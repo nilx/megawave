@@ -20,14 +20,9 @@
 #include <math.h>
 #include "mw.h"
 
-/* External modules called */
-#ifdef __STDC__
-extern void fop(Fimage,Fimage,Fimage,float *,char *,char *,char *,char *,char *,char *,char *,char *,char *,char *,char *);
-extern void fderiv(Fimage,Fimage,Fimage,Fimage,Fimage,Fimage,Fimage,Fimage,Fimage,float *,int *);
-#else
 extern void fop();
 extern void fderiv();
-#endif
+
 
 float fnorm(in,ref,p,s,v,b,n,t)
 Fimage in,ref;

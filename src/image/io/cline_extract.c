@@ -3,16 +3,22 @@
 name = {cline_extract};
 author = {"Jacques Froment"};
 function = {"Extract a line or a column of a cimage and store it as an 1D fsignal"};
-version = {"1.0"};
+version = {"1.1"};
 
 usage = {
   'c'->cflag "Flag for column number",
   Image->Image "Input image (should be a cimage)", 
   ExtractedSig<-Signal "Output fsignal",
-  Number->Index "Line (default) or column number"
+  Number->Index "Line (default) or column number",
+  {
+   OutImage<-OutImage "Output image (with selected line/column marked)"
+  }
 };
 
  */
+/*----------------------------------------------------------------------
+  v1.1: added "Output image" option (Jacques Froment)
+----------------------------------------------------------------------*/
 
 /*--- Fichiers inclus UNIX C ---*/
 #include <stdio.h>
@@ -21,7 +27,7 @@ usage = {
 #include  "mw.h"
 
 
-void cline_extract(cflag, Image, Signal, Index)
+void cline_extract(cflag, Image, Signal, Index, OutImage)
 
 	/*--- Extract line `LineIndex` or column `ColumnIndex` in `Image` ---*/
 
@@ -30,6 +36,7 @@ void cline_extract(cflag, Image, Signal, Index)
 					 * to be extracted */
     Cimage	Image;			/* Input image */
     Fsignal	Signal;		/* Output, extracted line or column */
+    Cimage      OutImage;
 
 {
 
@@ -55,6 +62,13 @@ void cline_extract(cflag, Image, Signal, Index)
     if ((Signal = mw_change_fsignal(Signal, size)) == NULL)
       mwerror(FATAL,1,"Not enough memory\n");
 
+    if (OutImage)
+      {
+	if (!(OutImage=mw_change_cimage(OutImage,Image->nrow,Image->ncol)))
+	  mwerror(FATAL,1,"Not enough memory\n");	  
+	mw_copy_cimage(Image,OutImage);
+      }
+    
     if (cflag)
       {
 	for (l = 0; l < size; l++)
@@ -65,6 +79,11 @@ void cline_extract(cflag, Image, Signal, Index)
 	/* Signal->scale = Image->scale; */
 	Signal->scale = 1.0;
 	sprintf(Signal->cmt, "Column %d of %s", Index, Image->name);
+
+	if (OutImage)
+	  for (l = 0; l < size; l++)
+	    mw_plot_cimage(OutImage,Index,l,255*(l%2));
+	
     } else
       {
 	for (c = 0; c < size; c++)
@@ -74,5 +93,9 @@ void cline_extract(cflag, Image, Signal, Index)
 	/* Signal->scale = Image->scale; */
 	Signal->scale = 1.0;
 	sprintf(Signal->cmt, "Line %d of %s", Index, Image->name);
+
+	if (OutImage)
+	  for (c = 0; c < size; c++)
+	    mw_plot_cimage(OutImage,c,Index,255*(c%2));
       }
 }

@@ -1,16 +1,21 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {kplot};
-  version = {"1.4"};
+  version = {"1.5"};
   author = {"Jacques Froment"};
   function = {"Bitmap the geometry of Curves onto a cimage"};
   usage = {
-  'i':cimage_in->A   "original Cimage (input)",
+  'i':cimage_in->A   "optional background Cimage (input)",
   'l'->line          "draw a line between successive points of a curve",
   curves_in->curves  "set of Curves (input)",
   cimage_out<-B      "bitmapped Cimage (output)"
   };
 */
+/*----------------------------------------------------------------------
+ v1.5: no more translation in case of negative points (L.Moisan) 
+ ----------------------------------------------------------------------*/
+
+
 
 #include <stdio.h>
 #include "mw.h"
@@ -80,13 +85,13 @@ int xmin,ymin;
     for (p=p->next; p; p=p->next)
       {
 	mwdebug("Line (%d,%d)-(%d,%d)\n",x0,y0,p->x,p->y);
-	  mw_draw_cimage(B, x0-xmin, y0-ymin, p->x, p->y, 0);
+	mw_draw_cimage(B, x0-xmin, y0-ymin, p->x-xmin, p->y-ymin, 0);
 	if (A)
 	  {
-	    if (abs(x0-p->x-xmin) >= abs(y0-p->y-ymin))
-	      mw_draw_cimage(B, x0-xmin,y0+1-ymin,p->x-xmin,p->y-ymin+1,255); 
-	    else
-	      mw_draw_cimage(B, x0-xmin+1,y0-ymin,p->x-xmin+1,p->y-ymin,255);  
+	    if (abs(x0-p->x-xmin) >= abs(y0-p->y-ymin)) 
+	      mw_draw_cimage(B, x0-xmin,y0+1-ymin,p->x-xmin,p->y-ymin+1,255);
+	    else 
+	      mw_draw_cimage(B, x0-xmin+1,y0-ymin,p->x-xmin+1,p->y-ymin,255);
 	  }
 	x0 = p->x;
 	y0 = p->y;
@@ -141,8 +146,9 @@ Curves curves;
       B = mw_change_cimage(B,A->nrow,A->ncol);
       if (B == NULL) mwerror(FATAL,1,"Not enough memory\n");
       mw_copy_cimage(A,B);
-      if (xmin < 0) xmin += (A->ncol/2);
-      if (ymin < 0) ymin += (A->nrow/2);
+      /*if (xmin < 0) xmin += (A->ncol/2);
+	if (ymin < 0) ymin += (A->nrow/2);*/
+      xmin = ymin = 0;
     }  
 
   if (line)

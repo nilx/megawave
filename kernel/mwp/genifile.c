@@ -1,7 +1,7 @@
 /**
  ** genifile
- ** (c)1993-99 J.Froment - S.Parrino
- ** Version 1.0
+ ** (c)1993-2000 J.Froment - S.Parrino
+ ** Version 1.1
  **/
 
 /*~~~~~~~~~~~  This file is part of the MegaWave2 preprocessor ~~~~~~~~~~~~~~~~
@@ -37,13 +37,24 @@ FILE *fd;
   int l;
   char buffer[BUFSIZ];
 
+  /* for proto */
+  extern Node * mwfuncdecl;
+  Node * CmpdStmtTmp;
+
   l = strlen(mwfunction->val.text)-2;
   strncpy(buffer, mwfunction->val.text+1, l);
   buffer[l] = '\0';
-  /*  {Function name, "group", "function", "usage"}, */        
-  fprintf(fd, "{ \"%s\", _%s, usage_%s, \"%s\", %s, \"%s\" }\n", 
+  /*  {Function name, "group", "function", "usage", "proto"}, */        
+  fprintf(fd, "{ \"%s\", _%s, usage_%s, \"%s\", %s, \"%s\", \"", 
               mwname->val.text, mwname->val.text, mwname->val.text, groupbuf, 
               mwfunction->val.text, usagebuf);
+  
+  CmpdStmtTmp = mwfuncdecl->right->right;
+  mwfuncdecl->right->right = NULL;
+  printprotonode(fd, mwfuncdecl);
+  mwfuncdecl->right->right = CmpdStmtTmp;
+
+  fprintf(fd, "\"}\n");
 }
 
 

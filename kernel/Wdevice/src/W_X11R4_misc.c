@@ -4,8 +4,9 @@
                     (That is, which should not be used as this by the     
                     main functions, but which are called in W_X11R4.c)    
    
-   Vers. 3.1
-   (C) 1991-99 Jacques Froment
+   Vers. 3.3
+   (C) 1991-2001 Jacques Froment, 
+                 Simon Masnou     (16 bits plane added)
    Parts of this code inspired from XV: Copyright 1989, 1994 by John Bradley.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~  This file is part of the MegaWave2 Wdevice library ~~~~~~~~~~~~~~
@@ -303,6 +304,12 @@ int dx,dy;        /* Size of the window */
 	sizepix = window->ximage->bytes_per_line * dy;
       break;
 
+    case 16:
+      window->ximage = XCreateImage(_W_Display,_W_Visual,_W_Depth,ZPixmap,0,
+				    NULL,dx,dy,16,0);
+      if (window->ximage != NULL) sizepix = 2 * dx * dy;
+      break;
+      
     case 24: case 32: /* What a nice screen ! */
 
       window->ximage = XCreateImage(_W_Display,_W_Visual,_W_Depth,ZPixmap,0,
@@ -352,7 +359,7 @@ int dx,dy;        /* Size of the window */
   /* Allocate *pic in case of not 8 bpp screens or set pic to pix
      Note du 15/3/99 : pourquoi seulement dans le cas 8 bpp ? Rajoute 24 et 32
    */
-  if ((_W_Depth == 8)||(_W_Depth == 24)||(_W_Depth == 32))
+  if ((_W_Depth == 8)||(_W_Depth == 16)||(_W_Depth == 24)||(_W_Depth == 32))
     window->pic = window->pix;
   else
     {
@@ -396,7 +403,8 @@ int dx,dy;        /* Size of the window */
 	       free(window->pix);
 	       window->pix = NULL;
           */
-	  if ((_W_Depth != 8)&&(_W_Depth != 24)&&(_W_Depth != 32))
+	  if ((_W_Depth != 8)&&(_W_Depth != 16)&&(_W_Depth != 24)&&
+	      (_W_Depth != 32))
 	    {
 	       free(window->pic);
 	       window->pic = NULL;
@@ -550,8 +558,8 @@ void WX_Ditherize(window,dx,dy)
 }
 
 
-/*   Called by WUserEvent: Update the _W_KeyBuffer string */
-/*   Return -1 if it is not a printable character */
+/*   Called by WUserEvent: set in _W_KeyBuffer the ascii value of */
+/*   the key pressed, or the key symbol in case of non-printable key. */
 
 int WX_KeyPress(event)
 
@@ -561,6 +569,7 @@ XKeyEvent       *event;
   int             length;
   KeySym          theKeySym;
   XComposeStatus  theComposeStatus;
+  char            key;
 
   /* This test to avoid a memory fault into the function XLookupString() */
   /* (on HP-UX A.09.03 with X11R5), when sometimes a XKeyEvent is received */
@@ -571,18 +580,17 @@ XKeyEvent       *event;
   if (((*event).keycode <= 0) || ((*event).keycode >= 0xFF00)) return(-1);
 
   length = XLookupString( event,
-			 _W_KeyBuffer,
-			 W_KeyBufferMaxLen-1,
-			 &theKeySym,
-			 &theComposeStatus );
+			  &key,
+			  1,
+			  &theKeySym,
+			  &theComposeStatus );
 
   if ( ( theKeySym < ' ' )  || /* -- ASCII 32 " "  */
-      ( theKeySym > '~' )  ||  /* -- ASCII 126 "~" */
-      ( length <= 0 ) )   
-    /* Not a printable character */
-    {
-      _W_KeyBuffer[0]='\0';
-      return(-1);
-    }
+       ( theKeySym > '~' ) ||  /* -- ASCII 126 "~" */
+       (length <=0) )
+    /* Not a printable character : set the Ascii code */
+    _W_KeyBuffer=theKeySym;
+  else
+    _W_KeyBuffer=key;  /* Map Ascii value */
   return(0);
 }

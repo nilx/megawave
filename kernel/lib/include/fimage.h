@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fimage.h
    
-   Vers. 1.02
-   (C) 1994-97 Jacques Froment
+   Vers. 1.3
+   (C) 1994-2000 Jacques Froment
    Internal Input/Output fimage structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -19,8 +19,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef SunOS
 #include <sys/types.h>
 #endif
-
-#include "string_size.h"
 
 /* Floating Point Gray Level Image */
 

@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="`basename $0`"
-_Vers="1.05"
-_Date="1997"
+_Vers="1.06"
+_Date="1997-2002"
 _Func="Compile your own XMegaWave2 software (debug-mode)";
 _Auth="Jacques Froment";
 _Usage="[-gnu] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-pubsyslib] modules_file"
@@ -236,9 +236,9 @@ if [ ! -f $BXMW2FILE ]; then
   exit 1
 fi
 
-cat $MEGAWAVE2/sys/shell/xmw2_header.c > $XMW2FILE
+cat $MEGAWAVE2/sys/shell/data/cxmw2_header.c > $XMW2FILE
 cat $BXMW2FILE >> $XMW2FILE
-cat $MEGAWAVE2/sys/shell/xmw2_foot.c >> $XMW2FILE
+cat $MEGAWAVE2/sys/shell/data/cxmw2_foot.c >> $XMW2FILE
 
 echo "  Phase 2 : Compiling ${XMW2}.c"
 

@@ -5,6 +5,7 @@
    author = {"Lionel Moisan"};
    function = {"Zoom, Rotate then translate IN PLACE a set of Fcurves"};
    usage = {
+    's'->sym     "apply first y=>-y symmetry",
     in->cs       "input Fcurves",
     out<-fkzrt   "output Fcurves (modifed input)",
     zoom->zoom   "zoom factor",
@@ -19,9 +20,10 @@
 #include "mw.h"
 
 
-Fcurves fkzrt(cs,zoom,angle,x,y)
+Fcurves fkzrt(cs,zoom,angle,x,y,sym)
 Fcurves cs;
 float   zoom,angle,x,y;
+char    *sym;
 {
   Fcurve        c;
   Point_fcurve  p;
@@ -35,7 +37,7 @@ float   zoom,angle,x,y;
     for (p=c->first; p; p=p->next) {
       
       px = (double)p->x;
-      py = (double)p->y;
+      py = (double)(sym?-p->y:p->y);
       
       p->x = (float)( ct*px - st*py ) + x;
       p->y = (float)( st*px + ct*py ) + y;

@@ -1,8 +1,24 @@
-{\em cextract} extracts a sub-image of an original image (of cimage type) and copy it in an output image. An optional background image can be given, it that
-case the location of the sub-image in this background must be given. 
+This modules extracts the sub-region $[X_1,X_2]\times [Y_1,Y_2]$ 
+of the input image. Hence, the extracted region has a size of 
+$(X_2-X_1+1) \times (Y_2-Y_1+1)$.
+If $X_2$ or $Y_2$ are negative or null, then they
+are considered relatively to the corresponding 
+last possible coordinate. For example, $X_2=0$ means that the sub-region 
+will end exactly at the last column of the input image, while $Y_2=-10$
+will crop 10 lines from the input image. If the sub-region is
+not included in the input image domain, the $b$ value is used in
+missing areas.
 
-The parameters $X_o,Y_o$ specify the coordinates of the sub-image's upper left point in the original image.
-The parameters $X_f,Y_f$ specify the coordinates of the sub-image's lower right point in the original image.
+\medskip
 
-The last two parameters $X_c,Y_c$ are optional and they specify the location at which the extracted sub-image is inserted in the background image.
+With the \verb+-r+ option, $X_2$ and $Y_2$ specify the
+size of the region instead
+of the ending coordinates, yielding the extracted region
+$[X_1,X_1+X_2-1]\times [Y_1,Y_1+Y_2-1]$.
+
+\medskip
+
+If a $bg$ image is specified, then the upleft corner of the
+extracted region is placed at position $(X_c,Y_c)$ of this 
+background image.
 

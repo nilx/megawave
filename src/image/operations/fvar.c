@@ -7,7 +7,7 @@ usage = {
 A->A "input fimage",
 v<-fvar "output variance"
 };
-version = {"1.0"};
+version = {"1.1"};
 */
 
 #include <stdio.h>
@@ -23,14 +23,11 @@ Fimage A;
   register int i;
   double m,v,vr;
 
-  m=0.0;
   s = A->ncol*A->nrow;
-  mwdebug("Imput image of size (%d,%d)\n",A->ncol,A->nrow);
+  if (s <= 1) return(0.);
 
-  if (s <= 1) mwerror(FATAL,1,"Illegal size for the image\n");
-
-  for (i=0, ptr = A->gray;i<s;i++,ptr++) m += *ptr;
-  m /= s;
+  for (m=0., i=0, ptr = A->gray; i<s; i++,ptr++) m += *ptr;
+  m /= (double)s;
       
   vr = 0.0;
   for (i=0, ptr = A->gray;i<s;i++,ptr++) 
@@ -38,6 +35,6 @@ Fimage A;
       v = *ptr - m;  
       vr += v*v;
     }
-  vr /= (s-1);
+  vr /=  (double)s - 1.;
   return((float) vr);
 }

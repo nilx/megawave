@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    curve.c
    
-   Vers. 1.5
-   (C) 1993-99 Jacques Froment
+   Vers. 1.6
+   (C) 1993-2002 Jacques Froment
    Basic memory routines for the curve internal type
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -44,7 +44,7 @@ Point_curve mw_change_point_curve(point)
   return(point);
 }
 
-/* desallocate all the point_curve structures from a starting point */
+/* deallocate all the point_curve structures from a starting point */
 
 void mw_delete_point_curve(point)
      Point_curve point;
@@ -70,18 +70,23 @@ void mw_delete_point_curve(point)
 
 /* Copy all the points of a curve starting from a Point_curve into another chain */
 
-void mw_copy_point_curve(in, out)
+Point_curve mw_copy_point_curve(in, out)
 
 Point_curve in,out;
 
 { 
   Point_curve pc,qc0,qc1;
 
-  if ((!in) || (!out))
+  if (!in)
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_point_curve] NULL input or output point_curve\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_point_curve] NULL input point_curve\n");
+      return(NULL);
+    }
+  if (!out)
+    {
+      out = mw_new_point_curve();
+      if (!out) mwerror(ERROR, 0,"[mw_copy_point_curve] Not enough memory to create a point_curve\n");
+      return(NULL);      
     }
 
   out->x = in->x;
@@ -96,8 +101,8 @@ Point_curve in,out;
       if (qc1 == NULL)
 	    {
 	      mw_delete_point_curve(qc1);
-	      mwerror(FATAL, 1,"Not enough memory to create a point_curve\n");
-	      return;
+	      mwerror(ERROR, 0,"[mw_copy_point_curve] Not enough memory to copy the point_curve\n");
+	      return(NULL);
 	    }
       qc1->x = pc->x;
       qc1->y = pc->y;
@@ -105,6 +110,7 @@ Point_curve in,out;
       qc0->next = qc1;
       qc0 = qc1;
     }
+  return(out);
 }
 /* ----- */
 
@@ -138,7 +144,7 @@ Curve cv;
   return(cv);
 }
 
-/* desallocate the curve structure */
+/* deallocate the curve structure */
 
 void mw_delete_curve(curve)
      Curve curve;
@@ -158,33 +164,50 @@ void mw_delete_curve(curve)
 
 /* Copy a curve into another curve */
 
-void mw_copy_curve(in, out)
+Curve mw_copy_curve(in, out)
 
 Curve in,out;
 
 { 
   Point_curve pc,qc0,qc1;
 
-  if ((!in) || (!out))
+  printf("Enter mw_copy_curve()\n");
+
+  if (!in)
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_curve] NULL input or output curve\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_curve] NULL input curve\n");
+      return(NULL);
+    }
+
+  if (!out)
+    {
+      out=mw_new_curve();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_curve] Not enough memory to create a curve !\n");
+	  return(NULL);
+	}
     }
 
   out->first = mw_new_point_curve();
   if (out->first == NULL)
     {
       mw_delete_point_curve(out->first);
-      mwerror(FATAL, 1,"Not enough memory to create a curve\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_curve] Not enough memory to copy the curve\n");
+      return(NULL);
     }
-  mw_copy_point_curve(in->first, out->first);
+  if (!mw_copy_point_curve(in->first, out->first))
+    {
+      mwerror(ERROR, 0,"[mw_copy_curve] Not enough memory to copy the curve\n");
+      return(NULL);
+    }
+  printf("return out=%x\n",out);
+  return(out);
 }
 
 /* Return the number of point into a curve */
 
-unsigned int mw_curve_length(curve)
+unsigned int mw_length_curve(curve)
 
 Curve curve;
 
@@ -228,7 +251,7 @@ Curves mw_change_curves(cvs)
 }
 
 
-/* desallocate the curves structure */
+/* deallocate the curves structure */
 
 void mw_delete_curves(curves)
      Curves curves;
@@ -258,7 +281,7 @@ void mw_delete_curves(curves)
 
 /* Return the number of curves into a curves */
 
-unsigned int mw_curves_length(curves)
+unsigned int mw_length_curves(curves)
 
 Curves curves;
 
@@ -275,7 +298,7 @@ Curves curves;
 
 /* Return the total number of points into a curves */
 
-unsigned int mw_curves_npoints(curves)
+unsigned int mw_npoints_curves(curves)
 
 Curves curves;
 
@@ -288,7 +311,7 @@ Curves curves;
   n=0;
   for (p=pfirst=curves->first, m=0;
        (p != NULL)&&((m==0)||(p != pfirst)); m++, p=p->next)
-	 n += mw_curve_length(p);
+	 n += mw_length_curve(p);
   return(n);
 }
 

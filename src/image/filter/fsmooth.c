@@ -1,7 +1,7 @@
 /*----------------------Megawave2 Module----------------------*/
 /*mwcommand
   name = {fsmooth};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Jacques Froment, Yann Guyonvarc'h"};
   function = {"Smoothing with a binomial filter"};
   usage = {
@@ -11,7 +11,9 @@
             out<-out      "Output Fimage"
           };
 */
-/*--------------------------------------------------------------*/
+/*----------------------------------------------------------------------
+ v1.1: bug nrow/ncol fixed (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -32,7 +34,7 @@ Fimage in,out;
  
  N=((2+(*W))*(*S)*(*S));
 
- out=mw_change_fimage(out,in->ncol,in->nrow);
+ out=mw_change_fimage(out,in->nrow,in->ncol);
  if (!out) mwerror(FATAL,1,"not enough memory\n"); 
 
  mw_copy_fimage(in,out);

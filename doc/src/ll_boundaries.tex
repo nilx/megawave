@@ -1,0 +1,34 @@
+This modules computes all the level lines (that is, the connected
+components of the boundaries of the level sets) of an image 
+(with the same options \verb+-s+, \verb+-p+, \verb+-z+ and \verb+-t+ 
+as the \verb+ll_extract+ module) and keeps the most contrasted ones.
+The detection is made using a thresholding function balancing between 
+the minimum contrast (gradient norm) along the curve and the
+length of the curve. Unless \verb+-a+ option is specified, only
+on representant (the most meaningful one) is kept for each 
+monotone sequence of meaningful level lines (that is, a sequence
+of level lines included in each others, with no inclusion
+branching and no contrast reversal).
+The thresholding function ensures
+that at most $10^{-eps}$ false detections could occur by chance
+with independent random gradient values (see [1]).
+
+\medskip
+
+Notice that contrary to the \verb+ll_edges+ detection, this 
+module is constrained to keep full (ie closed) level lines and 
+cannot break them into parts.
+
+\medskip
+
+The result is a collection of curves stored in a Flists structure.
+
+\bigskip
+
+{\large \bf References}
+
+\medskip
+
+[1] A. Desolneux, L. Moisan, J.-M. Morel, ``Edge Detection by Helmholtz 
+Principle'', {\it Journal of Mathematical Imaging and Vision}, 
+vol 14:3, pp 271-284, 2001

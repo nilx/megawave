@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {kspline};
-  version = {"1.1"};
+  version = {"1.3"};
   author = {"Jacques Froment"};
   function = {"Generate one spline-curve from one control points curve"};
   usage = {
@@ -11,28 +11,18 @@
   kspline<-spline      "B-spline curve (curve output)"
   };
 */
+/*----------------------------------------------------------------------
+ v1.2: corrected allocation bug + minor modifications (L.Moisan)
+ v1.3: upgrade for new kernel (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
 
 extern int mwdbg;
 
-/* Return the number of points in a curve */
 
-int give_number_of_points_in_curve(curve)
-                                         
-Curve curve;
-{
-  Point_curve c;
-  int n;
-
-  n=0;
-  for (c=curve->first; c; c=c->next) n++;
-  return(n);
-}
-
-
-init_nodes(X,j,n)   /* Init the node vector */
+void init_nodes(X,j,n)   /* Init the node vector */
 
 int *X,j,n;
 
@@ -171,7 +161,8 @@ float Step; /* Step in the discretization of the spline */
 }
 
 
-/* Main function */
+/*------------------------------ Main function ------------------------------*/
+
 void kspline(C,Step,P,spline)
 
 int *C;      /* Order j of the spline */
@@ -185,42 +176,33 @@ Curve P,spline;
 
   if (*C < 2) mwerror(USAGE,1,"Illegal spline order j=%d\n",*C);
 
-  M = give_number_of_points_in_curve(P);      
+  M = mw_length_curve(P);
   NPC = M-1;
   mwdebug("\tM=%d \t NPC=%d\n",M,NPC);
 
   if (M < *C) 
-    mwerror(FATAL,1,"Cannot generate spline: only %d control point(s) found !\n",M);
+    mwerror(FATAL,1,
+	    "Cannot generate spline: only %d control point(s) found !\n",M);
 
-  X = (int *) malloc((M+1)*sizeof(int));
+  X = (int *) malloc((M+*C)*sizeof(int));
   if (X == NULL) 
     mwerror(FATAL,1,"Not enough memory\n");
   
   N = mw_change_fimage(NULL,*C+1,M+*C);
-  if (N == NULL)
-    {
-      free(X);
-      mwerror(FATAL,1,"Not enough memory\n");
-    }
+  if (N == NULL) mwerror(FATAL,1,"Not enough memory\n");
 
   /* Create the spline structure if needed */
   spline = mw_change_curve(spline);
-  if (spline == NULL)
-    {
-      free(X);
-      mw_delete_fimage(N);
-      mwerror(FATAL,1,"Not enough memory\n");
-    }
+  if (spline == NULL) mwerror(FATAL,1,"Not enough memory\n");
+
   /* Fill the node vector */
   init_nodes(X,*C,NPC);
   
   /* Compute the spline */
   compute_spline(spline,P,X,N,*C,M,NPC,*Step);
 
-  /*
   mw_delete_fimage(N);
   free(X);
-  */
 
 }
 

@@ -1,22 +1,22 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {iowave2};
-version = {"1.20"};
+version = {"1.3"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Reconstructs an image from an orthogonal wavelet transform"};
 usage = {
 'r':[NLevel=0]->NumRec [0,20]
-	"Start reconstruction from level NLevel", 
+	"Start reconstruction from level NLevel (default 0)", 
 'h':HaarNLevel->Haar
 	"Start reconstruction with Haar filter from level HaarNLevel down to level NLevel + 1",
 'e':[EdgeMode=3]->Edge [0,3]
-	"Edge processing mode", 
+	"Edge processing mode (0/1/2/3, default 3)", 
 'p':[PrecondMode=0]->Precond [0,2]
-	"Edge preconditionning mode", 
+	"Edge preconditionning mode (0/1/2, default 0)", 
 'i'->Inverse
 	"Invertible transform", 
 'n':[FilterNorm=2]->FilterNorm [0,2]
-	"Filter taps normalization", 
+	"Filter taps normalization (0/1/2, default 2)", 
 WavTrans->Wtrans
 	"Input wavelet transform (wtrans2d)",
 RecompImage<-Output
@@ -40,13 +40,8 @@ ImpulseResponse->Ri
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void sconvolve(Fsignal, Fsignal, int *, int *, int *, int *, int *, int *, Fsignal, Fimage);
-void precond2d(int *, Fimage, Fimage, Fimage);
-#else
-void sconvolve();
-void precond2d();
-#endif
+extern void sconvolve();
+extern void precond2d();
 
 /*--- Constants ---*/
 
@@ -162,15 +157,18 @@ COMMENT(result, wtrans, edge, precond, filternorm, ri)
     strcat(result->cmt, wtrans->name);
     switch(edge)
     {
-    case 3:
-	strcat(result->cmt, ", special edge proc.");
-	break;
-    case 1:
-	strcat(result->cmt, ", edges period.");
-	break;
-    case 2:
-	strcat(result->cmt, ", edges reflected");
-	break;
+  case 0:
+      strcat(result->cmt, ", edges zero padded");
+      break;
+  case 1:
+      strcat(result->cmt, ", edges period.");
+      break;
+  case 2:
+      strcat(result->cmt, ", edges reflected");
+      break; 
+  case 3:
+      strcat(result->cmt, ", special edge proc.");
+      break;
     }
     if(precond == 1)
 	strcat(result->cmt, " with precond.");

@@ -24,11 +24,7 @@
 
 #include <stdio.h>
 #include <math.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
-
-extern double sin(),cos(),tan();
 
 #define HORIZONTAL 0
 #define VERTICAL 1

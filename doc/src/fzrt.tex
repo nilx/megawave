@@ -1,0 +1,10 @@
+This module transforms the image $in(a,b)$ into $out(A,B)$, where
+$$\left( \begin{array}{c} A \\ B \end{array} \right) \quad
+= \quad 
+\left( \begin{array}{cc} zoom \cdot \cos(\theta) & - zoom \cdot\sin(\theta) \\
+zoom \cdot \sin(\theta) & \;\;\;zoom\cdot\cos(\theta) \\ \end{array} \right) \;
+\left( \begin{array}{c} b \\ b \end{array} \right) \;+\;
+\left( \begin{array}{c} x \\ y  \end{array} \right)$$
+and $\displaystyle \theta = angle \cdot \frac{\pi}{180}$.
+The image domain is the same. The interpolation method can be specified
+as in \verb+fcrop+.

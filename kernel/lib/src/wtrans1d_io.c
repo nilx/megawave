@@ -1,9 +1,8 @@
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    wtrans1d_io.c
    
-   Vers. 1.1
-   (C) 1993-95 Jacques Froment
+   Vers. 1.2
+   (C) 1993-2000 Jacques Froment
    Input/Output private functions for the Wtrans1d structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -220,7 +219,7 @@ char Sname[];    /* Name of the signal field (A,AP,D or DP) */
 {
   int f,j,v,size;
   char wfname[BUFSIZ];
-  char type_in[TYPE_SIZE];
+  char type_in[mw_ftype_size];
   Fsignal signal;
   char sizedif = 0;         /* 1 if not the expected size in the signal */
 
@@ -252,7 +251,7 @@ char Sname[];    /* Name of the signal field (A,AP,D or DP) */
 
 	/* Load without any new memory allocation */
 	signal = (Fsignal) _mw_load_fsignal(wfname, type_in, signal);
-	_mw_make_type(type,type_in,fsignal_types);
+	_mw_make_type(type,type_in,"fsignal");
 
 	if (signal == NULL)
 	  mwerror(INTERNAL,0,"[_mw_wtrans1d_load_wtrans] NULL signal returned in loading file \"%s\"\n",wfname);
@@ -287,7 +286,7 @@ char *type;  /* External type of the wavelet coefficients files */
   Wtrans1d wtrans;               
   int f,j,v,size,use_average;
   char wfname[BUFSIZ];
-  char type_in[TYPE_SIZE];
+  char type_in[mw_ftype_size];
   Fsignal signal;
 
   wtrans = _mw_load_wtrans1d_header(fname);

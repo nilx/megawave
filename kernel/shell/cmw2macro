@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave Macro ----------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="cmw2macro"
-_Vers="2.03";
-_Date="1996-2000";
+_Vers="2.07";
+_Date="1996-2002";
 _Func="Compile a user's macro (make it available and create the doc file)";
 _Auth="Jacques Froment";
 _Usage="[-adm] [-ret] [-path path] macro"
@@ -16,7 +16,15 @@ _Usage="[-adm] [-ret] [-path path] macro"
 #       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 #-----------------------------------------------------------------------------
 
-# test entree
+# Convert special letter for LaTeX
+ConvLaTeX()
+
+{
+  echo $1 | sed "s/_/\\\_/g"  |  sed "s/%/\\\%/g" |  sed "s/{/\\\{/g" \
+	|  sed "s/}/\\\}/g" |  sed "s/&/\\\&/g" | sed "s/#/\\\#/g"
+}
+
+# Check input
 if [ $# -lt 1 ] || [ $# -gt 3 ]; then
    . .mw2_help_lg_com
 fi
@@ -25,7 +33,7 @@ SRCDIR=$MY_MEGAWAVE2/src
 DOCDIR=$MY_MEGAWAVE2/doc
 SHELLOBJ=$MY_MEGAWAVE2/shell
 retdocname=0
-# Bourne Shell seems to intrepret differently escape characters on different
+# Bourne Shell seems to interpret differently escape characters on different
 # systems if we use "\\\"
 antislash='\'
 
@@ -77,7 +85,9 @@ group=`echo $src_name | \
      {if (i==(j+1)) {out=$i} else {out=sprintf("%s/%s",out,$i)}} print out}'`
 # Supress ./ if needed
 group=`echo $group | sed "s/\.\///"`
-
+if [ "$group" = "" ]; then
+  group=.
+fi
 name=`echo $src_name | awk 'BEGIN {FS="/"} {print $NF}'`
 
 Prog=`awk 'BEGIN {FS="\""} /^_Prog=/ {print $2;}' $src_name`
@@ -107,23 +117,55 @@ fi
 echo "%*** Group=$group" > $doc_name
 echo "%*** Name=$name" >> $doc_name
 echo " " >> $doc_name
-echo "\markboth{{\em" >> $doc_name
-echo $group | sed "s/_/\\\_/g"  >> $doc_name
-echo "} \hfill MegaWave2 User's Modules Library \hfill {${antislash}bf " >> $doc_name
-echo $name | sed "s/_/\\\_/g"  >> $doc_name
-echo "} \hspace{1cm}}{{\em "  >> $doc_name
-echo $group | sed "s/_/\\\_/g"  >> $doc_name
-echo "} \hfill MegaWave2 User's Modules Library \hfill {${antislash}bf " >> $doc_name
-echo $name | sed "s/_/\\\_/g"  >> $doc_name
-echo "} \hspace{1cm}}" >> $doc_name
+echo "\markboth{" >> $doc_name
+if [ "$group" != "" ]; then
+  Cgroup=`ConvLaTeX "$group"`
+  echo "{\em $Cgroup}" >> $doc_name
+fi
+
+if [ "$MW_SYSTEMTYPE" = "Linux" ]; then
+  echo "\hfill MegaWave2 User's Modules Library \hfill {${antislash}bf " >> $doc_name
+else
+  echo "\hfill MegaWave2 User's Modules Library \hfill {\\\bf " >> $doc_name
+fi
+Cname=`ConvLaTeX "$name"`
+echo "$Cname } \hspace{1cm}}{"  >> $doc_name
+if [ "$group" != "" ]; then
+  echo "{\em $Cgroup}"  >> $doc_name
+fi
+if [ "$MW_SYSTEMTYPE" = "Linux" ]; then
+  echo "\hfill MegaWave2 User's Modules Library \hfill {${antislash}bf " >> $doc_name
+else
+  echo "\hfill MegaWave2 User's Modules Library \hfill {\\\bf " >> $doc_name
+fi
+echo "$Cname} \hspace{1cm}}" >> $doc_name
 echo " " >> $doc_name
 
 echo "\label{$name}" >> $doc_name
 echo " " >> $doc_name
-echo "\Macro{$name}{$Func}" | sed "s/_/\\\_/g"  >> $doc_name
-echo "\Usage{$name}{{\em $Usage}}" | sed "s/_/\\\_/g"  >> $doc_name
+echo "\index{$Cname}" >> $doc_name
+echo " " >> $doc_name
+CFunc=`ConvLaTeX "$Func"`
+echo "\Macro{$Cname}{$CFunc}" >> $doc_name
+CUsage=`ConvLaTeX "$Usage"`
+echo "\Usage{$Cname}{{\em $CUsage}}" >> $doc_name
 
-echo "\Description{\input{src/$name.tex}}" >> $doc_name
+# Description field 
+echo "\samepage" >> $doc_name
+if [ "$MW_SYSTEMTYPE" = "Linux" ]; then
+  echo "\Mark{\Large ${antislash}bf Description} ${antislash}nopagebreak ${antislash}bigskip" >> $doc_name
+  echo "${antislash}nopagebreak" >> $doc_name
+  echo " " >> $doc_name
+  echo "${antislash}nopagebreak" >> $doc_name
+else
+  echo "\Mark{\Large\\\bf Description} \\\nopagebreak\\\bigskip" >> $doc_name
+  echo "\\\nopagebreak" >> $doc_name
+  echo " " >> $doc_name
+  echo "\\\nopagebreak" >> $doc_name
+fi
+echo "\input{src/$name.tex}" >> $doc_name
+echo "\Next" >> $doc_name
+echo " " >> $doc_name
 
 # Compute date of last modification for src_name
 
@@ -150,7 +192,9 @@ if  [ "$y" = "" ]; then
   y=`date | awk '{print $NF}'`
 fi
 
-echo "\Author{$Auth}{$y}{$Labo}" >> $doc_name
+CAuth=`ConvLaTeX "$Auth"`
+CLabo=`ConvLaTeX "$Labo"`
+echo "\Author{$CAuth}{$y}{$CLabo}" >> $doc_name
 
 # Make the link 
 if [ -r $SHELLOBJ/${name} ] || [ -h $SHELLOBJ/${name} ]; then

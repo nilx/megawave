@@ -1,88 +1,89 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
-  name = {cmextract};
-  version = {"1.01"};
-  author = {"Jacques Froment, Lionel Moisan"};
-  function = {"Copy a part of a cmovie into another movie, in an optional background"};
-  usage = {
-       in->in          "input cmovie",
-       out<-out        "output cmovie",
-       Xo->X1          "X Coor. of upper left point of submovie in original movie",
-       Yo->Y1          "Y Coor. of upper left point of submovie in original movie",
-       To->T1          "Position of the first image of submovie in original movie",
-       Xf->X2          "X Coor. of lower right point of submovie in original movie",              
-       Yf->Y2          "Y Coor. of lower right point of submovie in original movie",
-       Tf->T2          "Position of the last image of submovie in original movie",
-       {
-       Background->bg  "Background input movie",
-       [Xc=0]->Xc "X Coor. of the upper left point in the background where to put the submovie",
-       [Yc=0]->Yc "Y Coor. of the upper left point in the background where to put the submovie",
-       [Tc=1]->Tc "Position of the image in the background where to put the submovie"
-       }
-       };
+name = {cmextract};
+author = {"Lionel Moisan"};
+function = {"Extract a subpart of a Cmovie"};
+version = {"1.7"};
+usage = {
+'b':[b=0]->b    "background grey level (default 0)",
+'r'->r         "if set, X2,Y2 and T2 must be the SIZE of the extracted region",
+in->in         "input Cmovie",
+out<-cmextract "output Cmovie",
+X1->X1         "upleft corner of the region to extract from input (x)",
+Y1->Y1         "upleft corner of the region to extract from input (y)",
+T1->T1         "index of first extracted image (1 is first index)",
+X2->X2         "downright corner of the region to extract from input (x)",
+Y2->Y2         "downright corner of the region to extract from input (y)",
+T2->T2         "index of last extracted image (1 is first index)",
+  {
+    bg->bg       "background Cmovie",
+    [Xc=0]->Xc   "new location of X1 on the background, default 0",
+    [Yc=0]->Yc   "new location of Y1 on the background, default 0",
+    [Tc=1]->Tc   "new location of T1 on the background, default 1"
+  }
+};
 */
-/*-- MegaWave2 - Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
+/*-------------------------------------------------------------------------
+ v1.6: module rewritten, extended parameter values, -r,-b options (L.Moisan)
+ v1.7: new possibilities added (L.Moisan)
+-------------------------------------------------------------------------*/
 
-#include <stdio.h>
+#include  "mw.h"
 
-/* Include always the MegaWave2 Library */
-#include "mw.h"
+extern Cimage cextract();
 
 
-#define MAX(a,b) ((a)>(b)?(a):(b))
-
-void cmextract(in,out,X1,Y1,T1,X2,Y2,T2,bg,Xc,Yc,Tc)
-Cmovie in,out,bg;
-int    X1,Y1,T1,X2,Y2,T2,*Xc,*Yc,*Tc;
+Cmovie cmextract(b,in,bg,X1,Y1,T1,X2,Y2,T2,Xc,Yc,Tc,r)
+     Cmovie in;
+     int X1,Y1,T1,X2,Y2,T2;
+     int *b;
+     Cmovie bg;
+     int *Xc,*Yc,*Tc;
+     char *r;
 {
-  Cimage u,prev,source,back;
-  int x1,y1,t1,sx,sy,st,k,Xcc,Ycc;
-    
-  if ((X1<0) || (Y1<0) || (T1 < 1) || (*Tc < 1) || (X2 < X1) || (Y2 < Y1) || 
-      (T2 < T1) || (in->first->ncol < X2) || (in->first->nrow < Y2))
-    mwerror(USAGE,1,"Illegal coordinates or positions\n");
-      
-  sx = *Xc+X2-X1+1;
-  sy = *Yc+Y2-Y1+1;
-  st = *Tc+T2-T1+1;
+  Cmovie out;
+  Cimage u,*u1,*u2,new,prev,*next,im1,im2;
+  int i1,i2,i3,j1,j2,j3;
 
-  Xcc = Ycc = 0;
+  /* put input movie(s) into array(s) */
+  for (i1=0,u=in->first;u;u=u->next) i1++;
+  u1 = (Cimage *)malloc((i1+1)*sizeof(Cimage));
+  if (!u1) mwerror(FATAL,1,"Not enough memory\n");
+  for (i1=0,u=in->first;u;u=u->next) u1[i1++]=u;
+  u1[i1] = mw_change_cimage(NULL,u1[0]->nrow,u1[0]->ncol);
+  mw_clear_cimage(u1[i1],*b);
+
   if (bg) {
-    back = bg->first;
-    if (back) {
-      sx = MAX(back->ncol,sx);
-      sy = MAX(back->nrow,sy);
-    }
-  } else back = NULL;
+    for (i2=0,u=bg->first;u;u=u->next) i2++;
+    u2 = (Cimage *)malloc((i2+1)*sizeof(Cimage));
+    if (!u2) mwerror(FATAL,1,"Not enough memory\n");
+    for (i2=0,u=bg->first;u;u=u->next) u2[i2++]=u;
+    u2[i2] = mw_change_cimage(NULL,u2[0]->nrow,u2[0]->ncol);
+    mw_clear_cimage(u2[i2],*b);
+  }
 
-  source = in->first;
-  k = T1; 
-  while (k-- && source) source=source->next;
-
+  out = mw_new_cmovie();
+  next = &(out->first);
   prev = NULL;
-  for (k=1;(k<=st) || back;k++) 
-    {
-      mwdebug("Output image #%d\n",k);
-      u = mw_change_cimage(NULL,sy,sx);
-      if (!u) mwerror(FATAL,1,"Not enough memory.\n");
-      if (source && k>=*Tc)
-	{
-	  mwdebug("Extract source #%d\n",T1+k-(*Tc));
-	  cextract(NULL,source,back,u,X1,Y1,X2,Y2,Xc,Yc);
-	  source = source->next;
-	}
-      else if (back) 
-	cextract(NULL,back,back,u,0,0,back->ncol-1,back->nrow-1,&Xcc,&Ycc);
-	
-      if (prev) prev->next = u; else out->first = u;
-      u->previous = prev;
-      prev = u;
-      if (back) back = back->next;
-    }
-  u->next = NULL;
-  
-  printf("Size of output cmovie : %dx%dx%d\n",sx,sy,k-1);
+  if (r) T2+=T1-1;
+  i3 = T2-T1+1;
+  if (bg){
+    i3 += *Tc-1;
+    if (i2>i3) i3=i2;
+  }
+  for (j3=0;j3<i3;j3++) {
+    j1 = j3+(T1-1);
+    im1 = u1[(j1>=0 && j1<i1 && j1>=T1-1 && j1<=T2-1?j1:i1)];
+    if (bg) {
+      j2 = j3+(*Tc-1); 
+      im2 = u2[(j2>=0 && j2<i2?j2:i2)];
+    } else im2 = NULL;
+    new = cextract(b,im1,im2,NULL,X1,Y1,X2,Y2,Xc,Yc,r);
+    new->previous = prev;
+    *next = prev = new;
+    next = &(new->next);
+  }
+  *next = NULL;
+
+  return(out);
 }
-
-
-

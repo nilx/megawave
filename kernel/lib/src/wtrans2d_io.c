@@ -1,9 +1,8 @@
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    wtrans2d_io.c
    
-   Vers. 1.0
-   (C) 1993 Jacques Froment
+   Vers. 1.2
+   (C) 1993-2000 Jacques Froment
    Input/Output private functions for the Wtrans2d structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -122,6 +121,7 @@ char *fname; /* Name of the generic wavelet decomposition (Header Ascii file)*/
 
   /* Alloc the wtrans images[][] field */
 
+  /*
   switch (wtrans->type)
     {
     case mw_orthogonal:
@@ -159,6 +159,7 @@ char *fname; /* Name of the generic wavelet decomposition (Header Ascii file)*/
       return(NULL);
       break;
     }
+  */
 
   return(wtrans);
 }
@@ -212,7 +213,7 @@ char *type;  /* External type of the wavelet coefficients files */
   Wtrans2d wtrans;               
   int f,j,d,dx,dy;
   char wfname[BUFSIZ];
-  char type_in[TYPE_SIZE];
+  char type_in[mw_ftype_size];
   Fimage image;
   char sizedif = 0;         /* 1 if not the expected size in the image */
 
@@ -234,36 +235,14 @@ char *type;  /* External type of the wavelet coefficients files */
 	}
       close(f);
 
-      image = wtrans->images[j][d];
-      if (image == NULL)
-	mwerror(INTERNAL,0,"[_mw_wtrans2d_load_wtrans] NULL wtrans->image[%d][%d]\n",j,d);
-
-      dx = image->ncol; 
-      dy = image->nrow;
-
-      /* Load without any new memory allocation */
-      image = (Fimage) _mw_fimage_load_image(wfname, type_in, image);
-      _mw_make_type(type,type_in,fimage_types);
+      /* Load with new memory allocation */
+      image = (Fimage) _mw_fimage_load_image(wfname, type_in);
+      _mw_make_type(type,type_in,"fimage");
 
       if (image == NULL)
 	mwerror(INTERNAL,0,"[_mw_wtrans2d_load_wtrans] NULL image returned in loading file \"%s\"\n",wfname);
-      
-      if ((dx != image->ncol) || (dy != image->nrow))
-	{
-	  if (sizedif == 0)
-	    mwerror(WARNING, 0,"Unexpected size (%d,%d) of the image in \"%s\" (disable size control)\n",
-		    image->ncol, image->nrow, wfname);
-	  sizedif = 1;
-/* Erreur Fatale supprimee suite a la demande de Jean-Pierre d'Ales 
-	  mw_delete_wtrans2d(wtrans);
-	  return(NULL);
-*/
-	}
 
-/* Erreur Fatale supprimee suite a la demande de Jean-Pierre d'Ales 
-      if (image != wtrans->images[j][d])
-	mwerror(INTERNAL,0,"[_mw_wtrans2d_load_wtrans] New memory allocation done by _mw_fimage_load_image in loading \"%s\"\n",wfname);
-*/
+      wtrans->images[j][d]=image;
     }
 
   return(wtrans);
@@ -305,6 +284,9 @@ Wtrans2d wtrans;
 
   return(0);
 }
+
+
+
 
 
 

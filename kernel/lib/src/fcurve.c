@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fcurve.c
    
-   Vers. 1.4
-   (C) 1995-99 Jacques Froment
+   Vers. 1.5
+   (C) 1995-2002 Jacques Froment
    Basic memory routines for the fcurve internal type
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -44,7 +44,7 @@ Point_fcurve mw_change_point_fcurve(point)
   return(point);
 }
 
-/* desallocate all the point_fcurve structures from a starting point */
+/* deallocate all the point_fcurve structures from a starting point */
 
 void mw_delete_point_fcurve(point)
      Point_fcurve point;
@@ -69,18 +69,24 @@ void mw_delete_point_fcurve(point)
 
 /* Copy all the points of a fcurve starting from a Point_fcurve into another chain */
 
-void mw_copy_point_fcurve(in, out)
+Point_fcurve mw_copy_point_fcurve(in, out)
 
 Point_fcurve in,out;
 
 { 
   Point_fcurve pc,qc0,qc1;
 
-  if ((!in) || (!out))
+  if (!in)
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_point_fcurve] NULL input or output point_fcurve\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_point_fcurve] NULL input point_fcurve\n");
+      return(NULL);
+    }
+
+  if (!out)
+    {
+      out = mw_new_point_fcurve();
+      if (!out) mwerror(ERROR, 0,"[mw_copy_point_fcurve] Not enough memory to create a point_fcurve\n");
+      return(NULL);      
     }
 
   out->x = in->x;
@@ -95,8 +101,8 @@ Point_fcurve in,out;
       if (qc1 == NULL)
 	    {
 	      mw_delete_point_fcurve(qc1);
-	      mwerror(FATAL, 1,"Not enough memory to create a point_fcurve\n");
-	      return;
+	      mwerror(ERROR, 0,"[mw_copy_point_fcurve] Not enough memory to create a point_fcurve\n");
+	      return(NULL);
 	    }
       qc1->x = pc->x;
       qc1->y = pc->y;
@@ -104,6 +110,7 @@ Point_fcurve in,out;
       qc0->next = qc1;
       qc0 = qc1;
     }
+  return(out);
 }
 
 /* ----- */
@@ -138,7 +145,7 @@ Fcurve cv;
   return(cv);
 }
 
-/* desallocate the fcurve structure */
+/* deallocate the fcurve structure */
 
 void mw_delete_fcurve(fcurve)
      Fcurve fcurve;
@@ -156,9 +163,49 @@ void mw_delete_fcurve(fcurve)
   fcurve=NULL;
 }
 
+/* Copy a fcurve into another fcurve */
+
+Fcurve mw_copy_fcurve(in, out)
+
+Fcurve in,out;
+
+{ 
+  Point_fcurve pc,qc0,qc1;
+
+  if (!in)
+    {
+      mwerror(ERROR, 0,"[mw_copy_fcurve] NULL input fcurve\n");
+      return(NULL);
+    }
+
+  if (!out)
+    {
+      out=mw_new_fcurve();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_fcurve] Not enough memory to create a fcurve !\n");
+	  return(NULL);
+	}
+    }
+
+  out->first = mw_new_point_fcurve();
+  if (out->first == NULL)
+    {
+      mw_delete_point_fcurve(out->first);
+      mwerror(ERROR, 0,"[mw_copy_fcurve] Not enough memory to copy the fcurve\n");
+      return(NULL);
+    }
+  if (!mw_copy_point_fcurve(in->first, out->first))
+    {
+      mwerror(ERROR, 0,"[mw_copy_fcurve] Not enough memory to copy the fcurve\n");
+      return(NULL);
+    }
+  return(out);
+}
+
 /* Return the number of point into a fcurve */
 
-unsigned int mw_fcurve_length(fcurve)
+unsigned int mw_length_fcurve(fcurve)
 
 Fcurve fcurve;
 
@@ -202,7 +249,7 @@ Fcurves mw_change_fcurves(cvs)
 }
 
 
-/* desallocate the fcurves structure */
+/* deallocate the fcurves structure */
 
 void mw_delete_fcurves(fcurves)
      Fcurves fcurves;
@@ -231,7 +278,7 @@ void mw_delete_fcurves(fcurves)
 
 /* Return the number of fcurves into a fcurves */
 
-unsigned int mw_fcurves_length(fcurves)
+unsigned int mw_length_fcurves(fcurves)
 
 Fcurves fcurves;
 
@@ -248,7 +295,7 @@ Fcurves fcurves;
 
 /* Return the total number of points into a fcurves */
 
-unsigned int mw_fcurves_npoints(fcurves)
+unsigned int mw_npoints_fcurves(fcurves)
 
 Fcurves fcurves;
 
@@ -261,7 +308,7 @@ Fcurves fcurves;
   n=0;
   for (p=pfirst=fcurves->first, m=0; 
        (p != NULL)&&((m==0)||(p != pfirst)); m++, p=p->next)
-	 n += mw_fcurve_length(p);
+	 n += mw_length_fcurve(p);
   return(n);
 }
 

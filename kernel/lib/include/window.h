@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    window.h
    
-   Vers. 1.0
-   (C) 1993 Jacques Froment
+   Vers. 1.1
+   (C) 1993-2001 Jacques Froment
    Interconnexion between the Wdevice Library and MegaWave2
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -17,6 +17,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #define window_flg
 
 #include "Wdevice.h"
+#include "wpanel.h"
 
 #ifdef __STDC__
 Wframe *mw_get_window(Wframe *,int, int, int, int, char *);

@@ -21,12 +21,14 @@ extern void print_io_function(FILE *);
 extern void print_is_range(FILE *, Io, Paramtype *, DataIo *, char *);
 extern void print_verify_io_arg(FILE *);
 extern char *noquote(char*);
+extern char *make_printable(char*);
 # else
 extern int print_io_include();
 extern int print_io_function();
 extern int print_is_range();
 extern int print_verify_io_arg();
 extern char *noquote();
+extern char *make_printable();
 # endif
 
 #endif

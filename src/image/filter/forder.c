@@ -1,17 +1,19 @@
 /*----------------------Megawave2 Module-----------------------------------*/
 /*mwcommand
   name = {forder};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Jacques Froment, Yann Guyonvarc'h"};
   function = {"Order filtering : do Erosion/Dilation/Median in a 3x3 window"};
   usage = { 
-  'e':[e=5]->e[1,9]  "order of the pixel in a ascending list which sorts the values of the pixels in the window",
+  'e':[e=5]->e[1,9]  "order of the pixel in a ascending list which sorts the values of the pixels in the window (1..9, default 5)",
   'n':[n=1]->N[1,10000] "number of the filter's iterations (default 1)",
   in->in "Input fimage",
   out<-out "Output fimage"
           };
 */
-/*-------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------
+ v2.0: corrected free() bug  (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
@@ -168,6 +170,6 @@ int *e,*N;
 	   qsort(a,9,sizeof(float) ,compare);
 	   *ptrOUT++ = a[*e];
 	 }
-     free(a);
    }
+ free(a);
 }

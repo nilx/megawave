@@ -26,15 +26,6 @@ Blue_image<-BImage
 
 #include  "mw.h"
 
-/*--- Megawave2 modules definition ---*/
-
-#ifdef __STDC__
-#else
-#endif
-
-/*--- Global variables ---*/ 
-
-
 
 
 void

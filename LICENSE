@@ -6,8 +6,10 @@ MegaWave2 version 2.x.
 You acknowledge to be informed about the following facts, and you accept the 
 consequences:
 - MegaWave2 is a "soft-publication" for the scientific community, 
-  maintained by the image department of the CMLA, CNRS UMR-8536, Ecole 
-  Normale Superieure de Cachan.
+  intented to offer reproducible research in image processing.
+- MegaWave2 is maintained by the image department of the CMLA, 
+  a public french laboratory associated to the CNRS UMR-8536, Ecole Normale 
+  Superieure de Cachan.
 - The image department is founded by the CMLA only, using public funds and 
   private grants for software development.
 - MegaWave2 has been implemented for research purposes only; it comes 
@@ -36,7 +38,6 @@ You agree to
   of the use of this software together with the name(s) of the author(s) 
   written in the header of the corresponding module and with the address of 
   the CMLA and of other laboratories implied in the development, if any.
-
 
 Address: MegaWave, CMLA, Ecole Normale Superieure de Cachan, 61 avenue 
          du President Wilson, 94235 Cachan cedex, France.   

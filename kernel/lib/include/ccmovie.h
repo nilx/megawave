@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ccmovie.h
    
-   Vers. 1.0
-   (C) 1995 Jacques Froment
+   Vers. 1.1
+   (C) 1995-2000 Jacques Froment
    Internal Input/Output ccmovie structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -19,8 +19,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef SunOS
 #include <sys/types.h>
 #endif
-
-#include "ccimage.h"
 
 /* Movie of Unsigned Char (byte) Gray Level Image */
 

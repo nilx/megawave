@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {skeleton};
-  version = {"2.0"};
+  version = {"2.1"};
   author = {"Denis Pasquignon"};
   function = {"compute the skeleton of a cimage"};
   usage = {
@@ -21,14 +21,15 @@
      "skeletons sequence of the image"     
   };
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v2.1: return result + external call (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
-
-/* Include always the MegaWave2 include file */
 #include "mw.h"
 
+extern Cimage infsup();
 
 #define sqrt22 0.353553390593273564
 
@@ -431,7 +432,7 @@ float r;
   
 }
 
-skeleton(iteration,infsup_iter,extremite,average,cmovie,image,output)
+Cmovie skeleton(iteration,infsup_iter,extremite,average,cmovie,image,output)
 
 int *iteration;
 int *infsup_iter;
@@ -476,70 +477,70 @@ Cmovie output;
   dy=image->nrow;
   rad=1;
   
- /* Final(pict,output);*/
+  /* Final(pict,output);*/
   
   deginf=0.0;
   degsup=1.0;
   
-		
- 		
+  
+  
   while(iter-->0) { 
-  	
-  	mwdebug("Remaining skeleton iterations : [%i]\n",iter+1); 
-        printf("%i \n",iter+1); 
-        n=*infsup_iter; 
-        nc=1;
+    
+    mwdebug("Remaining skeleton iterations : [%i]\n",iter+1); 
+    printf("%i \n",iter+1); 
+    n=*infsup_iter; 
+    nc=1;
+    
+    for(n_courbure=0;n_courbure <n;n_courbure ++)   {
+      
+      infsup(&nc,&deginf,&degsup,average,pict,cmovie,im_inter);
+      infsup(&nc,&degsup,&deginf,average,im_inter,cmovie,im_work);
+      
+      for(a=0;a<size;a++)   {
         
-        for(n_courbure=0;n_courbure <n;n_courbure ++)   {
-
- 	infsup(&nc,&deginf,&degsup,average,pict,cmovie,im_inter);
- 	infsup(&nc,&degsup,&deginf,average,im_inter,cmovie,im_work);
- 	
-        for(a=0;a<size;a++)   {
-        
-        	test_a=test_carda(im_final,a,l_min);
- 	      	test_b=test_mcm(im_final,a);
-
- 	      	if((test_a==1) && (test_b==1) )  {
- 	      	 	pict->gray[a] = im_work->gray[a];
- 			}
- 			else
- 			{
- 			pict->gray[a] = im_final->gray[a];
- 			}
- 	}
-
-	mw_copy_cimage(pict,im_final);
+	test_a=test_carda(im_final,a,l_min);
+	test_b=test_mcm(im_final,a);
 	
+	if((test_a==1) && (test_b==1) )  {
+	  pict->gray[a] = im_work->gray[a];
 	}
-	
-	Final(im_final,output);
-	
-        for(a=0;a<size;a++)   {
-          	
-        	test_a=test_thinning(im_final,a);
-        	
-	      	
- 	      	if(test_a==1)  {
- 	      		pict->gray[a] = erosion(im_final,a,rad);
- 			}
- 			else
- 			{
- 			pict->gray[a] = im_final->gray[a];
- 			}
-        		
-        	
-        } 
-
-        mw_copy_cimage(pict,im_final);
-	
- 	/* Final(pict,output);*/
- 	
- }
- 
-  	Final(pict,output);
-
- 
+	else
+	  {
+	    pict->gray[a] = im_final->gray[a];
+	  }
+      }
+      
+      mw_copy_cimage(pict,im_final);
+      
+    }
+    
+    Final(im_final,output);
+    
+    for(a=0;a<size;a++)   {
+      
+      test_a=test_thinning(im_final,a);
+      
+      
+      if(test_a==1)  {
+	pict->gray[a] = erosion(im_final,a,rad);
+      }
+      else
+	{
+	  pict->gray[a] = im_final->gray[a];
+	}
+      
+      
+    } 
+    
+    mw_copy_cimage(pict,im_final);
+    
+    /* Final(pict,output);*/
+    
+  }
+  
+  Final(pict,output);
+  
+  return(output);
 }
 
 

@@ -1,7 +1,7 @@
 /**
  ** main of mwp
- ** (c)1993-99 J.Froment - S.Parrino
- ** Version 1.1
+ ** (c)1993-2001 J.Froment - S.Parrino
+ ** Version 1.4
  **/
 /*~~~~~~~~~~~  This file is part of the MegaWave2 preprocessor ~~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -85,20 +85,21 @@ char *progname;
 char filein[BUFSIZ];
 int lineno = 1;
 FILE *mwerr = NULL, *fopen();
+int ansifunc = FALSE;
 
 extern char groupbuf[];
 
 #ifdef XMWP
 # ifdef DEBUG
-#  define OPTS "wXdD:U:I:_:"
+#  define OPTS "awXdD:U:I:_:"
 # else
-#  define OPTS "wXD:U:I:_:"
+#  define OPTS "awXD:U:I:_:"
 # endif
 #else
 # ifdef DEBUG
-#  define OPTS "wdD:U:I:_:"
+#  define OPTS "awdD:U:I:_:"
 # else
-#  define OPTS "wD:U:I:_:"
+#  define OPTS "awD:U:I:_:"
 # endif
 #endif
 
@@ -125,31 +126,37 @@ char *argv[];
 
   errflg = FALSE;
   nowarning = FALSE;
+  ansifunc = FALSE;
 
   /* Analysis of MegaWave command line options */
   while ((c = getopt(argc, argv, OPTS)) != -1)
-    switch (c) {
+    switch (c) 
+      {
 #ifdef DEBUG
-      /* Enable print debug */
+	/* Enable print debug */
       case 'd':
         yydebug = TRUE;
         break;
 #endif
-      /* Disable warning print */
+	/* ANSI main function declaration */
+      case 'a':
+	ansifunc = TRUE;
+	break;
+	/* Disable warning print */
       case 'w':
         nowarning = TRUE;
         break;
-      /* Pass to CPP all define flags */
+	/* Pass to CPP all define flags */
       case 'D':
         (void)strcat(bufcpp, " -D");
         (void)strcat(bufcpp, optarg);
         break;
-      /* Pass to CPP all undefine flags */
+	/* Pass to CPP all undefine flags */
       case 'U':
         (void)strcat(bufcpp, " -U");
         (void)strcat(bufcpp, optarg);
         break;
-      /* Pass to CPP alternative include path */
+	/* Pass to CPP alternative include path */
       case 'I':
         (void)strcat(bufcpp, " -I");
         (void)strcat(bufcpp, optarg);
@@ -238,8 +245,17 @@ char *argv[];
 	/* Preprocess MegaWave file */
 #ifdef CPPCMD
 #ifdef Linux
-	/* Call cpp with -undef to remove definitions as __GNUC__ */
+	/* Call cpp with -undef to remove definitions as __GNUC__ 
+
 	sprintf(buffer, "%s -undef -C %s %s %s/mw%d.i", CPPCMD, bufcpp, argv[optind], 
+                                                              tmpdir, getpid());
+	*/
+
+	/* Note JF 23/02/01 : -undef cannot be used on Linux kernel 2.2.16-9
+	   and it seems useless on kernel 2.0.36 : assuming that -undef was needed
+	   by very old kernels only and remove this flag.
+	*/
+	sprintf(buffer, "%s -C %s %s %s/mw%d.i", CPPCMD, bufcpp, argv[optind], 
                                                               tmpdir, getpid());
 #else
 	sprintf(buffer, "%s -C %s %s %s/mw%d.i", CPPCMD, bufcpp, argv[optind], 
@@ -253,7 +269,7 @@ char *argv[];
 ERROR -- "Don't know how to process file on this architecture !" --
 #endif
 #endif
-	/* fprintf(stderr,"exec %s\n", buffer); */
+  /*fprintf(stderr,"exec %s\n", buffer); */
 
 #ifdef DEBUG
 	PRDBG("exec %s\n", buffer);
@@ -344,12 +360,12 @@ ERROR -- "Don't know how to process file on this architecture !" --
     else
       strcpy(buffer, texfile);
     /* printf("texfile = %s\n", texfile);  */
-    if ((fd = fopen(buffer, "w")) != NULL) {
-
-/* Ajout Jacques 22/3/93 : pour generer dans la doc la date de modif. */
-      gentex(fd,ctime(&(fstat_buf.st_mtime)));
-      fclose(fd);
-    }
+    if ((fd = fopen(buffer, "w")) != NULL) 
+      {
+	/* Ajout Jacques 22/3/93 : pour generer dans la doc la date de modif. */
+	gentex(fd,ctime(&(fstat_buf.st_mtime)));
+	fclose(fd);
+      }
     else
       fatal_error("%s : cannot create %s\n", progname, buffer);
   } else
@@ -389,15 +405,15 @@ char *pgm;
 
 #ifdef XMWP
 # ifdef DEBUG
-  ustr = "-d -X -w -D<define> -U<undef> -I<includedir> file [...]";
+  ustr = "-a -d -X -w -D<define> -U<undef> -I<includedir> file [...]";
 # else
-  ustr = "-w -X -D<define> -U<undef> -I<includedir> file [...]";
+  ustr = "-a -w -X -D<define> -U<undef> -I<includedir> file [...]";
 # endif
 #else
 # ifdef DEBUG
-  ustr = "-d -w -D<define> -U<undef> -I<includedir> file [...]";
+  ustr = "-a -d -w -D<define> -U<undef> -I<includedir> file [...]";
 # else
-  ustr = "-w -D<define> -U<undef> -I<includedir> file [...]";
+  ustr = "-a -w -D<define> -U<undef> -I<includedir> file [...]";
 # endif
 #endif
 
@@ -499,14 +515,15 @@ char *argv[];
   /* Find default group of command */
   sprintf(mwsrcdir, "%s/%s", mwdir, SRCDIR);
   if (getcwd(wd, sizeof(wd)) == NULL)
-    fatal_error("Cannot get current working directory\n");
-  if ((pb = strstr(wd, mwsrcdir)) != NULL) {
-    int l;
-    l = strlen(mwsrcdir);
-    strcpy(groupbuf, (*(pb+l)=='\0') ? "." : pb+l+1);
-  }
+    fatal_error("Cannot get current working directory !\n");
+  if ((pb = strstr(wd, mwsrcdir)) != NULL) 
+    {
+      int l;
+      l = strlen(mwsrcdir);
+      strcpy(groupbuf, (*(pb+l)=='\0') ? "." : pb+l+1);
+    }
   else
-    fatal_error("Your current directory \"%s\" is not valid.\nYou must develop under MegaWave2 directory \"%s\" or a subdir\n", wd,mwsrcdir);
+    fatal_error("Your current directory \"%s\" is not valid.\nYou must develop under MegaWave2 directory \"%s\" or a subdir !\n", wd,mwsrcdir);
 #else
   strcpy(groupbuf, ".");
 #endif

@@ -1,0 +1,43 @@
+This module returns the chain of dual pixels adjacent to a shape in a bilinear
+interpolated image (see \texttt{flst\_bilinear}).
+
+Dual pixels are unit squares centered at integral coordinates in the rectangle
+$[0,W]\times [0,H]$ (thus some of them are only partially included in the
+rectangle). A dual pixel $D$ is said adjacent to a shape $S$ if $D\cap S\neq
+\emptyset \neq D\setminus S$.
+
+Dual edgels are unit segments, horizontal or vertical, whose one extremal
+point is a center of pixel. A dual edgel $E$ is said adjacent to a shape $S$
+if $E\cap S\neq \emptyset \neq E\setminus S$, i.e., one of its extremal points
+belongs to the shape and the other not.
+
+The dual pixels adjacent to a shape $S$ are ordered in such a manner that two
+successive ones share a common dual edgel as a face, this dual edgel being
+adjacent to $S$. Therefore, coding the chain of adjacent dual pixels or of
+adjacent dual edgels is equivalent. We prefer the former, as we do not have to
+distinguish between horizontal and vertical.
+
+The orientation of the chain is counterclockwise, so that the shape is at the
+left.
+
+This is a 4-connected chain of dual pixels. As usual, dual pixels are coded by
+the coordinates of their top left corner.
+
+Each dual pixel is coded by its center, which has integral coordinates.
+
+The interest of such a coding is that the level line boundary of $S$ crosses
+all the dual edgels adjacent to $S$, so as any level line corresponding to a
+shape containing $S$ but strictly contained in its parent in the tree returned
+by \texttt{flst\_bilinear} 
+(i.e., the closest containing shape passing through a
+pixel center or a saddle point). 
+
+This chain is used by \texttt{flstb\_boundary} 
+to compute the level line associated to a shape.
+
+The parameter \texttt{ctabtabSaddleValues}, which cannot be furnished by a
+command line call to the module, is of true type \texttt{float**} and is a two
+dimensional array accessing the saddle values of the bilinear interpolated
+image, see module \texttt{fsaddles}. If this array is \texttt{NULL}, it is
+computed inside the module; the interest is that if this module is called for
+each shape and the parameter furnished, it saves computation time.

@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {fillpoly};
-  version = {"1.01"};
+  version = {"1.1"};
   author = {"Jean-Pierre D'Ales"};
   function = {"Fill a Polygon given by its vertices and generate a Cimage"};
   usage = {
@@ -13,6 +13,9 @@
   Cimage<-bitmap   "bitmapped Cimage of the filled polygon"
   };
 */
+/*----------------------------------------------------------------------
+ v1.1: ending delete_polygon() call removed until bug is fixed (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
@@ -26,8 +29,8 @@
 #define max(A,B)     (((A)>(B)) ? (A) : (B))
 #define iabs(A)      (((A)>=(0)) ? (A) : -(A))
 
-static void
-FILL_CONTOUR(bitmap, contour)
+
+static void FILL_CONTOUR(bitmap, contour)
 
 Cimage          bitmap;              /* Output bitmap image */
 Polygon         contour;             /* Contour of polygon */
@@ -780,7 +783,10 @@ Cimage      bitmap;                  /* Output bitmap */
 
   FILL_CONTOUR(bitmap, contour);
 
-  mw_delete_polygon(contour);
+  /* free() crashes on a valid point : 
+     there may be an allocation problem in the module */
+
+  /* mw_delete_polygon(contour); */
 
 }
 

@@ -1,6 +1,6 @@
 /* mwcommand 
 name = {rotaffin};
-version={"2.0"};
+version={"2.1"};
 author = {"Frederic Guichard, Denis Pasquignon"};
 function = {"rotations and orthogonal affinities of binary images"};
 usage = {
@@ -16,6 +16,9 @@ usage = {
 cmovie<-cmovie    "rotations and affinities of the mask (movie of masks)"
 };
 */
+/*----------------------------------------------------------------------
+ v2.1: return void (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -77,7 +80,7 @@ int srect(x,y)
   if ((x<0.4)&&(x>=0)&&(y<0.1)&&(y>-0.1)) return(1); else return(0);
 }
 
-rotaffin(Nrota,Naffi,Size,Type,Area,Definition,OptSym,Factor,cimage,cmovie)
+void rotaffin(Nrota,Naffi,Size,Type,Area,Definition,OptSym,Factor,cimage,cmovie)
      int *Nrota,*Naffi,*Size,*Type,*Definition;
      float *Area;
      float *Factor;

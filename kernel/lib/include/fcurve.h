@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fcurve.h
    
-   Vers. 1.1
-   (C) 1995-98 Jacques Froment
+   Vers. 1.3
+   (C) 1995-2002 Jacques Froment
    Internal Input/Output point_fcurve, fcurve & fcurves structures
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -19,8 +19,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef SunOS
 #include <sys/types.h>
 #endif
-
-#include "string_size.h"
 
 /* Point in a fcurve */
 
@@ -59,15 +57,16 @@ typedef struct fcurves {
 Point_fcurve mw_new_point_fcurve(void);
 Point_fcurve mw_change_point_fcurve(Point_fcurve);
 void mw_delete_point_fcurve(Point_fcurve);
-void mw_copy_point_fcurve(Point_fcurve,Point_fcurve);
+Point_fcurve mw_copy_point_fcurve(Point_fcurve,Point_fcurve);
 Fcurve mw_new_fcurve(void);
 Fcurve mw_change_fcurve(Fcurve);
 void mw_delete_fcurve(Fcurve);
-unsigned int mw_fcurve_length(Fcurve);
+Fcurve mw_copy_fcurve(Fcurve, Fcurve);
+unsigned int mw_length_fcurve(Fcurve);
 Fcurves mw_new_fcurves(void);
 Fcurves mw_change_fcurves(Fcurves);
 void mw_delete_fcurves(Fcurves);
-unsigned int mw_fcurves_length(Fcurves);
+unsigned int mw_length_fcurves(Fcurves);
 unsigned int mw_fcurves_npoints(Fcurves);
 
 #else
@@ -75,18 +74,19 @@ unsigned int mw_fcurves_npoints(Fcurves);
 Point_fcurve mw_new_point_fcurve();
 Point_fcurve mw_change_point_fcurve();
 void mw_delete_point_fcurve();
-void mw_copy_point_fcurve();
+Point_fcurve mw_copy_point_fcurve();
 Fcurve mw_new_fcurve();
 Fcurve mw_change_fcurve();
 void mw_delete_fcurve();
 Fcurves mw_new_fcurves();
 Fcurves mw_change_fcurves();
 void mw_delete_fcurves();
-unsigned int mw_fcurve_length();
+Fcurve mw_copy_fcurve();
+unsigned int mw_length_fcurve();
 Fcurves mw_new_fcurves();
 Fcurves mw_change_fcurves();
 void mw_delete_fcurves();
-unsigned int mw_fcurves_length();
+unsigned int mw_length_fcurves();
 unsigned int mw_fcurves_npoints();
 
 #endif

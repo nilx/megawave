@@ -8,13 +8,11 @@
            in->in       "input Fimage",
            out<-out     "shrinked Fimage"
    };
-   */
-/*-- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
+*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
+
 
 /* NB : calling this module with out=in is nonsense */
 

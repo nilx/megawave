@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ps_io.c
    
-   Vers. 1.2
-   (C) 1995-99 Jacques Froment
+   Vers. 1.3
+   (C) 1995-2000 Jacques Froment
 
    Input/Output functions for PostScript image file
 
@@ -209,7 +209,9 @@ Cimage image;
   /* DATA */
 
   bdy = (bufsize / image->ncol) >> 1;
-
+  if (bdy <= 0) 
+    mwerror(INTERNAL,1,"[_mw_cimage_create_ps] Cannot write PS image with so many columns !\n");
+    
   /* Remember original state */
   sprintf(headbuf,"/origstate save def\n");
 

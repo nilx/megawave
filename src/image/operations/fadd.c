@@ -24,6 +24,9 @@
 #include <stdio.h>
 #include  "mw.h"
 
+extern void fthre();
+
+
 void fadd(A,B,C,norm,m0,m1,a)
 
 Fimage	A,B,C;
@@ -49,5 +52,5 @@ char *a;
 
   if (a) for (i=A->nrow*A->ncol;i--;) C->gray[i]*=0.5;
 
-  if (m0 || m1) fthre(C,C,norm,m0,m1);
+  if (m0 || m1) fthre(C,C,norm,NULL,m0,m1);
 }

@@ -1,13 +1,13 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mimage.h
    
-   Vers. 1.7
-   (C) 1996-99 Coloma Ballester, Jacques Froment, Manolo Gonzalez
+   Vers. 1.9
+   (C) 1996-2002 Coloma Ballester, Jacques Froment, Manolo Gonzalez
 
    Internal Input/Output for the following morphological structures
        Morpho_line
        Fmorpho_line
-       Segment
+       Hsegment
        Morpho_set
        Morpho_sets
        Mimage 
@@ -26,8 +26,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef SunOS
 #include <sys/types.h>
 #endif
-
-#include "string_size.h"
 
 #ifndef curve_flg
 #include "curve.h"
@@ -105,13 +103,13 @@ typedef struct fmorpho_line {
 
 /* An horizontal segment in the discrete grid */
 
-typedef struct segment {
+typedef struct hsegment {
   int xstart; /* Left x-coordinate of the segment */
   int xend;   /* Right x-coordinate of the segment */
   int y;      /* y-coordinate of the segment */
-  struct segment *previous; /* Pointer to the previous segment (may be NULL) */
-  struct segment *next;     /* Pointer to the next segment (may be NULL) */
-} *Segment;
+  struct hsegment *previous; /* Pointer to the previous segment (may be NULL) */
+  struct hsegment *next;     /* Pointer to the next segment (may be NULL) */
+} *Hsegment;
 
 
 /* One Morpho_set in the discrete grid */
@@ -122,8 +120,8 @@ typedef struct segment {
 
 typedef struct morpho_set {
   unsigned int num;      /* Morpho set number (range in the Morpho_sets struct.) */
-  Segment first_segment; /* Pointer to the first segment of the morpho set */
-  Segment last_segment;  /* Pointer to the last segment of the morpho set */  
+  Hsegment first_segment; /* Pointer to the first segment of the morpho set */
+  Hsegment last_segment;  /* Pointer to the last segment of the morpho set */  
   float minvalue;        /* Minimum gray level value of this set */
   float maxvalue;        /* Maximum gray level value of this set */
   unsigned char stated;  /* 1 if this m.s. has already been stated, 0 otherwise */
@@ -164,94 +162,94 @@ typedef struct mimage {
 Point_type mw_new_point_type(void);
 Point_type mw_change_point_type(Point_type);
 void mw_delete_point_type(Point_type);
-void mw_copy_point_type(Point_type, Point_type);
+Point_type mw_copy_point_type(Point_type, Point_type);
 
 Morpho_line mw_new_morpho_line(void);
 Morpho_line mw_change_morpho_line(Morpho_line);
 void mw_delete_morpho_line(Morpho_line);
-void mw_copy_morpho_line(Morpho_line,Morpho_line);
-unsigned int mw_morpho_line_length(Morpho_line);
-unsigned int mw_morpho_line_num(Morpho_line);
+Morpho_line mw_copy_morpho_line(Morpho_line,Morpho_line);
+unsigned int mw_length_morpho_line(Morpho_line);
+unsigned int mw_num_morpho_line(Morpho_line);
 
 Fmorpho_line mw_new_fmorpho_line(void);
 Fmorpho_line mw_change_fmorpho_line(Fmorpho_line);
 void mw_delete_fmorpho_line(Fmorpho_line);
-void mw_copy_fmorpho_line(Fmorpho_line,Fmorpho_line);
-unsigned int mw_fmorpho_line_length(Fmorpho_line);
+Fmorpho_line mw_copy_fmorpho_line(Fmorpho_line,Fmorpho_line);
+unsigned int mw_length_fmorpho_line(Fmorpho_line);
 
-Segment mw_new_segment(void);
-Segment mw_change_segment(Segment);
-void mw_delete_segment(Segment);
+Hsegment mw_new_hsegment(void);
+Hsegment mw_change_hsegment(Hsegment);
+void mw_delete_hsegment(Hsegment);
 
 Morpho_set mw_new_morpho_set(void);
 Morpho_set mw_alloc_morpho_set(Morpho_set,int);
 Morpho_set mw_change_morpho_set(Morpho_set);
 void mw_delete_morpho_set(Morpho_set);
-void mw_copy_morpho_set(Morpho_set, Morpho_set);
-unsigned int mw_morpho_set_length(Morpho_set);
+Morpho_set mw_copy_morpho_set(Morpho_set, Morpho_set);
+unsigned int mw_length_morpho_set(Morpho_set);
 
 Morpho_sets mw_new_morpho_sets(void);
 Morpho_sets mw_change_morpho_sets(Morpho_sets);
 void mw_delete_morpho_sets(Morpho_sets);
-void mw_copy_morpho_sets(Morpho_sets, Morpho_sets);
-unsigned int mw_morpho_sets_length(Morpho_sets);
-unsigned int mw_morpho_sets_num(Morpho_sets);
+Morpho_sets mw_copy_morpho_sets(Morpho_sets, Morpho_sets);
+unsigned int mw_length_morpho_sets(Morpho_sets);
+unsigned int mw_num_morpho_sets(Morpho_sets);
 void mw_morpho_sets_clear_stated(Morpho_sets);
 
 Mimage mw_new_mimage(void);
 Mimage mw_change_mimage(Mimage);
 void mw_delete_mimage(Mimage);
-void mw_copy_mimage(Mimage,Mimage);
-unsigned int mw_mimage_length_ml(Mimage);
-unsigned int mw_mimage_length_fml(Mimage);
-unsigned int mw_mimage_length_ms(Mimage);
+Mimage mw_copy_mimage(Mimage,Mimage);
+unsigned int mw_length_ml_mimage(Mimage);
+unsigned int mw_length_fml_mimage(Mimage);
+unsigned int mw_length_ms_mimage(Mimage);
 
 #else
 
 Point_type mw_new_point_type();
 Point_type mw_change_point_type();
 void mw_delete_point_type();
-void mw_copy_point_type();
+Point_type mw_copy_point_type();
 
 Morpho_line mw_new_morpho_line();
 Morpho_line mw_change_morpho_line();
 void mw_delete_morpho_line();
-void mw_copy_morpho_line();
-unsigned int mw_morpho_line_length();
-unsigned int mw_morpho_line_num();
+Morpho_line mw_copy_morpho_line();
+unsigned int mw_length_morpho_line();
+unsigned int mw_num_morpho_line();
 
 Fmorpho_line mw_new_fmorpho_line();
 Fmorpho_line mw_change_fmorpho_line();
 void mw_delete_fmorpho_line();
-void mw_copy_fmorpho_line();
-unsigned int mw_fmorpho_line_length();
+Fmorpho_line mw_copy_fmorpho_line();
+unsigned int mw_length_fmorpho_line();
 
-Segment mw_new_segment();
-Segment mw_change_segment();
-void mw_delete_segment();
+Hsegment mw_new_hsegment();
+Hsegment mw_change_hsegment();
+void mw_delete_hsegment();
 
 Morpho_set mw_new_morpho_set();
 Morpho_set mw_alloc_morpho_set();
 Morpho_set mw_change_morpho_set();
 void mw_delete_morpho_set();
-void mw_copy_morpho_set();
-unsigned int mw_morpho_set_length();
+Morpho_set mw_copy_morpho_set();
+unsigned int mw_length_morpho_set();
 
 Morpho_sets mw_new_morpho_sets();
 Morpho_sets mw_change_morpho_sets();
 void mw_delete_morpho_sets();
-void mw_copy_morpho_sets();
-unsigned int mw_morpho_sets_length();
-unsigned int mw_morpho_sets_num();
+Morpho_sets mw_copy_morpho_sets();
+unsigned int mw_length_morpho_sets();
+unsigned int mw_num_morpho_sets();
 void mw_morpho_sets_clear_stated();
 
 Mimage mw_new_mimage();
 Mimage mw_change_mimage();
 void mw_delete_mimage();
-void mw_copy_mimage();
-unsigned int mw_mimage_length_ml();
-unsigned int mw_mimage_length_fml();
-unsigned int mw_mimage_length_ms();
+Mimage mw_copy_mimage();
+unsigned int mw_length_ml_mimage();
+unsigned int mw_length_fml_mimage();
+unsigned int mw_length_ms_mimage();
 
 #endif
 

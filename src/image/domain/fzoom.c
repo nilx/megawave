@@ -1,112 +1,64 @@
 /*----------------------------- MegaWave Module -----------------------------*/
 /* mwcommand
   name = {fzoom};
-  version = {"1.2"};
-  author = {"Jacques Froment"};
+  version = {"2.0"};
+  author = {"Lionel Moisan"};
   function = {"Zoom of a floating point image"};
   usage = {
-  'x'->x_flg        "Zoom only in the X direction", 
-  'y'->y_flg        "Zoom only in the Y direction",      
-  'X':[factor=2.0]->factor    [0.01,100.0]  "Zoom factor (float value)",
-  A->Input   "Input (could be a fimage)",
-  B<-Output  "Output (zoomed image)"
+'x'->x_flg          "to zoom only in the x direction", 
+'y'->y_flg          "to zoom only in the y direction",      
+'X':[zoom=2.]->zoom "zoom factor (default 2.0)",
+'o':[o=0]->o        "order: 0,1,-3,3,5,..11 (zoom) / 0..5 (unzoom) default 0",
+'p':p->p            "Keys' parameter (when o=3), in [-1,0], default -0.5",
+'i'->i_flg          "apply inverse zooming",
+in->in              "input Fimage",
+out<-out            "output Fimage"
 };
 */
-/*--- MegaWave2 - Copyright (C)1994 Jacques Froment. All Rights Reserved. ---*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
 
-void fzoom(Input, Output, x_flg, y_flg, factor)
+extern Fimage fcrop();
+extern Fimage funzoom();
 
-char *x_flg, *y_flg;
-float *factor;
-Fimage Input;
-Fimage Output;
+/* NB : calling this module with out=in is possible */
 
+Fimage fzoom(in,out,x_flg,y_flg,zoom,o,p,i_flg)
+     Fimage in,out;
+     char *x_flg,*y_flg,*i_flg;
+     float *zoom,*p;
+     int *o;
 {
-  long l;
-  short x,y,i,j;
-  float c,s;
-  short  dx,dy;      /* Size of Input */
-  short  zx,zy;      /* Size of Output */
-  short  cx,cy;      /* Zoom factor */
-  char unzoom_flg;
-  float xfact,yfact;
-  register float *ptrI,*ptrO;
-  int Factor;
+  float X2,Y2,nx,ny,sx,sy,zero;
 
-  if (x_flg && y_flg) mwerror(USAGE, 0, "Options -x and -y are not compatible.");
+  if (x_flg && y_flg) 
+    mwerror(USAGE,0,"Options -x and -y are not compatible.");
 
-  dx = Input->ncol; 
-  dy = Input->nrow;
-  ptrI = Input->gray;
+  nx = (float)in->ncol; ny = (float)in->nrow;
+  zero = 0.;
 
-  if (*factor >= 1.0) 
-    {unzoom_flg=0; Factor = *factor; s =(float) Factor - (*factor); } 
-  else
-    {unzoom_flg=1; Factor = 1.0/ (*factor); s = (float) Factor - 1.0 / (*factor);} 
+  if (i_flg) {
 
-  if (s == 0.0) 
-    /* Zoom factor is an integer */
-    { 
-      mwdebug("Zoom factor is an integer\n");
-      
-      if (!y_flg) cx = Factor; else cx = 1;
-      if (!x_flg) cy = Factor; else cy = 1;
+    /* inverse zooming */
+    if (p || x_flg || y_flg) 
+      mwerror(USAGE,0,"Options -p/-x/-y and -i are not compatible.");
+    if (*o==-3) 
+      mwerror(USAGE,0,
+	 "No cubic Keys unzoom available. Use cubic spline (o=3) instead\n");
+    if (*o<0 || *o>5) mwerror(FATAL,1,"unrecognized interpolation order.\n");
+    out = funzoom(in,out,zoom,o,&zero,&zero);
 
-      if (unzoom_flg == 0)  {   /* Zoom forward */
+  } else {
 
-	zx = cx * dx;
-	zy = cy * dy;
+    /* regular zooming */
+    sx = (y_flg?nx:*zoom*nx);
+    sy = (x_flg?ny:*zoom*ny);
+    out = fcrop(in,out,&sx,&sy,(float *)NULL,&zero,o,p,0.,0.,nx,ny);
 
-	Output = mw_change_fimage(Output, zy, zx); 
-	if (Output == NULL) mwerror(FATAL,1,"Not enough memory.");
-	ptrO = Output->gray;
+  }
 
-	for (x=0;x<dx;x++) for(y=0;y<dy;y++) 
-	  {
-	    l = (long)zx*cy*y+cx*x;
-	    c = ptrI[(long)dx*y+x];
-	    for (i=0;i<cx;i++) for (j=0;j<cy;j++) ptrO[l+j*zx+i] = c;
-	  }
-      } else {  /* Zoom backward */
-
-	zx = dx / cx; 
-	zy = dy / cy;
-
-	Output = mw_change_fimage(Output, zy, zx); 
-	if (Output == NULL) mwerror(FATAL,1,"Not enough memory.");
-	ptrO = Output->gray;
-    
-	for (x=0;x<dx-1;x+=cx) for(y=0;y<dy-1;y+=cy) {
-	  l = (long)dx*y+x;
-	  s = 0.0;
-	  for (i=0;i<cx;i++) for (j=0;j<cy;j++) s += ptrI[l+j*dx+i];
-	  ptrO[(long)zx*y/cy+x/cx] = (float) (s / (cx*cy));
-	}
-      }
-    }
-  else
-    /* Zoom factor is not an integer */
-    {
-      mwdebug("Zoom factor is not an integer\n");
-      if (!y_flg) xfact =  1.0/(*factor); else xfact = 1.0;
-      if (!x_flg) yfact =  1.0/(*factor); else yfact = 1.0;
-      zx = nint(dx / xfact);
-      zy = nint(dy / yfact);
-
-      Output = mw_change_fimage(Output, zy, zx); 
-      if (Output == NULL) mwerror(FATAL,1,"Not enough memory.\n");
-      ptrO = Output->gray;
-
-      for (x=0;x<zx;x++) for(y=0;y<zy;y++) 
-	ptrO[y*zx+x] = ptrI[ ((int)(yfact*y))*dx+((int)(xfact*x))];
-    }
-  mwdebug("Size of Output : zx = %d, zy = %d \n",zx,zy);
+  return(out);
 }
-
 
 

@@ -1,15 +1,18 @@
 /*---------------------------------------------------------------------------*/
 /* mwcommand
 name = {cfmdiffuse};
-version = {"0.0"};
+version = {"1.0"};
 author = {"Antonin Chambolle, Jacques Froment"};
 function = {"Iterated Diffusion of a Color Float Image using Total Variation minimization"};
 usage = {
-'t':[deltat=10.0]->deltat    "Time of each diffusion",
-'n':[N=10]->N [1,1000] "Number of diffused images",
-'l':[epsilon=1.0]->epsilon [0.1,100.0] "Lower bound for the RGB norm",
-in->in       "original image (input cfimage)",
-out<-out         "movie of diffused images (output cfmovie)"
+  't':[deltat=10.0]->deltat    
+           "Time of each diffusion (default 10.)",
+  'n':[N=10]->N [1,1000] 
+           "Number of diffused images (default 10)",
+  'l':[epsilon=1.0]->epsilon [0.1,100.0] 
+           "Lower bound for the RGB norm (default 1.)",
+  in->in   "original image (input cfimage)",
+  out<-out "movie of diffused images (output cfmovie)"
 };
 */
 

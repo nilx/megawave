@@ -1,17 +1,20 @@
 /* mwcommand 
 name = {infsup};
-version={"2.0"};
+version={"2.1"};
 author = {"Frederic Guichard, Denis Pasquignon, Jacques Froment"};
 function = {"InfSup scheme or median-median filtering"};
 usage = {
-'n':[Niter=2]->Niter[0,1000]      "number of iterations",
-'i':[deginf=0.0]->deginf[0,1]  "second level med (default: sup)",
-'s':[degsup=1.0]->degsup[0,1]  "first level med (default: inf)",
+'n':[Niter=2]->Niter[0,1000]      "number of iterations (default 2)",
+'i':[deginf=0.0]->deginf[0,1]  "second level med (0..1, default: sup=0.)",
+'s':[degsup=1.0]->degsup[0,1]  "first level med (0..1, default: inf=1.)",
 'a'->average "swap first and second level med and take the average",
 input-> image  "input cimage",
 fmovie -> fmovie "masks sequence",
 output<- output   "filtered image"};
 */
+/*----------------------------------------------------------------------
+ v2.1: return void (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -314,7 +317,7 @@ ResolutionInfSup(image,A,G,t1,t2,movie,Nmask)
 /* ----------------------------------------------------------*/
 
 
-infsup(Niter,deginf,degsup,average,image,fmovie,output)
+Cimage infsup(Niter,deginf,degsup,average,image,fmovie,output)
      int *Niter;
      float *deginf;
      float *degsup;
@@ -347,7 +350,7 @@ infsup(Niter,deginf,degsup,average,image,fmovie,output)
   image_work = mw_change_cimage(NULL,image->nrow,image->ncol);
   if (image_work == NULL) mwerror(FATAL, 1, "Not enough memory\n");  
 
-  if (mw_change_cimage(output,image->nrow,image->ncol) == NULL)
+  if ((output=mw_change_cimage(output,image->nrow,image->ncol)) == NULL)
     mwerror(FATAL, 1, "Not enough memory\n");  
 
   if (average)
@@ -387,6 +390,8 @@ infsup(Niter,deginf,degsup,average,image,fmovie,output)
   cfree(G);
   if (image_save) mw_delete_cimage(image_save);
   mw_delete_cimage(image_work);
+
+  return(output);
 }
 
 

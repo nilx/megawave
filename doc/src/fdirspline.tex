@@ -1,0 +1,8 @@
+This modules computes the direct B-spline transform of a two-dimensionnal
+array of numbers (Fimage). A mirror extension is used at the boundaries of
+the array.
+The result image is
+$$out(x,y) = \sum_{k,l} in(k,l) \;\beta^n(x-k) \, \beta^n(y-l),$$
+where the spline $\beta^n$ is defined in the documentation 
+of the \verb+fcrop+ module.
+The order of the spline $n$ ($order$) must be between $2$ and $11$.

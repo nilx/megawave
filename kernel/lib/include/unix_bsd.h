@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    unix_bsd.h
    
-   Vers. 1.0
-   (C) 1994 Jacques Froment
+   Vers. 1.1
+   (C) 1994-2001 Jacques Froment
    Definition of some Unix BSD functions not implemented on Unix System V
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -28,7 +28,9 @@ double exp2(double);
 double my_cbrt(double);
 #ifndef sun4_5
 #ifndef iris
+#ifndef Linux
 void usleep(unsigned);
+#endif
 #endif
 #endif
 
@@ -42,7 +44,9 @@ double exp2();
 double my_cbrt();
 #ifndef sun4_5
 #ifndef iris
+#ifndef Linux
 void usleep();
+#endif
 #endif
 #endif
 

@@ -1,0 +1,133 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave Macro ----------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="mwdoclatex"
+_Vers="2.02";
+_Date="1993-2002";
+_Func="Compile the documentation of a single module";
+_Auth="Jacques Froment";
+_Usage="[-adm] module"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+
+# test entree
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+   . .mw2_help_lg_com
+fi
+
+# Defaults
+DOCDIR=$MY_MEGAWAVE2/doc
+opt=""
+
+while [ "$1" != "" ]
+do
+    case "$1" in
+
+    -adm)  DOCDIR=$MEGAWAVE2/doc
+           opt="-adm"
+           shift
+           ;;
+
+    -*)   . .mw2_help_lg_com;
+	  ;;
+
+    *)  module=$1
+        shift
+	;;
+
+    esac
+done
+
+Link=-h
+if [ $MW_SYSTEMTYPE = Linux ]; then
+  Link=-L
+fi
+
+module=`basename $module .doc`
+tmod=${DOCDIR}/src/${module}.tex
+if [ ! -r ${tmod} ]; then
+    echo "$_Prog : no tex file ! Please document the module in the file '${tmod}'" 1>&2
+    exit 1
+fi
+
+dmod=${DOCDIR}/obj/${module}.doc
+if [ ! -r ${dmod} ]; then
+  echo "$_Prog : doc file '${dmod}' not found ! Please compile the module or macro '${module}'." 1>&2
+  exit 1
+fi
+
+Dep=`grep \\input\{obj/DEPENDENCIES/${module}.dep\} $dmod`
+if [ "$Dep" != "" ]; then
+  depmod=${DOCDIR}/obj/DEPENDENCIES/${module}.dep
+  if [ ! -r $depmod ]; then
+    echo "$_Prog : dep file '${depmod}' not found ! I suppose this module couldn't be successfully compiled !" 1>&2
+    exit 1
+  fi
+fi
+
+# Case where a plain user try to compile the doc of a public module :
+# make a mirror megawave2/doc directory at home. Compile into user subdir.
+
+if [ ! -w ${DOCDIR} ]; then
+  GENDIR=$MY_MEGAWAVE2/tmp/megawave2_doc
+  mkdir -p $GENDIR/user
+  if [ $Link $GENDIR/src ]; then
+    \rm  $GENDIR/src 
+  fi
+  ln -s ${DOCDIR}/src $GENDIR/src
+  if [ $Link $GENDIR/obj ]; then
+    \rm  $GENDIR/obj
+  fi
+  ln -s ${DOCDIR}/obj $GENDIR/obj
+else
+  GENDIR=${DOCDIR}
+fi
+
+
+tfile=${GENDIR}/${module}$$.tex
+dvimod=${GENDIR}/${module}$$.dvi
+
+# new trap
+trap "echo Abort !; rm -f ${GENDIR}/${module}$$.*; exit 1" 2 3
+
+cat ${MEGAWAVE2?'environment not set'}/sys/shell/data/mwdoclatex_header.tex > $tfile
+cat $MEGAWAVE2/sys/shell/data/mwmakedoc_macros.tex >> $tfile
+cat $dmod >> $tfile
+cat $MEGAWAVE2/sys/shell/data/mwdoclatex_foot.tex >> $tfile
+(cd $GENDIR; latex $tfile ; latex $tfile ;)
+if [ $? -ne 0 ]; then
+   echo "$_Prog: Cannot run LaTeX." 2>&1
+   rm -f ${GENDIR}/${module}$$.*
+   exit 1
+ fi
+
+if [ ! -f $dvimod ]; then
+  echo "$_Prog : dvi file '${dvimod}' not found ! Something wrong with LaTeX" 1>&2
+  rm -f ${GENDIR}/${module}$$.*
+  exit 1
+fi
+
+if [ ! -w ${DOCDIR} ]; then
+  mv -f $dvimod ${GENDIR}/user/${module}.dvi
+else
+  mv -f $dvimod ${GENDIR}/obj/${module}.dvi
+fi
+
+rm -f ${GENDIR}/${module}$$.*
+
+exit 0
+
+
+
+
+
+
+
+

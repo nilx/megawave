@@ -1,20 +1,20 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {dybiowave2};
-version = {"1.01"};
+version = {"1.1"};
 author = {"J.P. d'Ales"};
 function = {"Computes the biorthogonal wavelet coefficients of an image without decimation"};
 usage = {
 'r':[NLevel=1]->NumRec [1,20]
-	"Number of level", 
+	"Number of levels (default 1)", 
 'd':[StopDecimLevel=2]->StopDecim [1,20]
-	"Level for decimation stop",
+	"Level for decimation stop (default 2)",
 'o'->Ortho
 	"Computes orthogonal coefficients", 
 'e':[EdgeMode=2]->Edge [0,2]
-	"Edge processing mode", 
+	"Edge processing mode (0/1/2, default 2)", 
 'n':[FiltNorm=0]->FilterNorm
-	"Normalization mode for filter bank", 
+	"Normalization mode for filter bank (default 0)", 
 Image->Image
 	"Input image (fimage)", 
 WavTrans<-Output
@@ -36,11 +36,7 @@ ImpulseResponse2->Ri2
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void sconvolve(Fsignal, Fsignal, int *, int *, int *, int *, int *, int *, Fsignal, Fimage);
-#else
-void sconvolve();
-#endif
+extern void sconvolve();
 
 /*--- Constants ---*/
 

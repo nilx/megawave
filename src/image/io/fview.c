@@ -1,54 +1,52 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {fview};
-  version = {"1.1"};
+  version = {"1.4"};
   author = {"Jacques Froment"};
   function = {"View a floating point image on a window"};
   usage = {
   'x':[pos_x=50]->x0
-      "X coordinate for the upper-left corner of the Window",
+      "X coordinate for the upper-left corner of the Window (default 50)",
   'y':[pos_y=50]->y0
-      "Y coordinate for the upper-left corner of the Window",
+      "Y coordinate for the upper-left corner of the Window (default 50)",
   'z':[zoom=1.0]->zoom
-      "Zoom factor (float value)",
+      "Zoom factor (float, default 1.0)",
+  'o':[order=0]->order      
+      "Zoom order: 0,1=linear,-3=cubic,3,5..11=spline, default 0",
+  'l'->linear
+      "allow linear rescaling only (preserve 0)",
   'N'->no_refresh
       "Do not refresh the window (library call)",
   fimage->input
         "Input image (should be a fimage)",
-   notused->window 
-      "Window to view the image (internal use)"
+  notused->window 
+        "Window to view the image (internal use)"
   };
 */
-/*--- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v1.2: added -o option + several minor modifications (L.Moisan)
+ v1.3: added -l option and removed "constant values" error (L.Moisan)
+ v1.4: fixed bug with non char input keys (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 include file */
 #include "mw.h"
 
 /* Include the window since we use windows facility */
 #include "window.h"
 
-/* External modules called */
-#ifdef __STDC__
-extern Cimage clocal_zoom(Cimage, int *, int *, int *, int *);
-extern Fimage flocal_zoom(Fimage, int *, int *, int *, int *);
-extern void fzoom(Fimage, Fimage, char *, char *, float *);
-extern splot(Fsignal,int *,int *, int *, int *,int *, char *);
-extern void fline_extract(char *, Fimage, Fsignal, long);
-#else
 extern Cimage clocal_zoom();
 extern Fimage flocal_zoom();
 extern void fzoom();
-extern splot();
+extern void splot();
 extern void fline_extract();
-#endif
+
 
 static Wframe *PlotWindow=NULL;  
 
-/* Param structure used to send parameters to cview_notify() */
+/* Param structure used to send parameters to fview_notify() */
 
-typedef struct cview_SParam {
+typedef struct fview_SParam {
   Fimage image_float;
   Cimage image_work;  
   unsigned char *image_save;
@@ -57,14 +55,14 @@ typedef struct cview_SParam {
   float *fimage_cscale;    
   char has_to_delete_image;
   Fsignal section;
-} *cview_Param;
+} *fview_Param;
 
 #define H_CSCALE 20 /* Height of the color_scale box */
 
 int GLprint;  /* Toggle to print the Gray Level values */
 int oldx1,oldy1,oldevent,zfactor,cscale_shown;
 
-void cview_notify_help()
+void fview_notify_help()
 
 {
   printf("\n\t\tHelp on line\n");
@@ -89,16 +87,16 @@ void cview_notify_help()
 /*     > 0 if there was an event catched (but Destroy) */
 /*      -1 if the event Destroy was catched (or 'Q')   */
 
-int cview_notify(ImageWindow,param)
+int fview_notify(ImageWindow,param)
 
 Wframe *ImageWindow;
 void *param;          /* Users's parameters: don't forget the cast ! */
 
 {
-  int x1,y1,wz,event,button_mask,ret;
-  char c,mess[80];
+  int x1,y1,wz,event,button_mask,ret,c;
+  char mess[80];
   float ng;
-  cview_Param images;
+  fview_Param images;
   Cimage image;
   Fimage fimage;
   unsigned char *gray_save,*color_scale;
@@ -114,7 +112,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
   char cflag=1;
   int norefresh=1;
 
-  images = (cview_Param) param;  /* Cast */
+  images = (fview_Param) param;  /* Cast */
   image = images->image_work;
   fimage = images->image_float;
   gray_save = images->image_save;
@@ -228,13 +226,13 @@ void *param;          /* Users's parameters: don't forget the cast ! */
       break;
 
     case W_KEYPRESS:
-      c = (char) WGetKeyboard();
+      c = WGetKeyboard();
       switch(c)
 	{
 	case 'q': case 'Q': ret = -1;
 	  break;
 
-	case 'h': case 'H': cview_notify_help();
+	case 'h': case 'H': fview_notify_help();
 	  break;
 
 	case 's': case 'S': 
@@ -272,7 +270,8 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	      sprintf(section->name,"Plot a section");
 	      PlotWindow = (Wframe *)
 		mw_get_window(PlotWindow,sx,sy,x0,y0,"");
-	      splot(section,&x0,&y0,&sx,&sy,&norefresh,(char *)PlotWindow);
+	      splot(section,&x0,&y0,&sx,&sy,
+		    &norefresh,(char *)PlotWindow,NULL,NULL);
 
 	      /* Restore image without red line */
 	      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
@@ -305,7 +304,8 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	      sprintf(section->name,"Plot a section");
 	      PlotWindow = (Wframe *)
 		mw_get_window(PlotWindow,sx,sy,x0,y0,"");
-	      splot(section,&x0,&y0,&sx,&sy,&norefresh,(char *)PlotWindow);
+	      splot(section,&x0,&y0,&sx,&sy,
+		    &norefresh,(char *)PlotWindow,NULL,NULL);
 
 	      /* Restore image without red line */
 	      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
@@ -314,7 +314,8 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	  break;
 
 	default:
-	  mwerror(WARNING,1,"Unrecognized Key '%c'. Type H for Help.\n",c);
+	  if (c>>8==0)
+	    mwerror(WARNING,1,"Unrecognized Key '%c'. Type H for Help.\n",c);
 	}    
       oldevent = event;
       break;
@@ -333,12 +334,12 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 }
 
 
-Cimage normalize(im,s,fs)
+Cimage normalize(im,s,fs,linear)
 
 Fimage im;
 unsigned char *s;
 float *fs;
-
+char *linear;
 {
   Cimage cim;
   unsigned char *C;
@@ -355,7 +356,8 @@ float *fs;
       if (*F < min) min=*F;
       if (*F > max) max=*F;
     }
-  if (max==min) mwerror(FATAL,1,"Input image has constant values !\n");
+  if (max==min) max = min+1.;
+  if (linear) min=0.;
   a=255.0/(max-min);
   b=-a*min;
 
@@ -373,28 +375,33 @@ float *fs;
 }
 
 
-fview(input,x0,y0,zoom,no_refresh,window)
+void fview(input,x0,y0,zoom,order,no_refresh,window,linear)
 
-int *x0,*y0,*no_refresh;
+int *x0,*y0,*no_refresh,*order;
 float *zoom;
 Fimage input;
-char *window;
+char *window,*linear;
 
 {
   Wframe *ImageWindow;
   Fimage fimage=NULL;
   Cimage cimage=NULL;
-  float *fgray_save,*fcolor_scale;
+  float *fgray_save,*fcolor_scale,inverse_zoom;
   unsigned char *gray_save,*color_scale;
   Fsignal section;
-  cview_Param param;
+  fview_Param param;
   int i,j,smax;
 
   if (*zoom != 1.0) 
     {
       fimage = mw_change_fimage(fimage,0,0);
       if (fimage == NULL) mwerror(FATAL,1,"Not enough memory\n");
-      fzoom(input,fimage,NULL,NULL,zoom);
+      if (*zoom>1.0) 
+	fzoom(input,fimage,NULL,NULL,zoom,order,NULL,NULL);
+      else {
+	inverse_zoom = 1./(*zoom);
+	fzoom(input,fimage,NULL,NULL,&inverse_zoom,order,NULL,(char *)1);
+      }
       sprintf(fimage->name,"%s %.1fX",input->name,*zoom);
     }
   else 
@@ -419,7 +426,7 @@ char *window;
   else { color_scale = NULL; fcolor_scale = NULL; }
   
   
-  cimage=normalize(fimage,color_scale,fcolor_scale);
+  cimage=normalize(fimage,color_scale,fcolor_scale,linear);
 
   WLoadBitMapImage(ImageWindow,cimage->gray,cimage->ncol,cimage->nrow); 
   WRestoreImageWindow(ImageWindow,0,0,cimage->ncol,cimage->nrow); 
@@ -441,7 +448,7 @@ char *window;
   if ((section = mw_change_fsignal(NULL, smax)) == NULL)
       mwerror(FATAL,1,"Not enough memory\n");
 
-  param = (cview_Param) malloc(sizeof(struct cview_SParam));
+  param = (fview_Param) malloc(sizeof(struct fview_SParam));
   if (param == NULL) mwerror(FATAL,1,"not enough memory\n");
 
   memcpy(gray_save,cimage->gray,cimage->ncol * cimage->nrow);
@@ -457,7 +464,7 @@ char *window;
 
   if (fimage == input) param->has_to_delete_image=0;
   else param->has_to_delete_image=1;
-  mw_window_notify(ImageWindow,(void *)param,cview_notify);
+  mw_window_notify(ImageWindow,(void *)param,fview_notify);
   if (!no_refresh) mw_window_main_loop();
 }
 

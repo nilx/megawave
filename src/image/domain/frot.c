@@ -11,16 +11,12 @@
  in->in          "input Fimage",
  out<-out        "output Fimage"
    };
-   */
-/*-- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
+*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include <math.h>
 #include "mw.h"
 
-extern double sin(),cos(),floor();
 
 void bound(x,y,ca,sa,xmin,xmax,ymin,ymax)
 int x,y;

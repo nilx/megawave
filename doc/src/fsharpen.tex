@@ -1,0 +1,8 @@
+This module implements the simple sharpen filter, exactly similar to
+the one of xv (John Bradley's shareware). It is a linear filter
+defined on a 3x3 neighborhood by
+$$ B(x,y) = 
+\frac{\displaystyle 9 \times A(x,y) - p/100 \times \sum_{-1\leq i,j\leq 1}A(x+i,y+j)}{9(1-p/100)},$$
+and zero on the boundary of the domain.
+
+

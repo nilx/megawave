@@ -1,0 +1,22 @@
+This modules computes the inverse B-spline transform of a two-dimensionnal
+array of numbers (Fimage). A mirror extension is used at the boundaries of
+the array.
+The coefficients $out(k,l)$ are computed in order to ensure that 
+the B-spline interpolation
+$$u(x,y) = \sum_{k,l} out(k,l) \;\beta^n(x-k) \, \beta^n(y-l)$$
+satisfies $u(k,l)=in(k,l)$.
+The spline $\beta^n$ is defined in the documentation of \verb+fcrop+ module.
+The order of the spline $n$ ($order$) must be between $2$ and $11$.
+The module is based on a recursive implementation of the associated $z$-filter
+(see [1],[2]).
+
+\begin{thebibliography}{99}
+\bibitem{unser1}
+M. Unser, A. Aldroubi, M. Eden.
+\newblock Fast B-Spline Transforms for Continuous Image Representation and Interpolation.
+\newblock IEEE Transactions on Pattern Analysis and Machine Intelligence, 13:3, 1991.
+
+\bibitem{unser2}
+P. Th\'evenaz, T. Blu, M. Unser.
+\newblock Image Interpolation and Resampling.
+\end{thebibliography}

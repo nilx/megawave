@@ -1,360 +1,421 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {llview};
-  version = {"1.0"};
+  version = {"2.2"};
   author = {"Lionel Moisan"};
-  function = {"Interactive view of the level lines of an image"};
+  function = {"Interactive visualization of level lines"};
   usage = {
-  'x':[x0=50]->x0     "window upleft corner (x coordinate, default 50)",
-  'y':[y0=50]->y0     "window upleft corner (y coordinate, default 50)",
-  'z':[zoom=2.0]->z   "zoom factor (default 2.0)",
-  's':[step=20]->s    "starting step of level grid (default 20)",
-  'p':[position=0]->p "starting position of level grid (default 0)",
-  'd'->d              "to start with bi-level sets (instead of level lines)",
-  'b'->b              "to start without the image as background",
-  'a':scale->scale    "to perform first 'amss -l scale' (e.g scale=2.0)",
-  'o':output<-output  "to save the last view as a Cimage",
-  cimage->input       "Input Cimage",
-  notused->window     "Window to view the image (internal use)"
-  };
+
+  'z':[z=2.0]->z   "zoom factor for display (default : 2.0)",
+  'l':[l=100]->l   "current level (default 100)",
+  's':[s=25]->s    "level step (default 25)",
+  'd':[d=2]->d     "display mode (default 2)",
+  'i':[i=1]->i     "interpolation mode (default 1)",
+  'b':[b=0]->b     "background mode (default 0)",
+  'o':out<-out     "to save the last view as a Ccimage",
+  'n'->n           "no display (useful with -o option)",
+  in->in           "input (Fimage)"
+
+          };
 */
+/*----------------------------------------------------------------------
+ v2.1: new interactive version (L.Moisan)
+ v2.2: minor modifications (L.Moisan)
+----------------------------------------------------------------------*/
 
+#include <math.h>
 #include <stdio.h>
+#include <string.h>
 #include "mw.h"
-
-/* Include the window since we use windows facility */
 #include "window.h"
 
+extern void fcrop();
 
-#define ZFMAX         4       /* Zoom Factor Max */
 
-/*--------------------------------------------------------------*/
-/* global variables avoids to pass parameters to ll_view_notify */
-/*--------------------------------------------------------------*/
-int PARprint;             /* Toggle to print the parameters     */
-int oldx1,oldy1;
-int zfactor;              /* zoom factor                        */
-int back_flag,mode;       /* background and lines/sets toggles  */
-int grid_ofs,grid_step;   /* grid offset and step               */
-Cimage display_image;     /* image being currently displayed    */
-Cimage ref_image;         /* reference image                    */
-Cimage real_image;        /* real image displayed (ref + zoom)  */
-/*--------------------------------------------------------------*/
+/*------------------- GLOBAL VARIABLES -------------------*/
 
-/*----------------------------------------------------------------------*/
-/* Level lines / Bi-level sets  Map */
+                    /* button handling */
+Wpanel wp;
+struct wp_toggle b1,b2,b3,b6;
+struct wp_int b4,b5;
 
-Cimage ll_map(input, output, step,ofs,flag,mode)
-Cimage input,output;
-int step,ofs,flag,mode;
+Wframe *win1;       /* control window */
+Wframe *win2;       /* display window */
+
+int nx,ny,zoom;     /* size of display and zoom level */
+Fimage ref;         /* reference image (= input image) */
+Fimage interpolate; /* current interpolated image */
+Ccimage image;      /* image displayed */
+float X1,Y1,X2,Y2;  /* location of displayed subimage */
+
+/*--------------------------------------------------------*/
+
+
+void faded_fimage_to_ccimage(in,out,lambda)
+Fimage in;     
+Ccimage out;
+float lambda;
 {
-  unsigned char *in,*out,background;
-  int dx,dy,size,l;
+  int adr;
+  float c;
 
-  dy= input->nrow;
-  dx= input->ncol;
-  size=dx*dy;
-
-  output=mw_change_cimage(output,dy,dx);
-  mw_clear_cimage(output,255);
-
-  if (flag) background=84; else background=255;
-
-  switch(mode) {
-
-  case 1: /* level lines */
-    for (l=dx, in=input->gray+dx, out = output->gray+dx;
-	 l<size; 
-	 l++,in++,out++) {
-      if ( (((*(in-1)-ofs+step)/step)!=((*in-ofs+step)/step)) 
-	   || (((*(in-dx)-ofs+step)/step)!=((*in-ofs+step)/step)) )
-	*out=0;
-      else
-	if (flag) *out=64+((*in)*3)/4; else *out=255;    
-    }
-    break;
-    
-  case 2: /* bi-level sets */
-    for (l=0, in=input->gray, out = output->gray; 
-	 l<size; 
-	 l++,in++,out++) {
-      if ( ! (((*in-ofs)/step) & 1) )
-	*out=0;
-      else
-	if (flag) *out=64+((*in)*3)/4; else *out=255;
-    }
-    break;
+  for (adr=in->nrow*in->ncol;adr--;) {
+    c = in->gray[adr];
+    c = 256.-lambda*(256.-c);
+    if (c>255.) c=255.; else if (c<0.) c=0.;
+    out->red[adr] = out->green[adr] = out->blue[adr] = (unsigned char)c;
   }
+}
+		  
+void my_llmap(in,out,ofs,step)
+Fimage in;
+Ccimage out;
+float ofs,step;
+{
+  float bg,v,w,a,NX,NY;
+  int x,y,adr,ok,order;
+  double fv;
 
-  return output;
+  /* image interpolation */
+  if (b3.button==2) order=-3; else 
+    if (b3.button<2) order=b3.button; else 
+      order=b3.button*2-3;
+  bg = 128.; a = -0.5; NX = (float)out->ncol; NY = (float)out->nrow;
+  fcrop(in,interpolate,&NX,&NY,NULL,&bg,&order,&a,X1,Y1,X2,Y2);
+
+  /* background if needed */
+  if (b2.button<2) 
+    faded_fimage_to_ccimage(interpolate,out,(b2.button==0?1.:0.75));
+  else mw_clear_ccimage(out,255,255,255);
+
+  /* add levels */
+  if (b1.button) 
+
+    for (x=0;x<nx-1;x++)
+      for (y=0;y<ny-1;y++) {
+	
+	adr = y*nx+x;
+	v = interpolate->gray[adr];
+	ok = 0;
+
+	switch (b1.button) 
+	  {
+	    
+	  case 1: /* level lines */
+	    fv = floor((double)((v-ofs)/step));
+	    w = interpolate->gray[adr+1];
+	    if (floor((double)((w-ofs)/step)) != fv) ok = 1;
+	    w = interpolate->gray[adr+nx];
+	    if (floor((double)((w-ofs)/step)) != fv) ok = 1;
+	    w = interpolate->gray[adr+nx+1];
+	    if (floor((double)((w-ofs)/step)) != fv) ok = 1;
+	    break;
+	    
+	  case 2: /* one level line */
+	    w = interpolate->gray[adr+1];
+	    if ((w-ofs)*(v-ofs)<=0. && v!=w) ok=1;
+	    w = interpolate->gray[adr+nx];
+	    if ((w-ofs)*(v-ofs)<=0. && v!=w) ok=1;
+	    w = interpolate->gray[adr+nx+1];
+	    if ((w-ofs)*(v-ofs)<=0. && v!=w) ok=1;
+	    break;
+	    
+	  case 3: /* one lower level set */
+	    ok = (v<ofs);
+	    break;
+	    
+	  case 4: /* one upper level set */
+	    ok = (v>=ofs);
+	    break;
+	    
+	  case 5: /* one bi-level set */
+	    ok = (v>=ofs && v<ofs+step);
+	    break;
+
+	  }
+	if (ok) {
+	  out->red[adr] = 255;
+	  out->green[adr] = 0;
+	  out->blue[adr] = 0;
+	}
+      }
 }
 
 
-/*----------------------------------------------------------------------*/
+int redisplay(wt,n)
+Wp_toggle wt;
+short n;
+{
+  my_llmap(ref,image,(float)b4.value,(float)b5.value);
+  WLoadBitMapColorImage(win2,image->red,image->green,image->blue,nx,ny);
+  WRestoreImageWindow(win2,0,0,nx,ny);
+  WFlushWindow(win2);
+  return(0);
+}
 
-void llview_notify_help()
+int grey_level(wi,n)
+Wp_int wi;
+short n;
+{
+  wi->value = (wi->value+256)%256;
+  redisplay(NULL,0);
+  return(0);
+}
 
+int step(wi,n)
+Wp_int wi;
+short n;
+{
+  if (wi->value<1) wi->value = 1;
+  if (wi->value>255) wi->value = 255;
+  redisplay(NULL,0);
+  return(0);
+}
+
+int quit(wt,n)
+Wp_toggle wt;
+short n;
+{
+  wp->state = -1;
+  return(wp->state);
+}
+
+void help()
 {
   printf("\n\t\tHelp on line\n");
-
   printf("\nMouse:\n");
-
-  printf("\tLeft button: Select grid offset (current level)\n");
-  printf("\tMiddle button: Restore the image\n");
-  printf("\tRight button: Local zooming\n");
-
+  printf("\tLeft button:    Select grey level.\n");
+  printf("\tMiddle button:  Restore the original display region.\n");
+  printf("\tRight button:   Zoom x2 on the selected location.\n");
   printf("\nKeyboard:\n");
-  printf("\tq: Quit.\n");
-  printf("\th: Help.\n");
-  printf("\tb: Toggle image background.\n");
-  printf("\td: Toggle display (level lines / bi-level sets).\n");
-  printf("\t+: Translate right level grid.\n");
-  printf("\t-: Translate left level grid.\n");
-  printf("\t*: Increase grid step.\n");
-  printf("\t/: Decrease grid step.\n");
+  printf("\tQ:  Quit.\n");
+  printf("\tH:  Help.\n");
+  printf("\tU:  Unzoom x2.\n");
+  printf("\tLeft arrow:   Go Left.\n");
+  printf("\tRight arrow:  Go Right.\n");
+  printf("\tUp arrow:     Go Up.\n");
+  printf("\tDown arrow:   Go Down.\n");
 }
 
-
-/*     A notify function must return a value ....      */
-/*       0 if there was no event catched               */
-/*     > 0 if there was an event catched (but Destroy) */
-/*      -1 if the event Destroy was catched (or 'Q')   */
-
-int llview_notify(ImageWindow,param)
-
-Wframe *ImageWindow;
-void *param;          /* Users's parameters: don't forget the cast ! */
-
+/* handle display events */
+int win2_notify(window,param)
+Wframe *window;
+void *param;
 {
-  Cimage im;
-  int x1,y1,wz,event,button_mask,ret;
-  char c,mess[200];
-  int ng,refresh;
+  int event,ret,x,y,button_mask;
+  float nc,nd;
+  int c; /* Key code must be int and not char to handle non-printable keys */
 
-  event = WUserEvent(ImageWindow); /* User's event on ImageWindow */
-  if (event < 0) ret=1; else ret=event;
-  if (event != W_DESTROY)
+  event = WUserEvent(window); 
+  if (event<0) ret=1; else ret=event;
+  WGetStateMouse(window,&x,&y,&button_mask);
+  switch (event) 
     {
-      WGetStateMouse(ImageWindow,&x1,&y1,&button_mask);
-      if (PARprint == 1) { 
-	/* print parameters on top of the window */
-	if ((x1>=0)&&(x1<display_image->ncol)
-	    &&(y1>=0)&&(y1<display_image->nrow))
-	  ng = real_image->gray[y1*ref_image->nrow+x1];
-	else ng = -1;
-	switch(mode) {
-	  case 1: /* level lines */
-	    sprintf(mess," %3d (level lines %d+%dn)",
-		    ng,grid_ofs,grid_step);
-	    break;
-	  case 2: /* bi-level sets */
-	    sprintf(mess," %3d (bi-level sets %d <= u-%dn < %d)",
-		    ng,grid_ofs,grid_step*2,grid_ofs+grid_step+1);
-	    break;
-	}
-	WDrawString(ImageWindow,0,10,mess);
-	WFlushAreaWindow(ImageWindow,0,0,display_image->ncol-1,12);
-      }
-    }
-  
-  refresh = 0;
 
-  switch(event)
-    {
-    case W_MS_LEFT:
-      PARprint = 1 - PARprint;
-      if (PARprint == 0)
-	{
-	  WRestoreImageWindow(ImageWindow,0,0,
-			      display_image->ncol,display_image->nrow); 
-	  WFlushWindow(ImageWindow);
-	}
-      break;
-      
-    case W_MS_MIDDLE:
-      refresh = 1;
-      zfactor = 1;
+    case W_MS_LEFT: /* select level */
+      b4.value =  (int)(.5+interpolate->gray[y*image->ncol+x]);
+      Wp_SetButton(WP_INT,wp,(void *)(&b4));
+      redisplay(NULL,0);
       break;
 
-    case W_MS_RIGHT:
-      if ((oldx1 == x1) && (oldy1 == y1)) 
-	{
-	  zfactor+=1;
-	  if (zfactor > ZFMAX) zfactor = ZFMAX;
-	  else refresh = 1;
-}
-      else {
-	zfactor=2;
-	refresh = 1;
-	oldx1 = x1;
-	oldy1 = y1;
-      }
+    case W_MS_RIGHT: /* zoom x2 */
+      zoom++;
+      nc = .5*(float)x*(X2-X1)/(float)nx;
+      nd = .5*(X2-X1);
+      X1 += nc; X2 = X1+nd;
+      nc = .5*(float)y*(Y2-Y1)/(float)ny;
+      nd = .5*(Y2-Y1);
+      Y1 += nc; Y2 = Y1+nd;
+      redisplay(NULL,0);
+      break;
+
+    case W_MS_MIDDLE: /* restore orgiginal display */
+      zoom = 0;
+      X1 = 0.; Y1 = 0.; 
+      X2 = (float)ref->ncol; Y2=(float)ref->nrow;
+      redisplay(NULL,0);
       break;
 
     case W_RESIZE:
-      WLoadBitMapImage(ImageWindow,display_image->gray,
-		       display_image->ncol,display_image->nrow); 
-      WRestoreImageWindow(ImageWindow,0,0,
-			  display_image->ncol,display_image->nrow); 
-      WFlushWindow(ImageWindow);	 
-      break;  
+      break;
 
     case W_DESTROY:
-      ret=-1;
+      wp->state = -1;
       break;
 
     case W_KEYPRESS:
-      c = (char) WGetKeyboard();
+      c = WGetKeyboard();
       switch(c)
 	{
-	case 'q': case 'Q': ret = -1;
+	  /* translate left */
+	case XK_Left: case XK_KP_Left: 
+	  nc = .1*(X2-X1); X1-=nc; X2-=nc; redisplay(NULL,0);  break;
+
+	  /* translate right */
+	case XK_Right:case XK_KP_Right: 
+	  nc = .1*(X2-X1); X1+=nc; X2+=nc; redisplay(NULL,0);  break;
+
+	  /* translate up */
+	case XK_Up: case XK_KP_Up:
+	  nc = .1*(Y2-Y1); Y1-=nc; Y2-=nc; redisplay(NULL,0);  break;
+
+	  /* translate down */
+	case XK_Down: case XK_KP_Down:
+	  nc = .1*(Y2-Y1); Y1+=nc; Y2+=nc; redisplay(NULL,0);  break;
+
+	  /* unzoom x2 */
+	case 'u': case 'U':       
+	  if (zoom>0) {
+	    zoom--;
+	    if (zoom==0) {
+	      X1 = 0.; Y1 = 0.; 
+	      X2 = (float)ref->ncol; Y2=(float)ref->nrow;
+	    } else {
+	      nc = X1+(float)x*(X2-X1)/(float)nx;
+	      nd = X2-X1;
+	      X1 = nc-nd; X2 = nc+nd;
+	      nc = Y1+(float)y*(Y2-Y1)/(float)ny;
+	      nd = Y2-Y1;
+	      Y1 = nc-nd; Y2 = nc+nd;
+	    }
+	    redisplay(NULL,0);
+	  }
 	  break;
+
+	  /* quit */
+	case 'q': case 'Q': wp->state = -1; break;
 	  
-	case 'h': case 'H': llview_notify_help();
-	  break;
-	  
-	case 'b': case 'B': 
-	  back_flag = 1-back_flag;
-	  refresh=1;
-	  break;
-
-	case 'd': case 'D': 
-	  mode = 3-mode;
-	  if (mode==1) grid_ofs = grid_ofs%grid_step;
-	  refresh=1;
-	  break;
-
-	case '+':
-	  grid_ofs = (grid_ofs+1)%(grid_step*mode);
-	  refresh=1;
-	  break;
-
-	case '-':
-	  grid_ofs = (grid_ofs+grid_step*mode-1)%(grid_step*mode);
-	  refresh=1;
-	  break;
-
-	case '*':
-	  grid_step ++;
-	  refresh=1;
-	  break;
-
-	case '/':
-	  if (grid_step>1) grid_step--;
-	  refresh=1;
-	  break;
-
-	default:
-	  mwerror(WARNING,1,"Unrecognized Key '%c'. Type H for Help.\n",c);
-	}    
+	  /* help */
+	case 'h': case 'H': help(); break;
+	}
       break;
     }
 
-  if (refresh) {
-    /* compute and display new image */
-    if (display_image->ncol >= display_image->nrow) 
-      wz = zfactor*display_image->nrow/16;
-    else 
-      wz = zfactor*display_image->ncol/16;
-    memcpy(real_image->gray,ref_image->gray,ref_image->ncol*ref_image->nrow);
-    if (zfactor!=1) 
-      clocal_zoom(real_image, &oldx1, &oldy1, &wz, &zfactor);
-    ll_map(real_image,display_image,grid_step,grid_ofs,back_flag,mode);
-    if (WLoadBitMapImage(ImageWindow,display_image->gray,
-			 display_image->ncol,display_image->nrow)
-	!= 0) return(-1);
-    WRestoreImageWindow(ImageWindow,0,0,
-			display_image->ncol,display_image->nrow); 
-    WFlushWindow(ImageWindow);
-  }
- 
-  return(ret);
-
+  return(wp->state);
 }
 
-/*----------------------------------------------------------------------*/
-
-llview(input,x0,y0,z,s,p,d,b,scale,output,window)
-
-Cimage input,output;
-int *x0,*y0,*s,*p;
-char *d,*b,*window;
-float *z,*scale;
-
+/* initialize buttons on control window */
+void init_buttons()
 {
-  Wframe *ImageWindow;
-  Cimage tmp1,tmp2;
-  Fimage ftmp1,ftmp2;
-  int i,j;
-  float v,p1,p2,p3,p4;
-  char text[BUFSIZ];
+  int line,linestep;
 
-  /*--- Initialize the parameters ---*/
-  PARprint = 0;
-  oldx1 = oldy1 = -1;
-  zfactor = 1;
-  if (b) back_flag=0; /* no background */
-    else back_flag=1; /* image as background */
-  if (d) mode=2; /* bi-level sets */
-    else mode=1; /* level lines */
-  grid_ofs = *p;
-  grid_step = *s;
+  wp = Wp_Init(win1);
+  line = 0; linestep = 22;
 
-  /* zoom if requested */
-  if (*z!=1.0) {
-    tmp1 = mw_new_cimage();
-    czoom(input,tmp1,NULL,NULL,z);
-  } else tmp1 = input;
-  
-  /* smooth if requested */
-  if (scale) {    
-    ftmp1 = mw_change_fimage(NULL,tmp1->nrow,tmp1->ncol);
-    ftmp2 = mw_new_fimage();
-    for (i=tmp1->nrow*tmp1->ncol;i--;)
-      ftmp1->gray[i] = (float)tmp1->gray[i];
-    p1=0.1;p2=6.0;p3=0.1;p4=0.0;i=0;
-    amss(NULL,NULL,&p1,&p2,&p3,&p4,scale,ftmp1,&ftmp2,&i,&i,
-	 NULL,NULL,NULL,NULL);
-    tmp2 = mw_change_cimage(NULL,ftmp2->nrow,ftmp2->ncol);
-    for (i=tmp2->nrow*tmp2->ncol;i--;) {
-      v = ftmp2->gray[i];
-      tmp2->gray[i] = (v<0.0?0:(v>255.0?255:v));
-    }
-  } else tmp2 = tmp1;
+  /* button 1 */
+  b1.text = "Level "; b1.nbuttons=6; b1.color=WP_RED;
+  b1.button_text = (char **)malloc(b1.nbuttons*sizeof(char *));
+  b1.button_text[0]="none";
+  b1.button_text[1]="lines";
+  b1.button_text[2]="one level";
+  b1.button_text[3]="lower set";
+  b1.button_text[4]="upper set";
+  b1.button_text[5]="bi-level set";
+  b1.x=10; b1.y=5+linestep*line++; b1.proc=redisplay;
+  Wp_SetButton(WP_TOGGLE,wp,(void *)(&b1));
 
-  ref_image = tmp2;
+  /* button 2 */
+  b2.text = "Background "; b2.nbuttons=3; b2.color=WP_RED;
+  b2.button_text = (char **)malloc(b2.nbuttons*sizeof(char *));
+  b2.button_text[0]="original image";
+  b2.button_text[1]="attenuated image";
+  b2.button_text[2]="none";
+  b2.x=10; b2.y=5+linestep*line++; b2.proc=redisplay;
+  Wp_SetButton(WP_TOGGLE,wp,(void *)(&b2));
 
-  real_image = mw_change_cimage(NULL,ref_image->nrow,ref_image->ncol);
-  memcpy(real_image->gray,ref_image->gray,ref_image->nrow*ref_image->ncol);
+  /* button 3 */
+  b3.text = "Interpolation "; b3.nbuttons=6; b3.color=WP_RED;
+  b3.button_text = (char **)malloc(b3.nbuttons*sizeof(char *));
+  b3.button_text[0]="block";
+  b3.button_text[1]="linear";
+  b3.button_text[2]="cubic";
+  b3.button_text[3]="spline 3";
+  b3.button_text[4]="spline 5";
+  b3.button_text[5]="spline 7";
+  b3.x=10; b3.y=5+linestep*line++; b3.proc=redisplay;
+  Wp_SetButton(WP_TOGGLE,wp,(void *)(&b3));
 
-  display_image = ll_map(ref_image,NULL,*s,*p,back_flag,mode);
+  /* button 4 (int) */
+  b4.text = "grey level : "; b4.format = "%3d  ";
+  b4.nbuttons=4; b4.strsize=0; b4.color=WP_BLUE;
+  b4.scale=150; b4.firstscale=0; b4.lastscale=255; b4.divscale=4;
+  b4.button_text = (char **)malloc(b4.nbuttons*sizeof(char *));
+  b4.button_inc = (int *)malloc(b4.nbuttons*sizeof(int));
+  b4.button_text[0]="-20";   b4.button_inc[0]=-20;
+  b4.button_text[1]="-1";    b4.button_inc[1]=-1;
+  b4.button_text[2]="+1";    b4.button_inc[2]= 1;
+  b4.button_text[3]="+20";   b4.button_inc[3]= 20;
+  b4.x=10; b4.y=5+linestep*line++; b4.proc=grey_level;
+  Wp_SetButton(WP_INT,wp,(void *)(&b4));
 
-  sprintf(text,"level lines of %s",input->name);
+  /* button 5 (int) */
+  b5.text = "      step : "; b5.format = "%3d  ";
+  b5.nbuttons=4; b5.strsize=0; b5.color=WP_BLUE;
+  b5.scale=100; b5.firstscale=1; b5.lastscale=50; b5.divscale=5;
+  b5.button_text = (char **)malloc(b5.nbuttons*sizeof(char *));
+  b5.button_inc = (int *)malloc(b5.nbuttons*sizeof(int));
+  b5.button_text[0]="-10";   b5.button_inc[0]=-10;
+  b5.button_text[1]="-1";    b5.button_inc[1]=-1;
+  b5.button_text[2]="+1";    b5.button_inc[2]= 1;
+  b5.button_text[3]="+10";   b5.button_inc[3]= 10;
+  b5.x=10; b5.y=5+linestep*line++; b5.proc=step;
+  Wp_SetButton(WP_INT,wp,(void *)(&b5));
 
-  /* display window */
-  ImageWindow = (Wframe *)
-    mw_get_window((Wframe *) window,
-		  display_image->ncol,display_image->nrow,*x0,*y0,text);
-  if (ImageWindow == NULL)
-    mwerror(INTERNAL,1,"NULL window returned by mw_get_window\n");
-  WLoadBitMapImage(ImageWindow,display_image->gray,
-		   display_image->ncol,display_image->nrow); 
-  WRestoreImageWindow(ImageWindow,0,0,
-		      display_image->ncol,display_image->nrow); 
-  WFlushWindow(ImageWindow);
+  /* button 6 (QUIT) */
+  b6.text = "";
+  b6.nbuttons=1; b6.button=0; b6.color=WP_GREEN;
+  b6.button_text = (char **)malloc(sizeof(char *));
+  b6.button_text[0]="Quit";
+  b6.x=416; b6.y=5+linestep*(line-1); b6.proc=quit;
+  Wp_SetButton(WP_TOGGLE,wp,(void *)(&b6));
+}
 
-  WSetUserEvent(ImageWindow,W_MS_BUTTON | W_KEYPRESS);
-  mw_window_notify(ImageWindow,NULL,llview_notify);
+/*------------------------------ MAIN MODULE ------------------------------*/
 
-  /* loops on events */
-  mw_window_main_loop();
+void llview(in,z,s,l,d,i,b,out,n)
+Fimage in;
+float *z;
+int *s,*l,*d,*i,*b;
+Ccimage *out;
+char *n;
+{
+  /* Initialization */
+  nx = (int)(*z*(float)in->ncol);
+  ny = (int)(*z*(float)in->nrow);
+  X1 = 0.; Y1 = 0.; X2 = (float)in->ncol; Y2=(float)in->nrow;
+  zoom = 0; ref = in;
+  image = mw_change_ccimage(NULL,ny,nx);
+  interpolate = mw_change_fimage(NULL,ny,nx);
+  b1.button = *d; b2.button = *b; b3.button = *i;
+  b4.value = *l; b5.value = *s;
 
-  /* save output if requested */
-  if (output) {
-    mw_change_cimage(output,display_image->nrow,display_image->ncol);
-    memcpy(output->gray,display_image->gray,
-	   display_image->nrow*display_image->ncol);
+  if (!n) { /* interactive mode */
+
+    /* open control window and display window */
+    if (!(win1=(Wframe *)mw_get_window(NULL,460,115,230,5,"llview (control)")))
+      mwerror(INTERNAL,1,"NULL window returned by mw_get_window\n");
+    if (!(win2=(Wframe *)mw_get_window(NULL,nx,ny,50,145,"llview (display)")))
+      mwerror(INTERNAL,1,"NULL window returned by mw_get_window\n");
+    
+    /* initialize buttons and display */
+    init_buttons();
+    redisplay(NULL,0);
+    
+    /* set events for display window */
+    WSetUserEvent(win2,W_MS_BUTTON | W_KEYPRESS);
+    mw_window_notify(win2,NULL,win2_notify);
+    
+    /* interactive display */
+    Wp_main_loop(wp);
+
+  } else { /* non-interactive mode */
+
+    my_llmap(ref,image,(float)b4.value,(float)b5.value);
+
   }
+
+  /* return display image if requested */
+  if (out) *out=image;
 }
 
 

@@ -2,7 +2,7 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="Fwivq"
-_Vers="1.01"
+_Vers="1.3"
 _Date="1997"
 _Func="Reconstruct an image compressed by vector quantizing its wavelet transform";
 _Auth="Jean-Pierre D'Ales";
@@ -16,31 +16,24 @@ _Usage="[-b1 BiFilt1] [-b2 BiFilt2] [-o OrthoFilt] [-e EdgeFilt] compressfile co
 #
 #       MegaWave2 modules used: fwivq
 
+# v1.2: fixed owave directory bug (L.Moisan)
+# v1.3: fixed $BIN and ${MY_MEGAWAVE2}/tmp bugs (JF)
 
 #----- Check syntax -----
 if [ $# -le 1 ] 
 then
-	. .mw2_help_lg_com
+s	. .mw2_help_lg_com
 fi
 
-#----- Check $MY_MEGAWAVE2/tmp directory -----
-if [ ! -d $MY_MEGAWAVE2/tmp ]
-then
-	echo $MY_MEGAWAVE2"/tmp does not exist."
-	exit 1
-fi
-
-MWTMP="${MY_MEGAWAVE2}/tmp"
-BIN=/users3/ales/bin
 MWDATA="${MEGAWAVE2}/data"
 MY_MWDATA="${MY_MEGAWAVE2}/data"
 GROUP=compression/vqwave
 
 
 # Default wavelet filters
-WAVELETFILTER="owave/biortho/h/sd07.ir"
-WAVELETFILTER2="owave/biortho/htilde/sd09.ir"
-WAVELETOPT="-b owave/biortho/htilde/sd09.ir"
+WAVELETFILTER="wave/biortho/h/sd07.ir"
+WAVELETFILTER2="wave/biortho/htilde/sd09.ir"
+WAVELETOPT="-b wave/biortho/htilde/sd09.ir"
 WAVELETEDGEFILTER="no filter"
 
 COMPRESS=""

@@ -1,0 +1,8 @@
+This module takes a signal $s(i)$ ($i=0..n-1$) as input and returns
+\begin{itemize}
+\item with no option selected, the signal $S: i\mapsto \sum_{k=0}^i s(k)$ item \item with the \verb+-r+ option selected, 
+the signal $S: i\mapsto \sum_{k=i}^{n-1} s(k)$ 
+\end{itemize}
+If the \verb+-n+ option is selected, the initial signal is first
+multiplied by a constant $C$ such that $C \sum_{k=0}^{n-1} s(k)=1$
+(if the total sum is not zero).

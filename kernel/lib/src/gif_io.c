@@ -534,6 +534,12 @@ Cimage image;
   int Resolution, ColorMapSize, InitCodeSize, Background, BitsPerPixel;
   int i,j;
 
+  if ((image->ncol>=65536)||(image->nrow>=65536))
+    {
+      mwerror(FATAL,1,"Image too big to be saved using GIF external type !\n");
+      return(-1);
+    }
+ 
   if (!(fp = fopen(fname, "w")))
     {
       mwerror(ERROR, 0,"Cannot create the file \"%s\"\n",fname);

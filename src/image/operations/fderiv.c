@@ -1,7 +1,7 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
   name = {fderiv};
-  version = {"1.2"};
+  version = {"1.3"};
   author = {"Lionel Moisan"};
   function = {"1st and 2nd order derivatives of an image (3x3 stencil)"};
   usage = {
@@ -29,6 +29,9 @@ in->in
       "input Fimage"
   };
 */
+/*----------------------------------------------------------------------
+ v1.3: removed unary + (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -184,7 +187,7 @@ int *nsize;
 (    a00    * ( -4.0*l0 )
 + (am0+a10) * ( 2.0*l0 -     (-axy)                 ) 
 + (a0m+a01) * ( 2.0*l0 -            axy             ) 
-+ (a11+amm) * ( -l0 + 0.5 * (           + (ax-ay) ) )
++ (a11+amm) * ( -l0 + 0.5 * (             (ax-ay) ) )
 + (am1+a1m) * ( -l0 + 0.5 * (           - (ax-ay) ) ) ) / an;
 
 

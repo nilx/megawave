@@ -2,7 +2,7 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="Fwlbg_adap"
-_Vers="1.01"
+_Vers="1.3"
 _Date="1997"
 _Func="Construct a complete set of codebook sequences adapted to vector quantization of image wavelet transform";
 _Auth="Jean-Pierre D'Ales";
@@ -16,6 +16,8 @@ _Usage="[-b1 BiFilt1] [-b2 BiFilt2] [-o OrthoFilt] [-e EdgeFilt] codebook traini
 #
 #       MegaWave2 modules used: fwlbg_adap
 
+# v1.2: fixed owave directory bug (L.Moisan)
+# v1.3: fixed ${MY_MEGAWAVE2}/tmp bug (JF)
 
 #----- Check syntax -----
 if [ $# -le 1 ] 
@@ -23,14 +25,6 @@ then
 	. .mw2_help_lg_com
 fi
 
-#----- Check $MY_MEGAWAVE2/tmp directory -----
-if [ ! -d $MY_MEGAWAVE2/tmp ]
-then
-	echo $MY_MEGAWAVE2"/tmp does not exist."
-	exit 1
-fi
-
-MWTMP="${MY_MEGAWAVE2}/tmp"
 MWDATA="${MEGAWAVE2}/data"
 MY_MWDATA="${MY_MEGAWAVE2}/data"
 GROUP=compression/vqwave
@@ -46,9 +40,9 @@ MULTICB="-M"
 OVERLAP="-l"
 
 # Default wavelet filters
-WAVELETFILTER="owave/biortho/h/sd07.ir"
-WAVELETFILTER2="owave/biortho/htilde/sd09.ir"
-WAVELETOPT="-b owave/biortho/htilde/sd09.ir"
+WAVELETFILTER="wave/biortho/h/sd07.ir"
+WAVELETFILTER2="wave/biortho/htilde/sd09.ir"
+WAVELETOPT="-b wave/biortho/htilde/sd09.ir"
 WAVELETEDGEFILTER="no filter"
 
 # Sizes of codebooks

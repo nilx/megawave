@@ -2,42 +2,43 @@
 /* mwcommand
  name = {fsepconvol};
  author = {"Lionel Moisan"};
- version = {"1.0"};
- function = {"Convolution with a separable 2D-kernel)"};
+ version = {"1.2"};
+ function = {"Convolution with a separable 2D-kernel"};
  usage = {
    'c':width->width           
     "unit mass constant kernel of specified width",
    'g':std->std[0.0,1.0e4]    
-    "unit mass Gaussian kernel with standart deviation std (half-width 4*std)",
+    "Gaussian kernel, standart deviation std (precision 1e-3)",
+   'b':[b=1]->b  "boundary condition: 0=zero, 1=symmetry (default), 2=torus",
    in->in        "input Fimage",
    out<-out      "output (convolved Fimage)",
  { xker->xker    "use a Fsignal (and its shift) as kernel along x axis",
    yker->yker    "use a Fsignal (and its shift) as kernel along y axis" }
 };
 */
+/*----------------------------------------------------------------------
+ v1.2: new sgauss(), -b option, acceleration, return output (L.Moisan)
+----------------------------------------------------------------------*/
+
+/* NOTE: calling this module with in=out is possible */
 
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
 
-#ifdef __STDC__
-extern void sconst(int*,float*,Fsignal);
-extern void sgauss(float*,int*,Fsignal);
-#else
 extern void sconst();
-extern void sgauss();
-#endif
+extern Fsignal sgauss();
 
 
-void fsepconvol(in,out,xker,yker,width,std)
+Fimage fsepconvol(in,out,xker,yker,width,std,b)
 Fimage in,out;
 Fsignal xker,yker;
-int *width;
+int *width,*b;
 float *std;
 {
   Fimage tmp;
-  int nx,ny,x,y,org,i,iter;
-  float value,sum;
+  int nx,nx2,ny,ny2,x,y,org,i,iter,s;
+  float value,sum,precision;
   int delete_xker;
 
   /* check options */
@@ -49,8 +50,8 @@ float *std;
     delete_xker = 1;
   } else delete_xker = 0;
 
-  nx = in->ncol;
-  ny = in->nrow;
+  nx = in->ncol; nx2 = 2*nx;
+  ny = in->nrow; ny2 = 2*ny;
   tmp = mw_change_fimage(NULL,ny,nx);
   out = mw_change_fimage(out,ny,nx);
   
@@ -65,23 +66,58 @@ float *std;
   }
   if (std) {
     /* Gaussian kernel */
-    sgauss(std,NULL,xker);
+    precision = 3.;
+    sgauss(*std,xker,NULL,&precision);
     yker = xker;
   }
 
   /* convolution along x axis */
   org = -(int)xker->shift;
   for (y=ny;y--;) for (x=nx;x--;) {
-    for (sum=0.0,i=xker->size;i--;) 
-      sum += xker->values[i]*in->gray[y*nx+(x+nx*100-i+org)%nx];
+    for (sum=0.0,i=xker->size;i--;) {
+      s = x-i+org;
+      switch(*b) {
+      case 0: 
+	if (s>=0 && s<nx) sum += xker->values[i]*in->gray[y*nx+s];
+	break;
+      case 1: 
+	while (s<0) s+=nx2;
+	while (s>=nx2) s-=nx2;
+	if (s>=nx) s = nx2-1-s;
+	sum += xker->values[i]*in->gray[y*nx+s];
+	break;
+      case 2: 
+	while (s<0) s+=nx;
+	while (s>=nx) s-=nx;
+	sum += xker->values[i]*in->gray[y*nx+s];
+	break;
+      }
+    }
     tmp->gray[y*nx+x] = sum;
   }
   
   /* convolution along y axis */
   org = -(int)yker->shift;
   for (y=ny;y--;) for (x=nx;x--;) {
-    for (sum=0.0,i=yker->size;i--;) 
-      sum += yker->values[i]*tmp->gray[((y+ny*100-i+org)%ny)*nx+x];
+    for (sum=0.0,i=yker->size;i--;) {
+      s = y-i+org;
+      switch(*b) {
+      case 0: 
+	if (s>=0 && s<ny) sum += yker->values[i]*tmp->gray[s*nx+x];
+	break;
+      case 1: 
+	while (s<0) s+=ny2;
+	while (s>=ny2) s-=ny2;
+	if (s>=ny) s = ny2-1-s;
+	sum += yker->values[i]*tmp->gray[s*nx+x];
+	break;
+      case 2: 
+	while (s<0) s+=ny;
+	while (s>=ny) s-=ny;
+	sum += yker->values[i]*tmp->gray[s*nx+x];
+	break;
+      }
+    }
     out->gray[y*nx+x] = sum;
   }
 
@@ -89,4 +125,6 @@ float *std;
   mw_delete_fimage(tmp);
   if (delete_xker) 
     mw_delete_fsignal(xker);
+
+  return(out);
 }

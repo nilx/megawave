@@ -19,6 +19,7 @@
 #include  "mw.h"
 
 int is_a_power_of_two(n)
+int n;
 {
   if (n<1) return(0);
   while ((n&1)==0) n=(n>>1);

@@ -1,7 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    img_io.c
    
-   Vers. 1.02
+   Vers. 1.04
+   (C) 1993-2000 Jacques Froment
    Input/Output functions for the Img structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -197,9 +198,11 @@ char  Comment[];
 
 { Rim image_rim;
   Img image_img;
-  char mtype[TYPE_SIZE];
-  
-  _mw_get_file_type(NomFic,Type,mtype);
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+
+  _mw_get_file_type(NomFic,Type,mtype,&hsize,&version);
   
   if ((strcmp(Type,"IMG") == 0) || (Type[0] == '?'))
     /* ? Includes INR and MTI types (not supported by _mw_get_file_type()) */

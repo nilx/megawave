@@ -1,18 +1,18 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {owave1};
-version = {"1.10"};
+version = {"1.2"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Computes the orthogonal wavelet transform of an 1D signal"};
 usage = {
 'r':[RecursNum=1]->NumRec [1,20]
-	"Number of level", 
+	"Number of levels (default 1)", 
 'h':HaarLevel->Haar
 	"Continue decomposition with Haar until HaarLevel",
 'e':[EdgeMode=3]->Edge [0,3]
-	"Edge processing mode", 
+	"Edge processing mode (0/1/2/3, default 3)", 
 'p':[PrecondMode=0]->Precond [0,2]
-	"Edge preconditionning mode", 
+	"Edge preconditionning mode (0/1/2, default 0)", 
 'i'->Inverse
 	"Invertible transform", 
 'n':[FilterNorm=2]->FilterNorm [0,2]
@@ -39,13 +39,8 @@ ImpulseResponse->Ri
 #include  "mw.h"
 
 /*--- Megawave2 modules ---*/
-#ifdef __STDC__
-void sconvolve(Fsignal, Fsignal, int *, int *, int *, int *, int *, int *, Fsignal, Fimage);
-void precond1d(int *, Fsignal, Fsignal, Fimage);
-#else
-void sconvolve();
-void precond1d();
-#endif
+extern void sconvolve();
+extern void precond1d();
 
 /*--- Constants ---*/
 

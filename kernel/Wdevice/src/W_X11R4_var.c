@@ -3,8 +3,8 @@
                    This file regroups all miscellaneous WX* commands     
                    (That is, which should not be used as this by the     
                    main functions, but which are called in W_X11R4.c)    
-  Vers. 3.0
-  (C) 1991-99 Jacques Froment
+  Vers. 3.1
+  (C) 1991-2001 Jacques Froment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~  This file is part of the MegaWave2 Wdevice library ~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -26,7 +26,7 @@ GC              _W_GC;          /* -- Graphic content to be used     */
 Visual          *_W_Visual;     /* -- Visual color structure         */
 XFontStruct     *_W_Font;       /* -- Font loaded                    */ 
 
-char _W_KeyBuffer[W_KeyBufferMaxLen]; /* -- The Key Buffer string */
+int _W_KeyBuffer;                /* -- The Key pressed */
 int _W_XErrorOccured = 0;        /* -- Used by WIsAnActiveWindow */
 
 /* Color parameters, located into the Wframe structure in Wdevice V2 : */

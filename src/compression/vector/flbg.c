@@ -70,15 +70,9 @@ MSE<-MSE
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void mk_trainset(int *, int *, int *, int *, int *, float *, float *, float *, int *, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage);
-void mk_codebook(int *, double *, double *, int *, int *, Fimage);
-void flbg_train(int *, Fsignal, int *, Fimage, int *, int *, Fimage, Fimage, int *, Fimage, float *, Fimage);
-#else
-void mk_trainset();
-void mk_codebook();
-void flbg_train();
-#endif
+extern void mk_trainset();
+extern void mk_codebook();
+extern void flbg_train();
 
 /*--- Constants ---*/
 

@@ -9,24 +9,13 @@ U->U "input fimage",
 brate<-fencode "best rate (bit per pixel)"
         };
 */
-/* ------------------------------------------------------------------------- */
 
 #include <stdio.h>
 #include "mw.h"
 
-/* MegaWave2 modules used */
-#ifdef __STDC__
-
-extern void arencode2(int *, long *, int *, long *, int *, Fsignal, int *, 
-		      Fimage, double *, Cimage);
-extern float fentropy(Fimage);
-
-#else
-
 extern void arencode2();
 extern float fentropy();
 
-#endif
 
 double fencode(U)
 

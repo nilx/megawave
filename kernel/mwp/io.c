@@ -5,6 +5,11 @@ The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
 CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/* I/O functions
+   V 1.0   
+   Original version : Sylvain Parrino
+   Several modifications done by Jacques Froment (JF)
+*/
 
 #define sparc 1
 #include <stdio.h>
@@ -387,7 +392,11 @@ va_dcl
           longflg = fmtflg = FALSE;
           break;
         case 'c':
-          c = va_arg(marker, char);
+	  /* JF 12/27/01: On Linux kernel 2.4.8-26mdk :
+	     Need a cast here since va_arg only
+	     takes fully promoted types 
+	  */
+	  c = (char) va_arg(marker, int);
           fprintf(fd, "%c", c);
           longflg = fmtflg = FALSE;
           break;
@@ -428,13 +437,15 @@ va_dcl
                 }
 		fprintf(fd, "$\\mathbf{\\hat{}}\\;$");
                 break;
-              case '~' :
-              case '|' :
+	    case '~' :
+	    case '|' :
+	    case '<' :
+	    case '>' :
                 if (escflg) {
                   fprintf(fd, "\\verb!\\!");
                   escflg = FALSE;
                 }
-                fprintf(fd, "\\verb!%c!", *s);
+                fprintf(fd, "$\\mathbf{%c}\\;$", *s);
                 break;
               case 'a' :
               case 'b' :
@@ -512,7 +523,11 @@ va_dcl
           if (longflg)
             fprintf(fd, "%g", va_arg(marker, double));
           else
-            fprintf(fd, "%g", (double)va_arg(marker, float));
+	    /* JF 12/27/01: On Linux kernel 2.4.8-26mdk :
+	       Need a cast here since va_arg only
+	       takes fully promoted types 
+	    */
+            fprintf(fd, "%g", (double)va_arg(marker, double));
           longflg = fmtflg = FALSE;
           break;
         case 'l' :
@@ -592,7 +607,11 @@ va_dcl
             longflg = fmtflg = FALSE;
             break;
           case 'c':
-            c = va_arg(marker, char);
+	    /* JF 12/27/01: On Linux kernel 2.4.8-26mdk :
+	       Need a cast here since va_arg only
+	       takes fully promoted types 
+	    */
+            c = (char) va_arg(marker, int);
             fprintf(fd_dbg, "%c", c);
             longflg = fmtflg = FALSE;
             break;
@@ -633,7 +652,11 @@ va_dcl
             if (longflg)
               fprintf(fd_dbg, "%g", va_arg(marker, double));
             else
-              fprintf(fd_dbg, "%g", (double)va_arg(marker, float));
+	      /* JF 12/27/01: On Linux kernel 2.4.8-26mdk :
+		 Need a cast here since va_arg only
+		 takes fully promoted types 
+	      */
+              fprintf(fd_dbg, "%g", (double)va_arg(marker, double));
             longflg = fmtflg = FALSE;
             break;
           case 'l' :
@@ -664,8 +687,7 @@ va_dcl
             break;
           case 'N' :
             n = va_arg(marker, Node *);
-            if (n == NULL)
-              fprintf(fd_dbg, "null");
+            if (n == NULL)  fprintf(fd_dbg, "null");
             else {
               yydebug = FALSE;
 	      /* Modif JF 22/9/98 : */

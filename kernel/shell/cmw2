@@ -2,11 +2,11 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="`basename $0`"
-_Vers="1.43"
-_Date="2000"
+_Vers="1.47"
+_Date="2002"
 _Func="Compile a MegaWave2 Module or Macro";
 _Auth="Jacques Froment, Sylvain Parrino";
-_Usage=" [-gnu] [-g] [-X] [-O] [-c compiler_option] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-dep] [-pubsyslib] [-N] module"
+_Usage=" [-gnu] [-g] [-X] [-O] [-v] [-c compiler_option] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-dep] [-pubsyslib] [-N] module"
 #----------------------------------------------------------------------------
 # This file is part of the MegaWave2 system macros. 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -15,6 +15,45 @@ _Usage=" [-gnu] [-g] [-X] [-O] [-c compiler_option] [-Dname[=def]] [-Uname] [-Ip
 # CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 #-----------------------------------------------------------------------------
+
+# Remove given file(s) if verbose flag not set; if set, output file name.
+
+remove()
+
+{
+ if [ $verbose -ne 1 ]; then
+  /bin/rm -f $1
+ else
+  for f in $1 
+  do
+  if [ -f $f ]; then
+   mwechon "<File $f> "
+   case "$f" in
+    $TEXFILE) : 
+    echo "tex file."
+    ;;
+    $NMFILE) :
+    echo "path of the module file."
+    ;;
+    $IIFILE) :
+    echo "syntax of the module (to be used by interpreters)."
+    ;;
+    $ICFILE) :
+    echo "mwicmd[] tab." 
+    ;;
+    $AAFILE) :
+    echo "main file to call the module (run-time command mode)."
+    ;;
+    $MFILE) :
+    echo "preprocessed module."
+    ;;
+    $XMWFILE) :
+    echo "main file to call the module (XMegaWave2 mode)."
+   esac
+  fi
+  done
+ fi
+}
 
 echo " "
 echo ">>> Welcome on the MegaWave2 Compiler V${_Vers} <<<"
@@ -90,9 +129,9 @@ fi
 # Check if the current directory is a subdir of $MY_MEGAWAVE2 (user mode)
 # or of $MEGAWAVE2 (adm mode). So we do not need anymore -adm.
 
-dir=`pwd | grep $MY_MEGAWAVE2`
+dir=`/bin/pwd | grep $MY_MEGAWAVE2`
 if [ "$dir" = "" ]; then
- dir=`pwd | grep $MEGAWAVE2`
+ dir=`/bin/pwd | grep $MEGAWAVE2`
  if [ "$dir" = "" ]; then
   echo "Your current directory is not valid. You must compile modules into subdir of"
   echo "$MY_MEGAWAVE2/src (user mode) or of $MEGAWAVE2/src (adm mode)."
@@ -185,6 +224,7 @@ MAINOBJ="$MWDIR/sys/lib/$MW_MACHINETYPE/mw_main.o"
 LOPTS="$MAINOBJ $LOPTS -L$MWDIR/sys/lib/$MW_MACHINETYPE -L$MWDIR/lib/$MW_MACHINETYPE"
 debug=0
 dep=0
+verbose=0
 
 while [ "$1" != "" -a "$STOP" = "FALSE" ]
 do
@@ -197,6 +237,10 @@ do
 
     -d)		MWOPTS="$MWOPTS -d"
 		;;
+
+    -v)         verbose=1
+                ;;
+		
     # MegaWave 2 preprocessor options
     -D*|-I*|-U*) MWOPTS="$MWOPTS $1"
 		;;
@@ -332,8 +376,8 @@ XMWFILE=$TMP/mw$$X.c
 LINKFILE=$TMP/mw$$D.link
 
 # new trap
-trap "echo interrupt; /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE; exit 1" 2
-trap "echo quit; /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE; exit 1" 3
+trap "echo interrupt; remove $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE $XMWFILE $LINKFILE; exit 1" 2
+trap "echo quit; remove $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE $XMWFILE $LINKFILE; exit 1" 3
 
 MWCMD="$MWCMD"
 MWARG="$IX11 $MWOPTS -_T$TEXFILE -_I$IIFILE -_A$AAFILE -_M$MFILE -_N$NMFILE $MWFILE"
@@ -344,7 +388,10 @@ fi
 
 echo " "
 echo "  Phase 1 : MegaWave2 preprocessor"
-#echo "-> $MWCMD $MWARG"
+#-------------------------------------------------------
+if [ $verbose -eq 1 ]; then
+ echo "<Run> $MWCMD $MWARG"
+fi
 sh -c "$MWCMD $MWARG"
 
 CMW2_RET=$?
@@ -357,15 +404,15 @@ if [ $CMW2_RET -ne 0 ]; then
      lint -u $MWOPTS $IX11 $MWFILE| more
     fi
    fi
-   /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
+   remove $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
    exit 1
 else
   TOTNAME=`cat $NMFILE`
   MODULE=`basename $TOTNAME`
   GROUP="`dirname $TOTNAME`"
-  /bin/rm -f $NMFILE
+  remove $NMFILE
   echo "  Phase 2 : production of sources and objects"
-
+#-------------------------------------------------------
   echo "          production of document squeleton (doc/obj/$MODULE.doc)"
   if [ ! -d $MWDESTDIR/doc/obj ]; then
     mwechon "  Creating '$MWDESTDIR/doc/obj' : "
@@ -375,6 +422,7 @@ else
   mv $TEXFILE $MWDESTDIR/doc/obj/$MODULE.doc
 
   echo "          production of arguments analyser object"
+#-------------------------------------------------------
   if [ ! -d $MWDESTDIR/obj/$MW_MACHINETYPE ]; then
     mwechon "  Creating '$MWDESTDIR/obj/$MW_MACHINETYPE' : "
     mkdir -p $MWDESTDIR/obj/$MW_MACHINETYPE
@@ -382,58 +430,83 @@ else
   fi
   CCCMD="$CC -D$MW_SYSTEMTYPE -D$MW_MACHINETYPE -c $OPTIM $COPTS -o $MWDESTDIR/obj/$MW_MACHINETYPE/m_$MODULE.o $AAFILE"
   #EXTOBJ="$EXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/m_$MODULE.o"
-  #echo "-> $CCCMD"
+
+  if [ $verbose -eq 1 ]; then
+   echo "<Run> $CCCMD"
+  fi
   sh -c "$CCCMD"
+
   if [ $? -ne 0 ]; then
     echo "          Error : exit."
-    /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
+    remove $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
     exit 1
   fi
-  /bin/rm -f $AAFILE
+  remove $AAFILE
 
   echo "          production of module object"
+#-------------------------------------------------------
   CCCMD="$CC -D$MW_SYSTEMTYPE -D$MW_MACHINETYPE -c $COPTS -o $MWDESTDIR/obj/$MW_MACHINETYPE/$MODULE.o $MFILE"
   #EXTOBJ="$EXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/$MODULE.o"
-  #echo "-> $CCCMD"
+
+  if [ $verbose -eq 1 ]; then
+   echo "<Run> $CCCMD"
+  fi
   sh -c "$CCCMD"
   if [ $? -ne 0 ]; then
     echo "          Error : exit."
-    /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
+    remove $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
     exit 1
   fi
-  /bin/rm -f $MFILE
+  remove $MFILE
+
   echo "          add objects to MegaWave2 user library"
+#-------------------------------------------------------
   if [ ! -d $MWDESTDIR/lib/$MW_MACHINETYPE ]; then
     mwechon "  Creating '$MWDESTDIR/lib/$MW_MACHINETYPE' : "
     mkdir -p $MWDESTDIR/lib/$MW_MACHINETYPE
     echo "done."
   fi
-  ar r $MWDESTDIR/lib/$MW_MACHINETYPE/lib$ULIB.a $MWDESTDIR/obj/$MW_MACHINETYPE/m_$MODULE.o $MWDESTDIR/obj/$MW_MACHINETYPE/$MODULE.o
-
+  CCCMD="ar r $MWDESTDIR/lib/$MW_MACHINETYPE/lib$ULIB.a $MWDESTDIR/obj/$MW_MACHINETYPE/m_$MODULE.o $MWDESTDIR/obj/$MW_MACHINETYPE/$MODULE.o"
+  if [ $verbose -eq 1 ]; then
+   echo "<Run> $CCCMD"
+  fi
+  sh -c "$CCCMD"
+  if [ $? -ne 0 ]; then
+    echo "          Error : exit."
+    remove $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
+    exit 1
+  fi
   # Ranlib is needed for SunOS 4.x
   if [ $MW_SYSTEMTYPE = SunOS ] && [ $MW_MACHINETYPE != sun4_5 ]; then
     ranlib $MWDESTDIR/lib/$MW_MACHINETYPE/lib$ULIB.a
   fi
 
   echo "          production of interface with MegaWave2 interpretor source"
+#-------------------------------------------------------
   if [ ! -d $MWDESTDIR/mwi ]; then
     mwechon "  Creating '$MWDESTDIR/mwi' : "
     mkdir -p $MWDESTDIR/mwi
     echo "done."
   fi
   CCCMD="/bin/mv $IIFILE $MWDESTDIR/mwi/int_$MODULE.c"
-  #echo "-> $CCCMD"
+  if [ $verbose -eq 1 ]; then
+   echo "<Run> $CCCMD"
+  fi
   sh -c "$CCCMD"
   
   if [ $XMW = 1 ]; then
     echo "          production of interface with XMegaWave2"
+#-------------------------------------------------------
     CCCMD="$CC $IX11 $IXm -D$MW_SYSTEMTYPE -D$MW_MACHINETYPE -c $OPTIM $COPTS -o $MWDESTDIR/obj/$MW_MACHINETYPE/x_$MODULE.o $XMWFILE"
-    # echo "-> $CCCMD"
+    if [ $verbose -eq 1 ]; then
+     echo "<Run> $CCCMD"
+    fi
     sh -c "$CCCMD"
-    /bin/rm -f $XMWFILE
+    remove $XMWFILE
   fi
   
   echo "          production of interface with MegaWave2 library object"
+#-------------------------------------------------------
   echo '#define MWI_DEC'                       >$ICFILE
   echo '#include "mwi.h"'                     >>$ICFILE
   echo 'int mwind = 0;'                       >>$ICFILE
@@ -444,17 +517,20 @@ else
   echo '};'                                   >>$ICFILE
   CCCMD="$CC -D$MW_SYSTEMTYPE -D$MW_MACHINETYPE -c $OPTIM $COPTS -o $MWDESTDIR/obj/$MW_MACHINETYPE/i_$MODULE.o $ICFILE"
   EXTOBJ="$EXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/i_$MODULE.o"
-  #echo "-> $CCCMD"
+  if [ $verbose -eq 1 ]; then
+   echo "<Run> $CCCMD"
+  fi
   sh -c "$CCCMD"
   if [ $? -ne 0 ]; then
     echo "          Error : exit."
-    /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
+    remove $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
     exit 1
   fi
-  /bin/rm -f $ICFILE
+  remove $ICFILE
 
   if [ $XMW = 1 ]; then  
    echo "          add objects to XMegaWave2 user interface library"
+#-------------------------------------------------------
    ar r $MWDESTDIR/lib/$MW_MACHINETYPE/lib$XULIB.a $MWDESTDIR/obj/$MW_MACHINETYPE/i_$MODULE.o $MWDESTDIR/obj/$MW_MACHINETYPE/x_$MODULE.o
    # Ranlib is needed for SunOS 4.x
    if [ $MW_SYSTEMTYPE = SunOS ] && [ $MW_MACHINETYPE != sun4_5 ]; then
@@ -486,17 +562,13 @@ else
   fi
 
   echo "  Phase 3 : production of MegaWave command"
+#-------------------------------------------------------
   # Teste acces de la directory des executables
   if [ ! -d $MWDESTDIR/bin/$MW_MACHINETYPE ]; then
     mwechon "  Creating '$MWDESTDIR/bin/$MW_MACHINETYPE' : "
     mkdir -p $MWDESTDIR/bin/$MW_MACHINETYPE
     echo "done."
   fi
-#  if [ ! -w $MWDESTDIR/bin/$MW_MACHINETYPE ] || [ ! -r $MWDESTDIR/include ] || \
-#     [ ! -r ${MWDIR?'environment not set'}/include ]; then
-#     echo "`basename $0` : You are not allowed to generate MegaWave User's command" 1>&2
-#     exit 4
-#  fi  
 
   # Teste si nouvelle commande ou non
   if [ -x $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE ] || \
@@ -548,12 +620,15 @@ else
 
 
   LINKCMD="$CC $LOPTS -o $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE $EXTOBJ $OBJ $LULIB $LADM_LIBMW $SYS_LIBMW $HPLIBS $ALIBS $ASLIBS"
-# echo "-> $LINKCMD"
+  if [ $verbose -eq 1 ]; then
+   echo "<Run> $LINKCMD"
+  fi
   sh -c "$LINKCMD"
   if [ $? -ne 0 ]; then
-    echo "          Error : exit."
-    /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
-    exit 1
+    echo "          Link failed : exit."
+    remove $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
+#  Exit 2 to detect error due to link
+    exit 2
   fi
 
 # Dependencies list, if asked 
@@ -563,10 +638,12 @@ else
     DEPEXTOBJ="$EXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/m_$MODULE.o"
     DEPEXTOBJ="$DEPEXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/$MODULE.o"
     DEPLINKCMD="$CC $LOPTS -o $LINKFILE $DEPEXTOBJ $OBJ $SYS_LIBMW $HPLIBS $ALIBS $ASLIBS 2> $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.mis"
-#echo "-> $DEPLINKCMD"
+    if [ $verbose -eq 1 ]; then
+     echo "<Run> $DEPLINKCMD"
+    fi
     sh -c "$DEPLINKCMD"
     if [ $? = 0 ]; then
-      /bin/rm -f $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.mis
+      remove $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.mis
       echo "" > $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.dep
     else
       echo "\SeeAlso{Dependencies list not available (run mwdep) !}"  > $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.dep
@@ -576,7 +653,7 @@ else
   fi
 
   if [ -f $LINKFILE ]; then
-    /bin/rm -f $LINKFILE
+    remove $LINKFILE
   fi
 
   if [ -x $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE ]; then
@@ -585,7 +662,7 @@ else
      strip $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE
     fi
     if  [ $NEW -eq 1 ]; then
-       echo "     (New command added... Type rehash)"
+       echo "     (New command added)"
     fi
   fi
 

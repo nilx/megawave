@@ -1,1 +1,7 @@
-{\em fvar} returns the variance of the gray level of an image.
+{\em fvar} returns the variance of the gray level of an image, estimated by
+$$var = \frac 1{m \cdot n-1} 
+\sum_{1\leq x \leq m, \,1 \leq y \leq n} \big(A(x,y)-M\big)^2$$
+and
+$$M = \frac 1{m \cdot n} 
+\sum_{1\leq x \leq m, \,1 \leq y \leq n} A(x,y).$$
+The result is zero if the domain of $A$ contains less than 2 pixels.

@@ -1,3 +1,11 @@
+/**
+ ** printnod
+ ** (c)1993-2001 J.Froment - S.Parrino
+ ** Version 1.2
+ ** Added from V1.1 : ANSI function declaration for main module function,
+ **                   so that declarations is right on ANSI C.
+ ** Print node structure.
+ **/
 /*~~~~~~~~~~~  This file is part of the MegaWave2 preprocessor ~~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
 been developed for research purposes and it comes without any warranty.
@@ -13,26 +21,52 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #include "token.h"
 #include "io.h"
 #include "y.tab.h"
+#include "mwarg.h"
 
-#define NL         putc('\n', fd); nl_flg = TRUE
-#define PRLEFT(N)  printnode(fd,(N)->left)
-#define PRRIGHT(N) printnode(fd,(N)->right)
-#define PR0(S)     fprintf(fd,S); nl_flg = FALSE
-#define PR1(S1,S2) fprintf(fd, S1, S2); nl_flg = FALSE
+/* print node for C files */
+#define NL         if (in_ansifunc == 0) {\
+                    putc('\n', fd); nl_flg = TRUE; \
+                    } else {\
+                    strcat(functxt,"\n"); \
+                    }
+#define PRLEFT(N)   printnode(fd,(N)->left)
+#define PRRIGHT(N)  printnode(fd,(N)->right)
 
-#define SYNC(N)    if ((N)->filein != NULL && (N)->lineno != 0) {\
+#define PR0(S)      nl_flg = FALSE; if (in_ansifunc == 0) {\
+                      fprintf(fd,S); \
+                    } else {\
+                    strcat(functxt,S); \
+                    }
+#define PR1(S1,S2)  nl_flg = FALSE; if (in_ansifunc == 0) {\
+                      fprintf(fd, S1, S2); \
+                    } else {\
+                    sprintf(funcbuff,S1,S2); strcat(functxt,funcbuff);\
+                    }
+#define SYNC(N)    if ((N)->filein != NULL && (N)->lineno != 0 && in_ansifunc == 0) {\
                      if (nl_flg == FALSE) NL;\
                      fprintf(fd, "# %d \"%s\"\n", (N)->lineno,\
                                                     (N)->filein);\
                    }
 
+/* print node for ANSI C module main function declaration */
+#define PRALEFT(N)  printnodeansi(fd,(N)->left)
+#define PRARIGHT(N) printnodeansi(fd,(N)->right)
+
+/* print node for TeX files */
 #define TEX_NL         putc('\n',fd); putc('\n', fd); nl_flg = TRUE
 #define TEX_PRLEFT(N)  texprintnode(fd,(N)->left)
 #define TEX_PRRIGHT(N) texprintnode(fd,(N)->right)
 #define TEX_PR0(S)     fprinttex(fd,S); nl_flg = FALSE
 #define TEX_PR1(S1,S2) fprinttex(fd, S1, S2); nl_flg = FALSE
-
 #define TEX_SYNC(N) 
+
+/* print proto node */
+#define PROTO_NL         fprintf(fd,"\\n"); nl_flg = TRUE
+#define PROTO_PRLEFT(N)  printprotonode(fd,(N)->left)
+#define PROTO_PRRIGHT(N) printprotonode(fd,(N)->right)
+#define PROTO_PR0(S)     fprintf(fd,S); nl_flg = FALSE
+#define PROTO_PR1(S1,S2) fprintf(fd, S1, S2); nl_flg = FALSE
+#define PROTO_SYNC(N) 
 
 static int nl_flg = FALSE;
 
@@ -41,6 +75,27 @@ char *rename_func(char *);
 #else
 char *rename_func();
 #endif
+
+/* For Ansi function declaration */
+extern int ansifunc; 
+static int in_ansifunc=0;
+static int in_funcdecl=0;
+static char functxt[BUFSIZ]="";
+static char funcbuff[BUFSIZ]="";
+
+/* Print ANSI function declaration from the content
+   of functxt (K&R function declaration)
+*/
+
+static void printansifunc(fd)
+FILE *fd;
+
+{
+  printf("\n*** printansifunc ***\n%s\n***\n",functxt);
+  fprintf(fd,"%s\n",functxt);
+}
+
+/* Print node for C files */
 
 #ifdef __STDC__
 void printnode(FILE *fd, Node *n)
@@ -298,8 +353,15 @@ Node *n;
         PRLEFT(nn); PR0(")"); NL; PRRIGHT(nn); 
         break;
 
-      case FUNCDECL :
-        PRLEFT(n); PR0("("); PRRIGHT(n); PR0(")");
+      case FUNCDECL : /* Function declaration */
+	in_funcdecl=1;
+        PRLEFT(n); 
+	in_funcdecl=0;
+	PR0("("); 
+
+	PRRIGHT(n); /* output variable list of the function :
+		       tree of NAME (leaf), node are ','. */
+	PR0(")");
         break;
 
       case FUNCTION :
@@ -308,6 +370,9 @@ Node *n;
         /* Declarator DeclarationList */
         nn = n->right->left;
         PR0(" "); PRLEFT(nn); NL; PRRIGHT(nn); NL;
+	if (in_ansifunc==1) printansifunc(fd);
+	in_ansifunc=0;
+	strcpy(functxt,"");
         /* CompoundStmt */
         nn = n->right;
         PRRIGHT(nn);
@@ -378,34 +443,49 @@ Node *n;
         break;
 
       case NAME :
-        if ((s = LOOKUP((char *)n->val.text)) != NULL) {
-          if (GET_RENAME(s) == NULL) {
+        if ((s = LOOKUP((char *)n->val.text)) != NULL) 
+	  {
+	    if (GET_RENAME(s) == NULL) 
+	      {
 #ifdef DEBUG
-            PRDBG("printnode : rename field is equal to NULL\n");
+		PRDBG("printnode : rename field is equal to NULL\n");
 #endif
-            PR1("%s ", GET_SNAME(s));
-          }
-          else {
-            if ((int)GET_RENAME(s) == RENAME) {
+		PR1("%s ", GET_SNAME(s));
+		if ((ansifunc==TRUE)&&(in_funcdecl==1)
+		    && (strcmp(mwname->val.text,GET_SNAME(s))==0))
+		  in_ansifunc=1; /* inside module main function */
+	      }
+	    else 
+	      {
+		if ((int)GET_RENAME(s) == RENAME) 
+		  {
 #ifdef DEBUG
-              PRDBG("printnode : rename field is equal to RENAME\n");
+		    PRDBG("printnode : rename field is equal to RENAME\n");
 #endif
-              SET_RENAME(s, rename_func(GET_SNAME(s)));
-              PR1("%s ", GET_RENAME(s));
-            }
-            else {
+		    SET_RENAME(s, rename_func(GET_SNAME(s)));
+		    PR1("%s ", GET_RENAME(s));
+		  }
+		else 
+		  {
 #ifdef DEBUG
-              PRDBG("printnode : rename field is equal to \"%s\"\n", 
-                                                                 GET_RENAME(s));
+		    PRDBG("printnode : rename field is equal to \"%s\"\n", 
+			  GET_RENAME(s));
 #endif
-              PR1("%s ", GET_RENAME(s));
-            }
-          }
-        }
+		    PR1("%s ", GET_RENAME(s));
+		  }
+		if ((ansifunc==TRUE)&&(in_funcdecl==1)
+		    && (strcmp(mwname->val.text,GET_RENAME(s))==0))
+		  in_ansifunc=1; /* inside module main function */
+	      }
+	  }
         else
-          if (!isinternalname(n->val.text)) {
-            PR1("%s ", n->val.text);
-          }
+          if (!isinternalname(n->val.text)) 
+	    {
+	      PR1("%s ", n->val.text);
+	      if ((ansifunc==TRUE)&&(in_funcdecl==1) 
+		  && (strcmp(mwname->val.text,n->val.text)==0))
+		in_ansifunc=1; /* inside module main function */
+	    }
         break;
 
       case NE :
@@ -540,6 +620,7 @@ Node *n;
   }
 }
 
+/* Print node for TeX files */
 
 #ifdef __STDC__
 void texprintnode(FILE *fd, Node *n)
@@ -1037,6 +1118,477 @@ Node *n;
         break;
     }
   }
+}
+
+
+/* Print proto node */
+
+#ifdef __STDC__
+void printprotonode(FILE *fd, Node *n)
+#else
+printprotonode(fd, n)
+FILE *fd;
+Node *n;
+#endif
+{
+  Node *nn;
+  int i;
+  Symbol *s;
+
+  if (!n) return;
+  
+  switch(n->name) {
+  case '!' :
+    PROTO_PR0("!"); PROTO_PRRIGHT(n);
+    break;
+    
+  case '#' :
+    PROTO_PRLEFT(n); PROTO_PRRIGHT(n);
+    break;
+    
+  case '%' :
+    PROTO_PRLEFT(n); PROTO_PR0("%"); PROTO_PRRIGHT(n);
+    break;
+    
+  case '&' :
+    PROTO_PRLEFT(n); PROTO_PR0("&"); PROTO_PRRIGHT(n);
+    break;
+    
+      case '*' :
+        PROTO_PRLEFT(n); PROTO_PR0(" *"); PROTO_PRRIGHT(n);
+        break;
+
+      case '+' :
+        PROTO_PRLEFT(n); PROTO_PR0("+"); PROTO_PRRIGHT(n);
+        break;
+
+      case ',' :
+        PROTO_PRLEFT(n); PROTO_PR0(", "); PROTO_PRRIGHT(n);
+        break;
+
+      case '-' :
+        PROTO_PRLEFT(n); PROTO_PR0("-"); PROTO_PRRIGHT(n);
+        break;
+
+      case '.' :
+        PROTO_PRLEFT(n); PROTO_PR0("."); PROTO_PRRIGHT(n);
+        break;
+
+      case '/' :
+        PROTO_PRLEFT(n); PROTO_PR0("/"); PROTO_PRRIGHT(n);
+        break;
+
+      case ':' :
+        PROTO_PRLEFT(n); PROTO_PR0(":"); PROTO_PRRIGHT(n);
+        break;
+
+      case '=' :
+        PROTO_PRLEFT(n); PROTO_PR0(" = "); PROTO_PRRIGHT(n);
+        break;
+
+      case '?' :
+        PROTO_PRLEFT(n); PROTO_PR0("?"); PROTO_PRRIGHT(n);
+        break;
+
+      case '^' :
+        PROTO_PRLEFT(n); PROTO_PR0("^"); PROTO_PRRIGHT(n);
+        break;
+
+      case '|' :
+        PROTO_PRLEFT(n); PROTO_PR0("|"); PROTO_PRRIGHT(n);
+        break;
+
+      case '~' :
+        PROTO_PR0("~"); PROTO_PRRIGHT(n);
+        break;
+
+      case ADDROF :
+        PROTO_PR0("&"); PROTO_PRRIGHT(n);
+        break;
+
+      case ANDAND :
+        PROTO_PRLEFT(n); PROTO_PR0("&&"); PROTO_PRRIGHT(n);
+        break;
+
+      case ANDEQ :
+        PROTO_PRLEFT(n); PROTO_PR0("&="); PROTO_PRRIGHT(n);
+        break;
+
+      case ARRAY :
+        PROTO_PRLEFT(n); PROTO_PR0("["); PROTO_PRRIGHT(n); PROTO_PR0("]");
+        break;
+
+      case ARRAYELT :
+        PROTO_PRLEFT(n); PROTO_PR0("["); PROTO_PRRIGHT(n); PROTO_PR0("]");
+        break;
+
+      case AUTO :
+        PROTO_PR0("auto "); PROTO_PRLEFT(n);
+        break;
+
+      case BALPAR :
+        PROTO_PR0("("); PROTO_PRLEFT(n); PROTO_PRRIGHT(n); PROTO_PR0(")");
+        break;
+
+      case BLOC :
+        PROTO_PR0("{"); PROTO_PRLEFT(n); PROTO_PRRIGHT(n); PROTO_PR0("}");
+        break;
+
+      case BREAK :
+        PROTO_SYNC(n); PROTO_PR0("break ;"); PROTO_NL;
+        break;
+
+      case CALL :
+        PROTO_PRLEFT(n); PROTO_PR0("("); PROTO_PRRIGHT(n); PROTO_PR0(")");
+        break;
+
+      case CASE :
+        PROTO_PR0("case "); PROTO_PRLEFT(n); PROTO_PR0(" :"); PROTO_NL; PROTO_PRRIGHT(n);
+        break;
+
+      case CAST :
+        PROTO_PR0("("); PROTO_PRLEFT(n); PROTO_PR0(")"); PROTO_PRRIGHT(n);
+        break;
+
+      case CHAR :
+        PROTO_PR0("char ");
+        break;
+
+      case CHARACTER :
+        PROTO_PR1("%s", n->yytext);
+        break;
+
+      case COMPOUND :
+        PROTO_PR0("{"); PROTO_NL; PROTO_PRLEFT(n); PROTO_PRRIGHT(n); PROTO_NL; PROTO_SYNC(n); PROTO_PR0("}"); PROTO_NL;
+        break;
+
+      case CONST :
+        PROTO_PR0("const "); PROTO_PRLEFT(n);
+        break;
+
+      case CONTINUE :
+        PROTO_SYNC(n); PROTO_PR0("continue ;");
+        break;
+
+      case DECLARATION :
+        PROTO_PRLEFT(n); PROTO_PRRIGHT(n); PROTO_SYNC(n); PROTO_PR0(";"); PROTO_NL;
+        break;
+
+      case DECR :
+        PROTO_PRLEFT(n); PROTO_PR0("--"); PROTO_PRRIGHT(n);
+        break;
+
+      case DEFAULT :
+        PROTO_PR0("default :"); PROTO_NL; PROTO_PRLEFT(n);
+        break;
+
+      case DEREF :
+        PROTO_PR0("*"); PROTO_PRLEFT(n); PROTO_PRRIGHT(n);
+        break;
+
+      case DIVEQ :
+        PROTO_PRLEFT(n); PROTO_PR0(" /= "); PROTO_PRRIGHT(n);
+        break;
+
+      case DO :
+        PROTO_PR0("do"); PROTO_NL; PROTO_PRLEFT(n); PROTO_NL;
+        PROTO_PR0("while ("); PROTO_PRRIGHT(n); PROTO_PR0(")"); PROTO_SYNC(n); PROTO_PR0(";"); PROTO_NL;
+        break;
+
+      case DOUBLE :
+        PROTO_PR0("double ");
+        break;
+
+      case ELLIPSIS :
+        PROTO_PR0("...");
+        break;
+
+      case ELSE :
+        PROTO_PRLEFT(n); PROTO_NL; PROTO_PR0("else"); PROTO_NL; PROTO_PRRIGHT(n);
+        break;
+
+      case ENUM :
+        PROTO_PR0("enum ");
+        /* enum id ? */
+        if (n->left != NULL) {
+          PROTO_PRLEFT(n); PROTO_PR0(" ");
+        }
+        /* enum { ... } ? */
+        if (n->right != NULL) {
+         PROTO_PR0("{"); PROTO_PRRIGHT(n); PROTO_PR0("}");
+        }
+        break;
+
+      case ENUMERATION :
+        PROTO_PR1("%s ", n->val.text);
+        break;
+
+      case EQ :
+        PROTO_PRLEFT(n); PROTO_PR0("=="); PROTO_PRRIGHT(n);
+        break;
+
+      case EREQ :
+        PROTO_PRLEFT(n); PROTO_PR0("^="); PROTO_PRRIGHT(n);
+        break;
+
+      case EXTERN :
+        PROTO_PR0("extern "); PROTO_PRLEFT(n);
+        break;
+
+      case FLOAT :
+        PROTO_PR0("float ");
+        break;
+
+      case FOR :
+        /* for ( init; */
+        PROTO_PR0("for ("); PROTO_PRLEFT(n); PROTO_PR0("; ");
+        /* test; */
+        nn = n->right;
+        PROTO_PRLEFT(nn); PROTO_SYNC(n); PROTO_PR0("; ");
+        /* next) stmt */
+        nn = nn->right;
+        PROTO_PRLEFT(nn); PROTO_PR0(")"); PROTO_NL; PROTO_PRRIGHT(nn); 
+        break;
+
+      case FUNCDECL :
+        PROTO_PRLEFT(n); PROTO_PR0("("); PROTO_PRRIGHT(n); PROTO_PR0(")");
+        break;
+
+      case FUNCTION :
+        /* DeclarationSpecifier */
+        PROTO_PRLEFT(n);
+        /* Declarator DeclaratioPROTO_NList */
+        nn = n->right->left;
+        PROTO_PR0(" "); PROTO_PRLEFT(nn); PROTO_NL; PROTO_PRRIGHT(nn); PROTO_NL;
+        /* CompoundStmt */
+        nn = n->right;
+        PROTO_PRRIGHT(nn);
+        break;
+
+      case GE :
+        PROTO_PRLEFT(n); PROTO_PR0(">="); PROTO_PRRIGHT(n);
+        break;
+
+      case GOTO :
+        PROTO_PR0("goto "); PROTO_PRLEFT(n); PROTO_SYNC(n); PROTO_PR0(";"); PROTO_NL;
+        break;
+
+      case GT :
+        PROTO_PRLEFT(n); PROTO_PR0(">"); PROTO_PRRIGHT(n);
+        break;
+
+      case IF :
+        PROTO_PR0("if ("); PROTO_PRLEFT(n); PROTO_SYNC(n); PROTO_PR0(")"); PROTO_NL; PROTO_PRRIGHT(n);
+        break;
+
+      case INCR :
+        PROTO_PRLEFT(n); PROTO_PR0("++"); PROTO_PRRIGHT(n);
+        break;
+
+      case INT :
+        PROTO_PR0("int ");
+        break;
+
+      case INTEGER :
+        PROTO_PR1("%s", n->yytext);
+        break;
+
+      case LARROW :
+        PROTO_PRLEFT(n); PROTO_PR0("<-"); PROTO_PRRIGHT(n);
+        break;
+
+      case LE :
+        PROTO_PRLEFT(n); PROTO_PR0("<="); PROTO_PRRIGHT(n);
+        break;
+
+      case LONG :
+        PROTO_PR0("long ");
+        break;
+
+      case LS :
+        PROTO_PRLEFT(n); PROTO_PR0("<<"); PROTO_PRRIGHT(n);
+        break;
+
+      case LSEQ :
+        PROTO_PRLEFT(n); PROTO_PR0(" <<= "); PROTO_PRRIGHT(n);
+        break;
+
+      case LT :
+        PROTO_PRLEFT(n); PROTO_PR0("<"); PROTO_PRRIGHT(n);
+        break;
+
+      case MINUSEQ :
+        PROTO_PRLEFT(n); PROTO_PR0(" -= "); PROTO_PRRIGHT(n);
+        break;
+
+      case MODEQ :
+        PROTO_PRLEFT(n); PROTO_PR0(" %= "); PROTO_PRRIGHT(n);
+        break;
+
+      case MULEQ :
+        PROTO_PRLEFT(n); PROTO_PR0(" *= "); PROTO_PRRIGHT(n);
+        break;
+
+      case NAME :
+        if ((s = LOOKUP((char *)n->val.text)) != NULL) {
+          if (GET_RENAME(s) == NULL) {
+#ifdef DEBUG
+            PRDBG("texprintnode : rename field is equal to NULL\n");
+#endif
+            PROTO_PR1("%s ", GET_SNAME(s));
+          }
+          else {
+            if ((int)GET_RENAME(s) == RENAME) {
+#ifdef DEBUG
+              PRDBG("texprintnode : rename field is equal to RENAME\n");
+#endif
+              SET_RENAME(s, rename_func(GET_SNAME(s)));
+              PROTO_PR1("%s ", GET_RENAME(s));
+            }
+            else {
+#ifdef DEBUG
+              PRDBG("texprintnode : rename field is equal to \"%T\"\n", 
+                                                                 GET_RENAME(s));
+#endif
+              PROTO_PR1("%s ", GET_RENAME(s));
+            }
+          }
+        }
+        else
+          if (!isinternalname(n->val.text)) {
+            PROTO_PR1("%s ", n->val.text);
+          }
+        break;
+
+      case NE :
+        PROTO_PRLEFT(n); PROTO_PR0(" != "); PROTO_PRRIGHT(n);
+        break;
+
+      case NULLINST :
+        PROTO_SYNC(n);
+        PROTO_PR0(";"); PROTO_NL;
+        break;
+
+      case OREQ :
+        PROTO_PRLEFT(n); PROTO_PR0(" |= "); PROTO_PRRIGHT(n);
+        break;
+
+      case OROR :
+        PROTO_PRLEFT(n); PROTO_PR0("||"); PROTO_PRRIGHT(n);
+        break;
+
+      case PLUSEQ :
+        PROTO_PRLEFT(n); PROTO_PR0(" += "); PROTO_PRRIGHT(n);
+        break;
+
+      case QSTRING :
+        PROTO_PR1("%s ", n->val.text);
+        break;
+
+      case RARROW :
+        PROTO_PRLEFT(n); PROTO_PR0("->"); PROTO_PRRIGHT(n);
+        break;
+
+      case REAL :
+        PROTO_PR1("%s", n->yytext);
+        break;
+
+      case REGISTER :
+        PROTO_PR0("register "); PROTO_PRLEFT(n);
+        break;
+
+      case RETURN :
+        PROTO_PRLEFT(n); PROTO_PR0("return "); PROTO_PRRIGHT(n); PROTO_SYNC(n); PROTO_PR0(";"); PROTO_NL;
+        break;
+
+      case RS :
+        PROTO_PRLEFT(n); PROTO_PR0(">>"); PROTO_PRRIGHT(n);
+        break;
+
+      case RSEQ :
+        PROTO_PRLEFT(n); PROTO_PR0(" >>= "); PROTO_PRRIGHT(n);
+        break;
+
+      case SHORT :
+        PROTO_PRLEFT(n); PROTO_PR0("short "); PROTO_PRRIGHT(n);
+        break;
+
+      case SIGNED :
+        PROTO_PRLEFT(n); PROTO_PR0("signed "); PROTO_PRRIGHT(n);
+        break;
+
+      case SIZEOF :
+        PROTO_PRLEFT(n); PROTO_PR0("sizeof "); PROTO_PRRIGHT(n);
+        break;
+
+      case STATIC :
+        PROTO_PR0("static "); PROTO_PRLEFT(n);
+        break;
+
+      case STREF :
+        PROTO_PRLEFT(n); PROTO_PR0("->"); PROTO_PRRIGHT(n);
+        break;
+
+     case STRUCT :
+        PROTO_PR0("struct ");
+        /* struct id ? */
+        if (n->left != NULL) {
+          PROTO_PRLEFT(n); PROTO_PR0(" ");
+        }
+        /* struct { ... } ? */
+        if (n->right != NULL) {
+         PROTO_PR0("{"); PROTO_NL; PROTO_PRRIGHT(n); PROTO_NL; PROTO_PR0("} ");
+        }
+        break;
+
+      case SWITCH :
+        PROTO_PR0("switch ("); PROTO_PRLEFT(n); PROTO_SYNC(n); PROTO_PR0(")"); PROTO_NL; PROTO_PRRIGHT(n);
+        break;
+
+      case TYPEDEF :
+        PROTO_PR0("typedef "); PROTO_PRLEFT(n);
+        break;
+
+     case UNION :
+        PROTO_PR0("union ");
+        /* union id ? */
+        if (n->left != NULL) {
+          PROTO_PRLEFT(n); PROTO_PR0(" ");
+        }
+        /* union { ... } ? */
+        if (n->right != NULL) {
+         PROTO_PR0("{"); PROTO_NL; PROTO_PRRIGHT(n); PROTO_NL; PROTO_PR0("}");
+        }
+        break;
+
+      case UNSIGNED :
+        PROTO_PR0("unsigned ");
+        break;
+
+      case USRTYPID :
+        PROTO_PR1("%s ", n->val.text);
+        PROTO_PRLEFT(n); PROTO_PRRIGHT(n);
+        break;
+
+      case VOID :
+        PROTO_PR0("void ");
+        break;
+
+      case VOLATILE :
+        PROTO_PR0("volatile "); PROTO_PRLEFT(n);
+        break;
+
+      case WHILE :
+        PROTO_PR0("while ("); PROTO_PRLEFT(n); PROTO_SYNC(n); PROTO_PR0(")"); PROTO_NL; PROTO_PRRIGHT(n);
+        break;
+
+      default :
+#ifdef DEBUG
+        PRDBG("printprotonode : n->name = %M\n", n->name);
+#endif
+        INT_ERROR("printprotonode");
+        break;
+    }
 }
 
 

@@ -1,7 +1,7 @@
 # Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.07 with arch = 'Linux ix86' option = 'shared '
 #-----------------------------------------------------------------------------
 # Makefile.in used to create Makefile using macro mw2config
-# Wdevice library : Copyright (c) Jacques Froment 1991-2000
+# Wdevice library : Copyright (c) Jacques Froment 1991-2001
 #-----------------------------------------------------------------------------
 # This file is part of the Wdevice library.
 # Wdevice is a "soft-publication" for the scientific community. It has
@@ -117,6 +117,6 @@ sysinstall:
 	chmod 644 $(PUBLIC_MEGAWAVE2)/sys/include/Wdevice.h
 
 clean :	
-	rm $(OBJPATH)/* $(LIBPATH)/*
+	rm -f $(OBJPATH)/* $(LIBPATH)/*
 
 

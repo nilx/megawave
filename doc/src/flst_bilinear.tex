@@ -1,0 +1,87 @@
+This module computes the FLST (see module \texttt{flst}) of a bilinear
+interpolated image. As the image is considered as a continuous function, the
+number of level lines is actually infinite. This module makes the following
+choice: It computes the shapes associated to level lines passing through data
+points and those passing through saddle points.
+
+We call data points the centers of pixels, where image values are
+given. Pixels are considered as squares, whose corners have integral
+coordinates. Therefore data points are at half-integral coordinates.
+A dual pixel is a square of corner the data points
+$(X-0.5,Y-0.5)$, $(X+0.5,Y)$, $(X,Y+0.5)$ and $(X+0.5,Y+0.5)$. Its coordinates
+are by convention the ones of its center, $(X,Y)$. A dual edgel is a face of
+a dual pixel. The image is interpreted as a continuous function taking the
+given values at the data points and being affine when restricted to any dual
+edgel. More precisely, the image values inside the dual pixel are given by the
+formula
+$$
+u(x+X,y+Y) = a (1-x)(1-y) +\,b x(1-y) +\,c (1-x)y +\,d xy
+$$
+where $a$, $b$, $c$ and $d$ are the respective given values at the data points
+$(X,Y)$, $(X+1,Y)$, $(X,Y+1)$ and $(X+1,Y+1)$. It is also the result of the
+convolution of Dirac weights positioned at data points with the function
+$$
+\max(0, 1-|x|)\max(0, 1-|y|).
+$$
+The image is thus considered as continuous, defined on the rectangle
+$R = [0,W]\times [0,H]$, $W$ and $H$ being the width and
+height of the image. Inside a dual pixel, an isolevel set is composed of one
+or two branches of a hyperbola, maybe degenerate. For points $(x,y)$ such that
+$x < 0.5$ or $x > W-0.5$ or $y <0.5$ or $y > H-0.5$, it gets the same value as
+the nearest point in the rectangle $[0.5,W-0.5]\times [0.5,H-0.5]$.
+
+The isolevel sets are the sets $u=c$, $c$ being a constant. The connected
+components of isolevel sets are disjoint. If $I$ is such a set, we define the
+exterior of $I$ as:
+\begin{itemize}
+\item the connected component of $R\setminus I$ containing the border of the
+image if $I$ does not meet this border;
+\item the connected component of $R\setminus I$ meeting the border of the
+image and of area larger than $\frac{WH}{2}$, provided it exists, $\emptyset$
+otherwise.
+\end{itemize}
+Remark: the term `area' here must be understood as the number of included data
+points. This convention simplifies the algorithm, avoiding the computation of
+a true area. In the same manner, the field \texttt{area} of \texttt{Shape} is
+actually the number of data points.
+
+The saturation of $I$ is the complement of the exterior of $I$, and called the
+shape associated to $I$. A shape is thus closed, connected and has a connected
+complement. The boundary of the saturation of $I$ is called a level line. It
+is a part of $I$, so a connected part of an isolevel set of the image.
+If $I$ meets the border, the line is open, otherwise it is closed.
+
+The shapes have a tree structure induced by the inclusion. $S$ is an ancestor
+of $T$ if and only if $T\subset S$. If $S$ and $T$ are two shapes such that
+none is an ancestor of the other, $S\cap T = \emptyset$.
+
+With our interpolation model, the number of isolevel sets at a given level are
+finite. Thus in a sufficiently small neighborhood $U$ of a level line at level
+\texttt{value}, the image takes values that are all strictly larger or all
+strictly lower than \texttt{value} on the intersection of $U$ and the exterior
+of the level line. In the first case, the field \texttt{inferior\_type} is set
+to true (1), while in the second case it is set to false (0).
+The other fields of \texttt{Shape} and \texttt{Shapes} have the same meaning
+as for the module \texttt{flst}, except \texttt{area}, as explained above, and
+\texttt{pixels} which stores the data points inside the shape, not pixels.
+
+This field is not filled by this module, but can be done by
+\texttt{flst\_pixels} if needed. In the same manner, the field
+\texttt{boundary} is not filled by this module, but by
+\texttt{flstb\_boundary}.
+
+The shapes included in the tree are the ones whose associated level line
+contains at least one data point or saddle point. Therefore, all
+the shapes whose boundary contains a critical point are in the tree, but no
+other shape (except the root). If other shapes are desired, see module
+\texttt{flstb\_quantize}. The module \texttt{flst\_reconstruct} permits to
+reconstruct the image from the tree, as for the tree extracted by
+\texttt{flst}.
+
+The \texttt{min\_area} parameter, if used, is the minimum number of data points
+for a shape to be included in the tree. If it is used, the reconstructed image
+is different from the original image.
+
+\bigskip
+
+NB: The input image is lost after a call to this function

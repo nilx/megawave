@@ -1,7 +1,7 @@
 /**************************** Copyright MegaWave ***************************/
 /* mwcommand
 name = {drawocclusion};
-version = {"1.0BETA"};
+version = {"1.1"};
 author = {"Simon Masnou"};
 function = {"Interactive creation of occlusions on an image"};
 usage = {
@@ -581,7 +581,7 @@ int *gray;
   float fzoom;
   register float *ptrlabel,*ptrinterlabel;
   register unsigned char *ptrhole;
-  int Number=0;
+  int Number=0,order=0;
   float foreground;
 
   labelimage=mw_change_fimage(labelimage,image->nrow,image->ncol);
@@ -604,7 +604,8 @@ int *gray;
       if ((image_zoom=mw_new_cimage())==NULL)
 	mwerror(FATAL,0,"Not enough memory\n");
       fzoom=(float)*zoom;
-      czoom(image,image_zoom,(char*)NULL,(char*)NULL,&fzoom);
+      order = 0;
+      czoom(image,image_zoom,(char*)NULL,(char*)NULL,&fzoom,&order,NULL);
     }
 
   poly = mw_new_polygons();

@@ -1,12 +1,12 @@
-#! /bin/sh 
+#!/bin/sh 
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Write the contributors of all MegaWave2 modules or macros"
 _Prog="`basename $0`"
-_Vers="1.0"
-_Date="1997-99"
+_Vers="1.1"
+_Date="1997-2002"
 _Auth="Jacques Froment";
-_Usage="src_directory | sort | uniq"
+_Usage="src_directory | sort -k 2 -u"
 #----------------------------------------------------------------------------#
 # This file is part of the MegaWave2 system macros. 
 # MegaWave2 is a "soft-publication" for the scientific community. It has

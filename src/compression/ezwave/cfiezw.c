@@ -32,13 +32,8 @@ QImage<-Output
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void fiezw(Fimage, Fsignal, float *, Cimage, Fsignal,Fimage);
-void cfchgchannels(int *, int *, int *, Cfimage, Cfimage);
-#else
-void fiezw();
-void cfchgchannels();
-#endif
+extern void fiezw();
+extern void cfchgchannels();
 
 /*--- Constants ---*/
 

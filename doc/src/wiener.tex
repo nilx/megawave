@@ -1,0 +1,17 @@
+This module implements the classical Wiener filter (in its simplest version),
+that aims to restore an image $in$ by an image $out$ that minimizes
+the energy
+$$E(out) = \int |\nabla(out)|^2 +  w \int (K \star out -in)^2.$$
+The solution is obtained in Fourier domain with
+$$\widehat{out}(\xi) = \widehat{in}(\xi) \cdot
+\frac{w K(\xi)}{w K^2(\xi) + \pi^2|\xi^2|},$$
+where $\xi$ is normalized into $[-\frac 12,\frac 12]^2$.
+The blur kernel $K$ can be 
+\begin{itemize}
+\item specified directly in Fourier domain as a Fimage (\verb+-K+ option), 
+\item specified radially in Fourier domain as a Fsignal (\verb+-R+ option), yielding
+$$K(\xi) = R(|\xi|),$$
+\item chosen Gaussian (\verb+-g+ option), yielding
+$$K(\xi) = e^{-2g^2\pi^2|\xi|^2},$$ 
+\item or left to identity (default).
+\end{itemize}

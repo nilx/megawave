@@ -15,17 +15,12 @@ J<-J "output cimage J : location of the junctions (map)",
 ntj<-tjmap "number of junctions found"
         };
 */
-/* ------------------------------------------------------------------------- */
 
 #include <stdio.h>
 #include "mw.h"
 
-#ifdef __STDC__
-extern int tjpoint(char *, int *, int *, Cimage, int, int, int*, int*, int*,
-		   int*, int*, int*, unsigned char *, int *);
-#else
 extern int tjpoint();
-#endif
+
 
 /* Record the junction location */
 

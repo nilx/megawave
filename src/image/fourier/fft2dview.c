@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {fft2dview};
-   version = {"1.1"};
+   version = {"1.3"};
    author = {"Lionel Moisan"};
    function = {"Compute and Visualize the 2D-FFT of a Fimage"};
    usage = {
@@ -14,7 +14,9 @@
    };
 */
 /*----------------------------------------------------------------------
- v1.1: fmeanvar() replaced by faxpb() (L.Moisan)
+  v1.1: fmeanvar() replaced by faxpb() (L.Moisan)
+  v1.2: cview syntax (L.Moisan)
+  v1.3: min = 0 when type = 0 (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -30,7 +32,7 @@ extern void    fft2d();
 extern void    fft2dpol();
 
 extern void    faxpb();
-extern         cview();
+extern void    cview();
 
 
 #define PIXRANGE(c) ( (c)<0?0:((c)>255?255:(unsigned char)(c)) )
@@ -49,8 +51,8 @@ char    *i_flag;
     float       v, mean;
     
     /*** for cview ***/
-    int         x0,y0;
-    float       zoom;
+    int         x0=50,y0=50,order=0;
+    float       zoom=1.0;
     Wframe      *ImageWindow;
 
 
@@ -86,8 +88,12 @@ char    *i_flag;
     }
 
     /*** Normalize mean and variance ***/
-    mean = 128.0;
-    faxpb(tmp,tmp,NULL,sd,NULL,&mean,NULL);
+    if (*type == 0) {
+      faxpb(tmp,tmp,NULL,sd,NULL,NULL,NULL);
+    } else {
+      mean = 128.0;
+      faxpb(tmp,tmp,NULL,sd,NULL,&mean,NULL);
+    }
 
     /*** Center output and sample to unsigned char values ***/
     out = mw_change_cimage(out,tmp->nrow,tmp->ncol);
@@ -100,9 +106,7 @@ char    *i_flag;
     if (!out_flag) {
       ImageWindow = (Wframe *)
 	mw_get_window((Wframe *)NULL,out->ncol,out->nrow,x0,y0,out->name);
-      x0 = y0 = 50;
-      zoom = 1.0;
-      cview(out,&x0,&y0,&zoom,NULL,ImageWindow);
+      cview(out,&x0,&y0,&zoom,&order,NULL,ImageWindow);
       mw_delete_cimage(out);
     };
 

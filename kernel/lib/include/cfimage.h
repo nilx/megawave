@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfimage.h
    
-   Vers. 1.03
-   (C) 1994-99 Jacques Froment
+   Vers. 1.04
+   (C) 1994-2000 Jacques Froment
    Internal Input/Output cfimage structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -19,8 +19,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef SunOS
 #include <sys/types.h>
 #endif
-
-#include "string_size.h"
 
 /* Models of the colorimetric system */
 #define MODEL_RGB 0

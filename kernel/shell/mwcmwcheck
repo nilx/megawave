@@ -1,0 +1,69 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave Macro ----------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="mwcmwcheck"
+_Vers="1.0";
+_Date="2001";
+_Func="Check the MegaWave2 compiler";
+_Auth="Jacques Froment";
+_Usage=""
+
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+# Check input
+if [ $# -ne 0 ]; then
+   . .mw2_help_lg_com
+fi
+
+# List of modules on which the compiler has to be checked.
+# Make the choice of modules that can be compiled at the first pass,
+# that is that does not depend to another module.
+
+modlist="ccopy"
+
+oneok=0
+for mod in $modlist
+do
+ where=`mwwhere $mod | head -1`
+ if [ "$where" = "" ]; then
+  echo "Warning: compiler cannot be checked on module \"$mod\" (module not found) !"  1>&2
+ else
+  loc=`dirname $where`
+  if [ ! -w $loc ]; then
+   echo "Warning: compiler cannot be checked on module \"$mod\" ! (no write permission on \"$loc\")"  1>&2
+  else
+   (cd $loc; cmw2 -N $mod >> /dev/null 2>> /dev/null;)
+   if [ $? -ne 0 ]; then
+    echo "Module \"$mod\" cannot be compiled !" 1>&2
+    echo "Following the corresponding output. Please send these lines when reporting bugs:" 1>&2
+    echo "--------------------------------------------------------------------------------" 1>&2 
+    (cd $loc; cmw2 -N $mod)
+    echo "--------------------------------------------------------------------------------" 1>&2 
+    exit 1
+   else
+    oneok=1
+   fi
+  fi
+ fi
+done
+
+if [ $oneok -eq 0 ]; then
+ echo "Error: zero module compiled !"  1>&2
+ exit 1
+fi
+
+exit 0
+
+
+
+
+
+
+

@@ -1,8 +1,24 @@
 This module performs a zoom of an image using floating point representation.
-The zoom ratio {\em factor} may be an integer or a float.
-In the first case, each pixel of the
-original image is duplicated in X and Y direction {\em factor} times.
-Note that it's possible to make the duplication only in the X or in the Y
-direction.
+The zoom ratio {\em factor} may be a float number.
 
-You can also do unzooming: in this case, each block of $1/\mbox{\em factor} \times 1/\mbox{\em factor}$ pixels are averaging to one pixel (when $1/\mbox{\em factor}$ is an integer; otherwise, no averaging is done).
+\medskip
+
+If the \verb+-i+ option is specified, the \verb+funzoom+ module is called
+with $tx=ty=0$, the same zoom factor and the corresponding spline order. 
+In this case, the \verb+-p+, 
+\verb+-x+ and \verb+-y+ options have no effect, and the order is limited
+to $\{0,1,2,3,4,5\}$.
+
+\medskip
+
+If not, the \verb+fcrop+ module is called 
+with the same order options (\verb+-o+, \verb+-p+) 
+to produce an image magnified by {\em factor}.
+
+
+\medskip
+
+Notice that \verb+fzoom -X 0.5+ and \verb+fzoom -i -X 2+ will not have the
+same effect: the first one will produce aliasing (at zero order (o=0), 
+the first
+one is a 2x2 subsampling while the second one is a 2x2 averaging).

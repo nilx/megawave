@@ -1,7 +1,7 @@
 /* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
 /* mwcommand
 name = {cvsorgcode};
-version={"1.0"};
+version={"1.1"};
 author = {"Jacques Froment"};
 function = {"Encode the origins of curves : return bit rate for lossless compression"};
 usage = {
@@ -11,24 +11,16 @@ B<-B "output number of bits to code the origin of the curves",
 brate<-cvsorgcode "compression rate (bit per point = B/N)"
         };
 */
-/* ------------------------------------------------------------------------- */
+/*----------------------------------------------------------------------
+ v1.1: upgrade for new kernel (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
 
-/* MegaWave2 modules used */
-#ifdef __STDC__
-
-extern void arencode2(int *, long *, int *, long *, int *, Fsignal, int *, 
-		      Fimage, double *, Cimage);
-extern float fentropy(Fimage);
-
-#else
-
 extern void arencode2();
 extern float fentropy();
 
-#endif
 
 /* Compute in (*ncol, *nrow) the size of the smallest image containing 
    all points which are origins of the curves of C.
@@ -148,8 +140,8 @@ double *B;
   Get_Size_Org(C,&ncol,&nrow,&mincol,&minrow);
 
   npxs = ncol * nrow;
-  npts = mw_curves_npoints(C);
-  nopts = mw_curves_length(C);
+  npts = mw_npoints_curves(C);
+  nopts = mw_length_curves(C);
   mwdebug("Total number of points in the curves : N = %d\n",npts);
   mwdebug("Number of origin points (nb of curves) : %d\n",nopts);
   mwdebug("Rates in bits per points to encode the origins of curves :\n");

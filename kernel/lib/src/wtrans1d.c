@@ -1,7 +1,7 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    wtrans1d.c
    
-   Vers. 1.1
+   Vers. 1.1u
    (C) 1993-95 Jacques Froment
    Basic memory routines for the wtrans1d internal type
 

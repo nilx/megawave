@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    polygon_io.c
    
-   Vers. 1.6
-   (C) 1993-96 Jacques Froment
+   Vers. 1.11
+   (C) 1993-2002 Jacques Froment
    Input/Output functions for the polygon & polygons structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -56,7 +56,7 @@ char  *fname;  /* Name of the file */
       return(NULL);
     }
       
-  poly = mw_change_polygon(poly,nc);
+  if (nc > 0) poly = mw_change_polygon(poly,nc);
   if (poly == NULL)
     {
       mw_delete_polygon(poly);
@@ -98,74 +98,49 @@ char  *fname;  /* Name of the file */
 }
 
 
-/* Load polygon from file of different types */
+/* Native formats (without conversion of the internal type) */
 
-Polygon _mw_load_polygon(fname,Type)
+Polygon _mw_polygon_load_native(fname,type)
 
-char  *fname;  /* Name of the file */
-char  *Type;   /* Type de format du fichier */
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
 
-{ char mtype[TYPE_SIZE];
+{
+  if (strcmp(type,"A_POLY") == 0)
+    return((Polygon)_mw_load_polygon_a_poly(fname));
+
+  return(NULL);
+}
+
+
+/* All available formats */
+
+Polygon _mw_load_polygon(fname,type)
+
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
+
+{ 
   Polygon poly;
-  Fpolygon fpoly;
-  Curve curve;
-  Fcurve fcurve;
-  Morpho_line ll;
-  Mimage mimage;
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  _mw_get_file_type(fname,Type,mtype);
-  
-  if (strcmp(Type,"A_POLY") == 0)
-    return(_mw_load_polygon_a_poly(fname));
+  _mw_get_file_type(fname,type,mtype,&hsize,&version);
 
-  if (strcmp(Type,"MW2_CURVE") == 0)
-    {
-      curve = (Curve) _mw_load_curve_mw2_curve(fname);
-      poly = (Polygon) mw_curve_to_polygon(curve);
-      mw_delete_curve(curve);
-      return(poly);
-    }
+  /* First, try native formats */
+  poly = _mw_polygon_load_native(fname,type);
+  if (poly != NULL) return(poly);
 
-  if (strcmp(Type,"MW2_FCURVE") == 0)
-    {
-      fcurve = (Fcurve) _mw_load_fcurve_mw2_fcurve(fname);
-      poly = (Polygon) mw_fcurve_to_polygon(fcurve);
-      mw_delete_fcurve(fcurve);
-      return(poly);
-    }
+  /* If failed, try other formats with memory conversion */
+  poly = (Polygon) _mw_load_etype_to_itype(fname,mtype,"polygon",type);
+  if (poly != NULL) return(poly);
 
-  if (strcmp(Type,"A_FPOLY") == 0)
-    {
-      fpoly = (Fpolygon) _mw_load_fpolygon_a_fpoly(fname);
-      poly = (Polygon) mw_fpolygon_to_polygon(fpoly);
-      mw_delete_fpolygon(fpoly);      
-      return(poly);
-    }
-
-  if (strcmp(Type,"MW2_MORPHO_LINE") == 0)
-    {
-      ll = (Morpho_line) _mw_load_ml_mw2_ml(fname);
-      curve = (Curve) mw_morpho_line_to_curve(ll);
-      poly = (Polygon) mw_curve_to_polygon(curve);
-      mw_delete_curve(curve);
-      mw_delete_morpho_line(ll);
-      return(poly);
-    }
-
-  if (strcmp(Type,"MW2_MIMAGE") == 0)
-    {
-      mimage = (Mimage) _mw_load_mimage_mw2_mimage(fname);
-      ll = (Morpho_line) mw_mimage_to_morpho_line(mimage);
-      curve = (Curve) mw_morpho_line_to_curve(ll);
-      poly = (Polygon) mw_curve_to_polygon(curve);
-      mw_delete_curve(curve);
-      mw_delete_morpho_line(ll);
-      mw_delete_mimage(mimage);
-      return(poly);
-    }
-
-  mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
-}  
+  if (type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Polygon !\n",fname,type);
+}
 
 /* Write file in A_POLY format */  
 
@@ -202,8 +177,24 @@ Polygon poly;
   return(0);
 }
    
-/* Write file in different formats */
+/* Create native formats (without conversion of the internal type) */
 
+short _mw_polygon_create_native(fname,poly,Type)
+
+char  *fname;                        /* file name */
+Polygon poly;
+char  *Type;                         /* Type de format du fichier */
+
+{
+  if (strcmp(Type,"A_POLY") == 0)
+    return(_mw_create_polygon_a_poly(fname,poly));
+  
+  return(-1);
+}
+
+
+/* Write file in different formats */
+   
 short _mw_create_polygon(fname,poly,Type)
 
 char  *fname;                        /* file name */
@@ -212,62 +203,19 @@ char  *Type;                         /* Type de format du fichier */
 
 {
   short ret;
-  Fpolygon fpoly;
-  Fcurve fcurve;
-  Curve curve;
-  Morpho_line ll;
-  Mimage mimage;
 
-  if (strcmp(Type,"A_POLY") == 0)
-    return(_mw_create_polygon_a_poly(fname,poly));
+  /* First, try native formats */
+  ret = _mw_polygon_create_native(fname,poly,Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CURVE") == 0)
-    {
-      curve = (Curve) mw_polygon_to_curve(poly);
-      ret = _mw_create_curve_mw2_curve(fname,curve);
-      mw_delete_curve(curve);
-      return(ret);
-    }
+  /* If failed, try other formats with memory conversion */
+  ret = _mw_create_etype_from_itype(fname,poly,"polygon",Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_FCURVE") == 0)
-    {
-      fcurve = (Fcurve) mw_polygon_to_fcurve(poly);
-      ret = _mw_create_fcurve_mw2_fcurve(fname,fcurve);
-      mw_delete_fcurve(fcurve);
-      return(ret);
-    }
-
-  if (strcmp(Type,"A_FPOLY") == 0)
-    {
-      fpoly = (Fpolygon) mw_polygon_to_fpolygon(poly);
-      ret = _mw_create_fpolygon_a_fpoly(fname,fpoly);
-      mw_delete_fpolygon(fpoly);
-      return(ret);
-    }
-
- if (strcmp(Type,"MW2_MORPHO_LINE") == 0)
-    {
-      curve = (Curve) mw_polygon_to_curve(poly);
-      ll = (Morpho_line) mw_curve_to_morpho_line(curve);
-      ret = _mw_create_ml_mw2_ml(fname,ll);
-      mw_delete_morpho_line(ll);
-      mw_delete_curve(curve);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_MIMAGE") == 0)
-    {
-      curve = (Curve) mw_polygon_to_curve(poly);
-      ll = (Morpho_line) mw_curve_to_morpho_line(curve);
-      mimage = (Mimage) mw_morpho_line_to_mimage(ll);
-      ret = _mw_create_mimage_mw2_mimage(fname,mimage);
-      mw_delete_mimage(mimage);
-      mw_delete_morpho_line(ll);
-      mw_delete_curve(curve);
-      return(ret);
-    }
-
- mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
+  /* Invalid Type should have been detected before, but we can arrive here because
+     of a write failure (e.g. the output file name is write protected).
+  */
+  mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
 }
 
 
@@ -359,76 +307,50 @@ char  *fname;  /* Name of the file */
   return(poly);
 }
 
+/* Native formats (without conversion of the internal type) */
 
-/* Load polygons from file of different types */
+Polygons _mw_polygons_load_native(fname,type)
 
-Polygons _mw_load_polygons(fname,Type)
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
 
-char  *fname;  /* Name of the file */
-char  *Type;   /* Type de format du fichier */
+{
+  if (strcmp(type,"A_POLY") == 0)
+    return((Polygons)_mw_load_polygons_a_poly(fname));
 
-{ char mtype[TYPE_SIZE];
-  Polygons polys;
-  Fpolygons fpolys;
-  Curves curves;
-  Curve curve;
-  Fcurves fcurves;
-  Morpho_line ll;
-  Mimage mimage;
-  
-  _mw_get_file_type(fname,Type,mtype);
-  
-  if (strcmp(Type,"A_POLY") == 0)
-    return(_mw_load_polygons_a_poly(fname));
+  return(NULL);
+}
 
-  if (strcmp(Type,"MW2_CURVES") == 0)
-    {
-      curves = (Curves) _mw_load_curves_mw2_curves(fname);
-      polys = (Polygons) mw_curves_to_polygons(curves);
-      mw_delete_curves(curves);
-      return(polys);
-    }
 
-  if (strcmp(Type,"MW2_FCURVES") == 0)
-    {
-      fcurves =(Fcurves) _mw_load_fcurves_mw2_fcurves(fname);
-      polys = (Polygons) mw_fcurves_to_polygons(fcurves);
-      mw_delete_fcurves(fcurves);
-      return(polys);
-    }
+/* All available formats */
 
-  if (strcmp(Type,"A_FPOLY") == 0)
-    {
-      fpolys = (Fpolygons) _mw_load_fpolygons_a_fpoly(fname);
-      polys = (Polygons) mw_fpolygons_to_polygons(fpolys);
-      mw_delete_fpolygons(fpolys);      
-      return(polys);
-    }
+Polygons _mw_load_polygons(fname,type)
 
-   if (strcmp(Type,"MW2_MORPHO_LINE") == 0)
-    {
-      ll = (Morpho_line) _mw_load_ml_mw2_ml(fname);
-      curve = (Curve) mw_morpho_line_to_curve(ll);
-      curves = (Curves) mw_curve_to_curves(curve);
-      polys = (Polygons) mw_curves_to_polygons(curves);
-      mw_delete_curves(curves);
-      mw_delete_curve(curve);
-      mw_delete_morpho_line(ll);
-      return(polys);
-    }
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
 
-  if (strcmp(Type,"MW2_MIMAGE") == 0)
-    {
-      mimage = (Mimage) _mw_load_mimage_mw2_mimage(fname);
-      curves = (Curves) mw_mimage_to_curves(mimage);
-      polys = (Polygons) mw_curves_to_polygons(curves);
-      mw_delete_curves(curves);
-      mw_delete_mimage(mimage);
-      return(polys);
-    }
+{ 
+  Polygons poly;
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
-}  
+  _mw_get_file_type(fname,type,mtype,&hsize,&version);
+
+  /* First, try native formats */
+  poly = _mw_polygons_load_native(fname,type);
+  if (poly != NULL) return(poly);
+
+  /* If failed, try other formats with memory conversion */
+  poly = (Polygons) _mw_load_etype_to_itype(fname,mtype,"polygons",type);
+  if (poly != NULL) return(poly);
+
+  if (type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Polygons !\n",fname,type);
+}
+
 
 /* Write file in A_POLY format */  
 
@@ -471,76 +393,48 @@ Polygons poly;
   fclose(fp);
   return(0);
 }
-   
-/* Write file in different formats */
 
-short _mw_create_polygons(fname,polys,Type)
+/* Create native formats (without conversion of the internal type) */
+
+short _mw_polygons_create_native(fname,poly,Type)
 
 char  *fname;                        /* file name */
-Polygons polys;
+Polygons poly;
+char  *Type;                         /* Type de format du fichier */
+
+{
+  if (strcmp(Type,"A_POLY") == 0)
+    return(_mw_create_polygons_a_poly(fname,poly));
+  
+  return(-1);
+}
+
+
+/* Write file in different formats */
+   
+short _mw_create_polygons(fname,poly,Type)
+
+char  *fname;                        /* file name */
+Polygons poly;
 char  *Type;                         /* Type de format du fichier */
 
 {
   short ret;
-  Fpolygons fpolys;
-  Fcurves fcurves;
-  Curves curves;
-  Curve curve;
-  Morpho_line ll;
-  Mimage mimage;
 
-  if (strcmp(Type,"A_POLY") == 0)
-    return(_mw_create_polygons_a_poly(fname,polys));
+  /* First, try native formats */
+  ret = _mw_polygons_create_native(fname,poly,Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CURVES") == 0)
-    {
-      curves = (Curves) mw_polygons_to_curves(polys);
-      ret = _mw_create_curves_mw2_curves(fname,curves);
-      mw_delete_curves(curves);
-      return(ret);
-    }
+  /* If failed, try other formats with memory conversion */
+  ret = _mw_create_etype_from_itype(fname,poly,"polygons",Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_FCURVES") == 0)
-    {
-      fcurves = (Fcurves) mw_polygons_to_fcurves(polys);
-      ret = _mw_create_fcurves_mw2_fcurves(fname,fcurves);
-      mw_delete_fcurves(fcurves);
-      return(ret);
-    }
-
-  if (strcmp(Type,"A_FPOLY") == 0)
-    {
-      fpolys = (Fpolygons) mw_polygons_to_fpolygons(polys);
-      ret = _mw_create_fpolygons_a_fpoly(fname,fpolys);
-      mw_delete_fpolygons(fpolys);
-      return(ret);
-    }
-
- if (strcmp(Type,"MW2_MORPHO_LINE") == 0)
-    {
-      curves = (Curves) mw_polygons_to_curves(polys);
-      curve = (Curve) mw_curves_to_curve(curves);
-      ll = (Morpho_line) mw_curve_to_morpho_line(curve);
-      ret = _mw_create_ml_mw2_ml(fname,ll);
-      mw_delete_morpho_line(ll);
-      mw_delete_curve(curve);
-      mw_delete_curves(curves);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_MIMAGE") == 0)
-    {
-      curves = (Curves) mw_polygons_to_curves(polys);
-      mimage = (Mimage) mw_curves_to_mimage(curves);
-      ret = _mw_create_mimage_mw2_mimage(fname,mimage);
-      mw_delete_mimage(mimage);
-      mw_delete_curves(curves);
-      return(ret);
-    }
-
- mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
+  /* Invalid Type should have been detected before, but we can arrive here because
+     of a write failure (e.g. the output file name is write protected).
+  */
+  mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
 }
-
+   
 
 
 

@@ -1,8 +1,10 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    W_X11R4.c    Window Device for X11 Release 4,5,6
    
-   Vers. 2.4
-   (C) 1991-99 Jacques Froment
+   Vers. 2.7
+   (C) 1991-2001 Jacques Froment, 
+                 Simon Masnou     (16 bits plane added)
+   Parts of this code inspired from XV: Copyright 1989, 1994 by John Bradley.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~  This file is part of the MegaWave2 Wdevice library ~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -11,6 +13,10 @@ The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
 CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*----------------------------------------------------------------------
+ v2.7: corrections WFlushAreaWindow and WRestoreImageWindow (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -139,7 +145,9 @@ int x0,y0,x1,y1;  /* Rectangle to be flushed */
   if (dx > window->px)  dx = window->px;
   if (dy > window->py)  dy = window->py;
 
-  XCopyArea(_W_Display,window->pixmap,window->win,_W_GC,0,0,dx,dy,x0,y0);
+  /* modification Lionel Moisan (jan 2001) */
+  /*XCopyArea(_W_Display,window->pixmap,window->win,_W_GC,0,0,dx,dy,x0,y0);*/
+  XCopyArea(_W_Display,window->pixmap,window->win,_W_GC,x0,y0,dx,dy,x0,y0);
   XFlush(_W_Display);
 }
 
@@ -447,7 +455,9 @@ int x,y,width,height;
     }
     
   if (window->ximage != NULL) 
-    XPutImage(_W_Display,window->pixmap,_W_GC,window->ximage,0,0,x,y,width,height);
+  /* modification Lionel Moisan (fev 2001) */
+  /*XPutImage(_W_Display,window->pixmap,_W_GC,window->ximage,0,0,x,y,width,height);*/
+    XPutImage(_W_Display,window->pixmap,_W_GC,window->ximage,x,y,x,y,width,height);
   else 
     WClearWindow(window);
 }
@@ -466,6 +476,7 @@ int width,height; /* Size of the bitmap */
 
 { register unsigned char *p,*q;
   register int i;
+  register unsigned short t;
 
   WDEBUG(WLoadBitMapImage); 
 
@@ -480,7 +491,6 @@ int width,height; /* Size of the bitmap */
       fprintf(stderr,"[WLoadBitMapImage] cannot load bitmap (pic is NULL)\n");
       return(-1);
     }
-
 
   switch (_W_Depth)
     {
@@ -497,10 +507,20 @@ int width,height; /* Size of the bitmap */
 	WX_Ditherize(window,width,height);
       break;
 
+    case 16: /* thresholding */
+      for (i=width*height, p=window->pic, q=bitmap; i; i--, q++)
+	{
+	  t=(((*q)<<8) & 0xf800) | (((*q)<<3) & 0x07e0) | (((*q)>>3)&0x001f);
+	  *p++=t-((t>>8)<<8);
+	  *p++=t>>8;
+	}
+      break;
+
     case 24: case 32: /* True colors */
       for (i=width*height, p=window->pic, q=bitmap; i; i--, q++)
 	{
-	  *(p++) = *q; *(p++) = *q; *(p++) = *q; *(p++) = *q;
+	  *(p++) = *q; *(p++) = *q; *(p++) = *q; 
+          /* if (_W_Depth==32) */ *(p++) = *q;
 	}
       break;
 
@@ -580,6 +600,45 @@ int width,height; /* Size of the bitmap */
 	WX_Ditherize(window,width,height);
       break;
 
+    case 16:
+      rmask = _W_Visual->red_mask;
+      gmask = _W_Visual->green_mask;
+      bmask = _W_Visual->blue_mask;
+      border   = window->ximage->byte_order;
+      rshift = 7 - highbit(rmask);
+      gshift = 7 - highbit(gmask);
+      bshift = 7 - highbit(bmask);
+      maplen = _W_Visual->map_entries;
+      if (maplen>256) maplen=256;
+      cshift = 7 - highbit((unsigned long) (maplen-1));
+      for (i=0, R=Red, G=Green, B=Blue, p=window->pic;
+	   i < width*height; i++, R++, G++, B++)
+	{
+	  r=*R; g=*G; b=*B;
+	  if (rshift<0) r = r << (-rshift);
+	  else r = r >> rshift;
+	  if (gshift<0) g = g << (-gshift);
+	  else g = g >> gshift;
+	  if (bshift<0) b = b << (-bshift);
+	  else b = b >> bshift;
+	  
+	  r = r & rmask;
+	  g = g & gmask;
+	  b = b & bmask;
+	  
+	  xcol = r | g | b;
+	  
+	  if (border == MSBFirst) {
+	    *p++ = (xcol>>8)  & 0xff;
+	    *p++ =  xcol      & 0xff;
+	  }
+	  else {  /* LSBFirst */
+	    *p++ =  xcol      & 0xff;
+	    *p++ = (xcol>>8)  & 0xff;
+	  }
+	}
+      break;
+      
     case 24: case 32: /* True colors */ 
       rmask = _W_Visual->red_mask;
       gmask = _W_Visual->green_mask;
@@ -608,18 +667,23 @@ int width,height; /* Size of the bitmap */
 
 	  xcol = r | g | b;
 
-	  if (border == MSBFirst) {
-	    *p++ = (xcol>>24) & 0xff;
-	    *p++ = (xcol>>16) & 0xff;
-	    *p++ = (xcol>>8)  & 0xff;
-	    *p++ =  xcol      & 0xff;
-	  }
-	  else {  /* LSBFirst */
-	    *p++ =  xcol      & 0xff;
-	    *p++ = (xcol>>8)  & 0xff;
-	    *p++ = (xcol>>16) & 0xff;
-	    *p++ = (xcol>>24) & 0xff;
-	  }
+	  if (border == MSBFirst)
+	    {
+	      /* if (_W_Depth==32) */
+	      *p++ = (xcol>>24) & 0xff;
+	      *p++ = (xcol>>16) & 0xff;
+	      *p++ = (xcol>>8)  & 0xff;
+	      *p++ =  xcol      & 0xff;
+	    }
+	  else 
+	    /* LSBFirst */
+	    {  
+	      *p++ =  xcol      & 0xff;
+	      *p++ = (xcol>>8)  & 0xff;
+	      *p++ = (xcol>>16) & 0xff;
+	      /* if (_W_Depth==32) */
+	      *p++ = (xcol>>24) & 0xff; 
+	    }
 	}
       break;
 
@@ -717,7 +781,7 @@ unsigned long user_event_mask;
 {
 
   WDEBUG(WSetUserEvent); 
-  _W_KeyBuffer[0] = '\0'; /* Init the KeyBuffer string */
+  _W_KeyBuffer = 0; /* Init KeyBuffer */
   window->event_mask = (SYSTEM_EVENT_MASK | user_event_mask); 
   XSelectInput(_W_Display,window->win,window->event_mask);
   XSetGraphicsExposures(_W_Display,_W_GC,False);
@@ -864,10 +928,10 @@ int *button_mask;
 /*   Get the key pressed on the keyboard. Must be called after a W_KEYPRESS */
 /*   event has be returned by WUserEvent().                                 */
 
-char WGetKeyboard()
+int WGetKeyboard()
 
 {
-  return(_W_KeyBuffer[0]);
+  return(_W_KeyBuffer);
 }
 
 

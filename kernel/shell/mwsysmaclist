@@ -1,0 +1,44 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
+_Func="List all system's macros";
+_Prog="mwsysmaclist"
+_Vers="0.0"
+_Date="2000"
+_Auth="Jacques Froment";
+_Usage=""
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+# Usage
+if [ $# -ne 0 ]; then
+  . .mw2_help_lg_com
+fi
+
+SRC=$MEGAWAVE2/sys/shell
+
+if [ ! -d $SRC ]; then
+  echo "Directory for system's macros '$SRC' not found !"
+  exit 1
+fi 
+
+for fic in `ls ${SRC}`
+do
+  firstline=`head -1 ${SRC}/${fic} | cut -d " " -f 1`
+  if [ "$firstline" = "#!/bin/sh" ]; then
+   Func=`awk 'BEGIN {FS="\""} /^_Func=/ {print $2;}' ${SRC}/${fic}`
+   if [ "$Func" = "" ]; then 
+    echo "$fic : !! Warning, bad header !! (no _Func field found)"
+   else
+    echo "$fic : $Func"
+   fi
+  fi
+done
+
+exit 0

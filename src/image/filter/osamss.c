@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------------*/
 /* mwcommand
 name = {osamss};
-version = {"1.0"};
+version = {"1.1"};
 author = {"Lionel Moisan"};
 function = { "AMSS as a stack filter (Osher Sethian scheme)"};
 usage = {
@@ -23,18 +23,15 @@ input->input   "original picture (input Fimage)",
 output<-output "result (Fimage)"
 
 }; */
-/*--------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------
+ v1.1: upgrade for new fvalues() call (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
 
-#ifdef __STDC__
-extern void amss(char *,char *,float *,float *,float *,float *,float *,Fimage,Fimage *,Fimage *,Fimage *,Cmovie,Cmovie,Cmovie,char *);
-extern Fsignal fvalues(char *,Fsignal,Fimage);
-#else
 extern void amss();
 extern Fsignal fvalues();
-#endif
 
 
 void osamss(isotrop,power,Step,MinGrad,firstScale,lastScale,input,output)
@@ -53,11 +50,10 @@ Fimage output;		/* Result         				    */
   float l,zero,min,max,mid,v;
   int img_size,i,adr;
 
-  levels = fvalues(NULL,NULL,input);
+  levels = fvalues(NULL,NULL,NULL,input);
   
   if (levels->size >= 50) 
-    mwerror(WARNING,1,"%d different grey levels : osamss may take some time !",
-	    levels->size);
+    mwerror(WARNING,1,"%d different grey levels : osamss may take some time !\n",levels->size);
 
   min = levels->values[0];
   max = levels->values[levels->size-1];

@@ -1,0 +1,37 @@
+This module extracts a polygonal approximation of a level line in a bilinear
+interpolated image (see module \texttt{flst\_bilinear}). A parameter indicates
+the approximate maximum number of points of discretization in each dual
+pixel. The sampling is done in the manner described below. The result is in
+the field \texttt{boundary} of the shape, as a list of 2-D points. If the
+level line is closed, the last point coincides with the first one. If the
+level line is open, the first and last points are on the rectangle
+$[0,W]\times [0,H]$.
+
+The curve is oriented so that the shape lies at the left of the curve. In this
+manner, the orientation of a closed line is counterclockwise. The entry point
+in each dual pixel (that is either at a data point or on a dual edgel) is put
+in the curve. Then if there is no maximal curvature point on the level line in
+the interior of the dual pixel, it is sampled uniformly (with step
+1/\texttt{precision}) along $x$ (resp. $y$) if
+the local map $y=f(x)$ (resp. $x=f(y)$) representing the curve is such that
+$|f'|\leq 1$.
+
+If there is a maximal curvature point, it is sampled uniformly along the
+appropriate direction (decided in the same manner as above) before reaching
+the maximal curvature point, this point is inserted in the curve, and the
+curve is then sampled along the other direction after this point.
+The maximal number is thus $2\times$\texttt{precision}$+1$.
+
+For parameter \texttt{ctabtabSaddleValues}, see documentation of module
+\texttt{flstb\_dualchain}, which is used by this one.
+
+The \texttt{tree} parameter is a tree of shapes associated to \texttt{image},
+as returned by \texttt{flst\_bilinear} or \texttt{flstb\_quantize}. 
+
+{\em Caveat}: the algorithm has no means to verify that the \texttt{tree} is
+really associated to the bilinear interpolation of \texttt{image}, and in the
+negative case, the module will fail with an error message, or worse, with a
+memory error. For example, if the \texttt{tree} is extracted with the module
+\texttt{flst} (which does not interpret the image as a bilinear
+interpolation), this will fail (unless there is no saddle point in the
+image, i.e., no $T$-junction).

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cimage_io.c
-   
-   Vers. 1.05
-   (C) 1993-99 Jacques Froment
+  
+   Vers. 1.11
+   (C) 1993-2002 Jacques Froment
    Input/Output private functions for the Cimage structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -154,7 +154,7 @@ char  *Type;                          /* Type de format du fichier */
   unsigned short minheader = 8; /* Nbre de bytes entete minimale du fichier */
   unsigned short header;        /* Nbre de bytes entete du format du fichier */
   long  TailleBuffer;                   /* Taille du Buffer en octets */
-  short dx,dy;                          /* Taille de l'image du fichier */
+  unsigned short dx,dy;                 /* Taille de l'image du fichier */
   unsigned short taillezc;              /* Taille de la zone de commentaires */
   unsigned short n;                       /* Nbre de bytes a lire */
   long i,L;                               /* Indices courants sur l'image */
@@ -298,16 +298,22 @@ short _mw_cimage_create_megawave1(NomFic,image,Type)
   int   fic;                            /* fichier */
   unsigned short byteswrite;            /* Nbre de bytes ecrits */
   unsigned short header;                /* Nbre de bytes entete du fichier */
-  short dx,dy;                          /* Taille de l'image */
+  unsigned short dx,dy;                          /* Taille de l'image */
   unsigned short taillezc;              /* Taille de la zone de commentaires */
   unsigned short n;                     /* Nbre de bytes a lire */
   long i,l;                             /* Indices courants sur l'image */
   unsigned char *ptr; 
 
+  if ((image->ncol>=65536)||(image->nrow>=65536))
+    {
+      mwerror(FATAL,1,"Image too big to be saved using %s external type !\n",
+	      Type);
+      return(-1);
+    }
   dx = image->ncol;
   dy = image->nrow;
 
-  if (Type[0] == '?') strcpy(Type,cimage_types[0]);
+  if (Type[0] == '?') _mw_put_range_type(Type,"cimage",1);
   if (strcmp(Type,"IMG") == 0) 
     {
       if (_MAKEHEADER_IMG(NomFic,dx,dy,image->cmt) != 0) 
@@ -441,7 +447,26 @@ short _mw_cimage_create_native(NomFic,image,Type)
 {
   if ((strcmp(Type,"IMG") == 0) || (strcmp(Type,"INR") == 0) || 
       (strcmp(Type,"MTI") == 0) || (strcmp(Type,"BIN") == 0))
-    return(_mw_cimage_create_megawave1(NomFic,image,Type));
+    {
+      if ((image->ncol>=65536)||(image->nrow>=65536))
+	{
+	  mwerror(WARNING,1,"Image too big to be saved using %s external type. Using PM_C...\n",Type);
+	  strcpy(Type,"PM_C");
+	}
+      else return(_mw_cimage_create_megawave1(NomFic,image,Type));
+    }
+
+  if (strcmp(Type,"GIF") == 0)
+    /* Write GIF87 file with a grey scales colormap */
+    {
+      if ((image->ncol>=65536)||(image->nrow>=65536))
+	{
+	  mwerror(WARNING,1,"Image too big to be saved using %s external type. Using PM_C...\n",Type);
+	  strcpy(Type,"PM_C");
+	}
+      else return(_mw_cimage_create_gif(NomFic,image));
+    }
+
 
   if (strcmp(Type,"TIFF") == 0)
      /* TIFF format with 1 gray-level plane */
@@ -450,10 +475,6 @@ short _mw_cimage_create_native(NomFic,image,Type)
   if (strcmp(Type,"PM_C") == 0)
     /* PM format with pm_form=PM_C and pm_np = pm_nband = 1 */
     return(_mw_cimage_create_pm(NomFic,image));
-
-  if (strcmp(Type,"GIF") == 0)
-    /* Write GIF87 file with a grey scales colormap */
-    return(_mw_cimage_create_gif(NomFic,image));
 
   if (strcmp(Type,"PS") == 0)
     /* Write PostScript file */
@@ -483,47 +504,24 @@ char  *Type;                          /* Type de format du fichier */
 
 { 
   Cimage im;
-  Fimage image_fimage;
-  Cimage image_cimage;
-  Ccimage image_ccimage;
-  Cfimage image_cfimage;
-  char mtype[TYPE_SIZE];
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  _mw_get_file_type(NomFic,Type,mtype);
+  _mw_get_file_type(NomFic,Type,mtype,&hsize,&version);
 
   /* First, try native formats */
   im = _mw_cimage_load_native(NomFic,Type);
   if (im != NULL) return(im);
 
-  /* Other formats */
-  image_fimage = (Fimage) _mw_fimage_load_native(NomFic,Type,NULL);
-  if (image_fimage != NULL) 
-    {
-      image_cimage = (Cimage) mw_fimage_to_cimage(image_fimage);
-      mw_delete_fimage(image_fimage);
-      return(image_cimage);
-    }
+  /* If failed, try other formats with memory conversion */
+  im = (Cimage) _mw_load_etype_to_itype(NomFic,mtype,"cimage",Type);
+  if (im != NULL) return(im);
 
-
-  image_ccimage = (Ccimage) _mw_ccimage_load_native(NomFic,Type);
-  if (image_ccimage != NULL) 
-    {
-      image_cimage = (Cimage) mw_ccimage_to_cimage(image_ccimage);
-      mw_delete_ccimage(image_ccimage);
-      return(image_cimage);
-    }
-
-  image_cfimage = (Cfimage) _mw_cfimage_load_native(NomFic,Type);
-  if (image_cfimage != NULL) 
-    {
-      image_ccimage = (Ccimage) mw_cfimage_to_ccimage(image_cfimage);
-      image_cimage = (Cimage) mw_ccimage_to_cimage(image_ccimage);
-      mw_delete_ccimage(image_ccimage);
-      mw_delete_cfimage(image_cfimage);
-      return(image_cimage);
-    }
-
-  mwerror(INTERNAL, 1,"[_mw_cimage_load_image] Invalid external type \"%s\" for the file \"%s\"\n",Type,NomFic);
+  if (Type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",NomFic);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cimage !\n",NomFic,Type);
 }
 
 
@@ -533,31 +531,20 @@ char  *NomFic;                        /* Nom du fichier image */
 Cimage image;
 char  *Type;                          /* Type de format du fichier */
 
-{ Fimage image_fimage;
-  Ccimage image_ccimage;
-  Cfimage image_cfimage;
+{
   short ret;
 
   /* First, try native formats */
   ret = _mw_cimage_create_native(NomFic,image,Type);
   if (ret == 0) return(0);
 
-  /* Other formats */
-
-  image_fimage = (Fimage) mw_cimage_to_fimage(image);
-  ret = _mw_fimage_create_native(NomFic,image_fimage,Type);
-  if (ret == 0) { mw_delete_fimage(image_fimage); return(0); }
-
-  image_cfimage = (Cfimage) mw_fimage_to_cfimage(image_fimage);
-  ret = _mw_cfimage_create_native(NomFic,image_cfimage,Type);
-  mw_delete_cfimage(image_cfimage);
-  mw_delete_fimage(image_fimage);
+  /* If failed, try other formats with memory conversion */
+  ret = _mw_create_etype_from_itype(NomFic,image,"cimage",Type);
   if (ret == 0) return(0);
 
-  image_ccimage = (Ccimage) mw_cimage_to_ccimage(image);
-  ret = _mw_ccimage_create_native(NomFic,image_ccimage,Type);
-  mw_delete_ccimage(image_ccimage);
-  if (ret == 0) return(0);
-
-  mwerror(INTERNAL, 1,"[_mw_cimage_create_image] Invalid external type \"%s\" for the file \"%s\"\n",Type,NomFic);  
+  /* Invalid Type should have been detected before, but we can arrive here because
+     of a write failure (e.g. the output file name is write protected).
+  */
+  mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",NomFic);  
 }
+

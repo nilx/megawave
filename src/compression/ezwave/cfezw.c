@@ -54,13 +54,8 @@ ImpulseResponse->Ri
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void fezw(int *, Fimage, Fsignal, int *, float *, int *, float *, float *, Polygons, Cimage, Fimage, Fsignal, Fimage, char *);
-void cfchgchannels(int *, int *, int *, Cfimage, Cfimage);
-#else
-void fezw();
-void cfchgchannels();
-#endif
+extern void fezw();
+extern void cfchgchannels();
 
 /*--- Constants ---*/
 

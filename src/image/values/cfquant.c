@@ -2,6 +2,7 @@
 /* mwcommand
 name = {cfquant};
 author = {"Jacques Froment"};
+version = {"1.1"};
 function = {"Uniform quantization of a color float image"};
 usage = {
 'l'->left "Set left value of the interval instead of middle value",
@@ -11,19 +12,17 @@ Mr->Mr "Number of quantized levels for the red channel",
 Mg->Mg "Number of quantized levels for the green channel",
 Mb->Mb "Number of quantized levels for the blue channel"
 };
-version = {"1.0"};
 */
+/*----------------------------------------------------------------------
+ v1.1: new fquant call (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
 
 #include  "mw.h"
 
-#ifdef __STDC__
-extern float fquant(Fimage,Fimage,int,char *);
-#else
 extern float fquant();
-#endif
 
 void cfquant(A,Q,Mr,Mg,Mb,left)
 
@@ -49,7 +48,7 @@ char *left;
 
   for (i=0, ptrA=A->red, ptr=channel->gray; i< A->nrow*A->ncol; i++, ptrA++, ptr++)
     *ptr = *ptrA;
-  fquant(channel,Qr,Mr,left);
+  fquant(channel,Qr,Mr,left,NULL,NULL);
 
   /* Green channel */
   Qg = mw_new_fimage();
@@ -57,7 +56,7 @@ char *left;
 
   for (i=0, ptrA=A->green, ptr=channel->gray; i< A->nrow*A->ncol; i++, ptrA++, ptr++)
     *ptr = *ptrA;
-  fquant(channel,Qg,Mg,left);
+  fquant(channel,Qg,Mg,left,NULL,NULL);
 
   /* Blue channel */
   Qb = mw_new_fimage();
@@ -65,7 +64,7 @@ char *left;
 
   for (i=0, ptrA=A->blue, ptr=channel->gray; i< A->nrow*A->ncol; i++, ptrA++, ptr++)
     *ptr = *ptrA;
-  fquant(channel,Qb,Mb,left);
+  fquant(channel,Qb,Mb,left,NULL,NULL);
 
   Q->red=Qr->gray;
   Q->green=Qg->gray;

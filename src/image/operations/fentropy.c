@@ -2,7 +2,7 @@
 /* mwcommand
 name = {fentropy};
 author = {"Jacques Froment"};
-version = {"1.2"};
+version = {"1.4"};
 function = {"Compute the entropy of an image"};
 usage = {
 A->A "input fimage",
@@ -11,12 +11,17 @@ e<-fentropy "output entropy value"
 */
 /*----------------------------------------------------------------------
  v1.2: uses fvalues() instead of fhisto() (L.Moisan)
+ v1.3: fix bug in fvalues() call (L.Moisan)
+ v1.4: upgrade for new fvalues() call (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
 
 #include  "mw.h"
+
+extern Fsignal fvalues();
+
 
 double entropy(input)
 
@@ -59,13 +64,12 @@ Fimage A;
   float e;
 
   B = mw_new_fsignal();
-  C = mw_new_fsignal();
-  if (!B || !C) mwerror(FATAL,1,"Not enough memory\n");
+  if (!B) mwerror(FATAL,1,"Not enough memory\n");
 
-  fvalues(NULL,B,A,C);
+  C = fvalues(NULL,B,NULL,A);
   e = (float) entropy(B);
-  mw_delete_fsignal(C);
   mw_delete_fsignal(B);
+  mw_delete_fsignal(C);
 
   return(e);
 }

@@ -70,13 +70,8 @@ CodeBook1<-Output1
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void flbg(int *, int *, int *, int *, int *, int *, Fsignal, int *, int *, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, int *, int *, int *, int *, Fimage, Fimage, Fimage, Fimage, float *);
-void flbg_adap(int *, int *, int *, int *, int *, int *, float *, float *, float *, Fsignal, int *, int *, int *, int *, int *, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage);
-#else
-void flbg();
-void flbg_adap();
-#endif
+extern void flbg();
+extern void flbg_adap();
 
 /*--- Constants ---*/
 

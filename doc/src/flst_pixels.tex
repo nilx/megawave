@@ -1,0 +1,39 @@
+This module fills the field \verb+pixels+ of a \verb+Shapes+ structure.
+Each shape (as defined in the FLST) points to the array of
+pixels belonging to it. Actually, only one array, whose size
+is the number of pixels, is allocated and stored in
+\verb+pTree->the_shapes[0].pixels+, the other \verb+pixels+ are only
+pointers to positions in this array.
+The consequence is that in order to free the allocated memory, the user must
+use the command \verb+free(pTree->the_shapes[0].pixels+.
+
+The number of pixels in each shape is stored in its field \verb+area+.
+
+The complexity of the algorithm is $O(N)$, $N$ being the number of
+shapes. This is very fast, which explains why the field \verb+pixels+ needs
+not be stored in the file corresponding to a \verb+Shapes+ structure.
+
+This module plays the same role for the bilinear FLST (see module
+\verb+flst_bilinear+). In this case, the field corresponds to the data
+points inside the shapes, i.e., points where the original image values were
+given, in contrast to interpolated points.
+
+The computation of the field \verb+pixels+ allows to quickly examine if the
+shape $S$ contains the shape $T$. This condition is simply
+\begin{verbatim}
+T->area <= S->area && S->pixels <= T->pixels && T->pixels < S->pixels + S->area,
+\end{verbatim}
+which is evaluated in constant time. As proper pixels of shape
+$S$ are placed before pixels of descendants, and as each shape contains at
+least one proper pixel in the case of FLST ({\em but not necessarily in the
+case of bilinear FLST}), except possibly the root, the condition can also
+be written 
+\begin{verbatim}
+S->pixels < T->pixels && T->pixels < S->pixels + S->area.
+\end{verbatim}
+
+Notice the field \verb+pixels+ is orthogonal to the term
+\verb+smallest_shape+ of \verb+Shapes+. The former gives for each shape
+the pixels it contains, whereas the latter gives for each pixel the shapes
+that contain it. In practice, the computation of \verb+pixels+ relies on the
+use of \verb+smallest_shape+.

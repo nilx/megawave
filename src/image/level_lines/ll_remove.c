@@ -1,7 +1,7 @@
 /*------------------------- MegaWave2 Module -------------------------*/
 /* mwcommand
 name = {ll_remove};
-version = {"0.0"};
+version = {"1.1"};
 author = {"Jacques Froment"};
 function = {"Remove small level lines in a mimage"};
 usage = {
@@ -10,7 +10,9 @@ usage = {
   output<-ll_remove "Output mimage with missing level lines"
   };
 */
-/*-------------------------------------------------------------------*/
+/*----------------------------------------------------------------------
+ v1.1: upgrade for new kernel (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
@@ -67,7 +69,7 @@ int *L;
 	  ((ll_type == 1)&&(ll->minvalue != -infty)) )
 	mwerror(FATAL,1,"Input mimage contains mixed types of level lines !\n");
       ll_next = ll->next;
-      if (mw_morpho_line_length(ll) < *L) {remove_ll(mimage,ll); Nrm++; }
+      if (mw_length_morpho_line(ll) < *L) {remove_ll(mimage,ll); Nrm++; }
     }
 
   if (ll_type == 0)

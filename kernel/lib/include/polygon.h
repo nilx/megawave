@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    polygon.h
    
-   Vers. 1.1
-   (C) 1993 Jacques Froment
+   Vers. 1.3
+   (C) 1993-2002 Jacques Froment
    Internal Input/Output polygon & polygons structures
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -19,8 +19,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef SunOS
 #include <sys/types.h>
 #endif
-
-#include "string_size.h"
 
 #ifndef curve_flg
 #include "curve.h"
@@ -59,11 +57,11 @@ Polygon mw_new_polygon(void);
 Polygon mw_alloc_polygon(Polygon,int);
 Polygon mw_change_polygon(Polygon, int);
 void mw_delete_polygon(Polygon);
-unsigned int mw_polygon_length(Polygon);
+unsigned int mw_length_polygon(Polygon);
 Polygons mw_new_polygons(void);
 Polygons mw_change_polygons(Polygons);
 void mw_delete_polygons(Polygons);
-unsigned int mw_polygons_length(Polygons);
+unsigned int mw_length_polygons(Polygons);
 
 #else
 
@@ -71,11 +69,11 @@ Polygon mw_new_polygon();
 Polygon mw_alloc_polygon();
 Polygon mw_change_polygon();
 void mw_delete_polygon();
-unsigned int mw_polygon_length();
+unsigned int mw_length_polygon();
 Polygons mw_new_polygons();
 Polygons mw_change_polygons();
 void mw_delete_polygons();
-unsigned int mw_polygons_length();
+unsigned int mw_length_polygons();
 
 #endif
 

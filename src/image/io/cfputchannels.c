@@ -26,14 +26,6 @@ Cfimage<-Image
 
 #include  "mw.h"
 
-/*--- Megawave2 modules definition ---*/
-
-#ifdef __STDC__
-#else
-#endif
-
-/*--- Global variables ---*/ 
-
 
 void
 cfputchannels(RImage, GImage, BImage, Image)

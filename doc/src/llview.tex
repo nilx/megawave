@@ -1,3 +1,76 @@
-This modules allows to visualyze interactively the level lines or
-bi-level sets of an image. Type 'H' on the window to get a list
-of the interactive commands.
+This module allows to visualize the level lines and the level sets of
+the input image. This image can be a Fimage, but this module only handles 
+level lines corresponding to integer values.
+It is designed to be used interactively (with a control
+window), but the parameters can be preset with the module options.
+
+\medskip
+
+{\bf \verb+-d+ option (display mode) :}
+
+0: no level structure displayed
+
+1: level lines for all levels $\lambda$ such that $\lambda = l \;\;{\mathrm mod}(s)$
+
+2: level lines for one level only ($\lambda=l$)
+
+3: lower level set, that is $\{x;\; u(x)<l\}$
+
+3: upper level set, that is $\{x;\; u(x)\geq l\}$
+
+4: bi-level set, that is $\{x;\; l \leq u(x)<l+s\}$
+
+\medskip
+
+{\bf \verb+-b+ option (background mode) :}
+
+0: original image
+
+1: attenuated image (grey levels rescaled between 64 and 255)
+
+2. no background
+
+\medskip
+
+{\bf \verb+-i+ option (interpolation mode) :} see \verb+fcrop+ module
+
+0: nearest-neighbor interpolation (level lines surround squares)
+
+1: bilinear interpolation (level lines are piecewise hyperboles)
+
+2: interpolation with bicubic Keys' function 
+
+3: cubic spline interpolation
+
+4: spline interpolation (order 5)
+
+5: spline interpolation (order 7)
+
+\medskip
+
+The \verb+-z+ option sets the size of the display window by multiplying
+by the specified factor the size of the original image. This factor
+cannot be set interactively. The \verb+-l+ and \verb+-s+ options 
+set the current level and the level step. They can also be set interactively
+using the bars and buttons in the control window. In the display window,
+the following events are handled:
+
+\medskip
+
+{\bf left mouse button:} set current level to the value present at mouse location
+
+{\bf middle mouse button:} restore the original display region
+
+{\bf right mouse button:} zoom by a factor 2 (center at mouse position)
+
+{\bf keys 'u' and 'U':} unzoom by a factor 2
+
+{\bf keys 'q' and 'Q':} quit 
+
+\medskip
+
+The -o option permits to save the last display in a Ccimage.
+It can be combined with the \verb+-n+ option (no display) to
+use \verb+llview+ as a non-interactive module.
+
+

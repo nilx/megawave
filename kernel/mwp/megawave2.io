@@ -34,11 +34,17 @@ Curve write	_mwsave_curve curve.h# Ecriture fichiers MW2_CURVE
 Fcurve read	_mwload_fcurve fcurve.h# Lecture fichiers MW2_FCURVE 
 Fcurve write	_mwsave_fcurve fcurve.h# Ecriture fichiers MW2_FCURVE 
 
+Dcurve read	_mwload_dcurve dcurve.h# Lecture fichiers MW2_DCURVE 
+Dcurve write	_mwsave_dcurve dcurve.h# Ecriture fichiers MW2_DCURVE 
+
 Curves read	_mwload_curves curve.h# Lecture fichiers MW2_CURVES 
 Curves write	_mwsave_curves curve.h# Ecriture fichiers MW2_CURVES 
 
 Fcurves read	_mwload_fcurves fcurve.h# Lecture fichiers MW2_FCURVES 
 Fcurves write	_mwsave_fcurves fcurve.h# Ecriture fichiers MW2_FCURVES 
+
+Dcurves read	_mwload_dcurves dcurve.h# Lecture fichiers MW2_DCURVES 
+Dcurves write	_mwsave_dcurves dcurve.h# Ecriture fichiers MW2_DCURVES 
 
 Fsignal	read	_mwload_fsignal	fsignal.h# Lecture de signaux de type flottant
 Fsignal	write	_mwsave_fsignal	fsignal.h# Ecriture de signaux de type flottant
@@ -105,4 +111,21 @@ Shape write	_mwsave_shape shape.h# Ecriture fichiers MW2_SHAPE
 
 Shapes read	_mwload_shapes shape.h# Lecture fichiers MW2_SHAPES
 Shapes write	_mwsave_shapes shape.h# Ecriture fichiers MW2_SHAPES
+
+Rawdata read	_mwload_rawdata rawdata.h# Lecture fichiers Rawdata
+Rawdata write	_mwsave_rawdata rawdata.h# Ecriture fichiers Rawdata
+
+Flist read	_mwload_flist list.h# Lecture fichiers Flist
+Flist write	_mwsave_flist list.h# Ecriture fichiers Flist
+
+Flists read	_mwload_flists list.h# Lecture fichiers Flists
+Flists write	_mwsave_flists list.h# Ecriture fichiers Flists
+
+Dlist read	_mwload_dlist list.h# Lecture fichiers Dlist
+Dlist write	_mwsave_dlist list.h# Ecriture fichiers Dlist
+
+Dlists read	_mwload_dlists list.h# Lecture fichiers Dlists
+Dlists write	_mwsave_dlists list.h# Ecriture fichiers Dlists
+
+
 

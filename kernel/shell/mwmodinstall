@@ -1,9 +1,9 @@
-#! /bin/sh 
+#!/bin/sh
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _Func="Install a new MegaWave2 public modules environment (adm only)";
 _Prog="`basename $0`"
-_Vers="2.03"
-_Date="1997-99"
+_Vers="2.04"
+_Date="1997-2002"
 _Auth="Jacques Froment";
 _Usage="[-clear] [-tdir target_directory] [-X file_of_modules_for_xmw2] file_of_modules"
 #----------------------------------------------------------------------------#
@@ -228,6 +228,7 @@ fi
 mkdir -p $MW_TARGET/$BIN
 mkdir -p $MW_TARGET/shell
 mkdir -p $MW_TARGET/$LIB
+mkdir -m 755 -p $MW_TARGET/src
 mkdir -p $MW_TARGET/doc/src
 mkdir -p $MW_TARGET/doc/obj/DEPENDENCIES
 if [ -d $MW_SOURCE/data/PUBLIC ]; then

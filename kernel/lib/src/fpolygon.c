@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fpolygon.c
    
-   Vers. 1.2
-   (C) 1995-96 Jacques Froment
+   Vers. 1.3
+   (C) 1995-2002 Jacques Froment
    Basic memory routines for the fpolygon internal type
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -122,7 +122,7 @@ void mw_delete_fpolygon(fpolygon)
 
 /* Return the number of point into a fpolygon */
 
-unsigned int mw_fpolygon_length(fpoly)
+unsigned int mw_length_fpolygon(fpoly)
 
 Fpolygon fpoly;
 
@@ -196,7 +196,7 @@ void mw_delete_fpolygons(fpolygons)
 
 /* Return the number of fpolygons into a fpolygons */
 
-unsigned int mw_fpolygons_length(fpolys)
+unsigned int mw_length_fpolygons(fpolys)
 
 Fpolygons fpolys;
 

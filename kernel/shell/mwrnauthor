@@ -1,4 +1,4 @@
-#! /bin/sh 
+#!/bin/sh 
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Rename the contributors of one MegaWave2 module or macro (misspelled names)"

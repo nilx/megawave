@@ -64,25 +64,14 @@ ImpulseResponse->Ri
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void fvq(int *, int *, int *, int *, int *, int *, int *, int *, Fimage, Fimage, Fimage, int *, int *, int *, int *, Fimage, Fimage, Fimage, Fimage, int *, int *, Fimage, Fimage, Cimage, Fimage, Fimage, Fimage, double *, double *, double *, double *);
-void fscalq(int *, int *, int *, float *, int *, Cimage, Fimage, Fimage, double *, double *, double *, double *);
-void owave2(int *, int *, int *, int *, int *, int *, Fimage, Wtrans2d, Fsignal, Fimage);
-void iowave2(int *, int *, int *, int *, int *, int *, Wtrans2d, Fimage, Fsignal, Fimage);
-void biowave2(int *, int *, int *, int *, Fimage, Wtrans2d, Fsignal, Fsignal);
-void ibiowave2(int *, int *, int *, int *, Wtrans2d, Fimage, Fsignal, Fsignal);
-void fmse(Fimage, Fimage, int *, char *, double *, double *, double *, double *);
-static int count_cb(Fimage);
-#else
-void fvq();
-void fscalq();
-void owave2();
-void iowave2();
-void biowave2();
-void ibiowave2();
-void fmse();
+extern void fvq();
+extern void fscalq();
+extern void owave2();
+extern void iowave2();
+extern void biowave2();
+extern void ibiowave2();
+extern void fmse();
 static int count_cb();
-#endif
 
 /*--- Megawave2 modules ---*/
 

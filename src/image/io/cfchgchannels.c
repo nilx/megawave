@@ -1,12 +1,12 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
 name = {cfchgchannels};
-version = {"1.02"};
+version = {"1.1"};
 author = {"Jean-Pierre D'Ales, Jacques Froment"};
 function = {"Convert a color float image from one coordinate system to another"};
 usage = {
 'c':[Conv=0]->Conv [0,2]
-	"0:RGB-YUV, 1:RGB-HSI 2:RGB-HSV", 
+	"0:RGB-YUV (default), 1:RGB-HSI 2:RGB-HSV", 
 'i'->Inverse
         "Perform inverse conversion", 
 'n'->Norm

@@ -1,0 +1,250 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
+_Prog="mwrm"
+_Func="Remove a module or a user's macro"
+_Vers="1.0"
+_Date="2000-02"
+_Auth="Jacques Froment";
+_Usage="[-macro] module"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+#------------------
+Answer()
+#------------------
+
+{
+ok=0
+while [ $ok -ne 1 ]; do
+ if  [ "$2" != "" ]; then
+   mwechon "$1 [Y/N] ? [default $2] "
+ else
+   mwechon "$1 [Y/N] ? "
+ fi
+ read ans
+ if [ "$ans" = "" ] && [ "$2" != "" ]; then
+  ans=$2
+ fi
+ if [ "$ans" = "y" ] ||  [ "$ans" = "Y" ]; then
+   ans="Y"
+   ok=1
+ fi
+ if [ "$ans" = "n" ] ||  [ "$ans" = "N" ]; then
+   ans="N"
+   ok=1
+ fi
+ if [ $ok -ne 1 ]; then
+  if  [ "$2" != "" ]; then
+   echo "Please, answer Y for Yes or N for No (default means $2) !"
+  else
+   echo "Please, answer Y for Yes or N for No !"
+  fi
+ fi
+done
+}
+
+#------------------
+rmmodule()
+#------------------
+
+{
+ mwpath=$1
+ module=$2
+ modulepath=$3
+ calling_private=${MY_MEGAWAVE2}/doc/obj/DEPENDENCIES/${module}.calling
+ if [ "${mwpath}" = "${MEGAWAVE2}" ]; then
+  calling_public=${mwpath}/doc/obj/DEPENDENCIES/${module}.calling
+ else
+  calling_public="/not_a_file"
+ fi
+ if [ -f $calling_public ] || [ -f $calling_private ]; then
+  echo "------------------------------ WARNING ------------------------------"
+  echo "This module is called by the following module(s) : "
+  if [ -f $calling_public ]; then
+   mwechon "[public] "
+   for f in `cat $calling_public`
+   do
+    mwechon "$f "
+   done
+   echo " "
+  fi
+  if [ -f $calling_private ]; then
+   mwechon "[private] "
+   for f in `cat $calling_private`
+   do
+    mwechon "$f "
+   done
+   echo " "
+  fi
+  echo "Removing '${module}' will lead those to become unusable !"
+  echo "---------------------------------------------------------------------"
+  Answer "Remove it anyway" "N"
+  if [ "$ans" = "Y" ]; then 
+   echo "OK, but to keep module's consistency please remove unusable modules."
+  fi
+ else
+  Answer "Remove this module" "N"
+ fi
+
+ if [ "$ans" = "Y" ]; then 
+  rm ${modulepath}
+  for mach in `ls ${mwpath}/bin`
+  do
+    rm -f ${mwpath}/bin/${mach}/${module}
+  done
+  rm -f ${mwpath}/doc/src/${module}.tex
+  rm -f ${mwpath}/doc/obj/${module}.doc
+  rm -f ${mwpath}/doc/obj/DEPENDENCIES/${module}.*
+  rm -f ${mwpath}/mwi/int_${module}.c
+  for mach in `ls ${mwpath}/lib`
+  do
+   if [ -f ${mwpath}/lib/${mach}/libmw.a ]; then
+    ar d ${mwpath}/lib/${mach}/libmw.a m_${module}.o ${module}.o
+   fi
+   if [ -f ${mwpath}/lib/${mach}/libmymw.a ]; then
+    ar d ${mwpath}/lib/${mach}/libmymw.a m_${module}.o ${module}.o
+   fi
+  done
+  for mach in `ls ${mwpath}/obj`
+  do
+    rm -f ${mwpath}/obj/${mach}/${module}.o
+    rm -f ${mwpath}/obj/${mach}/i_${module}.o
+    rm -f ${mwpath}/obj/${mach}/m_${module}.o
+  done
+ fi
+ echo " "
+}
+
+#------------------
+rmmacro()
+#------------------
+
+{
+ Answer "Remove this macro" "N"
+ if [ "$ans" = "Y" ]; then 
+  mwpath=$1
+  macro=$2
+  macropath=$3
+  rm ${macropath}
+  if [ -w ${mwpath}/shell/${macro} ] || [ -L ${mwpath}/shell/${macro} ]; then
+   rm ${mwpath}/shell/${macro}
+  fi
+  if [ -f ${mwpath}/doc/src/${macro}.tex ]; then
+   rm ${mwpath}/doc/src/${macro}.tex
+  fi
+  if [ -f ${mwpath}/doc/obj/${macro}.doc ]; then
+   rm ${mwpath}/doc/obj/${macro}.doc
+  fi
+ fi
+ echo " "
+}
+
+#------------------
+# Main program
+#------------------
+
+# Check input
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+   . .mw2_help_lg_com
+fi
+
+
+# Defaults
+macro=0
+
+while [ "$1" != "" ]
+do
+    case "$1" in
+
+# Identify a module as a macro
+    -macro) macro=1
+            shift
+ 	    ;;
+
+    -*)   . .mw2_help_lg_com;
+	  ;;
+
+    *)  module=$1
+        shift
+	;;
+
+    esac
+done
+
+# Automatically identifies a module as a macro when its name 
+# begins with a capital letter.
+if [ $macro -eq 0 ]; then
+ mwisupper $module > /dev/null
+ macro=$?
+fi
+
+module=`basename $module .c`
+found=0
+
+if [ $macro -eq 1 ]; then
+  f=`find ${MY_MEGAWAVE2}/src -name "${module}" -print`
+  if [ "$f" != "" ]; then
+    found=1
+    for modrm in $f
+    do
+     echo "User's private macro '$modrm' found !"
+     rmmacro ${MY_MEGAWAVE2} $module $modrm
+    done
+  fi
+  f=`find ${MEGAWAVE2}/src -name "${module}" -print`
+  if [ "$f" != "" ]; then
+    found=1
+    for modrm in $f 
+    do
+     echo "PUBLIC macro '$modrm' found !"
+     if [ ! -w  ${MEGAWAVE2} ]; then
+       echo "Cannot remove public macros: permission denied."
+     else
+       rmmacro ${MEGAWAVE2} $module $modrm
+     fi
+    done
+  fi
+  if [ $found -eq 0 ]; then
+    echo "Macro '$module' not found."
+  fi
+else
+  f=`find ${MY_MEGAWAVE2}/src -name "${module}.c" -print`
+  if [ "$f" != "" ]; then
+    found=1
+    for modrm in $f 
+    do
+     echo "User's module '$modrm' found !"
+     rmmodule ${MY_MEGAWAVE2} $module $modrm 
+    done
+  fi
+  f=`find ${MEGAWAVE2}/src -name "${module}.c" -print`
+  if [ "$f" != "" ]; then
+    found=1
+    for modrm in $f 
+    do
+     echo "PUBLIC module '$modrm' found !"
+     if [ ! -w  ${MEGAWAVE2} ]; then
+       echo "Cannot remove public modules: permission denied."
+     else
+       rmmodule ${MEGAWAVE2} $module $modrm
+     fi
+    done
+  fi
+  if [ $found -eq 0 ]; then
+    echo "Module '$module' not found."
+  fi
+fi
+
+
+exit 0
+
+
+
+

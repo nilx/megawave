@@ -481,56 +481,65 @@ Mwarg *e;
   /* Argtype == NEEDEDARG */
   e->t = NEEDEDARG;
 
-  if (arg->right->name == '#') {
-    if (arg->right->left->name == NAME) {
-      e->name = arg->right->left->val.text;
-      e->desc = arg->right->right->val.qstring;
+  if (arg->right->name == '#') 
+    {
+      if (arg->right->left->name == NAME) 
+	{
+	  e->name = arg->right->left->val.text;
+	  e->desc = arg->right->right->val.qstring;
 #ifdef DEBUG
-      PRDBG("set_neededarg : e->name = %s\n", e->name);
-      PRDBG("set_neededarg : e->desc = %s\n", e->desc);
+	  PRDBG("set_neededarg : e->name = %s\n", e->name);
+	  PRDBG("set_neededarg : e->desc = %s\n", e->desc);
 #endif
-    }
-    else if (arg->right->left->name == '#' &&
-             arg->right->left->left->name == NAME) {
-      e->name = arg->right->left->left->val.text;
-      e->desc = arg->right->left->right->val.qstring;
+	}
+      else 
+	if (arg->right->left->name == '#' &&
+	    arg->right->left->left->name == NAME) 
+	  {
+	    e->name = arg->right->left->left->val.text;
+	    e->desc = arg->right->left->right->val.qstring;
 #ifdef DEBUG
-      PRDBG("set_neededarg : e->name = %s\n", e->name);
-      PRDBG("set_neededarg : e->desc = %s\n", e->desc);
+	    PRDBG("set_neededarg : e->name = %s\n", e->name);
+	    PRDBG("set_neededarg : e->desc = %s\n", e->desc);
 #endif
-    }
-    else {
+	  }
+	else 
+	  {
 #ifdef DEBUG
-      if (arg->right->left->name != '#')
-        PRDBG("set_neededarg : arg->right->left->name = %M\n",
-                        arg->right->left->name);
-      else {
-        PRDBG("set_neededarg : arg->right->left->name = #\n");
-        PRDBG("set_neededarg : arg->right->left->left->name = %M\n",
-                    arg->right->left->left->name);
-      }
+	    if (arg->right->left->name != '#')
+	      PRDBG("set_neededarg : arg->right->left->name = %M\n",
+		    arg->right->left->name);
+	    else 
+	      {
+		PRDBG("set_neededarg : arg->right->left->name = #\n");
+		PRDBG("set_neededarg : arg->right->left->left->name = %M\n",
+		      arg->right->left->left->name);
+	      }
+#endif
+	    INT_ERROR("set_neededarg");
+	  } 
+    }  /* end of  if (arg->right->name == '#') */
+  else 
+    {
+#ifdef DEBUG
+      PRDBG("set_neededarg : arg->right->name = %M\n", arg->right->name);
 #endif
       INT_ERROR("set_neededarg");
-    } 
-  }
-  else {
-#ifdef DEBUG
-    PRDBG("set_neededarg : arg->right->name = %M\n", arg->right->name);
-#endif
-    INT_ERROR("set_neededarg");
-  }
+    }
 
-  if ((s = LOOKUP(e->name)) != NULL) {
-    SET_RENAME(s, GET_SNAME(s));
-    e->type = GET_TYPE(s);
-    e->access = GET_ACCESS(s); 
-    SET_SFATHER(s, e);
-  }
-  else {
-    e->type = NULL;
-    e->access = NULL; 
-    fatal_error("'%s' : is not declared\n", e->name);
-  }
+  if ((s = LOOKUP(e->name)) != NULL) 
+    {
+      SET_RENAME(s, GET_SNAME(s));
+      e->type = GET_TYPE(s);
+      e->access = GET_ACCESS(s); 
+      SET_SFATHER(s, e);
+    }
+  else 
+    {
+      e->type = NULL;
+      e->access = NULL; 
+      fatal_error("'%s' : is not declared [L532]\n", e->name);
+    }
 
   if (arg->left->name == NAME)
     e->texname = arg->left->val.text;
@@ -1810,10 +1819,16 @@ printf("(double)*(n->val.real) = %lg\n",(double)*(n->val.real));
     case CHARACTER :
       switch (t) {
         case QSTRING_T :
+	/*
           if (msg_flg) error2(NULL, 0,
      "'%s' default : You can't put character into quoted string variable\n", s);
           return NULL;
           break;
+
+	  Modified by JF 14/04/2000. Try to manage QSTRING_T as CHAR_T, since
+	  strings are not allowed (confusion with char *).
+	*/
+
         case CHAR_T :
 #ifdef __STDC__
           return (void *)n->val.character;
@@ -1970,12 +1985,17 @@ Paramvalue *v;
     case QSTRING_T :
       switch(n->name) {
         case QSTRING :
+	  /*
+	  Modified by JF 14/04/2000. Try to manage QSTRING_T as CHAR_T, since
+	  strings are not allowed (confusion with char *).
+	  */
+        case CHARACTER :
           v->q = (char *)ret;
           break;
-        case CHARACTER :
+	/* case CHARACTER : */
         case INTEGER :
         case REAL:
-          v->q = NULL;
+          v->q =  NULL;
           break;
         default :
           INT_ERROR("set_scalar_value");
@@ -2245,12 +2265,18 @@ Paramtype *p;
 	  short is_order_correct;
 	  switch (p->t) {
           case QSTRING_T :
+	    /*
             error2(NULL, 0,
 "'%s' interval : interval can't be used with quoted string variable\n", s);
             free(p->i);
             p->i = NULL;
             return;
             break;
+	    Modified by JF 15/04/2000. Try to manage QSTRING_T as CHAR_T, 
+	    since strings are not allowed (confusion with char *).
+	    */
+            is_order_correct = *p->i->max.q >= *p->i->min.q;
+	    break;
           case CHAR_T :
             is_order_correct = p->i->max.c >= p->i->min.c;
             break;

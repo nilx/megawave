@@ -235,12 +235,10 @@ void mw_delete_wtrans2d(wtrans)
 	mw_delete_fimage(wtrans->images[j][d]);
 	wtrans->images[j][d] = NULL;
       }
-  
-  for (j=0;j<mw_max_nfilter;j++) strcpy(wtrans->filter_name[j],"?");
 
+  for (j=0;j<mw_max_nfilter;j++) strcpy(wtrans->filter_name[j],"?");
   wtrans->type = wtrans->edges = wtrans->nlevel = wtrans->norient = 0;
   wtrans->nfilter = wtrans->nrow = wtrans->ncol = 0;
-
   wtrans->cmt[0] = wtrans->name[0] = '\0';
   free(wtrans);
   wtrans=NULL;  /* Useless but who knows ? */

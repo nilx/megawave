@@ -1,7 +1,7 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    module.h
    
-   Vers. 1.0
+   Vers. 1.1
    (C) 1994 Jacques Froment
    Internal Input/Output module & modules structures
 
@@ -19,8 +19,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef SunOS
 #include <sys/types.h>
 #endif
-
-#include "string_size.h"
 
 /* One MegaWave2 Module */
 /* This structure may contain true module or a group name, organized in

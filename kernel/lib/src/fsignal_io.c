@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fsignal_io.c
    
-   Vers. 1.0
-   (C) 1993 Jacques Froment
+   Vers. 1.3
+   (C) 1993-2001 Jacques Froment
    Input/Output functions for the fsignal structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -112,19 +112,19 @@ Fsignal signal;
   fp =_mw_create_data_ascii_file(fname);
   if (fp == NULL) return(-1);
 
-  fprintf(fp,"%%----- Fsignal -----\n");
-  fprintf(fp,"def Fsignal\n");
+  fprintf(fp,"#----- Fsignal -----\n");
+  fprintf(fp,"#def Fsignal\n");
 
-  fprintf(fp,"comments: %s\n",signal->cmt);
+  fprintf(fp,"#comments: %s\n",signal->cmt);
 
-  fprintf(fp,"size: %d\n",signal->size);
-  fprintf(fp,"scale: %e\n",signal->scale);
-  fprintf(fp,"shift: %e\n",signal->shift);
-  fprintf(fp,"gain: %e\n",signal->gain);
-  fprintf(fp,"sgrate: %e\n",signal->sgrate);
-  fprintf(fp,"firstp: %d\n",signal->firstp);
-  fprintf(fp,"lastp: %d\n",signal->lastp);
-  fprintf(fp,"param: %e\n\n",signal->param);
+  fprintf(fp,"#size: %d\n",signal->size);
+  fprintf(fp,"#scale: %e\n",signal->scale);
+  fprintf(fp,"#shift: %e\n",signal->shift);
+  fprintf(fp,"#gain: %e\n",signal->gain);
+  fprintf(fp,"#sgrate: %e\n",signal->sgrate);
+  fprintf(fp,"#firstp: %d\n",signal->firstp);
+  fprintf(fp,"#lastp: %d\n",signal->lastp);
+  fprintf(fp,"#param: %e\n\n",signal->param);
 
   for (i=0;i<signal->size;i++) fprintf(fp,"%e\n",signal->values[i]);
       
@@ -143,9 +143,11 @@ char *type;    /* type of the file */
 Fsignal signal;  /* pre-defined signal (may be NULL) */
 
 {
-  char mtype[TYPE_SIZE];
-  
-  _mw_get_file_type(fname,type,mtype);
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+
+  _mw_get_file_type(fname,type,mtype,&hsize,&version);
  
   if (strcmp(type,"A_FSIGNAL") == 0)
     return(_mw_load_fsignal_ascii(fname,signal));

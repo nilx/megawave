@@ -22,11 +22,7 @@ usage = {
 
 #define EPS 1e-4
 
-#ifdef __STDC__
-void fmse(Fimage, Fimage, int*, char*, double *, double *, double *, double *);
-#else
-void fmse();
-#endif
+extern void fmse();
 
 /* Compute the 8 neighbour pixels of the current pixel p              */
 /* When p touches the border of the image, a mirror effect is applied */

@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {ksplines};
-  version = {"1.0"};
+  version = {"1.3"};
   author = {"Jacques Froment"};
   function = {"Generate a set of splines-curves from control points-curves"};
   usage = {
@@ -11,6 +11,10 @@ cvs_control_pts->ctrl_pts  "set of curves of control points (curves input)",
 ksplines<-splines          "B-spline curves (curves output)"
   };
 */
+/*----------------------------------------------------------------------
+ v1.2: corrected allocation bug + minor modifications (L.Moisan)
+ v1.3: upgrade for new kernel (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
@@ -19,21 +23,6 @@ ksplines<-splines          "B-spline curves (curves output)"
 #define max(A,B)     (((A)>(B)) ? (A) : (B))
 
 extern int mwdbg;
-
-/* Return the number of points in a curve */
-
-int give_number_of_points_in_curve(curve)
-                                         
-Curve curve;
-{
-  Point_curve c;
-  int n;
-
-  n=0;
-  for (c=curve->first; c; c=c->next) n++;
-  return(n);
-}
-
 
 /* Return the maximum number of points in a set of curves */
 
@@ -47,12 +36,12 @@ Curves curves;
 
   n=0;
   for (cv=curves->first; cv; cv=cv->next)
-    n = max(n,give_number_of_points_in_curve(cv));
+    n = max(n,mw_length_curve(cv));
   return(n);
 }
 
 
-init_nodes(X,j,n)   /* Init the node vector */
+void init_nodes(X,j,n)   /* Init the node vector */
 
 int *X,j,n;
 
@@ -191,7 +180,8 @@ float Step; /* Step in the discretization of the spline */
 }
 
 
-/* Main function */
+/*------------------------------ Main function ------------------------------*/
+
 void ksplines(C,Step,ctrl_pts,splines)
 
 int *C;      /* Order j of the spline */
@@ -216,20 +206,11 @@ Curves ctrl_pts,splines;
   M = give_max_number_of_points_in_curves(ctrl_pts);
   mwdebug("Maxi. number of control points = %d\n",M);
 
-  X = (int *) malloc((M+1)*sizeof(int));
-  if (X == NULL) 
-    {
-      mw_delete_curves(splines);
-      mwerror(FATAL,1,"Not enough memory\n");
-    }
+  X = (int *) malloc((M+*C)*sizeof(int));
+  if (X == NULL) mwerror(FATAL,1,"Not enough memory\n");
 
   N = mw_change_fimage(NULL,*C+1,M+*C);
-  if (N == NULL)
-    {
-      mw_delete_curves(splines);
-      free(X);
-      mwerror(FATAL,1,"Not enough memory\n");
-    }
+  if (N == NULL) mwerror(FATAL,1,"Not enough memory\n");
 
   for (P=ctrl_pts->first, cp_number=1; P; P=P->next, cp_number++)
     {
@@ -237,7 +218,7 @@ Curves ctrl_pts,splines;
       
       mwdebug("-> Scanning Control points number #%d\n",cp_number);
 
-      M = give_number_of_points_in_curve(P);      
+      M = mw_length_curve(P);
       NPC = M-1;
       mwdebug("\tM=%d \t NPC=%d\n",M,NPC);
 
@@ -248,13 +229,7 @@ Curves ctrl_pts,splines;
 	  /* Create a new spline structure */
 	  oldsp = newsp;
 	  newsp = mw_new_curve();
-	  if (newsp == NULL)
-	    {
-	      mw_delete_curves(splines);
-	      free(X);
-	      mw_delete_fimage(N);
-	      mwerror(FATAL,1,"Not enough memory\n");
-	    }
+	  if (newsp == NULL) mwerror(FATAL,1,"Not enough memory\n");
 	  if (splines->first == NULL) splines->first = newsp;
 	  if (oldsp != NULL) oldsp->next = newsp;
 	  newsp->previous = oldsp;
@@ -273,7 +248,7 @@ Curves ctrl_pts,splines;
     }
 
   free(X);
-  mw_delete_fimage(N);
+  mw_delete_fimage(N); 
 }
 
 

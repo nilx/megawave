@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/sh 
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Install a new MegaWave2 full version (adm only)";
 _Prog="`basename $0`"
-_Vers="1.6"
-_Date="1999-2000"
+_Vers="1.14"
+_Date="1999-2002"
 _Auth="Jacques Froment";
 _Usage="[-static] [-public || -public=private] [-clear] [-debug] [-level l] mw2distribution"
 #-----------------------------------------------------------------------------
@@ -31,11 +31,18 @@ _Usage="[-static] [-public || -public=private] [-clear] [-debug] [-level l] mw2d
 # -level l : Install levels greater or equal than l only.
 #-----------------------------------------------------------------------------
 
+Echo()
+
+{
+ echo "$1"
+ echo "$1" >> $MWSRC/Install.log
+}
+
 NewTrap()
 {
-trap "echo '***********************************'; \
-      echo '***** Installation canceled ! *****'; \
-      echo '***********************************';\
+trap "Echo '***********************************'; \
+      Echo '***** Installation canceled ! *****'; \
+      Echo '***********************************';\
       Abort" 2 3
 }
 
@@ -45,9 +52,9 @@ Answer()
 ok=0
 while [ $ok -ne 1 ]; do
  if  [ "$2" != "" ]; then
-   echo "$1 [Y/N] ? [default $2]" 2>&1
+   Echo "$1 [Y/N] ? [default $2]" 
  else
-   echo "$1 [Y/N] ?" 2>&1
+   Echo "$1 [Y/N] ?" 
  fi
  read ans
  if [ "$ans" = "" ] && [ "$2" != "" ]; then
@@ -63,22 +70,23 @@ while [ $ok -ne 1 ]; do
  fi
  if [ $ok -ne 1 ]; then
   if  [ "$2" != "" ]; then
-   echo "Please, answer Y for Yes or N for No (default means $2) !" 2>&1
+   Echo "Please, answer Y for Yes or N for No (default means $2) !" 
   else
-   echo "Please, answer Y for Yes or N for No !" 2>&1
+   Echo "Please, answer Y for Yes or N for No !" 
   fi
  fi
 done
+echo "(Answer is $ans)" >> $MWSRC/Install.log
 echo ""
 }
 
 Abort()
 {
   cd $CWD
-  echo "***** Abort $_Prog at level $level." 2>&1
+  Echo "***** Abort $_Prog at level $level." 
   if [ -d $MWNEWPUB ]; then
-    echo "***** If you don't plan to continue the installation later using '$_Prog -level $level'," 2>&1
-    echo "***** you should remove $MWNEWPUB." 2>&1 
+    Echo "***** If you don't plan to continue the installation later using '$_Prog -level $level'," 
+    Echo "***** you should remove $MWNEWPUB."
     Answer "***** Remove it now" "Y"
     if [ "$ans" = "Y" ]; then
       rm -rf $MWNEWPUB
@@ -94,7 +102,7 @@ if [ $# -lt 1 ] || [ $# -gt 7 ]; then
 fi
 
 
-CWD=`pwd`
+CWD=`/bin/pwd`
 pubinstall=0
 clear=0
 kernelopt=""
@@ -103,7 +111,6 @@ setenvopt="-privateonly"
 l=1
 level=0
 MWNEWPUB="/void$$"
-NewTrap
 
 while [ "$1" != "" ]
 do
@@ -148,6 +155,15 @@ do
        esac
 done
 
+
+#--------------------------
+echo ==== >> $MWSRC/Install.log
+echo ==== `date`: Run $_Prog Vers $_Vers >> $MWSRC/Install.log
+echo ====  >> $MWSRC/Install.log
+#--------------------------
+
+NewTrap
+
 # Set optimization flag for cmw2 if -g not set
 a=`echo $cmw2opt | grep "\-g"`
 if [ "$a" = "" ]; then
@@ -155,73 +171,78 @@ if [ "$a" = "" ]; then
 fi 
 
 if [ ! -r $MWSRC/VERS ]; then
- echo "***** Cannot find version file in $MWSRC : Are you sure that" 2>&1
- echo "***** $MWSRC is the MegaWave2 Distribution home directory ?" 2>&1
+ Echo "***** Cannot find version file in $MWSRC : Are you sure that" 
+ Echo "***** $MWSRC is the MegaWave2 Distribution home directory ?" 
  Abort
 fi
 
 if [ ! -r $MWSRC/kernel/Install ]; then
- echo "***** Cannot find kernel Install in $MWSRC : Are you sure that" 2>&1
- echo "***** $MWSRC is the MegaWave2 Distribution home directory ?" 2>&1
+ Echo "***** Cannot find kernel Install in $MWSRC : Are you sure that" 
+ Echo "***** $MWSRC is the MegaWave2 Distribution home directory ?"
  Abort
 fi
 
-echo "************************************************************************"
-echo "***** Begin the MegaWave2 Installation Process (cross the fingers) *****"
-echo "************************************************************************"
-echo "***** `date`"
+Echo "************************************************************************"
+Echo "***** Begin the MegaWave2 Installation Process (cross the fingers) *****"
+Echo "************************************************************************"
+Echo "***** `date`"
 
 level=`echo "$level 1 + p" | dc`
 NewTrap
 if [ $l -le $level ]; then 
- echo "*****************************************"
- echo "***** Level $level : Set the environment *****"
- echo "*****************************************"
+ Echo "*****************************************"
+ Echo "***** Level $level : Set the environment *****"
+ Echo "*****************************************"
 
  MWSHELL=$MWSRC/kernel/shell
  if [ ! -x $MWSHELL/mwsetenv ]; then
-   echo "***** Cannot exec $MWSHELL/mwsetenv : Are you sure that" 2>&1
-   echo "***** $MWSRC is the MegaWave2 Distribution home directory ?" 2>&1
+   Echo "***** Cannot exec $MWSHELL/mwsetenv : Are you sure that" 
+   Echo "***** $MWSRC is the MegaWave2 Distribution home directory ?" 
    Abort
  fi
  $MWSHELL/mwsetenv $setenvopt $MWSRC
  if [ $? -ne 0 ]; then
-   echo "***** Error while setting environment !" 2>&1
+   Echo "***** Error while setting environment !"
    Abort
  fi
  MWSHELL=$MWSRC/kernel/shell
  machinetype=`$MWSHELL/mwarch -s`
  MWPROFILE=$MWSRC/sys/lib/$machinetype/.profile_adm_megawave2
  if [ ! -x $MWPROFILE ]; then
-   echo "***** Cannot exec profile $MWPROFILE !" 2>&1
+   Echo "***** Cannot exec profile $MWPROFILE !" 
    Abort
  fi
  . $MWPROFILE
+ if [ $? -ne 0 ]; then
+    Echo "***** Profile $MWPROFILE malformed !" 
+    Abort
+ fi
 
 # end of level
 fi
 
+MWSHELL=$MWSRC/kernel/shell
 if [ $pubinstall -eq 1 ]; then
   if [ "$PUBLIC_MEGAWAVE2" = "$PRIVATE_MEGAWAVE2" ]; then
-    echo "***** Option -public is meaningless since PUBLIC MegaWave2 is the same than PRIVATE." 2>&1
-    echo "***** Please rerun $_Prog with right options or change PUBLIC_MEGAWAVE2 value." 2>&1
+    Echo "***** Option -public is meaningless since PUBLIC MegaWave2 is the same than PRIVATE." 
+    Echo "***** Please rerun $_Prog with right options or change PUBLIC_MEGAWAVE2 value." 
     Abort
   fi
   MWDIRPUB=`dirname $PUBLIC_MEGAWAVE2`
   if [ ! -w $MWDIRPUB ]; then
-    echo "***** You don't have permission to install PUBLIC MegaWave2 on $MWDIRPUB !"
-    echo "***** Are you sure you are the MegaWave2 Administrator ?" 2>&1
+    Echo "***** You don't have permission to install PUBLIC MegaWave2 on $MWDIRPUB !"
+    Echo "***** Are you sure you are the MegaWave2 Administrator ?" 
     Abort
   fi
   if [ $clear -eq 1 ] && [ -d $PUBLIC_MEGAWAVE2 ]; then
     MWORGPUB=$PUBLIC_MEGAWAVE2
     if [ -d $MWORGPUB ] && [ ! -r  $MWORGPUB/VERS ]; then
-      echo "***** Cannot find version file in $MWORGPUB !" 2>&1
-      echo "***** I suppose this PUBLIC MegaWave2 is an obsolete version." 2>&1
+      Echo "***** Cannot find version file in $MWORGPUB !" 
+      Echo "***** I suppose this PUBLIC MegaWave2 is an obsolete version." 
       Answer "***** Ok to rename it ${MWORGPUB}_old and continue the installation" "Y"
       if [ "$ans" = "Y" ]; then
         if [ -d ${MWORGPUB}_old ]; then
-          echo "***** This old directory already exists !"  2>&1
+          Echo "***** This old directory already exists !"  
           Answer "***** Ok to remove it and continue the installation" "Y"
           if [ "$ans" = "Y" ]; then
             rm -rf ${MWORGPUB}_old
@@ -236,6 +257,9 @@ if [ $pubinstall -eq 1 ]; then
     fi
   fi
 fi
+
+# Set default value for newvers
+newvers=`cat $MWSRC/VERS`
 
 # If Install PUBLIC, check if $PUBLIC_MEGAWAVE2 comes from a former incomplete
 # installation. If yes, do not create a temporary directory.
@@ -263,13 +287,13 @@ if [ $pubinstall -ne 1 ] || [ ! -r $PUBLIC_MEGAWAVE2/INSTALL_NOT_COMPLETE ]; the
 
     MWNEWPUB=$MWDIRPUB/MegaWave2_new_V${newvers}
     PUBLIC_MEGAWAVE2=$MWNEWPUB
-    echo "***** Make PUBLIC installation in the temporary directory $PUBLIC_MEGAWAVE2"
+    Echo "***** Make PUBLIC installation in the temporary directory $PUBLIC_MEGAWAVE2"
     if [ -d $PUBLIC_MEGAWAVE2 ] && [ $l -le 1 ]; then
       Answer "***** This directory already exists. May I remove it" "Y"
       if [ "$ans" = "Y" ]; then
         rm -rf $PUBLIC_MEGAWAVE2
       else
-        echo "***** OK, hope you know what you are doing..."       
+        Echo "***** OK, hope you know what you are doing..."       
       fi              
     fi
   else
@@ -299,14 +323,14 @@ fi
 level=`echo "$level 1 + p" | dc`
 NewTrap
 if [ $l -le $level ]; then 
- echo "****************************************"
- echo "***** Level $level : Compile the kernel *****"
- echo "*****************************************"
+ Echo "****************************************"
+ Echo "***** Level $level : Compile the kernel *****"
+ Echo "*****************************************"
 
  cd kernel; 
  ./Install $kernelopt
  if [ $? -ne 0 ]; then
-   echo "***** Error while compiling kernel !" 2>&1
+   Echo "***** Error while compiling kernel !" 
    Abort
  fi
 # end of level
@@ -315,15 +339,31 @@ fi
 level=`echo "$level 1 + p" | dc`
 NewTrap
 if [ $l -le $level ]; then 
- echo "*****************************************"
- echo "***** Level $level : Compile the modules *****"
- echo "*****************************************"
+ Echo "*****************************************"
+ Echo "***** Level $level : Compile the modules *****"
+ Echo "*****************************************"
+
+# Check if cmw2 works well. If not, output error message from cmw2
+# so the user can guess what is happening.
+ 
+ mwcmwcheck
+ if [ $? -ne 0 ]; then
+   Echo "***** Modules cannot be compiled ! It means something went wrong during the kernel installation stage..." 
+   Abort
+ fi
+
+# Now, compile all modules.
 
  cd $MWSRC
  cmw2_all $cmw2opt src
  if [ $? -ne 0 ]; then
-   echo "***** Error while compiling modules !" 2>&1
-   Abort
+   Echo "***** Error while compiling modules !" 
+   Answer "***** Some module(s) could not be successfully compiled ! Abort the installation" "Y"
+   if [ "$ans" = "Y" ]; then
+    Abort       
+   else
+    Echo "***** I continue, but remember that some module(s) won't be available..."       
+   fi 
  fi
 # end of level
 fi
@@ -331,24 +371,32 @@ fi
 level=`echo "$level 1 + p" | dc`
 NewTrap
 if [ $l -le $level ]; then 
- echo "*******************************************************"
- echo "***** Level $level : Compile the documentation (guid3) *****"
- echo "*******************************************************"
+ Echo "*******************************************************"
+ Echo "***** Level $level : Compile the documentation (guid3) *****"
+ Echo "*******************************************************"
 
  mwdep -adm
  if [ $? -ne 0 ]; then
-   echo "***** Error while making dependencies list ! I continue but" 2>&1
-   echo "***** you will not get modules dependencies in the documentation." 2>&1
+   Echo "***** Error while making dependencies list ! I continue but" 
+   Echo "***** you will not get modules dependencies in the documentation."
  fi
- make_mw2doc $MWSRC
+ mwmakedoc $MWSRC
  if [ $? -ne 0 ]; then
-   echo "***** Error while making documentation !" 2>&1
+   Echo "***** Error while making documentation !" 
    Abort
  fi
  cd $MWSRC/doc
- latex guid3
- latex guid3
- latex guid3
+ latex guid3.tex
+# Check whether or not makeindex has to be called
+ package=`grep "\\usepackage{makeidx}" guid3.tex`
+ if [ "$package" = "\\usepackage{makeidx}" ] && [ -r guid3.idx ]; then
+    makeindex=`which makeindex`
+    if [ "$makeindex" != "" ] && [ -x $makeindex ]; then
+      makeindex guid3.idx
+  fi
+ fi
+ latex guid3.tex
+ latex guid3.tex
 # end of level
 fi
 
@@ -363,26 +411,26 @@ fi
 level=`echo "$level 1 + p" | dc`
 NewTrap
 if [ $l -le $level ] && [ $pubinstall -eq 1 ]; then
-  echo "*********************************************"
-  echo "***** Level $level : Install PUBLIC modules  *****"
-  echo "*********************************************"
+  Echo "*********************************************"
+  Echo "***** Level $level : Install PUBLIC modules  *****"
+  Echo "*********************************************"
 
   if [ ! -d $PUBLIC_MEGAWAVE2 ]; then
-    echo "***** Cannot find previous temporary PUBLIC installation" 2>&1
-    echo "***** in $PUBLIC_MEGAWAVE2 !" 2>&1
-    echo "***** You have to rerun $_Prog from level 1." 2>&1
+    Echo "***** Cannot find previous temporary PUBLIC installation" 
+    Echo "***** in $PUBLIC_MEGAWAVE2 !" 
+    Echo "***** You have to rerun $_Prog from level 1." 
     Abort
   fi
 
 # Make the MODULES file
   mwmodlist -mfile $MWSRC > $MWSRC/MODULES.${MW_MACHINETYPE}
   if [ $? -ne 0 ]; then
-    echo "***** Cannot generate MODULES file on ${MW_MACHINETYPE} !" 2>&1
+    Echo "***** Cannot generate MODULES file on ${MW_MACHINETYPE} !" 
     Abort
   fi
   mwmodinstall $MWSRC/MODULES.${MW_MACHINETYPE}
   if [ $? -ne 0 ]; then
-    echo "***** Cannot install PUBLIC modules !" 2>&1
+    Echo "***** Cannot install PUBLIC modules !" 
     Abort
   fi
 # end of level
@@ -391,14 +439,14 @@ fi
 level=`echo "$level 1 + p" | dc`
 NewTrap
 if [ $l -le $level ] && [ $pubinstall -eq 1 ]; then
-  echo "**************************************************"
-  echo "***** Level $level : Install miscellaneous files  *****"
-  echo "**************************************************"
+  Echo "**************************************************"
+  Echo "***** Level $level : Install miscellaneous files  *****"
+  Echo "**************************************************"
 
   if [ ! -d $PUBLIC_MEGAWAVE2 ]; then
-    echo "***** Cannot find previous temporary PUBLIC installation" 2>&1
-    echo "***** in $PUBLIC_MEGAWAVE2 !" 2>&1
-    echo "***** You have to rerun $_Prog from level 1." 2>&1
+    Echo "***** Cannot find previous temporary PUBLIC installation" 
+    Echo "***** in $PUBLIC_MEGAWAVE2 !" 
+    Echo "***** You have to rerun $_Prog from level 1." 
     Abort
   fi
 
@@ -497,24 +545,24 @@ fi
 level=`echo "$level 1 + p" | dc`
 NewTrap
 if [ -d $MWNEWPUB ]; then
-  echo "*****************************************************************"
-  echo "***** Level $level : Make changes in effect in PUBLIC MegaWave2  *****"
-  echo "*****************************************************************"
+  Echo "*****************************************************************"
+  Echo "***** Level $level : Make changes in effect in PUBLIC MegaWave2  *****"
+  Echo "*****************************************************************"
   mv -f $MWORGPUB $MWDIRPUB/MegaWave2_V${oldvers}
   if [ $? -ne 0 ]; then
-    echo "***** Cannot rename $MWORGPUB !" 2>&1
+    Echo "***** Cannot rename $MWORGPUB ! ($MWORGPUB ->  $MWDIRPUB/MegaWave2_V${oldvers})" 
     Abort
   fi
   mv -f $PUBLIC_MEGAWAVE2 $MWORGPUB
   if [ $? -ne 0 ]; then
-    echo "***** Cannot rename $PUBLIC_MEGAWAVE2 !" 2>&1
+    Echo "***** Cannot rename $PUBLIC_MEGAWAVE2 ! ($MWORGPUB -> $PUBLIC_MEGAWAVE2)" 
     Abort
   fi
   chmod 755 $MWORGPUB
   echo $newvers > $MWORGPUB/VERS
   chmod 644 $MWORGPUB/VERS
-  echo "***** Now, users should experiment in $MWORGPUB the new PUBLIC version $newvers"
-  echo "***** They still may get the old PUBLIC version $oldvers in $MWDIRPUB/MegaWave2_V${oldvers}"
+  Echo "***** Now, users should experiment in $MWORGPUB the new PUBLIC version $newvers"
+  Echo "***** They still may get the old PUBLIC version $oldvers in $MWDIRPUB/MegaWave2_V${oldvers}"
   PUBLIC_MEGAWAVE2=$MWORGPUB
 fi
 
@@ -522,11 +570,24 @@ if [ $pubinstall -eq 1 ]; then
   rm -f $PUBLIC_MEGAWAVE2/INSTALL_NOT_COMPLETE
 fi
 cd $CWD
-echo " "
-echo "***** `date`"
-echo "*******************************************************************"
-echo "***** Install done for MegaWave2 ! (Leave your fingers quiet) *****"
-echo "*******************************************************************"
+Echo " "
+Echo "***** `date`"
+Echo "*******************************************************************"
+Echo "***** Install done for MegaWave2 ! (Leave your fingers quiet) *****"
+Echo "*******************************************************************"
+Echo " "
+
+# After installation done, optional checking of modules
+trap "Echo '***** Checking of modules aborted'; exit 1" 2 3
+chk=`mwwhere -bin Checkmodules`
+if [ "$chk" != "" ]; then
+  Answer "***** Do you want to check the module library" "N"
+  if [ "$ans" = "Y" ]; then
+    MW_CHECK_HIDDEN=1
+    export MW_CHECK_HIDDEN
+    Checkmodules
+  fi
+fi
 
 exit 0
 

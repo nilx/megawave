@@ -1,30 +1,50 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {freadasc};
-  version = {"1.0"};
-  author = {"Jacques Froment"};
+  version = {"2.0"};
+  author = {"Jacques Froment, Saïd Ladjal"};
   function = {"Read an image in ascii format (float values)"};
-  usage = {
-    output<-u  "output fimage",
-    dx->dx     "number of columns",
-    dy->dy     "number of rows"
+  usage = {    
+      output<-u  "output fimage",
+    { dx->Dx     "number of columns",
+      dy->Dy     "number of rows" }
+
     };
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v2.0: optional dimensions can be read from standart input (S.Ladjal)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
  
-void freadasc(u,dx,dy)
+void freadasc(u,Dx,Dy)
 Fimage u;
-int dx,dy;
+int *Dx,*Dy;
 {
   register float *ptr;
   int i;
+  int dx,dy;
   float c;
-  
+
+  /* this part was added by Saïd */
+  if (!Dx || !Dy) { /* read them from standart input */
+    if (scanf("%f",&c) != 1) 
+      mwerror(WARNING,1,"File too short\n");
+    dy=(int)c;
+    if (scanf("%f",&c) != 1) 
+      mwerror(WARNING,1,"File too short\n");
+    dx=(int)c;
+  }
+  else 
+    if ((!Dx && Dy) || (Dx && !Dy)) 
+      mwerror(FATAL,1,"you gave only dx or dy \n");
+    else {
+      dx=*Dx; 
+      dy=*Dy;
+    }
+  /* end of Saïd's part */
+
   u = mw_change_fimage(u,dy,dx); 
   if (!u) mwerror(FATAL,1,"Not enough memory\n");
 

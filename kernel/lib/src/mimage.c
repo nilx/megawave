@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mimage.c
    
-   Vers. 1.6
-   (C) 1996-99 Jacques Froment
+   Vers. 1.8
+   (C) 1996-2002 Jacques Froment
    Basic memory routines for the morpho_line, morpho_set & mimage internal types
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -70,20 +70,25 @@ void mw_delete_point_type(point)
     } while ((point != NULL)&&(point != point_first));
 }
 
-void mw_copy_point_type(in, out)
+Point_type mw_copy_point_type(in, out)
 
 Point_type in,out;
 
 { 
   Point_type pt,qt0,qt1;
 
-  if ((!in) || (!out))
+  if (!in)
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_point_type] NULL input or output point_type\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_point_type] NULL input point_type\n");
+      return(NULL);
     }
-
+  if (!out)
+    {
+      out = mw_new_point_type();
+      if (!out) mwerror(ERROR, 0,"[mw_copy_point_type] Not enough memory to create a point_type\n");
+      return(NULL);      
+    }
+  
   out->type = in->type;
   out->previous = NULL;
 
@@ -95,14 +100,15 @@ Point_type in,out;
       if (qt1 == NULL)
 	    {
 	      mw_delete_point_type(qt1);
-	      mwerror(FATAL, 1,"Not enough memory to create a point_type\n");
-	      return;
+	      mwerror(ERROR, 0,"Not enough memory to create a point_type\n");
+	      return(NULL);
 	    }
       qt1->type = pt->type;
       qt1->previous = qt0;
       qt0->next = qt1;
       qt0 = qt1;
     }
+  return(out);
 }
 
 /*--- Morpho_line ---*/
@@ -144,7 +150,7 @@ Morpho_line ll;
   return(ll);
 }
 
-/* desallocate the morpho_line structure */
+/* deallocate the morpho_line structure */
 
 void mw_delete_morpho_line(morpho_line)
      Morpho_line morpho_line;
@@ -168,18 +174,25 @@ void mw_delete_morpho_line(morpho_line)
 
 /* Copy a morpho_line into another morpho_line */
 
-void mw_copy_morpho_line(in, out)
+Morpho_line mw_copy_morpho_line(in, out)
 
 Morpho_line in,out;
 
 { 
- Point_curve pc,qc0,qc1;
-
-  if ((!in) || (!out))
+  if (!in)
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_morpho_line] NULL input or output morpho_line\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_morpho_line] NULL input morpho_line\n");
+      return(NULL);
+    }
+
+  if (!out)
+    {
+      out=mw_new_morpho_line();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_morpho_line] Not enough memory to create a morpho_line !\n");
+	  return(NULL);
+	}
     }
   out->minvalue = in->minvalue;
   out->maxvalue = in->maxvalue;
@@ -188,16 +201,17 @@ Morpho_line in,out;
   if ( ((out->first_point = mw_new_point_curve()) == NULL) ||
       ((out->first_type = mw_new_point_type()) == NULL) )
     {
-      mwerror(FATAL, 1,"Not enough memory to create a morpho_line\n");
-      return;
+      mwerror(ERROR, 0,"Not enough memory to create a morpho_line\n");
+      return(NULL);
     }
   mw_copy_point_curve(in->first_point,out->first_point);
   mw_copy_point_type(in->first_type,out->first_type);
+  return(out);
 }
 
 /* Return the number of points into a morpho_line */
 
-unsigned int mw_morpho_line_length(morpho_line)
+unsigned int mw_length_morpho_line(morpho_line)
 
 Morpho_line morpho_line;
 
@@ -217,7 +231,7 @@ Morpho_line morpho_line;
 	   (t != NULL)&&(t->next != tfirst); m++, t=t->next);
 
       if ( (n*m != 0) && (n != m) )
-	mwerror(INTERNAL,1,"[mw_morpho_line_length] Inconsistent Morpho_line structure \n");
+	mwerror(INTERNAL,1,"[mw_length_morpho_line] Inconsistent Morpho_line structure \n");
     }
   return(n);
 }
@@ -225,7 +239,7 @@ Morpho_line morpho_line;
 /* Compute the num field of a morpho_line chain */
 /* Return the number of morpho_lines             */
 
-unsigned int mw_morpho_line_num(ml_first)
+unsigned int mw_num_morpho_line(ml_first)
 
 Morpho_line ml_first;
 
@@ -236,7 +250,7 @@ Morpho_line ml_first;
   if (!ml_first)
     {
       mwerror(ERROR, 0,
-	      "[mw_morpho_line_num] NULL input morpho_line\n");
+	      "[mw_num_morpho_line] NULL input morpho_line\n");
       return(0);
     }  
   for (ml=ml_first, n=1; ml; ml->num=n, ml=ml->next, n++);
@@ -304,7 +318,7 @@ void mw_delete_fmorpho_line(fmorpho_line)
 
 /* Copy a fmorpho_line into another fmorpho_line */
 
-void mw_copy_fmorpho_line(in, out)
+Fmorpho_line mw_copy_fmorpho_line(in, out)
 
 Fmorpho_line in,out;
 
@@ -312,11 +326,20 @@ Fmorpho_line in,out;
   Point_fcurve pc,qc0,qc1;
   Point_type pt,qt0,qt1;
 
-  if ((!in) || (!out))
+  if (!in)
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_fmorpho_line] NULL input or output fmorpho_line\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_fmorpho_line] NULL input fmorpho_line\n");
+      return(NULL);
+    }
+  
+  if (!out)
+    {
+      out=mw_new_fmorpho_line();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_fmorpho_line] Not enough memory to create a fmorpho_line !\n");
+	  return(NULL);
+	}
     }
   out->minvalue = in->minvalue;
   out->maxvalue = in->maxvalue;
@@ -330,8 +353,8 @@ Fmorpho_line in,out;
       if (qc1 == NULL)
 	    {
 	      mw_delete_point_fcurve(qc1);
-	      mwerror(FATAL, 1,"Not enough memory to create a fmorpho_line\n");
-	      return;
+	      mwerror(ERROR, 0,"Not enough memory to create a fmorpho_line\n");
+	      return(NULL);
 	    }
       qc1->x = pc->x;
       qc1->y = pc->y;
@@ -349,8 +372,8 @@ Fmorpho_line in,out;
 	    {
 	      mw_delete_point_fcurve(out->first_point);
 	      mw_delete_point_type(qt1);
-	      mwerror(FATAL, 1,"Not enough memory to create a fmorpho_line\n");
-	      return;
+	      mwerror(ERROR, 0,"Not enough memory to create a fmorpho_line\n");
+	      return(NULL);
 	    }
       qt1->type = pt->type;
       qt1->previous = qt0;
@@ -358,11 +381,12 @@ Fmorpho_line in,out;
       else qt0->next = qt1;
       qt0 = qt1;
     }
+  return(out);
 }
 
 /* Return the number of points into a fmorpho_line */
 
-unsigned int mw_fmorpho_line_length(fmorpho_line)
+unsigned int mw_length_fmorpho_line(fmorpho_line)
 
 Fmorpho_line fmorpho_line;
 
@@ -382,22 +406,22 @@ Fmorpho_line fmorpho_line;
 	   (t != NULL)&&(t->next != tfirst); m++, t=t->next);
 
       if ( (n*m != 0) && (n != m) )
-	mwerror(INTERNAL,1,"[mw_fmorpho_line_length] Inconsistent Fmorpho_line structure \n");
+	mwerror(INTERNAL,1,"[mw_length_fmorpho_line] Inconsistent Fmorpho_line structure \n");
     }
   return(n);
 }
 
-/*--- Segment ---*/
+/*--- Hsegment ---*/
 
 /* creates a new segment structure */
 
-Segment mw_new_segment()
+Hsegment mw_new_hsegment()
 {
-  Segment segment;
+  Hsegment segment;
 
-  if(!(segment = (Segment) (malloc(sizeof(struct segment)))))
+  if(!(segment = (Hsegment) (malloc(sizeof(struct hsegment)))))
     {
-      mwerror(ERROR, 0, "[mw_new_segment] Not enough memory\n");
+      mwerror(ERROR, 0, "[mw_new_hsegment] Not enough memory\n");
       return(NULL);
     }
   segment->xstart = segment->xend = segment->y = 0;
@@ -407,25 +431,25 @@ Segment mw_new_segment()
 
 /* Define the struct if it's not defined */
 
-Segment mw_change_segment(segment)
-     Segment segment;
+Hsegment mw_change_hsegment(segment)
+     Hsegment segment;
 {
-  if (segment == NULL) segment = mw_new_segment();
+  if (segment == NULL) segment = mw_new_hsegment();
   return(segment);
 }
 
 /* desallocate all the segment structures from a starting segment */
 
-void mw_delete_segment(segment)
-     Segment segment;
+void mw_delete_hsegment(segment)
+     Hsegment segment;
 
 {   
-  Segment segment_next,segment_first;
+  Hsegment segment_next,segment_first;
 
   if (segment == NULL)
     {
       mwerror(ERROR, 0,
-	      "[mw_delete_segment] cannot delete : segment structure is NULL\n");
+	      "[mw_delete_hsegment] cannot delete : segment structure is NULL\n");
       return;
     }
 
@@ -485,7 +509,7 @@ void mw_delete_morpho_set(morpho_set)
       return;
     }
 
-  if (morpho_set->first_segment) mw_delete_segment(morpho_set->first_segment);
+  if (morpho_set->first_segment) mw_delete_hsegment(morpho_set->first_segment);
   morpho_set->first_segment = morpho_set->last_segment = NULL;
   morpho_set->neighbor = NULL;
   free(morpho_set);
@@ -494,20 +518,30 @@ void mw_delete_morpho_set(morpho_set)
 
 /* Copy a morpho_set into another morpho_set */
 
-void mw_copy_morpho_set(in, out)
+Morpho_set mw_copy_morpho_set(in, out)
 
 Morpho_set in,out;
 
 { 
-  Segment pc,qc0,qc1;
-  Segment s,s0,s1;
+  Hsegment pc,qc0,qc1;
+  Hsegment s,s0,s1;
 
-  if ((!in) || (!out))
+  if (!in)
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_morpho_set] NULL input or output morpho_set\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_morpho_set] NULL input morpho_set\n");
+      return(NULL);
     }
+  
+  if (!out)
+    {
+      out=mw_new_morpho_set();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_morpho_set] Not enough memory to create a morpho_set !\n");
+	  return(NULL);
+	}
+    }
+
   out->minvalue = in->minvalue;
   out->maxvalue = in->maxvalue;
   out->stated = in->stated;
@@ -517,12 +551,12 @@ Morpho_set in,out;
   s0 = s1 = NULL;
   for (s=in->first_segment; s; s=s->next)
     {
-      s1 = mw_new_segment();
+      s1 = mw_new_hsegment();
       if (s1 == NULL)
 	    {
-	      mw_delete_segment(s1);
-	      mwerror(FATAL, 1,"Not enough memory to create a morpho_set\n");
-	      return;
+	      mw_delete_hsegment(s1);
+	      mwerror(ERROR, 0,"Not enough memory to create a morpho_set\n");
+	      return(NULL);
 	    }
       s1->xstart = s->xstart;
       s1->xend = s->xend;
@@ -532,17 +566,18 @@ Morpho_set in,out;
       else s0->next = s1;
       s0 = s1;
     }
+  return(out);
 }
 
 /* Return the number of segments into a morpho_set */
 
-unsigned int mw_morpho_set_length(morpho_set)
+unsigned int mw_length_morpho_set(morpho_set)
 
 Morpho_set morpho_set;
 
 { 
   unsigned int n;
-  Segment s,sfirst;
+  Hsegment s,sfirst;
 
   if ((!morpho_set) || (!morpho_set->first_segment)) return(0);
 
@@ -609,9 +644,9 @@ void mw_delete_morpho_sets(morpho_sets)
     }
 }
 
-/* Copy a morpho_sets into another morpho_sets from the given starting point */
+/* Copy a morpho_sets into another morpho_sets */
 
-void mw_copy_morpho_sets(in, out)
+Morpho_sets mw_copy_morpho_sets(in, out)
 
 Morpho_sets in,out;
 
@@ -619,12 +654,22 @@ Morpho_sets in,out;
   Morpho_sets iss,oldiss,newiss,p,q,qq,nin,nout;
   unsigned int i,n,num;
 
-  if ((!in) || (!out))
+  if (!in)
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_morpho_sets] NULL input or output morpho_sets\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_morpho_sets] NULL input morpho_sets\n");
+      return(NULL);
     }
+
+  if (!out)
+    {
+      out=mw_new_morpho_sets();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_morpho_sets] Not enough memory to create a morpho_sets !\n");
+	  return(NULL);
+	}
+    }
+
   /* First, copy the Morpho set */
   newiss = out;
   oldiss = NULL;
@@ -633,14 +678,14 @@ Morpho_sets in,out;
       if (newiss != out) newiss = mw_new_morpho_sets();
       if (!newiss)
 	    {
-	      mwerror(FATAL, 1,"Not enough memory to create a morpho_sets\n");
-	      return;
+	      mwerror(ERROR, 0,"Not enough memory to create a morpho_sets\n");
+	      return(NULL);
 	    }     
       if (!newiss->morphoset) newiss->morphoset = mw_new_morpho_set();
       if (!newiss->morphoset) 
 	    {
-	      mwerror(FATAL, 1,"Not enough memory to create a morpho_sets\n");
-	      return;
+	      mwerror(ERROR, 0,"Not enough memory to create a morpho_sets\n");
+	      return(NULL);
 	    }     
       mw_copy_morpho_set(p->morphoset, newiss->morphoset);      
       newiss->previous = oldiss;
@@ -662,13 +707,13 @@ Morpho_sets in,out;
 	for (qq=out; qq && qq->morphoset && (qq->morphoset->num != n); qq=qq->next);
 	if (!qq || !(qq->morphoset)) 
 	  {
-	    mwerror(FATAL, 1,"Cannot copy morpho sets : unconsistent neighbor list in input\n");
-	    return;
+	    mwerror(ERROR, 0,"Cannot copy morpho sets : unconsistent neighbor list in input\n");
+	    return(NULL);
 	  }
 	if ((newiss=mw_new_morpho_sets())==NULL)
 	    {
-	      mwerror(FATAL, 1,"Not enough memory to create a morpho_sets\n");	  
-	      return;
+	      mwerror(ERROR,0,"Not enough memory to create a morpho_sets\n");	  
+	      return(NULL);
 	    }
 	newiss->morphoset = qq->morphoset;
 	if (q->morphoset->neighbor == NULL) q->morphoset->neighbor=newiss;
@@ -676,11 +721,12 @@ Morpho_sets in,out;
 	newiss->previous = oldiss;
 	oldiss = newiss;
       }
+  return(out);
 }
 
 /* Return the number of morpho sets into a morpho_sets */
 
-unsigned int mw_morpho_sets_length(morpho_sets)
+unsigned int mw_length_morpho_sets(morpho_sets)
 
 Morpho_sets morpho_sets;
 
@@ -699,7 +745,7 @@ Morpho_sets morpho_sets;
 /* Compute the num field of a morpho_sets chain                      */
 /* Return the number of morpho_sets                                    */
 
-unsigned int mw_morpho_sets_num(mss_first)
+unsigned int mw_num_morpho_sets(mss_first)
 
 Morpho_sets mss_first;
 
@@ -711,7 +757,7 @@ Morpho_sets mss_first;
   if (!mss_first)
     {
       mwerror(ERROR, 0,
-	      "[mw_morpho_sets_num] NULL input morpho_sets\n");
+	      "[mw_num_morpho_sets] NULL input morpho_sets\n");
       return;
     }  
   for (mss=mss_first, n=1; mss && mss->morphoset; 
@@ -814,19 +860,30 @@ void mw_delete_mimage(mimage)
 
 /* Copy a mimage into another one */
 
-void mw_copy_mimage(in, out)
+Mimage mw_copy_mimage(in, out)
 
 Mimage in,out;
 
 { 
-  Morpho_sets iss,oldiss,newiss,p,q,qq,nin,nout;
-  unsigned int i,n,num;
+  
+  Morpho_line ml,mlc0,mlc1;
+  Fmorpho_line fml,fmlc0,fmlc1;
+  Morpho_sets ms,ms0,ms1;
 
-  if ((!in) || (!out))
+  if (!in)
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_mimage] NULL input or output mimage\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_mimage] NULL input mimage !\n");
+      return(NULL);
+    }
+
+  if (!out)
+    {
+      out=mw_new_mimage();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_mimage] Not enough memory to create a mimage !\n");
+	  return(NULL);
+	}
     }
 
   strcpy(out->cmt,in->cmt);
@@ -835,41 +892,64 @@ Mimage in,out;
   out->nrow = in->nrow;
   out->ncol = in->ncol;
   out->minvalue = in->minvalue;
-  if (in->first_ml)
+  out->maxvalue = in->maxvalue;
+  
+  /* Copy morpho lines */
+  for (mlc0=NULL, ml=in->first_ml; ml; ml=ml->next)
     {
-      out->first_ml = mw_new_morpho_line();
-      if (!out->first_ml)
+      mlc1=mw_new_morpho_line();
+      if (!mlc1)
 	{
-	  mwerror(FATAL, 1,"Not enough memory to create a mimage\n");    
-	  return;
+	  mwerror(ERROR, 0,"Not enough memory to create a mimage\n");  
+	  mw_delete_mimage(out);
+	  return(NULL);
 	}
-      mw_copy_morpho_line(in->first_ml,out->first_ml);
+      mlc1->previous=mlc0;
+      if (mlc0) mlc0->next=mlc1;
+      else out->first_ml=mlc1;
+      mw_copy_morpho_line(ml,mlc1);
+      mlc0=mlc1;
     }
-  if (in->first_fml)
+
+  /* Copy fmorpho lines */
+  for (fmlc0=NULL, fml=in->first_fml; fml; fml=fml->next)
     {
-      out->first_fml = mw_new_fmorpho_line();
-      if (!out->first_fml)
+      fmlc1=mw_new_fmorpho_line();
+      if (!fmlc1)
 	{
-	  mwerror(FATAL, 1,"Not enough memory to create a mimage\n");    
-	  return;
+	  mwerror(ERROR, 0,"Not enough memory to create a mimage\n");    
+	  mw_delete_mimage(out);
+	  return(NULL);
 	}
-      mw_copy_fmorpho_line(in->first_fml,out->first_fml);
+      fmlc1->previous=fmlc0;
+      if (fmlc0) fmlc0->next=fmlc1;
+      else out->first_fml=fmlc1;
+      mw_copy_fmorpho_line(fml,fmlc1);
+      fmlc0=fmlc1;
     }
-  if (in->first_ms)
+
+  /* Copy morpho sets */
+  for (ms0=NULL, ms=in->first_ms; ms; ms=ms->next)
     {
-      out->first_ms = mw_new_morpho_sets();
-      if (!out->first_ms)
+      ms1=mw_new_morpho_sets();
+      if (!ms1)
 	{
-	  mwerror(FATAL, 1,"Not enough memory to create a mimage\n");    
-	  return;
+	  mwerror(ERROR, 0,"Not enough memory to create a mimage\n");    
+	  mw_delete_mimage(out);
+	  return(NULL);
 	}
-      mw_copy_morpho_sets(in->first_ms,out->first_ms);
+      ms1->previous=ms0;
+      if (ms0) ms0->next=ms1;
+      else out->first_ms=ms1;
+      mw_copy_morpho_sets(ms,ms1);
+      ms0=ms1;
     }
+  return(out);
 }
 
 /* Return the number of morpho lines into a mimage */
 
-unsigned int mw_mimage_length_ml(mimage)
+unsigned int mw_length_ml_mimage(mimage)
 
 Mimage mimage;
 
@@ -886,7 +966,7 @@ Mimage mimage;
 
 /* Return the number of fmorpho lines into a mimage */
 
-unsigned int mw_mimage_length_fml(mimage)
+unsigned int mw_length_fml_mimage(mimage)
 
 Mimage mimage;
 
@@ -903,7 +983,7 @@ Mimage mimage;
 
 /* Return the number of morpho sets into a mimage */
 
-unsigned int mw_mimage_length_ms(mimage)
+unsigned int mw_length_ms_mimage(mimage)
 
 Mimage mimage;
 
@@ -912,7 +992,7 @@ Mimage mimage;
   Fmorpho_line pfirst,p;
 
   if ((!mimage) || (!mimage->first_ms)) return(0);
-  return(mw_morpho_sets_length(mimage->first_ms));
+  return(mw_length_morpho_sets(mimage->first_ms));
 }
 
 

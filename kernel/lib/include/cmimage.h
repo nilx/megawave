@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cmimage.h
    
-   Vers. 1.1
-   (C) 1999 Jacques Froment
+   Vers. 1.3
+   (C) 1999-2002 Jacques Froment
 
    Internal Input/Output for the following morphological structures
        Cmorpho_line
@@ -23,8 +23,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef SunOS
 #include <sys/types.h>
 #endif
-
-#include "string_size.h"
 
 #ifndef mimage_flg
 #include "mimage.h"
@@ -84,8 +82,8 @@ typedef struct cfmorpho_line {
 
 typedef struct cmorpho_set {
   unsigned int num;      /* Morpho set number (range in the Morpho_sets struct.) */
-  Segment first_segment; /* Pointer to the first segment of the morpho set */
-  Segment last_segment;  /* Pointer to the last segment of the morpho set */  
+  Hsegment first_segment; /* Pointer to the first segment of the morpho set */
+  Hsegment last_segment;  /* Pointer to the last segment of the morpho set */  
   Color minvalue;        /* Minimum color value of this set */
   Color maxvalue;        /* Maximum color level value of this set */
   unsigned char stated;  /* 1 if this m.s. has already been stated, 0 otherwise */
@@ -126,85 +124,76 @@ typedef struct cmimage {
 Cmorpho_line mw_new_cmorpho_line(void);
 Cmorpho_line mw_change_cmorpho_line(Cmorpho_line);
 void mw_delete_cmorpho_line(Cmorpho_line);
-void mw_copy_cmorpho_line(Cmorpho_line,Cmorpho_line);
-unsigned int mw_cmorpho_line_length(Cmorpho_line);
-unsigned int mw_cmorpho_line_num(Cmorpho_line);
+Cmorpho_line mw_copy_cmorpho_line(Cmorpho_line,Cmorpho_line);
+unsigned int mw_length_cmorpho_line(Cmorpho_line);
+unsigned int mw_num_cmorpho_line(Cmorpho_line);
 
 Cfmorpho_line mw_new_cfmorpho_line(void);
 Cfmorpho_line mw_change_cfmorpho_line(Cfmorpho_line);
 void mw_delete_cfmorpho_line(Cfmorpho_line);
-void mw_copy_cfmorpho_line(Cfmorpho_line,Cfmorpho_line);
-unsigned int mw_cfmorpho_line_length(Cfmorpho_line);
+Cfmorpho_line mw_copy_cfmorpho_line(Cfmorpho_line,Cfmorpho_line);
+unsigned int mw_length_cfmorpho_line(Cfmorpho_line);
 
 Cmorpho_set mw_new_cmorpho_set(void);
 Cmorpho_set mw_alloc_cmorpho_set(Cmorpho_set,int);
 Cmorpho_set mw_change_cmorpho_set(Cmorpho_set);
 void mw_delete_cmorpho_set(Cmorpho_set);
-void mw_copy_cmorpho_set(Cmorpho_set, Cmorpho_set);
-unsigned int mw_cmorpho_set_length(Cmorpho_set);
+Cmorpho_set mw_copy_cmorpho_set(Cmorpho_set, Cmorpho_set);
+unsigned int mw_length_cmorpho_set(Cmorpho_set);
 
 Cmorpho_sets mw_new_cmorpho_sets(void);
 Cmorpho_sets mw_change_cmorpho_sets(Cmorpho_sets);
 void mw_delete_cmorpho_sets(Cmorpho_sets);
-void mw_copy_cmorpho_sets(Cmorpho_sets, Cmorpho_sets);
-unsigned int mw_cmorpho_sets_length(Cmorpho_sets);
-unsigned int mw_cmorpho_sets_num(Cmorpho_sets);
+Cmorpho_sets mw_copy_cmorpho_sets(Cmorpho_sets, Cmorpho_sets);
+unsigned int mw_length_cmorpho_sets(Cmorpho_sets);
+unsigned int mw_num_cmorpho_sets(Cmorpho_sets);
 void mw_cmorpho_sets_clear_stated(Cmorpho_sets);
 
 Cmimage mw_new_cmimage(void);
 Cmimage mw_change_cmimage(Cmimage);
 void mw_delete_cmimage(Cmimage);
-void mw_copy_cmimage(Cmimage,Cmimage);
-unsigned int mw_cmimage_length_ml(Cmimage);
-unsigned int mw_cmimage_length_fml(Cmimage);
-unsigned int mw_cmimage_length_ms(Cmimage);
+Cmimage mw_copy_cmimage(Cmimage,Cmimage);
+unsigned int mw_length_ml_cmimage(Cmimage);
+unsigned int mw_length_fml_cmimage(Cmimage);
+unsigned int mw_length_ms_cmimage(Cmimage);
 
 #else
-
-Point_type mw_new_point_type();
-Point_type mw_change_point_type();
-void mw_delete_point_type();
-void mw_copy_point_type();
 
 Cmorpho_line mw_new_cmorpho_line();
 Cmorpho_line mw_change_cmorpho_line();
 void mw_delete_cmorpho_line();
-void mw_copy_cmorpho_line();
-unsigned int mw_cmorpho_line_length();
-unsigned int mw_cmorpho_line_num();
+Cmorpho_line mw_copy_cmorpho_line();
+unsigned int mw_length_cmorpho_line();
+unsigned int mw_num_cmorpho_line();
 
 Cfmorpho_line mw_new_cfmorpho_line();
 Cfmorpho_line mw_change_cfmorpho_line();
 void mw_delete_cfmorpho_line();
-void mw_copy_cfmorpho_line();
-unsigned int mw_cfmorpho_line_length();
-
-Segment mw_new_segment();
-Segment mw_change_segment();
-void mw_delete_segment();
+Cfmorpho_line mw_copy_cfmorpho_line();
+unsigned int mw_length_cfmorpho_line();
 
 Cmorpho_set mw_new_cmorpho_set();
 Cmorpho_set mw_alloc_cmorpho_set();
 Cmorpho_set mw_change_cmorpho_set();
 void mw_delete_cmorpho_set();
-void mw_copy_cmorpho_set();
-unsigned int mw_cmorpho_set_length();
+Cmorpho_set mw_copy_cmorpho_set();
+unsigned int mw_length_cmorpho_set();
 
 Cmorpho_sets mw_new_cmorpho_sets();
 Cmorpho_sets mw_change_cmorpho_sets();
 void mw_delete_cmorpho_sets();
-void mw_copy_cmorpho_sets();
-unsigned int mw_cmorpho_sets_length();
-unsigned int mw_cmorpho_sets_num();
+Cmorpho_sets mw_copy_cmorpho_sets();
+unsigned int mw_length_cmorpho_sets();
+unsigned int mw_num_cmorpho_sets();
 void mw_cmorpho_sets_clear_stated();
 
 Cmimage mw_new_cmimage();
 Cmimage mw_change_cmimage();
 void mw_delete_cmimage();
-void mw_copy_cmimage();
-unsigned int mw_cmimage_length_ml();
-unsigned int mw_cmimage_length_fml();
-unsigned int mw_cmimage_length_ms();
+Cmimage mw_copy_cmimage();
+unsigned int mw_length_ml_cmimage();
+unsigned int mw_length_fml_cmimage();
+unsigned int mw_length_ms_cmimage();
 
 #endif
 

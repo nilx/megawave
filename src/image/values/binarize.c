@@ -11,11 +11,8 @@
             output<-out        "output Cimage (grey levels 0 and 255 only)"
           };
 */
-/*-- MegaWave2 - Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
  
 void binarize(in, out, t, i)

@@ -1,0 +1,44 @@
+This modules allows to convert a Fcurves structure to fig format.
+It prints on standart output a fig 3.2 file (readable
+by {\sf xfig} or {\sf fig2dev} for example) that describes the
+Fcurves $in$ as a polygon ($d=2$) or a set of points ($d=1$) or both
+($d=3$). The coordinates of the points are rounded to integers
+in the following way. If the {\sf -s} option is selected,
+a symetrization along the $y$ coordinate (that is, $(x,y)\mapsto (x,-y)$)
+is first applied. Then, two cases are distinguished~:
+\begin{itemize}
+\item if the $m$ parameter is not set, a translation and a zoom
+are applied in order that the bounding box fits in
+the box $(0,0)-(10^5,10^5)$ (which guarantees a good resolution),
+and then the integer part is taken;
+note that if the zoom factor is large, it is converted to
+an integer to avoid rounding artifacts;
+\item if the $m$ parameter is set, no translation is applied and 
+the coordinates are multiplied by a factor $m$ before 
+the integer part is taken (this can be useful if the fig data needs 
+to be associated with something else and absolute coordinates are required).
+\end{itemize}
+For display modes 1 and 3, the points are drawn as black filled discs
+with radius $r$ (whose default value is $0.2$) in the original Fcurves 
+coordinates. If the {\sf -e} option is set, the extremal points of
+each curve are drawn as black filled discs with radius $4r$.
+For display modes 2 and 3, a polygon will be closed when the 
+first and the last point of the corresponding Fcurve have exactly
+the same coordinates.
+
+
+{\bf Examples~:}
+\begin{verbatim}
+fkprintfig -s france.crv > toto.fig
+fig2dev -L ps -m 0.1 toto.fig toto.ps
+ghostview toto.ps
+
+fkprintfig -r 1 -d 1 -e -s france.crv > toto.fig
+fig2dev -L ps -m 0.1 toto.fig toto.ps
+ghostview toto.ps
+
+fkcrop 0 600 100 700 france.crv toto.crv
+fkprintfig -m 100 -e -d 3 -s toto.crv > toto.fig
+fig2dev -L tiff -m 1 toto.fig toto.tiff
+xv toto.tiff
+\end{verbatim}

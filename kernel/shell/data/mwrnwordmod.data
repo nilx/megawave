@@ -1,0 +1,46 @@
+#---------------------------------------------
+# Data file for mwrnwordmod
+# Vers 0.0
+#---------------------------------------------
+# This file lists name of system functions to
+# be changed in modules.
+
+# --- Update 01/07/2002
+
+mw_curve_length mw_length_curve
+mw_curves_length  mw_length_curves
+mw_curves_npoints mw_npoints_curves
+
+mw_fcurve_length mw_length_fcurve
+mw_fcurves_length  mw_length_fcurves
+mw_fcurves_npoints mw_npoints_fcurves
+
+mw_dcurve_length mw_length_dcurve
+mw_dcurves_length mw_length_dcurves
+mw_dcurves_npoints mw_npoints_dcurves
+
+mw_polygon_length  mw_length_polygon
+mw_polygons_length  mw_length_polygons
+
+mw_fpolygon_length  mw_length_fpolygon
+mw_fpolygons_length  mw_length_fpolygons
+
+mw_morpho_line_length mw_length_morpho_line
+mw_morpho_line_num  mw_num_morpho_line
+mw_fmorpho_line_length  mw_length_fmorpho_line
+mw_morpho_set_length mw_length_morpho_set
+mw_morpho_sets_length mw_length_morpho_sets 
+mw_morpho_sets_num mw_num_morpho_sets
+mw_mimage_length_ml  mw_length_ml_mimage
+mw_mimage_length_fml mw_length_fml_mimage
+mw_mimage_length_ms mw_length_ms_mimage
+
+mw_cmorpho_line_length mw_length_cmorpho_line
+mw_cmorpho_line_num  mw_num_cmorpho_line
+mw_cfmorpho_line_length  mw_length_cfmorpho_line
+mw_cmorpho_set_length mw_length_cmorpho_set
+mw_cmorpho_sets_length mw_length_cmorpho_sets 
+mw_cmorpho_sets_num mw_num_cmorpho_sets
+mw_cmimage_length_ml  mw_length_ml_cmimage
+mw_cmimage_length_fml mw_length_fml_cmimage
+mw_cmimage_length_ms mw_length_ms_cmimage

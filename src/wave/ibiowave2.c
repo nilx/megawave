@@ -1,18 +1,18 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {ibiowave2};
-version = {"1.30"};
+version = {"1.4"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Reconstructs an image from a biorthogonal wavelet transform"};
 usage = {
 'r':[NLevel=0]->NumRec [0,20]
-	"Start reconstruction from level NLevel", 
+	"Start reconstruction from level NLevel (default 0)", 
 'h':HaarNLevel->Haar
 	"Start reconstruction with Haar filter from level HaarNLevel down to level NLevel + 1",
 'e':[EdgeMode=2]->Edge [0,2]
-	"Edge processing mode", 
+	"Edge processing mode (0/1/2, default 2)", 
 'n':[FilterNorm=0]->FilterNorm [0,2]
-	"Normalization mode for filter bank", 
+	"Normalization mode for filter bank (0/1/2, default 0)", 
 WavTrans->Wtrans
 	"Input wavelet transform (wtrans2d)", 
 RecompImage<-Output
@@ -36,11 +36,7 @@ ImpulseResponse2->Ri2
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void sconvolve(Fsignal, Fsignal, int *, int *, int *, int *, int *, int *, Fsignal, Fimage);
-#else
-void sconvolve();
-#endif
+extern void sconvolve();
 
 /*--- Constants ---*/
 

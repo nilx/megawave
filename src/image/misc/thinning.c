@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {thinning};
-  version = {"2.1"};
+  version = {"2.2"};
   author = {"Jacques Froment, Denis Pasquignon"};
   function = {"homotopic thinning of a B&W cimage"};
   usage = {
@@ -17,7 +17,9 @@
      "output cimage (thinned input)" 
   };
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v2.2: return result (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -194,7 +196,7 @@ int dy,dx,ONE,ZERO;
   return(change);
 }
 
-thinning(niter,inv,M,imageI,imageO)
+Cimage thinning(niter,inv,M,imageI,imageO)
 
 int *niter;
 char *inv;
@@ -235,6 +237,8 @@ Cimage imageI,imageO;
 	}
     }
   while ((change==1)&&((niter==NULL)||(i<=*niter)));
+
+  return(imageO);
 }
 
 

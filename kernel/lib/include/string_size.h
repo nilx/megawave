@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    string_size.h
    
-   Vers. 1.0
-   (C) 1993 Jacques Froment
+   Vers. 1.1
+   (C) 1993-2000 Jacques Froment
    Define the size of some string used in internal MegaWave2 types
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -16,6 +16,12 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 
 #ifndef string_size_flg
 #define string_size_flg
+
+/* Maximum Size of the MegaWave2 memory types (such as "Cimage") */
+#define mw_mtype_size 20
+
+/* Maximum Size of the MegaWave2 file types (such as "IMG") */
+#define mw_ftype_size 20
 
 /* Used in many of internal I/O types */
 

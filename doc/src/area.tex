@@ -1,0 +1,10 @@
+This module computes the algebraic area of a curve $P_1P_2...P_n$
+(Dlist), viewed as a closed polygon $P_1P_2...P_nP_1$. Thus, it computes
+$$\mathrm{area} (P_1P_2...P_nP_1)= \frac 12 \sum_{i=1}^n \mathrm{det}
+(P_k-P_1,P_{k+1}-P_1),$$
+with
+$$\mathrm{det}\left[\left(\begin{array}{l}a\\b\end{array}\right),\left(\begin{array}{l}c\\d\end{array}\right)\right] = ad-bc.$$
+The result is the area of the original curve if it is closed 
+($P_n=P_1$), with a plus sign if the interior of the polygon is ``on the
+left'' as the point index increases, and a minus sign else.
+

@@ -52,11 +52,7 @@ Result<-Result
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void ardecode2(int *, int *, int *, long *, int *, Fsignal, Cimage, double *, Fimage);
-#else
-void ardecode2();
-#endif
+extern void ardecode2();
 
 /*--- Constants ---*/
 

@@ -1,127 +1,74 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {fextract};
-author = {"Jean-Pierre D'Ales, Jacques Froment"};
-function = {"Copy a part of a fimage into another image, in an optional background"};
-version = {"1.3"};
+author = {"Lionel Moisan"};
+function = {"Extract a subpart of a Fimage"};
+version = {"1.7"};
 usage = {
-  OriginalImage->Image "Original image" , 
-  CopyImage<-Result    "Output image"   ,
-  Xo->X1               "X Coor. of upper left point of subimage in original image",
-  Yo->Y1               "Y Coor. of upper left point of subimage in original image",
-  Xf->X2  "X Coor. of lower right point of subimage in original image",              
-  Yf->Y2  "Y Coor. of lower right point of subimage in original image",
+'b':[b=0.]->b "background grey level (default 0.)",
+'r'->r        "if set, X2 and Y2 must be the SIZE of the extracted region",
+in->in        "input Fimage",
+out<-out      "output Fimage",
+X1->X1        "upleft corner of the region to extract from input (x)",
+Y1->Y1        "upleft corner of the region to extract from input (y)",
+X2->X2        "downright corner of the region to extract from input (x)",
+Y2->Y2        "downright corner of the region to extract from input (y)",
   {
-    Background->Back  "Background input image",
-    [Xc=0]->Xc "X Coor. of the upper left point in the background",
-    [Yc=0]->Yc "Y Coor. of the upper left point in the background"
+    bg->bg       "background Fimage",
+    [Xc=0]->Xc   "new location of X1 on the background, default 0",
+    [Yc=0]->Yc   "new location of Y1 on the background, default 0"
   }
 };
 */
+/*-------------------------------------------------------------------------
+ v1.6: module rewritten, extended parameter values, new -r option (L.Moisan)
+-------------------------------------------------------------------------*/
 
-
-/*--- Include files UNIX C ---*/
-#include <stdio.h>
-#include <math.h>
-
-/*--- Library megawave2 ---*/
 #include  "mw.h"
 
+#define MAX(x,y) ((x)>(y)?(x):(y))
 
-Fimage fextract(Image, Back, Result, X1, Y1, X2, Y2, Xc, Yc)
 
-    Fimage          Image;	/* Original image */
-    Fimage          Back;	/* Back image */
-    Fimage          Result;	/* Resulting image */
-    int             X1, Y1;	/* Coordinates of upper left point of sub-image
-				 * extracted in original image */
-    int 	    X2, Y2;	/* Coordinates of lower right point of sub-image
-				 * extracted in original image */
-    int 	    *Xc, *Yc;	/* Coordinates of the origin point for inserting
-				 * in Background image */
-
+Fimage fextract(b,in,bg,out,X1,Y1,X2,Y2,Xc,Yc,r)
+Fimage in,out;
+int X1,Y1,X2,Y2;
+float *b;
+Fimage bg;
+int *Xc,*Yc;
+char *r;
 {
-    int             rdx, rdy;	/* Size of the resulting image */
-    int             tdx, tdy;	/* Size of the Back image */
-    int             lrdx, ltdx, lidx;
-    int             DX, DY;	/* Size of the extracted sub-image */
-    register int             l, c;  /* Index for column and lines in images */
-    register float *ptrR,*ptrT;
+  int x,y,pos1,pos2;
 
-    /*--- Reading of default values ---*/
+  /* test relative coordinates */
+  if (r) {X2+=X1-1; Y2+=Y1-1;}
+  if (X2<0) X2=in->ncol+X2-1;
+  if (Y2<0) Y2=in->nrow+Y2-1;
 
-    DX = X2 - X1;
-    DY = Y2 - Y1;
+  if (X2<X1 || Y2<Y1) 
+    mwerror(FATAL,1,"empty region to extract: (%d,%d)-(%d,%d)\n",X1,Y1,X2,Y2);
 
-    if ((X1<0) || (Y1<0) || (DX < 0) || (DY < 0) || 
-	(Image->ncol <= X2) || (Image->nrow <= Y2))
-      mwerror(FATAL,1,"Illegal coordinates specification\n");
-      
-    if (Back) tdx = Back->ncol; else tdx = DX+1;
-    if (Back) tdy = Back->nrow; else tdy = DY+1;
+  if (bg) {
+    out = mw_change_fimage(out,MAX(bg->nrow,*Yc+Y2-Y1+1),MAX(bg->ncol,*Xc+X2-Y1+1));
+    mw_clear_fimage(out,*b);
+    for (x=0;x<bg->ncol;x++) 
+      for (y=0;y<bg->nrow;y++) 
+	out->gray[y*out->ncol+x] = bg->gray[y*bg->ncol+x];
+  } else {
+    out = mw_change_fimage(out,Y2-Y1+1,X2-X1+1);
+    mw_clear_fimage(out,*b);
+  }
 
-    if (tdx <= *Xc + DX)
-	rdx = *Xc + DX + 1;
-    else
-	rdx = tdx;
+  for (x=X1;x<=X2;x++)
+    for (y=Y1;y<=Y2;y++) {
+      pos1 = y*in->ncol+x;
+      pos2 = (*Yc+y-Y1)*out->ncol+(*Xc+x-X1);
+      if (*Yc+y-Y1>=0 && *Yc+y-Y1<out->nrow && 
+	  *Xc+x-X1>=0 && *Xc+x-X1<out->ncol &&
+	  x>=0 && x<in->ncol && y>=0 && y<in->nrow) {
+	out->gray[pos2] = in->gray[pos1];
+      }  
+    }      
 
-    if (tdy <= *Yc + DY)
-	rdy = *Yc + DY + 1;
-    else
-	rdy = tdy;
-
-    /*--- Memory allocation for resulting image ---*/
-
-    if ((Result = mw_change_fimage(Result, rdy, rdx)) == NULL)
-      mwerror(FATAL, 1, "Memory allocation refused for `Result`!\n");
-
-    /*--- Copy Back image on result image ---*/
-
-    ltdx = lrdx = 0;
-    ptrR = Result->gray;
-
-    if (Back)
-      {
-	ptrT = Back->gray;
-	for (l = 0; l < Back->nrow; l++)
-	  {
-	    for (c = 0; c < Back->ncol; c++)
-	      ptrR[lrdx + c] = ptrT[ltdx + c];
-	    lrdx += rdx;
-	    ltdx += tdx;
-	  }
-
-    /*--- Put other gray-levels to 0 if Result ---*/
-    /*--- has greater size than Back ---*/
-
-    lrdx = tdy * rdx;
-    for (l = tdy; l < rdy; l++)
-    {
-	for (c = 0; c < rdx; c++)
-	    ptrR[lrdx + c] = 0.0;
-	lrdx += rdx;
-    }
-
-    lrdx = 0;
-    for (l = 0; l < Back->nrow; l++)
-    {
-	for (c = Back->ncol; c < rdx; c++)
-	    ptrR[lrdx + c] = 0.0;
-	lrdx += rdx;
-    }
-
-      } /* if (Back) */
-
-    /*--- Copy the extracted sub-image on result ---*/
-
-    lrdx = *Yc * rdx;
-    lidx = Y1 * Image->ncol;
-    ptrT = Image->gray;
-    for (l = 0; l <= DY; l++)
-    {
-	for (c = 0; c <= DX; c++)
-	    ptrR[lrdx + *Xc + c] = ptrT[lidx + X1 + c];
-	lrdx += rdx;
-	lidx += Image->ncol;
-    }
+  return(out);
 }
+

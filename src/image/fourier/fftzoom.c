@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {fftzoom};
-   version = {"1.0"};
+   version = {"1.1"};
    author = {"Lionel Moisan"};
    function = {"Zoom an image using Fourier interpolation (zero-padding)"};
    usage = {
@@ -11,8 +11,7 @@
    in->in           "input Fimage",
    out<-out         "output Fimage"
    };
-   */
-/*-- MegaWave 2- Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
+*/
 
 #include "mw.h"
 
@@ -26,9 +25,14 @@ char   *i_flag;
   int nx,ny,nxz,nyz,x,y,hx,hy,adr,adrz;
   float z2,factor;
 
+  /* DIRECT FFT */
+  in_re = mw_new_fimage();
+  in_im = mw_new_fimage();
+  fft2d(in,NULL,in_re,in_im,NULL);
+
   /* COMPUTE DIMENSIONS */
-  nx = in->ncol;
-  ny = in->nrow;
+  nx = in_re->ncol;
+  ny = in_re->nrow;
   if (i_flag) {
     /* UNZOOM */
     nxz = nx/(*z);
@@ -46,17 +50,12 @@ char   *i_flag;
   }
   
   /* ALLOCATE AND INITIALIZE IMAGES */
-  in_re = mw_new_fimage();
-  in_im = mw_new_fimage();
   out_re = mw_change_fimage(NULL,nyz,nxz);
   out_im = mw_change_fimage(NULL,nyz,nxz);
   if (!out_re || !out_im) mwerror(FATAL,1,"Not enough memory.\n");
   mw_clear_fimage(out_re,0.0);
   mw_clear_fimage(out_im,0.0);
   
-  /* DIRECT FFT */
-  fft2d(in,NULL,in_re,in_im,NULL);
-
   /* DISPATCH FOURIER COEFFICIENTS */
   for (x=-hx;x<=hx;x++)
     for (y=-hy;y<=hy;y++) {

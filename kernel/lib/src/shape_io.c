@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    shape_io.c
    
-   Vers. 0.1
-   (C) 1999 Pascal Monasse, Frederic Guichard, Jacques Froment.
+   Vers. 1.4
+   (C) 1999-2001 Pascal Monasse, Frederic Guichard, Jacques Froment.
    Input/output functions for the 
      Shape
      Shapes
@@ -26,8 +26,9 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 /* ---- I/O for shape ---- */
 
 /* Read one shape from the file fp */
+/* Read old format V1.00 */
 
-static Shape _mw_read_mw2_shape(fname,fp,need_flipping,sh,iparent)
+static Shape _mw_read_mw2_shape_1_00(fname,fp,need_flipping,sh,iparent)
 
 char *fname;
 FILE    *fp;
@@ -40,6 +41,7 @@ int *iparent; /* Output index for parent in shapes->the_shapes, if not NULL */
   unsigned int npc;
   unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
   int i;
+  Curve cv;
 
   if (sh == NULL) sh = mw_new_shape();
   if (sh == NULL) 
@@ -94,8 +96,8 @@ int *iparent; /* Output index for parent in shapes->the_shapes, if not NULL */
   /* Read the curve, if any */
   if (npc == 0) return(sh);
   
-  sh->boundary = mw_new_curve();
-  if (sh->boundary == NULL)
+  cv = mw_new_curve();
+  if (cv == NULL)
     {
       mwerror(ERROR, 0,"Not enough memory to read file \"%s\"\n",fname);
       mw_delete_shape(sh);
@@ -111,7 +113,7 @@ int *iparent; /* Output index for parent in shapes->the_shapes, if not NULL */
 	      mw_delete_shape(sh);
 	      return(NULL);
 	    }
-      if (sh->boundary->first == NULL) sh->boundary->first = newpc;
+      if (cv->first == NULL) cv->first = newpc;
       if (oldpc != NULL) oldpc->next = newpc;
       newpc->previous = oldpc;
       newpc->next = NULL;
@@ -131,8 +133,99 @@ int *iparent; /* Output index for parent in shapes->the_shapes, if not NULL */
 	}
       oldpc = newpc;
     }
+
+  sh->boundary = (Flist) mw_conv_internal_type(cv,"Curve","Flist");
+  mw_delete_curve(cv);  
   return(sh);
 }
+
+#ifdef __STDC__
+Flist _mw_read_mw2_flist(char *,FILE *,int);
+#else
+Flist _mw_read_mw2_flist();
+#endif
+
+
+/* Read one shape from the file fp */
+
+static Shape _mw_read_mw2_shape(fname,fp,need_flipping,sh,iparent)
+
+char *fname;
+FILE    *fp;
+int need_flipping; /* 1 if flipping needed, 0 elsewhere */
+Shape sh; /* If not NULL, put the shape in it */
+int *iparent; /* Output index for parent in shapes->the_shapes, if not NULL */
+
+{ 
+  Point_curve newpc,oldpc;
+  unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
+  int i;
+  char bound;
+  
+  if (sh == NULL) sh = mw_new_shape();
+  if (sh == NULL) 
+      {
+	mwerror(ERROR, 0,"Not enough memory to read file \"%s\"\n",fname);
+	return(NULL);
+      }
+
+  if (
+      (fread(&(sh->inferior_type),sizeof(char),1,fp) == 0) || 
+      (fread(&(sh->value),sizeof(float),1,fp) == 0) || 
+      (fread(&(sh->open),sizeof(char),1,fp) == 0) ||
+      (fread(&(sh->area),sizeof(int),1,fp) == 0) ||
+      (fread(&i,sizeof(int),1,fp) == 0) ||
+      (fread(&bound,sizeof(char),1,fp) == 0) ||
+      (fread(&(sh->data_size),sizeof(int),1,fp) == 0)
+      )
+    {
+      mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+      mw_delete_shape(sh);
+      return(NULL);
+    }
+
+  if (need_flipping == 1)
+    {
+      _mw_in_flip_float( &(sh->value) );
+      _mw_in_flip_b4(sh->area);
+      _mw_in_flip_b4(i);
+      _mw_in_flip_b4(sh->data_size);
+    }
+
+  if (iparent != NULL) *iparent = i;
+
+  if ((sh->inferior_type!=0)&&(sh->inferior_type!=1))
+    {
+      mwerror(ERROR, 0,"Error while reading file \"%s\" : inconsistent value for the field inferior_type (%d)\n",fname,(int) sh->inferior_type);
+      mw_delete_shape(sh);
+      return(NULL);
+    }
+  if ((sh->open!=0)&&(sh->open!=1))
+    {
+      mwerror(ERROR, 0,"Error while reading file \"%s\" : inconsistent value for the field open (%d)\n",fname,(int) sh->open);
+      mw_delete_shape(sh);
+      return(NULL);
+    }
+  if (sh->area<=0)
+    {
+      mwerror(ERROR, 0,"Error while reading file \"%s\" : inconsistent value for the field area (%d)\n",fname,sh->area);
+      mw_delete_shape(sh);
+      return(NULL);
+    }
+
+  /* Read the boundary, if any */
+  if (bound == 1)  
+    sh->boundary = _mw_read_mw2_flist(fname,fp,need_flipping);
+  else sh->boundary = NULL; 
+
+  /* Read the array data */
+  if (sh->data_size > 0) 
+    fread((char *)sh->data,sizeof(char),sh->data_size,fp);
+  else sh->data = NULL;
+
+  return(sh);
+}
+
 
 /* Load one shape from a file of MW2_SHAPE format */
 
@@ -141,12 +234,17 @@ Shape _mw_load_mw2_shape(fname)
 char  *fname;  /* Name of the file */
 
 { FILE    *fp;
-  char header[10];
+  char header[BUFSIZ];
   Shape sh;
-  char ftype[TYPE_SIZE],mtype[TYPE_SIZE];
+  char ftype[mw_ftype_size],mtype[mw_mtype_size];
   int need_flipping;
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  need_flipping =  _mw_get_file_type(fname,ftype,mtype)-1;
+  need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
+  if (strncmp(ftype,"MW2_SHAPE",9) != 0)
+    mwerror(INTERNAL, 0,"[_mw_load_mw2_shape] File \"%s\" is not in the MW2_SHAPE format\n",fname);
+  
   if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
     {
       mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
@@ -154,17 +252,19 @@ char  *fname;  /* Name of the file */
       return(NULL);
     }
 
-  /* read header = "MW2_SHAPE" */
-  if (fread(header,9,1,fp) == 0)
+  /* read header */
+  if (fread(header,hsize,1,fp) == 0)
       {
 	mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	fclose(fp);
 	return(NULL);
       }
-  if (strncmp(ftype,"MW2_SHAPE",9) != 0)
-    mwerror(INTERNAL, 0,"[_mw_load_mw2_shape] File \"%s\" is not in the MW2_SHAPE format\n",fname);
-  
-  sh = _mw_read_mw2_shape(fname,fp,need_flipping,NULL,NULL);
+
+  printf("[_mw_load_mw2_shape] version=%f\n",version);
+  if (version==1.0) 
+    sh = _mw_read_mw2_shape_1_00(fname,fp,need_flipping,NULL,NULL);
+  else 
+    sh = _mw_read_mw2_shape(fname,fp,need_flipping,NULL,NULL);
 
   fclose(fp);
   return(sh);
@@ -178,10 +278,12 @@ Shape _mw_load_shape(fname,Type)
 char  *fname;  /* Name of the file */
 char  *Type;   /* Type de format du fichier */
 
-{ char mtype[TYPE_SIZE];
+{ char mtype[mw_mtype_size];
   Shape shape;
- 
-  _mw_get_file_type(fname,Type,mtype);
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+
+  _mw_get_file_type(fname,Type,mtype,&hsize,&version);
 
   /* Native format */
   if (strcmp(Type,"MW2_SHAPE") == 0)
@@ -194,6 +296,11 @@ char  *Type;   /* Type de format du fichier */
   return(NULL);
 }  
 
+#ifdef __STDC__
+void _mw_write_mw2_flist(FILE *, Flist);
+#else
+void _mw_write_mw2_flist();
+#endif
 
 /* Write one shape in the file fp */  
 
@@ -205,25 +312,23 @@ int iparent;
 
 {
   Point_curve pc;
-  unsigned int npc;
+  char bound; /* 1 if boundary defined (non NULL), 0 elsewhere */
 
   fwrite(&(sh->inferior_type),sizeof(char),1,fp);
   fwrite(&(sh->value),sizeof(float),1,fp);
   fwrite(&(sh->open),sizeof(char),1,fp);
   fwrite(&(sh->area),sizeof(int),1,fp);
   fwrite(&iparent,sizeof(int),1,fp);
-  /* Record the number of point curve */
-  npc=0;
-  if (sh->boundary)
-    for (pc=sh->boundary->first; pc; pc=pc->next, npc++);
-  fwrite(&(npc),sizeof(unsigned int),1,fp);
-      
-  if (sh->boundary)
-    for (pc=sh->boundary->first; pc; pc=pc->next)
-      {
-	fwrite(&(pc->x),sizeof(int),1,fp);
-	fwrite(&(pc->y),sizeof(int),1,fp);
-      }
+  if (sh->boundary) bound=1; else bound=0;
+  fwrite(&bound,sizeof(char),1,fp);  
+  fwrite(&(sh->data_size),sizeof(int),1,fp);  
+
+  /* Record the boundary, now a list rather than a curve */
+  if (sh->boundary) _mw_write_mw2_flist(fp,sh->boundary);
+
+  /* Record data field */
+  if (sh->data_size > 0) 
+    fwrite((char *)sh->data,sizeof(char),sh->data_size,fp);
 }
 
 /* Write file in MW2_SHAPE format */  
@@ -239,7 +344,7 @@ Shape sh;
   if (sh == NULL)
     mwerror(INTERNAL,1,"[_mw_create_mw2_shape] Cannot create file: shape structure is NULL\n");
 
-  fp=_mw_write_header_file(fname,"MW2_SHAPE");
+  fp=_mw_write_header_file(fname,"MW2_SHAPE",1.01);
   if (fp == NULL) return(-1);
 
   _mw_write_mw2_shape(fp,sh,0);
@@ -269,21 +374,29 @@ char  *Type;                         /* Type de format du fichier */
 /* ---- I/O for Shapes ---- */
 
 /* Load Shapes from a file of MW2_SHAPE format */
+/* Old version 1.00 */
 
-Shapes _mw_load_mw2_shapes(fname)
+Shapes _mw_load_mw2_shapes_1_00(fname)
 
 char  *fname;  /* Name of the file */
 
 { FILE    *fp;
-  char header[11];
+  char header[BUFSIZ];
   Shapes shapes;
   Shape sh;
-  int size,i,IDs,absolute,iparent;
-  char ftype[TYPE_SIZE],mtype[TYPE_SIZE];
+  unsigned int size;
+  int i,IDs,absolute,iparent;
+  char ftype[mw_ftype_size],mtype[mw_mtype_size];
   int need_flipping;
   unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  need_flipping =  _mw_get_file_type(fname,ftype,mtype)-1;
+  need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
+  if (strncmp(ftype,"MW2_SHAPES",10) != 0)
+    mwerror(INTERNAL, 0,"[_mw_load_mw2_shapes] File \"%s\" is not in the MW2_SHAPES format\n",fname);
+
+
   if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
     {
       mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
@@ -291,16 +404,13 @@ char  *fname;  /* Name of the file */
       return(NULL);
     }
 
-  /* read header = "MW2_SHAPES" */
-  if (fread(header,10,1,fp) == 0)
+  /* read header */
+  if (fread(header,hsize,1,fp) == 0)
       {
 	mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	fclose(fp);
 	return(NULL);
       }
-  
-  if (strncmp(ftype,"MW2_SHAPES",10) != 0)
-    mwerror(INTERNAL, 0,"[_mw_load_mw2_shapes] File \"%s\" is not in the MW2_SHAPES format\n",fname);
 
   shapes = mw_new_shapes();
   if (shapes == NULL) 
@@ -331,6 +441,7 @@ char  *fname;  /* Name of the file */
   if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
       {
 	mwerror(ERROR, 0,"Error while reading file \"%s\" (name size)...\n",fname);
+	mw_delete_shapes(shapes);
 	fclose(fp);
 	return(NULL);
       }
@@ -402,6 +513,172 @@ char  *fname;  /* Name of the file */
   sh = shapes->the_shapes;
   for (i=shapes->nb_shapes-1; i>=0; i--, sh++)
     {
+      if (_mw_read_mw2_shape_1_00(fname,fp,need_flipping,sh,&iparent) == NULL)
+	{      
+	  mw_delete_shapes(shapes);
+	  fclose(fp);
+	  return(NULL);
+	}
+      sh->parent = &shapes->the_shapes[iparent];
+    }
+
+  shapes->the_shapes[0].parent = NULL;
+  /* Correct the fields child and next_sibling of each shape */
+  sh = &shapes->the_shapes[shapes->nb_shapes-1];
+  for(i = shapes->nb_shapes-1; i > 0; i--, sh--) 
+    {
+      sh->next_sibling = sh->parent->child;
+      sh->parent->child = sh;
+    }
+  
+  fclose(fp);
+  return(shapes);
+}
+
+/* Load Shapes from a file of MW2_SHAPE format */
+
+Shapes _mw_load_mw2_shapes(fname)
+
+char  *fname;  /* Name of the file */
+
+{ FILE    *fp;
+  char header[BUFSIZ];
+  Shapes shapes;
+  Shape sh;
+  unsigned int size;
+  int i,IDs,absolute,iparent;
+  char ftype[mw_ftype_size],mtype[mw_mtype_size];
+  int need_flipping;
+  unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+
+  need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
+  if (strncmp(ftype,"MW2_SHAPES",10) != 0)
+    mwerror(INTERNAL, 0,"[_mw_load_mw2_shapes] File \"%s\" is not in the MW2_SHAPES format\n",fname);
+
+  if (version==1.00) return(_mw_load_mw2_shapes_1_00(fname));
+
+  if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+    {
+      mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+      fclose(fp);
+      return(NULL);
+    }
+
+  /* read header */
+  if (fread(header,hsize,1,fp) == 0)
+      {
+	mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+	fclose(fp);
+	return(NULL);
+      }
+
+  shapes = mw_new_shapes();
+  if (shapes == NULL) 
+      {
+	mwerror(ERROR, 0,"Not enough memory to read file \"%s\"\n",fname);
+	fclose(fp);
+	return(NULL);
+      }
+
+  /* Read the cmt field */
+  if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+      {
+	mwerror(ERROR, 0,"Error while reading file \"%s\" (cmt size)...\n",fname);
+	mw_delete_shapes(shapes);
+	fclose(fp);
+	return(NULL);
+      }
+  if (need_flipping == 1) _mw_in_flip_b4(size);
+  if ((size > 0)&& (fread(shapes->cmt,sizeof(char),size,fp) == 0))
+      {
+	mwerror(ERROR, 0,"Error while reading file \"%s\" (cmt; cmt size=%d)...\n",fname,size);
+	mw_delete_shapes(shapes);
+	fclose(fp);
+	return(NULL);
+      }
+
+  /* Read the name field */
+  if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+      {
+	mwerror(ERROR, 0,"Error while reading file \"%s\" (name size)...\n",fname);
+	mw_delete_shapes(shapes);
+	fclose(fp);
+	return(NULL);
+      }
+  if (need_flipping == 1) _mw_in_flip_b4(size);
+  if ((size > 0)&&(fread(shapes->name,sizeof(char),size,fp) == 0))
+      {
+	mwerror(ERROR, 0,"Error while reading file \"%s\" (name)...\n",fname);
+	mw_delete_shapes(shapes);
+	fclose(fp);
+	return(NULL);
+      }
+
+  /* Read the other fields */
+  if (
+      (fread(&(shapes->nrow),sizeof(int),1,fp) == 0) || 
+      (fread(&(shapes->ncol),sizeof(int),1,fp) == 0) || 
+      (fread(&(shapes->interpolation),sizeof(int),1,fp) == 0) || 
+      (fread(&(shapes->data_size),sizeof(int),1,fp) == 0) || 
+      (fread(&(shapes->nb_shapes),sizeof(int),1,fp) == 0))
+    {      
+      mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+      mw_delete_shapes(shapes);
+      fclose(fp);
+      return(NULL);
+    }
+  
+  if (need_flipping == 1)
+    {
+      _mw_in_flip_b4(shapes->nrow);
+      _mw_in_flip_b4(shapes->ncol);
+      _mw_in_flip_b4(shapes->interpolation);
+      _mw_in_flip_b4(shapes->data_size);
+      _mw_in_flip_b4(shapes->nb_shapes);
+    }
+
+  /* Alloc memory for the set of shapes */
+  shapes->the_shapes = (Shape) malloc(shapes->nb_shapes*sizeof(struct shape));
+  if (shapes->the_shapes==NULL)
+    {
+      mwerror(ERROR, 0,"Not enough memory to read file \"%s\"\n",fname);
+      mw_delete_shapes(shapes);
+      fclose(fp);
+      return(NULL);
+    }
+
+  /* Alloc memory for smallest_shape */
+  shapes->smallest_shape = (Shape *) 
+    malloc(shapes->nrow*shapes->ncol*sizeof(Shape));
+  if (shapes->smallest_shape==NULL)
+    {
+      mwerror(ERROR, 0,"Not enough memory to read file \"%s\"\n",fname);
+      mw_delete_shapes(shapes);
+      fclose(fp);
+      return(NULL);
+    }
+
+  /* read info for smallest_shape */
+  absolute=0;
+  for (i=(shapes->ncol*shapes->nrow)-1; i>=0; i--, absolute++)
+    {
+      if(fread(&(IDs),sizeof(int),1,fp) == 0)
+	{      
+	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+	  mw_delete_shapes(shapes);
+	  fclose(fp);
+	  return(NULL);
+	}
+      if (need_flipping == 1) _mw_in_flip_b4(IDs);
+      shapes->smallest_shape[absolute] = &shapes->the_shapes[IDs];
+    }
+
+  /* read the shapes */
+  sh = shapes->the_shapes;
+  for (i=shapes->nb_shapes-1; i>=0; i--, sh++)
+    {
       if (_mw_read_mw2_shape(fname,fp,need_flipping,sh,&iparent) == NULL)
 	{      
 	  mw_delete_shapes(shapes);
@@ -412,15 +689,20 @@ char  *fname;  /* Name of the file */
     }
 
   shapes->the_shapes[0].parent = NULL;
-   /* Correct the fields child and next_sibling of each shape */
-  sh = &shapes->the_shapes[1];
-  for(i = shapes->nb_shapes-1; i > 0; i--, sh++) 
+  /* Correct the fields child and next_sibling of each shape */
+  sh = &shapes->the_shapes[shapes->nb_shapes-1];
+  for(i = shapes->nb_shapes-1; i > 0; i--, sh--) 
     {
       sh->next_sibling = sh->parent->child;
       sh->parent->child = sh;
     }
+
+  /* Read the array data */
+  if (shapes->data_size > 0) 
+    fread((char *)shapes->data,sizeof(char),shapes->data_size,fp);
   
   fclose(fp);
+
   return(shapes);
 }
 
@@ -428,14 +710,15 @@ char  *fname;  /* Name of the file */
 /* Load shapes from file of different types */
 
 Shapes _mw_load_shapes(fname,Type)
-
 char  *fname;  /* Name of the file */
 char  *Type;   /* Type de format du fichier */
 
-{ char mtype[TYPE_SIZE];
+{ char mtype[mw_mtype_size];
   Shapes shapes;
- 
-  _mw_get_file_type(fname,Type,mtype);
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+
+  _mw_get_file_type(fname,Type,mtype,&hsize,&version);
 
   /* Native format */
   if (strcmp(Type,"MW2_SHAPES") == 0)
@@ -467,7 +750,7 @@ Shapes shs;
   if (shs == NULL)
     mwerror(INTERNAL,1,"[_mw_create_mw2_shapes] Cannot create file: shapes structure is NULL\n");
 
-  fp=_mw_write_header_file(fname,"MW2_SHAPES");
+  fp=_mw_write_header_file(fname,"MW2_SHAPES",1.01);
   if (fp == NULL) return(-1);
 
   size = strlen(shs->cmt);
@@ -480,7 +763,8 @@ Shapes shs;
 
   fwrite(&(shs->nrow),sizeof(int),1,fp);
   fwrite(&(shs->ncol),sizeof(int),1,fp);
-
+  fwrite(&(shs->interpolation),sizeof(int),1,fp);
+  fwrite(&(shs->data_size),sizeof(int),1,fp);    
 
   tabIDs = (int*)malloc(sizeof(int) * shs->nb_shapes);
   if(tabIDs == NULL)
@@ -525,6 +809,11 @@ Shapes shs;
       }	  
 
   free(tabIDs);
+
+  /* Record data field */
+  if (shs->data_size > 0) 
+    fwrite((char *)shs->data,sizeof(char),shs->data_size,fp);
+
   fclose(fp);
   return(0);
 }

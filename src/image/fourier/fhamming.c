@@ -8,16 +8,12 @@
            in->in           "input Fimage",
            out<-out         "windowed Fimage"
    };
-   */
-/*-- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
+*/
 
 #include <stdio.h>
 #include <math.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
 
-extern double cos();
 
 /* NB: Calling this module with out=in is possible */
 

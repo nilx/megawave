@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fmovie_io.c
    
-   Vers. 1.2
-   (C) 1994-95 Jacques Froment
+   Vers. 1.4
+   (C) 1994-2000 Jacques Froment
    Input/Output private functions for the Fmovie structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -33,7 +33,7 @@ char  *Type;                          /* Type de format du fichier */
   Fmovie movie;               
   Fimage image,image_next;
   char FicImage[BUFSIZ];
-  char Ext[TYPE_SIZE];
+  char Ext[BUFSIZ];
   short f,num;
   short i;
       
@@ -43,6 +43,7 @@ char  *Type;                          /* Type de format du fichier */
 
   sprintf(FicImage,"%s_001",NomFic);
   f = open(FicImage,O_RDONLY);
+  /*
   if (f == -1) for (i=0; (fimage_types[i] != NULL) && (f == -1); i++)
     {
       strcpy(Ext,fimage_types[i]);
@@ -55,11 +56,11 @@ char  *Type;                          /* Type de format du fichier */
 	  f = open(FicImage,O_RDONLY);      
 	}
     }
-  
+  */
   if (f == -1) 
     mwerror(FATAL,1,"First image file \"%s\" not found or unreadable\n",FicImage);
   close(f);
-  image = (Fimage) _mw_fimage_load_image(FicImage,Type,NULL);
+  image = (Fimage) _mw_fimage_load_image(FicImage,Type);
   if (image == NULL) return(movie);
 
   movie = (Fmovie) mw_new_fmovie();
@@ -78,7 +79,7 @@ char  *Type;                          /* Type de format du fichier */
 	close(f);
 	if (_mw_convert_struct_warning >= 3)
 	  _mw_convert_struct_warning = -1; /* Disable warnings */
-	image_next = (Fimage) _mw_fimage_load_image(FicImage,Type,NULL);
+	image_next = (Fimage) _mw_fimage_load_image(FicImage,Type);
 	if (image_next != NULL) 
 	  {
 	    image->next = image_next;
@@ -166,7 +167,7 @@ char  *Type;                          /* Type de format du fichier */
 	    num++;
 	    if (num == 1)  /* 1st image */
 	      {
-		image = (Fimage) _mw_fimage_load_image(FicImage,Type,NULL);
+		image = (Fimage) _mw_fimage_load_image(FicImage,Type);
 		if (image == NULL) return(movie);
 		movie = (Fmovie) mw_new_fmovie();
 		movie->first = image;
@@ -175,7 +176,7 @@ char  *Type;                          /* Type de format du fichier */
 	      {
 		if (_mw_convert_struct_warning >= 3)
 		  _mw_convert_struct_warning = -1; /* Disable warnings */
-		image_next = (Fimage) _mw_fimage_load_image(FicImage,Type,NULL);
+		image_next = (Fimage) _mw_fimage_load_image(FicImage,Type);
 		if (image_next != NULL) 
 		  {
 		    image->next = image_next;

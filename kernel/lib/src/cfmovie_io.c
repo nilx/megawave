@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfmovie_io.c
    
-   Vers. 1.1
-   (C) 1995 Jacques Froment
+   Vers. 1.3
+   (C) 1995-2000 Jacques Froment
    Input/Output private functions for the Cfmovie structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -22,7 +22,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 
 extern int _mw_convert_struct_warning;
 
-/* Ancien format (fichier d'entete vide) */
+/* Old format (empty header file) */
 
 Cfmovie _mw_cfmovie_load_movie_old_format(NomFic,Type)
 
@@ -33,7 +33,7 @@ char  *Type;                          /* Type de format du fichier */
   Cfmovie movie;               
   Cfimage image,image_next;
   char FicImage[BUFSIZ];
-  char Ext[TYPE_SIZE];
+  char Ext[BUFSIZ];
   short f,num;
   short i;
       
@@ -43,6 +43,7 @@ char  *Type;                          /* Type de format du fichier */
 
   sprintf(FicImage,"%s_001",NomFic);
   f = open(FicImage,O_RDONLY);
+  /*
   if (f == -1) for (i=0; (cfimage_types[i] != NULL) && (f == -1); i++)
     {
       strcpy(Ext,cfimage_types[i]);
@@ -55,7 +56,7 @@ char  *Type;                          /* Type de format du fichier */
 	  f = open(FicImage,O_RDONLY);      
 	}
     }
-  
+  */
   if (f == -1) 
     mwerror(FATAL,1,"First image file \"%s\" not found or unreadable\n",FicImage);
   close(f);
@@ -95,9 +96,11 @@ char  *Type;                          /* Type de format du fichier */
   return(movie);
 }
 
-/* Nouveau format (avec fichier entete enumerant les fichiers images) */
+/* Native formats (without conversion of the internal type) 
+   Recognize old and new format (with header file listing image files)
+*/
 
-Cfmovie _mw_cfmovie_load_movie(fname,Type)
+Cfmovie _mw_cfmovie_load_native(fname,Type)
 
 char  *fname;                         /* Nom du fichier image */
 char  *Type;                          /* Type de format du fichier */
@@ -193,6 +196,36 @@ char  *Type;                          /* Type de format du fichier */
     mwerror(WARNING,0,"Only %d image(s) have been read (%d expected):\n\t\tFile \"%s\" not found\n",num,nimage,FicImage);
 
   return(movie);
+}
+
+
+/* All available formats */
+
+Cfmovie _mw_cfmovie_load_movie(NomFic,Type)
+
+char  *NomFic;                        /* Nom du fichier image */
+char  *Type;                          /* Type de format du fichier */
+
+{ 
+  Cfmovie mov;
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+
+  _mw_get_file_type(NomFic,Type,mtype,&hsize,&version);
+
+  /* First, try native formats */
+  mov = _mw_cfmovie_load_native(NomFic,Type);
+  if (mov != NULL) return(mov);
+
+  /* If failed, try other formats with memory conversion */
+  mov = (Cfmovie) _mw_load_etype_to_itype(NomFic,mtype,"cfmovie",Type);
+  if (mov != NULL) return(mov);
+
+  if (Type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",NomFic);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cfmovie !\n",NomFic,Type);
 }
 
 

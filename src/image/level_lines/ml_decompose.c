@@ -1,23 +1,26 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {ml_decompose};
-   version = {"6.8"};
+   version = {"6.9"};
    author = {"Georges Koepfler"};
-   function = {"Compute all the morpho_lines of an image"};
+   function = {"Compute all morpho_lines of an image"};
    usage = {
    'c':m_image_in->m_image_in
        "original image in Mimage structure",
    'o':[ml_opt=0]->ml_opt [0,2]
-       "choose form of morpho_lines",
+       "type of level lines: 0=upper (default), 1=lower, 2=iso",
    'm'->m_flag
-       "optimize memory occupation (allows no free(points)",
+       "optimize memory occupation (allows no free(points))",
    image_in->image_in
        "original image",
    m_image<-ml_decompose
        "mimage with all morpho_lines"
        };
 */
-/*--- MegaWave2 - Copyright (C) 1994 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v6.9: upgrade for new kernel and new fvalues() call (L.Moisan)
+----------------------------------------------------------------------*/
+
 #include <stdio.h>
 #include <math.h>
 
@@ -25,13 +28,8 @@
 #include <assert.h>
 #include "mw.h"
 
-#ifdef __STDC__
-void ml_extract(float*,Fsignal,int*,Cimage,char*,Fimage,Mimage);
-Fsignal fvalues(char*,Fsignal,Fimage);
-#else
-void ml_extract();
-Fsignal fvalues();
-#endif
+extern void ml_extract();
+extern Fsignal fvalues();
 
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))
@@ -98,7 +96,7 @@ Fimage image_in;
 
   /* construct levels according to the ml_opt (unoptimized but readable) */
   if(*ml_opt==0) {
-    tmp_levels=fvalues(NULL,NULL,image_in);
+    tmp_levels=fvalues(NULL,NULL,NULL,image_in);
     m_image->minvalue=tmp_levels->values[0];
     m_image->maxvalue=tmp_levels->values[tmp_levels->size-1];
     levels=mw_change_fsignal(NULL,tmp_levels->size-1);
@@ -106,7 +104,7 @@ Fimage image_in;
     mw_delete_fsignal(tmp_levels);
   }
   if(*ml_opt==1) {
-    tmp_levels=fvalues(&i_flag,NULL,image_in);
+    tmp_levels=fvalues(&i_flag,NULL,NULL,image_in);
     m_image->minvalue=tmp_levels->values[tmp_levels->size-1];
     m_image->maxvalue=tmp_levels->values[0];
     levels=mw_change_fsignal(NULL,tmp_levels->size-1);
@@ -114,7 +112,7 @@ Fimage image_in;
     mw_delete_fsignal(tmp_levels);
   }
   if(*ml_opt==2) {
-    levels=fvalues(NULL,NULL,image_in);
+    levels=fvalues(NULL,NULL,NULL,image_in);
     m_image->minvalue=levels->values[0];
     m_image->maxvalue=levels->values[levels->size-1];
   }
@@ -128,7 +126,7 @@ Fimage image_in;
   if (mwdbg == 1)
     {
       mwdebug("Checking mimage in ml_decompose (%d level lines)...\n",
-              mw_morpho_line_num(m_image->first_ml));
+              mw_num_morpho_line(m_image->first_ml));
       llcheck(m_image);
       mwdebug("End of checking mimage\n");
     }

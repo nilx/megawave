@@ -1,83 +1,175 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {fproj};
-   version = {"1.01"};
+   version = {"2.0"};
    author = {"Lionel Moisan"};
-   function = {"affine or projective mapping using bilinear interpolation"};
+   function = {"affine or projective mapping using interpolation"};
    usage = {  
-     'x':[sx=512]->sx     "x-size of output image (default: 512)",
-     'y':[sy=512]->sy     "y-size of output image (default: 512)",
-     'b':[bg=0.0]->bg     "background grey value (default: 0.0)",
-     'z'->z               "for zero order interpolation (instead of bilinear)",
-     'i'->i               "for inverse transformation",
-     in->in               "input Fimage",
-     out<-out             "output Fimage",
-     X1->X1               "upleft corner",
-     Y1->Y1               "upleft corner",
-     x2->x2               "upright corner",
-     y2->y2               "upright corner",
-     x3->x3               "downleft corner",
-     y3->y3               "downleft corner",
+'x':[sx=512]->sx   "x-size of output image, default 512",
+'y':[sy=512]->sy   "y-size of output image, default 512",
+'b':[bg=0.0]->bg   "background grey value, default: 0.0",
+'o':[o=3]->o       "order: 0,1=linear,-3=cubic,3,5..11=spline, default 3",
+'p':[p=-.5]->p     "Keys' parameter (when o=-3), in [-1,0], default -0.5",
+'i'->i             "compute inverse transform",
+in->in             "input Fimage",
+out<-out           "output Fimage",
+X1->X1             "upleft corner",
+Y1->Y1             "upleft corner",
+X2->X2             "upright corner",
+Y2->Y2             "upright corner",
+X3->X3             "downleft corner",
+Y3->Y3             "downleft corner",
 {
-     x4->x4               "downright corner (for projective transformation)",
-     y4->y4               "downright corner (for projective transformation)"
+  x4->x4           "downright corner (for projective transform)",
+  y4->y4           "downright corner (for projective transform)"
 }
    };
    */
-/*-- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
 
 #include <stdio.h>
 #include <math.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
 
-extern double floor();
+extern void finvspline();
 
-/* NB : calling this module with out=in is nonsense */
 
-/*----------------------------------------------------------------------*/
+/* NB : calling this module with out=in is not possible */
 
-void fproj(in,out,sx,sy,bg,z,i,X1,Y1,x2,y2,x3,y3,x4,y4)
-Fimage in,out;
-int    *sx,*sy;
-float  *bg;
-char   *z,*i;
-float  X1,Y1,x2,y2,x3,y3,*x4,*y4;
+/* extract image value (even outside image domain) */
+float v(in,x,y,bg)
+Fimage in;
+int x,y;
+float bg;
 {
-  int    nx,ny,x,y,xi,yi,adr,tx1,ty1,tx2,ty2;
-  float  xx,yy,x12,y12,x13,y13,xp,yp,a11,a12,a21,a22,ux,uy,a,b,d;
+  if (x<0 || x>=in->ncol || y<0 || y>=in->nrow)
+    return(bg); else return(in->gray[y*in->ncol+x]);
+}
+
+
+/* c[] = values of interpolation function at ...,t-2,t-1,t,t+1,... */
+
+/* coefficients for cubic interpolant (Keys' function) */
+void keys(c,t,a)
+float *c,t,a;
+{
+  float t2,at;
+
+  t2 = t*t;
+  at = a*t;
+  c[0] = a*t2*(1.0-t);
+  c[1] = (2.0*a+3.0 - (a+2.0)*t)*t2 - at;
+  c[2] = ((a+2.0)*t - a-3.0)*t2 + 1.0;
+  c[3] = a*(t-2.0)*t2 + at;
+}
+
+/* coefficients for cubic spline */
+void spline3(c,t)
+float *c,t;
+{
+  float tmp;
+
+  tmp = 1.-t;
+  c[0] = 0.1666666666*t*t*t;
+  c[1] = 0.6666666666-0.5*tmp*tmp*(1.+t);
+  c[2] = 0.6666666666-0.5*t*t*(2.-t);
+  c[3] = 0.1666666666*tmp*tmp*tmp;
+}
+
+/* pre-computation for spline of order >3 */
+void init_splinen(a,n)
+float *a;
+int n;
+{
+  int k;
+
+  a[0] = 1.;
+  for (k=2;k<=n;k++) a[0]/=(float)k;
+  for (k=1;k<=n+1;k++)
+    a[k] = - a[k-1] *(float)(n+2-k)/(float)k;
+}
+
+/* fast integral power function */
+float ipow(x,n)
+     float x;
+     int n;
+{
+  float res;
+
+  for (res=1.;n;n>>=1) {
+    if (n&1) res*=x;
+    x*=x;
+  }
+  return(res);
+}
+
+/* coefficients for spline of order >3 */
+void splinen(c,t,a,n)
+float *c,t,*a;
+int n;
+{
+  int i,k;
+  float xn;
   
+  memset((void *)c,0,(n+1)*sizeof(float));
+  for (k=0;k<=n+1;k++) { 
+    xn = ipow(t+(float)k,n);
+    for (i=k;i<=n;i++) 
+      c[i] += a[i-k]*xn;
+  }
+}
+
+
+/*------------------------ MAIN MODULE ---------------------------------*/
+
+void fproj(in,out,sx,sy,bg,o,p,i,X1,Y1,X2,Y2,X3,Y3,x4,y4)
+Fimage in,out;
+int    *sx,*sy,*o;
+char   *i;
+float  *bg,*p,X1,Y1,X2,Y2,X3,Y3,*x4,*y4;
+{
+  int    n1,n2,nx,ny,x,y,xi,yi,adr,dx,dy;
+  float  res,xx,yy,xp,yp,ux,uy,a,b,d,fx,fy,x12,x13,y12,y13;
+  float  cx[12],cy[12],ak[13];
+  Fimage ref,coeffs;
+
+  /* CHECK ORDER */
+  if (*o!=0 && *o!=1 && *o!=-3 && 
+      *o!=3 && *o!=5 && *o!=7 && *o!=9 && *o!=11)
+    mwerror(FATAL,1,"unrecognized interpolation order.\n");
+
   /* ALLOCATE NEW IMAGE */
-  nx = in->ncol;
-  ny = in->nrow;
+  nx = in->ncol; ny = in->nrow;
   out = mw_change_fimage(out,*sy,*sx);
   if (!out) mwerror(FATAL,1,"not enough memory\n");
   
+  if (*o>=3) {
+    coeffs = mw_new_fimage();
+    finvspline(in,*o,coeffs);
+    ref = coeffs;
+    if (*o>3) init_splinen(ak,*o);
+  } else {
+    coeffs = NULL;
+    ref = in;
+  }
+
   /* COMPUTE NEW BASIS */
   if (i) {
-    x12 = (x2-X1)/(float)nx;
-    y12 = (y2-Y1)/(float)nx;
-    x13 = (x3-X1)/(float)ny;
-    y13 = (y3-Y1)/(float)ny;
+    x12 = (X2-X1)/(float)nx;
+    y12 = (Y2-Y1)/(float)nx;
+    x13 = (X3-X1)/(float)ny;
+    y13 = (Y3-Y1)/(float)ny;
   } else {
-    x12 = (x2-X1)/(float)(*sx);
-    y12 = (y2-Y1)/(float)(*sx);
-    x13 = (x3-X1)/(float)(*sy);
-    y13 = (y3-Y1)/(float)(*sy);
+    x12 = (X2-X1)/(float)(*sx);
+    y12 = (Y2-Y1)/(float)(*sx);
+    x13 = (X3-X1)/(float)(*sy);
+    y13 = (Y3-Y1)/(float)(*sy);
   }
   if (y4) {
-    xx=((*x4-X1)*(y3-Y1)-(*y4-Y1)*(x3-X1))/((x2-X1)*(y3-Y1)-(y2-Y1)*(x3-X1));
-    yy=((*x4-X1)*(y2-Y1)-(*y4-Y1)*(x2-X1))/((x3-X1)*(y2-Y1)-(y3-Y1)*(x2-X1));
+    xx=((*x4-X1)*(Y3-Y1)-(*y4-Y1)*(X3-X1))/((X2-X1)*(Y3-Y1)-(Y2-Y1)*(X3-X1));
+    yy=((*x4-X1)*(Y2-Y1)-(*y4-Y1)*(X2-X1))/((X3-X1)*(Y2-Y1)-(Y3-Y1)*(X2-X1));
     a = (yy-1.0)/(1.0-xx-yy);
     b = (xx-1.0)/(1.0-xx-yy);
   } else a=b=0.0;
-
-  /*** half-pixel translation for zero order interpolation */
-  if (z) {
-    X1 += 0.5;
-    Y1 += 0.5;
-  }
 
   /********** MAIN LOOP **********/
 
@@ -86,44 +178,83 @@ float  X1,Y1,x2,y2,x3,y3,*x4,*y4;
       
       /* COMPUTE LOCATION IN INPUT IMAGE */
       if (i) {
-	xx = (((float)x-X1)*y13-((float)y-Y1)*x13)/(x12*y13-y12*x13);
-	yy = -(((float)x-X1)*y12-((float)y-Y1)*x12)/(x12*y13-y12*x13);
+	xx = 0.5+(((float)x-X1)*y13-((float)y-Y1)*x13)/(x12*y13-y12*x13);
+	yy = 0.5-(((float)x-X1)*y12-((float)y-Y1)*x12)/(x12*y13-y12*x13);
 	d = 1.0-(a/(a+1.0))*xx/(float)nx-(b/(b+1.0))*yy/(float)ny;
 	xp = xx/((a+1.0)*d);
 	yp = yy/((b+1.0)*d);
-
-	/*d = a+b+1.0-b*(a+1.0)*yy/(float)ny+a*b*(1.0-xx/(float)nx);
-	xp = xx*(b+1.0)/d;
-	yp = yy*(a+1.0)/d;*/
       } else {
-	/*printf("x=%d y=%d ->",x,y);*/
-	d = a*(float)x/(float)(*sx)+b*(float)y/(float)(*sy)+1.0;
-	xx = (a+1.0)*(float)(x)/d;
-	yy = (b+1.0)*(float)(y)/d;
+	fx = (float)x + 0.5;
+	fy = (float)y + 0.5;
+	d = a*fx/(float)(*sx)+b*fy/(float)(*sy)+1.0;
+	xx = (a+1.0)*fx/d;
+	yy = (b+1.0)*fy/d;
 	xp = X1 + xx*x12 + yy*x13;
 	yp = Y1 + xx*y12 + yy*y13;
       }
 
       /* INTERPOLATION */
-      xi = (int)floor((double)xp); 
-      yi = (int)floor((double)yp);
-      adr = yi*nx+xi;
-      tx1 = (xi>=0 && xi<nx);
-      ty1 = (yi>=0 && yi<ny);
-      a11 = (tx1 && ty1? in->gray[adr]:*bg);
-      if (!z) {
-	tx2 = (xi+1>=0 && xi+1<nx);
-	ty2 = (yi+1>=0 && yi+1<ny);
-	a12 = (tx1 && ty2? in->gray[adr+nx]:*bg);
-	a21 = (tx2 && ty1? in->gray[adr+1]:*bg);
-	a22 = (tx2 && ty2? in->gray[adr+nx+1]:*bg);
-	ux = xp-(float)xi;
-	uy = yp-(float)yi;
-      }
+      
+      if (*o==0) { 
+	
+	/* zero order interpolation (pixel replication) */
+	xi = (int)floor((double)xp); 
+	yi = (int)floor((double)yp);
+	if (xi<0 || xi>=in->ncol || yi<0 || yi>=in->nrow)
+	  res = *bg; else res = in->gray[yi*in->ncol+xi];
+	
+      } else { 
+	
+	/* higher order interpolations */
+	if (xp<0. || xp>(float)nx || yp<0. || yp>(float)ny) res=*bg; 
+	else {
+	  xp -= 0.5; yp -= 0.5;
+	  xi = (int)floor((double)xp); 
+	  yi = (int)floor((double)yp);
+	  ux = xp-(float)xi;
+	  uy = yp-(float)yi;
+	  switch (*o) 
+	    {
+	    case 1: /* first order interpolation (bilinear) */
+	      n2 = 1;
+	      cx[0]=ux;	cx[1]=1.-ux;
+	      cy[0]=uy; cy[1]=1.-uy;
+	      break;
+	      
+	    case -3: /* third order interpolation (bicubic Keys' function) */
+	      n2 = 2;
+	      keys(cx,ux,*p);
+	      keys(cy,uy,*p);
+	      break;
 
-      /* PUT RESULT IN NEW IMAGE */
-      out->gray[y*(*sx)+x]=
-	(z?a11:(1.0-uy)*((1.0-ux)*a11+ux*a21)+uy*((1.0-ux)*a12+ux*a22));
+	    case 3: /* spline of order 3 */
+	      n2 = 2;
+	      spline3(cx,ux);
+	      spline3(cy,uy);
+	      break;
+
+	    default: /* spline of order >3 */
+	      n2 = (1+*o)/2;
+	      splinen(cx,ux,ak,*o);
+	      splinen(cy,uy,ak,*o);
+	      break;
+	    }
+	  
+	  res = 0.; n1 = 1-n2;
+	  /* this test saves computation time */
+	  if (xi+n1>=0 && xi+n2<nx && yi+n1>=0 && yi+n2<ny) {
+	    adr = yi*nx+xi; 
+	    for (dy=n1;dy<=n2;dy++) 
+	      for (dx=n1;dx<=n2;dx++) 
+		res += cy[n2-dy]*cx[n2-dx]*ref->gray[adr+nx*dy+dx];
+	  } else 
+	    for (dy=n1;dy<=n2;dy++)
+	      for (dx=n1;dx<=n2;dx++) 
+		res += cy[n2-dy]*cx[n2-dx]*v(ref,xi+dx,yi+dy,*bg);
+	}
+      }
+      out->gray[y*(*sx)+x] = res;
     }
+  if (coeffs) mw_delete_fimage(coeffs);
 }
 

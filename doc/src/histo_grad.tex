@@ -1,0 +1,18 @@
+This modules computes the histogram of the gradient of a given image $u$.
+The discrete input image, interpreted in bilinear interpolation, defines 
+a continuous (piecewise $C^1$) image whose gradient can be exactly computed
+at each point of the continuous plane with both non-integer coordinates.
+Inside a square region delimited by four pixels, the continuous image writes
+$$v(x,y) = axy+bx+cy+d,$$
+where $a,b,c,d$ are uniquely determined by the interpolation condition on
+the four pixels. Thus, its gradient inside the square region is
+$$Dv(x,y) := (v_x,v_y) = (ay+b,ax+c),$$
+and the histogram of $Dv$ with step $s$, defined by
+$$H_{Dv}: (i,j) \mapsto \mathrm{measure}
+\{ (x,y),\; is \leq v_x(x,y) < (i+1)s, \; js\leq vy(x,y) < (j+1)s\}$$
+can be computed easily.
+Depending on the selected outputs, this module returns either
+$H_{Dv}$ as a full image, or its cumulative $H_{v_x}$ or $H_{v_y}$,
+or an approximation of $H_{|Dv|}$ obtained from $H_{Dv}$ by
+$$H_{|Dv|} : k \mapsto \sum_{r\leq \sqrt{i^2+j^2} < r+1} H_{Dv}(i,j).$$
+

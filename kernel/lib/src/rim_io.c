@@ -1,7 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    rim_io.c
    
-   Vers. 1.02
+   Vers. 1.04
+   (C) 1993-2000 Jacques Froment
    Input/Output private functions for the Rim structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -231,9 +232,11 @@ char Comment[];
 
 { Rim image_rim;
   Img image_img;
-  char mtype[TYPE_SIZE];
-  
-  _mw_get_file_type(NomFic,Type,mtype);
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+ 
+  _mw_get_file_type(NomFic,Type,mtype,&hsize,&version);
   
   if (strcmp(Type,"RIM") == 0)
     return(_mw_rim_load_megawave1(NomFic,Type,Comment));

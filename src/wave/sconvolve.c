@@ -1,22 +1,22 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {sconvolve};
-version = {"1.22"};
+version = {"1.3"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Convolves a signal with a filter"};
 usage = {
 'd':[Decimation=1]->DownRate [1,10]
-	"Downsampling rate", 
+	"Downsampling rate (default 1)", 
 'i':[Interpolation=1]->UpRate [1,10]
-	"Upsampling rate", 
+	"Upsampling rate (default 1)", 
 'r'->ReflIR
 	"Convolution with symetric filter", 
 'e':[Edgemode=0]->Edge [0,3]
-	"Edge processing mode", 
+	"Edge processing mode (0/1/2/3, default 0)", 
 'b'->Band
 	"Convolution with high pass filter", 
 'p':[EdgeProl=0]->Prolong [0,2]
-	"Extension of output on edges", 
+	"Extension of output on edges (0/1/2, default 0)", 
 Signal->Signal
 	"Input signal (fsignal)", 
 FicConvol<-Output

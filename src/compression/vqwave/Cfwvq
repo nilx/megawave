@@ -2,7 +2,7 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="Cfwvq"
-_Vers="1.01"
+_Vers="1.3"
 _Date="1997"
 _Func="Compresses a color image by vector quantizing its wavelet transform";
 _Auth="Jean-Pierre D'Ales, Jacques Froment";
@@ -16,20 +16,34 @@ _Usage="[-R Rate] [-c] [-m] [-s] [-u] [-r NLevel] [-b1 BiFilt1] [-b2 BiFilt2] [-
 #
 #       MegaWave2 modules used: fwvq, cfgetchannels, cfputchannels
 
+# v1.2: fixed owave directory bug (L.Moisan)
+# v1.3: fixed ${MY_MEGAWAVE2}/tmp bug (JF)
+
 #----- Check syntax -----
 if [ $# -le 1 ] 
 then
 	. .mw2_help_lg_com
 fi
 
-#----- Check $MY_MEGAWAVE2/tmp directory -----
-if [ ! -d $MY_MEGAWAVE2/tmp ]
-then
-	echo $MY_MEGAWAVE2"/tmp does not exist."
-	exit 1
+
+#----- Choose tmp directory -----
+MWTMP="${MY_MEGAWAVE2}/tmp"
+if [ ! -d $MWTMP ]; then
+  if [ -w $${MY_MEGAWAVE2} ]; then
+    mkdir -p $MWTMP
+  else
+    MWTMP="${MEGAWAVE2}/tmp"
+    if [ ! -d  $MWTMP ]; then
+      if [ -w $${MEGAWAVE2} ]; then
+        mkdir -p $MWTMP
+      else
+        MWTMP=/tmp
+      fi
+    fi
+  fi
 fi
 
-MWTMP="${MY_MEGAWAVE2}/tmp"
+
 MWDATA="${MEGAWAVE2}/data"
 MY_MWDATA="${MY_MEGAWAVE2}/data"
 GROUP=compression/vqwave
@@ -52,9 +66,9 @@ NLEVELOPT=""
 NLEVEL=4
 
 # Default wavelet filters
-WAVELETFILTER="owave/biortho/h/sd07.ir"
-WAVELETFILTER2="owave/biortho/htilde/sd09.ir"
-WAVELETOPT="-b owave/biortho/htilde/sd09.ir"
+WAVELETFILTER="wave/biortho/h/sd07.ir"
+WAVELETFILTER2="wave/biortho/htilde/sd09.ir"
+WAVELETOPT="-b wave/biortho/htilde/sd09.ir"
 WAVELETEDGEFILTER="no filter"
 
 IMAGE=""

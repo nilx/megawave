@@ -24,7 +24,12 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #define COMMENT_CHAR '#'
 
 static DataIo defio[BUFSIZ] = {
-  {QSTRING_T, NULL, READ, "_mw_atoq_",  NULL},
+  /*  {QSTRING_T, NULL, READ, "_mw_atoq_",  NULL},
+      Modified by JF 14/04/2000. Try to manage QSTRING_T as CHAR_T, since
+      strings are not allowed (confusion with char *).
+   */
+  {QSTRING_T, NULL, READ, "_mw_atoc_",  NULL},
+
   {CHAR_T,    NULL, READ, "_mw_atoc_",  NULL},
   {UCHAR_T,   NULL, READ, "_mw_atouc_", NULL},
   {SHORT_T,   NULL, READ, "_mw_atos_",  NULL},

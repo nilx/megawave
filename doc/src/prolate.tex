@@ -1,0 +1,7 @@
+This module produces a prolate convolution kernel for optimal
+image reduction. Among all $n\times n$ images $u$ such that $u(x)=0$ 
+outside a $s\times s$ window and $\int u^2=1$, the energy 
+$\int_{|\xi|\leq dn/2} |\hat u(\xi)|^2$ is maximized ($\hat u$ is 
+the Fourier Transform of $u$), yielding an optimal image $\bar u$.
+The result is then normalized to produce a unit mass kernel 
+$out= \bar u/\int \bar u$.

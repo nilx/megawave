@@ -44,15 +44,9 @@ QImage<-Result
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void arencode2(int *, long *, int *, long *, int *, Fsignal, int *, Fimage, double *, Cimage);
-void entropy(Fsignal, double *);
-void fmse(Fimage, Fimage, int *, char *, double *, double *, double *, double *);
-#else
-void arencode2();
-void entropy();
-void fmse();
-#endif
+extern void arencode2();
+extern void entropy();
+extern void fmse();
 
 /*--- Constants ---*/
 
@@ -621,6 +615,8 @@ double     *ratear;             /* Arithmetic coding rate */
   histo->scale = (max - min) / (float) hsize;
   histo->sgrate = stepsize;
   entropy(histo, ent);
+  printf("entropy : ent=%g\n",*ent);
+
   mw_delete_fsignal(histo);
 
   INIT_ENCODING_FIMAGE(smallheader, image->nrow, image->ncol, c_stepsize, hsize, center, minstep, ashift, c_ashift, compress);
@@ -641,11 +637,14 @@ double     *ratear;             /* Arithmetic coding rate */
     e = 0.0;
 
   er = log10((double) hsize) / log10((double) 2.0);
+
   if (e > er)
-    *ratear = er + effnbit / (double) isize;
+    *ratear = er + (effnbit / (double) isize);
   else
-    *ratear = e + effnbit / (double) isize;
-  *ent += (double) effnbit / isize;
+    *ratear = e + (effnbit / (double) isize);
+
+  /* To check, value of *ent bugged  on Linux with cmw2 -O */
+  *ent += ((double) effnbit) / isize;
     
   if (compress && (hsize > 1))
     ADD_BUF_TO_COMPRESS_FIMAGE(compress, bufcomp);

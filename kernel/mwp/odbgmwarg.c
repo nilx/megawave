@@ -26,8 +26,12 @@ Paramtype p;
 {
   switch(p.t) {
     case QSTRING_T :
-      INT_ERROR("print_scalar");
-      break;
+      /*
+	INT_ERROR("print_scalar");
+	break;
+	Modified by JF 14/04/2000. Try to manage QSTRING_T as CHAR_T, since
+        strings are not allowed (confusion with char *).
+      */
     case CHAR_T :
   PRDBG("%s :   %s.t         %s= CHAR_T\n", s, f, b);
       if (p.d == NULL)

@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {amle3d};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Frederic Cao"};
   function = {"Compute the solution of the AMLE Model using the inf sup scheme in the 3d case"};
   usage = {
@@ -11,12 +11,14 @@
   out<-out  "Output fmovie solution of the amle equation"
   };
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v1.1: changed createmovie() + amle3d returns void (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
 
-/*create a movie with value 0.0 with the same numbrer number of images as the input*/
+/*create a movie with value 0.0 with the same number of images as the input*/
 
 void createmovie(input,output,nl,nc)
 
@@ -24,27 +26,23 @@ Fmovie input,output;
 int nc,nl;
 
 {
-  Fimage im,ima,imin;
-  
-  imin=input->first;
-  ima=mw_new_fimage();
-  output->first=ima;
-  while (imin != NULL)
-    {
-      ima=mw_change_fimage(ima,nl,nc);
-      if (ima == NULL) mwerror(FATAL,1,"Not enough memory.\n");
-      mw_clear_fimage(ima,0.0);
-      im=mw_new_fimage();
-      ima->next=im;
-      im->previous=ima;
-      ima=im;
-      imin=imin->next;
-    }
-  ima->previous->next=NULL;
+  Fimage u,cur,prev,*next;
+
+  next = &(output->first);
+  prev = NULL;
+  for (u=input->first;u;u=u->next) {
+    cur = mw_change_fimage(NULL,nl,nc);
+    if (!cur) mwerror(FATAL,1,"Not enough memory.\n");
+    cur->previous = prev;
+    prev = *next = cur;
+    next = &(cur->next);
+  }
+  *next = NULL;
 }      
 
 
-/*------------------ compute the value of the 4 neighbours of a pixel in the same image . If the pixel is at a border, a mirror effect is applied ------*/
+/*------------------ compute the value of the 4 neighbours of a pixel in the same image . 
+                           If the pixel is at a border, a mirror effect is applied  ------*/
 
 void neighbor_4(x,y,xmax,ymax,p,left,right,up,down)
 
@@ -114,7 +112,10 @@ float **left,**right,**up,**down;
 }
 
 
-/*-------- compute an iteration of the AMLE model : we only change the pixels with value equal to zero in the init movie, compute the max and min in the 6 (3d) neighborhood of the pixel, then replace the value by 0.5(max+min).*/
+/*-------- compute an iteration of the AMLE model : 
+we only change the pixels with value equal to zero in the init movie, 
+compute the max and min in the 6 (3d) neighborhood of the pixel, 
+then replace the value by 0.5(max+min).*/
 
 
 void iterate(input,output,nl,nc)
@@ -230,7 +231,7 @@ Fmovie input,output;
 
 /*-----------------------------  Main Program --------------------------*/
 
-amle3d(num,init,in,out)
+void amle3d(num,init,in,out)
 
 int *num;
 Fmovie in,out,init;

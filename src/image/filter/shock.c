@@ -2,7 +2,7 @@
 /* mwcommand
  name = {shock};
  author = {"Lionel Moisan"};
- version = {"1.0"};
+ version = {"1.1"};
  function = {"Rudin shock filter"};
  usage = {
  'n':[n=10]->n               "number of iterations (default: 10)",
@@ -39,13 +39,13 @@ float s;
 	     4.0*u->gray[u->ncol * j  + i ]);
       
       new = u->gray[u->ncol * j  + i  ];
-      if (laplacian >= 0.0) {
+      if (laplacian > 0.0) {
 	/* erosion */
 	val = u->gray[u->ncol * j  + i1 ]; if (val<new) new = val;
 	val = u->gray[u->ncol * j  + im ]; if (val<new) new = val;
 	val = u->gray[u->ncol * j1 + i  ]; if (val<new) new = val;
 	val = u->gray[u->ncol * jm + i  ]; if (val<new) new = val;
-      } else {
+      } else if (laplacian < 0.0) {
 	/* dilation */
 	val = u->gray[u->ncol * j  + i1 ]; if (val>new) new = val;
 	val = u->gray[u->ncol * j  + im ]; if (val>new) new = val;

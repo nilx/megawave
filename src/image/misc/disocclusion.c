@@ -2,7 +2,7 @@
 /**************************** Copyright MegaWave ***************************/
 /* mwcommand
 name = {disocclusion};
-version = {"1.0BETA"};
+version = {"1.1"};
 author = {"Simon Masnou"};
 function = {"Disocclusion using global minimisation of cost by dynamic recursive programing"};
 usage = {

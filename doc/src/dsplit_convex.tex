@@ -1,0 +1,33 @@
+This module splits a curve, given by a 2-Dlist, into convex components.
+
+\medskip
+
+Given 3 successive points $A,B,C$, the determinant
+$$d(A,B,C) = (x_B-x_A)(y_C-y_B)-(y_B-y_A)(x_C-x_B)$$ 
+is computed, as well as the approximate error
+\begin{eqnarray*}
+\varepsilon(A,B,C) = \varepsilon_0 \left( \frac{}{} \right. &\;& 
+	|x_B-x_A|*(|y_C|+|y_B|) + (|x_B|+|x_A|)|y_C-y_B| \\
+&+&	|y_B-y_A|(|x_C|+|x_B|)  + (|y_B|+|y_A|)|x_C-x_B| 
+\qquad \left. \frac{}{} \right),
+\end{eqnarray*}
+where $\varepsilon_0 = 10^{-15}$ is the relative precision of 
+\verb+double+ numbers.
+The points $B$ for which 
+$$|d(A,B,C)|\leq \varepsilon(A,B,C)$$ 
+are recursively ignored as ``zero-curvature'' points.
+
+\medskip
+
+For each sequence of 4 successive remaining points $A,B,C,D$,
+we say that $(B,C)$ is an inflexion
+segment when $d(A,B,C)$ and $d(B,C,D)$ have opposite signs.
+When this occurs, we define the middle of $(B,C)$ as an inflexion
+point and break the curve accordingly.
+
+The result is a Dlists describing the successive convex components
+encountered. Notice that this module is compatible with the convention
+that a curve whose first and end points have exactly the same coordinates
+must be considered as a closed curve.
+
+

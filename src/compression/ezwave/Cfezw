@@ -2,9 +2,9 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="Cfezw"
-_Vers="1.01"
-_Date="1997"
-_Func="Compresses a color image with EZW algorithm";
+_Vers="1.3"
+_Date="1997-2002"
+_Func="Compress a color image with EZW algorithm";
 _Auth="Jean-Pierre D'Ales";
 _Usage="[-R Rate] [-c] [-b1 BiFilt1] [-b2 BiFilt2] [-o OrthoFilt] [-e EdgeFilt] image"
 
@@ -15,18 +15,13 @@ _Usage="[-R Rate] [-c] [-b1 BiFilt1] [-b2 BiFilt2] [-o OrthoFilt] [-e EdgeFilt] 
 #
 #       MegaWave2 modules used: cfezw
 
+# v1.2: fixed owave directory bug (L.Moisan)
+# v1.3: MY_MEGAWAVE2/tmp removed (JF).
 
 #----- Check syntax -----
 if [ $# -le 0 ] 
 then
 	. .mw2_help_lg_com
-fi
-
-#----- Check $MY_MEGAWAVE2/tmp directory -----
-if [ ! -d $MY_MEGAWAVE2/tmp ]
-then
-	echo $MY_MEGAWAVE2"/tmp does not exist."
-	exit 1
 fi
 
 MWDATA="${MEGAWAVE2}/data"
@@ -41,9 +36,9 @@ RDOPT="-d"
 COLOROPT=""
 
 # Default wavelet filters
-WAVELETFILTER="owave/biortho/h/sd07.ir"
-WAVELETFILTER2="owave/biortho/htilde/sd09.ir"
-WAVELETOPT="-b owave/biortho/htilde/sd09.ir"
+WAVELETFILTER="wave/biortho/h/sd07.ir"
+WAVELETFILTER2="wave/biortho/htilde/sd09.ir"
+WAVELETOPT="-b wave/biortho/htilde/sd09.ir"
 WAVELETEDGEFILTER="no filter"
 
 IMAGE=""
@@ -148,8 +143,6 @@ fi
 #echo "cfezw $RDOPT $COLOROPT $WAVELETOPT $COMPRESSOPT $IMAGE $WAVELETFILTER $QUANTIZEARG"
 	
 cfezw $RDOPT $COLOROPT $WAVELETOPT $COMPRESSOPT $IMAGE $CODEBOOK $WAVELETFILTER $QUANTIZEARG
-	
-
 
 
 

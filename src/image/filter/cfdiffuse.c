@@ -1,12 +1,12 @@
 /*---------------------------------------------------------------------------*/
 /* mwcommand
 name = {cfdiffuse};
-version = {"0.0"};
+version = {"1.0"};
 author = {"Antonin Chambolle, Jacques Froment"};
 function = {"One-step Diffusion of a Color Float Image using Total Variation minimization"};
 usage = {
-'t':[deltat=10.0]->deltat  "Time for the diffusion",
-'l':[epsilon=1.0]->epsilon [0.1,100.0] "Lower bound for the RGB norm",
+'t':[deltat=10.0]->deltat  "Time for the diffusion (default 10.)",
+'l':[epsilon=1.0]->epsilon [0.1,100.0] "Lower bound for the RGB norm (default 1.)",
 in->in       "original image (input cfimage)",
 out<-out         "diffused image (output cfimage)",
 notused -> MDiag0   "Diagonal of the matrix #0 (internal use)",

@@ -1,0 +1,238 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
+_Prog="mwrnwordmod"
+_Func="Rename words (e.g. system functions or structure fields) inside modules for which name has changed"
+_Vers="1.0"
+_Date="2002"
+_Auth="Jacques Froment";
+_Usage="[-adm] [-all] [-check] [-d dir] [-f file_of_names]"
+# -adm : administrator : scan $MEGAWAVE2/src directory instead of $MY_MEGAWAVE2/src
+# -all : scan all files (not only .c files)
+# -check : check only : see files which would be changed, but do nothing.
+# -d dir : scan directory <dir>
+# -f file_of_names : use this file instead of data/mwrnwordmod.data
+#
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+#------------------
+Answer()
+#------------------
+
+{
+ok=0
+while [ $ok -ne 1 ]; do
+ if  [ "$2" != "" ]; then
+   mwechon "$1 [Y/N] ? [default $2] "
+ else
+   mwechon "$1 [Y/N] ? "
+ fi
+ read ans
+ if [ "$ans" = "" ] && [ "$2" != "" ]; then
+  ans=$2
+ fi
+ if [ "$ans" = "y" ] ||  [ "$ans" = "Y" ]; then
+   ans="Y"
+   ok=1
+ fi
+ if [ "$ans" = "n" ] ||  [ "$ans" = "N" ]; then
+   ans="N"
+   ok=1
+ fi
+ if [ $ok -ne 1 ]; then
+  if  [ "$2" != "" ]; then
+   echo "Please, answer Y for Yes or N for No (default means $2) !"
+  else
+   echo "Please, answer Y for Yes or N for No !"
+  fi
+ fi
+done
+}
+
+#------------------
+ChangeName()
+#------------------
+# Change names on file $dir/$fic
+
+{
+
+fold=$dir/$fic
+fnew=$TMP/mwrnwordmod_$$_$fic
+
+echo "  Scanning file $fic"
+
+# Main loop
+nl=0
+while [ $nl -ne $nlines ]
+do
+  nl=`echo "$nl 1 + p" | dc`
+  line=`sed -n "$nl,$nl p" $fname`
+  oldname=`echo $line | cut -d " " -f1`
+  newname=`echo $line | cut -d " " -f2`
+  firstcar=`echo $line | cut -c1`  
+#  echo "line $nl : '$line' oldname='$oldname' newname='$newname'"
+# Check if line is empty or is a comment.
+  if [ "$oldname" != "" ] || [ "$newname" != "" ]; then
+    if [ "$firstcar" != "#" ]; then
+# Check if one of the two fields is empty
+      if [ "$oldname" = "" ]; then
+        echo "${_Prog}: Error line $nl : cannot get old name ! Abort." 1>&2
+        exit 1
+      fi
+      if [ "$newname" = "" ]; then
+        echo "${_Prog}: Error line $nl : cannot get new name ! Abort." 1>&2
+        exit 1
+      fi
+      if [ "$oldname" = "$newname" ]; then
+        echo "${_Prog}: Error line $nl : cannot get old and new name ! Abort." 1>&2
+        exit 1
+      fi
+
+# Process change word oldname to newname
+      sed "s/${oldname}/${newname}/g" $fold  > $fnew
+      dif=`diff $fold $fnew`
+      if [ ! "${dif}" ]; then
+        /bin/rm $fnew
+      else
+        if [ $check -eq 0 ]; then
+          mv -f $fnew $fold
+         echo "    changed ${oldname} to ${newname} !"
+        else
+         echo "    I would change ${oldname} to ${newname}."
+         /bin/rm $fnew
+        fi
+      fi
+    fi
+  fi
+done
+
+}
+
+
+#------------------
+# Main program
+#------------------
+
+# Check input
+#if [ $# -lt 1 ]; then
+#   . .mw2_help_lg_com
+#fi
+
+dir=""
+arg=""
+fname=""
+defaultdir=$MY_MEGAWAVE2
+all=0
+check=0
+
+while [ "$1" != "" ]
+do
+        case "$1" in
+
+	  "-adm") defaultdir=$MEGAWAVE2
+                  shift
+                  ;;
+
+	  "-all") arg="$arg -all"
+                  all=1
+                  shift
+                  ;;
+
+	  "-check") arg="$arg -check"
+                    check=1
+                    shift
+                    ;;
+
+	  "-d") shift
+                dir=$1
+                shift
+                ;;
+
+	  "-f") shift
+                fname=$1
+		arg="$arg -f $fname"
+                shift
+                ;;
+
+          *)      . .mw2_help_lg_com
+                  ;;
+       
+       esac
+done
+
+if [ "$dir" = "" ]; then
+  dir=${defaultdir}/src
+fi
+if [ ! -d $dir ]; then
+  echo "${_Prog}: $dir is not a directory !" 1>&2
+  exit 1
+fi
+if [ ! -w $dir ]; then
+  echo "${_Prog}: $dir is not a writable directory !" 1>&2
+  exit 1
+fi
+
+if [ "$fname" = "" ]; then
+  fname=${MEGAWAVE2}/sys/shell/data/mwrnwordmod.data
+fi
+if [ ! -f $fname ]; then
+  echo "${_Prog}: Cannot open file of names ${fname}" 1>&2
+  exit 1
+fi
+
+TMP=/usr/tmp
+if  [ ! -w $TMP ]; then
+  TMP=/tmp
+fi
+
+# new trap
+trap "echo 'interrupt !'; rm -f $TMP/mwrnwordmod_$$_*; exit 1" 2
+trap "echo 'quit !'; rm -f  $TMP/mwrnwordmod_$$_*; exit 1" 3
+
+# First entry : ask confirmation
+if [ "$dir" = "${defaultdir}/src" ]; then
+  echo "-------------------------------- WARNING --------------------------------"
+  echo "I'm going to touch source files in $dir,"
+  echo "including subdirectories. In case of something goes wrong, it is strongly"
+  echo "recommended to save the entire content of $dir," 
+  echo "and run this shell after only."
+  echo "-------------------------------------------------------------------------"
+  Answer "Have you make the backup (i.e. should I continue)" "N"
+  if [ "$ans" = "N" ]; then 
+    echo "OK, do it and call mwrnwordmod again !"
+    exit 1
+  fi
+fi
+
+echo "Processing directory $dir..."
+
+# Get the number of lines in the file 
+nlines=`sed -n "$ =" $fname`
+if [ "$nlines" = "" ]; then
+  echo "${_Prog}: Missing <end of line> at the end of file ${fname}" 1>&2
+  exit 1
+fi
+
+for fic in `ls $dir`
+do
+if [ -f $dir/$fic ] && [ -w $dir/$fic ]; then
+# Check if file is a module (.c extension)
+  module=`basename $fic .c`
+# If yes or if -all selected, scan it to change names.
+  if [ $all -eq 1 ] || [ "${module}.c" = "$fic" ]; then
+    ChangeName
+  fi
+else
+# In case of directory, call mwrnwordmod recursively
+  if [ -d $dir/$fic ] && [ -w $dir/$fic ] && [ ! -h $dir/$fic ]; then
+   mwrnwordmod $arg -d $dir/$fic 
+  fi
+fi
+done

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mw.c
 
-  Vers. 1.7
-  (C) 1995-99 Jacques Froment & Sylvain Parrino
+  Vers. 1.11
+  (C) 1995-2002 Jacques Froment & Sylvain Parrino
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
@@ -261,16 +261,19 @@ struct mwargs {
 /* Default option buffer */
 char _mwdefoptbuf[BUFSIZ];
 
-static void call_help(), call_debug(), call_verbose(), call_ftype();
-char type_force[TYPE_SIZE+1] = {'?', '\0'};
+static void call_help(), call_debug(), call_verbose(), call_ftype(), call_vers(), call_fsum(), call_proto();
+char type_force[mw_ftype_size+1] = {'?', '\0'};
 
 
-/* Default megawave options */
+/* System options */
 struct mwargs mwargs[] = { 
   {"-debug",   NULL,       0,                  NULL,             call_debug}, 
   {"-help",    NULL,       0,                  NULL,             call_help}, 
   {"-verbose", NULL,       0,                  NULL,             call_verbose}, 
   {"-ftype",   type_force, sizeof(type_force), "<image type>",   call_ftype}, 
+  {"-vers",   NULL,        0,                  NULL,             call_vers}, 
+  {"-fsum",   NULL,        0,                 NULL,             call_fsum}, 
+  {"-proto",   NULL,        0,                 NULL,             call_proto}, 
   {NULL}
 };
 
@@ -333,6 +336,150 @@ char *s;
   ;
 }
 
+int vers_flg = FALSE;
+#ifdef __STDC__
+static void call_vers(void)
+#else
+static void call_vers()
+#endif
+{
+  vers_flg = TRUE;
+}
+
+/* Write function summary */
+#ifdef __STDC__
+static void call_fsum(void)
+#else
+static void call_fsum()
+#endif
+{
+  printf("%s",mwicmd[mwind].fsummary);
+  mwexit(0);
+}
+
+/* For call_proto() : return in <type> the type of the variable <var>
+   from the function declaration <fdecl> (fsum without first line).
+*/
+
+static void find_type(fdecl,var,type)
+
+char *fdecl,*var,*type;
+
+{
+  char vtype[BUFSIZ]; /* current variable type */
+  char v[BUFSIZ];     /* current variable name */
+  char pvar[BUFSIZ];  /* *<var> */
+  int i,j;
+
+  sprintf(pvar,"*%s",var);
+  i=0;
+  while (1)
+    {
+      j=i;
+      for (; (fdecl[i]!='\0')&&(fdecl[i]!=' '); i++) vtype[i-j]=fdecl[i];
+      if (fdecl[i]=='\0')
+	mwerror(INTERNAL,1,"[find_type] cannot find <space> !\n");  
+      vtype[i-j]='\0';
+      /*printf("vtype=<%s>\n",vtype);*/
+
+      do
+	{
+	  i++;
+	  j=i;
+	  for (; (fdecl[i]!='\0')&&(fdecl[i]!=' ')&&(fdecl[i]!=';'); i++) 
+	    v[i-j]=fdecl[i];
+	  if (fdecl[i]=='\0')
+	    mwerror(INTERNAL,1,"[find_type] cannot find <space> !\n");  
+	  v[i-j]='\0';
+	  if ((i>j)&&(v[0]!=',')) 
+	    {
+	      /*printf("v=<%s>\n",v);*/
+	      if (strcmp(var,v)==0) 
+		{
+		  strcpy(type,vtype);
+		  return;
+		}
+	      if (strcmp(pvar,v)==0) 
+		{
+		  sprintf(type,"%s *",vtype);
+		  return;
+		}
+	    }
+	}
+      while (i>j);
+
+      for (; (fdecl[i]!='\0')&&(fdecl[i]!='\n'); i++);
+      if (fdecl[i]=='\0')
+	mwerror(INTERNAL,1,"[find_type] cannot find var='%s' !\n",var);
+      i++;
+    }
+}
+
+/* Write function prototype */
+#ifdef __STDC__
+static void call_proto(void)
+#else
+static void call_proto()
+#endif
+{
+  char type[BUFSIZ];  /* type of the function */
+  char name[BUFSIZ];  /* name of the function */
+  char var[BUFSIZ];   /* list of all variables */
+  char v[BUFSIZ];     /* current variable name */
+  char vtype[BUFSIZ]; /* current variable type */
+  char fdecl[BUFSIZ]; /* declaration of variables */
+  int i,j;
+
+  if (sscanf(mwicmd[mwind].fsummary,"%s%s%[^)]",type,name,var)!=3)
+    mwerror(INTERNAL,1,"[call_proto] cannot extract var field (3) !\n");
+  if ((var[0]!=' ')||(var[1]!='('))
+    /* Maybe function type forgotten */
+    {
+      if (sscanf(mwicmd[mwind].fsummary,"%s%[^)]",name,var)!=2)
+	mwerror(INTERNAL,1,"[call_proto] cannot extract var field (2) !\n");
+      if ((var[0]!=' ')||(var[1]!='('))      
+	mwerror(INTERNAL,1,"[call_proto] invalid extracted var field '%s'\n",var);
+      strcpy(type,"int");
+      mwerror(WARNING,1,"No type definition for function '%s'; assuming <int> but the author probably meant <void>.\n",name);
+    }
+  
+  for (i=0; (mwicmd[mwind].fsummary[i]!='\n')&&
+	 (mwicmd[mwind].fsummary[i]!='\0'); i++);
+  if (mwicmd[mwind].fsummary[i]=='\0')
+    mwerror(INTERNAL,1,"[call_proto] cannot find \\n !\n");    
+
+  /* get fdecl */
+  for (j=i+1; mwicmd[mwind].fsummary[j]!='\0'; j++)
+    fdecl[j-i-1]= mwicmd[mwind].fsummary[j];
+  fdecl[j-i-3]='\0';
+  /*printf("fdecl=<%s>\n",fdecl);*/
+
+  printf("#ifdef __STDC__\n");
+  printf("%s %s(",type,name);
+  for (i=2; var[i]!='\0'; )
+    {
+      for (j=0;(var[i+j]!='\0')&&(var[i+j]!=' '); j++) v[j]=var[i+j];
+      if (var[i+j]=='\0')
+	mwerror(INTERNAL,1,"[call_proto] cannot find <space> !\n");    	
+      v[j]='\0';
+      if (*v!=',')
+	{
+	  find_type(fdecl,v,vtype);
+	  printf("%s",vtype);
+	}
+      else
+	printf(",");
+      i+=j+1;
+    }
+  printf(");\n");
+  printf("#else\n");
+  printf("%s %s();\n",type,name);
+  printf("#endif\n");
+
+
+  mwexit(0);
+}
+
 
 /* MegaWave2 main function */
 #ifdef __STDC__
@@ -346,10 +493,13 @@ char *argv[], *envp[];
   char *userargv[BUFSIZ], *strrchr();
   int i, userargc, flg;
   struct mwargs *p;
+  char command[BUFSIZ],*chm;
+  int retcommand;
 #ifdef XMWP
   char *mw_xmw;
 #endif
-  
+  char *getenv();  
+
   /* Name of module */
   if ((mwname = strrchr(argv[0], '/')) != NULL)
     mwname = mwname + 1;
@@ -362,6 +512,15 @@ char *argv[], *envp[];
   /* This current main function is executed in run-time mode only */
   mwrunmode = 1;
 
+  /* If MW_CHECK_HIDDEN set, check for hidden module */
+  chm=getenv("MW_CHECK_HIDDEN");
+  if ((chm) && (chm[0]=='1'))
+    {
+      sprintf(command,"mwwhere -bin %s > /dev/null",mwname);
+      retcommand=system(command) >> 8;
+      if (retcommand == 2)
+	mwerror(WARNING,1,"Module of same name hidden by this one !\n");
+    }
 #ifdef XMWP
   /* If module is executed without any argument and if shell variable MW_XMW is
      set then the module tries to exec the XMegaWave2 main program. */
@@ -427,11 +586,20 @@ char *argv[], *envp[];
 
 /* MegaWave default options actions */
 #ifdef __STDC__
-void MegaWaveDefOpt(void)
+void MegaWaveDefOpt(char *vers)
 #else
-MegaWaveDefOpt()
+MegaWaveDefOpt(vers)
+char *vers;
 #endif
 {
+  /* Version flag */
+  if (vers_flg == TRUE)
+    {
+      printf("%s\n",vers);
+      mwexit(0);
+    }
+
+  /* Help flag */
   if (help_flg == TRUE)
     mwusage(NULL);
 }

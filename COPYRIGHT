@@ -10,18 +10,16 @@ contribution to the software by writting modules (see mwcontrib_all to get the
 updated list of all contributors). Since 1998, Lionel Moisan is in charge of 
 collecting and improving the module library. Some small parts of the system libraries 
 (especially input/output functions related to the X Window System or to image file 
-formats) have been written by adapting publicly available source code. In that case 
+formats) have been written by adapting publicly available source codes. In that case 
 the original copyright mentions have been transfered in the corresponding file.
 
-Copyrights
-
+Copyrights :
   for the whole system:
    (C)1988-1998 Universite Paris-IX Dauphine,
-   (C)1999-2000 Ecole Normale Superieure de Cachan.
-
-  for the modules:
+   (C)1999-2002 Ecole Normale Superieure de Cachan.
+  for the modules and macros:
    the copyrights are given by the author's names and institutions written in the
-   header of the module.
+   header of the module or macro.
 
 Address: MegaWave, CMLA, Ecole Normale Superieure de Cachan, 61 avenue 
          du President Wilson, 94235 Cachan cedex, France.   

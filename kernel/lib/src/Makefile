@@ -1,7 +1,7 @@
 # Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.07 with arch = 'Linux ix86' option = 'shared '
 #-----------------------------------------------------------------------------
 # Makefile.in used to create Makefile using macro mw2config
-# MegaWave2 system library : Copyright (c) Jacques Froment 1996-99
+# MegaWave2 system library : Copyright (c) Jacques Froment 1996-2001
 #-----------------------------------------------------------------------------
 # This file is part of the MegaWave2 system library 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -32,7 +32,8 @@ LIBslXMWCOM  = $(LIBTARGET)/libxmwcom.so
 # --- C compiler Options ---
 # XMWP : Add code for communication with XMegaWave (+ compile the lib xmwcom)
 
-CFLAGS   = -I$(MWINCDIR) -I$(MW_INCLUDEX11) -D$(MW_SYSTEMTYPE) -D$(MW_MACHINETYPE) -DXMWP 
+#CFLAGS   = -I$(MWINCDIR) -I$(MW_INCLUDEX11) -D$(MW_SYSTEMTYPE) -D$(MW_MACHINETYPE) -DXMWP 
+CFLAGS   = -I$(MWINCDIR) -I$(MW_INCLUDEX11) -D$(MW_SYSTEMTYPE) -D$(MW_MACHINETYPE) 
 
 CFLAGSLIB  = $(CFLAGS) -c 
 
@@ -63,15 +64,15 @@ AR       = ar $(ARFLAGS)
 
 # Library object
 SRC = mw.c mwio.c cimage.c \
-      fimage.c cimage_io.c fimage_io.c window.c \
+      fimage.c cimage_io.c fimage_io.c window.c wpanel.c \
       cmovie.c cmovie_io.c polygon.c \
       polygon_io.c fsignal.c fsignal_io.c ascii_file.c file_type.c \
-      wtrans2d.c wtrans2d_io.c convert_struct.c wmax2d.c wmax2d_io.c \
+      wtrans2d.c wtrans2d_io.c basic_conv.c type_conv.c wmax2d.c wmax2d_io.c \
       wtrans1d.c wtrans1d_io.c pm_io.c gif_io.c curve.c curve_io.c \
       cfimage.c cfimage_io.c ccimage.c ccimage_io.c unix_bsd.c \
       module.c module_io.c fmovie.c fmovie_io.c ps_io.c epsf_io.c ccmovie.c \
       cfmovie.c fcurve.c fcurve_io.c fpolygon.c fpolygon_io.c tiff_io.c \
-      pgm_io.c 
+      pgm_io.c dcurve.c dcurve_io.c rawdata.c rawdata_io.c
 
 OBJ = 	$(OBJPATH)/mw.o \
 	$(OBJPATH)/mwio.o \
@@ -80,6 +81,7 @@ OBJ = 	$(OBJPATH)/mw.o \
 	$(OBJPATH)/cimage_io.o \
 	$(OBJPATH)/fimage_io.o \
 	$(OBJPATH)/window.o \
+	$(OBJPATH)/wpanel.o \
 	$(OBJPATH)/cmovie.o \
 	$(OBJPATH)/cmovie_io.o \
 	$(OBJPATH)/fmovie.o \
@@ -98,7 +100,8 @@ OBJ = 	$(OBJPATH)/mw.o \
 	$(OBJPATH)/file_type.o \
 	$(OBJPATH)/wtrans2d.o \
 	$(OBJPATH)/wtrans2d_io.o \
-	$(OBJPATH)/convert_struct.o \
+	$(OBJPATH)/basic_conv.o \
+	$(OBJPATH)/type_conv.o \
 	$(OBJPATH)/wmax2d.o \
 	$(OBJPATH)/wmax2d_io.o \
 	$(OBJPATH)/wtrans1d.o \
@@ -111,8 +114,10 @@ OBJ = 	$(OBJPATH)/mw.o \
 	$(OBJPATH)/epsf_io.o \
 	$(OBJPATH)/curve.o \
 	$(OBJPATH)/fcurve.o \
+	$(OBJPATH)/dcurve.o \
 	$(OBJPATH)/curve_io.o \
 	$(OBJPATH)/fcurve_io.o \
+	$(OBJPATH)/dcurve_io.o \
 	$(OBJPATH)/mimage.o \
 	$(OBJPATH)/mimage_io.o \
 	$(OBJPATH)/cmimage.o \
@@ -123,18 +128,22 @@ OBJ = 	$(OBJPATH)/mw.o \
 	$(OBJPATH)/ccimage_io.o \
 	$(OBJPATH)/shape.o \
 	$(OBJPATH)/shape_io.o \
+	$(OBJPATH)/rawdata.o \
+	$(OBJPATH)/rawdata_io.o \
+	$(OBJPATH)/list.o \
+	$(OBJPATH)/list_io.o \
 	$(OBJPATH)/unix_bsd.o \
 	$(OBJPATH)/module.o \
 	$(OBJPATH)/module_io.o
 
-sysmw :		$(OBJ) $(OBJPATH)/mw_main.o 
+sysmw :	$(OBJPATH)/make_type_conv $(OBJ) $(OBJPATH)/mw_main.o $(OBJPATH)/make_type_conv
 	@echo " "
 	@echo "Create Archive (static) library..."	
 	mv $(OBJPATH)/mw_main.o $(LIBTARGET)/.
 	$(AR) $(LIBaSYSMW) $(OBJ)
 	-ranlib $(LIBaSYSMW)
 
-sysmwsl :	$(OBJ) $(OBJPATH)/mw_main.o 
+sysmwsl : $(OBJPATH)/make_type_conv $(OBJ) $(OBJPATH)/mw_main.o 
 	@echo " "
 	@echo "Create Shared (dynamic) library..."	
 	mv $(OBJPATH)/mw_main.o $(LIBTARGET)/.
@@ -188,7 +197,7 @@ $(OBJPATH)/notiff.o : $(MWINCDIR)/tiff.h $(MWINCDIR)/tiffio.h notiff.c
 # xmwcom library ----------------------------------------
 
 $(OBJPATH)/xmw_com.o : $(MWINCDIR)/mw.h $(MWINCDIR)/file_type.h $(MWINCDIR)/xmw_com.h \
-	mwio.c convert_struct.c file_type.c xmw_com.c
+	mwio.c basic_conv.c file_type.c xmw_com.c
 	$(CC) $(CFLAGSLIB) -o $@ xmw_com.c
 
 # sysmw library ----------------------------------------
@@ -205,16 +214,23 @@ $(OBJPATH)/mwio.o : $(MWINCDIR)/mw.h $(MWINCDIR)/file_type.h $(MWINCDIR)/cimage.
 $(OBJPATH)/window.o : $(MWINCDIR)/window.h $(MWINCDIR)/Wdevice.h $(MWINCDIR)/cimage.h window.c
 	$(CC) $(CFLAGSLIB) -o $@ window.c
 
+$(OBJPATH)/wpanel.o : $(MWINCDIR)/wpanel.h $(MWINCDIR)/Wdevice.h window.c wpanel.c
+	$(CC) $(CFLAGSLIB) -o $@ wpanel.c
+
 $(OBJPATH)/ascii_file.o : $(MWINCDIR)/ascii_file.h ascii_file.c
 	$(CC) $(CFLAGSLIB) -o $@ ascii_file.c
 
-$(OBJPATH)/file_type.o : $(MWINCDIR)/file_type.h file_type.c
+$(OBJPATH)/file_type.o : $(MWINCDIR)/file_type.h $(MWINCDIR)/native_ftype.h $(MWINCDIR)/type_conv.h file_type.c
 	$(CC) $(CFLAGSLIB) -o $@ file_type.c
 
 $(OBJPATH)/unix_bsd.o : $(MWINCDIR)/mw.h unix_bsd.c
 	$(CC) $(CFLAGSLIB) -o $@ unix_bsd.c
 
 # --- INTERNAL TYPES ---
+
+$(OBJPATH)/make_type_conv : $(MWINCDIR)/native_ftype.h make_type_conv.c basic_conv.c 
+	$(CC) $(CFLAGS) -o $@ make_type_conv.c
+	$(OBJPATH)/make_type_conv 			
 
 $(OBJPATH)/cimage.o : $(MWINCDIR)/cimage.h cimage.c
 	$(CC) $(CFLAGSLIB) -o $@ cimage.c
@@ -278,11 +294,17 @@ $(OBJPATH)/curve.o : $(MWINCDIR)/curve.h curve.c
 $(OBJPATH)/fcurve.o : $(MWINCDIR)/fcurve.h fcurve.c
 	$(CC) $(CFLAGSLIB) -o $@ fcurve.c
 
+$(OBJPATH)/dcurve.o : $(MWINCDIR)/dcurve.h dcurve.c
+	$(CC) $(CFLAGSLIB) -o $@ dcurve.c
+
 $(OBJPATH)/curve_io.o : $(MWINCDIR)/curve.h curve_io.c
 	$(CC) $(CFLAGSLIB) -o $@ curve_io.c
 
 $(OBJPATH)/fcurve_io.o : $(MWINCDIR)/fcurve.h fcurve_io.c
 	$(CC) $(CFLAGSLIB) -o $@ fcurve_io.c
+
+$(OBJPATH)/dcurve_io.o : $(MWINCDIR)/dcurve.h dcurve_io.c
+	$(CC) $(CFLAGSLIB) -o $@ dcurve_io.c
 
 $(OBJPATH)/polygon.o : $(MWINCDIR)/polygon.h $(MWINCDIR)/curve.h polygon.c curve.c
 	$(CC) $(CFLAGSLIB) -o $@ polygon.c
@@ -314,6 +336,12 @@ $(OBJPATH)/shape.o : $(MWINCDIR)/shape.h $(MWINCDIR)/curve.h shape.c
 $(OBJPATH)/shape_io.o : $(MWINCDIR)/shape.h $(MWINCDIR)/curve.h shape.c shape_io.c
 	$(CC) $(CFLAGSLIB) -o $@ shape_io.c
 
+$(OBJPATH)/list.o : $(MWINCDIR)/list.h list.c
+	$(CC) $(CFLAGSLIB) -o $@ list.c
+
+$(OBJPATH)/list_io.o : $(MWINCDIR)/list.h list.c list_io.c
+	$(CC) $(CFLAGSLIB) -o $@ list_io.c
+
 $(OBJPATH)/fsignal.o : $(MWINCDIR)/fsignal.h fsignal.c
 	$(CC) $(CFLAGSLIB) -o $@  fsignal.c
 
@@ -341,8 +369,11 @@ $(OBJPATH)/wtrans1d.o : $(MWINCDIR)/wtrans1d.h wtrans1d.c
 $(OBJPATH)/wtrans1d_io.o : $(MWINCDIR)/wtrans1d.h ascii_file.c wtrans1d_io.c
 	$(CC) $(CFLAGSLIB) -o $@  wtrans1d_io.c
 
-$(OBJPATH)/convert_struct.o : convert_struct.c
-	$(CC) $(CFLAGSLIB) -o $@ convert_struct.c
+$(OBJPATH)/basic_conv.o : basic_conv.c
+	$(CC) $(CFLAGSLIB) -o $@ basic_conv.c
+
+$(OBJPATH)/type_conv.o : type_conv.c $(OBJPATH)/make_type_conv
+	$(CC) $(CFLAGSLIB) -o $@ type_conv.c
 
 $(OBJPATH)/cfimage.o : $(MWINCDIR)/cfimage.h cfimage.c
 	$(CC) $(CFLAGSLIB) -o $@ cfimage.c
@@ -355,6 +386,12 @@ $(OBJPATH)/ccimage.o : $(MWINCDIR)/ccimage.h ccimage.c
 
 $(OBJPATH)/ccimage_io.o : $(MWINCDIR)/ccimage.h ccimage_io.c
 	$(CC) $(CFLAGSLIB) -o $@ ccimage_io.c
+
+$(OBJPATH)/rawdata.o : $(MWINCDIR)/rawdata.h rawdata.c
+	$(CC) $(CFLAGSLIB) -o $@  rawdata.c
+
+$(OBJPATH)/rawdata_io.o : $(MWINCDIR)/rawdata.h rawdata_io.c
+	$(CC) $(CFLAGSLIB) -o $@  rawdata_io.c
 
 $(OBJPATH)/module.o : $(MWINCDIR)/module.h module.c
 	$(CC) $(CFLAGSLIB) -o $@ module.c
@@ -387,7 +424,7 @@ sysinstall :
 	chmod 755 $(SYSDESTDIR)/lib/$(MW_MACHINETYPE)/*.so
 
 clean :
-	/bin/rm -f $(OBJ) $(OBJPATH)/notiff.o $(OBJPATH)/xmw_com.o $(LIBaSYSMW) $(LIBaNOTIFF) $(LIBaXMWCOM) $(LIBslSYSMW) $(LIBslNOTIFF) $(LIBslXMWCOM)
+	/bin/rm -f type_conv.c $(OBJ) $(OBJPATH)/make_type_conv $(OBJPATH)/notiff.o $(OBJPATH)/xmw_com.o $(LIBaSYSMW) $(LIBaNOTIFF) $(LIBaXMWCOM) $(LIBslSYSMW) $(LIBslNOTIFF) $(LIBslXMWCOM)
 
 
 

@@ -1,28 +1,44 @@
 # %Z%MegaWave %R%, %M% %I%, %G%
 #-------------------------------------------
 # Makefile for the MegaWave2 system macros
-# (c)1995-99 Jacques Froment
-#-------------------------------------------
+# (c)1995-2002 Jacques Froment
+#-----------------------------------------------------------------------------
+# This file is part of the MegaWave2 system library 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
 SHELL = /bin/sh
 
 # Megawave shell makefile
 
-MWBINDIR = $(PRIVATE_MEGAWAVE2)/sys/shell
+DESTDIR = $(PRIVATE_MEGAWAVE2)/sys/shell
+DESTDATADIR = $(PRIVATE_MEGAWAVE2)/sys/shell/data
 SYSDESTDIR  = $(PUBLIC_MEGAWAVE2)/sys/shell
+SYSDESTDATADIR  = $(PUBLIC_MEGAWAVE2)/sys/shell/data
 
 # Files to install for all users
 
-SYSTARGET =  .mw2_help_lg_com cmw2 cmw2_all mwvers mw2_macros.tex \
-	smw2_foot.tex smw2_header.tex smw2latex mwnewuser mwechon \
-	mwarch xmw2_header.c xmw2_foot.c cxmw2 mwdep\
-        mw2_header.tex mw2_foot.tex mw2_index-header.tex make_mw2doc \
-	cmw2macro smw2xdvi mwdoc mwwhere mwisupper mwmodlist
+SYSTARGET =  .mw2_help_lg_com cmw2 cmw2_all mwvers mwdoclatex mwnewuser mwechon \
+	mwarch cxmw2 mwdep mwmakedoc cmw2macro mwdocxdvi mwdoc mwwhere mwisupper \
+	mwmodlist mwsysmaclist mwrm mwrnwordmod
+
+SYSDATATARGET = data/mwmakedoc_foot.tex data/mwmakedoc_foot_index.tex data/mwmakedoc_macros.tex \
+		data/mwmakedoc_body.tex data/mwmakedoc_body_html.tex\
+		data/mwmakedoc_header_latex2.09.tex data/mwmakedoc_header_latex2e.tex \
+		data/mwmakedoc_list.tex data/mwmakedoc_reference.tex \
+		data/mwdoclatex_header.tex data/mwdoclatex_foot.tex \
+		data/mwrnwordmod.data data/cxmw2_header.c data/cxmw2_foot.c
 
 # Files to install for MegaWave2 Administrator only 
 
 TARGET = $(SYSTARGET)  mwmodinstall mwcontrib \
 	mwcontrib_all mwrnauthor mwrnauthor_all cxmw2debug \
-	mwmodcheck mwconfig mwsetenv mwincvers mwinstall mwcleandistrib
+	mwmodcheck mwconfig mwsetenv mwincvers mwinstall mwcleandistrib \
+	mwcmwcheck
 
 
 SRC    = $(TARGET) 
@@ -30,12 +46,14 @@ MODE = 022
 RELEASE = 4
 
 install :
-	mkdir -p $(MWBINDIR)
+	mkdir -p $(DESTDIR)
 	for i in $(TARGET);\
 	do DESTDIR=`echo $(PRIVATE_MEGAWAVE2)|sed '1,$$s/\//\\\\\\//g'`;\
-	   sed "1,\$$s/%DESTDIR%/$$DESTDIR/g" $$i >$(MWBINDIR)/$$i;\
-	   chmod u+x $(MWBINDIR)/$$i;\
+	   sed "1,\$$s/%DESTDIR%/$$DESTDIR/g" $$i >$(DESTDIR)/$$i;\
+	   chmod u+x $(DESTDIR)/$$i;\
 	done
+	mkdir -p  $(DESTDATADIR)
+	cp $(SYSDATATARGET) $(DESTDATADIR)
 
 sysinstall :
 	umask $(MODE)
@@ -45,6 +63,9 @@ sysinstall :
 	   sed "1,\$$s/%DESTDIR%/$$DESTDIR/g" $$i >$(SYSDESTDIR)/$$i;\
 	   chmod 755 $(SYSDESTDIR)/$$i;\
 	done
+	mkdir -m 755 -p  $(SYSDESTDATADIR)
+	cp $(SYSDATATARGET) $(SYSDESTDATADIR)
+	chmod 644 $(SYSDESTDATADIR)/*
 
 
 

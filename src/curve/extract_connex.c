@@ -1,25 +1,21 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {extract_connex};
-   version = {"1.3"};
+   version = {"1.4"};
    author = {"Thierry Cohignac, Lionel Moisan"};
    function = {"Extract connected components"};
    usage = {            
             'g':[g=128]->g      "thresholding grey level (default: 128)",
             in->in              "input cimage",
-            out<-curves         "output connex components (fcurves)"
+            out<-curves         "output connected components (fcurves)"
    };
    */
-/*-- MegaWave 2- Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
 
 #include <stdio.h>
 #include <math.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
 
-
-/* maximum number of connex components */
+/* maximum number of connected components */
 #define MAXSHAPES 10000
 
 
@@ -45,7 +41,7 @@ float  x,y;
 }
 
 
-/* Assimile deux formes
+/* put together two shapes
 */
 void MemeForme(tab,fold,fnew,start,lg)
 long *tab;
@@ -81,7 +77,7 @@ int  nbforme;
   bcopy(start,start+1,nbforme-ou);
 }
 
-/* allocation du tableau permettant d'associer les points aux formes */
+/* Allocate the array that associates the points to the shapes */
 unsigned long *AllocTab(size)
 unsigned long size;
 {
@@ -122,7 +118,7 @@ int     *g;
      
      build an array (tab) which has one cell per pixel of the input image
      after this stage :
-     - the number of shapes (8-connex components) is known
+     - the number of shapes (8-connected components) is known
      - each shape has a number
      - tab identifies the corresponfing shape for each pixel
      
@@ -196,7 +192,7 @@ int     *g;
       
     }
     
-  mwdebug("%d connex components found (max = %d)\n",nbforme,MAXSHAPES);
+  mwdebug("%d connected components found (max = %d)\n",nbforme,MAXSHAPES);
 
   /*-----------------------------------------------*/
   

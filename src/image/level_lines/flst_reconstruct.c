@@ -1,4 +1,4 @@
-/*----------------------------- MegaWave Module -----------------------------*/ 
+/*---------------------------- MegaWave Module ----------------------------*/ 
 /* mwcommand 
   name = {flst_reconstruct}; 
   version = {"1.0"}; 
@@ -9,10 +9,9 @@
     image <- pFloatImageOutput  "Output fimage" 
     }; 
 */ 
-/*--- MegaWave2 - Copyright (C)1994 Jacques Froment. All Rights Reserved. ---*/ 
- 
-/* Include always the MegaWave2 Library */ 
+
 #include "mw.h" 
+
  
 void flst_reconstruct(pTree, pFloatImageOutput) 
 Shapes pTree; 

@@ -1,0 +1,47 @@
+This module extracts the tree of shapes associated to level lines passing
+through centers of dual pixels, that is, corners of original pixels, in a
+bilinear interpolated image (see module \verb+flst_bilinear+ for exact
+definitions of the terms shape and dual pixel). These points have integer
+coordinates.
+
+This tree is dual from the original bilinear tree, whose shapes are those
+associated to level lines passing through {\em centers of pixels} or saddle
+points. The advantage of this dual tree is that most of its level lines should
+avoid these singular points (though some level lines can be common to both
+trees).
+
+The advantage, compared for example to \verb+flstb_quantize+, is that here
+no information is lost: knowing values at corners of pixels is enough to
+reconstruct the original image, though not by module
+\verb+flst_reconstruct+. A call to \verb+flst_reconstruct+ would work but
+would not yield the expected result, the original image: we would get the
+result of the translation of the bilinear image by half a pixel in each
+direction (by a complicated method, since for this it is enough to take the
+average of values at each group of four adjacent pixels). The module
+\verb+flst_pixels+ can be applied to the resulting tree without problem.
+
+The source of this module can be modified so as to extract level lines passing
+through any set of predefined locations.
+
+Caveat: when called from another module, the original tree and the new tree
+are mixed (because new shapes are insertions in the original tree) in the same
+structure. They are dissociated by the fact that shapes of the original tree
+are marked as \verb+removed+. Nevertheless, the new shapes are of course
+stored in \verb+pDualTree->the_shapes+. The consequences are twofold:
+\begin{enumerate}
+\item To move inside the new tree, the user should use the functions provided
+by MegaWave, \verb+mw_get_parent_shape+, \verb+mw_get_first_child_shape+
+and \verb+mw_get_next_sibling_shape+, which take into account the field
+\verb+removed+, and not directly the pointers \verb+parent+,
+\verb+child+ and \verb+next_sibling+.
+\item After the call to \verb+flstb_dual+, the original tree should not be
+used any more, unless the user knows exactly what he/she is doing.
+\end{enumerate}
+This remark only applies when the module is called from another one; when
+called from the command line, the original tree file remains unchanged.
+
+Remark: when a shape must appear in both trees, a new one is created is
+\verb+pDualTree+ as parent of the original one. These shapes are identical,
+except that the original one is \verb+removed+. In particular, the root of
+the new tree is parent of the root of original tree. Again, this has no
+incidence when the module is called from command line.

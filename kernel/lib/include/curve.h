@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    curve.h
    
-   Vers. 1.1
-   (C) 1993-98 Jacques Froment
+   Vers. 1.3
+   (C) 1993-2002 Jacques Froment
    Internal Input/Output point_curve, curve & curves structures
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -19,8 +19,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef SunOS
 #include <sys/types.h>
 #endif
-
-#include "string_size.h"
 
 /* Point in a curve */
 
@@ -59,34 +57,34 @@ typedef struct curves {
 Point_curve mw_new_point_curve(void);
 Point_curve mw_change_point_curve(Point_curve);
 void mw_delete_point_curve(Point_curve);
-void mw_copy_point_curve(Point_curve,Point_curve);
+Point_curve mw_copy_point_curve(Point_curve,Point_curve);
 Curve mw_new_curve(void);
 Curve mw_change_curve(Curve);
 void mw_delete_curve(Curve);
-void mw_copy_curve(Curve, Curve);
-unsigned int mw_curve_length(Curve);
+Curve mw_copy_curve(Curve, Curve);
+unsigned int mw_length_curve(Curve);
 Curves mw_new_curves(void);
 Curves mw_change_curves(Curves);
 void mw_delete_curves(Curves);
-unsigned int mw_curves_length(Curves);
-unsigned int mw_curves_npoints(Curves);
+unsigned int mw_length_curves(Curves);
+unsigned int mw_npoints_curves(Curves);
 
 #else
 
 Point_curve mw_new_point_curve();
 Point_curve mw_change_point_curve();
 void mw_delete_point_curve();
-void mw_copy_point_curve();
+Point_curve mw_copy_point_curve();
 Curve mw_new_curve();
 Curve mw_change_curve();
 void mw_delete_curve();
-void mw_copy_curve();
-unsigned int mw_curve_length();
+Curve mw_copy_curve();
+unsigned int mw_length_curve();
 Curves mw_new_curves();
 Curves mw_change_curves();
 void mw_delete_curves();
-unsigned int mw_curves_length();
-unsigned int mw_curves_npoints();
+unsigned int mw_length_curves();
+unsigned int mw_npoints_curves();
 
 #endif
 

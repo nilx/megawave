@@ -1,3 +1,7 @@
 This module computes the bounding box enclosing a set of Fcurves. The output
 $xmin$, $xmax$, $ymin$ and $ymax$ are the minimum and maximum
 values taken by the $x$ and $y$ coordinates over all points of all curves.
+If the \verb+-z+ option is used, then the size of the bounding box is 
+magnified by $z$ along each axis (the center of the box being kept). 
+If requested, the bounding box is stored in a Fcurve.
+

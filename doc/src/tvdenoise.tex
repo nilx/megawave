@@ -1,0 +1,24 @@
+This module looks for the image $out$ that minimizes the energy
+functional proposed by Rudin and Osher,
+$$E(out) = \int |\nabla_{eps}(out)| +  w \int (out -in)^2.$$
+This energy is the combination of a regularity term (the total variation)
+and a fidelity term ($L^2$ square error). The regularity term is 
+obtained from the local estimate of the gradient norm
+$$|\nabla_{eps}(u)| = \frac{\displaystyle
+\sqrt{eps + (a-b)^2+(c-d)^2+(a-c)^2+(b-d)^2 
++ \frac 12 (a-d+b-c)^2 
++ \frac 12 (a-d-b+c)^2}}
+{2+\sqrt{2}},$$
+where the local images values are 
+\begin{tabular}{|c|c|}
+\hline
+a & b \\
+\hline
+c & d \\
+\hline
+\end{tabular}.
+
+A gradient descent algorithm is applied, with a initial step $s$.
+If the energy does not decrease, then $s$ is multiplied by
+$0.8$ until the stopping criterion is statisfied. 
+Other options are straightforward.

@@ -2,14 +2,28 @@
 		Note for Linux users
 		--------------------
 
-Warning : This include directory in needed by Linux users only ! 
-          If your system is not Linux, you can remove it.
+-------------------------- WARNING --------------------------
 
-Strange instructions (which are not, for my point of view,
-nor ANSI C nor K&R compliant) in the Linux gcc include files lead 
-the MegaWave2 preprocessor to fail during the C lexical analysis phase.
-We had to change some lines and the new include files are located in
-this directory. They will be automatically read instead of the standard 
+1 - This include directory is needed by Linux users only ! 
+    If none of your systems is Linux, you may remove it.
+
+2 - The include files listed in this directory have been
+    slightly modified from their original distribution :
+    they must not been confused with the original ones !
+-------------------------- WARNING --------------------------
+
+Why this directory ?
+------------------
+
+Strange instructions (which are not, for our point of view,
+nor ANSI C nor K&R compliant, but a super-set of standard instructions
+recognized by gcc only) in the Linux gcc include files lead the 
+MegaWave2 preprocessor to fail during the C lexical analysis phase,
+even if cpp (or gcc -E) is called with the -ansi option. This seems
+to be in contradiction with the libc documentation.
+
+We therefore had to change some lines and the new include files are located 
+in this directory. They will be automatically read instead of the standard 
 include files.
 
 Let us give an example : on Linux 2.0.32 (gcc 2.7), file /usr/include/libio.h, 

@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {cmview};
-  version = {"1.05"};
+  version = {"1.2"};
   author = {"Jacques Froment"};
   function = {"View a cmovie on a window"};
   usage = {
@@ -11,11 +11,13 @@
      "Y coordinate for the upper-left corner of the Window",
   'z':[zoom=1.0]->zoom
       "Zoom factor (float value)",
+  'o':[order=0]->order      
+      "Zoom order: 0,1=linear,-3=cubic,3,5..11=spline, default 0",
   'l'->loop
       "Flag to loop on the sequence",
   'p'->pause
       "pause the movie on start",
-  cmovie->input 
+   cmovie->input 
      "Input movie (should be a cmovie)",
    notused->window 
       "Window to display the movie (internal use)"
@@ -23,6 +25,8 @@
 */
 /*----------------------------------------------------------------------
  v1.05: added -p (pause) option (L.Moisan)
+ v1.1: added -o option + several minor modifications (L.Moisan)
+ v1.2: fixed bug with non char input keys (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -31,15 +35,8 @@
 /* Include the window since we use windows facility */
 #include "window.h"
 
-#ifdef __STDC___
+extern void cmzoom();
 
-void cmzoom(Cmovie, Cmovie, char *, char *, float *);
-
-#else
-
-void cmzoom();
-
-#endif
 
 typedef struct cmview_SParam {
   Cimage image_work;
@@ -86,8 +83,8 @@ void *param;          /* Users's parameters: don't forget the cast ! */
   Cimage image;
   Cimage first,last;
   int *loop;
-  int event,ret;
-  char c,go;
+  int event,ret,c;
+  char go;
   char mess[mw_cmtsize+10];
 
   data = (cmview_Param) param;
@@ -126,7 +123,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	  ret=-1;
 	  break;
 	case W_KEYPRESS:
-	  c = (char) WGetKeyboard();
+	  c = WGetKeyboard();
 	  switch(c)
 	    {
 	    case 'q': case 'Q': ret=-1;
@@ -190,10 +187,10 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 }
 
 
-cmview(input,x0,y0,zoom,loop,pause,window)
+void cmview(input,x0,y0,zoom,order,loop,pause,window)
 
 Cmovie input;
-int *x0,*y0,*loop,*pause;
+int *x0,*y0,*loop,*pause,*order;
 float *zoom;
 char *window;
 
@@ -203,6 +200,7 @@ char *window;
   Cmovie movie = NULL;
   cmview_Param param;
   char text[BUFSIZ];
+  float inverse_zoom;
 
   mwwindelay=100;
 
@@ -212,7 +210,12 @@ char *window;
     {
       movie = mw_change_cmovie(NULL);
       if (movie == NULL) mwerror(FATAL,1,"Not enough memory\n");
-      cmzoom(input,movie,NULL,NULL,zoom);
+      if (*zoom>1.0) 
+	cmzoom(input,movie,NULL,NULL,zoom,order,NULL);
+      else {
+	inverse_zoom = 1./(*zoom);
+	cmzoom(input,movie,NULL,NULL,&inverse_zoom,order,(char *)1);
+      }
       sprintf(text,"%s (%.1fX)",input->name,*zoom);
     }
   else 

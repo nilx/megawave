@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ccimage_io.c
    
-   Vers. 1.04
-   (C) 1993-99 Jacques Froment
+   Vers. 1.09
+   (C) 1993-2002 Jacques Froment
    Input/Output private functions for the Ccimage structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -72,47 +72,26 @@ Ccimage _mw_ccimage_load_image(NomFic,Type)
 char  *NomFic;                        /* Nom du fichier image */
 char  *Type;                          /* Type de format du fichier */
 
-{ Cimage image_cimage;
-  Ccimage image_ccimage;
-  Cfimage image_cfimage;
-  Fimage image_fimage;
-  char mtype[TYPE_SIZE];
+{ 
+  Ccimage im;
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  _mw_get_file_type(NomFic,Type,mtype);
+  _mw_get_file_type(NomFic,Type,mtype,&hsize,&version);
 
   /* First, try native formats */
-  image_ccimage = _mw_ccimage_load_native(NomFic,Type);
-  if (image_ccimage != NULL) return(image_ccimage);
+  im = _mw_ccimage_load_native(NomFic,Type);
+  if (im != NULL) return(im);
 
-  /* Other formats */
-  image_cfimage = (Cfimage) _mw_cfimage_load_native(NomFic,Type);
-  if (image_cfimage != NULL) 
-    {
-      image_ccimage = (Ccimage) mw_cfimage_to_ccimage(image_cfimage);
-      mw_delete_cfimage(image_cfimage);
-      return(image_ccimage);
-    }
+  /* If failed, try other formats with memory conversion */
+  im = (Ccimage) _mw_load_etype_to_itype(NomFic,mtype,"ccimage",Type);
+  if (im != NULL) return(im);
 
-  image_cimage = (Cimage) _mw_cimage_load_native(NomFic,Type);
-  if (image_cimage != NULL) 
-    {
-      image_ccimage = (Ccimage) mw_cimage_to_ccimage(image_cimage);
-      mw_delete_cimage(image_cimage);
-      return(image_ccimage);
-    }
-
-  image_fimage = (Fimage) _mw_fimage_load_native(NomFic,Type,NULL);
-  if (image_fimage != NULL) 
-    {
-      image_cimage = (Cimage) mw_fimage_to_cimage(image_fimage);
-      image_ccimage = (Ccimage) mw_cimage_to_ccimage(image_cimage);
-      mw_delete_cimage(image_cimage);
-      mw_delete_fimage(image_fimage);
-      return(image_ccimage);
-    }
-
-  mwerror(INTERNAL, 1,"[_mw_ccimage_load_image] Invalid external type \"%s\" for the file \"%s\"\n",Type,NomFic);
-
+  if (Type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",NomFic);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Ccimage !\n",NomFic,Type);
 }
 
 
@@ -123,31 +102,19 @@ short _mw_ccimage_create_image(NomFic,image,Type)
      char  *Type;                          /* Type de format du fichier */
 
 { 
-  Cimage image_cimage;
-  Fimage image_fimage;
-  Cfimage image_cfimage;
   short ret;
 
   /* First, try native formats */
   ret = _mw_ccimage_create_native(NomFic,image,Type);
   if (ret == 0) return(0);
 
-  /* Other formats */
-
-  image_cfimage = (Cfimage) mw_ccimage_to_cfimage(image);
-  ret = _mw_cfimage_create_native(NomFic,image_cfimage,Type);
-  mw_delete_cfimage(image_cfimage);
+  /* If failed, try other formats with memory conversion */
+  ret = _mw_create_etype_from_itype(NomFic,image,"ccimage",Type);
   if (ret == 0) return(0);
 
-  image_cimage = (Cimage) mw_ccimage_to_cimage(image);
-  ret = _mw_cimage_create_native(NomFic,image_cimage,Type);
-  if (ret == 0) { mw_delete_cimage(image_cimage); return(0); }
-
-  image_fimage = (Fimage) mw_cimage_to_fimage(image_cimage);
-  ret = _mw_fimage_create_native(NomFic,image_fimage,Type);
-  mw_delete_fimage(image_fimage);
-  mw_delete_cimage(image_cimage);
-  if (ret == 0) return(0);
-
-  mwerror(INTERNAL, 1,"[_mw_ccimage_create_image] Invalid external type \"%s\" for the file \"%s\"\n",Type,NomFic); 
+  /* Invalid Type should have been detected before, but we can arrive here because
+     of a write failure (e.g. the output file name is write protected).
+  */
+  mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",NomFic);  
 }
+

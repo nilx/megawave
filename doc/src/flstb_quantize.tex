@@ -1,0 +1,14 @@
+The module \texttt{flstb\_quantize} is used to extract the shapes at some levels
+in a bilinear interpolated image. Actually, it is based on the tree of shapes
+extracted by \texttt{flst\_bilinear} (see documentation for this module) and
+provides with the tree of shapes associated to level lines at given levels.
+
+The exception to this is the root which keeps its original gray level.
+Notice that if the values of some data points are not in the set of
+quantization levels, the original image cannot be reconstructed from the
+extracted tree.
+
+For example, for an image with integral gray values at data points, it could
+be useful to extract the tree of shapes at half integral levels, since the
+associated level lines are likely to be more regular than the ones associated
+to integral levels.

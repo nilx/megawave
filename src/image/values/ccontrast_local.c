@@ -16,11 +16,7 @@ output<-out        "output Cimage"
 #include <math.h>
 #include "mw.h"
 
-#ifdef __STDC__
-extern Fcurves extract_connex(Cimage,Fcurves,int *);
-#else
 extern Fcurves extract_connex();
-#endif
 
 
 #define GRAY_LEVEL(image, point) ((image)->gray[(int)((point)->y)*(image)->ncol+(int)((point)->x)])

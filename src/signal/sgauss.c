@@ -1,53 +1,61 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {sgauss};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Lionel Moisan"};
   function = {"Create a Gaussian Fsignal with unit mass"};
   usage = {
-     'd':[std=1.0]->std[0.0,1e10]   "standart deviation (default 1.0)",
-     's':size->size                 "size of signal (default: 2*ceil(4std)+1)",
-     sgauss<-signal                 "output Fsignal"
+   's':size->size      "set size directly ...",
+   'p':[prec=4]->prec  "... or specify -log10 signal precision (default 4)",
+   out<-out            "output Fsignal",
+   std->std            "standart deviation"
   };
 */
+/*----------------------------------------------------------------------
+ v1.1: added -p option and return output (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
 
-void sgauss(std,size,signal)
-float *std;
+Fsignal sgauss(std,out,size,prec)
+Fsignal out;
+float std,*prec;
 int *size;
-Fsignal signal;
 {
   int i,n;
   double sum,v;
 
-  n = 2*(int)ceil((double)(*std*4.0)) + 1;
   if (size) {
-    if (*size < n) 
-      mwerror(WARNING,0,"small support (%d), %d would be better\n",*size,n);
     n = *size;
-  }  
+    v = (0.5*(double)(n-1))/(double)(std);
+    v = 0.5*v*v/log(10.);
+    mwdebug("precision = %g\n",v);
+  } else {
+    n = 1+2*(int)ceil((double)std*sqrt(*prec*2.*log(10.)));
+    mwdebug("size = %d\n",n);
+  }
 
-  signal = mw_change_fsignal(signal, n);
-  if (!signal) mwerror(FATAL,1,"Not enough memory.");
-  strcpy(signal->cmt,"Gaussian");
-  signal->shift = -0.5*(float)(n-1);
+  out = mw_change_fsignal(out, n);
+  if (!out) mwerror(FATAL,1,"Not enough memory.");
+  sprintf(out->cmt,"Gaussian (standart deviation %g)",std);
+  out->shift = -0.5*(float)(n-1);
 
   if (n==1) {
-    signal->values[0]=1.0;
+    out->values[0]=1.0;
   } else {
     /* store Gaussian signal */
     for (i=(n+1)/2;i--;) {
-      v = ((double)i+(double)signal->shift)/(double)(*std);
-      signal->values[i] = signal->values[n-1-i] = (float)exp(-0.5*v*v); 
+      v = ((double)i+(double)out->shift)/(double)std;
+      out->values[i] = out->values[n-1-i] = (float)exp(-0.5*v*v); 
     }
     /* normalize to get unit mass */
-    for (sum=0.0,i=n;i--;) sum += (double)signal->values[i];
-    for (i=n;i--;) signal->values[i] /= (float)sum;
+    for (sum=0.0,i=n;i--;) sum += (double)out->values[i];
+    for (i=n;i--;) out->values[i] /= (float)sum;
   }
 
+  return(out);
 }
 
 

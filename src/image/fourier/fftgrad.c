@@ -1,7 +1,7 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
   name = {fftgrad};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Lionel Moisan"};
   function = {"Compute the gradient of an image using Fourier interpolation"};
   usage = {
@@ -17,6 +17,9 @@ in->in
       "input Fimage"
   };
 */
+/*----------------------------------------------------------------------
+ v1.1: bug fixed (missing computation for -n option) (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -90,6 +93,13 @@ Fimage in,gradx,grady,gradn,gradp;
 	  gradp->gray[adr] = RADIANS_TO_DEGREES *
 	    (float)atan2( (double)grady->gray[adr],
 			  (double)gradx->gray[adr]);
+
+  if (gradn)
+    for (adr=nx*ny;adr--;)
+      if (gradx->gray[adr]!=0.0 || grady->gray[adr]!=0.0)
+	gradn->gray[adr] = 
+	  (float)hypot( (double)grady->gray[adr],
+			(double)gradx->gray[adr]);
 
   mw_delete_fimage(re);
   mw_delete_fimage(im);

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    curve_io.c
    
-   Vers. 1.8
-   (C) 1993-97 Jacques Froment
+   Vers. 1.17
+   (C) 1993-2002 Jacques Froment
    Input/Output functions for the curve & curves structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -23,13 +23,28 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 
 #include "mw.h"
 
-/* This value of int type reserved */
-/*
-  Old value to large on Linux :#define END_OF_CURVE -2147483648
-*/
+/* Those values of int type reserved */
+
+/* End of curve (and end of curves with format V1.00) */
 #define END_OF_CURVE -2147483647
+/* End of curves */
+#define END_OF_CURVES -2147483646
+
+/* ----- I/O for Point_curve ----- */
+
+Point_curve _mw_point_curve_load_native(fname,type)
+
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
+
+{
+  return(NULL);
+}
 
 /* ---- I/O for Curve ---- */
+
+/* Max number of coordinates in the buffer (even number) */
+#define MAXBUFSIZ 100000
 
 /* Load curve from a file of MW2_CURVE format */
 
@@ -42,13 +57,17 @@ char  *fname;  /* Name of the file */
   Point_curve newcvc,oldcvc;
   struct stat buf;
   int fsize,buf_size,i;
-  char header[10];
+  int readsize,remainsize;
   int vx,vy,*buffer;
   register int *ptr;
-  char ftype[TYPE_SIZE],mtype[TYPE_SIZE];
+  char ftype[mw_ftype_size],mtype[mw_mtype_size];
   int need_flipping;
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  need_flipping = _mw_get_file_type(fname,ftype,mtype)-1;
+  need_flipping = _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
+  if (strcmp(ftype,"MW2_CURVE") != 0)
+    mwerror(INTERNAL, 0,"[_mw_load_curve_mw2_curve] File \"%s\" is not in the MW2_CURVE format\n",fname);
   
   if ( (need_flipping==-1) ||
        (!(fp = fopen(fname, "r"))) || (fstat(fileno(fp),&buf) != 0) )
@@ -58,59 +77,69 @@ char  *fname;  /* Name of the file */
       return(NULL);
     }
 
-  fsize = buf.st_size-9; /* Size of the file - size of the header, in bytes */
-                          /* header = "MW2_CURVE" */
-  buf_size = (fsize / sizeof(int));
-
-  if ((buf_size % 2) != 0)
-	{
-	  mwerror(ERROR, 0,"Error into the file \"%s\": not an even number of coordinates !\n",fname);
-	  return(NULL);
-	}
-  
-  if (!(buffer = (int *) malloc(buf_size * sizeof(int))))
+  /* Size of the file - size of the header, in bytes */
+  fsize = buf.st_size-hsize; 
+  remainsize = (fsize / sizeof(int));
+  if ((remainsize % 2) != 0)
     {
-      mwerror(ERROR, 0,"Not enough memory to load file \"%s\" (size of file = %d bytes)\n",fname,buf.st_size);
+      mwerror(ERROR, 0,"Error into the file \"%s\": not an even number of coordinates !\n",fname);
+      return(NULL);
+    }
+
+  buf_size=remainsize;
+  if (hsize>buf_size) buf_size=hsize;
+  if (buf_size > MAXBUFSIZ) buf_size=MAXBUFSIZ;
+
+  if ( (!(buffer = (int *) malloc(buf_size * sizeof(int)))) ||
+       (!(cv=mw_new_curve())))
+    {
+      mwerror(ERROR, 0,"Not enough memory to load curve file \"%s\" !\n",fname);
       fclose(fp);
       return(NULL);
     }
 
-  if ((fread(header,9,1,fp) == 0) || (fread(buffer,fsize,1,fp) == 0))
-      {
-	mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
-	free(buffer);
-	fclose(fp);
-	return(NULL);
-      }
-
-  fclose(fp);
-
-  if (strcmp(ftype,"MW2_CURVE") != 0)
-    mwerror(INTERNAL, 0,"[_mw_load_curve_mw2_curve] File \"%s\" is not in the MW2_CURVE format\n",fname);
-
-  cv = mw_new_curve();
-  if (cv == NULL) return(cv);
+  if (fread(buffer,1,hsize,fp) != hsize)
+    {
+      mwerror(ERROR, 0,"Error while reading header of file \"%s\" !\n",fname);
+      fclose(fp);
+      return(NULL);
+    }
+  
   oldcvc = newcvc = NULL;
 
-  for (ptr=buffer, i=1; i < buf_size; i+=2)
+  while (remainsize > 0)
     {
-      if (need_flipping==1)
-	{	
-	  vx = _mw_get_flip_b4(*ptr);
-	  ptr++;
-	  vy = _mw_get_flip_b4(*ptr);
-	  ptr++;
-	  /*printf("(flip) i=%d (%d,%d)\n",i,vx,vy);*/
-	}
-      else
-	{	
-	  vx = *ptr++;
-	  vy = *ptr++;
-	  /*printf("(no flip) i=%d (%d,%d)\n",i,vx,vy);*/
-	}
+      readsize=remainsize;
+      if (readsize > buf_size) readsize=buf_size;
 
-      newcvc = mw_new_point_curve();
-      if (newcvc == NULL)
+      if (fread(buffer,sizeof(int),readsize,fp) != readsize)
+	{
+	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+	  free(buffer);
+	  fclose(fp);
+	  return(NULL);
+	}
+      remainsize -= readsize;
+      
+      for (ptr=buffer, i=1; i < readsize; i+=2)
+	{
+	  if (need_flipping==1)
+	    {	
+	      vx = _mw_get_flip_b4(*ptr);
+	      ptr++;
+	      vy = _mw_get_flip_b4(*ptr);
+	      ptr++;
+	      /*printf("(flip) i=%d (%d,%d)\n",i,vx,vy);*/
+	    }
+	  else
+	    {	
+	      vx = *ptr++;
+	      vy = *ptr++;
+	      /*printf("(no flip) i=%d (%d,%d)\n",i,vx,vy);*/
+	    }
+	  
+	  newcvc = mw_new_point_curve();
+	  if (newcvc == NULL)
 	    {
 	      mw_delete_curve(cv);
 	      free(buffer);
@@ -122,114 +151,57 @@ char  *fname;  /* Name of the file */
 	  newcvc->next = NULL;
 	  newcvc->x = vx; newcvc->y = vy;
 	  oldcvc = newcvc;
+	}
     }
+
+  fclose(fp);
   free(buffer);
   return(cv);
 }
-
-/* Load curve from file of different types */
-
-Curve _mw_load_curve(fname,Type)
-
-char  *fname;  /* Name of the file */
-char  *Type;   /* Type de format du fichier */
-
-{ char mtype[TYPE_SIZE];
-  Polygon poly;
-  Fpolygon fpoly;
-  Curve curve;
-  Morpho_line ll;
-  Fmorpho_line fll;
-  Mimage mimage;
-  Fcurve fcurve;
-  Curves curves;
-  Fcurves fcurves;
-
-#ifdef __STDC__
-  Curves _mw_load_curves_mw2_curves(char *);
-#else  
-  Curves _mw_load_curves_mw2_curves();
-#endif
-
-  _mw_get_file_type(fname,Type,mtype);
   
-  if (strcmp(Type,"MW2_CURVE") == 0)
-    return(_mw_load_curve_mw2_curve(fname));
+/* Native formats (without conversion of the internal type) */
 
-  if (strcmp(Type,"MW2_FCURVE") == 0)
-    {
-      fcurve = (Fcurve) _mw_load_fcurve_mw2_fcurve(fname);
-      curve = (Curve) mw_fcurve_to_curve(fcurve);
-      mw_delete_fcurve(fcurve);
-      return(curve);
-    }
+Curve _mw_curve_load_native(fname,type)
 
-  if (strcmp(Type,"MW2_MORPHO_LINE") == 0)
-    {
-      ll = (Morpho_line) _mw_load_ml_mw2_ml(fname);
-      curve = (Curve) mw_morpho_line_to_curve(ll);
-      mw_delete_morpho_line(ll);
-      return(curve);
-    }
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
+
+{
+  if (strcmp(type,"MW2_CURVE") == 0)
+    return((Curve)_mw_load_curve_mw2_curve(fname));
+
+  return(NULL);
+}
 
 
-  if (strcmp(Type,"MW2_FMORPHO_LINE") == 0)
-    {
-      fll = (Fmorpho_line) _mw_load_fml_mw2_fml(fname);
-      fcurve = (Fcurve) mw_fmorpho_line_to_fcurve(fll);
-      curve = (Curve) mw_fcurve_to_curve(fcurve);
-      mw_delete_fcurve(fcurve);
-      mw_delete_fmorpho_line(fll);
-      return(curve);
-    }
+/* All available formats */
 
-  if (strcmp(Type,"MW2_MIMAGE") == 0)
-    {
-      mimage = (Mimage) _mw_load_mimage_mw2_mimage(fname);
-      ll = (Morpho_line) mw_mimage_to_morpho_line(mimage);
-      curve = (Curve) mw_morpho_line_to_curve(ll);
-      mw_delete_morpho_line(ll);
-      mw_delete_mimage(mimage);
-      return(curve);
-    }
+Curve _mw_load_curve(fname,type)
 
-  if (strcmp(Type,"A_POLY") == 0)
-    {
-      poly = (Polygon) _mw_load_polygon_a_poly(fname);
-      curve = (Curve) mw_polygon_to_curve(poly);
-      mw_delete_polygon(poly);
-      return(curve);
-    }
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
 
-  if (strcmp(Type,"A_FPOLY") == 0)
-    {
-      fpoly = (Fpolygon) _mw_load_fpolygon_a_fpoly(fname);
-      curve = (Curve) mw_fpolygon_to_curve(fpoly);
-      mw_delete_fpolygon(fpoly);      
-      return(curve);
-    }
+{ 
+  Curve cv;
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  if (strcmp(Type,"MW2_CURVES") == 0)
-    {
-      curves = (Curves) _mw_load_curves_mw2_curves(fname);
-      curve = (Curve) mw_curves_to_curve(curves);
-      mw_delete_curves(curves);
-      return(curve);
-    }
+  _mw_get_file_type(fname,type,mtype,&hsize,&version);
 
-  if (strcmp(Type,"MW2_FCURVES") == 0)
-    {
-      fcurves = (Fcurves) _mw_load_fcurves_mw2_fcurves(fname);
-      curves = (Curves) mw_fcurves_to_curves(fcurves);
-      curve = (Curve) mw_curves_to_curve(curves);
-      mw_delete_curves(curves);
-      mw_delete_fcurves(fcurves);
-      return(curve);
-    }
+  /* First, try native formats */
+  cv = _mw_curve_load_native(fname,type);
+  if (cv != NULL) return(cv);
 
+  /* If failed, try other formats with memory conversion */
+  cv = (Curve) _mw_load_etype_to_itype(fname,mtype,"curve",type);
+  if (cv != NULL) return(cv);
 
-  mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
-}  
+  if (type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Curve !\n",fname,type);
+}
 
 
 /* Write file in MW2_CURVE format */  
@@ -247,12 +219,14 @@ Curve cv;
   if (cv == NULL)
     mwerror(INTERNAL,1,"[_mw_create_curve_mw2_curve] Cannot create file: Curve structure is NULL\n");
 
-  fp=_mw_write_header_file(fname,"MW2_CURVE");
+  fp=_mw_write_header_file(fname,"MW2_CURVE",1.00);
   if (fp == NULL) return(-1);
 
+  /* Now, allow to record empty curve
   if (cv->first == NULL)
     mwerror(INTERNAL,1,"[_mw_create_curve_mw2_curve] Curve has no point curve !\n");
-  
+  */
+
   for (pc=cv->first; pc; pc=pc->next)
     {
       fwrite(&(pc->x),sizeof(int),1,fp);
@@ -262,6 +236,22 @@ Curve cv;
   fclose(fp);
   return(0);
 }
+
+/* Create native formats (without conversion of the internal type) */
+
+short _mw_curve_create_native(fname,cv,Type)
+
+char  *fname;                        /* file name */
+Curve cv;
+char  *Type;                         /* Type de format du fichier */
+
+{
+  if (strcmp(Type,"MW2_CURVE") == 0)
+    return(_mw_create_curve_mw2_curve(fname,cv));
+  
+  return(-1);
+}
+
 
 /* Write file in different formats */
    
@@ -273,103 +263,31 @@ char  *Type;                         /* Type de format du fichier */
 
 {
   short ret;
-  Polygon poly;
-  Fpolygon fpoly;
-  Fcurve fcurve;
-  Curves curves;
-  Fcurves fcurves;
-  Morpho_line ll;
-  Fmorpho_line fll;
-  Mimage mimage;
 
-#ifdef __STDC__
-  short _mw_create_curves_mw2_curves(char *, Curves);
-#else
-  short _mw_create_curves_mw2_curves();
-#endif
+  /* First, try native formats */
+  ret = _mw_curve_create_native(fname,cv,Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CURVE") == 0)
-    return(_mw_create_curve_mw2_curve(fname,cv));
+  /* If failed, try other formats with memory conversion */
+  ret = _mw_create_etype_from_itype(fname,cv,"curve",Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_FCURVE") == 0)
-    {
-      fcurve = (Fcurve) mw_curve_to_fcurve(cv);
-      ret = _mw_create_fcurve_mw2_fcurve(fname,fcurve);
-      mw_delete_fcurve(fcurve);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_MORPHO_LINE") == 0)
-    {
-      ll = (Morpho_line) mw_curve_to_morpho_line(cv);
-      ret = _mw_create_ml_mw2_ml(fname,ll);
-      mw_delete_morpho_line(ll);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_FMORPHO_LINE") == 0)
-    {
-      fcurve = (Fcurve) mw_curve_to_fcurve(cv);      
-      fll = (Fmorpho_line) mw_fcurve_to_fmorpho_line(fcurve);
-      ret = _mw_create_fml_mw2_fml(fname,fll);
-      mw_delete_fmorpho_line(fll);
-      mw_delete_fcurve(fcurve);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_MIMAGE") == 0)
-    {
-      ll = (Morpho_line) mw_curve_to_morpho_line(cv);
-      mimage = (Mimage) mw_morpho_line_to_mimage(ll);
-      ret = _mw_create_mimage_mw2_mimage(fname,mimage);
-      mw_delete_mimage(mimage);
-      mw_delete_morpho_line(ll);
-      return(ret);
-    }
-
-  if (strcmp(Type,"A_POLY") == 0)
-    {
-      poly = (Polygon) mw_curve_to_polygon(cv);
-      ret = _mw_create_polygon_a_poly(fname,poly);
-      mw_delete_polygon(poly);
-      return(ret);
-    }
-
-  if (strcmp(Type,"A_FPOLY") == 0)
-    {
-      fpoly = (Fpolygon) mw_curve_to_fpolygon(cv);
-      ret = _mw_create_fpolygon_a_fpoly(fname,fpoly);
-      mw_delete_fpolygon(fpoly);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_CURVES") == 0)
-    {
-      curves = (Curves) mw_curve_to_curves(cv);
-      ret = _mw_create_curves_mw2_curves(fname,curves);
-      mw_delete_curves(curves);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_FCURVES") == 0)
-    {
-      curves = (Curves) mw_curve_to_curves(cv);
-      fcurves = (Fcurves) mw_curves_to_fcurves(curves);
-      ret = _mw_create_fcurves_mw2_fcurves(fname,fcurves);
-      mw_delete_fcurves(fcurves);
-      mw_delete_curves(curves);
-      return(ret);
-    }
-
-  mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
+  /* Invalid Type should have been detected before, but we can arrive here because
+     of a write failure (e.g. the output file name is write protected).
+  */
+  mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
 }
 
 
 /* ---- I/O for Curves ---- */
 
-/* Load curves from a file of MW2_CURVES format */
+/* Load curves from a file of MW2_CURVES format.
+   Read operation is no more bufferized to be able to load huge curves.
+ */
 
-Curves _mw_load_curves_mw2_curves(fname)
+/* Load old format V1.00 */
+
+static Curves _mw_load_curves_mw2_curves_1_00(fname)
 
 char  *fname;  /* Name of the file */
 
@@ -377,56 +295,44 @@ char  *fname;  /* Name of the file */
   Curves cvs;
   Curve newcv,oldcv;
   Point_curve newcvc,oldcvc;
-  struct stat buf;
-  int fsize,buf_size,i;
-  char header[11];
-  int vx,vy,*buffer;
-  register int *ptr;
+  int x,y;
   char new_curve;
-  char ftype[TYPE_SIZE],mtype[TYPE_SIZE];
+  char ftype[mw_ftype_size],mtype[mw_mtype_size];
   int need_flipping;
+  char header[BUFSIZ];
+  int eof,xsave;
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  need_flipping = _mw_get_file_type(fname,ftype,mtype)-1;
+  need_flipping = _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
+  printf("[_mw_load_curves_mw2_curves_1_00] version=%f\n",version);
+
+  if (strcmp(ftype,"MW2_CURVES") != 0)
+    mwerror(INTERNAL, 0,"[_mw_load_curves_mw2_curves] File \"%s\" is not in the MW2_CURVES format\n",fname);
   
-  if ( (need_flipping==-1) ||
-       (!(fp = fopen(fname, "r"))) || (fstat(fileno(fp),&buf) != 0) )
+  if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))))
     {
       mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
       fclose(fp);
       return(NULL);
     }
 
-  fsize = buf.st_size-10; /* Size of the file - size of the header, in bytes */
-                          /* header = "MW2_CURVES" */
-  buf_size = (fsize / sizeof(int));
-
-  if (!(buffer = (int *) malloc(buf_size * sizeof(int))))
+  if (fread(header,1,hsize,fp) != hsize)
     {
-      mwerror(ERROR, 0,"Not enough memory to load file \"%s\" (size of file = %d bytes)\n",fname,buf.st_size);
+      mwerror(ERROR, 0,"Error while reading header of file \"%s\" !\n",fname);
       fclose(fp);
       return(NULL);
     }
-
-  if ((fread(header,10,1,fp) == 0) || (fread(buffer,fsize,1,fp) == 0))
-      {
-	mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
-	free(buffer);
-	fclose(fp);
-	return(NULL);
-      }
-  fclose(fp);
-
-  if (strcmp(ftype,"MW2_CURVES") != 0)
-    mwerror(INTERNAL, 0,"[_mw_load_curves_mw2_curves] File \"%s\" is not in the MW2_CURVES format\n",fname);
   
   cvs = mw_new_curves();
   if (cvs == NULL) return(cvs);
   oldcv = newcv = NULL;
 
   new_curve = 1;
-  for (ptr=buffer, i=1; i < buf_size; i+=2)
+  xsave=END_OF_CURVE;
+  eof=0;
+  while (eof != 1)
     {
-      
       if (new_curve == 1)  /* Begin a new curve */
 	{
 	  oldcv = newcv;
@@ -434,7 +340,6 @@ char  *fname;  /* Name of the file */
 	  if (newcv == NULL)
 	    {
 	      mw_delete_curves(cvs);
-	      free(buffer);
 	      return(NULL);
 	    }
 	  if (cvs->first == NULL) cvs->first = newcv;
@@ -444,152 +349,210 @@ char  *fname;  /* Name of the file */
 	  newcv->first = NULL;
 	  oldcvc = newcvc = NULL;
 	}
-
-      if (need_flipping==1)
-	{	
-	  vx = _mw_get_flip_b4(*ptr);
-	  ptr++;
-	  vy = _mw_get_flip_b4(*ptr);
-	  ptr++;
-	  /*printf("(flip) i=%d (%d,%d)\n",i,vx,vy);*/
-	}
-      else
-	{	
-	  vx = *ptr++;
-	  vy = *ptr++;
-	  /*printf("(no flip) i=%d (%d,%d)\n",i,vx,vy);*/
-	}
-
-      if ((vy == END_OF_CURVE) && (i < buf_size-1))
-	{
-	  mwerror(ERROR, 0,"Error into the file \"%s\"...\n",fname);
-	  mw_delete_curves(cvs);
-	  free(buffer);
-	  return(NULL);
-	}
       
-      if (vx == END_OF_CURVE) { new_curve=1; ptr--; i--; } /* Mark end of curve */
-      else
+      if (xsave == END_OF_CURVE) /* Has to read x from file */
 	{
+	  if (fread(&x,1,sizeof(int),fp) != sizeof(int))
+	    {
+	      mwerror(ERROR, 0,
+		      "Error into the file \"%s\" : EOF encountered before EOC.\n",fname);
+	      return(NULL);		
+	    }
+	  if (need_flipping==1) x = _mw_get_flip_b4(x);    
+	}			
+      else x=xsave; /* set previous value */
+      
+      if (fread(&y,1,sizeof(int),fp) != sizeof(int))
+	{
+	  mwerror(ERROR, 0,
+		  "Error into the file \"%s\" : cannot read y coordinate\n",fname);
+	  return(NULL);		    
+	}		
+      if (need_flipping==1) y = _mw_get_flip_b4(y);
+      
+      if (x==END_OF_CURVE)
+	{
+	  xsave=y;
+	  if (y==END_OF_CURVE)
+	    {
+	      if (fread(&y,1,sizeof(int),fp) != 0)
+		{
+		  mwerror(ERROR, 0,
+			  "Error into the file \"%s\" : no EOF after double EOC.\n",fname);
+		  return(NULL);		    
+		}
+	      else eof=1;
+	    }
+	  else new_curve=1;
+	}
+      else /* Record (x,y) */
+	{
+	  xsave=END_OF_CURVE;
 	  new_curve = 0;
 	  newcvc = mw_new_point_curve();
 	  if (newcvc == NULL)
 	    {
 	      mw_delete_curves(cvs);
-	      free(buffer);
 	      return(NULL);
 	    }
 	  if (newcv->first == NULL) newcv->first = newcvc;
 	  if (oldcvc != NULL) oldcvc->next = newcvc;
 	  newcvc->previous = oldcvc;
 	  newcvc->next = NULL;
-	  newcvc->x = vx; newcvc->y = vy;
+	  newcvc->x = x; newcvc->y = y;
 	  oldcvc = newcvc;
 	}
-    }      
-  free(buffer);
+    } /* while (eof != 1) */
+  fclose(fp);
   return(cvs);
 }
 
-/* Load curves from file of different types */
+/* Load current format V1.01 
+   Changes from V1.00 : END_OF_CURVES introduced to be able
+                        to record empty curve.
+*/
 
-Curves _mw_load_curves(fname,Type)
+Curves _mw_load_curves_mw2_curves(fname)
 
 char  *fname;  /* Name of the file */
-char  *Type;   /* Type de format du fichier */
 
-{ char mtype[TYPE_SIZE];
-  Polygons polys;
-  Fpolygons fpolys;
-  Curves curves;
-  Fcurves fcurves;
-  Curve curve;
-  Fcurve fcurve;
-  Morpho_line ll;
-  Fmorpho_line fll;
-  Mimage mimage;
+{ FILE    *fp;
+  Curves cvs;
+  Curve newcv,oldcv;
+  Point_curve newcvc,oldcvc;
+  int n,X[2];
+  char ftype[mw_ftype_size],mtype[mw_mtype_size];
+  int need_flipping;
+  char header[BUFSIZ];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  _mw_get_file_type(fname,Type,mtype);
+  need_flipping = _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
   
-  if (strcmp(Type,"MW2_CURVES") == 0)
-    return(_mw_load_curves_mw2_curves(fname));
+  if (strcmp(ftype,"MW2_CURVES") != 0)
+    mwerror(INTERNAL, 0,"[_mw_load_curves_mw2_curves] File \"%s\" is not in the MW2_CURVES format\n",fname);
+  
+  /*printf("[_mw_load_curves_mw2_curves] version=%f\n",version);*/
+  if (version==1.0) return(_mw_load_curves_mw2_curves_1_00(fname));
 
-  if (strcmp(Type,"MW2_FCURVES") == 0)
+  if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))))
     {
-      fcurves = (Fcurves) _mw_load_fcurves_mw2_fcurves(fname);
-      curves = (Curves) mw_fcurves_to_curves(fcurves);
-      mw_delete_fcurves(fcurves);
-      return(curves);
+      mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+      fclose(fp);
+      return(NULL);
     }
 
-  if (strcmp(Type,"MW2_MORPHO_LINE") == 0)
+  if (fread(header,1,hsize,fp) != hsize)
     {
-      ll = (Morpho_line) _mw_load_ml_mw2_ml(fname);
-      curve = (Curve) mw_morpho_line_to_curve(ll);
-      curves = (Curves) mw_curve_to_curves(curve);
-      mw_delete_curve(curve);
-      mw_delete_morpho_line(ll);
-      return(curves);
+      mwerror(ERROR, 0,"Error while reading header of file \"%s\" !\n",fname);
+      fclose(fp);
+      return(NULL);
     }
+  
+  cvs = mw_new_curves();
+  if (cvs == NULL) return(cvs);
+  oldcv = newcv = NULL;
 
-  if (strcmp(Type,"MW2_FMORPHO_LINE") == 0)
+  n=0;
+  while (1)
     {
-      fll = (Fmorpho_line) _mw_load_fml_mw2_fml(fname);
-      fcurve = (Fcurve) mw_fmorpho_line_to_fcurve(fll);
-      curve = (Curve) mw_fcurve_to_curve(fcurve);
-      curves = (Curves) mw_curve_to_curves(curve);
-      mw_delete_curve(curve);
-      mw_delete_fcurve(fcurve);
-      mw_delete_fmorpho_line(fll);
-      return(curves);
+      if (fread(&X[n],1,sizeof(int),fp) != sizeof(int))
+	{
+	  mwerror(ERROR, 0,
+		  "Error into the file \"%s\" : EOF encountered before END_OF_CURVES.\n",fname);
+	  return(NULL);		
+	}
+      if (need_flipping==1) X[n] = _mw_get_flip_b4(X[n]);          
+      if (X[n]==END_OF_CURVES) 
+	{
+	  fclose(fp);
+	  return(cvs);
+	}
+      else
+	if (X[n]==END_OF_CURVE)
+	  {
+	    n=-1;
+	    oldcv = newcv;
+	    newcv = mw_new_curve();
+	    if (newcv == NULL)
+	      {
+		mw_delete_curves(cvs);
+		fclose(fp);
+		return(NULL);
+	      }
+	    if (cvs->first == NULL) cvs->first = newcv;
+	    if (oldcv != NULL) oldcv->next = newcv;
+	    newcv->previous = oldcv;
+	    newcv->next = NULL;
+	    newcv->first = NULL;
+	    oldcvc = newcvc = NULL;
+	  }
+	else
+	  if (n==1) /* record new point */
+	    {
+	      newcvc = mw_new_point_curve();
+	      if (newcvc == NULL)
+		{
+		  mw_delete_curves(cvs);
+		  return(NULL);
+		}
+	      if (newcv->first == NULL) newcv->first = newcvc;
+	      if (oldcvc != NULL) oldcvc->next = newcvc;
+	      newcvc->previous = oldcvc;
+	      newcvc->next = NULL;
+	      newcvc->x = X[0]; newcvc->y = X[1];
+	      oldcvc = newcvc;
+	    }
+      n++; if (n==2) n=0;
     }
+}
 
-  if (strcmp(Type,"MW2_MIMAGE") == 0)
-    {
-      mimage = (Mimage) _mw_load_mimage_mw2_mimage(fname);
-      curves = (Curves) mw_mimage_to_curves(mimage);
-      mw_delete_mimage(mimage);
-      return(curves);
-    }
+/* Native formats (without conversion of the internal type) */
 
-  if (strcmp(Type,"A_POLY") == 0)
-    {
-      polys = (Polygons) _mw_load_polygons_a_poly(fname);
-      curves = (Curves) mw_polygons_to_curves(polys);
-      mw_delete_polygons(polys);
-      return(curves);
-    }
+Curves _mw_curves_load_native(fname,type)
 
-  if (strcmp(Type,"A_FPOLY") == 0)
-    {
-      fpolys = (Fpolygons) _mw_load_fpolygons_a_fpoly(fname);
-      curves = (Curves) mw_fpolygons_to_curves(fpolys);
-      mw_delete_fpolygons(fpolys);      
-      return(curves);
-    }
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
 
-  if (strcmp(Type,"MW2_CURVE") == 0)
-    {
-      curve = (Curve) _mw_load_curve_mw2_curve(fname);
-      curves = (Curves) mw_curve_to_curves(curve);
-      mw_delete_curve(curve);
-      return(curves);
-    }
+{
+  if (strcmp(type,"MW2_CURVES") == 0)
+    return((Curves)_mw_load_curves_mw2_curves(fname));
 
-  if (strcmp(Type,"MW2_FCURVE") == 0)
-    {
-      fcurve = (Fcurve) _mw_load_fcurve_mw2_fcurve(fname);
-      curve = (Curve) mw_fcurve_to_curve(fcurve);
-      curves = (Curves) mw_curve_to_curves(curve);
-      mw_delete_curve(curve);
-      mw_delete_fcurve(fcurve);
-      return(curves);
-    }
+  return(NULL);
+}
 
-  mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
-}  
+/* All available formats */
 
-/* Write file in MW2_CURVES format */  
+Curves _mw_load_curves(fname,type)
+
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
+
+{ 
+  Curves cvs;
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+
+  _mw_get_file_type(fname,type,mtype,&hsize,&version);
+
+  /* First, try native formats */
+  cvs = _mw_curves_load_native(fname,type);
+  if (cvs != NULL) return(cvs);
+
+  /* If failed, try other formats with memory conversion */
+  cvs = (Curves) _mw_load_etype_to_itype(fname,mtype,"curves",type);
+  if (cvs != NULL) return(cvs);
+
+  if (type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Curves !\n",fname,type);
+}
+
+
+
+/* Write file in MW2_CURVES format V 1.01 */  
 
 short _mw_create_curves_mw2_curves(fname,cvs)
 
@@ -602,21 +565,17 @@ Curves cvs;
   Point_curve pc;
   int n;
   int end_of_curve = END_OF_CURVE;
+  int end_of_curves = END_OF_CURVES;
 
   if (cvs == NULL)
     mwerror(INTERNAL,1,"[_mw_create_curves_mw2_curves] Cannot create file: Curves structure is NULL\n");
 
-  if (cvs->first == NULL)
-    mwerror(INTERNAL,1,
-	      "[_mw_create_curves_mw2_curves] Cannot create file: No curve in the Curves structure\n");
-
-  fp=_mw_write_header_file(fname,"MW2_CURVES");
+  fp=_mw_write_header_file(fname,"MW2_CURVES",1.01);
   if (fp == NULL) return(-1);
 
+  if (cvs->first) fwrite(&end_of_curve,sizeof(int),1,fp);
   for (pl=cvs->first, n=1; pl; pl=pl->next, n++)
     {
-      if (pl->first == NULL)
-	mwerror(INTERNAL,1,"[_mw_create_curves_mw2_curves] Curve #%d has no point curve\n",n);
       for (pc=pl->first; pc; pc=pc->next)
 	{
 	  if ((pc->x == END_OF_CURVE) ||
@@ -625,13 +584,29 @@ Curves cvs;
 	  fwrite(&(pc->x),sizeof(int),1,fp);
 	  fwrite(&(pc->y),sizeof(int),1,fp);
 	}
-      fwrite(&end_of_curve,sizeof(int),1,fp);
+      if (pl->next) fwrite(&end_of_curve,sizeof(int),1,fp);
     }      
-  fwrite(&end_of_curve,sizeof(int),1,fp);
+  fwrite(&end_of_curves,sizeof(int),1,fp);
   fclose(fp);
   return(0);
 }
-   
+
+/* Create native formats (without conversion of the internal type) */
+
+short _mw_curves_create_native(fname,cvs,Type)
+
+char  *fname;                        /* file name */
+Curves cvs;
+char  *Type;                         /* Type de format du fichier */
+
+{
+  if (strcmp(Type,"MW2_CURVES") == 0)
+    return(_mw_create_curves_mw2_curves(fname,cvs));
+  
+  return(-1);
+}
+
+
 /* Write file in different formats */
    
 short _mw_create_curves(fname,cvs,Type)
@@ -642,93 +617,18 @@ char  *Type;                         /* Type de format du fichier */
 
 {
   short ret;
-  Polygons polys;
-  Fpolygons fpolys;
-  Fcurves fcurves;
-  Curve curve;
-  Fcurve fcurve;
-  Morpho_line ll;
-  Fmorpho_line fll;
-  Mimage mimage;
 
-  if (strcmp(Type,"MW2_CURVES") == 0)
-    return(_mw_create_curves_mw2_curves(fname,cvs));
+  /* First, try native formats */
+  ret = _mw_curves_create_native(fname,cvs,Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_FCURVES") == 0)
-    {
-      fcurves = (Fcurves) mw_curves_to_fcurves(cvs);
-      ret = _mw_create_fcurves_mw2_fcurves(fname,fcurves);
-      mw_delete_fcurves(fcurves);
-      return(ret);
-    }
+  /* If failed, try other formats with memory conversion */
+  ret = _mw_create_etype_from_itype(fname,cvs,"curves",Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_MORPHO_LINE") == 0)
-    {
-      curve = (Curve) mw_curves_to_curve(cvs);
-      ll = (Morpho_line) mw_curve_to_morpho_line(curve);
-      ret = _mw_create_ml_mw2_ml(fname,ll);
-      mw_delete_morpho_line(ll);
-      mw_delete_curve(curve);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_FMORPHO_LINE") == 0)
-    {
-      fcurves = (Fcurves) mw_curves_to_fcurves(cvs);
-      fcurve = (Fcurve) mw_fcurves_to_fcurve(fcurves);
-      fll = (Fmorpho_line) mw_fcurve_to_fmorpho_line(fcurve);
-      ret = _mw_create_fml_mw2_fml(fname,fll);
-      mw_delete_fmorpho_line(fll);
-      mw_delete_fcurve(fcurve);
-      mw_delete_fcurves(fcurves);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_MIMAGE") == 0)
-    {
-      mimage = (Mimage) mw_curves_to_mimage(cvs);
-      ret = _mw_create_mimage_mw2_mimage(fname,mimage);
-      mw_delete_mimage(mimage);
-      return(ret);
-    }
-
-  if (strcmp(Type,"A_POLY") == 0)
-    {
-      polys = (Polygons) mw_curves_to_polygons(cvs);
-      ret = _mw_create_polygons_a_poly(fname,polys);
-      mw_delete_polygons(polys);
-      return(ret);
-    }
-
-  if (strcmp(Type,"A_FPOLY") == 0)
-    {
-      fpolys = (Fpolygons) mw_curves_to_fpolygons(cvs);
-      ret = _mw_create_fpolygons_a_fpoly(fname,fpolys);
-      mw_delete_fpolygons(fpolys);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_CURVE") == 0)
-    {
-      curve = (Curve) mw_curves_to_curve(cvs);
-      ret = _mw_create_curve_mw2_curve(fname,curve);
-      mw_delete_curve(curve);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_FCURVE") == 0)
-    {
-      curve = (Curve) mw_curves_to_curve(cvs);
-      fcurve = (Fcurve) mw_curve_to_fcurve(curve);
-      ret = _mw_create_fcurve_mw2_fcurve(fname,fcurve);
-      mw_delete_fcurve(fcurve);
-      mw_delete_curve(curve);
-      return(ret);
-    }
-
-  mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
+  /* Invalid Type should have been detected before, but we can arrive here because
+     of a write failure (e.g. the output file name is write protected).
+  */
+  mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
 }
-
-
-
-
+   

@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="`basename $0`"
-_Vers="1.0"
-_Date="2000"
+_Vers="1.03"
+_Date="2000-2002"
 _Func="Clean from objects and old files the MegaWave2 Distribution (adm only)"
 _Auth="Jacques Froment";
 _Usage="mw2_distrib_dir"
@@ -56,10 +56,17 @@ Remove_Old()
  for file in `ls $1`
  do
   if [ ! -d $1/${file} ]; then
-    old=`basename $file \~`
-    if [ "${old}~" = "$file" ]; then
-#      echo "Remove $file"
-      rm $1/$file
+    new=`basename $file \~`
+    if [ "${new}~" = "$file" ]; then
+      if [ ! -f $1/${new} ]; then
+        echo "New file '$1/$new' not found !"
+        Answer "Should I remove old file $1/$file" "N"
+        if [ "$ans" = "Y" ]; then 
+          rm $1/$file
+        fi
+      else     
+        rm $1/$file
+      fi
     fi
   else
     Remove_Old $1/${file}
@@ -120,9 +127,10 @@ Remove_Dir "obj"
 Remove_Dir "shell"
 Remove_Dir "sys"
 Remove_Dir "doc/obj"
+Remove_Dir "tmp"
 
 # Remove misc files 
-rm -f $MW/megawave2.io $MW/MODULES.*
+rm -f $MW/megawave2.io $MW/Install.log $MW/MODULES.*
 rm -f $MW/kernel/mwp/lex.yy.c $MW/kernel/mwp/y.tab.c $MW/kernel/mwp/y.output \
       $MW/kernel/mwp/y.tab.h $MW/kernel/mwp/mwp.output
 rm -f $MW/doc/guid3.*

@@ -30,15 +30,9 @@ QImage<-Output
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void iezw(int *, float *, Cimage, Wtrans2d);
-void iowave2(int *, int *, int *, int *, int *, int *, Wtrans2d, Fimage, Fsignal, Fimage);
-void ibiowave2(int *, int *, int *, int *, Wtrans2d, Fimage, Fsignal, Fsignal);
-#else
-void iezw();
-void iowave2();
-void ibiowave2();
-#endif
+extern void iezw();
+extern void iowave2();
+extern void ibiowave2();
 
 /*--- Constants ---*/
 

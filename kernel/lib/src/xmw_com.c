@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    xmw_com.c
    
-   Vers. 1.0
-   (C) 1994-98 Jacques Froment
+   Vers. 1.1
+   (C) 1994-2000 Jacques Froment
    Communication with XMegaWave
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -245,41 +245,41 @@ char *mtype;
 
 {
   if (strcmp(mtype,"cimage") == 0)
-  	return(cimage_types);
+  	return(cimage_native_ftypes);
   if (strcmp(mtype,"fimage") == 0)
-  	return(fimage_types);
+  	return(fimage_native_ftypes);
   if (strcmp(mtype,"fsignal") == 0)
-  	return(fsignal_types);
+  	return(fsignal_native_ftypes);
   if (strcmp(mtype,"ccimage") == 0)
-  	return(ccimage_types);
+  	return(ccimage_native_ftypes);
   if (strcmp(mtype,"cfimage") == 0)
-  	return(cfimage_types);
+  	return(cfimage_native_ftypes);
   if (strcmp(mtype,"curve") == 0)
-  	return(curve_types);
+  	return(curve_native_ftypes);
   if (strcmp(mtype,"curves") == 0)
-  	return(curves_types);
+  	return(curves_native_ftypes);
   if (strcmp(mtype,"fcurve") == 0)
-  	return(fcurve_types);
+  	return(fcurve_native_ftypes);
   if (strcmp(mtype,"fcurves") == 0)
-  	return(fcurves_types);
+  	return(fcurves_native_ftypes);
   if (strcmp(mtype,"polygon") == 0)
-  	return(polygon_types);
+  	return(polygon_native_ftypes);
   if (strcmp(mtype,"fpolygon") == 0)
-  	return(fpolygon_types);
+  	return(fpolygon_native_ftypes);
   if (strcmp(mtype,"polygons") == 0)
-  	return(polygons_types);
+  	return(polygons_native_ftypes);
   if (strcmp(mtype,"fpolygons") == 0)
-  	return(fpolygons_types);
+  	return(fpolygons_native_ftypes);
   if (strcmp(mtype,"morpho_line") == 0)
-  	return(morpho_line_types);
+  	return(morpho_line_native_ftypes);
   if (strcmp(mtype,"fmorpho_line") == 0)
-  	return(fmorpho_line_types);
+  	return(fmorpho_line_native_ftypes);
   if (strcmp(mtype,"mimage") == 0)
-  	return(mimage_types);
+  	return(mimage_native_ftypes);
   if (strcmp(mtype,"morpho_set") == 0)
-  	return(morpho_set_types);
+  	return(morpho_set_native_ftypes);
   if (strcmp(mtype,"morpho_sets") == 0)
-  	return(morpho_sets_types);
+  	return(morpho_sets_native_ftypes);
   	
   return(NULL);
 }

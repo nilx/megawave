@@ -1,7 +1,7 @@
 /* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
 /* mwcommand
 name = {cvsfrecode};
-version={"0.0"};
+version={"1.1"};
 author = {"Jacques Froment"};
 function = {"Encode the change of direction of points in the curves : return bit rate for lossless compression"};
 usage = {
@@ -11,24 +11,16 @@ B<-B "output number of bits to code the curves (without origin points)",
 brate<-cvsfrecode "compression rate (bit per point = B/N)"
         };
 */
-/* ------------------------------------------------------------------------- */
+/*----------------------------------------------------------------------
+ v1.1: upgrade for new kernel (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
 
-/* MegaWave2 modules used */
-#ifdef __STDC__
-
-extern void arencode2(int *, long *, int *, long *, int *, Fsignal, int *, 
-		      Fimage, double *, Cimage);
-extern float fentropy(Fimage);
-
-#else
-
 extern void arencode2();
 extern float fentropy();
 
-#endif
 
 /* Fill dirchg by Freeman algorithm. Return the minimal size of dirchg.
    The Freeman encoding of a curve uses 4 symbols :
@@ -132,8 +124,8 @@ double *B;
   if ((!C)||(!C->first)||(!C->first->first))
     mwerror(FATAL,1,"Input curves does not contain any curve or point !\n");
 
-  npts = mw_curves_npoints(C);
-  ncvs = mw_curves_length(C);
+  npts = mw_npoints_curves(C);
+  ncvs = mw_length_curves(C);
   mwdebug("Total number of points in the curves : N = %d\n",npts);
   mwdebug("Number of curves (nb of origin points) : %d\n",ncvs);
 

@@ -95,10 +95,12 @@ in the shapes. The size of the array is the field \texttt{area}.
 point being at the junction of 4 pixels. The point of coordinates $(i,j)$ is
 considered to be at the upper-left corner of the pixel $(i,j)$.
 \item \texttt{data} is left free for the user to store what needed.
+\item \texttt{data\_size} is the size (in bytes) of the \texttt{data}. Put it
+to 0 in case \texttt{data} is not meant to be saved.
 \end{itemize}
 
-The number of shapes in the tree is not more than the number of pixels. But
-the number of holes cannot be bounded so easily.
+The number of shapes in the tree is not more than the number of pixels (plus
+1). But the number of holes cannot be bounded so easily.
 
 Removing a shape from the tree means connecting its children directly to its
 father. In fact no connection is changed, but the functions
@@ -119,6 +121,7 @@ is the smallest shape containing pixel $(i,j)$. This does not take into
 account that this shape could be removed, so the function
 \texttt{mw\_get\_smallest\_shape} should be used instead.
 \item \texttt{data} is left free for the user.
+\item \texttt{data\_size} is the size (in bytes) of \texttt{data}
 \end{itemize}
 
 Of course, the flst is called a ``transform'', that means that we can
@@ -127,66 +130,32 @@ module \texttt{flst\_reconstruct}.
 
 The arguments of the function are:
 \begin{itemize}
-\item \texttt{pFloatImageInput}: the image to decompose
+\item \texttt{pImageInput}: the image to decompose
 \item \texttt{pTree}: the tree of shapes, filled as output.
-\item \texttt{pStoreCurves}: if non \texttt{NULL}, indicates to store also the
-curve corresponding to the boundary of each shape.
-\item \texttt{pMinArea, pMode}: arguments to a possible extrema killer, see below.
+\item \texttt{pMinArea}: arguments to a possible grain filter.
 \end{itemize}
 
 Before decomposing the image, it is possible to apply an extrema killer to the
 image. This reduces the number of shapes, and so the memory requirement of the
 output structure is also reduced, so as computation time. An extrema killer is
 applied only in the case where \texttt{pMinArea} is a non \texttt{NULL}
-pointer and the pointed value is strictly greater than 1. In this case, the
-input image \texttt{pFloatImageInput} is modified, the extrema killer is
-applied to it. In this manner, the tree and the image after the call to the
-function \texttt{flst} are always equivalent.
-
-We call extremum a connected component of level set. If it is of a superior
-level set (resp. inferior), that means that all its neighbors have a strictly
-inferior (resp. superior) gray level. Removing it means putting the
-restriction of the image to it to the level determined by the greatest
-(resp. lowest) gray value of its neighbors. The extrema killer removes all
-extrema of area strictly lower than \texttt{*pMinArea}. This is equivalent to
-applying an inf-sup $IS$ (resp. sup-inf $SI$) operator with all connected
-subsets of area \texttt{*pMinArea} as structuring elements. These operators do
-not commute, so that we have four choices, applying whether $IS$, $SI$,
-$IS\circ SI$ or $SI\circ IS$. Moreover, each one of these filters can be
-applied with a certain notion of connectedness (4- or 8-). The value of
-\texttt{*pMode} is meant to allow the choice (if \texttt{pMode} is the
-\texttt{NULL} pointer, it is understood as the value 0). It is a concatenation
-of the different choices we make:
-
-\begin{enumerate}
-\item We have to put whether \texttt{MW\_LS\_4} or \texttt{MW\_LS\_8}, this is the
-choice of connectedness for inferior level sets (for superior level sets, it
-is automatically the other notion).
-\item We have to choose if the last extrema killer before extraction of
-shapes is IS (\texttt{MW\_LS\_INF}) or SI (\texttt{MW\_LS\_SUP}). This is applied
-with the connectedness of choice 1. For example, if we have chosen
-4-connectedness for inf level sets, the minima killer (if chosen here) is
-applied with 4-connectedness.
-\item We have to choose if we apply a composed filter (ISoSI or SIoIS) (value
-\texttt{MW\_LS\_COMPOSED} or a simple filter (SI or IS) (value
-\texttt{MW\_LS\_UNCOMPOSED}).
-\item Notion of connectedness for the first filter in a composed filter (value
-\texttt{MW\_LS\_4\_FIRST} or \texttt{MW\_LS\_8\_FIRST}). This
-parameter is meaningless if a simple filter is chosen.
-\end{enumerate}
-
-The value of the mode is a combination of the modes with the binary ``or''
-operator. For example, value 0 corresponds to \texttt{MW\_LS\_4 | MW\_LS\_INF |
-MW\_LS\_COMPOSED | MW\_LS\_4\_FIRST}, meaning: apply a composed Luc Vincent filter
-(\texttt{MW\_LS\_COMPOSED}), which is $IS\circ SI$ (maxima killer before
-minima killer), with 4-connectedness for $IS$ (\texttt{MW\_LS\_4}) and also
-4-connectedness for $SI$ (\texttt{MW\_LS\_4\_FIRST}).
+pointer and the pointed value is strictly greater than 1. In this case, only
+shapes of area at least \texttt{*pMinArea} are put in the tree.
 
 Some very simple manipulations of the tree structure are made in the modules
-\texttt{fkill\_grains} and \texttt{fkill\_gradations}.
+\texttt{fgrain} and \texttt{ll\_sharp}.
+
+The field \texttt{boundary} of each shape is left to \texttt{NULL}. To compute
+it, use the module \texttt{flst\_boundary}.
+
+The field \texttt{pixels} of the shapes is left to \texttt{NULL}. To compute
+it, use the module \texttt{flst\_pixels}.
+
+A similar algorithm, interpreting the image as a bilinear interpolation of
+data points, is the module \texttt{flst\_bilinear}.
 
 \begin{thebibliography}{10}
-\bibitem{fllt} Monasse, P., Guichard, F.:~
+\bibitem{flst} Monasse, P., Guichard, F.:~
 Fast Computation of a Contrast-Invariant Image Representation,
 to appear in IEEE Trans. on Image Processing,
 Preprint CMLA 9815, available from {\texttt
@@ -197,8 +166,13 @@ Scale-Space from a Level Lines Tree,
 Proc. of 2nd Int. Conf. on Scale-Space Theories in Computer
 Vision, Corfu, Greece, LNCS 1682, pp. 175--186.
 
-\bibitem{fllt_theory}
-Monasse, P.:
-An Inclusion Tree Describing the Topological Structure of an Image,
-in preparation.
+\bibitem{flst_theory} Ballester, C., Caselles, V., Monasse, P.:~
+The Tree of Shapes of an Image,
+preprint CMLA, available at
+\texttt{http://www.cmla.ens-cachan.fr/Cmla/Publications/2001/index.html},
+2001.
+
+\bibitem{grain} Caselles, V., Monasse, P.:~
+Grain filters,
+preprint CMLA, 2001.
 \end{thebibliography}

@@ -1,4 +1,4 @@
-#! /bin/sh 
+#!/bin/sh 
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Make the dependencies list (See Also) of the modules' documentation"

@@ -1,18 +1,18 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {biowave2};
-version = {"1.30"};
+version = {"1.4"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Computes the biorthogonal wavelet transform of an image"};
 usage = {
-'r':[NLevel=0]->NumRec [0,20]
-	"Number of level", 
+'r':[NLevel=1]->NumRec [1,20]
+	"Number of levels (default 1)", 
 'h':HaarNLevel->Haar
 	"Continue decomposition with Haar filter until level HaarNLevel",
 'e':[EdgeMode=2]->Edge [0,2]
-	"Edge processing mode", 
+	"Edge processing mode (0/1/2, default 2)", 
 'n':[FilterNorm=0]->FilterNorm [0,2]
-	"Normalization mode for filter bank", 
+	"Normalization mode for filter bank (0/1/2, default 0)", 
 Image->Image
 	"Input image (fimage)", 
 WavTrans<-Output
@@ -23,7 +23,9 @@ ImpulseResponse2->Ri2
 	"Impulse response of filter 2 (fsignal)"
 	};
  */
-
+/*-------------------------------------------------------------------------
+ v1.4: fixed bug with default number of levels (L.Moisan)
+-------------------------------------------------------------------------*/
 
 /*--- Include files UNIX C ---*/
 
@@ -36,11 +38,7 @@ ImpulseResponse2->Ri2
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void sconvolve(Fsignal, Fsignal, int *, int *, int *, int *, int *, int *, Fsignal, Fimage);
-#else
-void sconvolve();
-#endif
+extern void sconvolve();
 
 /*--- Constants ---*/
 

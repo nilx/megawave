@@ -1,20 +1,20 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {dyowave2};
-version = {"1.00"};
+version = {"1.1"};
 author = {"J.P. d'Ales"};
 function = {"Computes the orthogonal wavelet coefficients of an image without decimation"};
 usage = {
 'r':[NLevel=1]->NumRec [1,20]
-	"Number of level", 
+	"Number of levels (default 1)", 
 'd':[StopDecimLevel=2]->StopDecim [1,20]
-	"Level for decimation stop",
+	"Level for decimation stop (default 2)",
 'o'->Ortho
 	"Computes orthogonal coefficients", 
 'e':[EdgeMode=3]->Edge [0,3]
-	"Edge processing mode", 
+	"Edge processing mode (0/1/2/3, default 3)", 
 'p':[PrecondMode=0]->Precond [0,2]
-	"Edge preconditionning mode", 
+	"Edge preconditionning mode (0/1/2, default 2)", 
 'n':[FiltNorm=2]->FilterNorm [0,2]
 	"Filter taps normalization. 0: no normalization, 1: sum equal to 1.0, 2: squares sum equal to 1.0 (default)", 
 Image->Image
@@ -40,15 +40,7 @@ ImpulseResponse->Ri
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void owave2(int *, int *, int *, int *, int *, int *, Fimage, Wtrans2d, Fsignal, Fimage);
-#else
-void owave2();
-#endif
-
-/*--- Constants ---*/
-
-
+extern void owave2();
 
 
 

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    W_X11R4.h    Window Device for X11 Release 4,5,6 - Include file -
    
-   Vers. 3.1
-   (C) 1991-99 Jacques Froment
+   Vers. 3.3
+   (C) 1991-2001 Jacques Froment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~  This file is part of the MegaWave2 Wdevice library ~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -12,10 +12,18 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+/*----------------------------------------------------------------------
+ v3.3: increased  PLOT/IMAGE_MAX_WIDTH/HEIGHT (L.Moisan)
+----------------------------------------------------------------------*/
+
 /* X11 Include Files */
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
+
+/* To get key symb (non-printable keys) */
+#define  XK_MISCELLANY
+#include <X11/keysymdef.h>
 
 /* Wframe : main structure for a window */
 /*          This structure is device-dependent and the fields must NOT */
@@ -82,8 +90,8 @@ typedef struct {
 #define PLOT_MIN_WIDTH 50     /* Minimum useful size of the Plot Window */
 #define PLOT_MIN_HEIGHT 50
 
-#define PLOT_MAX_WIDTH 1000    /* Maximum useful size of the Plot Window */
-#define PLOT_MAX_HEIGHT 1000
+#define PLOT_MAX_WIDTH 2000    /* Maximum useful size of the Plot Window */
+#define PLOT_MAX_HEIGHT 2000
 
 /* Image Window Attributes */
 
@@ -93,8 +101,8 @@ typedef struct {
 #define IMAGE_MIN_WIDTH 50     /* Minimum useful size of the Image Window */
 #define IMAGE_MIN_HEIGHT 50
 
-#define IMAGE_MAX_WIDTH 1000    /* Maximum useful size of the Image Window */
-#define IMAGE_MAX_HEIGHT 1000
+#define IMAGE_MAX_WIDTH 2000    /* Maximum useful size of the Image Window */
+#define IMAGE_MAX_HEIGHT 2000
 
 /*===== Events =====*/
 
@@ -109,11 +117,16 @@ typedef struct {
 /* that are simultaneously defined in all of the various window systems      */
 /* supported by Wdevice.                                                     */
 
+/* Mouse */
+
 #define W_MS_LEFT    10 /* Mouse buttons (not a mask) */
 #define W_MS_RIGHT   11 
 #define W_MS_MIDDLE  12
 #define W_MS_BUTTON  ButtonPressMask /* Mask for button scanning */
 
+/* For keyboard, non-printable characters: see X11 include file keysymdef.h */
+
+/* Window */
 
 #define W_REPAINT  ExposureMask /* Have to repaint the window (Expose...) */
 #define W_RESIZE   ResizeRedirectMask  /* Have to resize the window */
@@ -121,8 +134,6 @@ typedef struct {
 #define W_LEAVE    LeaveWindowMask     /* Mouse leaves the window */
 #define W_KEYPRESS KeyPressMask        /* A key has been pressed */
 #define W_DESTROY  StructureNotifyMask /* The window has been destroyed */
-
-#define W_KeyBufferMaxLen 65 /* Size of the Key Buffer (for W_KEYPRESS) */
 
 /*===== Types of Pencil  =====*/
 
@@ -163,6 +174,7 @@ void WSystemEvent(Wframe *);
 void WSetUserEvent(Wframe *,unsigned long);
 int WUserEvent(Wframe *);
 int WGetStateMouse(Wframe *,int *,int *,int *);
+int WGetKeyboard(void);
 Wframe *WNewImageWindow();
 Wframe *WOpenImageWindow(int,int,int,int,char *);
 void WReOpenImageWindow(Wframe *,int,int,int,int,char *);
@@ -197,6 +209,7 @@ void WSystemEvent();
 void WSetUserEvent();
 int WUserEvent();
 int WGetStateMouse();
+int WGetKeyboard();
 Wframe *WNewImageWindow();
 Wframe *WOpenImageWindow();
 void WReOpenImageWindow();

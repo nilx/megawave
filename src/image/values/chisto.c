@@ -1,6 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {chisto};
+version = {"1.2"};
 author = {"Jacques Froment, Lionel Moisan"};
 function = {"Compute the histogram signal of a Cimage"};
 usage = {
@@ -8,16 +9,16 @@ usage = {
   A->A         "input cimage",
   S<-S         "output histogram fsignal"
 };
-version = {"1.1"};
 */
 /*----------------------------------------------------------------------
  v1.1: added -i option (L.Moisan)
+ v1.2: return S (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include  "mw.h"
 
-chisto(A,S,i_flag)
+Fsignal chisto(A,S,i_flag)
 
 Cimage A;
 Fsignal S;
@@ -41,4 +42,5 @@ char *i_flag;
   if (i_flag) for (i=1;i<n;i++)
     S->values[i] += S->values[i-1];
 
+  return(S);
 }

@@ -1,12 +1,12 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {owtrans_fimage};
-version = {"1.01"};
+version = {"1.1"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Generates a fimage for visualization of orthonormal wavelet decomposition"};
 usage = {
 'r':[RecursNum=1]->NumRec
-	"Number of level of wavelet transform", 
+	"Number of levels of wavelet transform (default 1)", 
 'c':[Contrast=1.0]->Contrast
 	"Multiplicative facor for wavelet coefficients", 
 WavTrans->Wtrans

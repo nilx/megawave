@@ -13,23 +13,13 @@ B<-B "output number of bits to code the curves",
 brate<-cvsencode "compression rate (bit per point = B/N)"
         };
 */
-/* ------------------------------------------------------------------------- */
 
 #include <stdio.h>
 #include "mw.h"
 
-/* MegaWave2 modules used */
-#ifdef __STDC__
-
-extern double cvsfrecode(Curves,unsigned int *, double *);
-extern double cvsorgcode(Curves,unsigned int *, double *);
-
-#else
-
 extern double cvsfrecode();
 extern double cvsorgcode();
 
-#endif
 
 /* Compute in (*ncol, *nrow) the size of the smallest image containing 
    all points which are in the curves of C.

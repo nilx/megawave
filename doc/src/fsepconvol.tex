@@ -3,7 +3,17 @@ case of a separable kernel,
 $$K(x,y)=xker(x)\cdot yker(y).$$
 The kernel $K$ can be given with $xker$ and $yker$ (Fsignal), or 
 chosen between a constant kernel or a Gaussian kernel, both
-with total mass $1$. The boundary assumption is that the initial
-image is periodic. See module \verb+fconvol+ for general
+with total mass $1$. The boundary assumption is, depending on
+the value of the $b$ parameter, that
+\begin{itemize}
+\item $b=0$: the image is zero outside its domain
+\item $b=1$: the image is symmetrized on each side 
+(eg if $u>0$, $u(-i)=u(i-1)$) 
+\item $b=2$: the image is periodic (eg $u(i) = u(i+n)$)
+\end{itemize}
+See module \verb+fconvol+ for general
 convolution with non-separable 2D kernels.
 
+\medskip
+
+NOTE: calling this module with in=out is possible

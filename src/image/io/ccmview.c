@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {ccmview};
-  version = {"1.04"};
+  version = {"1.2"};
   author = {"Jacques Froment"};
   function = {"View a ccmovie on a window"};
   usage = {
@@ -9,35 +9,33 @@
      "X coordinate for the upper-left corner of the Window",
   'y':[pos_y=50]->y0
      "Y coordinate for the upper-left corner of the Window",
- 'z':[zoom=1.0]->zoom
+  'z':[zoom=1.0]->zoom
       "Zoom factor (float value)",
+  'o':[order=0]->order      
+      "Zoom order: 0,1=linear,-3=cubic,3,5..11=spline, default 0",
   'l'->loop
       "Flag to loop on the sequence",
+  'p'->pause
+      "pause the movie on start",
   ccmovie->input 
      "Input movie (should be a ccmovie)",
   notused->window 
       "Window to display the movie (internal use)"
   };
 */
-/*--- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v1.06: added -p (pause) option and return void (L.Moisan)
+ v1.1: added -o option + several minor modifications (L.Moisan)
+ v1.2: fixed bug with non char input keys (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 include file */
 #include "mw.h"
 
 /* Include the window since we use windows facility */
 #include "window.h"
 
-#ifdef __STDC___
-
-void cmzoom(Cmovie, Cmovie, char *, char *, float *);
-
-#else
-
-void cmzoom();
-
-#endif
+extern void cmzoom();
 
 typedef struct ccmview_SParam {
    Ccimage image_work;
@@ -46,7 +44,7 @@ typedef struct ccmview_SParam {
    int *loop_flag;
    }  *ccmview_Param;
 
-char step_mode=0,direction=1;
+char step_mode,direction=1;
 unsigned char InfoPrint; /* Toggle to print info on the current image */
 int CurrentFrameNumber;  /* Current number of the frame */
 int FrameNumber;         /* Total number of frames */
@@ -84,8 +82,8 @@ void *param;          /* Users's parameters: don't forget the cast ! */
   Ccimage image;
   Ccimage first,last;
   int *loop;
-  int event,ret;
-  char c,go;
+  int event,ret,c;
+  char go;
   char mess[mw_cmtsize+10];
 
   data = (ccmview_Param) param;
@@ -124,7 +122,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	  ret=-1;
 	  break;
 	case W_KEYPRESS:
-	  c = (char) WGetKeyboard();
+	  c = WGetKeyboard();
 	  switch(c)
 	    {
 	    case 'q': case 'Q': ret=-1;
@@ -189,10 +187,10 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 }
 
 
-ccmview(input,x0,y0,zoom,loop,window)
+void ccmview(input,x0,y0,zoom,order,loop,pause,window)
 
 Ccmovie input;
-int *x0,*y0,*loop;
+int *x0,*y0,*loop,*pause,*order;
 float *zoom;
 char *window;
 
@@ -202,14 +200,22 @@ char *window;
   Ccmovie movie=NULL;
   ccmview_Param param;
   char text[BUFSIZ];
+  float inverse_zoom;
 
   mwwindelay=100;
+
+  step_mode = (pause?1:0);
 
   if (*zoom != 1.0) 
     {
       movie = mw_change_ccmovie(NULL);
       if (movie == NULL) mwerror(FATAL,1,"Not enough memory\n");
-      ccmzoom(input,movie,NULL,NULL,zoom);
+      if (*zoom>1.0) 
+	ccmzoom(input,movie,NULL,NULL,zoom,order,NULL);
+      else {
+	inverse_zoom = 1./(*zoom);
+	ccmzoom(input,movie,NULL,NULL,&inverse_zoom,order,(char *)1);
+      }
       sprintf(text,"%s (%.1fX)",input->name,*zoom);
     }
   else 

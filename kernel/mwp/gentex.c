@@ -1,7 +1,7 @@
 /**
  ** gentex
- ** (c)1993-99 J.Froment - S.Parrino
- ** Version 1.1
+ ** (c)1993-2002 J.Froment - S.Parrino
+ ** Version 1.6
  **/
 
 /*~~~~~~~~~~~  This file is part of the MegaWave2 preprocessor ~~~~~~~~~~~~~~~~
@@ -21,6 +21,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #include "mwarg.h"
 #include "y.tab.h"
 
+/* Remove " " in a word, as "word" -> word */
 #ifdef __STDC__
 void remove_dquote(char *buffer1, char *buffer2)
 #else
@@ -33,9 +34,14 @@ char *buffer1,*buffer2;
   if (buffer2 == NULL) strcpy(buffer1,"??");
   else
     {
-      l = strlen(buffer2)-2;
-      strncpy(buffer1, buffer2+1, l);
-      buffer1[l] = '\0';
+      l = strlen(buffer2);
+      if ((buffer2[0]!='"')||(buffer2[l-1]!='"'))
+	strcpy(buffer1,buffer2);
+      else
+	{
+	  strncpy(buffer1, buffer2+1, l-2);
+	  buffer1[l-2] = '\0';
+	}
     }
 }
 
@@ -61,10 +67,13 @@ char *lastmodif_date;
 
   if ((mwgroup != NULL) && (mwgroup->val.text != NULL))
     {
+      /*
       if (mwgroup->val.text[0]=='*')
 	remove_dquote(group_name,mwgroup->val.text);
       else
 	strcpy(group_name,mwgroup->val.text);
+      */
+      remove_dquote(group_name,mwgroup->val.text);
     }
   else strcpy(group_name,"??");
 
@@ -80,6 +89,10 @@ char *lastmodif_date;
   /* === Label for the index === */
   fprintf(fd,"\\label{%s}\n\n",mwname->val.text);
 
+  /* === Index entry  === */
+  remove_dquote(function_descript,mwfunction->val.text);
+  fprinttex(fd, "\\index{%T}\n\n", mwname->val.text);  
+
   /* === Name === */
   remove_dquote(function_descript,mwfunction->val.text);
   fprinttex(fd, "\\Name{%T}{%T}\n\n", mwname->val.text, function_descript);
@@ -91,22 +104,28 @@ char *lastmodif_date;
     Mwarg *opt;
     opt = (Mwarg *)GET_ELT(c);
       fprintf(fd, "[-%c", opt->d.o.o);
-      if (!(opt->d.o.d.t == SCALARARG &&  opt->d.o.d.rw == WRITE)) {
-        if (opt->texname != NULL)
-          fprinttex(fd, " {\\em %T}] ", opt->texname);
-        else
-          fprinttex(fd, "] "); 
-      }
-      else
-        fprinttex(fd, "] ");
+      /*if (!(opt->d.o.d.t == SCALARARG &&  opt->d.o.d.rw == WRITE)) 
+	Removed JF 13/10/2000
+       */
+	{
+	  if (opt->texname != NULL)
+	    fprinttex(fd, " {\\em %T}] ", opt->texname);
+	  else
+	    fprinttex(fd, "] "); 
+	}
+	/*      else        fprinttex(fd, "] ");*/
   }
   /* Needed arg */
-  for (c = GET_FIRST(neededarglist); c != NULL; c = GET_NEXT(c)) {
-    Mwarg *opt;
-    opt = (Mwarg *)GET_ELT(c);
-    if (!(opt->d.a.t == SCALARARG &&  opt->d.a.rw == WRITE))
-      fprinttex(fd, "{\\em %T} ", opt->texname);
-  }
+  for (c = GET_FIRST(neededarglist); c != NULL; c = GET_NEXT(c)) 
+    {
+      Mwarg *opt;
+      opt = (Mwarg *)GET_ELT(c);
+      if (!(opt->d.a.t == SCALARARG &&  opt->d.a.rw == WRITE))
+	fprinttex(fd, "{\\em %T} ", opt->texname);
+      else
+	/* -- Added JF 07/06/01 -- */
+	fprinttex(fd, "{\\em .} ");	
+	}
   /* Optionnal arg */
   if (GET_NUMBER(optarglist) != 0) {
     int in_flg;
@@ -138,22 +157,51 @@ char *lastmodif_date;
   fprinttex(fd, "}\n\n");
 
   /* === Arguments === (command) */
-  fprinttex(fd, "\\Arguments{\n");
+  /* JF 04/02/02 : macros \Argument, \Summary, \Description
+     replaced with plain text to allow \verb with LaTeX 2e
+  */
+
+  fprinttex(fd, "\n% --- ARGUMENTS : BEGIN --- \n");
+  fprinttex(fd, "\\samepage\n");
+  fprinttex(fd, "\\nopagebreak\n");
+  fprinttex(fd, "\\vspace{-5mm}\n");  
+  fprinttex(fd, "\\nopagebreak\n");
+  fprinttex(fd, "\\begin{quotation}\n");
+
   /* Options */
   for (c = GET_FIRST(optionlist); c != NULL; c = GET_NEXT(c)) {
     Mwarg *opt;
     opt = (Mwarg *)GET_ELT(c);
-    if (!(opt->d.o.d.t == SCALARARG && opt->d.o.d.rw == WRITE)) {
-      fprintf(fd, "-%c ", opt->d.o.o);
-      if (opt->texname != NULL) {
-        if (!(opt->d.o.d.t == SCALARARG &&  opt->d.o.d.rw == WRITE))
-          fprinttex(fd, "{\\em %T}", opt->texname);
-        else
-          fprinttex(fd, " screen output");
+    /* Modified JF 06/10/2000
+    if (!(opt->d.o.d.t == SCALARARG && opt->d.o.d.rw == WRITE)) 
+      {
+	fprintf(fd, "-%c ", opt->d.o.o);
+	if (opt->texname != NULL) {
+	  if (!(opt->d.o.d.t == SCALARARG &&  opt->d.o.d.rw == WRITE)) 
+	    fprinttex(fd, "{\\em %T}", opt->texname);
+	  else
+	    fprinttex(fd, " screen output");
+	}
+	fprinttex(fd, " : %T\n\n", noquote(opt->desc));
       }
-      fprinttex(fd, " : %T\n\n", noquote(opt->desc));
-    }
+    */
+    fprintf(fd, "-%c ", opt->d.o.o);
+    if (opt->texname != NULL) 
+      {
+	if (!(opt->d.o.d.t == SCALARARG && opt->d.o.d.rw == WRITE)) 
+	  fprinttex(fd, "{\\em %T} : %T\n\n", opt->texname,noquote(opt->desc));
+	else
+	  fprinttex(fd, "{\\em %T} (screen output) : %T\n\n", opt->texname,noquote(opt->desc));
+      }
+    else
+      {
+	if (!(opt->d.o.d.t == SCALARARG && opt->d.o.d.rw == WRITE)) 
+	  fprinttex(fd, " : %T\n\n", noquote(opt->desc));
+	else
+	  fprinttex(fd, " screen output : %T\n\n",noquote(opt->desc));
+      }
   }
+
   /* Needed arg */
   for (c = GET_FIRST(neededarglist); c != NULL; c = GET_NEXT(c)) {
     Mwarg *opt;
@@ -161,7 +209,8 @@ char *lastmodif_date;
     if (!(opt->d.a.t == SCALARARG && opt->d.a.rw == WRITE))
       fprinttex(fd, "{\\em %T} : %T\n\n", opt->texname, noquote(opt->desc));
     else
-      fprinttex(fd, "screen output : %T\n\n", noquote(opt->desc));
+      /* -- Added JF 07/06/01 -- */
+      fprinttex(fd, ". (screen output) : %T\n\n", noquote(opt->desc));
   }
   /* Opt arg */
   if (GET_NUMBER(optarglist) != 0) {
@@ -171,7 +220,7 @@ char *lastmodif_date;
       if (!(opt->d.a.t == SCALARARG && opt->d.a.rw == WRITE))
         fprinttex(fd, "{\\em %T} : %T\n\n", opt->texname, noquote(opt->desc));
       else
-        fprinttex(fd, "screen output :  %T\n\n", noquote(opt->desc));
+        fprinttex(fd, "screen output : %T\n\n", noquote(opt->desc));
         
     }
   }
@@ -186,22 +235,28 @@ char *lastmodif_date;
     else
       fprinttex(fd, "screen output... : %T\n\n", noquote(opt->desc));
   }
-  fprinttex(fd, "\n}\n\n");
 
+  fprinttex(fd, "\\end{quotation}\n");
+  fprinttex(fd, "\\Next\n");
+  fprinttex(fd, "% --- ARGUMENTS : END --- \n\n");
 
   /* Summary (C function) */
   if (mwfuncdecl != NULL && mwfuncdecl->right != NULL &&
       mwfuncdecl->right->right != NULL &&
       mwfuncdecl->right->right->name == COMPOUND) 
     {
-      fprinttex(fd, "\\Summary{\n");
+      fprinttex(fd, "\n% --- SUMMARY : BEGIN --- \n");
+      fprinttex(fd, "\\samepage\n");
+      fprinttex(fd, "\\Mark{\\Large\\bf  Function Summary} \\nopagebreak\\bigskip\n");
+      fprinttex(fd, "\\nopagebreak\n\n");
 
       CmpdStmtTmp = mwfuncdecl->right->right;
       mwfuncdecl->right->right = NULL;
       texprintnode(fd, mwfuncdecl);
       mwfuncdecl->right->right = CmpdStmtTmp;
 
-      fprinttex(fd, "}\n\n");
+      fprinttex(fd, "\\Next\n");
+      fprinttex(fd, "% --- SUMMARY : END --- \n\n");
     }
 
   else {
@@ -212,7 +267,11 @@ char *lastmodif_date;
   }
 
   /* Description */
-  fprinttex(fd, "\\Description{\n");
+  fprinttex(fd, "\n% --- DESCRIPTION : BEGIN --- \n");
+  fprinttex(fd, "\\samepage\n");
+  fprinttex(fd, "\\Mark{\\Large\\bf  Description} \\nopagebreak\\bigskip\n");
+  fprinttex(fd, "\\nopagebreak\n\n");
+  fprinttex(fd, "\\nopagebreak\n");
 
   /* Include the module.doc file 
      Modified the 23/11/99  : no more group subdirectory in doc directory. 
@@ -227,7 +286,10 @@ char *lastmodif_date;
       fprintf(fd,"\\input{%s}\n\n",User_DocFile);
     }
   */
-  fprintf(fd,"\\input{src/%s.tex}}\n\n",mwname->val.text);  
+  fprintf(fd,"\\input{src/%s.tex}\n\n",mwname->val.text);  
+  
+  fprinttex(fd, "\\Next\n");
+  fprinttex(fd, "% --- DESCRIPTION : END --- \n\n");
 
   /* See also */
   sprintf(User_DepFile,"%s.dep",mwname->val.text);
@@ -249,9 +311,9 @@ char *lastmodif_date;
 	   "CMLA, ENS Cachan, 94235 Cachan cedex, France");
   remove_dquote(author_name,mwauthor->val.text);
   if (strcmp(An0,An1) == 0)
-    fprinttex(fd, "\\Author{%s}{%s}{%s}\n",author_name,An0,labo_name);
+    fprinttex(fd, "\\Author{%s}{%s}{%T}\n",author_name,An0,labo_name);
   else
-    fprinttex(fd, "\\Author{%s}{%s-%s}{%s}\n",author_name,An0,An1,labo_name);
+    fprinttex(fd, "\\Author{%s}{%s-%s}{%T}\n",author_name,An0,An1,labo_name);
 
 #ifdef DEBUG
     PRDBG("gentex : end\n");

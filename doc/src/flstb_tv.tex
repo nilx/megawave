@@ -1,0 +1,22 @@
+This module reduces the total variation of an image by modifying the local
+contrast of shapes in a bilinear interpolated image (see
+\texttt{flst\_bilinear}). More precisely, it is a scale-space depending on a
+scale parameter $t$. The contrast of a shape relatively to its background is
+reduced at a speed proportional to the global curvature of its boundary,
+defined as the ratio $C=\frac{L}{A}$, $L$ being the length and $A$ the
+area. The contrast of a leaf in the tree is reduced of $t C$. If this amount
+is superior to the original contrast $c$, the leaf is removed and we try to
+reduce the contrast of its parent according to the scale $t-\frac{c}{C}$,
+provided it has no other child. If it has other children, we apply the same
+operation to each corresponding branch. If each one is removed in the process,
+the scale parameter we apply to the shape is $t$ minus the amount of scale
+used by each branch.
+
+The parameter \texttt{quantization} represents a subsampling of the tree of
+bilinear level lines such that the contrast between a shape and its parent is
+at most \texttt{quantization}.
+
+The parameter \texttt{precision} is linked to the discretization of the level
+lines (see \texttt{flstb\_boundary}).
+
+This filter is presented by F. Dibos and G. Koepfler.

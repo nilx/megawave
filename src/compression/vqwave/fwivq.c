@@ -48,17 +48,10 @@ Result<-Output
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void iowave2(int *, int *, int *, int *, int *, int *, Wtrans2d, Fimage, Fsignal, Fimage);
-void ibiowave2(int *, int *, int *, int *, Wtrans2d, Fimage, Fsignal, Fsignal);
-void fivq(int *, int *, int *, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Fimage, Cimage, Fimage, Fimage, double *);
-void fiscalq(int *, int *, int *, Cimage, Fimage, double *);
-#else
-void iowave2();
-void ibiowave2();
-void fivq();
-void fiscalq();
-#endif
+extern void iowave2();
+extern void ibiowave2();
+extern void fivq();
+extern void fiscalq();
 
 /*--- Constants ---*/
 

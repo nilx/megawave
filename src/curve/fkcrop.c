@@ -1,20 +1,19 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {fkcrop};
-   version = {"1.0"};
+   version = {"1.1"};
    author = {"Lionel Moisan"};
    function = {"Crop Fcurves with a rectangular box"};
    usage = {                        
             'b':box<-box         "store the rectangular box as a Fcurve",
-            x1->x1               "first corner (x coordinate)",
-            y1->y1               "first corner (y coordinate)",
-            x2->x2               "opposite corner (x coordinate)",
-            y2->y2               "opposite corner (y coordinate)",
+            x1->X1               "first corner (x coordinate)",
+            y1->Y1               "first corner (y coordinate)",
+            x2->X2               "opposite corner (x coordinate)",
+            y2->Y2               "opposite corner (y coordinate)",
 	    in->cs               "input (Fcurves)",
             out<-fkcrop          "output (Fcurves)"
 	    };
-   */
-/*-- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
+*/
 
 #include <stdio.h>
 #include "mw.h"
@@ -36,8 +35,8 @@ float x,y;
 }
 
 
-Fcurves fkcrop(x1,y1,x2,y2,cs,box)
-float x1,y1,x2,y2;
+Fcurves fkcrop(X1,Y1,X2,Y2,cs,box)
+float X1,Y1,X2,Y2;
 Fcurves cs;
 Fcurve box;
 {
@@ -48,17 +47,17 @@ Fcurve box;
   int count_p,count_c,newc_flag,close_flag;
   
   /*** prepare box ***/
-  if (x2<x1) {tmp=x1; x1=x2; x2=tmp;}
-  if (y2<y1) {tmp=y1; y1=y2; y2=tmp;}
+  if (X2<X1) {tmp=X1; X1=X2; X2=tmp;}
+  if (Y2<Y1) {tmp=Y1; Y1=Y2; Y2=tmp;}
   
   /*** create Fcurve box if requested ***/
   if (box) {
-    box->first = new_point(NULL,x1,y1);;
-    box->first->next = new_point(box->first,x1,y2);
-    box->first->next->next = new_point(box->first->next,x2,y2);
-    box->first->next->next->next = new_point(box->first->next->next,x2,y1);
+    box->first = new_point(NULL,X1,Y1);;
+    box->first->next = new_point(box->first,X1,Y2);
+    box->first->next->next = new_point(box->first->next,X2,Y2);
+    box->first->next->next->next = new_point(box->first->next->next,X2,Y1);
     box->first->next->next->next->next 
-      = new_point(box->first->next->next->next,x1,y1);
+      = new_point(box->first->next->next->next,X1,Y1);
     box->first->next->next->next->next->next = NULL;
   }
     
@@ -73,7 +72,7 @@ Fcurve box;
   /*** main loop ***/
   for (c=cs->first;c;c=c->next) {
     for (p=c->first;p;p=p->next) {
-      if (p->x>=x1 && p->x<=x2 && p->y>=y1 && p->y<=y2) {
+      if (p->x>=X1 && p->x<=X2 && p->y>=Y1 && p->y<=Y2) {
 	if (newc_flag) {
 	  if (close_flag) *pnext = NULL; else close_flag = TRUE;
 	  newc = mw_new_fcurve();

@@ -21,7 +21,7 @@
        "mimage with morpho_lines of image_in"
        };
 */
-/*--- MegaWave2 - Copyright (C) 1994 Jacques Froment. All Rights Reserved. ---*/
+
 #include <stdio.h>
 #include <math.h>
 
@@ -29,11 +29,7 @@
 #include <assert.h>
 #include "mw.h"
 
-#ifdef __STDC__
-extern Cimage ml_draw(Mimage,Cimage,char*,Cmovie);
-#else
 extern Cimage ml_draw();
-#endif
 
 #define INSIDE(A)   ((minvalue<=(A))&&((A)<=maxvalue))
 #define OUTSIDE(A)  (!INSIDE(A))

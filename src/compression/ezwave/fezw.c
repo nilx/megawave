@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {fezw};
-version = {"1.31"};
+version = {"1.32"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Compress an image with EZW algorithm"};
 usage = {
@@ -37,7 +37,9 @@ ImpulseResponse->Ri
                   "Distorsion rate curve"
 	};
  */
-
+/*-------------------------------------------------------------------------------
+ v1.32: bugs on memory deallocation on Wtrans and QWtrans corrected (J. Froment)
+--------------------------------------------------------------------------------*/
 
 /*--- Include files UNIX C ---*/
 
@@ -50,21 +52,12 @@ ImpulseResponse->Ri
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void ezw(int *, int *, float *, float *, int *, int *, float *, float *, Polygons, Cimage, Wtrans2d, Wtrans2d, char *);
-void owave2(int *, int *, int *, int *, int *, int *, Fimage, Wtrans2d, Fsignal, Fimage);
-void iowave2(int *, int *, int *, int *, int *, int *, Wtrans2d, Fimage, Fsignal, Fimage);
-void biowave2(int *, int *, int *, int *, Fimage, Wtrans2d, Fsignal, Fsignal);
-void ibiowave2(int *, int *, int *, int *, Wtrans2d, Fimage, Fsignal, Fsignal);
-void fmse(Fimage, Fimage, int *, char *, double *, double *, double *, double *);
-#else
-void ezw();
-void owave2();
-void iowave2();
-void biowave2();
-void ibiowave2();
-void fmse();
-#endif
+extern void ezw();
+extern void owave2();
+extern void iowave2();
+extern void biowave2();
+extern void ibiowave2();
+extern void fmse();
 
 /*--- Constants ---*/
 
@@ -242,8 +235,8 @@ char       *PtrDRC;             /* Distorsion rate curve */
   int         J, Jx, Jy;       	/* Current level of decomposition */
   int         x;
   float       targrate;         /* Target rate for vector quantization */
-  Wtrans2d    Wtrans, QWtrans;  /* Wavelet transform of Image, quantized 
-				 * wavelet transform */
+  Wtrans2d    Wtrans=NULL;      /* Wavelet transform of Image */
+  Wtrans2d    QWtrans=NULL;     /* Quantized wavelet transform */
   Fimage      QImage_dr;        /* Reconstructed image (for biorthogonal 
 				 * wavelet transform and dist.rate curve) */
   int         Haar;             /* Continue decomposition with Haar wavelet
@@ -286,17 +279,20 @@ char       *PtrDRC;             /* Distorsion rate curve */
 
   /*--- Wavelet decomposition ---*/
 
-  if (Ri2) {
-    Edge = 2;
-    if (FilterNorm)
-      FiltNorm = *FilterNorm;
-    else
-      FiltNorm = 1;
-    INIT_RI(Ri, Ri2);
-    Wtrans = mw_new_wtrans2d();
-    biowave2(&J, &Haar, &Edge, &FiltNorm, Image, Wtrans, Ri, Ri2);
-    REFRESH_FILTERS(Ri, Ri2);
-  } else
+  if (Ri2) 
+    {
+      Edge = 2;
+      if (FilterNorm)
+	FiltNorm = *FilterNorm;
+      else
+	FiltNorm = 1;
+      INIT_RI(Ri, Ri2);
+      Wtrans = mw_new_wtrans2d();
+      if (!Wtrans) mwerror(FATAL,1,"Not enough memory to create Wtrans !\n");
+      biowave2(&J, &Haar, &Edge, &FiltNorm, Image, Wtrans, Ri, Ri2);
+      REFRESH_FILTERS(Ri, Ri2);
+    } 
+  else
     {
       if (Edge_Ri)
 	Edge = 3;
@@ -308,6 +304,7 @@ char       *PtrDRC;             /* Distorsion rate curve */
 	FiltNorm = 2;
       Precond = 0;
       Wtrans = mw_new_wtrans2d();
+      if (!Wtrans) mwerror(FATAL,1,"Not enough memory to create Wtrans !\n");
       owave2(&J, &Haar, &Edge, &Precond, NULL, &FiltNorm, Image, Wtrans, Ri, Edge_Ri);
     }
 
@@ -323,6 +320,7 @@ char       *PtrDRC;             /* Distorsion rate curve */
     for (count_dr = 0; count_dr <= max_count_dr; count_dr++) {
       targrate = targrate_dr[count_dr];
       QWtrans = mw_new_wtrans2d();
+      if (!QWtrans) mwerror(FATAL,1,"Not enough memory to create QWtrans !\n");
       ezw(NULL, NULL, WeightFac, NULL, &Max_Count_AC, NULL, &targrate, NULL, SelectedArea, NULL, Wtrans, QWtrans, PtrDRC);
 
       REFRESH_FILTERS(Ri, Ri2);
@@ -333,28 +331,33 @@ char       *PtrDRC;             /* Distorsion rate curve */
       else
 	printf("%d\t%.2f\n", (int) targcr_dr[count_dr], psnr);
       mw_delete_wtrans2d(QWtrans);
+      QWtrans=NULL;
     }
 
     mw_delete_fimage(QImage_dr);
+    QImage_dr=NULL;
 
   } else
     {
       QWtrans = mw_new_wtrans2d();
+      if (!QWtrans) mwerror(FATAL,1,"Not enough memory to create QWtrans !\n");
       ezw(NULL, NULL, WeightFac, NULL, &Max_Count_AC, DistRate, Rate, PSNR, SelectedArea, Output, Wtrans, QWtrans, PtrDRC);
     }
 
   /*--- Wavelet reconstruction ---*/
 
   if (QImage)
-    if (Ri2) {
-      ibiowave2(&J, &Haar, &Edge, &FiltNorm, QWtrans, QImage, Ri, Ri2);
-      REFRESH_FILTERS(Ri, Ri2);
-    } else
+    if (Ri2) 
+      {
+	ibiowave2(&J, &Haar, &Edge, &FiltNorm, QWtrans, QImage, Ri, Ri2);
+	REFRESH_FILTERS(Ri, Ri2);
+      } 
+    else
       {
 	iowave2(&J, &Haar, &Edge, &Precond, NULL, &FiltNorm, QWtrans, QImage, Ri, Edge_Ri);
       }
   
 
-  mw_delete_wtrans2d(Wtrans);
-  mw_delete_wtrans2d(QWtrans);
+  if (Wtrans) mw_delete_wtrans2d(Wtrans);
+  if (QWtrans) mw_delete_wtrans2d(QWtrans);
 }

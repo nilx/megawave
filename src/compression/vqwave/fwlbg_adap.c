@@ -77,15 +77,9 @@ CodeBook1<-Output1
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void wlbg_adap(int *, int *, int *, int *, int *, int *, int *, int *, int *, int *, int *, int *, float *, float *, float *, Wtrans2d, Wtrans2d, Wtrans2d, Wtrans2d *, Wtrans2d *, Wtrans2d, Wtrans2d, Wtrans2d, Wtrans2d, Wtrans2d, Wtrans2d, Wtrans2d *);
-void dybiowave2(int *, int *, int *, int *, int *, Fimage, Wtrans2d, Fsignal, Fsignal);
-void dyowave2(int *, int *, int *, int *, int *, int *, Fimage, Wtrans2d, Fsignal, Fimage);
-#else
-void wlbg_adap();
-void dybiowave2();
-void dyowave2();
-#endif
+extern void wlbg_adap();
+extern void dybiowave2();
+extern void dyowave2();
 
 /*--- Constants ---*/
 

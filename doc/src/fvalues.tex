@@ -2,8 +2,7 @@ Let $NC$={\em image\_in-$>$ncol} and $NL$={\em image\_in-$>$nrow}, then
 the image {\em image\_in} is defined by the set of pixels
 $\{ g(i,j)\, /\, i=0, \ldots, NC\, , j=0, \ldots, NL\}$.
 The module {\bf fvalues} computes the range of the function 
-$g\,: [0,NC-1]\times[0,NL-1]\longrightarrow {\rm I\!\!R}$, which
-gives all the different pixel values $g(i,j)\in{\rm I\!\!R}$,
+$g\,: [0,NC-1]\times[0,NL-1]\longrightarrow {\rm I\!\!R}$\,.
 
 \smallskip
 
@@ -22,3 +21,16 @@ The {\bf -m} option allows to save the multiplicities of the
 corresponding values in {\em values} into the {\tt fsignal} 
 {\em multiplicity} and thus allows to compute the histogram
 of {\em image\_in}.
+
+\smallskip
+
+The {\bf -r} option computes an {\tt fimage} {\em rank}, 
+this array contains the indexes of the gray values in 
+the ordered list {\em values}, {\em i.e.} the rank of 
+a pixel's gray value.
+
+\smallskip
+
+Example : if $g(i,j)=v_n$ then {\em values$[n]=v_n$}
+and {\em rank$(i,j)=n$}\,, moreover {\em multiplicity$[n]$}
+gives the number of occurrences of the value $v_n$ in the image.

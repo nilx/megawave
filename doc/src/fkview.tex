@@ -1,24 +1,43 @@
 This module is designed to allow an interactive visualization of curves.
-The requested input is a Fcurves structure, but thanks to
+The requested input is a Flists structure, but thanks to
 MegaWave2 automatic format conversions, all kinds of curves 
-(Fcurve, Curve, Curves, Polygon, etc\ldots) can be 
+(Fcurve, Curve, Curves, Polygon, Flist, Dlist(s), \ldots) can be 
 used as input in a shell call. The visualization window has a default
 size of $800\times 600$, but it can be changed using the \verb+-x+ and
 \verb+-y+ options. A background image (\verb+-b+ option)
 can also be specified (this may
 be useful when the curves to visualize are related to the geometry of this
-image for example). In this case, the window size is set by the
-background image. A translation and zoom is then performed in order that
-the Fcurves size fits at least one of the window dimensions. 
+image for example). 
+
+\medskip
+
+Unless the \verb+-a+ option is used, the $x/y$ ratio is preserved between
+the region displayed and its corresponding part on the screen.
 If the \verb+-a+ option is specified, the zoom factor may differ in the
 $x$ and in the $y$ direction, yielding an affine scaling. 
 The \verb+-s+ option places origin in the downleft corner of the window
 (instead of upleft). The display style is set by the \verb+-d+ option~:
 the curves can be drawn as isolated points ($d=1$), as lines ($d=2$, 
 the default) or as lines plus points ($d=3$). The endpoints of the curves
-can also be marked using the \verb+-e+ option. The \verb+-o+ option allows
-to save the last visualized image as a Cimageé; it can be combined with
-the \verb+-n+ option (that prevents the display) to bitmap a Fcurves
+can also be marked using the \verb+-e+ option. 
+A particular curve can be selected with the mouse left button. 
+It will appear in red. The 'a' and PageUp/Down keys allow to 
+view the curves separately. With the 'm' key, curve evolutions can
+be easily visualized.
+
+\medskip
+
+A reference curve can be used to set the display window (it is useful to
+visualize at the same scale the successive evolutions of a given curve). 
+If the \verb+-C+ option is specified, this reference curve will be
+displayed in the specified color (3 decimal digits RGB color: 
+0 is black, 999 is white, 900 is full red, etc.).
+
+\medskip
+
+The \verb+-o+ option allows
+to save the last visualized image as a Ccimage; it can be combined with
+the \verb+-n+ option (that prevents the display) to bitmap the curves
 in a Cimage.
 
 \medskip
@@ -29,11 +48,23 @@ in a Cimage.
 \begin{tabular}{ll}
 Key 'q'			& quit \\
 Key 'h'			& help \\
-Key 'u'			& unzoom $\times 2$ \\
-Key 's'			& symmetrize along y coordinate (\verb+-s+ option)\\
-Key 'p'			& toggle display style (\verb+-d+ option)\\
+Key 'a'			& toggle all/single display \\
+Key 'b'			& toggle background image \\
+Key 'c'			& toggle current curve display \\
 Key 'e'			& toggle extremal points (\verb+-e+ option) \\
-Mouse Left button 	& center the window at mouse origin \\
-Mouse Middle button 	& restore original settings \\
+Key 'g'			& switch grid mode (\verb+-g+ option) \\
+Key 'm'			& toggle motion \\
+Key 'p'			& toggle display style (\verb+-d+ option)\\
+Key 's'			& symmetrize y axis (\verb+-s+ option)\\
+Key 'u'			& unzoom $\times 2$ \\
+Left Arrow		& go Left\\
+Right Arrow		& go Right\\
+Up Arrow		& go Up\\
+Down Arrow		& go Down\\
+Page Up      		& previous curve.\\
+Page Down    		& next curve.\\
+\\
+Mouse Left button 	& select a curve \\
+Mouse Middle button 	& restore the original display region \\
 Mouse Right button	& zoom $\times 2$, centered at mouse origin \\
 \end{tabular}

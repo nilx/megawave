@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {fkplot};
-   version = {"1.2"};
+   version = {"1.3"};
    author = {"Thierry Cohignac, Lionel Moisan"};
    function = {"Plot Fcurves on a Cimage"};
    usage = {            
@@ -15,11 +15,7 @@
 #include <math.h>
 #include "mw.h"
 
-#ifdef __STDC__
-extern void fkbox(Fcurves, float *, float *, float *, float *);
-#else
 extern void fkbox();
-#endif
 
 #define BLACK 0
 #define WHITE 255
@@ -35,7 +31,7 @@ char *s_flag;
   int           nx,ny,x,y;
   float         xmax,ymax,xmin,ymin;
   
-  fkbox(cs,&xmin,&ymin,&xmax,&ymax);
+  fkbox(cs,&xmin,&ymin,&xmax,&ymax,NULL,NULL);
   
   if (!s_flag) {
     xmin=0.0;

@@ -1,12 +1,12 @@
-#! /bin/sh
+#!/bin/sh
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
-_Func="List the modules found in the MegaWave2 directory mw2dir";
+_Func="List the modules and macros found in the MegaWave2 directory mw2dir";
 _Prog="`basename $0`"
-_Vers="1.4"
-_Date="1998-99"
+_Vers="1.7"
+_Date="1998-2002"
 _Auth="Jacques Froment";
-_Usage="[-mfile] [-group gdir] mw2dir"
+_Usage="[-mfile] [-bad] [-group gdir] mw2dir"
 #----------------------------------------------------------------------------#
 # This file is part of the MegaWave2 system macros. 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -17,11 +17,12 @@ _Usage="[-mfile] [-group gdir] mw2dir"
 #-----------------------------------------------------------------------------
 
 # Usage
-if [ $# -lt 1 ] || [ $# -gt 4 ]; then
+if [ $# -lt 1 ] || [ $# -gt 5 ]; then
   . .mw2_help_lg_com
 fi
 
 mfile=0
+bad=0
 opt=""
 GROUP=""
 while [ "$1" != "" ]
@@ -29,6 +30,10 @@ do
   case "$1" in
     -mfile)	mfile=1
 		opt="$opt -mfile"
+		;;
+
+    -bad)	bad=1
+		opt="$opt -bad"
 		;;
 
     -group)	GROUP=$2
@@ -66,15 +71,21 @@ fi
 BIN=bin/$MW_MACHINETYPE
 OBJ=obj/$MW_MACHINETYPE
 
-if [ $mfile -eq 1 ] && [ "$GROUP" != "" ]; then
+PRINTGROUP=$GROUP
+if  [ "$GROUP" = "" ]; then
+  PRINTGROUP="."
+fi
+
+#if [ $mfile -eq 1 ] && [ "$GROUP" != "" ]; then
+if [ $mfile -eq 1 ]; then
   echo " "
   subgroup=`echo ${GROUP}/ | cut -d "/" -f 2`
   if [ "$subgroup" = "" ]; then
     echo "%--------------------------"
-    echo "#group $GROUP"
+  fi
+  echo "#group $PRINTGROUP"
+  if [ "$subgroup" = "" ]; then
     echo "%--------------------------"
-  else
-    echo "#group $GROUP"
   fi
 fi
 
@@ -102,22 +113,34 @@ do
         fi
         Func=`awk 'BEGIN {FS="\""} /^_Func=/ {print $2;}' ${SRC}/$GROUP/${fic}`
       fi  
-      if  [ $mfile -eq 1 ]; then
-        if [ $ok -eq 1 ]; then
-         echo $f
-        else
-         echo "%Warning : the following module was not successfully compiled !"
-         echo "%$f"
-        fi
+      if [ $bad -eq 1 ]; then
+       if [ $ok -eq 0 ] && [ $macro -eq 0 ]; then
+        echo $f
+       fi
       else
-        if [ $ok -eq 1 ]; then
-          echo "${GROUP}/$f : $Func"
-        else
-          echo "${GROUP}/$f  !! Warning : not successfully compiled !!"
-        fi
-      fi
+       if  [ $mfile -eq 1 ]; then
+         if [ $ok -eq 1 ]; then
+          echo $f
+         else
+          echo "%Warning : the following module was not successfully compiled !"
+          echo "%$f"
+         fi
+       else
+         if [ $ok -eq 1 ]; then
+           echo "${PRINTGROUP}/$f : $Func"
+         else
+           echo "${PRINTGROUP}/$f  !! Warning : not successfully compiled !!"
+         fi
+       fi
+     fi
     fi
-  else
+# End of if [ ! -d ${SRC}/$GROUP/${fic} ]; then
+  fi
+done
+
+for fic in `ls ${SRC}/$GROUP`
+do  
+  if [ -d ${SRC}/$GROUP/${fic} ]; then
     if [ "${GROUP}" = "" ]; then
       $0 $opt -group ${fic} $MW
       if [ $mfile -eq 1 ]; then
@@ -126,7 +149,7 @@ do
     else
       $0 $opt -group ${GROUP}/${fic} $MW
       if [ $mfile -eq 1 ]; then
-        echo "#group $GROUP"
+        echo "#group $PRINTGROUP"
       fi
     fi
   fi

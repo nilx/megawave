@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {sop};
-   version = {"1.0"};
+   version = {"1.1"};
    author = {"Pascal Monasse, Lionel Moisan"};
    function = {"Perform elementary operations between Fsignals"};
    usage = {
@@ -17,7 +17,7 @@
 	    'g' -> greater "the A > B  operator (result: 1=true, 0=false)",
 	    'e' -> equal   "the A == B operator (result: 1=true, 0=false)",
 	    B->B           "input Fsignal B (right term)",
-	    out->out       "resulting Fsignal"
+	    out<-out       "resulting Fsignal"
    };
    */
 /*-- MegaWave 2- Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/

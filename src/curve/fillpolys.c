@@ -20,11 +20,7 @@
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void fillpoly(int *, int *, Polygon, Cimage);
-#else
-void fillpoly();
-#endif
+extern void fillpoly();
 
 /*--- Constants ---*/
 

@@ -1,7 +1,9 @@
-/*   Analyse syntaxique du module et creation de l'arbre         
-     syntaxique. On analyse egalement les erreurs grammaticale de 
-     l'entete. 
-*/
+/**
+ **  Analyse syntaxique du module et creation de l'arbre         
+ **  syntaxique. On analyse egalement les erreurs grammaticale de 
+ **  l'entete. 
+ **  Version 1.1 (c)1993-2000 J.Froment - S.Parrino
+ **/
 
 /*~~~~~~~~~~~  This file is part of the MegaWave2 preprocessor ~~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -344,23 +346,22 @@ Header :
 	HeaderBegin ObligatoryHeaderCmd ECOMMENT
 		{
 		  if (mwname == NULL)
-		    fatal_error("MegaWave name function is not given\n");
+		    fatal_error("Missing module name in the header !\n");
 		  if (mwauthor == NULL) {
 		    if (author_passed == TRUE)
-		      fatal_error("Too many errors in author statement\n");
+		      fatal_error("Too many errors in author statement !\n");
 		    else
-		      fatal_error("Authors of '%s' are not given\n",
-		                   mwname->val.text);
+		      fatal_error("Missing author field in the header !\n");
 		  }
 		  if (mwfunction == NULL)
-		    fatal_error("MegaWave abstract of '%s' is not given\n",
-		                 mwname->val.text);
+		    fatal_error("Missing function field in the header !\n");
+		  if (mwversion == NULL)
+		    fatal_error("Missing version field in the header !\n");
 		  if (mwusage == NULL) {
 		    if (usage_passed == TRUE)
-		      fatal_error("Too many errors in usage statement\n");
+		      fatal_error("Too many errors in usage statement !\n");
 		    else
-		      fatal_error("Usage of '%s' is not described\n",
-		                  mwname->val.text);
+		      fatal_error("Missing usage field in the header !\n");
 		  }
 		  else if (VERIFY_USAGE == FALSE)
 		    fatal_error("Usage of '%s' must contains an input or an output\n",

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fpolygon.h
    
-   Vers. 1.0
-   (C) 1995 Jacques Froment
+   Vers. 1.2
+   (C) 1995-2002 Jacques Froment
    Internal Input/Output fpolygon & fpolygons structures
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -19,8 +19,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef SunOS
 #include <sys/types.h>
 #endif
-
-#include "string_size.h"
 
 #ifndef fcurve_flg
 #include "fcurve.h"
@@ -59,11 +57,11 @@ Fpolygon mw_new_fpolygon(void);
 Fpolygon mw_alloc_fpolygon(Fpolygon,int);
 Fpolygon mw_change_fpolygon(Fpolygon, int);
 void mw_delete_fpolygon(Fpolygon);
-unsigned int mw_fpolygon_length(Fpolygon);
+unsigned int mw_length_fpolygon(Fpolygon);
 Fpolygons mw_new_fpolygons(void);
 Fpolygons mw_change_fpolygons(Fpolygons);
 void mw_delete_fpolygons(Fpolygons);
-unsigned int mw_fpolygons_length(Fpolygons);
+unsigned int mw_length_fpolygons(Fpolygons);
 
 #else
 
@@ -71,11 +69,11 @@ Fpolygon mw_new_fpolygon();
 Fpolygon mw_alloc_fpolygon();
 Fpolygon mw_change_fpolygon();
 void mw_delete_fpolygon();
-unsigned int mw_fpolygon_length();
+unsigned int mw_length_fpolygon();
 Fpolygons mw_new_fpolygons();
 Fpolygons mw_change_fpolygons();
 void mw_delete_fpolygons();
-unsigned int mw_fpolygons_length();
+unsigned int mw_length_fpolygons();
 
 #endif
 

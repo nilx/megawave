@@ -1,8 +1,9 @@
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cmimage_io.c
    
-   Vers. 1.2
-   (C) 1999 Jacques Froment
+   Vers. 1.11
+   (C) 1999-2002 Jacques Froment
    Input/output functions for the 
      Cmorpho_line
      Cfmorpho_line
@@ -153,12 +154,17 @@ Cmorpho_line _mw_load_cml_mw2_cml(fname)
 char  *fname;  /* Name of the file */
 
 { FILE    *fp;
-  char header[17];
+  char header[BUFSIZ];
   Cmorpho_line ll;
-  char ftype[TYPE_SIZE],mtype[TYPE_SIZE];
+  char ftype[mw_ftype_size],mtype[mw_mtype_size];
   int need_flipping;
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  need_flipping =  _mw_get_file_type(fname,ftype,mtype)-1;
+  need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
+  if (strncmp(ftype,"MW2_CMORPHO_LINE",16) != 0)
+    mwerror(INTERNAL, 0,"[_mw_load_cml_mw2_cml] File \"%s\" is not in the MW2_CMORPHO_LINE format\n",fname);
+
   if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
     {
       mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
@@ -167,15 +173,12 @@ char  *fname;  /* Name of the file */
     }
 
   /* read header = "MW2_CMORPHO_LINE" */
-  if (fread(header,16,1,fp) == 0)
+  if (fread(header,hsize,1,fp) == 0)
       {
 	mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	fclose(fp);
 	return(NULL);
       }
-  if (strncmp(ftype,"MW2_CMORPHO_LINE",16) != 0)
-    mwerror(INTERNAL, 0,"[_mw_load_cml_mw2_cml] File \"%s\" is not in the MW2_CMORPHO_LINE format\n",fname);
-
   ll = _mw_read_cml_mw2_cml(fname,fp,need_flipping);
 
   fclose(fp);
@@ -183,93 +186,49 @@ char  *fname;  /* Name of the file */
 }
 
 
-/* Load cmorpho_line from file of different types */
+/* Native formats (without conversion of the internal type) */
 
-Cmorpho_line _mw_load_cmorpho_line(fname,Type)
+Cmorpho_line _mw_cmorpho_line_load_native(fname,type)
 
-char  *fname;  /* Name of the file */
-char  *Type;   /* Type de format du fichier */
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
 
-{ char mtype[TYPE_SIZE];
-  Polygon poly;
-  Fpolygon fpoly;
-  Cmimage cmimage;
-  Cmorpho_line cmorpho_line;
-  Cfmorpho_line cfmorpho_line;
-  Mimage mimage;
-  Morpho_line morpho_line;
-  Fmorpho_line fmorpho_line;
-  Curve curve;
- 
-#ifdef __STDC__
-  Cmimage _mw_load_cmimage_mw2_cmimage(char *);
-  Cfmorpho_line _mw_load_cfml_mw2_cfml(char *);
-  Mimage _mw_load_mimage_mw2_mimage(char *);
-  Fmorpho_line _mw_load_fml_mw2_fml(char *);
-#else  
-  Cmimage _mw_load_cmimage_mw2_cmimage();
-  Cfmorpho_line _mw_load_cfml_mw2_cfml();
-  Mimage _mw_load_mimage_mw2_mimage();
-  Fmorpho_line _mw_load_fml_mw2_fml();
-#endif
+{
+  if (strcmp(type,"MW2_CMORPHO_LINE") == 0)
+    return((Cmorpho_line)_mw_load_ml_mw2_ml(fname));
 
-  _mw_get_file_type(fname,Type,mtype);
+  return(NULL);
+}
 
-  /* Color Morpho structures */
 
-  if (strcmp(Type,"MW2_CMORPHO_LINE") == 0)
-    return(_mw_load_cml_mw2_cml(fname));
+/* All available formats */
 
-  if (strcmp(Type,"MW2_CFMORPHO_LINE") == 0)
-    {
-      cfmorpho_line = (Cfmorpho_line) _mw_load_cfml_mw2_cfml(fname);
-      cmorpho_line = (Cmorpho_line) mw_cfmorpho_line_to_cmorpho_line(cfmorpho_line);
-      mw_delete_cfmorpho_line(cfmorpho_line);
-      return(cmorpho_line);
-    }
+Cmorpho_line _mw_load_cmorpho_line(fname,type)
 
-  if (strcmp(Type,"MW2_CMIMAGE") == 0)
-    {
-      cmimage = (Cmimage) _mw_load_cmimage_mw2_cmimage(fname);
-      cmorpho_line = (Cmorpho_line) mw_cmimage_to_cmorpho_line(cmimage);
-      mw_delete_cmimage(cmimage);
-      return(cmorpho_line);
-    }
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
 
-  /* Gray levels Morpho structures */
+{ 
+  Cmorpho_line ml;
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  if (strcmp(Type,"MW2_MORPHO_LINE") == 0)
-    {
-      morpho_line = (Morpho_line) _mw_load_ml_mw2_ml(fname);
-      cmorpho_line = (Cmorpho_line) mw_morpho_line_to_cmorpho_line(morpho_line);
-      mw_delete_morpho_line(morpho_line);
-      return(cmorpho_line);
-    }
+  _mw_get_file_type(fname,type,mtype,&hsize,&version);
 
-  if (strcmp(Type,"MW2_FMORPHO_LINE") == 0)
-    {
-      fmorpho_line = (Fmorpho_line) _mw_load_fml_mw2_fml(fname);
-      cmorpho_line = (Cmorpho_line) mw_fmorpho_line_to_cmorpho_line(fmorpho_line);
-      mw_delete_fmorpho_line(fmorpho_line);
-      return(cmorpho_line);
-    }
+  /* First, try native formats */
+  ml = _mw_cmorpho_line_load_native(fname,type);
+  if (ml != NULL) return(ml);
 
-  if (strcmp(Type,"MW2_MIMAGE") == 0)
-    {
-      mimage = (Mimage) _mw_load_mimage_mw2_mimage(fname);
-      cmorpho_line = (Cmorpho_line) mw_mimage_to_cmorpho_line(mimage);
-      mw_delete_mimage(mimage);
-      return(cmorpho_line);
-    }
+  /* If failed, try other formats with memory conversion */
+  ml = (Cmorpho_line) _mw_load_etype_to_itype(fname,mtype,"cmorpho_line",type);
+  if (ml != NULL) return(ml);
 
-  /* Else, try to recover the point curve only */
-  {
-    curve = (Curve) _mw_load_curve(fname,Type);
-    cmorpho_line = (Cmorpho_line) mw_curve_to_cmorpho_line(curve);
-    mw_delete_curve(curve);      
-    return(cmorpho_line);
-  }
-}  
+  if (type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cmorpho_line !\n",fname,type);
+}
 
 
 /* Write one cmorpho line in the file fp */  
@@ -350,17 +309,32 @@ Cmorpho_line ll;
 {
   FILE *fp;
 
-printf("_mw_create_cml_mw2_cml\n");
   if (ll == NULL)
     mwerror(INTERNAL,1,"[_mw_create_cml_mw2_cml] Cannot create file: Cmorpho_line structure is NULL\n");
 
-  fp=_mw_write_header_file(fname,"MW2_CMORPHO_LINE");
+  fp=_mw_write_header_file(fname,"MW2_CMORPHO_LINE",1.00);
   if (fp == NULL) return(-1);
 
   _mw_write_cml_mw2_cml(fp,ll,1);
 
   fclose(fp);
   return(0);
+}
+
+
+/* Create native formats (without conversion of the internal type) */
+
+short _mw_cmorpho_line_create_native(fname,ll,Type)
+
+char  *fname;                        /* file name */
+Cmorpho_line ll;
+char  *Type;                         /* Type de format du fichier */
+
+{
+  if (strcmp(Type,"MW2_CMORPHO_LINE") == 0)
+    return(_mw_create_ml_mw2_ml(fname,ll));
+  
+  return(-1);
 }
 
 /* Write file in different formats */
@@ -373,79 +347,19 @@ char  *Type;                         /* Type de format du fichier */
 
 {
   short ret;
-  Curve curve;
-  Cmimage cmimage;
-  Cfmorpho_line cfll;
-  Mimage mimage;
-  Fmorpho_line fll;
-  Morpho_line ml;
 
-#ifdef __STDC__
-  short _mw_create_cmimage_mw2_cmimage(char *, Cmimage);
-  short _mw_create_cfml_mw2_cfml(char *, Cfmorpho_line);
-  short _mw_create_mimage_mw2_mimage(char *, Mimage);
-  short _mw_create_fml_mw2_fml(char *, Fmorpho_line);
-#else
-  short _mw_create_cmimage_mw2_cmimage();
-  short _mw_create_cfml_mw2_cfml();
-  short _mw_create_mimage_mw2_mimage();
-  short _mw_create_fml_mw2_fml();
-#endif
+  /* First, try native formats */
+  ret = _mw_cmorpho_line_create_native(fname,ll,Type);
+  if (ret == 0) return(0);
 
-  /* Color Morpho structures */
+  /* If failed, try other formats with memory conversion */
+  ret = _mw_create_etype_from_itype(fname,ll,"cmorpho_line",Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CMORPHO_LINE") == 0)
-    return(_mw_create_cml_mw2_cml(fname,ll));
-
-  if (strcmp(Type,"MW2_CFMORPHO_LINE") == 0)
-    {
-      cfll = (Cfmorpho_line) mw_cmorpho_line_to_cfmorpho_line(ll);
-      ret = _mw_create_cfml_mw2_cfml(fname,cfll);
-      mw_delete_cfmorpho_line(cfll);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_CMIMAGE") == 0)
-    {
-      cmimage = (Cmimage) mw_cmorpho_line_to_cmimage(ll);
-      ret = _mw_create_cmimage_mw2_cmimage(fname,cmimage);
-      mw_delete_cmimage(cmimage);
-      return(ret);
-    }
-
-  /* Gray levels Morpho structures */
-
-  if (strcmp(Type,"MW2_MORPHO_LINE") == 0)
-    {
-      ml = (Morpho_line) mw_cmorpho_line_to_morpho_line(ll);
-      ret = _mw_create_ml_mw2_ml(fname,ml);
-      mw_delete_morpho_line(ml);
-      return(ret);
-    }
-  if (strcmp(Type,"MW2_FMORPHO_LINE") == 0)
-    {
-      fll = (Fmorpho_line) mw_cmorpho_line_to_fmorpho_line(ll);
-      ret = _mw_create_fml_mw2_fml(fname,fll);
-      mw_delete_fmorpho_line(fll);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_MIMAGE") == 0)
-    {
-      mimage = (Mimage) mw_cmorpho_line_to_mimage(ll);
-      ret = _mw_create_mimage_mw2_mimage(fname,mimage);
-      mw_delete_mimage(mimage);
-      return(ret);
-    }
-
-
-  /* Else, try to save the point curve only */
-    {
-      curve = (Curve) mw_cmorpho_line_to_curve(ll);
-      ret = _mw_create_curve_mw2_curve(fname,curve);
-      mw_delete_curve(curve);
-      return(ret);
-    }
+  /* Invalid Type should have been detected before, but we can arrive here because
+     of a write failure (e.g. the output file name is write protected).
+  */
+  mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
 }
 
 /* ---- I/O for Cfmorpho_line ---- */
@@ -570,12 +484,17 @@ Cfmorpho_line _mw_load_cfml_mw2_cfml(fname)
 char  *fname;  /* Name of the file */
 
 { FILE    *fp;
-  char header[18];
+  char header[BUFSIZ];
   Cfmorpho_line fll;
-  char ftype[TYPE_SIZE],mtype[TYPE_SIZE];
+  char ftype[mw_ftype_size],mtype[mw_mtype_size];
   int need_flipping;
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  need_flipping =  _mw_get_file_type(fname,ftype,mtype)-1;
+  need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
+  if (strncmp(ftype,"MW2_CFMORPHO_LINE",17) != 0)
+    mwerror(INTERNAL, 0,"[_mw_load_cfml_mw2_cfml] File \"%s\" is not in the MW2_CFMORPHO_LINE format\n",fname);
+
   if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
     {
       mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
@@ -584,14 +503,12 @@ char  *fname;  /* Name of the file */
     }
 
   /* read header = "MW2_CFMORPHO_LINE" */
-  if (fread(header,17,1,fp) == 0)
+  if (fread(header,hsize,1,fp) == 0)
       {
 	mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	fclose(fp);
 	return(NULL);
       }
-  if (strncmp(ftype,"MW2_CFMORPHO_LINE",17) != 0)
-    mwerror(INTERNAL, 0,"[_mw_load_cfml_mw2_cfml] File \"%s\" is not in the MW2_CFMORPHO_LINE format\n",fname);
 
   fll = _mw_read_cfml_mw2_cfml(fname,fp,need_flipping);
 
@@ -600,47 +517,50 @@ char  *fname;  /* Name of the file */
 }
 
 
-/* Load Cfmorpho_line from file of different types */
+/* Native formats (without conversion of the internal type) */
 
-Cfmorpho_line _mw_load_cfmorpho_line(fname,Type)
+Cfmorpho_line _mw_cfmorpho_line_load_native(fname,type)
 
-char  *fname;  /* Name of the file */
-char  *Type;   /* Type de format du fichier */
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
 
-{ char mtype[TYPE_SIZE];
-  Polygon poly;
-  Fpolygon fpoly;
-  Cmimage cmimage;
-  Cfmorpho_line cfmorpho_line;
-  Fcurve fcurve;
+{
+  if (strcmp(type,"MW2_CFMORPHO_LINE") == 0)
+    return((Cfmorpho_line)_mw_load_fml_mw2_fml(fname));
 
-#ifdef __STDC__
-  Cmimage _mw_load_cmimage_mw2_cmimage(char *);
-#else  
-  Cmimage _mw_load_cmimage_mw2_cmimage();
-#endif
+  return(NULL);
+}
 
-  _mw_get_file_type(fname,Type,mtype);
-  
-  if (strcmp(Type,"MW2_CFMORPHO_LINE") == 0)
-    return(_mw_load_cfml_mw2_cfml(fname));
 
-  if (strcmp(Type,"MW2_CMIMAGE") == 0)
-    {
-      cmimage = (Cmimage) _mw_load_cmimage_mw2_cmimage(fname);
-      cfmorpho_line = (Cfmorpho_line) mw_cmimage_to_cfmorpho_line(cmimage);
-      mw_delete_cmimage(cmimage);
-      return(cfmorpho_line);
-    }
+/* All available formats */
 
-  /* Else, try to recover the point fcurve only */
-  {
-    fcurve = (Fcurve) _mw_load_fcurve(fname,Type);
-    cfmorpho_line = (Cfmorpho_line) mw_fcurve_to_cfmorpho_line(fcurve);
-    mw_delete_fcurve(fcurve);      
-    return(cfmorpho_line);
-  }
-}  
+Cfmorpho_line _mw_load_cfmorpho_line(fname,type)
+
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
+
+{ 
+  Cfmorpho_line ml;
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+
+  _mw_get_file_type(fname,type,mtype,&hsize,&version);
+
+  /* First, try native formats */
+  ml = _mw_cfmorpho_line_load_native(fname,type);
+  if (ml != NULL) return(ml);
+
+  /* If failed, try other formats with memory conversion */
+  ml = (Cfmorpho_line) _mw_load_etype_to_itype(fname,mtype,"cfmorpho_line",type);
+  if (ml != NULL) return(ml);
+
+  if (type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cfmorpho_line !\n",fname,type);
+}
+
 
 /* Write one cfmorpho line in the file fp */  
 
@@ -708,7 +628,7 @@ Cfmorpho_line fll;
   if (fll == NULL)
     mwerror(INTERNAL,1,"[_mw_create_cfml_mw2_cfml] Cannot create file: Cfmorpho_line structure is NULL\n");
 
-  fp=_mw_write_header_file(fname,"MW2_CFMORPHO_LINE");
+  fp=_mw_write_header_file(fname,"MW2_CFMORPHO_LINE",1.00);
   if (fp == NULL) return(-1);
 
   _mw_write_cfml_mw2_cfml(fp,fll);
@@ -717,44 +637,46 @@ Cfmorpho_line fll;
   return(0);
 }
 
-/* Write file in different formats */
-   
-short _mw_create_cfmorpho_line(fname,fll,Type)
+/* Create native formats (without conversion of the internal type) */
+
+short _mw_cfmorpho_line_create_native(fname,ll,Type)
 
 char  *fname;                        /* file name */
-Cfmorpho_line fll;
+Cfmorpho_line ll;
+char  *Type;                         /* Type de format du fichier */
+
+{
+  if (strcmp(Type,"MW2_CFMORPHO_LINE") == 0)
+    return(_mw_create_fml_mw2_fml(fname,ll));
+  
+  return(-1);
+}
+
+/* Write file in different formats */
+   
+short _mw_create_cfmorpho_line(fname,ll,Type)
+
+char  *fname;                        /* file name */
+Cfmorpho_line ll;
 char  *Type;                         /* Type de format du fichier */
 
 {
   short ret;
-  Fcurve fcurve;
-  Cmimage cmimage;
 
-#ifdef __STDC__
-  short _mw_create_cmimage_mw2_cmimage(char *, Cmimage);
-#else
-  short _mw_create_cmimage_mw2_cmimage();
-#endif
+  /* First, try native formats */
+  ret = _mw_cfmorpho_line_create_native(fname,ll,Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CFMORPHO_LINE") == 0)
-    return(_mw_create_cfml_mw2_cfml(fname,fll));
+  /* If failed, try other formats with memory conversion */
+  ret = _mw_create_etype_from_itype(fname,ll,"cfmorpho_line",Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CMIMAGE") == 0)
-    {
-      cmimage = (Cmimage) mw_cfmorpho_line_to_cmimage(fll);
-      ret = _mw_create_cmimage_mw2_cmimage(fname,cmimage);
-      mw_delete_cmimage(cmimage);
-      return(ret);
-    }
-
-  /* Else, try to save the point fcurve only */
-    {
-      fcurve = (Fcurve) mw_cfmorpho_line_to_fcurve(fll);
-      ret = _mw_create_fcurve_mw2_fcurve(fname,fcurve);
-      mw_delete_fcurve(fcurve);
-      return(ret);
-    }
+  /* Invalid Type should have been detected before, but we can arrive here because
+     of a write failure (e.g. the output file name is write protected).
+  */
+  mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
 }
+
 
 /* ---- I/O for cmorpho_set ---- */
 
@@ -768,7 +690,7 @@ int need_flipping; /* 1 if flipping needed, 0 elsewhere */
 
 { 
   Cmorpho_set is;
-  Segment news,olds;
+  Hsegment news,olds;
   unsigned int ns, i;
   unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
 
@@ -813,7 +735,7 @@ int need_flipping; /* 1 if flipping needed, 0 elsewhere */
   olds = news = NULL;
   for (i = 1; i <= ns; i++)
     {
-      news = mw_new_segment();
+      news = mw_new_hsegment();
       if (news == NULL)
 	    {
 	      mw_delete_cmorpho_set(is);
@@ -854,12 +776,17 @@ Cmorpho_set _mw_load_cms_mw2_cms(fname)
 char  *fname;  /* Name of the file */
 
 { FILE    *fp;
-  char header[16];
+  char header[BUFSIZ];
   Cmorpho_set is;
-  char ftype[TYPE_SIZE],mtype[TYPE_SIZE];
+  char ftype[mw_mtype_size],mtype[mw_mtype_size];
   int need_flipping;
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  need_flipping =  _mw_get_file_type(fname,ftype,mtype)-1;
+  need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
+  if (strncmp(ftype,"MW2_CMORPHO_SET",15) != 0)
+    mwerror(INTERNAL, 0,"[_mw_load_cms_mw2_cms] File \"%s\" is not in the MW2_CMORPHO_SET format\n",fname);
+
   if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
     {
       mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
@@ -868,66 +795,62 @@ char  *fname;  /* Name of the file */
     }
 
   /* read header = "MW2_CMORPHO_SET" */
-  if (fread(header,15,1,fp) == 0)
+  if (fread(header,hsize,1,fp) == 0)
       {
 	mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	fclose(fp);
 	return(NULL);
       }
-  if (strncmp(ftype,"MW2_CMORPHO_SET",15) != 0)
-    mwerror(INTERNAL, 0,"[_mw_load_cms_mw2_cms] File \"%s\" is not in the MW2_CMORPHO_SET format\n",fname);
-
   is = _mw_read_cms_mw2_cms(fname,fp,need_flipping);
 
   fclose(fp);
   return(is);
 }
 
-/* Load cmorpho_set from file of different types */
+/* Native formats (without conversion of the internal type) */
 
-Cmorpho_set _mw_load_cmorpho_set(fname,Type)
+Cmorpho_set _mw_cmorpho_set_load_native(fname,type)
 
-char  *fname;  /* Name of the file */
-char  *Type;   /* Type de format du fichier */
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
 
-{ char mtype[TYPE_SIZE];
-  Cmimage cmimage;
-  Cmorpho_set cmorpho_set;
-  Cmorpho_sets cmorpho_sets;
+{
+  if (strcmp(type,"MW2_CMORPHO_SET") == 0)
+    return((Cmorpho_set)_mw_load_ms_mw2_ms(fname));
 
-#ifdef __STDC__
-  Cmimage _mw_load_cmimage_mw2_cmimage(char *);
-  Cmorpho_sets _mw_load_cmss_mw2_cmss(char *);
-#else  
-  Cmimage _mw_load_cmimage_mw2_cmimage();
-  Cmorpho_sets _mw_load_cmss_mw2_cmss();
-#endif
+  return(NULL);
+}
 
-  _mw_get_file_type(fname,Type,mtype);
-  
-  if (strcmp(Type,"MW2_CMORPHO_SET") == 0)
-    return(_mw_load_cms_mw2_cms(fname));
 
-  if (strcmp(Type,"MW2_CMORPHO_SETS") == 0)
-    {
-      cmorpho_sets = (Cmorpho_sets) _mw_load_cmss_mw2_cmss(fname);
-      cmorpho_set = (Cmorpho_set) mw_cmorpho_sets_to_cmorpho_set(cmorpho_sets);
-      mw_delete_cmorpho_sets(cmorpho_sets);
-      return(cmorpho_set);
-    }
+/* All available formats */
 
-  if (strcmp(Type,"MW2_CMIMAGE") == 0)
-    {
-      cmimage = (Cmimage) _mw_load_cmimage_mw2_cmimage(fname);
-      cmorpho_sets = (Cmorpho_sets) mw_cmimage_to_cmorpho_sets(cmimage);
-      cmorpho_set = (Cmorpho_set) mw_cmorpho_sets_to_cmorpho_set(cmorpho_sets);
-      mw_delete_cmorpho_sets(cmorpho_sets);
-      mw_delete_cmimage(cmimage);
-      return(cmorpho_set);
-    }
+Cmorpho_set _mw_load_cmorpho_set(fname,type)
 
-  mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
-}  
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
+
+{ 
+  Cmorpho_set ms;
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+
+  _mw_get_file_type(fname,type,mtype,&hsize,&version);
+
+  /* First, try native formats */
+  ms = _mw_cmorpho_set_load_native(fname,type);
+  if (ms != NULL) return(ms);
+
+  /* If failed, try other formats with memory conversion */
+  ms = (Cmorpho_set) _mw_load_etype_to_itype(fname,mtype,"cmorpho_set",type);
+  if (ms != NULL) return(ms);
+
+  if (type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cmorpho_set !\n",fname,type);
+}
+
 
 /* Write one cmorpho set in the file fp */  
 
@@ -937,7 +860,7 @@ FILE *fp;
 Cmorpho_set is;
 
 {
-  Segment s;
+  Hsegment s;
   unsigned int ns;
 
   /* Record the number of segments */
@@ -976,7 +899,7 @@ Cmorpho_set is;
   if (is == NULL)
     mwerror(INTERNAL,1,"[_mw_create_cms_mw2_cms] Cannot create file: Cmorpho_set structure is NULL\n");
 
-  fp=_mw_write_header_file(fname,"MW2_CMORPHO_SET");
+  fp=_mw_write_header_file(fname,"MW2_CMORPHO_SET",1.00);
   if (fp == NULL) return(-1);
 
   _mw_write_cms_mw2_cms(fp,is);
@@ -985,50 +908,47 @@ Cmorpho_set is;
   return(0);
 }
 
-/* Write file in different formats */
-   
-short _mw_create_cmorpho_set(fname,is,Type)
+
+/* Create native formats (without conversion of the internal type) */
+
+short _mw_cmorpho_set_create_native(fname,ms,Type)
 
 char  *fname;                        /* file name */
-Cmorpho_set is;
+Cmorpho_set ms;
+char  *Type;                         /* Type de format du fichier */
+
+{
+  if (strcmp(Type,"MW2_CMORPHO_SET") == 0)
+    return(_mw_create_ms_mw2_ms(fname,ms));
+  
+  return(-1);
+}
+
+/* Write file in different formats */
+   
+short _mw_create_cmorpho_set(fname,ms,Type)
+
+char  *fname;                        /* file name */
+Cmorpho_set ms;
 char  *Type;                         /* Type de format du fichier */
 
 {
   short ret;
-  Cmimage cmimage;
-  Cmorpho_sets cmorpho_sets;
 
-#ifdef __STDC__
-  short _mw_create_cmimage_mw2_cmimage(char *, Cmimage);
-  short _mw_create_cmss_mw2_cmss(char *, Cmorpho_sets);
-#else
-  short _mw_create_cmimage_mw2_cmimage();
-  short _mw_create_cmss_mw2_cmss();
-#endif
+  /* First, try native formats */
+  ret = _mw_cmorpho_set_create_native(fname,ms,Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CMORPHO_SET") == 0)
-    return(_mw_create_cms_mw2_cms(fname,is));
+  /* If failed, try other formats with memory conversion */
+  ret = _mw_create_etype_from_itype(fname,ms,"cmorpho_set",Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CMORPHO_SETS") == 0)
-    {
-      cmorpho_sets = (Cmorpho_sets) mw_cmorpho_set_to_cmorpho_sets(is);
-      ret = _mw_create_cmss_mw2_cmss(fname,cmorpho_sets);
-      mw_delete_cmorpho_sets(cmorpho_sets);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_CMIMAGE") == 0)
-    {
-      cmorpho_sets = (Cmorpho_sets) mw_cmorpho_set_to_cmorpho_sets(is);
-      cmimage = (Cmimage) mw_cmorpho_sets_to_cmimage(cmorpho_sets);
-      ret = _mw_create_cmimage_mw2_cmimage(fname,cmimage);
-      mw_delete_cmimage(cmimage);
-      mw_delete_cmorpho_sets(cmorpho_sets);
-      return(ret);
-    }
-
-  mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
+  /* Invalid Type should have been detected before, but we can arrive here because
+     of a write failure (e.g. the output file name is write protected).
+  */
+  mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
 }
+
 
 /* ---- I/O for cmorpho_sets  ---- */
 
@@ -1088,7 +1008,7 @@ int need_flipping; /* 1 if flipping needed, 0 elsewhere */
     }
   
   /* Compute the Cmorpho set numbers */
-  mw_cmorpho_sets_num(iss);
+  mw_num_cmorpho_sets(iss);
 
   /* Read the neighbor cmorpho sets (given by the Cmorpho set numbers list) */
   for (p=iss; p; p=p->next)
@@ -1135,12 +1055,17 @@ Cmorpho_sets _mw_load_cmss_mw2_cmss(fname)
 char  *fname;  /* Name of the file */
 
 { FILE    *fp;
-  char header[17];
+  char header[BUFSIZ];
   Cmorpho_sets iss;
-  char ftype[TYPE_SIZE],mtype[TYPE_SIZE];
+  char ftype[mw_mtype_size],mtype[mw_mtype_size];
   int need_flipping;
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  need_flipping =  _mw_get_file_type(fname,ftype,mtype)-1;
+  need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
+  if (strncmp(ftype,"MW2_CMORPHO_SETS",16) != 0)
+    mwerror(INTERNAL, 0,"[_mw_load_cmss_mw2_cmss] File \"%s\" is not in the MW2_CMORPHO_SETS format\n",fname);
+
   if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
     {
       mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
@@ -1148,62 +1073,62 @@ char  *fname;  /* Name of the file */
       return(NULL);
     }
   /* read header = "MW2_CMORPHO_SETS" */
-  if (fread(header,16,1,fp) == 0)
+  if (fread(header,hsize,1,fp) == 0)
       {
 	mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	fclose(fp);
 	return(NULL);
       }
-  if (strncmp(ftype,"MW2_CMORPHO_SETS",16) != 0)
-    mwerror(INTERNAL, 0,"[_mw_load_cmss_mw2_cmss] File \"%s\" is not in the MW2_CMORPHO_SETS format\n",fname);
-
   iss = _mw_read_cmss_mw2_cmss(fname,fp,need_flipping);
 
   fclose(fp);
   return(iss);
 }
 
-/* Load cmorpho_sets from file of different types */
+/* Native formats (without conversion of the internal type) */
 
-Cmorpho_sets _mw_load_cmorpho_sets(fname,Type)
+Cmorpho_sets _mw_cmorpho_sets_load_native(fname,type)
 
-char  *fname;  /* Name of the file */
-char  *Type;   /* Type de format du fichier */
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
 
-{ char mtype[TYPE_SIZE];
-  Cmimage cmimage;
-  Cmorpho_set cmorpho_set;
-  Cmorpho_sets cmorpho_sets;
+{
+  if (strcmp(type,"MW2_CMORPHO_SETS") == 0)
+    return((Cmorpho_sets)_mw_load_mss_mw2_mss(fname));
 
-#ifdef __STDC__
-  Cmimage _mw_load_cmimage_mw2_cmimage(char *);
-#else  
-  Cmimage _mw_load_cmimage_mw2_cmimage();
-#endif
+  return(NULL);
+}
 
-  _mw_get_file_type(fname,Type,mtype);
-  
-  if (strcmp(Type,"MW2_CMORPHO_SETS") == 0)
-    return(_mw_load_cmss_mw2_cmss(fname));
 
-  if (strcmp(Type,"MW2_CMORPHO_SET") == 0)
-    {
-      cmorpho_set = (Cmorpho_set) _mw_load_cms_mw2_cms(fname);
-      cmorpho_sets = (Cmorpho_sets) mw_cmorpho_set_to_cmorpho_sets(cmorpho_set);
-      mw_delete_cmorpho_set(cmorpho_set);
-      return(cmorpho_sets);
-    }
+/* All available formats */
 
-  if (strcmp(Type,"MW2_CMIMAGE") == 0)
-    {
-      cmimage = (Cmimage) _mw_load_cmimage_mw2_cmimage(fname);
-      cmorpho_sets = (Cmorpho_sets) mw_cmimage_to_cmorpho_sets(cmimage);
-      mw_delete_cmimage(cmimage);
-      return(cmorpho_sets);
-    }
+Cmorpho_sets _mw_load_cmorpho_sets(fname,type)
 
-  mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
-}  
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
+
+{ 
+  Cmorpho_sets ms;
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+
+  _mw_get_file_type(fname,type,mtype,&hsize,&version);
+
+  /* First, try native formats */
+  ms = _mw_cmorpho_sets_load_native(fname,type);
+  if (ms != NULL) return(ms);
+
+  /* If failed, try other formats with memory conversion */
+  ms = (Cmorpho_sets) _mw_load_etype_to_itype(fname,mtype,"cmorpho_sets",type);
+  if (ms != NULL) return(ms);
+
+  if (type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cmorpho_sets !\n",fname,type);
+}
+
 
 /* Write one cmorpho sets in the file fp */  
 
@@ -1217,7 +1142,7 @@ Cmorpho_sets iss;
   Cmorpho_sets p,q,neig;
 
   /* Compute the Cmorpho set numbers */
-  if (iss) n=mw_cmorpho_sets_num(iss); else n=0;
+  if (iss) n=mw_num_cmorpho_sets(iss); else n=0;
   /* fprintf(stderr,"Number of cmorpho sets = %d\n",n); */
 
   /* Record the number of cmorpho sets */
@@ -1233,7 +1158,7 @@ Cmorpho_sets iss;
     {
       /* Write first the number of neighbors */
       neig = p->cmorphoset->neighbor;
-      n = mw_cmorpho_sets_length(neig);
+      n = mw_length_cmorpho_sets(neig);
       /*
 	 fprintf(stderr,"Number of neighbors = %d\n",n);
       */
@@ -1256,7 +1181,7 @@ Cmorpho_sets iss;
   if (iss == NULL)
     mwerror(INTERNAL,1,"[_mw_create_cmss_mw2_cmss] Cannot create file: Cmorpho_sets structure is NULL\n");
 
-  fp=_mw_write_header_file(fname,"MW2_CMORPHO_SETS");
+  fp=_mw_write_header_file(fname,"MW2_CMORPHO_SETS",1.00);
   if (fp == NULL) return(-1);
 
   _mw_write_cmss_mw2_cmss(fp,iss);
@@ -1265,46 +1190,46 @@ Cmorpho_sets iss;
   return(0);
 }
 
-/* Write file in different formats */
-   
-short _mw_create_cmorpho_sets(fname,iss,Type)
+/* Create native formats (without conversion of the internal type) */
+
+short _mw_cmorpho_sets_create_native(fname,mss,Type)
 
 char  *fname;                        /* file name */
-Cmorpho_sets iss;
+Cmorpho_sets mss;
+char  *Type;                         /* Type de format du fichier */
+
+{
+  if (strcmp(Type,"MW2_CMORPHO_SETS") == 0)
+    return(_mw_create_mss_mw2_mss(fname,mss));
+  
+  return(-1);
+}
+
+/* Write file in different formats */
+   
+short _mw_create_cmorpho_sets(fname,mss,Type)
+
+char  *fname;                        /* file name */
+Cmorpho_sets mss;
 char  *Type;                         /* Type de format du fichier */
 
 {
   short ret;
-  Cmimage cmimage;
-  Cmorpho_set cmorpho_set;
 
-#ifdef __STDC__
-  short _mw_create_cmimage_mw2_cmimage(char *, Cmimage);
-#else
-  short _mw_create_cmimage_mw2_cmimage();
-#endif
+  /* First, try native formats */
+  ret = _mw_cmorpho_sets_create_native(fname,mss,Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CMORPHO_SETS") == 0)
-    return(_mw_create_cmss_mw2_cmss(fname,iss));
+  /* If failed, try other formats with memory conversion */
+  ret = _mw_create_etype_from_itype(fname,mss,"cmorpho_sets",Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CMORPHO_SET") == 0)
-    {
-      cmorpho_set = (Cmorpho_set) mw_cmorpho_sets_to_cmorpho_set(iss);
-      ret = _mw_create_cms_mw2_cms(fname,cmorpho_set);
-      mw_delete_cmorpho_set(cmorpho_set);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_CMIMAGE") == 0)
-    {
-      cmimage = (Cmimage) mw_cmorpho_sets_to_cmimage(iss);
-      ret = _mw_create_cmimage_mw2_cmimage(fname,cmimage);
-      mw_delete_cmimage(cmimage);
-      return(ret);
-    }
-
-  mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",Type,fname);  
+  /* Invalid Type should have been detected before, but we can arrive here because
+     of a write failure (e.g. the output file name is write protected).
+  */
+  mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
 }
+
 
 /* ---- I/O for Cmimage ---- */
 
@@ -1315,17 +1240,22 @@ Cmimage _mw_load_cmimage_mw2_cmimage(fname)
 char  *fname;  /* Name of the file */
 
 { FILE    *fp;
-  char header[12];
+  char header[BUFSIZ];
   Cmimage cmimage;
   Cmorpho_line ll,oldll,newll;
   Cmorpho_sets mss;
   Cfmorpho_line oldfll,newfll;
   unsigned int size,nll,i,mlnum,msnum;
-  char ftype[TYPE_SIZE],mtype[TYPE_SIZE];
+  char ftype[mw_ftype_size],mtype[mw_mtype_size];
   int need_flipping;
   unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
 
-  need_flipping =  _mw_get_file_type(fname,ftype,mtype)-1;
+  need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
+  if (strncmp(ftype,"MW2_CMIMAGE",11) != 0)
+    mwerror(INTERNAL, 0,"[_mw_load_cmimage_mw2_cmimage] File \"%s\" is not in the MW2_CMIMAGE format\n",fname);
+
   if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
     {
       mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
@@ -1333,14 +1263,12 @@ char  *fname;  /* Name of the file */
       return(NULL);
     }
   /* read header = "MW2_CMIMAGE" */
-  if (fread(header,11,1,fp) == 0)
+  if (fread(header,hsize,1,fp) == 0)
       {
 	mwerror(ERROR, 0,"Error while reading file \"%s\" (header)...\n",fname);
 	fclose(fp);
 	return(NULL);
       }
-  if (strncmp(ftype,"MW2_CMIMAGE",11) != 0)
-    mwerror(INTERNAL, 0,"[_mw_load_cmimage_mw2_cmimage] File \"%s\" is not in the MW2_CMIMAGE format\n",fname);
 
   cmimage = mw_new_cmimage();
   if (cmimage == NULL) 
@@ -1471,7 +1399,7 @@ char  *fname;  /* Name of the file */
   /* Read link between cmorpho lines and cmorpho sets and set pointers */
   if (cmimage->first_ml)
     {
-      mw_cmorpho_line_num(cmimage->first_ml);
+      mw_num_cmorpho_line(cmimage->first_ml);
       /* First, read the number of couples */
       if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
 	{
@@ -1523,70 +1451,50 @@ char  *fname;  /* Name of the file */
   return(cmimage);
 }
 
-/* Load Cmimage from file of different types */
 
-Cmimage _mw_load_cmimage(fname,Type)
+/* Native formats (without conversion of the internal type) */
 
-char  *fname;  /* Name of the file */
-char  *Type;   /* Type de format du fichier */
+Cmimage _mw_cmimage_load_native(fname,type)
 
-{ char mtype[TYPE_SIZE];
-  Polygon poly;
-  Fpolygon fpoly;
-  Cmimage cmimage;
-  Cmorpho_line ll;
-  Cfmorpho_line fll;
-  Curves curves;
-  Cmorpho_set cmorpho_set;
-  Cmorpho_sets cmorpho_sets;
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
 
-  _mw_get_file_type(fname,Type,mtype);
-  
-  if (strcmp(Type,"MW2_CMIMAGE") == 0)
-    return(_mw_load_cmimage_mw2_cmimage(fname));
+{
+  if (strcmp(type,"MW2_CMIMAGE") == 0)
+    return((Cmimage)_mw_load_cmimage_mw2_cmimage(fname));
 
-  if (strcmp(Type,"MW2_CMORPHO_LINE") == 0)
-    {
-      ll = (Cmorpho_line) _mw_load_cml_mw2_cml(fname);
-      cmimage = (Cmimage) mw_cmorpho_line_to_cmimage(ll);
-      mw_delete_cmorpho_line(ll);
-      return(cmimage);
-    }
+  return(NULL);
+}
 
-  if (strcmp(Type,"MW2_CFMORPHO_LINE") == 0)
-    {
-      fll = (Cfmorpho_line) _mw_load_cfml_mw2_cfml(fname);
-      cmimage = (Cmimage) mw_cfmorpho_line_to_cmimage(fll);
-      mw_delete_cfmorpho_line(fll);
-      return(cmimage);
-    }
 
-  if (strcmp(Type,"MW2_CMORPHO_SET") == 0)
-    {
-      cmorpho_set = (Cmorpho_set) _mw_load_cms_mw2_cms(fname);
-      cmorpho_sets = (Cmorpho_sets) mw_cmorpho_set_to_cmorpho_sets(cmorpho_set);
-      cmimage = (Cmimage) mw_cmorpho_sets_to_cmimage(cmorpho_sets);
-      mw_delete_cmorpho_set(cmorpho_set);
-      mw_delete_cmorpho_sets(cmorpho_sets);
-      return(cmimage);
-    }
+/* All available formats */
 
-  if (strcmp(Type,"MW2_CMORPHO_SETS") == 0)
-    {
-      cmorpho_sets = (Cmorpho_sets) _mw_load_cmss_mw2_cmss(fname);
-      cmimage = (Cmimage) mw_cmorpho_sets_to_cmimage(cmorpho_sets);
-      mw_delete_cmorpho_sets(cmorpho_sets);
-      return(cmimage);
-    }
+Cmimage _mw_load_cmimage(fname,type)
 
-  /* Else, try to recover a curves structure */
-  {
-    curves = (Curves) _mw_load_curves(fname,Type);
-    cmimage = (Cmimage) mw_curves_to_cmimage(curves);
-    mw_delete_curves(curves);      
-    return(cmimage);
-  }
-}  
+char  *fname; /* Name of the file */
+char  *type;  /* Type of the file */
+
+{ 
+  Cmimage mim;
+  char mtype[mw_mtype_size];
+  int hsize;  /* Size of the header, in bytes */
+  float version;/* Version number of the file format */
+
+  _mw_get_file_type(fname,type,mtype,&hsize,&version);
+
+  /* First, try native formats */
+  mim = _mw_cmimage_load_native(fname,type);
+  if (mim != NULL) return(mim);
+
+  /* If failed, try other formats with memory conversion */
+  mim = (Cmimage) _mw_load_etype_to_itype(fname,mtype,"cmimage",type);
+  if (mim != NULL) return(mim);
+
+  if (type[0]=='?')
+    mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
+  else
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cmimage !\n",fname,type);
+}
 
 /* Write file in MW2_CMIMAGE format */  
 
@@ -1604,7 +1512,7 @@ Cmimage cmimage;
   if (cmimage == NULL)
     mwerror(INTERNAL,1,"[_mw_create_cmimage_mw2_cmimage] Cannot create file: Cmimage structure is NULL\n");
 
-  fp=_mw_write_header_file(fname,"MW2_CMIMAGE");
+  fp=_mw_write_header_file(fname,"MW2_CMIMAGE",1.00);
   if (fp == NULL) return(-1);
 
   size = strlen(cmimage->cmt);
@@ -1647,7 +1555,7 @@ Cmimage cmimage;
   /* Record the pointers between cmorpho lines and cmorpho sets */
   if (cmimage->first_ml)
     {
-      mw_cmorpho_line_num(cmimage->first_ml);
+      mw_num_cmorpho_line(cmimage->first_ml);
       /* First, write the number of links */
       size=0;
       for (ll=cmimage->first_ml; ll; ll=ll->next)
@@ -1665,6 +1573,21 @@ Cmimage cmimage;
   return(0);
 }
 
+/* Create native formats (without conversion of the internal type) */
+
+short _mw_cmimage_create_native(fname,cmimage,Type)
+
+char  *fname;                        /* file name */
+Cmimage cmimage;
+char  *Type;                         /* Type de format du fichier */
+
+{
+  if (strcmp(Type,"MW2_CMIMAGE") == 0)
+    return(_mw_create_cmimage_mw2_cmimage(fname,cmimage));
+  
+  return(-1);
+}
+
 /* Write file in different formats */
    
 short _mw_create_cmimage(fname,cmimage,Type)
@@ -1675,54 +1598,18 @@ char  *Type;                         /* Type de format du fichier */
 
 {
   short ret;
-  Curves curves;
-  Cmorpho_line ll;
-  Cfmorpho_line fll;
-  Cmorpho_set cmorpho_set;
-  Cmorpho_sets cmorpho_sets;
 
-  if (strcmp(Type,"MW2_CMIMAGE") == 0)
-    return(_mw_create_cmimage_mw2_cmimage(fname,cmimage));
+  /* First, try native formats */
+  ret = _mw_cmimage_create_native(fname,cmimage,Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CMORPHO_LINE") == 0)
-    {
-      ll = (Cmorpho_line) mw_cmimage_to_cmorpho_line(cmimage);
-      ret = _mw_create_cml_mw2_cml(fname,ll);
-      mw_delete_cmorpho_line(ll);
-      return(ret);
-    }
+  /* If failed, try other formats with memory conversion */
+  ret = _mw_create_etype_from_itype(fname,cmimage,"cmimage",Type);
+  if (ret == 0) return(0);
 
-  if (strcmp(Type,"MW2_CFMORPHO_LINE") == 0)
-    {
-      fll = (Cfmorpho_line) mw_cmimage_to_cfmorpho_line(cmimage);
-      ret = _mw_create_cfml_mw2_cfml(fname,fll);
-      mw_delete_cfmorpho_line(fll);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_CMORPHO_SET") == 0)
-    {
-      cmorpho_sets = (Cmorpho_sets) mw_cmimage_to_cmorpho_sets(cmimage);
-      cmorpho_set = (Cmorpho_set) mw_cmorpho_sets_to_cmorpho_set(cmorpho_sets);
-      ret = _mw_create_cms_mw2_cms(fname,cmorpho_set);
-      mw_delete_cmorpho_set(cmorpho_set);
-      mw_delete_cmorpho_sets(cmorpho_sets);
-      return(ret);
-    }
-
-  if (strcmp(Type,"MW2_CMORPHO_SETS") == 0)
-    {
-      cmorpho_sets = (Cmorpho_sets) mw_cmimage_to_cmorpho_sets(cmimage);
-      ret = _mw_create_cmss_mw2_cmss(fname,cmorpho_sets);
-      mw_delete_cmorpho_sets(cmorpho_sets);
-      return(ret);
-    }
-
-  /* Else, try to save the curves structure only */
-    {
-      curves = (Curves) mw_cmimage_to_curves(cmimage);
-      ret = _mw_create_curves_mw2_curves(fname,curves);
-      mw_delete_curves(curves);
-      return(ret);
-    }
+  /* Invalid Type should have been detected before, but we can arrive here because
+     of a write failure (e.g. the output file name is write protected).
+  */
+  mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
 }
+

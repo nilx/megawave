@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {cview};
-  version = {"1.5"};
+  version = {"1.9"};
   author = {"Jacques Froment"};
   function = {"View an image on a window"};
   usage = {
@@ -11,37 +11,32 @@
       "Y coordinate for the upper-left corner of the Window",
   'z':[zoom=1.0]->zoom
       "Zoom factor (float value)",
+  'o':[order=0]->order      
+      "Zoom order: 0,1=linear,-3=cubic,3,5..11=spline, default 0",
   'N'->no_refresh
       "Do not refresh the window (library call)",
-  cimage->input
+   cimage->input
         "Input image (should be a cimage)",
    notused->window 
       "Window to view the image (internal use)"
   };
 */
-/*--- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v1.8: added -o option + several minor modifications (L.Moisan)
+ v1.9: fixed bug with non char input keys (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 include file */
 #include "mw.h"
 
 /* Include the window since we use windows facility */
 #include "window.h"
 
-
-/* External modules called */
-#ifdef __STDC__
-extern Cimage clocal_zoom(Cimage, int *, int *, int *, int *);
-extern void czoom(Cimage, Cimage, char *, char *, float *);
-extern splot(Fsignal,int *,int *, int *, int *,int *, char *);
-extern void cline_extract(char *, Cimage, Fsignal, long);
-#else
 extern Cimage clocal_zoom();
 extern void czoom();
-extern splot();
+extern void splot();
 extern void cline_extract();
-#endif
+
 
 static Wframe *PlotWindow=NULL;  
 
@@ -91,8 +86,8 @@ Wframe *ImageWindow;
 void *param;          /* Users's parameters: don't forget the cast ! */
 
 {
-  int x1,y1,wz,event,button_mask,ret;
-  char c,mess[80];
+  int x1,y1,wz,event,button_mask,ret,c;
+  char mess[80];
   int ng;
   cview_Param images;
   Cimage image;
@@ -213,7 +208,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
       break;
 
     case W_KEYPRESS:
-      c = (char) WGetKeyboard();
+      c = WGetKeyboard();
       switch(c)
 	{
 	case 'q': case 'Q': ret = -1;
@@ -249,11 +244,12 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	      x0 = 52 + image->ncol;
 	      y0 = 52 + ((image->nrow - sy) / 2);
 	      if (y0 < 0) y0 = 0;
-	      cline_extract((char *) NULL, image, section, y1);
+	      cline_extract((char *) NULL, image, section, y1, NULL);
 	      sprintf(section->name,"Plot a section");
 	      PlotWindow = (Wframe *)
 		mw_get_window(PlotWindow,sx,sy,x0,y0,"");
-	      splot(section,&x0,&y0,&sx,&sy,&norefresh,(char *)PlotWindow);
+	      splot(section,&x0,&y0,&sx,&sy,
+		    &norefresh,(char *)PlotWindow,NULL,NULL);
 	      
 	      /* Restore image without red line */
 	      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
@@ -278,11 +274,12 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	      x0 = 52 + image->ncol;
 	      y0 = 52 + ((image->nrow - sy) / 2);
 	      if (y0 < 0) y0 = 0;
-	      cline_extract(&cflag, image, section,x1);
+	      cline_extract(&cflag, image, section,x1,NULL);
 	      sprintf(section->name,"Plot a section");
 	      PlotWindow = (Wframe *)
 		mw_get_window(PlotWindow,sx,sy,x0,y0,"");
-	      splot(section,&x0,&y0,&sx,&sy,&norefresh,(char *)PlotWindow);
+	      splot(section,&x0,&y0,&sx,&sy,
+		    &norefresh,(char *)PlotWindow,NULL,NULL);
 
 	      /* Restore image without red line */
 	      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
@@ -291,7 +288,8 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	  break;
 
 	default:
-	  mwerror(WARNING,1,"Unrecognized Key '%c'. Type H for Help.\n",c);
+	  if (c>>8==0)
+	    mwerror(WARNING,1,"Unrecognized Key '%c'. Type H for Help.\n",c);
 	}    
       oldevent = event;
       break;
@@ -309,9 +307,9 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 }
 
 
-cview(input,x0,y0,zoom,no_refresh,window)
+void cview(input,x0,y0,zoom,order,no_refresh,window)
 
-int *x0,*y0,*no_refresh;
+int *x0,*y0,*no_refresh,*order;
 float *zoom;
 Cimage input;
 char *window;
@@ -323,12 +321,18 @@ char *window;
   Fsignal section;
   cview_Param param;
   int i,j,smax;
+  float inverse_zoom;
 
   if (*zoom != 1.0) 
     {
       image = mw_change_cimage(image,0,0);
       if (image == NULL) mwerror(FATAL,1,"Not enough memory\n");
-      czoom(input,image,NULL,NULL,zoom);
+      if (*zoom>1.0) 
+	czoom(input,image,NULL,NULL,zoom,order,NULL);
+      else {
+	inverse_zoom = 1./(*zoom);
+	czoom(input,image,NULL,NULL,&inverse_zoom,order,(char *)1);
+      }
       sprintf(image->name,"%s %.1fX",input->name,*zoom);
     }
   else 

@@ -1,0 +1,14 @@
+This module computes the values at the saddle points in a bilinear
+interpolated image. The resulting image has one column and one line missing
+compared to the original image. The value at $(i,j)$ is the one at the saddle
+point in the dual pixel of corners $(i,j)$, $(i+1,j)$, $(i,j+1)$ and
+$(i+1,j+1)$ if there is one, and \texttt{FLT\_MAX} (defined in \texttt{math.h})
+if there is no saddle point inside the dual pixel. A more appropriate value
+would have been \texttt{NAN} (Not A Number), but this value is not always
+defined in \texttt{math.h}.
+
+As the resulting image contains values (or rather non-values) not easily
+representable, it is not appropriate for viewing via the module \texttt{fview}
+for example.
+
+This module is mainly called by the module \texttt{flst\_bilinear}.

@@ -19,12 +19,8 @@
 #include <time.h>
 #include "mw.h"
 
-/* for drand48() */
-#ifdef __STDC__
-extern void cnoise(Cimage,Cimage,float*,float*,char*);
-#else
 extern void cnoise();
-#endif
+
 
 Cmovie cmnoise(in,std,p)
 Cmovie	in;

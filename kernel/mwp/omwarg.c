@@ -195,7 +195,11 @@ Mwarg *opt;
         switch(d->v.p.t) {
           case QSTRING_T :
             if (d->v.p.d != NULL)
-              fprintf(fd, "%s ;\n", d->v.p.d->q);
+              /* fprintf(fd, "%s ;\n", d->v.p.d->q);
+		 Modified by JF 14/04/2000. Try to manage QSTRING_T as CHAR_T, 
+		 since strings are not allowed (confusion with char *).
+	       */
+              fprintf(fd, "'%s' ;\n", d->v.p.d->q);
             else
               fprintf(fd, "NULL ;\n");
             break;
@@ -373,15 +377,17 @@ char *s;
 
   switch (p->t) {
     case QSTRING_T :
+      /*
       INT_ERROR("print_is_range");
-      break;
-    case CHAR_T :
+      Modified by JF 15/04/2000. Try to manage QSTRING_T as CHAR_T, 
+      since strings are not allowed (confusion with char *).
+      */
       fprintf(fd, "        if (%s(%s) %s '%c' || '%c' %s %s(%s)) {\n",
-                          io->function, s, t_m, p->i->min.c,
-                          p->i->max.c, t_M, io->function, s);
+                          io->function, s, t_m, *p->i->min.q,
+                          *p->i->max.q, t_M, io->function, s);
       switch(rw) {
         case READ :
-      fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+      fprintf(fd, "          char buffer[BUFSIZ] ;\n");
       fprintf(fd, "          sprintf(buffer, \"'%%c' is out of range\", %s(%s)) ;\n",
                           io->function, s);
       fprintf(fd, "          mwusage(buffer) ;\n");
@@ -393,13 +399,35 @@ char *s;
       }
       fprintf(fd, "        }\n");
       break;
+
+    case CHAR_T :
+      fprintf(fd, "        if (%s(%s) %s '%c' || '%c' %s %s(%s)) {\n",
+                          io->function, s, t_m, p->i->min.c,
+                          p->i->max.c, t_M, io->function, s);
+      switch(rw) {
+        case READ :
+      fprintf(fd, "          char buffer[BUFSIZ] ;\n");
+      fprintf(fd, "          sprintf(buffer, \"'%%c' is out of range\", %s(%s)) ;\n",
+                          io->function, s);
+      fprintf(fd, "          mwusage(buffer) ;\n");
+          break;
+        case WRITE :
+      fprintf(fd, "          printf(\"'%%s' is out of range\", %s(%s)) ;\n",
+                                                                       io->function, s);
+          break;
+      }
+      fprintf(fd, "        }\n");
+      break;
+
+
     case UCHAR_T :
-      fprintf(fd, "        if (%s(%s) %s 0x%2.2X || 0x%2.2X %s %s(%s)) {\n",
+      /* Changed JF 03/10/2000 : added cast to corresponding type */
+      fprintf(fd, "        if (%s(%s) %s (unsigned char) 0x%2.2X || (unsigned char) 0x%2.2X %s %s(%s)) {\n",
                           io->function, s, t_m, p->i->min.uc,
                           p->i->max.uc, t_M, io->function, s);
       switch(rw) {
         case READ :
-      fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+      fprintf(fd, "          char buffer[BUFSIZ] ;\n");
       fprintf(fd, "          sprintf(buffer, \"0x%%2.2X is out of range\", %s(%s)) ;\n",
                           io->function, s);
       fprintf(fd, "          mwusage(buffer) ;\n");
@@ -412,12 +440,13 @@ char *s;
       fprintf(fd, "        }\n");
       break;
     case SHORT_T :
-      fprintf(fd, "        if (%s(%s) %s %hd || %hd %s %s(%s)) {\n",
+      /* Changed JF 03/10/2000 : added cast to corresponding type */
+      fprintf(fd, "        if (%s(%s) %s (short) %hd || (short) %hd %s %s(%s)) {\n",
                           io->function, s, t_m, p->i->min.s,
                           p->i->max.s, t_M, io->function, s);
       switch(rw) {
         case READ :
-      fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+      fprintf(fd, "          char buffer[BUFSIZ] ;\n");
       fprintf(fd, "          sprintf(buffer, \"%%hd is out of range\", %s(%s)) ;\n",
                           io->function, s);
       fprintf(fd, "          mwusage(buffer) ;\n");
@@ -430,12 +459,13 @@ char *s;
       fprintf(fd, "        }\n");
       break;
     case USHORT_T :
-      fprintf(fd, "        if (0x%hX %s %s(%s) %s 0x%hX || 0x%hX %s %s(%s)) {\n",
+      /* Changed JF 03/10/2000 : added cast to corresponding type */
+      fprintf(fd, "        if (0x%hX %s %s(%s) %s (unsigned short) 0x%hX || (unsigned short) 0x%hX %s %s(%s)) {\n",
                           io->function, s, t_m, p->i->min.us,
                           p->i->max.us, t_M, io->function, s);
       switch(rw) {
         case READ :
-      fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+      fprintf(fd, "          char buffer[BUFSIZ] ;\n");
       fprintf(fd, "          sprintf(buffer, \"0x%%hX is out of range\", %s(%s)) ;\n",
                           io->function, s);
       fprintf(fd, "          mwusage(buffer) ;\n");
@@ -448,12 +478,13 @@ char *s;
       fprintf(fd, "        }\n");
       break;
     case INT_T :
-      fprintf(fd, "        if (%s(%s) %s %d || %d %s %s(%s)) {\n",
+      /* Changed JF 03/10/2000 : added cast to corresponding type */
+      fprintf(fd, "        if (%s(%s) %s (int) %d || (int) %d %s %s(%s)) {\n",
                           io->function, s, t_m, p->i->min.i,
                           p->i->max.i, t_M, io->function, s);
       switch(rw) {
         case READ :
-      fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+      fprintf(fd, "          char buffer[BUFSIZ] ;\n");
       fprintf(fd, "          sprintf(buffer, \"%%d is out of range\", %s(%s)) ;\n",
                           io->function, s);
       fprintf(fd, "          mwusage(buffer) ;\n");
@@ -466,12 +497,13 @@ char *s;
       fprintf(fd, "        }\n");
       break;
     case UINT_T :
-      fprintf(fd, "        if (%s(%s) %s 0x%X || 0x%X %s %s(%s)) {\n",
+      /* Changed JF 03/10/2000 : added cast to corresponding type */
+      fprintf(fd, "        if (%s(%s) %s (unsigned int) 0x%X || (unsigned int) 0x%X %s %s(%s)) {\n",
                           io->function, s, t_m, p->i->min.ui,
                           p->i->max.ui, t_M, io->function, s);
       switch(rw) {
         case READ :
-      fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+      fprintf(fd, "          char buffer[BUFSIZ] ;\n");
       fprintf(fd, "          sprintf(buffer, \"0x%%X is out of range\", %s(%s)) ;\n",
                           io->function, s);
       fprintf(fd, "          mwusage(buffer) ;\n");
@@ -484,12 +516,13 @@ char *s;
       fprintf(fd, "        }\n");
       break;
     case LONG_T :
-      fprintf(fd, "        if (%s(%s) %s %ld || %ld %s %s(%s)) {\n",
+      /* Changed JF 03/10/2000 : added cast to corresponding type */
+      fprintf(fd, "        if (%s(%s) %s (long) %ld || (long) %ld %s %s(%s)) {\n",
                           io->function, s, t_m, p->i->min.l,
                           p->i->max.l, t_M, io->function, s);
       switch(rw) {
         case READ :
-      fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+      fprintf(fd, "          char buffer[BUFSIZ] ;\n");
       fprintf(fd, "          sprintf(buffer, \"%%ld is out of range\", %s(%s)) ;\n",
                           io->function, s);
       fprintf(fd, "          mwusage(buffer) ;\n");
@@ -502,12 +535,13 @@ char *s;
       fprintf(fd, "        }\n");
       break;
     case ULONG_T :
-      fprintf(fd, "        if (%s(%s) %s 0x%lX || 0x%lX %s %s(%s)) {\n",
+      /* Changed JF 03/10/2000 : added cast to corresponding type */
+      fprintf(fd, "        if (%s(%s) %s (unsigned long) 0x%lX || (unsigned long) 0x%lX %s %s(%s)) {\n",
                           io->function, s, t_m, p->i->min.ul,
                           p->i->max.ul, t_M, io->function, s);
       switch(rw) {
         case READ :
-      fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+      fprintf(fd, "          char buffer[BUFSIZ] ;\n");
       fprintf(fd, "          sprintf(buffer, \"0x%%lX is out of range\", %s(%s)) ;\n",
                           io->function, s);
       fprintf(fd, "          mwusage(buffer) ;\n");
@@ -520,14 +554,16 @@ char *s;
       fprintf(fd, "        }\n");
       break;
     case FLOAT_T :
-      fprintf(fd, "        if (%s(%s) %s %g || %g %s %s(%s)) {\n",
+      /* Changed JF 03/10/2000 : added cast to corresponding type */
+      fprintf(fd, "        if (%s(%s) %s (float) %g || (float) %g %s %s(%s)) {\n",
                           io->function, s, t_m, (double)p->i->min.f,
                           (double)p->i->max.f, t_M, io->function, s);
       switch(rw) {
         case READ :
-      fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+      fprintf(fd, "          char buffer[BUFSIZ] ;\n");
       fprintf(fd, "          sprintf(buffer, \"%%g is out of range\", (double)%s(%s)) ;\n",
                           io->function, s);
+
       fprintf(fd, "          mwusage(buffer) ;\n");
           break;
         case WRITE :
@@ -535,15 +571,17 @@ char *s;
                                                                        io->function, s);
           break;
       }
+
       fprintf(fd, "        }\n");
       break;
     case DOUBLE_T :
-      fprintf(fd, "        if (%s(%s) %s %g || %g %s %s(%s)) {\n",
+      /* Changed JF 03/10/2000 : added cast to corresponding type */
+      fprintf(fd, "        if (%s(%s) %s (double) %g || (double) %g %s %s(%s)) {\n",
                           io->function, s, t_m, p->i->min.d,
                           p->i->max.d, t_M, io->function, s);
       switch(rw) {
         case READ :
-      fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+      fprintf(fd, "          char buffer[BUFSIZ] ;\n");
       fprintf(fd, "          sprintf(buffer, \"%%g is out of range\", %s(%s)) ;\n",
                           io->function, s);
       fprintf(fd, "          mwusage(buffer) ;\n");
@@ -589,14 +627,14 @@ FILE *fd;
         case FILEARG :
           if (opt->d.o.d.rw == READ) {
             fprintf(fd, "        if (!_mwis_readable(_mwoptarg)) {\n");
-            fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+            fprintf(fd, "          char buffer[BUFSIZ] ;\n");
             fprintf(fd, "          sprintf(buffer, \"cannot find '%%s' in default path\", _mwoptarg) ;\n");
             fprintf(fd, "          mwusage(buffer) ;\n");
             fprintf(fd, "        }\n");
           }
           else if (opt->d.o.d.rw == WRITE) {
             fprintf(fd, "        if (!_mwis_writable(_mwoptarg)) {\n");
-            fprintf(fd, "          char buffer[MWBUFSIZ] ;\n");
+            fprintf(fd, "          char buffer[BUFSIZ] ;\n");
             fprintf(fd, "          sprintf(buffer, \"cannot write '%%s'\", _mwoptarg) ;\n");
             fprintf(fd, "          mwusage(buffer) ;\n");
             fprintf(fd, "        }\n");
@@ -639,7 +677,7 @@ FILE *fd;
         if (opt->d.a.rw == READ) {
           fprintf(fd, "  if (_mwoptind+%d<argc) {\n", n);
           fprintf(fd, "    if (!_mwis_readable(argv[_mwoptind+%d])) {\n", n);
-          fprintf(fd, "      char buffer[MWBUFSIZ] ;\n");
+          fprintf(fd, "      char buffer[BUFSIZ] ;\n");
           fprintf(fd, "      sprintf(buffer, \"cannot find '%%s' in default path\",  argv[_mwoptind+%d]) ;\n", n);
           fprintf(fd, "      mwusage(buffer) ;\n");
           fprintf(fd, "    }\n");
@@ -651,7 +689,7 @@ FILE *fd;
         else if (opt->d.a.rw == WRITE) {
           fprintf(fd, "  if (_mwoptind+%d<argc) {\n", n);
           fprintf(fd, "    if (!_mwis_writable(argv[_mwoptind+%d])) {\n", n);
-          fprintf(fd, "      char buffer[MWBUFSIZ] ;\n");
+          fprintf(fd, "      char buffer[BUFSIZ] ;\n");
           fprintf(fd, "      sprintf(buffer, \"cannot write '%%s'\", argv[_mwoptind+%d]) ;\n", n);
           fprintf(fd, "      mwusage(buffer) ;\n");
           fprintf(fd, "    }\n");
@@ -675,7 +713,7 @@ FILE *fd;
           }
           else {
             fprintf(fd, "  if (_mwoptind+%d>=argc) {\n", n);
-            fprintf(fd, "    char buffer[MWBUFSIZ] ;\n");
+            fprintf(fd, "    char buffer[BUFSIZ] ;\n");
             fprintf(fd, "    sprintf(buffer, \"missing '%s'\") ;\n", 
                                                                  opt->texname);
             fprintf(fd, "    mwusage(buffer) ;\n");
@@ -709,7 +747,7 @@ FILE *fd;
           fprintf(fd, "    if (_mwoptind+%d < argc) {\n", n);
           if (opt->d.a.rw == READ) {
             fprintf(fd, "    if (!_mwis_readable(argv[_mwoptind+%d])) {\n", n);
-            fprintf(fd, "      char buffer[MWBUFSIZ] ;\n");
+            fprintf(fd, "      char buffer[BUFSIZ] ;\n");
             fprintf(fd, "      sprintf(buffer, \"cannot find '%%s' in default path\", argv[_mwoptind+%d]) ;\n", n);
             fprintf(fd, "      mwusage(buffer) ;\n");
             fprintf(fd, "    }\n");
@@ -717,7 +755,7 @@ FILE *fd;
           }
           else if (opt->d.a.rw == WRITE) {
             fprintf(fd, "    if (!_mwis_writable(argv[_mwoptind+%d])) {\n", n);
-            fprintf(fd, "      char buffer[MWBUFSIZ] ;\n");
+            fprintf(fd, "      char buffer[BUFSIZ] ;\n");
             fprintf(fd, "      sprintf(buffer, \"cannot write '%%s'\", argv[_mwoptind+%d]) ;\n", n);
             fprintf(fd, "      mwusage(buffer) ;\n");
             fprintf(fd, "    }\n");
@@ -773,14 +811,14 @@ FILE *fd;
       case FILEARG :
         if (opt->d.a.rw == READ) {
           fprintf(fd, "      if (!_mwis_readable(argv[%si])) {\n", MW_PFX2);
-          fprintf(fd, "        char buffer[MWBUFSIZ] ;\n");
+          fprintf(fd, "        char buffer[BUFSIZ] ;\n");
           fprintf(fd, "        sprintf(buffer, \"cannot find '%%s' in default path\", argv[%si]) ;\n", MW_PFX2);
           fprintf(fd, "        mwusage(buffer) ;\n");
           fprintf(fd, "      }\n");
         }
         else if (opt->d.a.rw == WRITE) {
           fprintf(fd, "      if (!_mwis_writable(argv[%si])) {\n", MW_PFX2);
-          fprintf(fd, "        char buffer[MWBUFSIZ] ;\n");
+          fprintf(fd, "        char buffer[BUFSIZ] ;\n");
           fprintf(fd, "        sprintf(buffer, \"cannot write '%%s'\", argv[%si]) ;\n", MW_PFX2);
           fprintf(fd, "        mwusage(buffer) ;\n");
           fprintf(fd, "      }\n");
@@ -1444,6 +1482,10 @@ char *id;
     fprintf(fd ,"%s", id);
 }
 
+/*
+  Remove quote " found in the first and last positions of 
+  the opt->desc field.
+*/
 
 #ifdef __STDC__
 char *noquote(char* s)
@@ -1454,8 +1496,41 @@ char *s;
 {
   static char buffer[BUFSIZ];
   int l;
+
   l = strlen(s)-2;
   strncpy(buffer, s+1, l);
   buffer[l] = '\0';
   return buffer;
 }
+
+/*
+  Return the input string s corrected to be printed using printf()
+*/
+
+#ifdef __STDC__
+char *make_printable(char* s)
+#else
+char *make_printable(s)
+char *s;
+#endif
+{
+  static char o[BUFSIZ];
+  int i,j;
+
+  for (i=j=0;s[i]!='\0';i++,j++)
+    switch(s[i])
+      {
+      case '"' :
+	j--;
+	break;
+	
+      case '%':
+	o[j++]='%';
+
+      default :
+	o[j]=s[i];
+      }
+  o[j] = '\0';
+  return(o);
+}
+

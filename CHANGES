@@ -2,6 +2,65 @@
 			MegaWave2 : Revision History
 			----------------------------
 
+Version 2.10	11/02/2002
+============
+
+
+- System library update. 
+
+  + The following memory (internal) types have been added 
+	Rawdata : allows to read and write any file format.
+  	Dcurve/Dcurves : same as Fcurve/Fcurves but coordinates on double precision.
+        Flist/Flists : alternate type for Fcurve/Fcurves, where coordinates
+		       are recorded in array (speeds some algoritms).
+        Dlist/Dlists : same as Flist/Flists but for coordinates on double precision.
+  + Automatic generation of code to convert memory types and file formats,
+    see guide #2 "System Library" Section "Conversion between memory types".
+  + System options added (see guide #1 "User's Guide" Section "System options"):
+    -fsum (function summary), -proto (function prototype), -vers (version number).
+  + New system's macros (see guide #1 "User's Guide" Section "System macros"):
+	mwrm : safely remove a module or a user's macro.
+	mwsysmaclist : list all system's macros.
+        mwcmwcheck : check if the MegaWave2 compiler can operate.
+  + New optional environmental variable MW_CHECK_HIDDEN, to check at run-time 
+    if a module or a macro hides another one.
+  + The following system's macros have been renamed :
+	make_mw2doc->mwmakedoc, smw2latex->mwdoclatex,  smw2xdvi->mwdocxdvi.
+  + Wpanel added (panel display facilities and buttons) : it is a small
+    library that allows to handle buttons and bars. It is not documented
+    yet, and will probably change quite much in the future. For the time 
+    being, it is used only in the module llview.c.
+  + Too many bugs fixed to report them !
+
+- Wdevice library update.
+ 
+  + Driver for 16-bits plane added.
+  + Keyboard : now handle non-Ascii keys (as control keys). Now WGetKeyboard()
+    returns a key code in case of a non-printable character (return type is
+    int and no more char). See module llview.c for a demo.
+
+- Documentation update.
+
+  + All three guides have been updated; in particular, morphological structures
+    are now documented in the guide #2 "MegaWave2 System Library";
+    index has been added in each guide.    
+  + Now the three guides are also available in html format
+    (see http://www.cmla.ens-cachan.fr/Cmla/Megawave).
+
+- Module update.
+
+  The module library offers several new possibilities:
+  + curve evolution (mean curvature motion and affine scale space);
+  + image interpolation : bilinear, bicubic, splines;
+  + image reduction : splines, prolate;
+  + image filters : sharpen, total variation denoising, wiener;
+  + new image/detection group (detection of alignments, edges, boundaries);
+  + level lines extraction with bilinear interpolation (flst);
+  + new or enhanced visualization tools (llview, fkview, splot).
+  For a more complete description, please go to 
+	http://www.cmla.ens-cachan.fr/Cmla/Megawave
+
+
 Version 2.00	04/02/2000
 ============
 
@@ -37,7 +96,7 @@ Version 2.00	04/02/2000
 - System library update.
 
 
-Version 1.05	07/05/97
+Version 1.05	07/05/1997
 ============
 
 - Add binaries and libraries for Silicon Graphics SGI IRIX 5.x.
@@ -67,7 +126,7 @@ Version 1.05	07/05/97
 	morphological functions, not documented in the guide #2).
 
 
-Version 1.04	03/06/96
+Version 1.04	03/06/1996
 ============
 
 - Solaris users : we apologize that the libraries for Sparc SunOS 5.xx 
@@ -106,7 +165,7 @@ Version 1.04	03/06/96
 
 - Revision of the guides #1, #2 and #3 to reflect the changes.
 
-Version 1.03	25/07/95
+Version 1.03	25/07/1995
 ============
 
 - System library update: 
@@ -130,7 +189,7 @@ Version 1.03	25/07/95
 - Revision of the guides #1, #2 and #3 to reflect the changes.
 
 
-Version 1.02	17/03/95
+Version 1.02	17/03/1995
 ============
 
 - Add binaries for Sun sparc SunOS 5.xx (Solaris):
@@ -144,16 +203,17 @@ Version 1.02	17/03/95
 - Revision of the guides #1, #2 and #3 to reflect the changes.
 
 
-Version 1.01	23/01/95
+Version 1.01	23/01/1995
 ============
 
 Fix bugs in the "owave" group's modules (doc revision will come later).
 
 
-Version 1.00	20/12/94
+Version 1.00	20/12/1994
 ============
 
-Initial release.
+Initial release of MegaWave2. The former sofware MegaWave is renamed
+MegaWave1 and will not be anymore maintained.
 
 
 

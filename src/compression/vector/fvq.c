@@ -82,13 +82,8 @@ QImage<-Result
 
 /*--- Megawave2 modules definition ---*/
 
-#ifdef __STDC__
-void arencode2(int *, long *, int *, long *, int *, Fsignal, int *, Fimage, double *, Cimage);
-void entropy(Fsignal, double *);
-#else
-void arencode2();
-void entropy();
-#endif
+extern void arencode2();
+extern void entropy();
 
 /*--- Constants ---*/
 

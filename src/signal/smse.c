@@ -3,7 +3,7 @@
 name = {smse};
 author = {"Jean-Pierre D'Ales, Jacques Froment"};
 function = {"Computes the mean square error between two fsignals"};
-version = {"1.00"};
+version = {"1.01"};
 usage = {
 'n'->Norm      "flag to normalize the signals",
 Signal1->Sig1  "original signal", 
@@ -151,8 +151,8 @@ smse(Sig1, Sig2, Norm, SNR, PSNR, MSE, MRD)
     if (max1 > min1)
 	mwdebug("-> Maximal relative difference = %3.1lf\n",100.0*DMAX/(max1-min1));
   
-    mwdebug("-> Peak signal to noise ratio : PSNR = %lg db\n", PSNR);
-    mwdebug("-> Signal to noise ratio : SNR = %lg db\n", SNR);
-    mwdebug("-> Mean square error : MSE = %lg\n",MSE);          
+    mwdebug("-> Peak signal to noise ratio : PSNR = %lg db\n", *PSNR);
+    mwdebug("-> Signal to noise ratio : SNR = %lg db\n", *SNR);
+    mwdebug("-> Mean square error : MSE = %lg\n",*MSE);          
 
 }

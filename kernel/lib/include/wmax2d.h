@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    wmax2d.h
    
-   Vers. 1.0
-   (C) 1993 Jacques Froment
+   Vers. 1.1
+   (C) 1993-2000 Jacques Froment
    Internal Input/Output for the 2D Wavelet Maxima structures
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -19,7 +19,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef SunOS
 #include <sys/types.h>
 #endif
-#include "string_size.h"
 #include "wtrans2d.h"
 
 /* Preset value for an unknown argument */

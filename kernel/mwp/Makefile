@@ -1,7 +1,7 @@
 # Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.07 with arch = 'Linux ix86' option = ''
 #-----------------------------------------------------------------------------
 # Makefile.in used to create Makefile using macro mw2config
-# MegaWave2 preprocessor : Copyright (c) J.Froment and S.Parrino 1995-99
+# MegaWave2 preprocessor : Copyright (c) J.Froment and S.Parrino 1995-2001
 #-----------------------------------------------------------------------------
 # MAKEFILE for the MegaWave2 preprocesseur on Unix Systems 
 # WARNING : the files follow K&R and not ANSI C. (should be changed).
@@ -152,7 +152,7 @@ install :
 	cp $(TARGET) $(BINDIR)/`basename $(TARGET)`
 	mkdir   -p $(PRIVATE_MEGAWAVE2)
 	cp $(MEGAWAVEIOFILE) $(PRIVATE_MEGAWAVE2)/$(MEGAWAVEIOFILE)
-	-rm $(BINDIR)/u`basename $(TARGET)`
+	-rm -f $(BINDIR)/u`basename $(TARGET)`
 	cp -p $(BINDIR)/`basename $(TARGET)` $(BINDIR)/u`basename $(TARGET)`
 
 sysinstall :
@@ -163,7 +163,7 @@ sysinstall :
 	chmod 755 $(SYSBINDIR)/*
 	umask $(MODE); cp  $(MEGAWAVEIOFILE) $(PUBLIC_MEGAWAVE2)/$(MEGAWAVEIOFILE)
 	chmod 644 $(PUBLIC_MEGAWAVE2)/$(MEGAWAVEIOFILE)
-	-rm $(SYSBINDIR)/u`basename $(TARGET)`
+	-rm -f $(SYSBINDIR)/u`basename $(TARGET)`
 	cp -p $(SYSBINDIR)/`basename $(TARGET)` $(SYSBINDIR)/u`basename $(TARGET)`
 
 clean :

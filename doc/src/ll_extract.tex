@@ -1,0 +1,21 @@
+This module extract level lines from a Fimage.
+
+\begin{itemize}
+\item if the \verb+-z+ option is used, the (zero-order) flst is first
+computed with area parameter $area$ 
+(\verb+flst+ module), and then all level lines are extracted
+with the \verb+flst_boundary+ module.
+These lines are made of concatenations of segment of length 1. 
+As always when using the zero-order flst, be sure that your image is
+reasonably quantized before calling this module, since all existing
+grey levels are kept in the computation of the flst.
+\item if not, then the bilinear flst (\verb+flst_bilinear+ module) is used 
+and the resulting tree is quantized on the grid $levels$ or
+$offset + n \times step$
+with the \verb+flstb_quantize+ module. Then, all level lines corresponding
+to these levels are computed and sampled with approximately $prec$ points
+per pixel with the \verb+flstb_boundary+ module.
+\end{itemize}
+
+The resulting fcurves are stored in a Flists. In both cases, the flst tree
+can be precomputed and passed to the program via the \verb+-t+ option.

@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {ccview};
-  version = {"1.2"};
+  version = {"1.12"};
   author = {"Jacques Froment"};
   function = {"View a color image on a window"};
   usage = {
@@ -11,19 +11,21 @@
       "Y coordinate for the upper-left corner of the Window",
   'z':[zoom=1.0]->zoom
       "Zoom factor",
+  'o':[order=0]->order      
+      "Zoom order: 0,1=linear,-3=cubic,3,5..11=spline, default 0",
   'N'->no_refresh
       "Do not refresh the window (library call)",
-  ccimage->image
+   ccimage->image
         "Input image (should be a ccimage)",
    notused->window 
       "Window to view the image (internal use)"
   };
 */
-/*--- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v1.12: added -o option + several minor modifications (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 include file */
 #include "mw.h"
 
 /* Include the window since we use windows facility */
@@ -69,8 +71,8 @@ Wframe *ImageWindow;
 void *param;          /* Users's parameters: don't forget the cast ! */
 
 {
-  int x1,y1,wz,event,button_mask,ret,imsize;
-  char c,mess[90];
+  int x1,y1,wz,event,button_mask,ret,imsize,c;
+  char mess[90];
   int nred,ngreen,nblue,l;
   ccview_Param images;
   Ccimage image;
@@ -190,7 +192,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
       break;
 
      case W_KEYPRESS:
-      c = (char) WGetKeyboard();
+      c = WGetKeyboard();
       switch(c)
 	{
 	case 'q': case 'Q': ret =-1;
@@ -200,7 +202,8 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	  break;
 
 	default:
-	  mwerror(WARNING,1,"Unrecognized Key '%c'. Type H for Help.\n",c);
+	  if (c>>8==0)
+	    mwerror(WARNING,1,"Unrecognized Key '%c'. Type H for Help.\n",c);
 	}
       oldevent = event; 
       break;
@@ -218,9 +221,9 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 }
 
 
-ccview(image,x0,y0,zoom,no_refresh,window)
+void ccview(image,x0,y0,zoom,order,no_refresh,window)
 
-int *x0,*y0,*no_refresh;
+int *x0,*y0,*no_refresh,*order;
 float *zoom;
 Ccimage image;
 char *window;
@@ -232,12 +235,18 @@ char *window;
   ccview_Param param;
   int i,j;
   char text[BUFSIZ];
+  float inverse_zoom;
 
   if (*zoom != 1) 
     {
       zimage = mw_change_ccimage(zimage,0,0);
       if (zimage == NULL) mwerror(FATAL,1,"Not enough memory\n");
-      cczoom(image,zimage,NULL,NULL,zoom);
+      if (*zoom>1.0) 
+	cczoom(image,zimage,NULL,NULL,zoom,order,NULL);
+      else {
+	inverse_zoom = 1./(*zoom);
+	cczoom(image,zimage,NULL,NULL,&inverse_zoom,order,(char *)1);
+      }
       sprintf(text,"%s (%.1fX)",image->name,*zoom);
       mw_delete_ccimage(image);
       image = zimage;

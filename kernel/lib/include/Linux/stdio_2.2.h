@@ -472,15 +472,16 @@ extern void rewind __P ((FILE *__stream));
    are originally defined in the Large File Support API.  */
 
 /* Types needed in these functions.  */
-#ifndef off_t
-# ifndef __USE_FILE_OFFSET64
-typedef __off_t off_t;
-# else
-typedef __off64_t off_t;
-# endif
-# define off_t off_t
-#endif
-
+/* !!!! On Linux kernel 2.4.3, defined elsewhere !!!! 
+  #ifndef off_t
+  # ifndef __USE_FILE_OFFSET64
+  typedef __off_t off_t;
+  # else
+  typedef __off64_t off_t;
+  # endif
+  # define off_t off_t
+  #endif
+*/
 #if defined __USE_LARGEFILE64 && !defined off64_t
 typedef __off64_t off64_t;
 # define off64_t off64_t

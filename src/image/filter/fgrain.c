@@ -1,7 +1,7 @@
-/*----------------------------- MegaWave Module -----------------------------*/ 
+/*----------------------------- MegaWave Module ----------------------------*/ 
 /* mwcommand 
   name = {fgrain}; 
-  version = {"1.0"}; 
+  version = {"1.1"}; 
   author = {"Pascal Monasse, Frederic Guichard"}; 
   function = {"Grain filter of an image"}; 
   usage = { 
@@ -10,14 +10,16 @@
     image_out <- pFloatImageOutput "Output fimage" 
     }; 
 */ 
-/*--- MegaWave2 - Copyright (C)1994 Jacques Froment. All Rights Reserved. ---*/ 
- 
-/* Include always the MegaWave2 Library */ 
+
 #include "mw.h" 
+
+extern void flst();
+extern void flst_reconstruct();
  
-/* This removes the shapes from the tree associated to pFloatImageInput that are too small 
-   (threshold *pMinArea). As a consequence all the remaining shapes of pFloatImageOutput are 
-   of area larger or equal than *pMinArea */ 
+/* This removes the shapes from the tree associated to pFloatImageInput 
+that are too small (threshold *pMinArea). As a consequence all the remaining 
+shapes of pFloatImageOutput are of area larger or equal than *pMinArea */ 
+
 void fgrain(pMinArea, pFloatImageInput, pFloatImageOutput) 
 int *pMinArea; 
 Fimage pFloatImageInput, pFloatImageOutput; 
@@ -25,14 +27,19 @@ Fimage pFloatImageInput, pFloatImageOutput;
   int i; 
   Shapes pTree; 
  
-  if(mw_change_fimage(pFloatImageOutput, pFloatImageInput->nrow, pFloatImageInput->ncol) == NULL) 
-    mwerror(FATAL, 1, "fgrain --> Not enough memory to allocate the output image"); 
+  if(mw_change_fimage(pFloatImageOutput, pFloatImageInput->nrow, 
+		      pFloatImageInput->ncol) == NULL) 
+    mwerror(FATAL, 1, 
+	    "fgrain --> Not enough memory to allocate the output image"); 
   if((pTree = mw_new_shapes()) == NULL) 
-    mwerror(FATAL, 1, "fgrain --> Not enough memory to allocate the tree of shapes"); 
+    mwerror(FATAL, 1, 
+	    "fgrain --> Not enough memory to allocate the tree of shapes"); 
+
   /* Compute the Level Sets Transform of the input image */ 
   flst(NULL, pFloatImageInput, pTree, NULL, NULL); 
  
-  /* Kill too small grains. Bound i>0 because it is forbidden to delete the root, at index 0 */ 
+  /* Kill too small grains. 
+     Bound i>0 because it is forbidden to delete the root, at index 0 */ 
   for(i = pTree->nb_shapes-1; i > 0; i--) 
     if(pTree->the_shapes[i].area < *pMinArea) 
       pTree->the_shapes[i].removed = (char)1; 

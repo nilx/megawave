@@ -1,16 +1,16 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
 name = {biowave1};
-version = {"1.2"};
+version = {"1.3"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Computes the biorthogonal wavelet transform of an 1D signal"};
 usage = {
 'r':[RecursNum=1]->NumRec [1,20]
-	"Number of level", 
+	"Number of levels (default 1)", 
 'e':[EdgeMode=2]->Edge [0,2]
-	"Edge processing mode", 
+	"Edge processing mode (0/1/2, default 2)", 
 'n':[FilterNorm=0]->FilterNorm [0,2]
-	"Normalization mode for filter bank", 
+	"Normalization mode for filter bank (0/1/2, default 0)", 
 Signal->Signal
 	"Input signal (fsignal)", 
 WavTrans<-Output
@@ -31,11 +31,7 @@ ImpulseResponse2->Ri2
 #include  "mw.h"
 
 /*--- Megawave2 modules ---*/
-#ifdef __STDC__
-void sconvolve(Fsignal, Fsignal, int *, int *, int *, int *, int *, int *, Fsignal, Fimage);
-#else
-void sconvolve();
-#endif
+extern void sconvolve();
 
 /*--- Constants ---*/
 

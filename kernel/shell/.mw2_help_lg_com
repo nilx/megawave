@@ -1,16 +1,41 @@
-#! /bin/sh
-#-------------------------- Shell MegaWave2 Utility --------------------------#
-#
-#  This Utility has to be call by a Shell MegaWave2 Macro, when an error
-#  occurs in the syntax of the command-line arguments .
-#
-#-- MegaWave2 - Copyright (C) 1988-96 Jacques Froment. All Rights Reserved. --#
+#!/bin/sh
+#----------------------------------------------------------------------------#
+# .mw2_help_lg_com 
+# V 1.0
+# Not a regular system's macro : called by any system's macro in case
+# of error in the syntax.
+#----------------------------------------------------------------------------
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
 
+# If MW_CHECK_HIDDEN is set, check for hidden macro
+if [ "$MW_CHECK_HIDDEN" = "1" ]; then
+  mwwhere -bin $_Prog > /dev/null
+  if [ $? -eq 2 ]; then
+    echo "MegaWave2 warning ($_Prog) : macro of same name hidden by this one !" 1>&2
+  fi
+fi
+
+# Output the header and usage
 echo '' 1>&2
 echo "   \\\\\ ${_Prog=(unknown)} /// Vers ${_Vers=(unknown)}" 1>&2
-echo "   Shell MegaWave2 Macro : (C) ${_Date=(unknown)} ${_Auth=(unknown)} " 1>&2
+
+d=`dirname $0`
+if [ "$d" = "$MEGAWAVE2/sys/shell" ]; then
+ mwechon "   System's"
+else
+ mwechon "   User's"
+fi
+echo " MegaWave2 Macro : (C) ${_Date=(unknown)} ${_Auth=(unknown)} " 1>&2
 echo "   ${_Labo=CMLA, ENS Cachan, 94235 Cachan cedex, France.}" 1>&2
-echo "   MegaWave2 (C) 1988-2000 J.Froment. All Rights Reserved." 1>&2
+
+year=`date '+%Y'`
+echo "   MegaWave2 (C) 1988-$year J.Froment. All Rights Reserved." 1>&2
 echo '' 1>&2
 echo "Usage : ${_Prog=(unknown)} ${_Usage=(unknown)}" 1>&2
 echo '' 1>&2

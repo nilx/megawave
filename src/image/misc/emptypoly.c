@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {emptypoly};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Jacques Froment"};
   function = {"Empty the polygons contained in a cimage"};
   usage = {
@@ -9,14 +9,14 @@
   cimage_empty<-B "the same cimage with empty polygons (output)"
   };
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v1.1: return result (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 include file */
 #include "mw.h"
 
-emptypoly(A,B)
+Cimage emptypoly(A,B)
 
 Cimage A,B;
 
@@ -47,7 +47,8 @@ Cimage A,B;
 	  !(*P6) || !(*P7) || !(*P8))
 	*ptrB = *ptrA;
     }
-  
+ 
+  return(B);
 }
 
 

@@ -1,5 +1,40 @@
-This function allows to plot on the screen a signal of fsignal type.
+This module allows to visualize a Fsignal on the screen.
 
-Type 'H' in the window to get an help for how to use the mouse and
-the keyboard.
-Facilities include zooming/unzooming and shifting of the signal.
+\medskip
+
+The \verb+-x+ and \verb+-y+ options specify the position of the
+window on the screen, and the the \verb+-X+ and \verb+-Y+ options 
+rule the wiindow size. This module can be called with \verb+-n+
+and \verb+-o+ options to store the display image instead of
+visualizing the result on the screen.
+
+\bigskip
+
+Interactive commands:
+
+\bigskip
+
+{\bf Keyboard:}
+\begin{tabular}{lll}
+&  Q:  &Quit.\\
+&  H:  &Help.\\
+&  G:  &Grid mode (switch).\\
+&  S:  &Scaling (zoom y axis).\\
+&  U:  &Unzoom (x and y).\\
+&  P:  &Point/Line/boxes representation (switch).\\
+&  L/Left arrow:   &Go Left.\\
+&  R/Right arrow:  &Go Right.\\
+&  Up arrow:       &Go Up.\\
+&  Down arrow:     &Go Down.\\
+\end{tabular}
+
+\bigskip
+
+{\bf Mouse:}
+\begin{tabular}{lll}
+&  Left button:    & Select a region of interest. \\
+&  Middle button:  & Restore the original display region.\\
+&  Right button:   & Zoom on the selected x location.\\
+\end{tabular}
+
+

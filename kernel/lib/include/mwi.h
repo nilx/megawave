@@ -1,3 +1,11 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mwi.h
+   
+   Vers. 1.1
+   (C) 1993-2000 Jacques Froment & Sylvain Parrino
+   Include file for module's interpretor structure
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
 been developed for research purposes and it comes without any warranty.
@@ -16,6 +24,7 @@ struct Mwiline {
   char *group;
   char *function;
   char *usage;
+  char *fsummary;
 };
 
 typedef struct Mwiline Mwiline;

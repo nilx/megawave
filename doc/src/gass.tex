@@ -1,0 +1,69 @@
+This module implements numerically the Affine Scale Space of curves.
+An initial curve $s\mapsto {\mathbf C}(s,0)$ evolves in function 
+of time $t$ according to the 
+equation
+$$\frac{\partial {\mathbf C}}{\partial t}(s,t) 
+= \kappa^{1/3}(s,t) \; {\mathbf N}(s,t),$$
+where $\kappa$ represents the local curvature of $\mathbf C$ and
+$\mathbf N$ the normal vector to $\mathbf C$. This equation is
+the geometric equivalent of the scalar Affine Morphological Scale
+Space (see module \verb+amss+).
+The Affine Scale Space is the only regular semigroup that preserves 
+inclusion and that commutes with special affine transforms of the plane.
+
+\medskip
+
+The numerical scheme used in this module is based on the iteration
+of a geometric semi-local operator called {\em affine erosion}.
+This operator, described in [1], is ``fully consistent'' in the
+sense that it satisfies all the axioms that define the Affine Scale
+Space (except the semigroup property of course, otherwise it would be
+the Affine Scale Space itself). Indeed, it preserves inclusion
+and commutes with special affine transforms.
+
+\medskip
+
+This module computes the evolution of each curve of the Dlists {\em in}
+and puts it in the Dlists {\em out}.
+The parameter {\em last} defines the final scale (time) of evolution.
+This scale is normalized in such a way that a circle with radius $t$
+should vanish exactly at scale $t$. Since this normalization is not 
+linear on $t$, it imposes to specify a {\em first} scale when the 
+evolution has to be iterated. The {\em eps} parameter tells the program
+how precise it should be in the representation of curves. Combined
+with the {\em r} parameter, it defines the spatial quantization step
+$\delta = 10^{-eps} \cdot r$. 
+All the curves used in the algorithm will
+be sampled in such a way that the distance between 2 successive points
+lies in $[\delta,2\sqrt 2\delta]$. If not automatically set, the {\em r}
+parameter is defined by the maximum distance to origin given by an
+input point.
+
+The default values of {\em eps} is 3. For more accurate computations,
+you can use greater values (3.5, 4, 5, ...) but remember that
+the cost in memory and in computation time depends linearly on $10^{eps}$.
+
+\medskip
+
+The scale quantization can be fixed in two ways: either by specifying
+a maximal scale step or by specifying a minimum number of iterations.
+These are only bounds since the algorithm may (and will) have to change
+this value for some iterations due to the fact that inflexion points
+vanish. Hence, the actual scale step will be smaller and the actual
+number of iterations will be grater. The default is a minimum of 5 iterations.
+
+\medskip
+
+The \verb+-v+ option displays some information at each iteration :
+the number of convex components found at the begining of the iteration,
+the effective scale of erosion applied, and the total evolution scale
+achieved so far.
+
+\bigskip
+
+{\Large \bf References}
+
+\medskip
+
+[1] L.Moisan, ``Affine Plane Curve Evolution : a Fully Consistent Scheme'', 
+{\it IEEE Transactions On Image Processing}, vol. 7:3, pp. 411-420, 1998.

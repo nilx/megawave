@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cmimage.c
    
-   Vers. 1.1
-   (C) 1999 Jacques Froment
+   Vers. 1.2
+   (C) 1999-2002 Jacques Froment
    Basic memory routines for the cmorpho_line, cmorpho_set & cmimage internal types
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -81,7 +81,7 @@ void mw_delete_cmorpho_line(cmorpho_line)
 
 /* Copy a cmorpho_line into another cmorpho_line */
 
-void mw_copy_cmorpho_line(in, out)
+Cmorpho_line mw_copy_cmorpho_line(in, out)
 
 Cmorpho_line in,out;
 
@@ -90,9 +90,18 @@ Cmorpho_line in,out;
 
   if ((!in) || (!out))
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_cmorpho_line] NULL input or output cmorpho_line\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_cmorpho_line] NULL input cmorpho_line\n");
+      return(NULL);
+    }
+
+  if (!out)
+    {
+      out=mw_new_cmorpho_line();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_cmorpho_line] Not enough memory to create a cmorpho_line !\n");
+	  return(NULL);
+	}
     }
   out->minvalue = in->minvalue;
   out->maxvalue = in->maxvalue;
@@ -101,16 +110,17 @@ Cmorpho_line in,out;
   if ( ((out->first_point = mw_new_point_curve()) == NULL) ||
       ((out->first_type = mw_new_point_type()) == NULL) )
     {
-      mwerror(FATAL, 1,"Not enough memory to create a cmorpho_line\n");
-      return;
+      mwerror(ERROR, 0,"Not enough memory to create a cmorpho_line\n");
+      return(NULL);
     }
   mw_copy_point_curve(in->first_point,out->first_point);
   mw_copy_point_type(in->first_type,out->first_type);
+  return(out);
 }
 
 /* Return the number of points into a cmorpho_line */
 
-unsigned int mw_cmorpho_line_length(cmorpho_line)
+unsigned int mw_length_cmorpho_line(cmorpho_line)
 
 Cmorpho_line cmorpho_line;
 
@@ -130,7 +140,7 @@ Cmorpho_line cmorpho_line;
 	   (t != NULL)&&(t->next != tfirst); m++, t=t->next);
 
       if ( (n*m != 0) && (n != m) )
-	mwerror(INTERNAL,1,"[mw_cmorpho_line_length] Inconsistent Cmorpho_line structure \n");
+	mwerror(INTERNAL,1,"[mw_length_cmorpho_line] Inconsistent Cmorpho_line structure \n");
     }
   return(n);
 }
@@ -138,7 +148,7 @@ Cmorpho_line cmorpho_line;
 /* Compute the num field of a cmorpho_line chain */
 /* Return the number of cmorpho_lines             */
 
-unsigned int mw_cmorpho_line_num(ml_first)
+unsigned int mw_num_cmorpho_line(ml_first)
 
 Cmorpho_line ml_first;
 
@@ -149,7 +159,7 @@ Cmorpho_line ml_first;
   if (!ml_first)
     {
       mwerror(ERROR, 0,
-	      "[mw_cmorpho_line_num] NULL input cmorpho_line\n");
+	      "[mw_num_cmorpho_line] NULL input cmorpho_line\n");
       return(0);
     }  
   for (ml=ml_first, n=1; ml; ml->num=n, ml=ml->next, n++);
@@ -218,7 +228,7 @@ void mw_delete_cfmorpho_line(cfmorpho_line)
 
 /* Copy a cfmorpho_line into another cfmorpho_line */
 
-void mw_copy_cfmorpho_line(in, out)
+Cfmorpho_line mw_copy_cfmorpho_line(in, out)
 
 Cfmorpho_line in,out;
 
@@ -226,11 +236,20 @@ Cfmorpho_line in,out;
   Point_fcurve pc,qc0,qc1;
   Point_type pt,qt0,qt1;
 
-  if ((!in) || (!out))
+  if (!in) 
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_cfmorpho_line] NULL input or output cfmorpho_line\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_cfmorpho_line] NULL input cfmorpho_line\n");
+      return(NULL);
+    }
+
+  if (!out)
+    {
+      out=mw_new_cfmorpho_line();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_cfmorpho_line] Not enough memory to create a cfmorpho_line !\n");
+	  return(NULL);
+	}
     }
   out->minvalue = in->minvalue;
   out->maxvalue = in->maxvalue;
@@ -244,8 +263,8 @@ Cfmorpho_line in,out;
       if (qc1 == NULL)
 	    {
 	      mw_delete_point_fcurve(qc1);
-	      mwerror(FATAL, 1,"Not enough memory to create a cfmorpho_line\n");
-	      return;
+	      mwerror(ERROR, 0,"Not enough memory to create a cfmorpho_line\n");
+	      return(NULL);
 	    }
       qc1->x = pc->x;
       qc1->y = pc->y;
@@ -263,8 +282,8 @@ Cfmorpho_line in,out;
 	    {
 	      mw_delete_point_fcurve(out->first_point);
 	      mw_delete_point_type(qt1);
-	      mwerror(FATAL, 1,"Not enough memory to create a cfmorpho_line\n");
-	      return;
+	      mwerror(ERROR, 0,"Not enough memory to create a cfmorpho_line\n");
+	      return(NULL);
 	    }
       qt1->type = pt->type;
       qt1->previous = qt0;
@@ -272,11 +291,12 @@ Cfmorpho_line in,out;
       else qt0->next = qt1;
       qt0 = qt1;
     }
+  return(out);
 }
 
 /* Return the number of points into a cfmorpho_line */
 
-unsigned int mw_cfmorpho_line_length(cfmorpho_line)
+unsigned int mw_length_cfmorpho_line(cfmorpho_line)
 
 Cfmorpho_line cfmorpho_line;
 
@@ -296,7 +316,7 @@ Cfmorpho_line cfmorpho_line;
 	   (t != NULL)&&(t->next != tfirst); m++, t=t->next);
 
       if ( (n*m != 0) && (n != m) )
-	mwerror(INTERNAL,1,"[mw_cfmorpho_line_length] Inconsistent Cfmorpho_line structure \n");
+	mwerror(INTERNAL,1,"[mw_length_cfmorpho_line] Inconsistent Cfmorpho_line structure \n");
     }
   return(n);
 }
@@ -349,7 +369,7 @@ void mw_delete_cmorpho_set(cmorpho_set)
       return;
     }
 
-  if (cmorpho_set->first_segment) mw_delete_segment(cmorpho_set->first_segment);
+  if (cmorpho_set->first_segment) mw_delete_hsegment(cmorpho_set->first_segment);
   cmorpho_set->first_segment = cmorpho_set->last_segment = NULL;
   cmorpho_set->neighbor = NULL;
   free(cmorpho_set);
@@ -358,19 +378,28 @@ void mw_delete_cmorpho_set(cmorpho_set)
 
 /* Copy a cmorpho_set into another cmorpho_set */
 
-void mw_copy_cmorpho_set(in, out)
+Cmorpho_set mw_copy_cmorpho_set(in, out)
 
 Cmorpho_set in,out;
 
 { 
-  Segment pc,qc0,qc1;
-  Segment s,s0,s1;
+  Hsegment pc,qc0,qc1;
+  Hsegment s,s0,s1;
 
-  if ((!in) || (!out))
+  if (!in)
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_cmorpho_set] NULL input or output cmorpho_set\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_cmorpho_set] NULL input cmorpho_set\n");
+      return(NULL);
+    }
+
+  if (!out)
+    {
+      out=mw_new_cmorpho_set();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_cmorpho_set] Not enough memory to create a cmorpho_set !\n");
+	  return(NULL);
+	}
     }
   out->minvalue = in->minvalue;
   out->maxvalue = in->maxvalue;
@@ -381,12 +410,12 @@ Cmorpho_set in,out;
   s0 = s1 = NULL;
   for (s=in->first_segment; s; s=s->next)
     {
-      s1 = mw_new_segment();
+      s1 = mw_new_hsegment();
       if (s1 == NULL)
 	    {
-	      mw_delete_segment(s1);
-	      mwerror(FATAL, 1,"Not enough memory to create a cmorpho_set\n");
-	      return;
+	      mw_delete_hsegment(s1);
+	      mwerror(ERROR, 0,"Not enough memory to create a cmorpho_set\n");
+	      return(NULL);
 	    }
       s1->xstart = s->xstart;
       s1->xend = s->xend;
@@ -396,17 +425,18 @@ Cmorpho_set in,out;
       else s0->next = s1;
       s0 = s1;
     }
+  return(out);
 }
 
 /* Return the number of segments into a cmorpho_set */
 
-unsigned int mw_cmorpho_set_length(cmorpho_set)
+unsigned int mw_length_cmorpho_set(cmorpho_set)
 
 Cmorpho_set cmorpho_set;
 
 { 
   unsigned int n;
-  Segment s,sfirst;
+  Hsegment s,sfirst;
 
   if ((!cmorpho_set) || (!cmorpho_set->first_segment)) return(0);
 
@@ -475,7 +505,7 @@ void mw_delete_cmorpho_sets(cmorpho_sets)
 
 /* Copy a cmorpho_sets into another cmorpho_sets from the given starting point */
 
-void mw_copy_cmorpho_sets(in, out)
+Cmorpho_sets mw_copy_cmorpho_sets(in, out)
 
 Cmorpho_sets in,out;
 
@@ -483,12 +513,21 @@ Cmorpho_sets in,out;
   Cmorpho_sets iss,oldiss,newiss,p,q,qq,nin,nout;
   unsigned int i,n,num;
 
-  if ((!in) || (!out))
+  if (!in)
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_cmorpho_sets] NULL input or output cmorpho_sets\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_cmorpho_sets] NULL input cmorpho_sets\n");
+      return(NULL);
     }
+  if (!out)
+    {
+      out=mw_new_cmorpho_sets();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_cmorpho_sets] Not enough memory to create a cmorpho_sets !\n");
+	  return(NULL);
+	}
+    }
+
   /* First, copy the Cmorpho set */
   newiss = out;
   oldiss = NULL;
@@ -497,14 +536,14 @@ Cmorpho_sets in,out;
       if (newiss != out) newiss = mw_new_cmorpho_sets();
       if (!newiss)
 	    {
-	      mwerror(FATAL, 1,"Not enough memory to create a cmorpho_sets\n");
-	      return;
+	      mwerror(ERROR, 0,"Not enough memory to create a cmorpho_sets\n");
+	      return(NULL);
 	    }     
       if (!newiss->cmorphoset) newiss->cmorphoset = mw_new_cmorpho_set();
       if (!newiss->cmorphoset) 
 	    {
-	      mwerror(FATAL, 1,"Not enough memory to create a cmorpho_sets\n");
-	      return;
+	      mwerror(ERROR, 0,"Not enough memory to create a cmorpho_sets\n");
+	      return(NULL);
 	    }     
       mw_copy_cmorpho_set(p->cmorphoset, newiss->cmorphoset);      
       newiss->previous = oldiss;
@@ -526,13 +565,13 @@ Cmorpho_sets in,out;
 	for (qq=out; qq && qq->cmorphoset && (qq->cmorphoset->num != n); qq=qq->next);
 	if (!qq || !(qq->cmorphoset)) 
 	  {
-	    mwerror(FATAL, 1,"Cannot copy cmorpho sets : unconsistent neighbor list in input\n");
-	    return;
+	    mwerror(ERROR, 0,"Cannot copy cmorpho sets : unconsistent neighbor list in input\n");
+	    return(NULL);
 	  }
 	if ((newiss=mw_new_cmorpho_sets())==NULL)
 	    {
-	      mwerror(FATAL, 1,"Not enough memory to create a cmorpho_sets\n");	  
-	      return;
+	      mwerror(ERROR, 0,"Not enough memory to create a cmorpho_sets\n");	  
+	      return(NULL);
 	    }
 	newiss->cmorphoset = qq->cmorphoset;
 	if (q->cmorphoset->neighbor == NULL) q->cmorphoset->neighbor=newiss;
@@ -540,11 +579,12 @@ Cmorpho_sets in,out;
 	newiss->previous = oldiss;
 	oldiss = newiss;
       }
+  return(out);
 }
 
 /* Return the number of cmorpho sets into a cmorpho_sets */
 
-unsigned int mw_cmorpho_sets_length(cmorpho_sets)
+unsigned int mw_length_cmorpho_sets(cmorpho_sets)
 
 Cmorpho_sets cmorpho_sets;
 
@@ -563,7 +603,7 @@ Cmorpho_sets cmorpho_sets;
 /* Compute the num field of a cmorpho_sets chain                      */
 /* Return the number of cmorpho_sets                                    */
 
-unsigned int mw_cmorpho_sets_num(mss_first)
+unsigned int mw_num_cmorpho_sets(mss_first)
 
 Cmorpho_sets mss_first;
 
@@ -575,7 +615,7 @@ Cmorpho_sets mss_first;
   if (!mss_first)
     {
       mwerror(ERROR, 0,
-	      "[mw_cmorpho_sets_num] NULL input cmorpho_sets\n");
+	      "[mw_num_cmorpho_sets] NULL input cmorpho_sets\n");
       return;
     }  
   for (mss=mss_first, n=1; mss && mss->cmorphoset; 
@@ -679,7 +719,7 @@ void mw_delete_cmimage(cmimage)
 
 /* Copy a cmimage into another one */
 
-void mw_copy_cmimage(in, out)
+Cmimage mw_copy_cmimage(in, out)
 
 Cmimage in,out;
 
@@ -687,11 +727,20 @@ Cmimage in,out;
   Cmorpho_sets iss,oldiss,newiss,p,q,qq,nin,nout;
   unsigned int i,n,num;
 
-  if ((!in) || (!out))
+  if (!in) 
     {
-      mwerror(ERROR, 0,
-	      "[mw_copy_cmimage] NULL input or output cmimage\n");
-      return;
+      mwerror(ERROR, 0,"[mw_copy_cmimage] NULL input cmimage\n");
+      return(NULL);
+    }
+
+  if (!out)
+    {
+      out=mw_new_cmimage();
+      if (!out) 
+	{
+	  mwerror(ERROR,0,"[mw_copy_cmimage] Not enough memory to create a cmimage !\n");
+	  return(NULL);
+	}
     }
 
   strcpy(out->cmt,in->cmt);
@@ -705,8 +754,8 @@ Cmimage in,out;
       out->first_ml = mw_new_cmorpho_line();
       if (!out->first_ml)
 	{
-	  mwerror(FATAL, 1,"Not enough memory to create a cmimage\n");    
-	  return;
+	  mwerror(ERROR, 0,"Not enough memory to create a cmimage\n");    
+	  return(NULL);
 	}
       mw_copy_cmorpho_line(in->first_ml,out->first_ml);
     }
@@ -715,8 +764,8 @@ Cmimage in,out;
       out->first_fml = mw_new_cfmorpho_line();
       if (!out->first_fml)
 	{
-	  mwerror(FATAL, 1,"Not enough memory to create a cmimage\n");    
-	  return;
+	  mwerror(ERROR, 0,"Not enough memory to create a cmimage\n");    
+	  return(NULL);
 	}
       mw_copy_cfmorpho_line(in->first_fml,out->first_fml);
     }
@@ -725,16 +774,17 @@ Cmimage in,out;
       out->first_ms = mw_new_cmorpho_sets();
       if (!out->first_ms)
 	{
-	  mwerror(FATAL, 1,"Not enough memory to create a cmimage\n");    
-	  return;
+	  mwerror(ERROR, 0,"Not enough memory to create a cmimage\n");    
+	  return(NULL);
 	}
       mw_copy_cmorpho_sets(in->first_ms,out->first_ms);
     }
+  return(out);
 }
 
 /* Return the number of cmorpho lines into a cmimage */
 
-unsigned int mw_cmimage_length_ml(cmimage)
+unsigned int mw_length_ml_cmimage(cmimage)
 
 Cmimage cmimage;
 
@@ -751,7 +801,7 @@ Cmimage cmimage;
 
 /* Return the number of cfmorpho lines into a cmimage */
 
-unsigned int mw_cmimage_length_fml(cmimage)
+unsigned int mw_length_fml_cmimage(cmimage)
 
 Cmimage cmimage;
 
@@ -768,7 +818,7 @@ Cmimage cmimage;
 
 /* Return the number of cmorpho sets into a cmimage */
 
-unsigned int mw_cmimage_length_ms(cmimage)
+unsigned int mw_length_ms_cmimage(cmimage)
 
 Cmimage cmimage;
 
@@ -777,7 +827,7 @@ Cmimage cmimage;
   Cfmorpho_line pfirst,p;
 
   if ((!cmimage) || (!cmimage->first_ms)) return(0);
-  return(mw_cmorpho_sets_length(cmimage->first_ms));
+  return(mw_length_cmorpho_sets(cmimage->first_ms));
 }
 
 

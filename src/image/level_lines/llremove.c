@@ -12,20 +12,13 @@ usage = {
   output<-llremove "Output fimage with missing level lines"
   };
 */
-/*-------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
 
-#ifdef __STDC__
-Mimage ml_decompose(Mimage,int*,char *,Fimage);
-Fimage ml_reconstruct(char*,Mimage);
-Mimage ll_remove(Mimage,int *L);
-#else
-Mimage ml_decompose();
-Fimage ml_reconstruct();
-Mimage ll_remove();
-#endif
+extern Mimage ml_decompose();
+extern Fimage ml_reconstruct();
+extern Mimage ll_remove();
 
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    polygon.c
    
-   Vers. 1.12
-   (C) 1993-96 Jacques Froment
+   Vers. 1.13
+   (C) 1993-2002 Jacques Froment
    Basic memory routines for the polygon internal type
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -124,7 +124,7 @@ void mw_delete_polygon(polygon)
 
 /* Return the number of point into a polygon */
 
-unsigned int mw_polygon_length(poly)
+unsigned int mw_length_polygon(poly)
 
 Polygon poly;
 
@@ -198,7 +198,7 @@ void mw_delete_polygons(polygons)
 
 /* Return the number of polygons into a polygons */
 
-unsigned int mw_polygons_length(polys)
+unsigned int mw_length_polygons(polys)
 
 Polygons polys;
 

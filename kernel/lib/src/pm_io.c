@@ -1,9 +1,9 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    pm_io.c
    
-   Vers. 1.05
+   Vers. 1.07
    (C) 1989, 1990 by the University of Pennsylvania
-   (C) 1993-99 Jacques Froment 
+   (C) 1993-2000 Jacques Froment 
    Input/Output functions for the PM file compatibility with MegaWave2
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -106,7 +106,7 @@ char *file;
       return(NULL);
     }
 
-  image = mw_change_cimage(NULL,pm->pm_ncol,pm->pm_nrow);
+  image = mw_change_cimage(NULL,pm->pm_nrow,pm->pm_ncol);
   if (image == NULL)
     mwerror(FATAL,0,"Not enough memory to load the image \"%s\"\n",file);
 
@@ -229,19 +229,16 @@ Cimage image;
 
 /*~~~~~ Load PM FLOAT ~~~~~*/
 
-Fimage _mw_fimage_load_pm(file,image)
+Fimage _mw_fimage_load_pm(file)
 
 char *file;
-Fimage image;                         /* predefined image (may be NULL) */
      
 {
+  Fimage image=NULL; 
   int	isize,cmtsize;
   char    need_flipping = FALSE;
   pmpic   *pm;
   FILE *fp;
-  int image_predefined;   /* 1 if image was predefined, 0 elsewhere */
-
-  if (image == NULL) image_predefined = 0; else image_predefined = 1;
    
   pm = (pmpic*)malloc(sizeof(pmpic));
   if (pm == NULL)
@@ -314,7 +311,7 @@ Fimage image;                         /* predefined image (may be NULL) */
       return(NULL);
     }
 
-  image = mw_change_fimage(image,pm->pm_ncol,pm->pm_nrow);
+  image = mw_change_fimage(image,pm->pm_nrow,pm->pm_ncol);
   if (image == NULL)
     mwerror(FATAL,0,"Not enough memory to load the image \"%s\"\n",file);
 
@@ -324,7 +321,7 @@ Fimage image;                         /* predefined image (may be NULL) */
 	{
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"... Not a PM format or file corrupted !\n",file);      
 	  free(pm);
-	  if (image_predefined == 0) mw_delete_fimage(image);
+	  mw_delete_fimage(image);
 	  fclose(fp);
 	  return(NULL);
 	}
@@ -339,7 +336,7 @@ Fimage image;                         /* predefined image (may be NULL) */
 	{
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"... Not a PM format or file corrupted !\n",file);      
 	  free(pm);
-	  if (image_predefined == 0) mw_delete_fimage(image);
+	  mw_delete_fimage(image);
 	  fclose(fp);
 	  return(NULL);
 	}

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    shape.c
    
-   Vers. 0.1
-   (C) 1999 Pascal Monasse, Frederic Guichard, Jacques Froment.
+   Vers. 1.1
+   (C) 1999-2001 Pascal Monasse, Frederic Guichard, Jacques Froment.
    Basic memory routines for the Point_plane, Shape and Shapes structures
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -67,6 +67,7 @@ Shape mw_new_shape()
   shape->boundary = NULL;
   shape->parent = shape->next_sibling = shape->child = NULL;
   shape->data = NULL;
+  shape->data_size = 0;
   return(shape);
 }
 
@@ -96,7 +97,7 @@ void mw_delete_shape(shape)
   if (shape->pixels) free(shape->pixels);
   shape->pixels = NULL;
   shape->area=0;
-  if (shape->boundary) mw_delete_curve(shape->boundary);
+  if (shape->boundary) mw_delete_flist(shape->boundary);
   shape->boundary=NULL;
   if (shape->data) free(shape->data);
   free(shape);
@@ -112,7 +113,7 @@ Shape sh;
   if((sh == NULL) || (!sh->removed))
     return(sh);
   for(sh = sh->child; sh != NULL; sh = sh->next_sibling)
-    if((NotSup = mw_get_not_removed_shape(NULL)) != NULL)
+    if((NotSup = mw_get_not_removed_shape(sh)) != NULL)
       break;
   return(NotSup);
 }
@@ -177,16 +178,17 @@ Shape sh;
   for(sh1 = sh->next_sibling; sh1 != NULL; sh1 = sh1->next_sibling)
     if((sh2 = mw_get_not_removed_shape(sh1)) != NULL)
       return(sh2);
-  if(! sh->parent->removed)
+  if(sh->parent == NULL || ! sh->parent->removed) 
     return(NULL); /* The parent in the original tree is also the parent in the true tree, nothing more to do */
   /* If not found, find the node in the original tree just before the true parent */
   do
-    sh = sh->parent;
-  while(sh->parent->removed);
-  /* Look at the siblings of this node */
-  for(sh1 = sh->next_sibling; sh1 != NULL; sh1 = sh1->next_sibling)
-    if((sh2 = mw_get_not_removed_shape(sh1)) != NULL)
-      return(sh2);
+    {
+      sh = sh->parent;
+      /* Look at the siblings of this node */
+      for(sh1 = sh->next_sibling; sh1 != NULL; sh1 = sh1->next_sibling)
+	if((sh2 = mw_get_not_removed_shape(sh1)) != NULL)
+	  return(sh2);
+    }   while(sh->parent->removed);
   return(NULL);
 }
 
@@ -232,8 +234,10 @@ Shapes mw_new_shapes()
   shapes->the_shapes = NULL;
   shapes->smallest_shape = NULL;
   shapes->data = NULL;
+  shapes->data_size = 0;
   shapes->nb_shapes = 0;
   shapes->nrow = shapes->ncol = 0;
+  shapes->interpolation = 0;
   strcpy(shapes->cmt,"?");
   strcpy(shapes->name,"?");
   return(shapes);
@@ -271,7 +275,7 @@ Shapes mw_alloc_shapes(shs, nrow, ncol, value)
       return(NULL);
     }
 
-  root = shs->the_shapes = (Shape) malloc(size*sizeof(struct shape));
+  root = shs->the_shapes = (Shape) malloc((size+1)*sizeof(struct shape));
   if (root==NULL)
     {
       mwerror(ERROR, 0,"[mw_alloc_shapes] Not enough memory\n");
@@ -286,6 +290,7 @@ Shapes mw_alloc_shapes(shs, nrow, ncol, value)
   root->boundary = NULL;
   root->parent = root->next_sibling = root->child = NULL;
   root->data = NULL;
+  root->data_size = 0;
 
   shs->nb_shapes=1;
   shs->nrow = nrow;
@@ -321,7 +326,7 @@ Shapes mw_change_shapes(shs, nrow, ncol, value)
   /* Deallocate the shapes but the structure itself */
   for(i = shs->nb_shapes-1; i > 0; i--)
     if(shs->the_shapes[i].boundary != NULL)
-      mw_delete_curve(shs->the_shapes[i].boundary);
+      mw_delete_flist(shs->the_shapes[i].boundary);
 
   if((shs->the_shapes != NULL) && (shs->nb_shapes > 0))
     free(shs->the_shapes[0].pixels);
@@ -350,7 +355,7 @@ void mw_delete_shapes(shs)
   
   for(i = shs->nb_shapes-1; i > 0; i--)
     if(shs->the_shapes[i].boundary != NULL)
-      mw_delete_curve(shs->the_shapes[i].boundary);
+      mw_delete_flist(shs->the_shapes[i].boundary);
 
   if((shs->the_shapes != NULL) && (shs->nb_shapes > 0))
     free(shs->the_shapes[0].pixels);
