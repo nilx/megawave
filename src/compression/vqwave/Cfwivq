@@ -1,0 +1,294 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="Cfwivq"
+_Vers="1.01"
+_Date="1997"
+_Func="Reconstruct a color image compressed by vector quantizing its wavelet transform";
+_Auth="Jean-Pierre D'Ales";
+_Usage="[-c] [-b1 BiFilt1] [-b2 BiFilt2] [-o OrthoFilt] [-e EdgeFilt] compressfile codebook_red [codebook_green codebook_blue]"
+
+#---- MegaWave2 - Copyright (C) 1992-94 J.F. & S.P. All Rights Reserved. ----#
+
+#	input:		the compressed files, the wavelet filters, 
+#                       the codebook sequence(s)
+#	output:		the reconstructed image
+#
+#       MegaWave2 modules used: fwivq, cfputchannels, cfchgchannels
+
+
+#----- Check syntax -----
+if [ $# -le 1 ] 
+then
+	. .mw2_help_lg_com
+fi
+
+#----- Check $MY_MEGAWAVE2/tmp directory -----
+if [ ! -d $MY_MEGAWAVE2/tmp ]
+then
+	echo $MY_MEGAWAVE2"/tmp does not exist."
+	exit 1
+fi
+
+MWTMP="${MY_MEGAWAVE2}/tmp"
+MWDATA="${MEGAWAVE2}/data"
+MY_MWDATA="${MY_MEGAWAVE2}/data"
+GROUP=compression/vqwave
+
+
+# Default color conversion : no conversion
+COLORCONVERT="no"
+
+# Default wavelet filters
+WAVELETFILTER="owave/biortho/h/sd07.ir"
+WAVELETFILTER2="owave/biortho/htilde/sd09.ir"
+WAVELETOPT="-b owave/biortho/htilde/sd09.ir"
+WAVELETEDGEFILTER="no filter"
+
+IMAGE=""
+CBOPT_R=""
+CBOPT_G=""
+CBOPT_B=""
+
+STOP="FALSE"
+
+while [ "$1" != "" -a "$STOP" = "FALSE" ]
+do
+  case "$1" in
+    # Perform color conversion to YUV
+    -c)	        COLORCONVERT="yes"
+		shift
+		;;
+
+    # Use customized wavelet filters
+    -b1)        shift
+		WAVELETFILTER="$1"
+		shift
+		;;
+    -b2)        shift
+		WAVELETOPT="-b $1"
+		shift
+		;;
+    -o)         shift
+		WAVELETFILTER="$1"
+		shift
+		;;
+    -e)         shift
+		WAVELETOPT="-e $1"
+		shift
+		;;
+
+    # Input compressed file
+    [!-]*)	COMPRESS=$1
+		PREFIMAGE='basename $1'
+		shift
+
+    # Prefix of codebooks
+                # Set codebooks for red channel
+		PREFCODEBOOK_R=$1
+		CODEBOOK_R=${PREFCODEBOOK_R}.cb
+		if  [ ! -f $CODEBOOK_R ]; then
+		  echo "Cannot find codebook file ${CODEBOOK_R}"
+		  exit 0
+		fi
+		CODEBOOKQ_R=${PREFCODEBOOK_R}_q.cb
+		if  [ -f $CODEBOOKQ_R ]; then
+		  CBOPT_R="${CBOPT_R} -A ${CODEBOOKQ_R}"
+		fi
+		CODEBOOKQR_R=${PREFCODEBOOK_R}_qr.cb
+		if  [ -f $CODEBOOKQR_R ]; then
+		  CBOPT_R="${CBOPT_R} -D ${CODEBOOKQR_R}"
+		fi
+		CODEBOOKX_R=${PREFCODEBOOK_R}_x.cb
+		if  [ -f $CODEBOOKX_R ]; then
+		  CBOPT_R="${CBOPT_R} -x ${CODEBOOKX_R}"
+		fi
+		CODEBOOKXQ_R=${PREFCODEBOOK_R}_xq.cb
+		if  [ -f $CODEBOOKXQ_R ]; then
+		  CBOPT_R="${CBOPT_R} -B ${CODEBOOKXQ_R}"
+		fi
+		CODEBOOKXQR_R=${PREFCODEBOOK_R}_xqr.cb
+		if  [ -f $CODEBOOKXQR_R ]; then
+		  CBOPT_R="${CBOPT_R} -E ${CODEBOOKXQR_R}"
+		fi
+		CODEBOOKY_R=${PREFCODEBOOK_R}_y.cb
+		if  [ -f $CODEBOOKY_R ]; then
+		  CBOPT_R="${CBOPT_R} -y ${CODEBOOKY_R}"
+		fi
+		CODEBOOKYQ_R=${PREFCODEBOOK_R}_yq.cb
+		if  [ -f $CODEBOOKYQ_R ]; then
+		  CBOPT_R="${CBOPT_R} -C ${CODEBOOKYQ_R}"
+		fi
+		shift
+
+                # Check if different codebooks must be used 
+		# for green and blue channels
+		PREFCODEBOOK_G=""
+		PREFCODEBOOK_B=""
+		if [ "$1" != "" ]; then
+		  PREFCODEBOOK_G=$1
+		  shift
+		  if [ "$1" != "" ]; then
+		    PREFCODEBOOK_B=$1
+
+                    # Set codebooks for green channel
+		    CODEBOOK_G=${PREFCODEBOOK_G}.cb
+		    if  [ ! -f $CODEBOOK_G ]; then
+		      echo "Cannot find codebook file ${CODEBOOK_G}"
+		      exit 0
+		    fi
+		    CODEBOOKQ_G=${PREFCODEBOOK_G}_q.cb
+		    if  [ -f $CODEBOOKQ_G ]; then
+		      CBOPT_G="${CBOPT_G} -A ${CODEBOOKQ_G}"
+		    fi
+		    CODEBOOKQR_G=${PREFCODEBOOK_G}_qr.cb
+		    if  [ -f $CODEBOOKQR_G ]; then
+		      CBOPT_G="${CBOPT_G} -D ${CODEBOOKQR_G}"
+		    fi
+		    CODEBOOKX_G=${PREFCODEBOOK_G}_x.cb
+		    if  [ -f $CODEBOOKX_G ]; then
+		      CBOPT_G="${CBOPT_G} -x ${CODEBOOKX_G}"
+		    fi
+		    CODEBOOKXQ_G=${PREFCODEBOOK_G}_xq.cb
+		    if  [ -f $CODEBOOKXQ_G ]; then
+		      CBOPT_G="${CBOPT_G} -B ${CODEBOOKXQ_G}"
+		    fi
+		    CODEBOOKXQR_G=${PREFCODEBOOK_G}_xqr.cb
+		    if  [ -f $CODEBOOKXQR_G ]; then
+		      CBOPT_G="${CBOPT_G} -E ${CODEBOOKXQR_G}"
+		    fi
+		    CODEBOOKY_G=${PREFCODEBOOK_G}_y.cb
+		    if  [ -f $CODEBOOKY_G ]; then
+		      CBOPT_G="${CBOPT_G} -y ${CODEBOOKY_G}"
+		    fi
+		    CODEBOOKYQ_G=${PREFCODEBOOK_G}_yq.cb
+		    if  [ -f $CODEBOOKYQ_G ]; then
+		      CBOPT_G="${CBOPT_G} -C ${CODEBOOKYQ_G}"
+		    fi
+
+                    # Set codebooks for blue channel
+		    CODEBOOK_B=${PREFCODEBOOK_B}.cb
+		    if  [ ! -f $CODEBOOK_B ]; then
+		      echo "Cannot find codebook file ${CODEBOOK_B}"
+		      exit 0
+		    fi
+		    CODEBOOKQ_B=${PREFCODEBOOK_B}_q.cb
+		    if  [ -f $CODEBOOKQ_B ]; then
+		      CBOPT_B="${CBOPT_B} -A ${CODEBOOKQ_B}"
+		    fi
+		    CODEBOOKQR_B=${PREFCODEBOOK_B}_qr.cb
+		    if  [ -f $CODEBOOKQR_B ]; then
+		      CBOPT_B="${CBOPT_B} -D ${CODEBOOKQR_B}"
+		    fi
+		    CODEBOOKX_B=${PREFCODEBOOK_B}_x.cb
+		    if  [ -f $CODEBOOKX_B ]; then
+		      CBOPT_B="${CBOPT_B} -x ${CODEBOOKX_B}"
+		    fi
+		    CODEBOOKXQ_B=${PREFCODEBOOK_B}_xq.cb
+		    if  [ -f $CODEBOOKXQ_B ]; then
+		      CBOPT_B="${CBOPT_B} -B ${CODEBOOKXQ_B}"
+		    fi
+		    CODEBOOKXQR_B=${PREFCODEBOOK_B}_xqr.cb
+		    if  [ -f $CODEBOOKXQR_B ]; then
+		      CBOPT_B="${CBOPT_B} -E ${CODEBOOKXQR_B}"
+		    fi
+		    CODEBOOKY_B=${PREFCODEBOOK_B}_y.cb
+		    if  [ -f $CODEBOOKY_B ]; then
+		      CBOPT_B="${CBOPT_B} -y ${CODEBOOKY_B}"
+		    fi
+		    CODEBOOKYQ_B=${PREFCODEBOOK_B}_yq.cb
+		    if  [ -f $CODEBOOKYQ_B ]; then
+		      CBOPT_B="${CBOPT_B} -C ${CODEBOOKYQ_B}"
+		    fi
+                  fi
+		fi
+		if [ "${PREFCODEBOOK_B}" = "" ]; then
+		  CODEBOOK_G=${CODEBOOK_R}
+		  CBOPT_G=${CBOPT_R}
+		  CODEBOOK_B=${CODEBOOK_R}
+		  CBOPT_B=${CBOPT_R}
+		fi
+		STOP="TRUE"
+		;;
+
+    # Error
+    *)		echo "Unrecognized option $1"
+		exit 1
+		;;
+  esac
+done
+
+
+
+# Check that wavelet filters are available
+
+if [ ! -f "${WAVELETFILTER}" ] && [ ! -f "${MWDATA}/${WAVELETFILTER}" ] && [ ! -f "${MY_MWDATA}/${WAVELETFILTER}" ] && [ ! -f "${MY_MWDATA}/${GROUP}/${WAVELETFILTER}" ]; then
+  echo "Cannot find ${WAVELETFILTER} in Megawave2 data directories!"
+  exit 1
+fi
+
+if [ "${WAVELETEDGEFILTER}" = "no filter" ]; then
+
+  if [ "${WAVELETFILTER2}" != "" ]; then
+    if [ ! -f "${WAVELETFILTER2}" ] && [ ! -f "${MWDATA}/${WAVELETFILTER2}" ] && [ ! -f "${MY_MWDATA}/${WAVELETFILTER2}" ] && [ ! -f "${MY_MWDATA}/${GROUP}/${WAVELETFILTER2}" ]; then
+      echo "Cannot find ${WAVELETFILTER2} in Megawave2 data directories!"
+      exit 1
+    fi
+  fi
+
+else
+
+  if [ ! -f ${WAVELETEDGEFILTER} ] && [ ! -f ${MWDATA}/${WAVELETEDGEFILTER} ] && [ ! -f ${MY_MWDATA}/${WAVELETEDGEFILTER} ] && [ ! -f ${MY_MWDATA}/${GROUP}/${WAVELETEDGEFILTER} ]; then
+    echo "Cannot find ${WAVELETEDGEFILTER} in Megawave2 data directories!"
+    exit 1
+  fi
+
+fi
+
+
+
+### Reconstruct red channel ###
+
+
+  echo 
+  echo "Reconstruct red channel : "
+  echo 
+
+  fwivq $WAVELETOPT $CBOPT_R ${COMPRESS}r.comp $CODEBOOK_R $WAVELETFILTER ${MWTMP}/${COMPRESS}r_r.rim
+	
+
+
+
+### Reconstruct green channel ###
+
+  echo 
+  echo "Reconstruct green channel : "
+  echo 
+
+  fwivq $WAVELETOPT $CBOPT_G ${COMPRESS}g.comp $CODEBOOK_G $WAVELETFILTER ${MWTMP}/${COMPRESS}r_g.rim
+	
+
+
+### Reconstruct blue channel ###
+
+  echo 
+  echo "Reconstruct blue channel : "
+  echo 
+
+  fwivq $WAVELETOPT $CBOPT_B ${COMPRESS}b.comp $CODEBOOK_B $WAVELETFILTER ${MWTMP}/${COMPRESS}r_b.rim
+	
+
+  cfputchannels ${MWTMP}/${COMPRESS}r_r.rim ${MWTMP}/${COMPRESS}r_g.rim ${MWTMP}/${COMPRESS}r_b.rim ${COMPRESS}r.pm 2>${MWTMP}/trash
+
+  ### Perform inversecolor conversion
+
+  if [ "${COLORCONVERT}" = "yes" ]; then
+
+    cfchgchannels -c 0 -i ${COMPRESS}r.pm ${COMPRESS}r.pm
+
+  fi
+
+  rm -f ${MWTMP}/${COMPRESS}r_r.rim ${MWTMP}/${COMPRESS}r_g.rim ${MWTMP}/${COMPRESS}r_b.rim
+
+
+

@@ -1,0 +1,16 @@
+This module prepares an uniformly quantized image to be the input of the 
+module \verb+amle+ which reconstructs
+an image by interpolating the missing level lines from the ones kept.
+
+The preparation consists of building an image with $0$ everywhere but
+at pixel locations $(x,y)$ adjoining the remaining level lines (which are borders of level sets).
+At these locations, the value of the pixels $\mbox{out}(x,y)$ is given by the 
+value $\lambda$ of the nearest level line in $\mbox{in}(x,y)$.
+Because of the quantization process, adjacent level lines are multiple
+of $\mbox{delta}=\delta$ where $\delta$ corresponds the quantization step, 
+and in the input image only the last level line of value $\mu >= \lambda$ is
+recorded. The value $\lambda$ is therefore recovered using the following 
+scheme:
+
+if $\mbox{in}(x,y) > \mu$ then $\mbox{out}(x,y) = \mu + \delta$,
+else  $\mbox{out}(x,y) = \mbox{in}(x,y)$.

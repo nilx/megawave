@@ -1,0 +1,79 @@
+This module generates sets of codebooks for the quantization 
+of image wavelet transforms. It is based on the LBG algorithm, 
+and it operates on training sets of wavelet coefficients vectors. 
+It can generate codebooks for both classified and multi-staged 
+or residual vector quantization. 
+The classification is based on the energy of the coefficients vectors. 
+
+The training sets of wavelet coefficients vectors are build using the 
+wavelet transforms of the images TrainImage1, TrainImage2, TrainImage3 
+and TrainImage4. These images are thus wavelet transformed in the same 
+way as in fwvq program (see fwvq program documentation for the 
+signification of the -r, -e, -b and -n options, as well as of 
+ImpulseResponse). The only difference here is that there is a possiblity 
+of stopping the decimation in the subband decomposition using the -d 
+option. StopDecimLevel is a positive integer. From this level on, 
+the decimation is not performed (See {\em dyowave2} and {\em dywave2} modules 
+documentation for further details). This enables to obtain larger 
+training sets. Notice that one training set is generated 
+separately for each subimage of the wavelet transform. 
+
+The -q option specifies that only the codebooks at scale Level 
+should be generated (Level is a positive integer). 
+
+The -o option specifies that only the codebooks in orientation 
+Orient should be generated (Orient is an integer ranging from 0 to 3). 
+Here Orient is 0 for average, 1 for horizontal details, 2 for vertical 
+details, and 3 for diagonal details. Notice that if the option -o 
+is not selected, then the average subimage is generated only at level 
+MaxLevel. 
+
+The -h and -w options specify the height and width of vectors. 
+Here the codebooks for higher levels are generated first. 
+When going to a lower scale, VectorWidth and VectorHeight are multipied 
+by 2, unless they are bigger than 2, or the size of the subimage 
+is less than 128$\times$128 (This is done because the size of the 
+vectors must be negligible compared to the subimage size). 
+
+If the -l option is selected, then overlapping vectors are taken in the 
+wavelet transform. This enables to get larger training sets. 
+
+CodeBook1, AdapCodeBook2 and AdapCodeBook3 contain the sets of generated 
+codebooks for the first, second and third classes respectively. 
+
+If the -M option is selected, then codebooks for each power of two is 
+generated, with size ranging from 1 to Size1, Size2 or Size3 
+(respectively for CodeBook1, AdapCodeBook2 and AdapCodeBook3). 
+If it is not selected then only one codebook of size Size1, Size2 or Size3 
+is generated. 
+
+The energy threshold for the different classes are selected using 
+the -S, -T and -U options. These thresholds are equal to the variance 
+of the training set multiplied by ThresVal1, ThresVal2 or ThresVal3 
+(these are positive floating point numbers). 
+Typically, one should choose these values between 0.5 and 3.0. 
+
+The -Q and -R options enable to generate codebooks adapted to 
+multistaged vector quantization. If for example the -Q option 
+is selected then the input set of codebooks in ResCodeBook is used 
+to quantize the training set, and the residual errors of this quantization 
+are used to form a new codebook. The process can be iterated with the 
+-R option. Notice that these options should not be used in conjonction with 
+the -x and -y options. 
+
+The -O, -X, -Y options enable to modify existing codebook(s). This can be used 
+in conjonction with the -q and -o options. It can be used for example 
+to generate the codebooks for the different subimages separately, 
+in order to get customized sizes of codebooks and vectors. 
+
+Notice that the representation format for the codebooks sequence is not the 
+same as for {\em wlbg\_adap} module : here all the codebooks are grouped in 
+a single fimage, whereas for {\em wlbg\_adap}, they were distributed in 
+the wavelet transform format wtrans2d. 
+
+Notice also that {\bf the running time may be very long} if large codebooks 
+with large dimension vectors are generated. It may takes several hours 
+(if not days) to generate a full set of codebook sequences with $4\times 4$ 
+vectors at level 1 and 2, for $512\times 512$ images, starting from three 
+or four images for the training set. 
+

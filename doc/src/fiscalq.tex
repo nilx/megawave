@@ -1,0 +1,9 @@
+This module reconstructs an image from the compressed file Compress, 
+which has been generated using the scalar quantization module {\em fscalq}. 
+The reconstructed image is put in Result. Result should be identical 
+to the image QImage obtained with {\em fscalq}. 
+
+The -r and -h options enable to specify the number of rows and columns 
+in the reconstructed image. They must be activated if the -h option has 
+been activated during the encoding process ({\em fscalq}) because then this 
+information is not included in the header of Compress. 

@@ -1,0 +1,8 @@
+This module computes the Shannon entropy of the input histogram. 
+If $\{s_k\}_{1\leq k\leq K}$ are the values of the input fsignal, 
+then {\em entropy} computes
+\[
+- \sum_{k=1}^K \tilde{s}_k \log \tilde{s}_k
+\]
+where $\tilde{s}_k = s_k / (\sum_{l=1}^K s_l)$.
+It is assumed that the $s_k$'s are positive. 

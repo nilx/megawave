@@ -1,0 +1,109 @@
+This module generates one or several training sets of rectangular blocks 
+of pixels which are extracted from one or several floating point images. 
+The input images are read in {\em Image}, {\em Image2}, ..., {\em Image8} 
+files. The resulting training set(s) is (are) stored in {\em TrainingSet}, 
+({\em TrainingSet2}, ..., {\em TrainingSet2}) file(s). 
+
+The -w and -h options can be used to set the width and height of rectangular 
+blocks extracted from the image(s). {\em VectorWidth} and {\em VectorHeight}
+are strictly positive integers. 
+
+\begin{figure}[hbt]
+\vspace{0.4cm}
+\parbox[t]{6.5cm}{
+%\epsfxsize=6.5cm \epsfbox{figures/vectshape1.eps}
+%\insertps{figures/vectshape1.eps}{4.5cm}{1cm}
+%\centerline{\psfig{figure=figures/vectshape1.eps,height=3in,width=4.5in}}
+}
+\hspace{0.55cm}
+\parbox[t]{6.5cm}{
+%\insertps{figures/vectshape2.ps}{4.5cm}{1cm}
+%\centerline{\psfig{figure=figures/boelinft16384.ps,height=3in,width=4.5in}}
+}
+\caption[overlap]{On the left : blocks extracted from image are not overlapping. On the right : blocks extracted from image are overlapping.
+\label{fig:overlap}
+}
+\end{figure}
+
+When the -l option  is not set, extracted blocks are not overlapping 
+(as in the left part of figure~\ref{fig:overlap}). On the contrary, 
+when this option is selected, extracted blocks are overlapping 
+(as in the right part of figure~\ref{fig:overlap}). This option 
+thus enables to extract a larger number of vectors from a single image 
+(this number is multiplied roughly by 
+{\em VectorWidth $\times$ VectorHeight}). 
+
+\begin{figure}[hbt]
+\vspace{0.4cm}
+\parbox[t]{6.5cm}{
+%\epsfxsize=6.5cm \epsfbox{figures/vectshape3.eps}
+%\insertps{figures/vectshape3.eps}{4.5cm}{1cm}
+%\centerline{\psfig{figure=figures/vectshape3.eps,height=3in,width=4.5in}}
+}
+\caption[decim]{Blocks are not constructed with contiguous pixels. 
+Here $Decim = 2$.
+\label{fig:decim}
+}
+\end{figure}
+
+The -d option enables to construct vectors with non contiguous pixels. 
+Namely, the vertical and horizontal distance between the pixels is 
+{\em Decim} (See figure~\ref{fig:decim}). {\em Decim} is a strictly positive 
+number. When equal to 1 (default value), vectors are constructed 
+with contiguous pixels. This option is especially useful when 
+the input images are sub-images of wavelet transforms generated with 
+{\em dywave2} and {\em dyowave2}.  
+
+The -e option is effective only when the -l option has also been selected. 
+It indicates that extracted blocks should not be overlapping if they 
+are located at a distance less than {\em Edge} from the edges of the 
+image. {\em Edge} is a positive integer. This option is especially useful when 
+the input images are sub-images of wavelet transforms which has been 
+computed with special edge processing methods (like the one in 
+{\em owave2} module).
+
+The -t, -u and -v options enable to sort the extracted blocks according 
+to their energy and put them in different training sets according 
+to their energy value. The energy of a $K$-dimensional vector 
+$X=\{X_k\}_{1\leq k\leq K}$ is simply defined by
+\[
+E(X) = \frac{1}{K} \sum_{k=1}^K |X_k|^2.
+\]
+Given a set of thresholds $T_1>\ldots >T_S>0$ (with $S\leq 3$), 
+the blocks extracted from the image(s) are sorted by finding the index $s$ 
+such that 
+\[
+T_{s-1}> E(X) \geq T_s
+\]
+(with $T_0 = +\infty$ and $T_{S+1} = 0$). One thus obtains $S+1$ 
+(sub-) training sets which are stored respectively in the files 
+{\em TrainingSet}, {\em TrainingSet2}, ...
+The thresholds $T_1, \ldots$ depend on the mean energy $E_{m}$ of all 
+the extracted vectors and on the input values {\em ThresVal1}, 
+{\em ThresVal2}, and {\em ThresVal3} :
+\begin{eqnarray*} 
+T_1 & = ThresVal1 * E_m \;\;\;\;\;\;\; \mbox{if the -t option is selected} \\
+T_2 & = ThresVal2 * E_m \;\;\;\;\;\;\; \mbox{if the -u option is selected} \\
+T_3 & = ThresVal3 * E_m \;\;\;\;\;\;\; \mbox{if the -v option is selected} 
+\end{eqnarray*}
+These options are especially useful when one wants to make training sets 
+for the creation of codebooks for classified vector quantization (see 
+{\em flbg\_adap} and {\em fvq} modules. {\em ThresVal1}, {\em ThresVal2}, 
+and {\em ThresVal3} are floating point values. They should range 
+between 0.5 and 5.0 in order to get reasonable sizes of training sets. 
+If it happens that $T_1$ is too large so that the first training set is 
+empty, then the module automatically decreases the value of {\em ThresVal1}
+so that the first training set becomes non empty. The same is done 
+with $T_2$ and $T_3$. Notice that if for example the -t option is selected 
+while neither the -m, -n and -o options are selected, then 
+the {\em mk\_trainset} module will only put in {\em TrainingSet} file 
+all the extracted blocks whose energy is larger then $ThresVal1 * E_m$. 
+
+The -f option enables to ensure that the size of the resulting training sets 
+are big enough when compared to the size of the codebooks which will 
+be created based on these training sets (see {\em flbg} and {\em flbg\_adap} 
+modules). {\em SizeCB} is a positive integer. If the -f option 
+is selected, then the module will try ensure that the size of 
+all the generated training sets is larger than $10\times SizeCB$ 
+(of course this is not possible if for example the total number of extracted 
+blocks is less that $10\times SizeCB$). 

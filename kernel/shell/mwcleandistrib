@@ -1,0 +1,147 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="`basename $0`"
+_Vers="1.0"
+_Date="2000"
+_Func="Clean from objects and old files the MegaWave2 Distribution (adm only)"
+_Auth="Jacques Froment";
+_Usage="mw2_distrib_dir"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+
+Answer()
+
+{
+ok=0
+while [ $ok -ne 1 ]; do
+ if  [ "$2" != "" ]; then
+   echo "$1 [Y/N] ? [default $2]"
+ else
+   echo "$1 [Y/N] ?"
+ fi
+ read ans
+ if [ "$ans" = "" ] && [ "$2" != "" ]; then
+  ans=$2
+ fi
+ if [ "$ans" = "y" ] ||  [ "$ans" = "Y" ]; then
+   ans="Y"
+   ok=1
+ fi
+ if [ "$ans" = "n" ] ||  [ "$ans" = "N" ]; then
+   ans="N"
+   ok=1
+ fi
+ if [ $ok -ne 1 ]; then
+  if  [ "$2" != "" ]; then
+   echo "Please, answer Y for Yes or N for No (default means $2) !"
+  else
+   echo "Please, answer Y for Yes or N for No !"
+  fi
+ fi
+done
+echo ""
+}
+
+Remove_Old()
+
+{
+ for file in `ls $1`
+ do
+  if [ ! -d $1/${file} ]; then
+    old=`basename $file \~`
+    if [ "${old}~" = "$file" ]; then
+#      echo "Remove $file"
+      rm $1/$file
+    fi
+  else
+    Remove_Old $1/${file}
+  fi
+ done
+}
+
+Remove_Dir()
+
+{
+ if [ -d $MW/$1 ]; then 
+  echo "Removing directory $1..."
+  rm -rf  $MW/$1
+  echo "  Done."
+ fi
+}
+
+
+# Usage
+if [ $# -ne 1 ]; then
+  . .mw2_help_lg_com
+fi
+
+MW=$1 
+
+if [ ! -d $MW ]; then 
+  echo "Directory '$MWSRC' not found !"
+  exit 1
+fi
+
+if [ ! -f $MW/COPYRIGHT ] || [ ! -f $MW/LICENSE ] || \
+   [ ! -f $MW/VERS ]  || [ ! -d $MW/kernel ]; then 
+  echo "'$MW' is not the MegaWave2 distribution directory !"
+  exit 1
+fi
+
+if [ ! -w $MW ]; then 
+  echo "Cannot write into directory '$MW' ! (are you the MegaWave2 Administrator ?)"
+  exit 1
+fi
+
+echo "I am going to remove all old (ending by ~) and object files from '$MW' !"
+Answer "Should I continue" "N"
+if [ "$ans" = "N" ]; then 
+ echo "OK, exit !"
+ exit 1
+fi
+
+echo "Removing old files..."
+Remove_Old $MW
+echo "  Done."
+
+Remove_Dir "bin"
+Remove_Dir "kernel_obj"
+Remove_Dir "lib"
+Remove_Dir "mwi"
+Remove_Dir "obj"
+Remove_Dir "shell"
+Remove_Dir "sys"
+Remove_Dir "doc/obj"
+
+# Remove misc files 
+rm -f $MW/megawave2.io $MW/MODULES.*
+rm -f $MW/kernel/mwp/lex.yy.c $MW/kernel/mwp/y.tab.c $MW/kernel/mwp/y.output \
+      $MW/kernel/mwp/y.tab.h $MW/kernel/mwp/mwp.output
+rm -f $MW/doc/guid3.*
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

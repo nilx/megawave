@@ -1,0 +1,21 @@
+This module allows to visualize the Fast Fourier Transform of a real Fimage 
+(or the inverse FFT is the -i option is set).
+\begin{itemize}
+\item $type$ specifies what will be displayed~:
+\begin{itemize}
+\item[$\circ$] $type=0$ means the modulus $M$ of the Fourier Transform (default)
+\item[$\circ$] $type=1$ means the phase of the Fourier Transform
+\item[$\circ$] $type=2$ means the real part of the Fourier Transform
+\item[$\circ$] $type=3$ means the imaginary part of the Fourier Transform
+\item[$\circ$] $type=4$ means the log power of the Fourier Transform, i.e. $log(1+M)$
+\end{itemize}
+\item A gain-offset correction is applied to the output to be visualized
+in order to obtain a mean of 128 and a standart deviation of $sd$ 
+($sd = 50.0$ by default)
+\item You can apply a Hamming window to the input image before computing the
+FFT by setting the -h option~: the artifacts created by the borders of a
+non-periodic image (high energies in vertical and horizontal frequencies)
+will be attenuated.
+\item Last, you can decide the result to be displayed into a Cimage (instead 
+of the screen) using the -o option.
+\end{itemize}

@@ -1,0 +1,16 @@
+This module computes a simple ``distance'' between two shapes, which can be
+first normalized using \verb+SR_Normalize+. This distance is zero when the 
+shapes match up to a translation-rotation, and can be up to $100$ when they 
+do not. It is defined by
+$$d(f_1,f_2) = 100. \max (\tilde{f_1} \otimes f_2,\tilde{f_2} \otimes f_1 ),$$
+where $f \mapsto \tilde{f}$ means a dilation of radius 1 (cf. the
+\verb+erosion+ module). The binary rotation-invariant product $f \otimes g$ 
+is defined by
+$$f \otimes g = \frac{1}{\int\!\!\int \chi_g(M) \, dS(M)} \inf_{\theta} \int\!\!\int R_{\theta} \circ \chi_f (M-G_f) \,.\, \left[ 1 - \chi_g(M-G_g) \right]
+ \, dS(M),$$
+where $\chi_f$ is the characteristic function of the shape $f$ (i.e such
+that $\chi_f(M) = 1$ if $M \epsilon f$, $0$ otherwise), $G_f$ is the
+barycenter of $f$, and $R_{\theta}$ is the rotation of angle $\theta$.
+These rotations are necessary even when the product is computed between
+two affine-invariant normalized shapes because the angle normalization 
+is numerically instable.

@@ -1,0 +1,458 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="`basename $0`"
+_Vers="1.6"
+_Date="1999-2000"
+_Func="Set up the environment needed by MegaWave2 (adm only)"
+_Auth="Jacques Froment";
+_Usage="[-public=private || -privateonly] mw2_distrib_dir"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+Answer()
+
+{
+ok=0
+while [ $ok -ne 1 ]; do
+ if  [ "$2" != "" ]; then
+   echo "$1 [Y/N] ? [default $2]"
+ else
+   echo "$1 [Y/N] ?"
+ fi
+ read ans
+ if [ "$ans" = "" ] && [ "$2" != "" ]; then
+  ans=$2
+ fi
+ if [ "$ans" = "y" ] ||  [ "$ans" = "Y" ]; then
+   ans="Y"
+   ok=1
+ fi
+ if [ "$ans" = "n" ] ||  [ "$ans" = "N" ]; then
+   ans="N"
+   ok=1
+ fi
+ if [ $ok -ne 1 ]; then
+  if  [ "$2" != "" ]; then
+   echo "Please, answer Y for Yes or N for No (default means $2) !"
+  else
+   echo "Please, answer Y for Yes or N for No !"
+  fi
+ fi
+done
+echo ""
+}
+
+GetDir()
+
+{
+ok=0
+while [ $ok -ne 1 ]; do
+ echo " "
+ echo "Now type the $1 directory name with full pathname or <return> :"
+ read a
+ ok=1
+ if [ "$a" = "" ]; then 
+   a=$2
+ fi
+ if [ ! -d $a ]; then
+   mkdir -p $a
+   if [ $? -ne 0 ]; then
+     echo "Cannot create $1 directory '$a' !"
+     ok=0
+   else
+     rmdir $a
+   fi
+ else
+   if [ ! -w $a ]; then
+     echo "You don't have write permission into existing directory '$a' !"
+     ok=0
+   fi 
+ fi
+done
+}
+
+GetSystemDir()
+{
+echo " "
+echo "Cannot find the directory for $1."
+ok=0
+while [ $ok -ne 1 ]; do
+ if [ "$2" = "opt" ]; then
+   echo "(This one is optional. If you don't have it, type <return>)"
+ fi
+ echo "Please type the location with full pathname :"
+ read a
+ ok=1
+ if [ "$2" != "opt" ] && [ "$a" = "" ]; then
+   echo "Answer is needed !"
+   ok=0
+ else
+   if [ "$a" != "" ]; then
+     if [ ! -d $a ]; then 
+       echo "'$a' is not a directory !"
+       ok=0
+     fi
+   fi
+ fi
+done
+}
+
+
+SetEnv()
+
+{
+  echo "$1=$2" >> $3
+  echo "export $1" >> $3
+  echo "setenv $1 $2" >> $4
+}
+
+AddEnv()
+
+{
+  echo "if [ \"\${$1}\" != \"\" ]; then"  >> $3
+  echo "  $1=\${$1}:$2" >> $3
+  echo "else" >> $3
+  echo "  $1=$2" >> $3
+  echo "fi" >> $3
+  echo "export $1" >> $3
+
+  echo "if ( \`echo \$?$1\` == 1 ) then"  >> $4
+  echo "  setenv $1 \${$1}:$2" >> $4
+  echo "else" >> $4
+  echo "  setenv $1 $2" >> $4
+  echo "endif" >> $4  
+}
+
+# Usage
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+  . .mw2_help_lg_com
+fi
+
+pub=0
+while [ "$1" != "" ]
+do
+        case "$1" in
+
+	  "-public=private") pub=1
+            	     shift
+		     ;;
+
+	  "-privateonly") pub=2
+            	     shift
+		     ;;
+	  
+           -*)      . .mw2_help_lg_com
+                ;;
+ 
+           *)       MW=$1
+		    shift
+		    ;;
+       
+       esac
+done
+
+s=`pwd`; cd $MW; MWSRC=`pwd`; cd $s;
+MWSHELL=$MWSRC/kernel/shell
+
+if [ ! -d $MWSRC ]; then 
+  echo "Directory '$MWSRC' not found !"
+  exit 1
+fi
+
+if [ ! -d $MWSHELL ]; then 
+  echo "'$MWSRC' is not the MegaWave2 distribution directory !"
+  exit 1
+fi
+
+if [ ! -w $MWSHELL ]; then 
+  echo "Cannot write into directory '$MWSHELL' ! (are you the MegaWave2 Administrator ?)"
+  exit 1
+fi
+
+ans="Y"
+if [ "${MW_MACHINETYPE}" != "" ] && [ "${MW_SYSTEMTYPE}" != "" ] && \
+   [ "${MW_INCLUDEX11}" != "" ] && [ "${MW_LIBX11}" != "" ] && \
+   [ "${MEGAWAVE2}" != "" ] && [ "${MY_MEGAWAVE2}" != "" ] && \
+   [ "${PRIVATE_MEGAWAVE2}" = "${MEGAWAVE2}" ] && [ "${PUBLIC_MEGAWAVE2}" != "" ]; then
+  err=0
+  echo "Environment variables are already set :"
+  a=`$MWSHELL/mwarch -s`
+  if [ "$MW_MACHINETYPE" != "$a" ]; then
+    err=1
+    echo "  Machine type is $MW_MACHINETYPE  !! Error : MegaWave finds $a !!"
+  else
+    echo "  Machine type is $MW_MACHINETYPE"
+  fi
+  a=`uname | tr -d -`
+  if [ "$MW_SYSTEMTYPE" != "$a" ]; then
+    err=1
+    echo "  System type is $MW_SYSTEMTYPE  !! Error : MegaWave finds $a !!"
+  else
+    echo "  System type is $MW_SYSTEMTYPE"
+  fi
+  if [ ! -r $MW_INCLUDEX11/X11/Xlib.h ]; then
+    err=1
+    echo "  Include X11 is in $MW_INCLUDEX11   !! Error : invalid location !!"
+  else
+    echo "  Include X11 is in $MW_INCLUDEX11"  
+  fi
+  if [ ! -r $MW_LIBX11/libX11.a ] && [ ! -r $MW_LIBX11/libX11.sl ] && \
+     [ ! -r $MW_LIBX11/libX11.so ]; then
+    err=1
+    echo "  X11 Library is in $MW_LIBX11    !! Error : invalid location !!"
+  else
+    echo "  X11 Library is in $MW_LIBX11"
+  fi
+  echo "  PUBLIC MegaWave2 is in ${PUBLIC_MEGAWAVE2}"
+  if [ ! -d ${PRIVATE_MEGAWAVE2} ]; then
+    err=1
+    echo "  PRIVATE MegaWave2 is in ${PRIVATE_MEGAWAVE2}   !! Error : invalid location !!"
+  else
+    echo "  PRIVATE MegaWave2 is in ${PRIVATE_MEGAWAVE2}"
+  fi
+  echo "  Location for my modules is $MY_MEGAWAVE2"
+  if [ $err -eq 0 ]; then
+    Answer "Do you want to update these variables" "N"
+  else
+     echo "Because inconsistency has been found, I reset the environment."
+  fi
+fi
+
+if [ "$ans" = "Y" ]; then 
+
+  MW_MACHINETYPE=`$MWSHELL/mwarch -s`
+  export MW_MACHINETYPE
+  if [ "$MW_MACHINETYPE" = "unknown" ]; then
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    echo "!!! WARNING !!! MegaWave2 does not recognize your machine architecture !"
+    echo "!!!!!!!!!!!!!!! It means that never we have tried to compile MegaWave2 on such machine."
+    echo "!!!!!!!!!!!!!!! You are very likely to encounter difficulties during installation process."
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  fi
+
+  MW_SYSTEMTYPE=`uname | tr -d -`
+  export MW_SYSTEMTYPE
+
+  PRIVATE_MEGAWAVE2=$MWSRC
+  export PRIVATE_MEGAWAVE2
+
+  if [ $pub -ne 0 ]; then
+    PUBLIC_MEGAWAVE2=$PRIVATE_MEGAWAVE2
+  else
+    echo " "
+    echo "PRIVATE (original distribution) MegaWave2 Directory is '$MWSRC'."
+    echo "Please give location of the PUBLIC MegaWave2 Directory, i.e."
+    echo "the one which will contain the modules available for users."
+    echo "Remember that users must have read/executable access to this directory."
+    echo "Distinct PRIVATE and PUBLIC versions of the software allow you to"
+    echo "update and check the software without interferences for the users."
+    echo "If you don't plan to modify the software or if you will be the single"
+    echo "user, you should set PUBLIC=PRIVATE. In that case, just type <return>."
+    GetDir PUBLIC $PRIVATE_MEGAWAVE2
+    PUBLIC_MEGAWAVE2=$a
+  fi
+  export PUBLIC_MEGAWAVE2
+
+  MEGAWAVE2=$PRIVATE_MEGAWAVE2
+  export MEGAWAVE2
+
+  s=`\pwd`; cd; a=`\pwd`; cd $s;
+  MY_MEGAWAVE2=$a/my_megawave2
+  echo "Please give location of the directory where you will write new modules."
+  echo "Suggested location is $MY_MEGAWAVE2. If you agree, just type <return>."
+  GetDir MY_MEGAWAVE2 $MY_MEGAWAVE2
+  MY_MEGAWAVE2=$a
+  export MY_MEGAWAVE2
+
+  echo "Search for system files location (this may take a while)..."
+
+  MW_INCLUDEX11=/usr/include
+  if [ ! -r $MW_INCLUDEX11/X11/Xlib.h ]; then
+    a=`find /usr/include/ -follow -name Xlib.h -print 2> /dev/null`
+    if [ "$a" != "" ]; then
+# If several directories returned, take the first one.
+      a=`echo $a | cut -d " " -f 1`
+      MW_INCLUDEX11=`dirname $a`
+    fi
+    if [ ! -r $MW_INCLUDEX11/X11/Xlib.h ]; then
+      GetSystemDir "the X Windows include files"
+      MW_INCLUDEX11=$a
+    fi
+  fi
+  export MW_INCLUDEX11
+
+  MW_LIBX11=/usr/lib/X11
+  if [ ! -r $MW_LIBX11/libX11.a ] && [ ! -r $MW_LIBX11/libX11.sl ] && \
+     [ ! -r $MW_LIBX11/libX11.so ]; then
+    MW_LIBX11=/usr/X/lib
+    if [ ! -r $MW_LIBX11/libX11.a ] && [ ! -r $MW_LIBX11/libX11.sl ] && \
+       [ ! -r $MW_LIBX11/libX11.so ]; then
+      a=`find /usr -follow -name libX11.a -print 2> /dev/null`
+      if [ "$a" != "" ]; then
+# If several directories returned, take the first one.
+        a=`echo $a | cut -d " " -f 1`
+        MW_LIBX11=`dirname $a`
+      fi
+      if [ ! -r $MW_LIBX11/libX11.a ] && [ ! -r $MW_LIBX11/libX11.sl ] && \
+         [ ! -r $MW_LIBX11/libX11.so ]; then
+        GetSystemDir "the X Windows library"
+        MW_LIBX11=$a
+      fi
+    fi
+  fi
+  export MW_LIBX11
+
+  MW_LIBTIFF=/usr/lib
+  if [ ! -r $MW_LIBTIFF/libtiff.a ] && [ ! -r $MW_LIBTIFF/libtiff.sl ] && \
+     [ ! -r $MW_LIBTIFF/libtiff.so ]; then
+    a=`find /usr/lib -follow -name libtiff.a -print 2> /dev/null`
+    if [ "$a" != "" ]; then
+# If several directories returned, take the first one.
+      a=`echo $a | cut -d " " -f 1`
+      MW_LIBTIFF=`dirname $a`
+    fi
+  if [ ! -r $MW_LIBTIFF/libtiff.a ] && [ ! -r $MW_LIBTIFF/libtiff.sl ] && \
+     [ ! -r $MW_LIBTIFF/libtiff.so ]; then
+      GetSystemDir "the TIFF library"  "opt"
+      MW_LIBTIFF=$a
+    fi
+  fi
+
+# end of if [ "$ans" = "Y" ]; then 
+fi
+
+# Environment variable name to put the path where shared libraries are may differ
+# regarding the system...
+
+SHLP_NAME="LD_LIBRARY_PATH"
+if [ "$MW_SYSTEMTYPE" = "HPUX"  ]; then 
+  SHLP_NAME="SHLIB_PATH"
+fi
+
+# Dump PRIVATE environment (for adm) in $PRIVATE_MEGAWAVE2
+
+MWPRIVATELIB=$PRIVATE_MEGAWAVE2/sys/lib/$MW_MACHINETYPE
+if [ ! -d $MWPRIVATELIB ]; then
+  mkdir -p $MWPRIVATELIB 
+fi
+MWPUBLICLIB=$PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE
+MWPRIVATEPROFILE=$MWPRIVATELIB/.profile_adm_megawave2
+MWPRIVATECSHRC=$MWPRIVATELIB/.cshrc_adm_megawave2
+
+if [ "$ans" = "Y" ] || [ ! -f $MWPRIVATEPROFILE ] || [ ! -f $MWPRIVATECSHRC ]; 
+  then
+  ans="Y"
+  if [ -f $MWPRIVATEPROFILE ] || [ -f $MWPRIVATECSHRC ]; then
+    echo "May I rewrite Profile and Cshrc files for the Administrator located in"
+    echo  $MWPRIVATEPROFILE
+    echo "and in"
+    Answer "$MWPRIVATECSHRC" "Y"
+  fi
+fi
+
+if [ "$ans" = "Y" ]; then 
+  echo "#!/bin/sh"  > $MWPRIVATEPROFILE
+  echo "# Profile for MegaWave2 Administrator" >> $MWPRIVATEPROFILE
+  echo "# Generated by $_Prog V.$_Vers" >> $MWPRIVATEPROFILE
+  echo "# You may have to customize it" >> $MWPRIVATEPROFILE
+  echo "#!/bin/csh"  > $MWPRIVATECSHRC
+  echo "# Cshrc for MegaWave2 Administrator" >> $MWPRIVATECSHRC
+  echo "# Generated by $_Prog V.$_Vers" >> $MWPRIVATECSHRC
+  echo "# You may have to customize it" >> $MWPRIVATECSHRC
+  chmod u+x $MWPRIVATEPROFILE $MWPRIVATECSHRC
+
+  SetEnv MW_MACHINETYPE $MW_MACHINETYPE $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  SetEnv MW_SYSTEMTYPE $MW_SYSTEMTYPE $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  SetEnv PRIVATE_MEGAWAVE2 $PRIVATE_MEGAWAVE2 $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  SetEnv PUBLIC_MEGAWAVE2 $PUBLIC_MEGAWAVE2 $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  SetEnv MEGAWAVE2 $MEGAWAVE2 $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  SetEnv MY_MEGAWAVE2 $MY_MEGAWAVE2 $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  SetEnv MW_INCLUDEX11 $MW_INCLUDEX11 $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  SetEnv MW_LIBX11 $MW_LIBX11 $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  if [ "$MW_LIBTIFF" != "" ]; then
+    SetEnv MW_LIBTIFF $MW_LIBTIFF $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  fi
+  if [ $pub -ne 2 ]; then
+    AddEnv $SHLP_NAME $MWPRIVATELIB:$MWPUBLICLIB $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  else
+    AddEnv $SHLP_NAME $MWPRIVATELIB $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  fi
+  AddEnv PATH ${MY_MEGAWAVE2}/shell:${MY_MEGAWAVE2}/bin/${MW_MACHINETYPE}:${MEGAWAVE2}/shell:${MEGAWAVE2}/sys/shell:${MEGAWAVE2}/sys/bin/${MW_MACHINETYPE}:${MEGAWAVE2}/bin/${MW_MACHINETYPE} $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  echo "New Profile and Cshrc for Administrator set in "
+  echo $MWPRIVATEPROFILE
+  echo $MWPRIVATECSHRC
+fi
+
+if [ $pub -eq 2 ]; then
+  exit 0
+fi
+
+# Dump PUBLIC environment (for users) in $PRIVATE_MEGAWAVE2 (and not in $PUBLIC_MEGAWAVE2 !!)
+
+MWPUBLICPROFILE=$MWPRIVATELIB/.profile_megawave2
+MWPUBLICCSHRC=$MWPRIVATELIB/.cshrc_megawave2
+
+ans="Y"
+if [ -f $MWPUBLICPROFILE ] || [ -f $MWPUBLICCSHRC ]; then
+  echo "May I rewrite Profile and Cshrc files for Users located in"
+  echo  $MWPUBLICPROFILE
+  echo "and in"
+  Answer "$MWPUBLICCSHRC" "Y"
+fi
+
+if [ "$ans" = "Y" ]; then 
+
+  echo "#!/bin/sh"  > $MWPUBLICPROFILE
+  echo "# Profile for MegaWave2 Users" >> $MWPUBLICPROFILE
+  echo "# Generated by $_Prog V.$_Vers" >> $MWPUBLICPROFILE
+  echo "# You may have to customize it" >> $MWPUBLICPROFILE
+  echo "#!/bin/csh"  > $MWPUBLICCSHRC
+  echo "# Cshrc for MegaWave2 Users" >> $MWPUBLICCSHRC
+  echo "# Generated by $_Prog V.$_Vers" >> $MWPUBLICCSHRC
+  echo "# You may have to customize it" >> $MWPUBLICCSHRC
+  chmod a+rx $MWPUBLICPROFILE $MWPUBLICCSHRC
+
+  SetEnv MW_MACHINETYPE $MW_MACHINETYPE $MWPUBLICPROFILE $MWPUBLICCSHRC
+  SetEnv MW_SYSTEMTYPE $MW_SYSTEMTYPE $MWPUBLICPROFILE $MWPUBLICCSHRC
+  SetEnv MEGAWAVE2 $PUBLIC_MEGAWAVE2 $MWPUBLICPROFILE $MWPUBLICCSHRC
+  SetEnv MY_MEGAWAVE2 \$HOME/my_megawave2 $MWPUBLICPROFILE $MWPUBLICCSHRC
+  SetEnv MW_INCLUDEX11 $MW_INCLUDEX11 $MWPUBLICPROFILE $MWPUBLICCSHRC
+  SetEnv MW_LIBX11 $MW_LIBX11 $MWPUBLICPROFILE $MWPUBLICCSHRC
+  if [ "$MW_LIBTIFF" != "" ]; then
+    SetEnv MW_LIBTIFF $MW_LIBTIFF $MWPUBLICPROFILE $MWPUBLICCSHRC
+  fi
+  AddEnv $SHLP_NAME $MWPUBLICLIB $MWPUBLICPROFILE $MWPUBLICCSHRC
+  AddEnv PATH \$HOME/my_megawave2/shell:\$HOME/my_megawave2/bin/${MW_MACHINETYPE}:${PUBLIC_MEGAWAVE2}/shell:${PUBLIC_MEGAWAVE2}/sys/shell:${PUBLIC_MEGAWAVE2}/sys/bin/${MW_MACHINETYPE}:${PUBLIC_MEGAWAVE2}/bin/${MW_MACHINETYPE} $MWPUBLICPROFILE $MWPUBLICCSHRC
+
+  echo "New Profile and Cshrc for Users set in "
+  echo $MWPUBLICPROFILE
+  echo $MWPUBLICCSHRC
+
+fi
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

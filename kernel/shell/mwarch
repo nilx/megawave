@@ -1,0 +1,103 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="`basename $0`"
+_Vers="1.3"
+_Date="1994-97"
+_Func="Display the architecture of the current host"
+_Auth="Jacques Froment";
+_Usage="[ -k || -s ]"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+OParch=
+case $# in
+0)      OP=major;;
+1)      case $1 in
+        -k)     OP=minor; OParch=-k ;;
+        -s)     OP=system;;
+        *)      . .mw2_help_lg_com;;
+        esac;;
+*)       . .mw2_help_lg_com;;
+esac
+
+# (1) search for binary with same name than the machine name ---
+
+MINOR=unknown
+
+# HP 9000 Series 700
+if [ -f /bin/hp9000s700 ] && /bin/hp9000s700 && [ -f /bin/uname ]; then
+        MINOR=hp9000s700
+fi
+
+# HP 9000 Series 800
+if [ -f /bin/hp9000s800 ] && /bin/hp9000s800 && [ -f /bin/uname ]; then
+        MINOR=hp9000s800
+fi
+
+# Sun OS 4.x
+if [ -f /bin/sun4 ] && /bin/sun4; then
+        MINOR=sun4
+fi
+
+# Silicon Graphics (Indigo, Indy)
+if [ -f /bin/4d ] && /bin/4d; then
+	MINOR=iris-4d
+fi
+
+# (2) search for typically command. If found, run it ---
+
+if [ "$MINOR" = "unknown" ]; then
+
+# arch command on Sun OS 5.x
+ if [ -f /usr/ucb/arch ]; then
+   MINOR=`/usr/ucb/arch $OParch`
+ else
+# arch command on Sun OS 4.x
+  if [ -f /usr/bin/arch ]; then
+    MINOR=`/usr/bin/arch $OParch`
+  else
+# arch command on Linux ix86 architecture
+  if [ -f /bin/arch ]; then
+    MINOR=`/bin/arch $OParch`
+   else
+# machine command (e.g. on Dec)
+    if [ -f /usr/bin/machine ]; then
+      MINOR=`/usr/bin/machine`
+    fi
+   fi
+  fi
+ fi
+fi
+
+# Major architecture and operating system release if requested
+
+SYSTEM=
+case $MINOR in
+ hp*)   MAJOR=hp;;
+ alpha*)   MAJOR=alpha;;
+ sun4*) MAJOR=sun4;
+	if [ -f /usr/bin/uname ]; then
+         vers=`/usr/bin/uname -r | cut -d '.' -f 1 ` 
+         case $vers in
+          5) SYSTEM=_$vers;; 
+         esac
+        fi;;
+ iris*) MAJOR=iris;;
+ i?86)  MAJOR=ix86;;
+ *)     MAJOR=unknown;;
+esac
+
+case $OP in
+ major)  echo $MAJOR;;
+ minor)  echo $MINOR;;
+ system)  echo $MAJOR$SYSTEM;;
+esac
+
+exit 0

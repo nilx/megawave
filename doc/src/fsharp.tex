@@ -1,0 +1,33 @@
+This module is a kind of shock filter based on the FLST (see modules
+\verb+flst+ and \verb+flst_reconstruct+). It is a non-uniform quantization
+of an image based on shapes.
+One shape $S$ and its child $C$ are in the same gradation iff:
+\begin{enumerate}
+\item $C$ is the only child of $S$;
+\item $C$ and $S$ have the same type;
+\item the areas of $C$ and $S$ do not differ more than a certain factor.
+\item $C$ is not an elementary shape, that is all the children of $C$ (if
+there are some) are of the same type of $C$.
+\end{enumerate}
+An elementary shape (ie having a child with a different type) is considered to
+be a gradation by itself. These shapes must not be removed to keep consistency
+between the tree and the image it represents (see module \verb+flst+).
+It is not difficult 
+to see that this relation induces a partition of the family of
+shapes, each class of the partition is then called a gradation.  The
+representative shape of the gradation is the shape of the gradation with
+smallest $L^2/A$ where $A$ is the area and $L$ is the length of its boundary.
+This gray value of this shape is set to the mean of the gray value of the
+image inside the gradation.
+
+The definition of a gradation depends on a factor of increase of area, given
+by \verb+percent_area+. When it is close to 0, this parameter isolates
+each shape as one gradation and when it is 
+large, it gathers the maximum of shapes
+inside each gradation.
+
+This shock filter gives better effects when the grain filter is 
+applied to the image before
+(see module \verb+fgrain+). In this case, the number
+or remaining level lines can be dramatically smaller than in the original
+image, whereas the structure of the image seems unchanged.

@@ -1,0 +1,87 @@
+This method is an approach of edge extraction preceded by an optimisation of criteria keeping in mind a pre-defined model of the edge to detect. 
+The approach introduced by Deriche consists in a research of the optimal operator of the Canny's filter under a infinite impusionnal response filter (RII).
+
+\medskip
+{\large \bf Canny's filter :}
+
+\nopagebreak
+
+Considering $I(x)$ a monodimensionnal signal representing a jump of amplitude $A$, lost in a Gaussian noise $n(x)$ with a null average and variance $n_{0}{2}$.
+Let $\Theta (x_{0})$, the output at the point $x_{0}$ of the convolution of the signal $I(x)$ whit a detection operater $f(x)$:
+\[ 
+\Theta(x_{0}) = \int_{-\infty}^{+\infty}I(x) f(x_{0}-x)\,dx 
+\]
+So the issue is to find $f(x)$ where $\Theta (x_{0})$ is maximum under the following constraints:
+
+\begin{itemize}
+\item Good detection : The probability of not detecting a point of a real edge has to be small, same as the probabilty to detect a point which does not belong to an edge. 
+This criteria leads to find $f(x)$ so as the ratio signal-noise $\sum$ is maximum:
+\[
+\sum = \frac{A \int_{-\infty}^{0}f(x)\,dx}{n_{0}\sqrt{\int_{_\infty}^{+\infty} f^{2}(x)\,dx}} 
+\]
+\item Good localisation : The detected points which belong to an edge, have to be as close as possible of the middle of the real edge. This criteria corresponds to the minimisation of the variance $\sigma{2}$ of the zero passages position. It is equivalent to maximize the localisation $\Lambda$ defined as the inverse of $\sigma{2}$:
+\[
+\Lambda = \frac{A |f'(0)|}{n_{0}\sqrt{\int_{_\infty}^{+\infty} f'{2}(x)\,dx}} 
+\]
+\item  No multiplicity of responses : This criteria corresponds to the limitation of the number of local maxima detected in reply of an only edge. the average distance between the local maxima, noted down $x_{max}$ is constraint to the following egality:
+\[
+ x_{max} = 2\pi \sqrt{ \frac{ \int_{-\infty}^{+\infty}f'{2}(x)\,dx}{\int_{_\infty}^{+\infty} f''{2}(x)\,dx }}
+\]
+\end{itemize}
+The Canny's method consists in combinig with those three conditions in order to finf $f(x)$ which maximises $\sum.\Lambda$ under the third constraint that the criteria is fixed to constant $k$. This leads to find the solution of the following differentail center :
+\[
+2f(x)-2\lambda _{1}f''(x)+2\lambda _{2}f''''(x)+\lambda _{3}=0 
+\]
+which accepts the general solution :
+\[
+f(x)=a_{1}e^{\alpha x}sin(\omega x)+a_{2}e^{\alpha x}cos(\omega x) +a_{3}e^{-\alpha x}sin(\omega x) + a_{4}e^{-\alpha x}cos(\omega x) + C 
+\]
+Seeking for the operator $f(x)$ under the form of a finite impulsionnal response (RIF) defined on the interval $[-W,+W]$ and having a slope $S$ at the origin, Canny has imposed the following limit conditions:
+\[
+f(0)=0 \hspace{0.5cm}  f(W)=0 \hspace{0.5cm}  f'(0)=S \hspace{0.5cm}  f'(W)=0 
+\]
+Those four limit conditions allow us to determine the coefficients $a_{1}$ to $a_{4}$. $f(x)$ beeing odd, the solution can be extend for $x$ negative with $f(x)=-f(-x)$. 
+
+\medskip
+
+{\large \bf  Deriche's filter : }
+
+The Deriche's approach consists in the research of the optimal operator under the form of a RII filter. This approach leads to the same Canny's differential center, but limit conditions are as follow :
+\[
+f(0)=0 \hspace{0.5cm}  f(+\infty)=0 \hspace{0.5cm}  f'(0)=S \hspace{0.5cm}  f'(+\infty)=0 
+\]
+It results as solution the following operator:
+\[
+f(x) = -c.e^{-\alpha |x|}sin(\omega x) 
+\]
+Now we introduce the procedure that summarize the Deriche's operator in two dimensions. We create in the x (resp y) direction a 2D mask resulted from the product of a lined up dectector in x (resp y) with a projection operator parallel to the direction y (resp x). We have a recursive implementation if we choose the smoothing operator $f(x)$.
+We obtain the following centers:
+\[
+X(m,n)=\frac {[-c.e^{-\alpha .|m|}.sin\omega .m].[k.(\alpha .sin\omega |n|+\omega .cos \omega .|n|).e^{-\alpha .|n|}]}{\alpha ^{2}+\omega ^{2}} 
+\]
+\[
+Y(m,n)=\frac {[-c.e^{-\alpha .|n|}.sin \omega .n].[k.(\alpha .sin\omega .|m|+\omega .cos\omega .|m|).e^{-\alpha .|m|}]}{\alpha ^{2}+\omega ^{2}} 
+\]
+
+The variables $k$ and $c$ are fixed by the normalization constraint, so we have:
+\[
+c=\frac {[1-e^{-\alpha }]^{2}}{e^{-\alpha } } 
+\]
+\[
+k=\frac{[1-e^{-\alpha }]^{2}.\alpha ^{2}}{1+\alpha .e^{-\alpha}-e^{-2.\alpha}}
+\]
+In the realization of a RII filter, the size of both masks $X(m,n)$ and $Y(m,n)$ depends of $\alpha$. After the image is convolued with the two masks, we obtain two image  $r(m,n)$ and $s(m,n)$. The direction of the edge $\alpha (m,n)$ and the amplitude $A(m,n)$ are estimated in fonction of $r(m,n)$ and $s(m,n)$ as follow :
+\[
+A(m,n)=(r(m,n)^{2}+s(m,n)^{2})^{\frac{1}{2}}
+\]
+\[
+\alpha (m,n)=arctg\frac {r(m,n)}{s(m,n)} 
+\]
+
+The suppression of the non local maxima of $A(m,n)$ in the exact direction of gradient $\alpha (m,n)$ is then realized. So an linear interpolation is made on the gradient. 
+The extaction of local maxima is done in a neighbourhood of 3*3 of the gradient's norm image. The aim is to extract all the pixels coming in the form of a local maxima in the gradient's direction. We use the images coming from the precedent steps in order to obtain an approxiamtion of the gradient's direction.
+
+\medskip
+
+{\Large \bf References }  
+Rachid Deriche, {\em Using Canny's Criteria to Derive a Recursively Implemented Optimal Edge Detector}, International Journal of Computer Vision, 167-187, 1987.

@@ -1,0 +1,21 @@
+This module build a multi-scales multi-channels representation of an image.
+
+The aim of the algorithm is  to create channels so as they can be used with {\it msegct} module in order to find the segmentation. We consider three kind of channels. Each channel correponds to a direction of a quadratic difference if {\it p} is set to 2 (default) or a simple difference in absolute value if {\it(p=1)}. More over we consider different scale for each channel. 
+
+Let $e$ the local scale, and $N$ the number of channels per direction that the user wants to reach. So for each local scale we have three channels. 
+Let $I_{m,n}$ the value of the original image's pixel (input Fimage). 
+From the original image we calculate the channels (Fimage) associated with the value of the local scale : 
+
+For $e=1$ we have : 
+\begin{center}
+Horizontal Channel : $H_{m,n}^{(e=1)}=(abs(I_{m+1,n}-I_{m,n})^{p}+abs(I_{m-1,n}-I_{m,n})^{p})/2$\\
+Vertical Channel   : $V_{m,n}^{(e=1)}=(abs(I_{m,n+1}-I_{m,n})^{p}+abs(I_{m,n-1}-I_{m,n})^{p})/2$\\
+Diagonal Channel   : $V_{m,n}^{(e=1)}=(abs(I_{m+1,n+1}-I_{m,n})^{p}+abs(I_{m-1,n-1}-I_{m,n})^{p})/2$\\
+\end{center} 
+Those three channels correspond to the 3 images of the fmovie associeted with the first local scale $e=1$. Then we compute the other channels belonging to the upper odd local scale. We need odd local scale because now we blur the input fimage. This is the multi-scale part of the algorithm. So we compute for $e>1$ and odd  :\\
+\begin{center}
+Horizontal Channel : $H_{m,n}^{(e>1)}=(abs(\hat{I}_{m+e,n}^{e}-\hat{I}_{m,n}^{e})^{p}+abs(\hat{I}_{m-e,n}^{e}-\hat{I}_{m,n}^{e})^{p})/2$\\
+Vertical Channel   : $V_{m,n}^{(e>1)}=(abs(\hat{I}_{m,n+e}^{e}-\hat{I}_{m,n}^{e})^{p}+abs(\hat{I}_{m,n-e}^{e}-\hat{I}_{m,n}^{e})^{p})/2$\\
+Diagonal Channel   : $V_{m,n}^{(e>1)}=(abs(\hat{I}_{m+e,n+e}^{e}-\hat{I}_{m,n}^{e})^{p}+abs(\hat{I}_{m-e,n-e}^{e}-\hat{I}_{m,n}^{e})^{p})/2$\\
+\end{center} 
+$\hat{I}^{e}$ is the original fimage convolved with splitable blur filter of size $e*e$.\\At least, all the channels are smoothed with a type of binomial filter. For that reason, the user needs to enter the standard deviation $S$ and the weight $W$ of the centered pixel . This filter is splitable and iterated $(2+W)*S^{2}$ times.

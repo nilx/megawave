@@ -1,0 +1,18 @@
+{\em fpsnr255} computes the additive factor to get the '255' PSNR from the 
+'max-min' PSNR, where
+\[
+\mbox{PSNR}_{\mbox{max-min}} = 
+10 \times \log_{10} \frac{(\max_{x,y}f(x,y) - \min_{x,y}f(x,y))^{2}}{MSE}
+\]
+and 
+\[
+\mbox{PSNR}_{255} = 10 \times \log_{10} \frac{255^{2}}{MSE}
+\],
+for $f$ the given image and $MSE$ the mean square error between this original
+image and a reconstructed image.
+
+This module allows to get the '255' PSNR from PSNR results obtained by
+the module \verb+fmse+, when it has not been called with the option \verb+-p+.
+
+Use the \verb+-n+ option when \verb+fmse+ has been called with the 
+\verb+-n+ option.

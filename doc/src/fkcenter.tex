@@ -1,0 +1,6 @@
+This module computes the barycenter all points encountered in a set
+of Fcurves. This barycenter is given by
+$$(x_G,y_G) = \frac{1}{n} \sum_{i=1}^n \frac{1}{n_i} \sum_{j=1}^{n_i} 
+(x_{i,j},y_{i,j}),$$
+where $j \in \{1,\ldots n_i\} \mapsto (x_{i,j},y_{i,j})$ describes
+the curve number $i$ of the Fcurves structure.

@@ -1,0 +1,39 @@
+------------------------------------------------------------------------------
+The kernel directory holds the MegaWave2 kernel source, which contains
+the Wdevice library, the system library and the preprocessor.
+------------------------------------------------------------------------------
+
+Warning : any modification of one of these files may lead your version to
+-------   become incompatible with the official version. However, contributions
+          are welcomed (especially bugs-tracking and adaptation to a new 
+          architecture) and may be submitted to the email given below.
+
+Instructions : 
+------------
+          To compile and install the kernel for your machine architecture
+          (i.e. the machine on which you will run ./Install), the simplest
+          way is to do the following :
+
+          1 - You must have configured your environment to be the MegaWave2 
+              administrator (it does not mean to be the super-user root).
+          2 - Type "./Install" from this directory, with the options below :
+              -static : generates static libraries (default : shared).
+              -public : change the kernel of the PUBLIC version of MegaWave2
+                        (the version used by everybody else than you in your 
+                        lab), in addition to the PRIVATE version of MegaWave2
+                        (the version of the MegaWave2 administrator).
+              -clear : clear previous objects and libraries (for your machine
+                       architecture only).
+              -debug : produce libraries with debugging information (allows
+                       to debug the libraries).
+          3 - If you don't understand what you are doing, read the User's 
+              Guide ! (you should read it anyway).
+          
+
+------------------------------------------------------------------------------
+MegaWave2 is a "soft-publication" for the scientific community. It has
+been developed for research purposes and it comes without any warranty.
+The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+      94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+------------------------------------------------------------------------------

@@ -1,0 +1,8 @@
+This modules thresholds a Fimage $u$ at a value $t$ (default 128.0), and
+produces a Cimage $v$ such that 
+$$v(x,y) = \left\{ \begin{array}{l}
+255 \mbox{ if } u(x,y) > t,\\
+0 \mbox{ if } u(x,y) \leq t.
+\end{array}\right.$$
+If the \verb+-i+ option is selected, the video inverse 
+$v\mapsto 255-v$ is then applied.

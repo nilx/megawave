@@ -1,0 +1,30 @@
+This module is the inverse Fast Level Sets Transform (see module flst). From
+the tree of shapes of an image, it builds back the image. If the tree was not
+modified since the call to the module flst, the reconstruction gives of course
+the initial image. So that interesting reconstructions happen when something
+has changed in the graph, for example gray levels were changed, or some shapes
+were removed.
+
+The reconstruction algorithm is elementary: for each pixel, we know the
+smallest shape containing it (given by the function
+\texttt{mw\_get\_smallest\_shape}) and we put at this pixel the gray level value
+of the shape.
+
+If the root of the tree was not removed (this operation is forbidden), any
+other manipulation of the tree is allowed, but:
+\begin{itemize}
+\item if the gray level of one shape is changed, its relation to the gray
+level of its father and to the gray levels of its children must be preserved;
+that means that the order of these gray levels must remain the same.
+\item if a shape is removed, the order of the gray levels between its parent
+and its children must remain the same.
+\end{itemize}
+If these conditions are fulfilled, then it is guaranteed that the tree is
+consistent with the image it represents. That means that reconstructing the
+image from such a tree and then decomposing again the result with the flst
+module, we get the same tree. Such modifications of the tree are called
+allowable modification.
+
+For example, removing a leaf of the tree is an allowable modification. Also,
+removing a shape of the same type as its father and as its children is
+allowable.

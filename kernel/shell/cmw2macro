@@ -1,0 +1,167 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave Macro ----------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="cmw2macro"
+_Vers="2.03";
+_Date="1996-2000";
+_Func="Compile a user's macro (make it available and create the doc file)";
+_Auth="Jacques Froment";
+_Usage="[-adm] [-ret] [-path path] macro"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+# test entree
+if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+   . .mw2_help_lg_com
+fi
+
+SRCDIR=$MY_MEGAWAVE2/src
+DOCDIR=$MY_MEGAWAVE2/doc
+SHELLOBJ=$MY_MEGAWAVE2/shell
+retdocname=0
+# Bourne Shell seems to intrepret differently escape characters on different
+# systems if we use "\\\"
+antislash='\'
+
+while [ "$1" != "" ]
+do
+    case "$1" in
+
+    -adm)  DOCDIR=$MEGAWAVE2/doc
+           SRCDIR=$MEGAWAVE2/src
+	   SHELLOBJ=$MEGAWAVE2/shell
+           shift
+           ;;
+
+    -ret) retdocname=1
+	  shift
+	  ;;
+
+    -path) shift
+	   DOCDIR=$1/doc
+	   SRCDIR=$1/src
+	   SHELLOBJ=$1/shell
+           shift
+	   ;;
+
+    -*)   . .mw2_help_lg_com;
+	  ;;
+
+    *)  module=$1
+        shift
+	;;
+
+    esac
+done
+
+if [ ! -w ${DOCDIR} ]; then
+    echo "$_Prog : you are not allowed to write doc into ${DOCDIR}." 1>&2
+    exit 1
+fi
+
+src_name=`find ${SRCDIR} -name "${module}" -print`
+if [ "${src_name}" = "" ] || [ ! -r ${src_name} ]; then
+  echo "$_Prog : cannot find the macro '${module}' in '${SRCDIR}'" 1>&2
+  exit 1
+fi
+
+group=`echo $src_name | \
+ awk 'BEGIN {FS="/"} {for (i=NF; i>0; --i) if ($i=="src")
+  {j=i; i=0}} {for (i=j+1; i< NF; i++) 
+     {if (i==(j+1)) {out=$i} else {out=sprintf("%s/%s",out,$i)}} print out}'`
+# Supress ./ if needed
+group=`echo $group | sed "s/\.\///"`
+
+name=`echo $src_name | awk 'BEGIN {FS="/"} {print $NF}'`
+
+Prog=`awk 'BEGIN {FS="\""} /^_Prog=/ {print $2;}' $src_name`
+Vers=`awk 'BEGIN {FS="\""} /^_Vers=/ {print $2;}' $src_name`
+Date=`awk 'BEGIN {FS="\""} /^_Date=/ {print $2;}' $src_name`
+Func=`awk 'BEGIN {FS="\""} /^_Func=/ {print $2;}' $src_name`
+Auth=`awk 'BEGIN {FS="\""} /^_Auth=/ {print $2;}' $src_name`
+Usage=`awk 'BEGIN {FS="\""} /^_Usage=/ {print $2;}' $src_name`
+Labo=`awk 'BEGIN {FS="\""} /^_Labo=/ {print $2;}' $src_name`
+
+if [  "$Prog" != "" ]; then
+  if [ "$Prog" != "$name" ]; then
+    echo "Warning : $_Prog : _Prog header field does not match macro name" 1>&2
+    Prog=$name
+  fi
+else
+  Prog=$name
+fi
+
+doc_name=${DOCDIR}/obj/${name}.doc
+
+if [ "$Prog" = "" ] || [ "$Func" = "" ] || [ "$Auth" = "" ]; then
+  echo "$_Prog : macro '${src_name}' has no valid header" 1>&2
+  exit 1
+fi
+
+echo "%*** Group=$group" > $doc_name
+echo "%*** Name=$name" >> $doc_name
+echo " " >> $doc_name
+echo "\markboth{{\em" >> $doc_name
+echo $group | sed "s/_/\\\_/g"  >> $doc_name
+echo "} \hfill MegaWave2 User's Modules Library \hfill {${antislash}bf " >> $doc_name
+echo $name | sed "s/_/\\\_/g"  >> $doc_name
+echo "} \hspace{1cm}}{{\em "  >> $doc_name
+echo $group | sed "s/_/\\\_/g"  >> $doc_name
+echo "} \hfill MegaWave2 User's Modules Library \hfill {${antislash}bf " >> $doc_name
+echo $name | sed "s/_/\\\_/g"  >> $doc_name
+echo "} \hspace{1cm}}" >> $doc_name
+echo " " >> $doc_name
+
+echo "\label{$name}" >> $doc_name
+echo " " >> $doc_name
+echo "\Macro{$name}{$Func}" | sed "s/_/\\\_/g"  >> $doc_name
+echo "\Usage{$name}{{\em $Usage}}" | sed "s/_/\\\_/g"  >> $doc_name
+
+echo "\Description{\input{src/$name.tex}}" >> $doc_name
+
+# Compute date of last modification for src_name
+
+y=`ls -l ${src_name} | awk '{i=NF-1; print $i}'`
+h=`echo $y | grep ":"`
+if [ "$h" = "$y" ]; then
+  cm=`date +%m`
+  if [ $cm -ge 6 ]; then
+    y=`date | awk '{print $NF}'`
+  else
+    y=""
+  fi
+fi
+d=`ls -l ${src_name} | awk '{i=NF-2; print $i}'`
+m=`ls -l ${src_name} | awk '{i=NF-3; print $i}'`
+
+echo "\Version{$Vers}{$m $d $y}" >> $doc_name
+
+if [ "$Labo" = "" ]; then
+  Labo="CMLA, ENS Cachan, France."
+fi
+
+if  [ "$y" = "" ]; then
+  y=`date | awk '{print $NF}'`
+fi
+
+echo "\Author{$Auth}{$y}{$Labo}" >> $doc_name
+
+# Make the link 
+if [ -r $SHELLOBJ/${name} ] || [ -h $SHELLOBJ/${name} ]; then
+  rm $SHELLOBJ/${name}
+else
+  if [ ! -d $SHELLOBJ ]; then
+    mkdir -p $SHELLOBJ
+  fi
+fi
+ln -s ${src_name} $SHELLOBJ/${name}
+
+if [ $retdocname -eq 1 ]; then
+  echo "$doc_name"
+fi

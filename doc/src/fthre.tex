@@ -1,0 +1,15 @@
+{\em fthre} copies the input image in the output and makes a thresold 
+into the following interval:
+\begin{itemize}
+\item $]-\infty, \mbox{max}]$ if \verb+-M max+ is selected;
+\item $[\mbox{min}, \infty[$ if \verb+-m min+ is selected;
+\item $[\mbox{min}, \mbox{max}]$ if both \verb+-m+ and \verb+-M+ are selected.
+\end{itemize}
+
+Using the option \verb+-n+ you can normalize the image before the
+thresholding. 
+In that case, you must select both \verb+-m+ and \verb+-M+ and the
+normalization consists to apply an affine transformation on the gray levels,
+such that the lowest level becomes the level \verb+min+ and the greatest
+level the level \verb+max+.
+

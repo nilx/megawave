@@ -1,0 +1,18 @@
+This module implements one of the most effective denoising operator of 
+mathematical morphology, the median filter. Let $s$ be a shape, i.e. a 
+discrete subset of $R^2$, this operator processes an image $u(x)$ into
+$$v(x)=\mathrm{med}\left(\,u(x+\delta)\,\right)_{\delta \epsilon s},$$
+where the med operator of a sequence $(x_i)_{i=1..n}$ is defined as follows~: 
+first sort $(x_i)$ into $(y_i)$ so that $y_1\leq y_2 \leq\ldots\leq y_n$, and 
+then define
+$$\mathrm{med}\,(x_i)_{i=1..n} = y_{[\frac{n}{2}]}.$$
+The iteration of the infinitesimal median filter leads theoritically to mean 
+curvature motion, but in practice this process blocks (i.e. the image is
+stabilized) after several 
+iterations because of the discrete spatial resolution of the image. 
+In this module, the 
+median operator is iterated $n$ times. If no shape $s$ is specified, a disk
+of radius $r$ is taken. A message is printed to the standard output
+if the process blocked before the $n$ iterations were achieved.
+The complexity of the algorithm is $O(|u| n r^2 \log r)$, so that it costs
+less to increase $n$ than $r$. 

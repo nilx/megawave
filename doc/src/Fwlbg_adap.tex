@@ -1,0 +1,62 @@
+This macro generates a complete set of codebook sequences for the quantization 
+of image wavelet transforms. It is based on the {\em fwlbg\_adap} module, 
+but is simpler to use. 
+
+One only has to specify the prefix {\em codebook} of all generated 
+codebook sets and at least one (maximum four) input image for the 
+training sets. The macro generates codebook sequences 
+CodeBook1, CodeBook2, CodeBook3, ResCodeBook1, ResCodeBook2, ResCodeBook3, 
+ResResCodeBook1 and ResResCodeBook2, which can be used directly 
+as input to the compression module {\em fwvq}. These are put in the files 
+{\em codebook}.cb, {\em codebook}\_x.cb, {\em codebook}\_y.cb, 
+{\em codebook}\_q.cb, {\em codebook}\_xq.cb, {\em codebook}\_yq.cb, 
+{\em codebook}\_qr.cb and {\em codebook}\_xqr.cb respectively. 
+However, if one uses the {\em Fwvq} and {\em Fwivq} macros, 
+one does not have to bother about these files. It suffices to put 
+the same prefix name {\em codebook} as argument of 
+{\em Fwvq} and {\em Fwivq} (see documentation). 
+
+The default wavelet transform is a biorthogonal one using 
+7/9 Cohen--Daubechies filter pair (see \cite{kn:cdf}). 
+The filters are read in the h/sd07.ri and htilde/sd09.ri 
+which must be available either in the MegaWave2 data directory or 
+data/quantization subdirectory. 
+However one can use other filter pairs (using -b1 and -b2 options) 
+or switch to orthogonal transform, using -o option 
+(possibly with the -e option if special edge processing is requested, 
+see {\em owave2} module documentation for details). 
+The normalization mode is the default one. 
+
+Codebook sequences are generated for details from level 1 to 4, and 
+for average at level 3 and 4. The size of blocks is $4\times 4$ at 
+levels 1 and 2, $2\times 2$ at levels 3 and 4.
+
+The overlapping option is activated, as well as the default decimation 
+stop (at level 2) option. 
+
+The maximum size of codebooks are 
+\begin{itemize} 
+\item 4096 for average codebooks. 
+\item 1024 for detail codebooks in CodeBook1, CodeBook2, ResCodeBook1, 
+ResCodeBook2, ResResCodeBook1 and ResResCodeBook2.
+\item 4096 for detail codebooks in CodeBook3 and ResCodeBook3.
+\end{itemize}
+
+The threshold value options are set to 3.0 and 1.0. 
+
+This option setting is well adapted to the construction of a codebook set 
+from 2,3 or 4 $512\times 512$ images. It enables to get rather high bit rates 
+when using {\em fwvq} module or {\em Fwvq} macro with the generated codebook 
+set. However, the running time might be very long (several days!). 
+In order to perform a quick test, one has to modify the maximum sizes 
+of codebooks directly in the macro file. Typically, one should put 
+sizes not greater than 16. However, one won't be able to get 
+very high bit rate compression when using these codebooks.
+
+\begin{thebibliography}{CDF}
+
+\bibitem[CDF]{kn:cdf} A. Cohen, I. Daubechies, J.C. Feauveau. 
+{\em Biorthogonal bases of compactly supported wavelets, } 
+Comm. pure and applied math. 45, pp 485-560, 1992.
+
+\end{thebibliography}

@@ -1,0 +1,22 @@
+This module computes the bit rate needed to encode
+the points of the curves contained in the input set, but
+the origin points.
+The bit rate is given in bit per point, the number of points being
+the total number of points contained in all curves.
+The curves are supposed to be made by connected points 
+(for the 4-connectivity).
+
+This module implements the Freeman algorithm : the data structure
+is made by the change of direction from one point to the next.
+After that, the data is coded using one of the following schemes
+(only the best bit rate is returned) :
+entropy coding, arithmetic coding, predictive arithmetic coding.
+
+The function outputs also the total number of points \verb+N+
+and the number of bits \verb+B+ needed to code the structure.
+
+Use the module \verb+cvsencode+ to get the total bit rate to encode
+a set of curves.
+See the module \verb+arencode2+ for more information on the arithmetic
+coding algorithms.
+

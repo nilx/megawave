@@ -1,0 +1,97 @@
+
+\paragraph{Mathematical description} \mbox{}
+
+Given a set of real values $\cal M$, we define the median filter of level $r$, for a $r \in [0,1]$, by
+$$ med^r({\cal M}) = \inf \big\{\lambda \in {\cal M}, 
+\hbox{ such that }  \#\{ \mu \in {\cal M}, \mu \leq \lambda \} = r
+ \#{\cal M} \big\}$$
+where $\#$ is the cardinal operator.
+Note that for $r=0$, the median of level $r$ coresponds to the inf operator, 
+and for $r=1$, it coresponds to the sup operator.
+
+Now, consider a set $\cal B$ of shapes, for example the set of the ellipses of same area, and an original image $u_0$.
+This program will compute the sequences of images $u_i$ defined by
+\[
+u_{i+1}(x) = med^{deginf}\big( med^{degsup} \{u_{i}(y+x), y \in B \},
+B \in {\cal B} \big),
+\]
+or, when using the \verb+-a+ option,
+\begin{eqnarray*}
+u_{i+1}(x) = & \big( med^{deginf}\big( med^{degsup} \{u_{i}(y+x), y \in B \},
+B \in {\cal B} \big) + \\
+& med^{degsup}\big( med^{deginf} \{u_{i}(y+x), y \in B \}, B \in {\cal B} \big) \big)
+/2.
+\end{eqnarray*}
+
+% ---- Version 1 ----
+% $$ u_{2i+1}(x) = med^{deginf}\big( med^{degsup} \{u_{2i}(y+x), y \in B \},
+%  B \in {\cal B} \big) $$
+% $$ u_{2i+2}(x) = med^{degsup}\big( med^{deginf} \{u_{2i+1}(y+x), y \in B \},
+%  B \in {\cal B} \big) $$
+
+In a mathematical viewpoint, when the area of the elements of ${\cal B}$ tends
+to zero, this scheme (with option \verb+-a+ set) 
+computes a discretisation of an equation of type
+$$ \frac{\partial u}{\partial t} = |Du| G( Du/|Du|, curv(u)), qquad u(t=0)= u_0 $$
+For example, it has been proved that when $\cal B$ is the set of
+segments with same lenght (file \verb+seg_mask+), and centered into 0, 
+we have $G( Du/|Du|, curv(u)) = curv(u)$.
+
+And, in the same way, when $\cal B$ is the sets of the ellipses, or 
+rectangles with same areas, also centered into 0, 
+$G( Du/|Du|, curv(u)) = curv(u)^\frac{1}{3}$.
+
+At last, notice that when $\cal B$ contains only one element then with $deginf = degsup = 0$ we have the erosion, with $deginf = degsup = 1$ we have the dilation, and with $deginf= degsup= 0.5$ we have the median filter.
+
+\paragraph{Options} \mbox{}
+
+The option \verb+-n Niter+ fix the number of iterations to be done. 
+% At each interations {\it deginf} and {\it degsup} are switched (see above the definition of the sequence $u_i$).
+
+The options \verb+-i+ and \verb+-s+ fix the levels of the two medians.
+
+When setting the option \verb+-a+, the value  {\it deginf} and {\it degsup} are switched 
+at each iteration and the resulting image is computed by taking the average of those
+images (see above the definition of the sequence $u_i$).
+
+\paragraph{Inputs} \mbox{}
+
+The infsup module needs the name of a original image : {\it image}, and the
+name of a Cmovie which corresponds to the set of the shapes :$\cal B$. Each shape is then represented by a Cimage.
+The module \verb+rotaffin+ generates such Cmovie.
+
+\paragraph{Output} \mbox{}
+
+The output is the process image at the iteration $Niter$.
+
+
+\paragraph{References} \mbox{}
+
+This program is associated to the article :
+
+F. Guichard, J-M. Morel. {\em Infinitesimal mathematical morphology}
+Preprint CEREMADE 1995.
+
+See also :
+
+F. Catte, F. Dibos. {\em A morphological approach of mean curvature motion.}, Report 9310, Ceremade, Univ. Paris-Dauphine 1993.
+
+F. Catte, F. Dibos, G. Koepfler. {\em A morphological scheme for mean curvature motion and applications to anisotropic diffusion and motion of level sets.}, Report 9338, Ceremade, Univ. Paris-Dauphine 1993.
+
+F. Catte, {\em Convergence of iterated affine and morphological filters by nonlinear semi-group theory} Preprint No 9528 CEREMADE 1995.
+
+F. Guichard, {\em Axiomatisation des analyses multi-echelles d'images et de films.} PhD. Universite Paris IX, 1994.
+
+
+
+
+
+
+
+
+
+
+
+
+
+

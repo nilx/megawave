@@ -1,0 +1,26 @@
+This module computes the Fast Fourier Transform of a 2D input, given
+by two Fimages (real and imaginary parts). It returns two other Fimages,
+real and imaginary parts of the Fourier Transform. 
+
+\vskip 0.3cm
+
+Since FFT only applies
+to images which dimensions are power of $2$, the input will be shrinked 
+to proper dimensions if necessary using the {\sf fshrink2} module. In this
+case a warning message will be produced.
+
+\vskip 0.3cm
+
+The two-dimensional FFT is performed by applying a 1D-FFT on each row
+of the 2D input, and then on each column.
+
+\vskip 0.3cm
+
+Several special cases can occur when you use this module as a 
+C subroutine~:
+\begin{itemize}
+\item If $in\_im=NULL$, the input imaginary part is assumed to be zero 
+everywhere.
+\item If $out\_re=NULL$ or $out\_im=NULL$, the module assumes that you
+don't need the corresponding output.
+\end{itemize}

@@ -1,0 +1,605 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="`basename $0`"
+_Vers="1.43"
+_Date="2000"
+_Func="Compile a MegaWave2 Module or Macro";
+_Auth="Jacques Froment, Sylvain Parrino";
+_Usage=" [-gnu] [-g] [-X] [-O] [-c compiler_option] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-dep] [-pubsyslib] [-N] module"
+#----------------------------------------------------------------------------
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+echo " "
+echo ">>> Welcome on the MegaWave2 Compiler V${_Vers} <<<"
+
+if [ "${MW_MACHINETYPE}" = "" ]; then
+   echo "Please set the \$MW_MACHINETYPE environment variable"
+   exit 1
+fi
+if [ "${MW_SYSTEMTYPE}" = "" ]; then
+   echo "Please set the \$MW_SYSTEMTYPE environment variable"
+   exit 1
+fi
+
+# trap
+trap "echo interrupt; exit 1" 2
+trap "echo quit; exit 1" 3
+
+# Defaults
+MWDIR=$HOME/megawave2
+TMP=/usr/tmp
+if  [ ! -w $TMP ]; then
+  TMP=/tmp
+fi
+
+# C Compiler
+CC=cc
+
+EXT=c
+NOLINT=0
+XMW=0
+
+# User shell variables
+if [ "$MEGAWAVE2" != "" ]; then
+  MWDIR=$MEGAWAVE2
+fi
+
+# -- Standard user library --
+#  libmymw : modules library for the user
+USER_LIBMW="mymw"
+#  libmw : modules library for the administrator
+ADM_LIBMW="mw"
+
+# libxmymw : XMegaWave2 interface for the modules (user)
+XUSER_LIBMW="myxmw"
+# libxmw : XMegaWave2 interface for the modules (administrator)
+XADM_LIBMW="xmw"
+
+# -- Standard MegaWave2 system library --
+#  libsysmw : system library 
+#  libmw : modules library for the administrator
+
+SYS_LIBMW="-lsysmw "
+if [ -f $MWDIR/lib/$MW_MACHINETYPE/lib$ADM_LIBMW.a ]; then
+ LADM_LIBMW="-l$ADM_LIBMW"
+else
+ LADM_LIBMW=""
+fi
+ 
+# Option to search X11 include files, if not in /usr/include
+if [ "${MW_INCLUDEX11}" != "" ] && [ "${MW_INCLUDEX11}" != "/usr/include" ] \
+   && [ "${MW_INCLUDEX11}" != "/usr/include/" ]; then
+ IX11=-I${MW_INCLUDEX11}
+else
+ IX11=
+fi   
+# Option to search XMotif include files, if not in /usr/include/Xm
+if [ "${MW_INCLUDEXm}" != "" ]; then
+ IXm=-I${MW_INCLUDEXm}
+else
+ IXm=
+fi   
+
+# Check if the current directory is a subdir of $MY_MEGAWAVE2 (user mode)
+# or of $MEGAWAVE2 (adm mode). So we do not need anymore -adm.
+
+dir=`pwd | grep $MY_MEGAWAVE2`
+if [ "$dir" = "" ]; then
+ dir=`pwd | grep $MEGAWAVE2`
+ if [ "$dir" = "" ]; then
+  echo "Your current directory is not valid. You must compile modules into subdir of"
+  echo "$MY_MEGAWAVE2/src (user mode) or of $MEGAWAVE2/src (adm mode)."
+  exit 1
+ else
+# adm mode
+  MWDESTDIR=$MEGAWAVE2
+  MWCMD="$MWDIR/sys/bin/$MW_MACHINETYPE/mwp"
+  LULIB="-l$ADM_LIBMW"
+  ULIB=$ADM_LIBMW
+  XULIB=$XADM_LIBMW
+  macropt="-adm"
+  echo "Warning: the target user is the system on $MWDESTDIR"
+ fi
+else
+# user mode
+ MWDESTDIR=$MY_MEGAWAVE2
+ MWCMD="$MWDIR/sys/bin/$MW_MACHINETYPE/umwp"
+ LULIB="-l$USER_LIBMW"
+ ULIB=$USER_LIBMW
+ XULIB=$XUSER_LIBMW
+ macropt=""
+fi
+
+if [ ! -w $MWDESTDIR ]; then
+ echo "Sorry, you don't have permission to compile the modules in $MWDESTDIR"
+ exit 1
+fi
+  
+if [ "${MW_LIBX11}" = "" ]; then
+ LOPTS="-L$MWDESTDIR/lib/$MW_MACHINETYPE -LX11 "
+else
+ LOPTS="-L$MWDESTDIR/lib/$MW_MACHINETYPE -L$MW_LIBX11 "
+fi   
+
+if [ "${MW_LIBTIFF}" != "" ]; then
+ LOPTS="${LOPTS} -L${MW_LIBTIFF}"
+fi
+
+if [ "$TMPDIR" != "" ]; then
+  TMP=$TMPDIR
+fi
+if  [ ! -w $TMP ]; then
+ echo "Cannot access to the TMP directory $TMP !"
+ exit 1
+fi
+
+if [ ! -d $MWDESTDIR/doc/obj/DEPENDENCIES ]; then
+   mkdir -p $MWDESTDIR/doc/obj/DEPENDENCIES
+fi
+
+# Usage
+if [ "$1" = "" ]; then
+  . .mw2_help_lg_com
+fi
+
+# Scan options
+STOP="FALSE"
+MWOPTS="-I$MWDIR/sys/include -I$MWDESTDIR/include -D$MW_SYSTEMTYPE -D$MW_MACHINETYPE"
+
+# -- System include files need special statement under some systems since they are not full K&R
+# -- nor ANSI C compliant !!
+
+# -- Linux case
+if [ $MW_SYSTEMTYPE = Linux ]; then
+# In addition, system include files differ from one kernel to another !
+# Assume the first two numbers (e.g. 2.0) are enough to caracterise the include files.
+  KERNEL_MAJOR=`uname -r | cut -d "." -f 1`
+  KERNEL_MINOR=`uname -r | cut -d "." -f 2`
+  MWOPTS="$MWOPTS -D_KERNEL_MAJOR_=$KERNEL_MAJOR -D_KERNEL_MINOR_=$KERNEL_MINOR -I$MWDIR/sys/include/Linux"
+else
+
+# -- SunOS 5.x (Solaris) case. Problem appears on SunOS 5.7
+
+  if [ $MW_SYSTEMTYPE = SunOS ]; then
+    KERNEL_MAJOR=`uname -r | cut -d "." -f 1`
+    KERNEL_MINOR=`uname -r | cut -d "." -f 2`
+    if [ $KERNEL_MAJOR -ge 5 ] && [ $KERNEL_MINOR -ge 7 ]; then
+      MWOPTS="$MWOPTS -I$MWDIR/sys/include/Solaris"
+    fi
+# -- SunOS 
+  fi
+
+# -- Linux
+fi
+
+
+COPTS="-I$MWDIR/sys/include -I$MWDIR/include"
+MAINOBJ="$MWDIR/sys/lib/$MW_MACHINETYPE/mw_main.o"
+LOPTS="$MAINOBJ $LOPTS -L$MWDIR/sys/lib/$MW_MACHINETYPE -L$MWDIR/lib/$MW_MACHINETYPE"
+debug=0
+dep=0
+
+while [ "$1" != "" -a "$STOP" = "FALSE" ]
+do
+  case "$1" in
+    # MegaWave 2 options
+    -c)		shift
+		COPTS="$COPTS $1"
+		LOPTS="$LOPTS $1"
+		;;
+
+    -d)		MWOPTS="$MWOPTS -d"
+		;;
+    # MegaWave 2 preprocessor options
+    -D*|-I*|-U*) MWOPTS="$MWOPTS $1"
+		;;
+    -w)         MWOPTS="$MWOPTS $1"
+		;;
+    # Linker options
+    -L*)	LOPTS="$LOPTS $1"
+		;;
+    -l*)	SYS_LIBMW="$SYS_LIBMW $1"
+		;;
+    # C compiler options
+    -g|-go)	COPTS="$COPTS $1"
+		LOPTS="$LOPTS $1"
+                debug=1
+		;;
+    -O*)	COPTS="$COPTS $1"
+		LOPTS="$LOPTS $1"
+		OPTIM="$OPTIM $1"
+		;;
+
+    # Ask for Gnu CC
+    -gnu)	CC=gcc
+		;;
+
+    # Link with sysmw from $PUBLIC_MEGAWAVE2 instead of $MEGAWAVE2
+    -pubsyslib) if [ -d $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE ]; then
+		 LOPTS="-L$PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE $LOPTS"
+                else
+                 echo "Cannot read public libraries in $PUBLIC_MEGAWAVE2 !"
+                 exit 1
+                fi
+		;;
+ 
+   # XMegaWave extension
+    -X)         XMW=1
+    		if [ ! -f $MWDIR/sys/include/XMW2.h ]; then 
+    		 echo "Warning: option -X cannot be activated (No XMegaWave2 include file)"
+    		 XMW=0
+    		else
+    		 if [ ! -f /usr/include/Xm/Xm.h ] && \
+			[ ! -f ${MW_INCLUDEXm}/Xm/Xm.h ]; then
+    		  echo "Warning: option -X cannot be activated (No Motif include file)"
+    		  XMW=0
+      		 fi
+      		fi
+    		;;
+
+    # Switch to say we don't want the lint
+    -N)         NOLINT=1
+                ;;
+
+    # Ask to make dependencies of the module
+    -dep)       dep=1
+                ;;
+
+    # Objects file
+    *.o)	OBJ="$OBJ $1"
+		;;
+    # MegaWave 2 module 
+    *.$EXT)	MWFILE=$1
+		STOP="TRUE"
+		;;
+    # MegaWave 2 module without extension
+    [!-]*)	if  [ -f $1.$EXT ]; then
+                  # It is a module
+ 		  MWFILE=$1.$EXT
+		else
+                  mwisupper $1 > /dev/null
+                  if [ $? -eq 1 ] && [ -x $1 ]; then
+                    # It is a macro
+		    cmw2macro $macropt $1
+                    if [ $? -ne 0 ]; then
+                      exit 1
+                    else
+                      exit 0
+                    fi
+                  else
+		    echo "$1 is not a module nor a macro"
+		    exit 0
+                  fi
+                fi
+		STOP="TRUE"
+		;;
+
+    # Error
+    *)		echo "arg \"$1\" cannot be used in `basename $0`"
+		exit 1
+		;;
+  esac
+  shift
+done
+
+if [ "$MWFILE" = "" ]; then
+  echo "module or macro name must be given"
+  exit 0;
+fi
+
+if [ ! -f $MWFILE ]; then
+  echo "Module $MWFILE not found"
+# not a compilation error: exit 0
+  exit 0
+fi
+
+# Additional system libraries
+if [ "${MW_LIBTIFF}" != "" ]; then
+ ASLIBS="-lm -ltiff"
+else
+ ASLIBS="-lm -lnotiff"
+fi   
+if [ $XMW -eq 1 ]; then
+ ASLIBS="$ASLIBS -lxmwcom"
+fi
+
+# Directory and files name
+TEXFILE=$TMP/mw$$T.tex
+IIFILE=$TMP/mw$$I.c
+
+# Define the mwicmd[] tab.
+ICFILE=$TMP/mw$$C.c
+
+# Define _module() and usage_module() : call in the Unix command mode.
+AAFILE=$TMP/mw$$A.c
+
+# Preprocessed module
+MFILE=$TMP/mw$$M.i
+
+NMFILE=$TMP/mw$$N
+
+# Define _mw2_module_mod() and _mw2_module()  : call in XMW2.
+XMWFILE=$TMP/mw$$X.c
+
+# Used for dependency list
+LINKFILE=$TMP/mw$$D.link
+
+# new trap
+trap "echo interrupt; /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE; exit 1" 2
+trap "echo quit; /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE; exit 1" 3
+
+MWCMD="$MWCMD"
+MWARG="$IX11 $MWOPTS -_T$TEXFILE -_I$IIFILE -_A$AAFILE -_M$MFILE -_N$NMFILE $MWFILE"
+
+if [ $XMW = 1 ]; then
+  MWARG="-X -_X$XMWFILE $MWARG"
+fi
+
+echo " "
+echo "  Phase 1 : MegaWave2 preprocessor"
+#echo "-> $MWCMD $MWARG"
+sh -c "$MWCMD $MWARG"
+
+CMW2_RET=$?
+if [ $CMW2_RET -ne 0 ]; then
+  if [ $NOLINT -eq 0 -a $CMW2_RET -eq 2 ]; then
+    mwechon "Errors are detected. Type <l>+<return> to execute lint on ${MWFILE}..."
+    a="N"
+    read a
+    if [ "$a" = "l" ] || [ "$a" = "L" ]; then
+     lint -u $MWOPTS $IX11 $MWFILE| more
+    fi
+   fi
+   /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
+   exit 1
+else
+  TOTNAME=`cat $NMFILE`
+  MODULE=`basename $TOTNAME`
+  GROUP="`dirname $TOTNAME`"
+  /bin/rm -f $NMFILE
+  echo "  Phase 2 : production of sources and objects"
+
+  echo "          production of document squeleton (doc/obj/$MODULE.doc)"
+  if [ ! -d $MWDESTDIR/doc/obj ]; then
+    mwechon "  Creating '$MWDESTDIR/doc/obj' : "
+    mkdir -p $MWDESTDIR/doc/obj
+    echo "done."
+  fi
+  mv $TEXFILE $MWDESTDIR/doc/obj/$MODULE.doc
+
+  echo "          production of arguments analyser object"
+  if [ ! -d $MWDESTDIR/obj/$MW_MACHINETYPE ]; then
+    mwechon "  Creating '$MWDESTDIR/obj/$MW_MACHINETYPE' : "
+    mkdir -p $MWDESTDIR/obj/$MW_MACHINETYPE
+    echo "done."
+  fi
+  CCCMD="$CC -D$MW_SYSTEMTYPE -D$MW_MACHINETYPE -c $OPTIM $COPTS -o $MWDESTDIR/obj/$MW_MACHINETYPE/m_$MODULE.o $AAFILE"
+  #EXTOBJ="$EXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/m_$MODULE.o"
+  #echo "-> $CCCMD"
+  sh -c "$CCCMD"
+  if [ $? -ne 0 ]; then
+    echo "          Error : exit."
+    /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
+    exit 1
+  fi
+  /bin/rm -f $AAFILE
+
+  echo "          production of module object"
+  CCCMD="$CC -D$MW_SYSTEMTYPE -D$MW_MACHINETYPE -c $COPTS -o $MWDESTDIR/obj/$MW_MACHINETYPE/$MODULE.o $MFILE"
+  #EXTOBJ="$EXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/$MODULE.o"
+  #echo "-> $CCCMD"
+  sh -c "$CCCMD"
+  if [ $? -ne 0 ]; then
+    echo "          Error : exit."
+    /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
+    exit 1
+  fi
+  /bin/rm -f $MFILE
+  echo "          add objects to MegaWave2 user library"
+  if [ ! -d $MWDESTDIR/lib/$MW_MACHINETYPE ]; then
+    mwechon "  Creating '$MWDESTDIR/lib/$MW_MACHINETYPE' : "
+    mkdir -p $MWDESTDIR/lib/$MW_MACHINETYPE
+    echo "done."
+  fi
+  ar r $MWDESTDIR/lib/$MW_MACHINETYPE/lib$ULIB.a $MWDESTDIR/obj/$MW_MACHINETYPE/m_$MODULE.o $MWDESTDIR/obj/$MW_MACHINETYPE/$MODULE.o
+
+  # Ranlib is needed for SunOS 4.x
+  if [ $MW_SYSTEMTYPE = SunOS ] && [ $MW_MACHINETYPE != sun4_5 ]; then
+    ranlib $MWDESTDIR/lib/$MW_MACHINETYPE/lib$ULIB.a
+  fi
+
+  echo "          production of interface with MegaWave2 interpretor source"
+  if [ ! -d $MWDESTDIR/mwi ]; then
+    mwechon "  Creating '$MWDESTDIR/mwi' : "
+    mkdir -p $MWDESTDIR/mwi
+    echo "done."
+  fi
+  CCCMD="/bin/mv $IIFILE $MWDESTDIR/mwi/int_$MODULE.c"
+  #echo "-> $CCCMD"
+  sh -c "$CCCMD"
+  
+  if [ $XMW = 1 ]; then
+    echo "          production of interface with XMegaWave2"
+    CCCMD="$CC $IX11 $IXm -D$MW_SYSTEMTYPE -D$MW_MACHINETYPE -c $OPTIM $COPTS -o $MWDESTDIR/obj/$MW_MACHINETYPE/x_$MODULE.o $XMWFILE"
+    # echo "-> $CCCMD"
+    sh -c "$CCCMD"
+    /bin/rm -f $XMWFILE
+  fi
+  
+  echo "          production of interface with MegaWave2 library object"
+  echo '#define MWI_DEC'                       >$ICFILE
+  echo '#include "mwi.h"'                     >>$ICFILE
+  echo 'int mwind = 0;'                       >>$ICFILE
+  echo "extern int `cat $MWDESTDIR/mwi/int_$MODULE.c | cut -d, -f 2`();" >>$ICFILE
+  echo "extern int `cat $MWDESTDIR/mwi/int_$MODULE.c | cut -d, -f 3`();" >>$ICFILE
+  echo 'Mwiline mwicmd[] = {'                 >>$ICFILE
+  cat  $MWDESTDIR/mwi/int_$MODULE.c           >>$ICFILE
+  echo '};'                                   >>$ICFILE
+  CCCMD="$CC -D$MW_SYSTEMTYPE -D$MW_MACHINETYPE -c $OPTIM $COPTS -o $MWDESTDIR/obj/$MW_MACHINETYPE/i_$MODULE.o $ICFILE"
+  EXTOBJ="$EXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/i_$MODULE.o"
+  #echo "-> $CCCMD"
+  sh -c "$CCCMD"
+  if [ $? -ne 0 ]; then
+    echo "          Error : exit."
+    /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
+    exit 1
+  fi
+  /bin/rm -f $ICFILE
+
+  if [ $XMW = 1 ]; then  
+   echo "          add objects to XMegaWave2 user interface library"
+   ar r $MWDESTDIR/lib/$MW_MACHINETYPE/lib$XULIB.a $MWDESTDIR/obj/$MW_MACHINETYPE/i_$MODULE.o $MWDESTDIR/obj/$MW_MACHINETYPE/x_$MODULE.o
+   # Ranlib is needed for SunOS 4.x
+   if [ $MW_SYSTEMTYPE = SunOS ] && [ $MW_MACHINETYPE != sun4_5 ]; then
+     ranlib $MWDESTDIR/lib/$MW_MACHINETYPE/lib$XULIB.a
+   fi
+  else
+   # Remove the objects, if found into the XMegaWave2 user interface library
+   if [ -f $MWDESTDIR/lib/$MW_MACHINETYPE/lib$XULIB.a ]; then
+    # Because ar doesn't archive more than 14 characters ! 
+    a=`echo i_$MODULE.o | cut -c1-14`
+    b=`ar t $MWDESTDIR/lib/$MW_MACHINETYPE/lib$XULIB.a | grep $a`
+    if [ "$b" != "" ]; then
+      echo "          remove module in XMegaWave2 user interface library"  
+      ar du $MWDESTDIR/lib/$MW_MACHINETYPE/lib$XULIB.a $a
+    fi
+    a=`echo x_$MODULE.o | cut -c1-14`
+    bb=`ar t $MWDESTDIR/lib/$MW_MACHINETYPE/lib$XULIB.a | grep $a`
+    if [ "$bb" != "" ]; then
+      if [ "$b" = "" ]; then
+          echo "          remove module in XMegaWave2 user interface library"
+      fi  
+      ar d $MWDESTDIR/lib/$MW_MACHINETYPE/lib$XULIB.a $a
+    fi
+    # Ranlib is needed for SunOS 4.x
+    if [ $MW_SYSTEMTYPE = SunOS ] && [ $MW_MACHINETYPE != sun4_5 ]; then
+     ranlib $MWDESTDIR/lib/$MW_MACHINETYPE/lib$XULIB.a
+    fi
+   fi
+  fi
+
+  echo "  Phase 3 : production of MegaWave command"
+  # Teste acces de la directory des executables
+  if [ ! -d $MWDESTDIR/bin/$MW_MACHINETYPE ]; then
+    mwechon "  Creating '$MWDESTDIR/bin/$MW_MACHINETYPE' : "
+    mkdir -p $MWDESTDIR/bin/$MW_MACHINETYPE
+    echo "done."
+  fi
+#  if [ ! -w $MWDESTDIR/bin/$MW_MACHINETYPE ] || [ ! -r $MWDESTDIR/include ] || \
+#     [ ! -r ${MWDIR?'environment not set'}/include ]; then
+#     echo "`basename $0` : You are not allowed to generate MegaWave User's command" 1>&2
+#     exit 4
+#  fi  
+
+  # Teste si nouvelle commande ou non
+  if [ -x $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE ] || \
+     [ -x $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE.old ]; then
+     NEW=0;
+  else
+     NEW=1;
+  fi
+
+  # Recherche des librairies 
+  # Xlib
+  BIBLIO=`grep "#include *<X11/Xlib.h>" $MWFILE`
+  if [ "$BIBLIO" ]; then 
+   ALIBS="$MW_LIBX11 -lX11 $ALIBS" 
+   if [ $MW_MACHINETYPE = sun4_5 ]; then
+    ALIBS="$ALIBS -lsocket -lnsl" 
+   fi
+  fi
+
+  # Wdevice X11R4 if window is used, or if on SunOS with Dynamic libraries
+  # (so we avoid undefined symbol written in window.c)
+  BIBLIO=`grep '#include *"window.h"' $MWFILE`
+  if [ "$BIBLIO" ] || \
+	 [ -f $MWDIR/sys/lib/$MW_MACHINETYPE/libsysmw.so* ] || \
+         [ $MW_SYSTEMTYPE = Linux ]; then    
+      ALIBS="-lW_X11R4 -lX11 $ALIBS" 
+   if [ $MW_MACHINETYPE = sun4_5 ]; then
+    ALIBS="$ALIBS -lsocket -lnsl" 
+   fi
+  fi
+
+
+# Link of the command
+
+# Some systems need special option to enable the shared executables to 
+# use the path list which gives shared libraries location.
+  if [ $MW_SYSTEMTYPE = HPUX ] && [ "$CC" = "cc" ]; then
+    KERNEL_MINOR=`uname -r | cut -d "." -f 2`
+    if [ $KERNEL_MINOR -ge 10  ]; then
+      LOPTS="$LOPTS -Wl,+s"
+    fi
+  fi
+
+  if [ "$ALIBS" ]; then
+     echo "          linking MegaWave2 command \"$MODULE\" on $MW_MACHINETYPE with additional libraries [$ALIBS]"
+  else
+     echo "          linking MegaWave2 command \"$MODULE\" on $MW_MACHINETYPE"
+  fi
+
+
+  LINKCMD="$CC $LOPTS -o $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE $EXTOBJ $OBJ $LULIB $LADM_LIBMW $SYS_LIBMW $HPLIBS $ALIBS $ASLIBS"
+# echo "-> $LINKCMD"
+  sh -c "$LINKCMD"
+  if [ $? -ne 0 ]; then
+    echo "          Error : exit."
+    /bin/rm -f $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE
+    exit 1
+  fi
+
+# Dependencies list, if asked 
+
+  if [ $dep = 1 ]; then
+    echo "          making dependencies primary list"
+    DEPEXTOBJ="$EXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/m_$MODULE.o"
+    DEPEXTOBJ="$DEPEXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/$MODULE.o"
+    DEPLINKCMD="$CC $LOPTS -o $LINKFILE $DEPEXTOBJ $OBJ $SYS_LIBMW $HPLIBS $ALIBS $ASLIBS 2> $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.mis"
+#echo "-> $DEPLINKCMD"
+    sh -c "$DEPLINKCMD"
+    if [ $? = 0 ]; then
+      /bin/rm -f $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.mis
+      echo "" > $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.dep
+    else
+      echo "\SeeAlso{Dependencies list not available (run mwdep) !}"  > $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.dep
+    fi
+  else
+      echo "\SeeAlso{Dependencies list not available (run cmw2 with -dep) !}"  > $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.dep
+  fi
+
+  if [ -f $LINKFILE ]; then
+    /bin/rm -f $LINKFILE
+  fi
+
+  if [ -x $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE ]; then
+    if [ $debug = 0 ]; then
+#     echo "          striping the command"
+     strip $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE
+    fi
+    if  [ $NEW -eq 1 ]; then
+       echo "     (New command added... Type rehash)"
+    fi
+  fi
+
+# Warning about modules calling this current module
+ 
+  if [ -f $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.calling ]; then
+    echo " "
+    echo "          WARNING: the following module(s) may have to be re-compiled:"
+    for m in `cat $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.calling`
+    do
+      echo "               $m"
+    done 
+  fi
+  exit 0
+fi
+
+

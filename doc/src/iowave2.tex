@@ -1,0 +1,74 @@
+\def\real{I\!\!R}
+
+
+{\em iowave2} reconstructs an image from a sequence of sub-images forming 
+a wavelet decomposition, according to the pyramidal algorithm of S. Mallat 
+\cite{kn:ma1}. 
+The notations that are used here have been already defined in {\em owave1} 
+and {\em owave2} modules' documentation, so the reader is refered 
+there to see their signification. 
+
+{\em WavTrans} is the prefix name of a sequence of files containing 
+the coefficients of a wavelet decomposition  $D^{1}_{1}, D^{1}_{2}, \ldots, 
+D^{1}_{J}, D^{2}_{1}, \ldots D^{2}_{J}, D^{3}_{1}, \ldots, D^{3}_{J}, A_{J}$. 
+{\em iowave2} computes \( A_{0} \), i.e. the inverse wavelet transform 
+of {\em WavTrans}. 
+
+As for {\em owave2} this is a semi-separable and recursive transformation : 
+\( A_{j-1} \) is computed from \( A_{j} \) \( D^{1}_{j} \), \( D^{2}_{j} \), 
+and \( D^{3}_{j} \). One applies the one-dimensional inverse wavelet transform 
+to each pair of corresponding lines in \( A_{j} \) and \( D^{1}_{j} \) and in 
+$D^{2}_{j}$, and $D^{3}_{j}$. Then one applies the one-dimensional inverse 
+wavelet transform to each pair of corresponding columns in the two resulting 
+sub-images. 
+
+The edge processing methods are corresponding to those described for 
+{\em iowave1}.
+
+The complexity of the algorithm is roughly the same as for {\em owave2}.
+
+The name of the files containing the sub-signals 
+$D^{1}_{1}, D^{1}_{2}, \ldots, D^{1}_{J}, D^{2}_{1}, \ldots D^{2}_{J}, 
+D^{3}_{1}, \ldots, D^{3}_{J}, A_{J}$ must have the same prefix {\em WavTrans}, 
+and their syntax obeys the rules described in {\em owave2}. 
+The sample values of the reconstructed signal are stored in the file 
+{\em RecompImage}. 
+
+The coefficients \( h_{k} \) of the filter's impulse response are read 
+in the file {\em ImpulseResponse}. The coefficients of the filter's 
+impulse response for computing the edge coefficients are read in the file 
+{\em EdgeIR}. 
+
+
+\begin{itemize}
+\item
+The -r option specifies that the reconstruction should start from level 
+{\em NLevel}. The default is the number of level in {\em WavTrans}. 
+\item
+The -h option specifies that the reconstruction should start from level 
+{\em HaarNLevel} up to level {\em NLevel + 1} with the Haar filter. 
+\item
+The -e option specifies the edge processing mode (see {\em owave1}).
+\item
+The -p option specifies the preconditionning mode (see {\em iowave1}).
+\item
+The -i option enables to have invertible transform. Since the transform is invertible when EdgeMode is equal to 1 or 3, this only makes sense when EdgeMode is equal to 0 or 2. 
+\item
+The -n option specifies the normalisation mode of the filter impulse responses' coefficients. It should be selected according to the mode used for the decomposition in order to get exact reconstruction. 
+\end{itemize}
+
+These options should be tuned in the same way as they were 
+for the decomposition (with the {\em owave2} module). 
+
+\begin{thebibliography}{Dau1}
+
+\bibitem[CDV]{kn:cdv} A. Cohen, I. Daubechies, P. Vial. 
+{\em Wavelets and Fast Wavelet Transform on an Interval, } 
+preprint AT\&T Bell Laboratories, 1992.
+\bibitem[Dau]{kn:dau1} I. Daubechies. 
+{\em Orthonomal Bases of Compactly Supported Wavelets, } 
+Comm. pure and applied math., 41, pp.909--996, 1988.
+\bibitem[Mal]{kn:ma1} S. Mallat. {\em a theory for multiresolution signal decomposition, the wavelet representation, } IEEE PAMI Vol. 2, n 7, 1989.
+
+\end{thebibliography}
+

@@ -1,0 +1,58 @@
+
+{\em sconvolve} computes the convolution of a fsignal with a discrete filter which is also of fsignal type. The signal can eventually be interpolated or over-sampled (adding $M-1$ zero-valued samples betwen each successive samples) before the convolution, and the result can eventually be decimated or sub-sampled (discarding $N-1$ samples over $N$).
+
+Let $\{x_{k}\}$ and $\{y_{k}\}$ be the sample values of the input and output signal, and $\{h_{k}\}$ the impulse response of the filter, then :
+\[
+y_{k} = \sum_{n} h_{Nk-Ml} x_{l}
+\]
+
+Because the signal is of finite size, one has to use special tricks to compute the edge (i.e. the first and last) coefficients. These are the following :
+\begin{itemize}
+\item
+One can extend the signal with \( 0 \)-valued samples.
+\item
+One can periodize the signal.
+\item
+One can also reflect the signal around each edge.
+\item
+Finally one can use special filters to compute the coefficients near edges. For example one can use filters that correspond to wavelet basis adapted to the interval (see {\em owave1} module's documentation). 
+\end{itemize}
+
+Notice that if $n$ is the size of the input signal, then the size of the output signal is $nM/N$, unless the -p option is selected.
+
+The coefficients \( h_{k} \) of the filter's impulse response are stored in the fsignal type file {\em ImpulseResponse}. The coefficients of the filter's impulse response for computing the edge coefficients are stored in the fimage type file {\em EdgeIR}.
+
+The sample values of the input signal are read in the fsignal type file {\em Signal}, the sample values of the output signal are stored in the file {\em FicConvol}.
+
+\begin{itemize}
+\item
+The -d option specifies the rate $N$ of sub-sampling after the convolution.
+\item
+The -i option specifies the rate $M$ of over-sampling before convolution.
+\item
+The -e option specifies the edge processing mode.
+\begin{itemize}
+\item
+0 : 0 extension.
+\item
+1 : periodization.
+\item
+2 : reflexion.
+\item
+3 : adapted filtering (default).
+\end{itemize}
+\item
+The -p option specifies the extension or shrinkage of the output signal near edges. It works only if the edge processing mode is 0 or 1, and enables then to get exact reconstruciton in wavelet decompositions (see {\em owave1}).
+\begin{itemize}
+\item
+0 : no extension nor shrinkage (default).
+\item
+1 : prolongation. All the coefficients $y_{k}$ which are not always nul when the 0 extension is selected are kept.
+\item
+2 : shrinkage, the size of output is $(input.lastp \, - \, input.firstp + 1)uprate/domwrate$.
+\end{itemize}
+\item
+The -b option specifies the high-pass filtering, i.e. the convolution is performed with $\{ g_{k} = (-1)^{k+1} h_{1-k} \}$ rather than $\{ h_{k} \}$.
+\item
+The -r option specifies that the convolution is performed with reflected filter $\{ h_{-k} \}$ (resp. $\{ g_{-k} \}$) rather than $\{ h_{k} \}$ (resp. $\{ g_{k} \}$).
+\end{itemize}

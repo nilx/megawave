@@ -1,0 +1,17 @@
+This module reconstructs an image from the compressed file Compress, 
+which has been generated using the wavelet transform + vector quantization 
+module {\em fwvq}. The reconstructed image is put in Result. 
+
+First the wavelet transform of Result is reconstructed, 
+using the codebooks CodeBook1, CodeBook2, CodeBook3, ResCodeBook1, 
+ResCodeBook2, ResCodeBook3, ResResCodeBook1 and ResResCodeBook2 
+(see {\em fwvq} program documentation for information on these codebooks). 
+Then a scaling of the coefficients is made if he -w option is selected
+Finally an inverse wavelet transform is applied to reconstruct the image
+Result. 
+
+All the options should be selected and tuned in exactly the same 
+manner at the compression ({\em fwvq}) and decompression ({\em fwivq}) steps. 
+Likewise, CodeBook1 and ImpulseResponse should be the same 
+at the compression ({\em fwvq}) and decompression ({\em fwivq}) steps. 
+Then Result should be identical to the image QImage obtained with {\em fwvq}. 

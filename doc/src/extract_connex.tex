@@ -1,0 +1,9 @@
+This module quickly computes the connected components of the 
+level set $\{x, \; u(x) \leq g\}$, 
+where $u$ is the input image and $g$ a given grey level 
+(by default 128). 
+We use the 8-connectedness (i.e. each point has 8 neighbors) to compute these
+components, which are returned as a Fcurves structure.
+The maximum number of connected 
+components is limited to 10000, which theoretically allows to 
+process any 200x200 image, and actually any natural image.

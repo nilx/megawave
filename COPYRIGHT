@@ -1,0 +1,29 @@
+                       COPYRIGHT AND CONTRIBUTIONS
+
+MegaWave2 is a "soft-publication" from the following laboratory:
+CMLA (CNRS UMR-8536), Ecole Normale Superieure de Cachan, 61 avenue du President 
+Wilson, 94235 Cachan cedex, France.
+
+The whole system has been designed and implemented by Jacques Froment, with the 
+help of Sylvain Parrino for the preprocessor part. A lot of people made 
+contribution to the software by writting modules (see mwcontrib_all to get the 
+updated list of all contributors). Since 1998, Lionel Moisan is in charge of 
+collecting and improving the module library. Some small parts of the system libraries 
+(especially input/output functions related to the X Window System or to image file 
+formats) have been written by adapting publicly available source code. In that case 
+the original copyright mentions have been transfered in the corresponding file.
+
+Copyrights
+
+  for the whole system:
+   (C)1988-1998 Universite Paris-IX Dauphine,
+   (C)1999-2000 Ecole Normale Superieure de Cachan.
+
+  for the modules:
+   the copyrights are given by the author's names and institutions written in the
+   header of the module.
+
+Address: MegaWave, CMLA, Ecole Normale Superieure de Cachan, 61 avenue 
+         du President Wilson, 94235 Cachan cedex, France.   
+E-mail:  megawave@cmla.ens-cachan.fr
+Last version available at: http://www.cmla.ens-cachan.fr/Cmla/Megawave

@@ -1,0 +1,12 @@
+This module adds Gaussian noise of standart deviation $sd$ (default value~:
+10.0) to a Cmovie, using the {\sf fganoise} module.
+
+\vskip 0.3cm
+
+The random seed is reinitialized once at the begining, but not for each 
+image of the movie (which could create correlations between successive
+images).
+
+\vskip 0.5cm
+
+NB: Calling this C-subroutine with $out=in$ is possible 

@@ -1,0 +1,25 @@
+This module performs a ``phase randomization'' on a Fimage, defined by
+$$u' = F^{-1} \{ |F \{ u \} | e^{i \phi} \} ,$$
+where $F \{u\}$ means the Fourier Transform of $u$, and $\phi$ is an
+antisymetric field of random independant variables uniformely distributed
+on $[0,2\pi[$.
+In addition to that, a gain-offset correction is finally applied on $u'$ 
+in order to keep the $u$'s original mean and variance.
+
+\vskip 0.3cm
+
+This operator can be viewed as a ``texturization'', since it is well-known
+that microscopic textures can be caracterized by their correlation function
+$$\Gamma_u(x) = <u(t)u(t+x)>_t,$$
+which Fourier Transform equals $| F \{ u \} | ^2$ up to a multiplicative 
+coefficient (Wiener-Kichnine theorem). Thus, this function is a kind of 
+projection on the space of microscopic textures.
+
+\vskip 0.3cm
+
+The random seed used ({\sf drand48}) is reinitialized with the current time
+unless the -i option is set.
+
+\vskip 0.5cm
+
+NB: Calling this C-subroutine with $out=in$ is possible 

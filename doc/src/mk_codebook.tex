@@ -1,0 +1,12 @@
+{\em mk\_codebook} enables to generate random codebooks to be used as initial 
+data for the LBG algorithm (see {\em flbg} module documentation). The 
+coordinates of the vectors are considered as i.i.d. random variables. 
+Their distribution is either normal (if the -n option is selected) 
+or uniform. One can choose also their mean and variance with the help 
+of the -m and -v options. The -s and -b options permit to control 
+the size of codebook and the size of vectors in codebook. 
+
+As a matter of fact, it is not necessary to consider the output 
+of {\em mk\_codebook} as a codebook. It is merely a random matrix 
+of i.i.d. floating point. It can thus be used for other purposes 
+than creation of random codebooks.  

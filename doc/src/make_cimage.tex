@@ -1,0 +1,24 @@
+This module provides a very simple demo for how to use the Cimage memory
+format in output.
+It generates an image $256 \times 256$ with 256 gray levels, the column \#i having the gray level \#i.
+
+Use the module cview to show it.
+
+Note that an alternate form of this function could be
+\begin{verbatim}
+Cimage make_cimage()
+
+{
+  Cimage Output;
+
+  ...
+
+  return(Output);
+}
+\end{verbatim}
+that is, to return the value using the function (and not passing an argument
+to this function).
+However, this alternate form is no longer recommanded since it allocates the
+memory for the image at each call to the module (this can be wasting in case
+of another module calling this one in a loop).
+

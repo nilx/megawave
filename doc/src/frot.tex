@@ -1,0 +1,18 @@
+This module performs a rotation of angle $a$ on a Fimage $u(i,j)$, using
+a bilinear interpolation $\tilde{u}(x,y)$ of $u(i,j)$ to compute the rotated 
+image
+$$u'(i,j) = \tilde{u}(\;i \cos a - j \sin a\;,\;i \sin a + j \cos a\;).$$
+Since the rotated image must be included in a rectangular window, a 
+black background (grey level $0.0$) is set on the undefined parts of
+the rotated image. This background value can be modified through the 
+$-b$ option.
+
+\vskip 0.3 cm
+
+Last, notice that that two successive rotations of angles $a$ and $a'$ 
+are {\em not} equivalent to a single rotation of angle $a+a'$, due to
+the the discrete representation of the images.
+
+\vskip 0.5 cm
+
+NB: Calling this C-subroutine with in=out is not possible

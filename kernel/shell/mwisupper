@@ -1,0 +1,28 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="`basename $0`"
+_Vers="1.0"
+_Date="1999"
+_Func="Return 1 if the first letter of the input is of upper case, 0 elsewhere"
+_Auth="Jacques Froment";
+_Usage=""
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+# Seems strange to need such function ! But [A-Z] does not work properly
+# on Linux with non-english locales ! However, it should exists a better
+# way to do that.
+
+car=`echo $1 | cut -c1`
+case $car in
+      [ABCDEFGHIJKLMNOPQRSTUVWXYZ]) echo "1"; exit 1;;
+      *) echo "0"; exit 0;;
+esac
+exit -1

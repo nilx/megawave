@@ -1,0 +1,20 @@
+This module displays the input image on a window, and interactively reads the 
+contours of polygons which are pointed by the operator using the mouse.
+The polygons are created with a defaut gray level (field {\em gray})
+set to 0 (black).
+
+\medskip
+
+{\bf Interactive commands~:}
+\medskip
+
+\begin{tabular}{ll}
+Key 'Q'			& soft quit (save the polygons) \\
+Key 'H'			& help \\
+Key \verb+<SPACE>+	& list recorded polygons \\
+Key 'R'			& redraw the window according to the recorded 
+polygons\\
+Mouse Left button 	& create a new point in the current coordinates (x,y)\\
+Mouse Middle button 	& remove the last recorded point\\
+Mouse Right button	& terminate the polygon and go ready for the next one\\
+\end{tabular}

@@ -1,0 +1,63 @@
+This module compresses a graylevel image (fimage) using a vector quantization 
+algorithm. {\em fvq} supports both classified and multistaged/residual 
+vector quantization (see \cite{kn:gg}). 
+
+The classification is based on the energy of the coefficients vectors. 
+The codebooks for the first class (vectors with the highest energy) 
+are contained in the CodeBook1 file.  The codebooks for the second and third 
+classes (the energy of vectors dereases with the index class) 
+are contained respectiveley in the CodeBook2 and CodeBook3 files. 
+The values of energy thresholds which separate the different classes 
+are read in the codebook files. 
+
+ResCodeBook1, ResCodeBook2 and ResCodeBook3 contain codebooks 
+for the quantization of the residual vectors coming from the 
+quantization with CodeBook1, CodeBook2 and CodeBook3 respectively 
+(second stage quantization). 
+ResResCodeBook1 and ResResCodeBook2 contain codebooks 
+for the quantization of the residual vectors coming from the 
+quantization with ResCodeBook1 and ResCodeBook2 respectively 
+(third stage quantization). 
+
+Compress is the output compressed file. Notice that all lists 
+of quantization symbols are arithmetically encoded using the 
+{\em arithm\_encode2} module (see the documentation of this module 
+for further details). 
+
+QImage is the quantized image, which can be reconstructed 
+from Compress. 
+
+The -h option indicates that only a reduced header (not including 
+the dimensions of image) should be inserted at the beginning 
+of the Compress file. 
+
+When one performs classified vector quantization, one has to encode 
+in addition the index of the class of each quantized vector in order 
+to know which codebook was used to quantize it. This list of indices 
+can be considered as a bitmap. When the codebooks used to quantize each class 
+have size one, then the vectors are quantized to 0. In this case, it is 
+normally useless to encode the bitmap of indices. The -M option 
+specifies to encode this bitmap anyway (this option is used by {\em fwvq} 
+module). Notice that this bitmap is also arithmetically encoded. 
+
+The -m option enables to compute a discrete rate-distortion curve. 
+It only makes sense when the different codebook files contain more 
+than one codebook.
+
+The -n, -X, -Y and -Z options specify which codebook should be used 
+in CodeBook1, CodeBook2, CodeBook3 and CodeBook4 respectively 
+to perform the quantization. This supposes that these files contain 
+more than one codebook and that the -m option is not selected.   
+
+Likewise, the -A, -B, -C, -D, -E and -F options specify which codebook 
+should be used in ResCodeBook1, ResCodeBook2, ResCodeBook3, ResCodeBook4, 
+ResResCodeBook1 and ResResCodeBook2 respectively 
+to perform the quantization. 
+
+
+\begin{thebibliography}{999999}
+
+\bibitem[GG]{kn:gg} A. Gersho, R.M. Gray, {\em ``Vector quantization 
+and signal compression'', } Kluwer Ac. Pub., Boston (1992). 
+
+\end{thebibliography}

@@ -1,0 +1,22 @@
+#! /bin/sh
+#-------------------------- Shell MegaWave2 Utility --------------------------#
+#
+#  This Utility has to be call by a Shell MegaWave2 Macro, when an error
+#  occurs in the syntax of the command-line arguments .
+#
+#-- MegaWave2 - Copyright (C) 1988-96 Jacques Froment. All Rights Reserved. --#
+
+echo '' 1>&2
+echo "   \\\\\ ${_Prog=(unknown)} /// Vers ${_Vers=(unknown)}" 1>&2
+echo "   Shell MegaWave2 Macro : (C) ${_Date=(unknown)} ${_Auth=(unknown)} " 1>&2
+echo "   ${_Labo=CMLA, ENS Cachan, 94235 Cachan cedex, France.}" 1>&2
+echo "   MegaWave2 (C) 1988-2000 J.Froment. All Rights Reserved." 1>&2
+echo '' 1>&2
+echo "Usage : ${_Prog=(unknown)} ${_Usage=(unknown)}" 1>&2
+echo '' 1>&2
+echo "   ${_Func=(function unknown)}" 1>&2
+echo '' 1>&2
+
+exit 1
+
+

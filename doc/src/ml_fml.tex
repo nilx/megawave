@@ -1,0 +1,16 @@
+This module transforms a {\tt morpho\_line} into 
+an {\tt fmorpho\_line} by a $(-0.5,-0.5)$ translation.
+This is consistent with the conventions explained in
+{\bf ml\_extract}.
+
+\medskip
+
+If the range of integer {\tt morpho\_line} points is
+$\{0,\ldots,NC\}\times\{0,\ldots,NL\}$, then the 
+float {\tt fmorpho\_line} points will be in
+$\{-0.5,\ldots,NC-0.5\}\times\{-0.5,\ldots,NL-0.5\}$.
+
+\medskip
+
+If {\bf ml\_fml} is used in another MW2 module it converts
+a list of {\tt morpho\_lines} into a list of {\tt fmorpho\_lines}.

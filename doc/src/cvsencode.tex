@@ -1,0 +1,27 @@
+This module computes the bit rate needed to encode
+all points of the curves contained in the input set.
+The bit rate is given in bit per point, the number of points being
+the total number of points contained in all curves.
+The curves are supposed to be composed by connected points
+for the 4-connectivity. To encode curves with holes, rather use
+the module \verb+cvscompress+.
+
+This module first calls \verb+cvsorgcode+ to get the 
+bit rate to code the origin points, and after that
+\verb+cvsfreecode+ to get the bit rate to code the other points
+by the Freeman algorithm.
+
+The option \verb+-s+ avoids to code large parts of multiple points,
+by splitting curves into pieces of non-overlapping curves.
+The length of the permitted overlapping is given by the parameter
+\verb+L+. 
+Be aware that by splitting curves, the amount of origin points,
+hard to code, grows.
+Do not use this option if it is non-sense to modify your curves 
+structure.
+
+The option \verb+-o+ is meaningful together with \verb+-s+ : it
+allows to output the curves which were really coded.
+
+The function outputs also the total number of points \verb+N+
+and the number of bits \verb+B+ needed to code the curves.

@@ -1,0 +1,10 @@
+This module fills a polygon (e.g. created using the
+module \verb+readpoly+) with the gray level 0 (black).
+The result is bitmapped in a Cimage.
+Pixels outside the polygon are set to the gray level 255 (white).
+The user has to specify the size of the Cimage, which must of course contain 
+the polygon. The defaut size is $256 \times 256$.
+Such a function is useful to generate the first entry of the 
+module \verb+movepoly+.
+It has a pseudo-inverse transform called \verb+emptypoly+.
+

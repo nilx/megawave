@@ -1,0 +1,23 @@
+This macro compresses a 8 bits graylevel image using EZW 
+algorithm applied to the orthogonal/biorthogonal wavelet coefficients. 
+It is based on the {\em fezw} module, but is simpler to use. 
+
+One only has to specify the input image name. 
+If the -R option is selected, then both a compressed file and a quantized 
+image (which can be reconstructed from the compressed file) are generated. 
+The compression is made in order to reach the target bit rate {\em Rate}. 
+If the input image file has the form *.rim or *.img, then 
+the compressed file is named *\_{\em Rate}c.comp and the quantized image file 
+is named *\_{\em Rate}q.rim.
+
+If the -R option is not selected, then the rate distortion curve is computed 
+(as if the -d option was selected in {\em fezw}). 
+
+Details about wavelet transform are the same as for {\em Fwlbg\_adap} macro. 
+The reader is refered to its documentation for information about the -b1, -b2, 
+-o and -e options. 
+
+
+When calling {\em fezw} module, none of the -r, -n, -w, -P and -s option is 
+selected. 
+

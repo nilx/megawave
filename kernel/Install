@@ -1,0 +1,130 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
+_Func="Install a new version of the MegaWave2 kernel";
+_Prog="`basename $0`"
+_Vers="0.0"
+_Date="1999"
+_Auth="Jacques Froment";
+_Usage="[-static] [-public] [-clear] [-debug]"
+#-----------------------------------------------------------------------------
+# This file is part of the MegaWave2 kernel.
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+# Run this shell-script to make a new version of the MegaWave2 kernel
+# on your machine. Notice : you must have configured your environment to be 
+# the MegaWave2 administrator (it does not mean to be the super-user root).
+# Options :
+# -static : generates static libraries (default : shared).
+# -public : change the kernel of the PUBLIC version of MegaWave2
+#           (the version used by everybody else than you in your lab), in
+#           addition to the PRIVATE version of MegaWave2.
+# -clear : clear previous objects and libraries.
+# -debug : produce debugging information to debug the libraries.
+
+if [ "${MW_MACHINETYPE}" = "" ]; then
+   echo "Please set the \$MW_MACHINETYPE environment variable"
+   exit 1
+fi
+if [ "${MW_SYSTEMTYPE}" = "" ]; then
+   echo "Please set the \$MW_SYSTEMTYPE environment variable"
+   exit 1
+fi
+if [ "${PRIVATE_MEGAWAVE2}" = "" ]; then
+   echo "Please set the \$PRIVATE_MEGAWAVE2 environment variable"
+   exit 1
+fi
+if [ "${PUBLIC_MEGAWAVE2}" = "" ]; then
+   echo "Please set the \$PUBLIC_MEGAWAVE2 environment variable"
+   exit 1
+fi
+
+lib="shared"
+clear=0
+public=0
+debug=0
+libopt=""
+mwpopt=""
+
+while [ "$1" != "" ]
+do
+        case "$1" in
+	  "-static") lib="static"
+		     libopt="${libopt} -static"
+		     shift
+		     ;;
+	  
+	  "-public") public=1
+		     libopt="${libopt} -public"
+		     mwpopt="${mwpopt} -public"
+		     shift
+		     ;;
+
+	  "-clear") clear=1
+	            libopt="${libopt} -clear"
+		    mwpopt="${mwpopt} -clear"
+		    shift
+		    ;;
+
+	  "-debug") debug=1
+	            libopt="${libopt} -debug"
+		    mwpopt="${mwpopt} -debug"
+		    shift
+		    ;;
+	  
+        *)      . .mw2_help_lg_com
+                ;;
+       
+       esac
+done
+
+echo "=== `date`"
+echo "=== Install the MegaWave2 kernel ==="
+
+cd Wdevice
+./Install $libopt
+if [ $? -ne 0 ]; then
+  echo "=== Error in Wdevice Install ! Abort kernel Install. ===" 2>&1
+  exit 1
+fi
+cd ../lib
+./Install $libopt
+if [ $? -ne 0 ]; then
+  echo "=== Error in lib Install ! Abort kernel Install. ===" 2>&1
+  exit 1
+fi
+cd ../mwp
+./Install $mwpopt
+if [ $? -ne 0 ]; then
+  echo "=== Error in mwp Install ! Abort kernel Install. ===" 2>&1
+  exit 1
+fi
+
+cd ../shell
+make install
+if [ $? -ne 0 ]; then
+  echo "=== Error in 'make install (shell)' ! Abort kernel Install. ===" 2>&1
+  exit 1
+fi
+if [ $public -eq 1 ]; then
+  make sysinstall
+  if [ $? -ne 0 ]; then
+    echo "=== Error in 'make sysinstall (shell)' ! Abort kernel Install. ===" 2>&1
+    exit 1
+  fi
+fi
+cd ..
+
+echo " "
+echo "=== `date`"
+echo "=== Install done for the kernel on $PRIVATE_MEGAWAVE2 ==="
+if [ $public -eq 1 ]; then
+  echo "=== Install done for the kernel on $PUBLIC_MEGAWAVE2 ==="
+fi  
+exit 0
+
+

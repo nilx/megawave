@@ -1,0 +1,202 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
+_Func="Install a new MegaWave2 version";
+_Prog="`basename $0`"
+_Vers="1.2"
+_Date="1999-2000"
+_Auth="Jacques Froment";
+_Usage=""
+#-----------------------------------------------------------------------------
+# This file is part of the MegaWave2 Distribution.
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+# Run this shell-script to make a new version of MegaWave2.
+# It simply calls mwinstall with the right parameters.
+#-----------------------------------------------------------------------------
+
+Answer()
+
+{
+ok=0
+while [ $ok -ne 1 ]; do
+ if  [ "$2" != "" ]; then
+   echo "$1 [Y/N] ? [default $2]"
+ else
+   echo "$1 [Y/N] ?"
+ fi
+ read ans
+ if [ "$ans" = "" ] && [ "$2" != "" ]; then
+  ans=$2
+ fi
+ if [ "$ans" = "y" ] ||  [ "$ans" = "Y" ]; then
+   ans="Y"
+   ok=1
+ fi
+ if [ "$ans" = "n" ] ||  [ "$ans" = "N" ]; then
+   ans="N"
+   ok=1
+ fi
+ if [ $ok -ne 1 ]; then
+  if  [ "$2" != "" ]; then
+   echo "Please, answer Y for Yes or N for No (default means $2) !"
+  else
+   echo "Please, answer Y for Yes or N for No !"
+  fi
+ fi
+done
+echo ""
+}
+
+
+MWSRC=`\pwd`
+a=`diff $0 $MWSRC/$_Prog`
+if [ "$a" != "" ] || [ ! -r $MWSRC/COPYRIGHT ]; then
+    echo "+++++ Please, run Install from the MegaWave2 Distribution home directory" 2>&1
+    exit 1
+fi
+MWSHELL=$MWSRC/kernel/shell
+if [ ! -x $MWSHELL/mwinstall ]; then
+  echo "+++++ Cannot exec $MWSHELL/mwinstall : Are you sure you" 2>&1
+  echo "+++++ have called Install from the MegaWave2 Distribution home directory ?" 2>&1
+  exit 1
+fi
+Guid1=$MWSRC/doc/guid1.dvi
+if [ ! -r $Guid1 ]; then
+  echo "+++++ Cannot find documentation $Guid1 : Are you sure you" 2>&1
+  echo "+++++ have called Install from the MegaWave2 Distribution home directory ?" 2>&1
+  exit 1
+fi
+
+insopt=""
+debug=0
+
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo "This shell is intended to help the MegaWave2 Administrator to install the MegaWave2 software."
+echo "We call MegaWave2 Administrator the user which is in charge of installing and maintaining the"
+echo "local MegaWave2 version. He must not to be root, but he has to be the proprietary of the"
+echo "PRIVATE MegaWave2 Distribution directory $MWSRC."
+echo "If you are not the MegaWave2 Administrator, please exit this shell."
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo ""
+echo "In addition to the PRIVATE version, you may want to maintain a PUBLIC version of the software."
+echo "In this way, you will be able to perform changes and tests on the PRIVATE version without"
+echo "bothering the users. To make your changes in effect in the PUBLIC version, you can use this"
+echo "shell or you can directly use system macros you will find in the documentation."
+echo "If you will be the ONLY ONE MegaWave2 user, or if you don't plan to modify MegaWave2, you"
+echo "don't need of course to manage a PUBLIC version. In that case, answer NO to the following"
+echo "question. Later, you will still be able to generate a PUBLIC version by running this shell"
+echo "one more time. If you answer NO, I will install the PRIVATE version only. If you answer YES,"
+echo "I will install both PRIVATE and PUBLIC version".
+Answer "Do you want to create or to update a PUBLIC version different to the PRIVATE one" "N"
+if [ "$ans" = "Y" ]; then
+  insopt="$insopt -public"
+else
+  echo "If you answer NO to the following question, it means that you will be the only user"
+  echo "concerned by this current installation."
+  Answer "Do you want to make the PRIVATE version the PUBLIC version for all users" "N"
+  if [ "$ans" = "Y" ]; then  
+    insopt="$insopt -public=private"
+  fi
+fi
+
+if [ -d $MWSRC/bin ] && [  -d $MWSRC/kernel_obj ] && [  -d $MWSRC/lib ] && \
+   [ -d $MWSRC/obj ]; then
+  echo "You have to run Install on each machine architecture you want MegaWave2. If you answer"
+  echo "YES to the following question, it means that you already have installed MegaWave2 for"
+  echo "a machine architecture, and now you want to get the same installation on a new machine."
+  Answer "Are you installing a new machine architecture" "N"
+  if [ "$ans" = "N" ]; then  
+    insopt="$insopt -clear"
+  fi
+else 
+  insopt="$insopt -clear"
+fi
+
+echo "If you answer NO to the following question, optimization will be turned on."
+Answer "Do you want to be able to debug the code" "N"
+if [ "$ans" = "Y" ]; then  
+  insopt="$insopt -debug"
+  debug=1
+fi
+echo "If you answer NO to the following question, kernel libraries will be shared."
+echo "WARNING : modules linked with static kernel libraries use lot of DISK and RAM memory."
+if [ $debug -eq 1 ]; then
+  echo "However, some debuggers don't correctly work with shared libraries."
+fi
+Answer "Do you want to create STATIC kernel libraries" "N"
+if [ "$ans" = "Y" ]; then  
+  insopt="$insopt -static"
+  echo "OK, but I hope you know what your are doing !"
+fi
+
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo "Well ladies and gentlemen, I am going to start the BIG installation process"
+echo ""
+echo "  $MWSHELL/mwinstall $insopt $MWSRC"
+echo ""
+echo "This installation process is supposed to work on the very most common systems only."
+echo "In any case, remember that NOTHING is WARRANTY and please read the manuals, starting"
+echo "with Volume 1 located at $Guid1."
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo "" 
+
+xdvi=`which xdvi | cut -d " " -f 1`
+if [ "$xdvi" != "" ]; then
+ if [ -x $xdvi ]; then
+  xdvi -s 9 -iconic $Guid1 1> /dev/null 2> /dev/null &
+  echo "+++++ An Icon is created to display the MegaWave2 User's Guide (Vol.1)."
+ fi
+fi
+echo "+++++ Please watch the screen, you may have to answer to some questions while the installation progresses. "
+
+sleep 20
+
+machinetype=`$MWSHELL/mwarch -s`
+MWPROFILE=$MWSRC/sys/lib/$machinetype/.profile_adm_megawave2
+MWCSHRC=$MWSRC/sys/lib/$machinetype/.cshrc_adm_megawave2
+
+$MWSHELL/mwinstall $insopt $MWSRC
+
+if [ $? -ne 0 ]; then
+  echo "+++++ Installation NOT COMPLETE using"
+  echo "+++++      $MWSHELL/mwinstall $insopt $MWSRC"
+  echo "+++++ Try to fix the problem and rerun mwinstall. If this command has failed at a level l greater"
+  echo "+++++ than 1, you may save time by adding the parameter '-level l'. In that case, make sure "
+  echo "+++++ your environment variables are correctly set."
+else
+  echo "+++++ Installation DONE using"
+  echo "+++++      $MWSHELL/mwinstall $insopt $MWSRC"
+  echo "+++++ Installation successfully complete does not mean that modules have been successfully compiled"
+  echo "+++++ on your architecture. Modules for which compilation failed have been written on the output "
+  echo "+++++ screen during level 3 (List of unsuccessful compilations, Second pass). You may also get the"
+  echo "+++++ list of available/invalid modules using the macro 'mwdoc L'."
+  echo "+++++ Before using MegaWave2, you need to set the environement variables in your shell."
+fi
+if [ -x $MWPROFILE ] || [ -x $MWCSHRC ]; then
+  echo "+++++ The environment variables you need are initialized in the following files :"
+  if [ -x $MWPROFILE ]; then 
+    echo "+++++ $MWPROFILE (Profile for Bourne-compatible shells)"
+  fi
+  if [ -x $MWCSHRC ]; then 
+    echo "+++++ $MWCSHRC (Csh for C-compatible shells)"
+  fi
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+

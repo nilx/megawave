@@ -1,0 +1,10 @@
+This module implements a binomial smoothing filtering. 
+It is a Bernouilli filter iterated $N$ times. 
+$N$ depends on the standard deviation $S$ and on the weight $W$ of the considered pixel : $N=(2+W)*S^{2}$. 
+Let $I$ the input fimage, then the module iterates $N$ times
+the following two-steps scheme:
+
+\begin{eqnarray*}
+1) && I_{m,n} \;\longleftarrow\; ((I_{m-1,n}+I_{m+1,n}+W*I_{m,n})/(2+W)) \\
+2) && I_{m,n} \;\longleftarrow\; ((I_{m,n-1}+I_{m,n+1}+W*I_{m,n})/(2+W))
+\end{eqnarray*}

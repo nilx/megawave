@@ -1,0 +1,87 @@
+This module generates a movie in which each image is obtained by a
+rotation and a orthogonal affinity of a generic shape, given as a binary
+image.
+It should be used also as a preprocessing of the infsup module, to get the
+set of shapes.
+
+\paragraph{Options}
+
+3 shapes can be automaticaly computed by the program : a circle :
+option -T 1, a square : option -T 0, or a non centered square -T 2.
+But it is possible to input another shape by using the option -M
+{\it shape.img}, where
+{\it shape.img} is  a Cimage. This image is considered as a binary image : level 0 and levels $>0$.
+
+
+The size of this input shape is
+free, but bigger this size is, better is the precision of the output.
+Moreover the image {\it shape.img} is assumed to be equal to zero
+outside its boundaries.
+
+\vspace{1mm}
+
+The options -r, and -a parametrize the number of rotations, and
+(resp.) affinities which are requested. The number of images of the
+output movie is then the product of these numbers.
+
+\vspace{1mm}
+
+
+The option -t {\it Taille} allows to fix the size of the output images
+as a $2*Taille+1$ by $2*Taille+1$ pixels.
+
+\vspace{1mm}
+
+The option -A {\it Area} fixs the square root area of the shape in the output
+images. More exactly if the generic shape is a image always equals to
+one, the set of the pixels of the output images which are equals to
+one will be {\it Area}, or {\it Taille}*{\it Taille} if the {\it
+Taille} is not enough big.
+
+\vspace{1mm}
+
+The option -o {\it OptSym} changes the step of the rotations. This step is 
+equal to $2*\pi/(OptSym*Nrotation)$. This option must be equal to 1.0, if the generic mask is not symmetric, and equal to 2.0 if it is invariant by rotation of $\pi$. If this option is not used, {\it OptSym} is set to 2.0.
+
+\vspace{1mm}
+
+The option -f {\it Factor}, multiplies the factor of the last affinity by {\it Factor}. So that if Factor is big, for the last affinity, the output shapes will be as straigh lines. For a normal use of this module do not change this option.
+
+\vspace{1mm}
+
+The option -d {\it Definition} coresponds to the precision of the calculs.
+ A {\it Definition} equal to 10 is generally enough.
+
+
+
+\vspace{3mm}
+
+\paragraph{Principle of the algorithm}
+
+The principle of algorithm is following :
+the module reads a generic shape : a standard one (circle, or square) or an
+input image {\it shape.img}.
+The size of this shape is normalized into a square [0, 1]*[0, 1].
+
+Then it process two loops :
+one for the rotations, and one for the affinities.
+The step of the rotations is $2*\pi/(OptSym*Nrotation)$. The factors of affinities : $a_x$ (for $x$ axe) and $a_y$ (for $y$ axe) are going from
+$(a_x = Area, a_y = Area)$, to $(a_x = Taille, a_y= Area*Area/Taille)$.
+
+For each mask, we create an intermediar image of size {\it Definition} times bigger than the size of the output mask.
+ So that a pixel of an output mask coresponds to a square {\it Definition} by {\it  Definition} of pixels of the intermediar image. This coresponds in fact to a sursampling of the ourput masks.
+
+For each pixel (i,j) of the intermediar image, we process the inverse rotation and the inverse affinity, so that it coresponds to a location (i',j') in the generic mask.
+If the grey level value of the point (i',j') of the generic mask is strictly bigger than 0, we set 1 into the pixel (i,j). Else, we set 0.
+
+We then come back to the output mask, by calculing for each of its pixels the number of 1 being in the coresponding square of the intermediar image. This number is then divided by the square of {\it Definition} and multiplied by 255, so that it belongs into $[0,255]$.
+
+If we consider the generic shape as a binary function : $f(x,y)$, the output mask $m_{i,j}$ corresponding to the rotation $R$ and the affinity $A$, is defined by
+$$ m_{i,j}= 255 * \int_{(x,y) \in [i,i+1[*[j,j+1[} f( A( R( (x,y)))) dx dy $$
+the module process an approximation of this formula.
+
+
+
+
+
+

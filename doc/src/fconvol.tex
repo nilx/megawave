@@ -1,0 +1,17 @@
+This module computes the convolution of the Fimage $in$ with the Fimage
+$filter$. The result $out$ is defined by
+$$out(i,j) = \sum_{k,l} in(i-k,j-l) \cdot filter(k,l).$$
+In this sum, it is assumed that functions are zero outside their
+domain.
+You can use predefined filters put in the \verb+$MEGAWAVE2/data/image+ 
+directory (with \verb+.ir+ extension for Impulse Response), 
+or you can type your own filter using the module \verb+freadasc+.
+
+\smallskip
+
+In the case of a separable filter, that is, a filter than can be
+written
+$$filter(i,j)=a(i)b(j),$$
+it is much faster to use the module \verb+fsepconvol+.
+
+

@@ -1,0 +1,66 @@
+This module generates a sequence fo codebooks adapted 
+for classified and/or residual vector quantization of image wavelet tranforms. 
+It is based on the LBG algorithm (see {\em flbg\_train} documentation), 
+and it operates on training sets of wavelet coefficients vectors. 
+
+The training sets of wavelet coefficients vectors which are necessary 
+for the LBG algorithm are build using the wavelet transforms 
+read in the files {\em TrainWavtrans1}, ..., {\em TrainWavtrans4}. 
+Notice that one training set is generated separately for each subimage 
+of the wavelet transform (this training set can be further divided 
+in sub-training sets if codebooks for classified vector quantization 
+are generated). 
+
+The only difference here is that there is a possiblity 
+of stopping the decimation in the subband decomposition using the -d 
+option. StopDecimLevel is a positive integer. From this level on, 
+the decimation is not performed. This enables to obtain larger 
+training sets. 
+
+The -q option specifies that only the codebooks at scale Level 
+should be generated (Level is a positive integer). 
+
+The -o option specifies that only the codebooks in orientation 
+Orient should be generated (Orient is an integer ranging from 0 to 3). 
+Here Orient is 0 for average, 1 for horizontal details, 2 for vertical 
+details, and 3 for diagonal details. Notice that if the option -o 
+is not selected, then the average subimage is generated only at level 
+MaxLevel. 
+
+The -h and -w options specify the height and width of vectors. 
+Here the codebooks for higher levels are generated first. 
+When going to a lower scale, VectorWidth and VectorHeight are multipied 
+by 2, unless they are bigger than 2, or the size of the subimage 
+is less than 128$\times$128 (This is done because the size of the 
+vectors must be negligible compared to the subimage size). 
+
+If the -l option is selected, then overlapping vectors are taken in the 
+wavelet transform. This enables to get larger training sets. 
+
+CodeBook1, AdapCodeBook2 and AdapCodeBook3 contain the sets of generated 
+codebooks for the first, second and third classes respectively. 
+
+If the -M option is selected, then codebooks for each power of two is 
+generated, with size ranging from 1 to Size1, Size2 or Size3 
+(respectively for CodeBook1, AdapCodeBook2 and AdapCodeBook3). 
+If it is not selected then only one codebook of size Size1, Size2 or Size3 
+is generated. 
+
+The -s, -t, -u, -S, -T and -U options have the same meaning as for 
+{\em flbg\_adap}. 
+
+The -W, -M and -p options have the same effect as in {\em flbg\_train} 
+module. 
+
+The -Q and -R options enable to generate codebooks adapted to 
+multistaged vector quantization. If for example the -Q option 
+is selected then the input set of codebooks in ResCodeBook is used 
+to quantize the training set, and the residual errors of this quantization 
+are used to form a new codebook. The process can be iterated with the 
+-R option. Notice that these options should not be used in conjonction with 
+the -x and -y options. 
+
+The -O, -X, -Y options enable to modify existing codebook(s). This can be used 
+in conjonction with the -q and -o options. It can be used for example 
+to generate the codebooks for the different subimages separately, 
+in order to get customized sizes of codebooks and vectors. 

@@ -1,0 +1,53 @@
+{\em ibiowave2} reconstructs an image from a sequence of sub-images forming 
+a wavelet decomposition, using filter banks associated to biorthogonal bases 
+of wavelets. 
+The notations that are used here have been already defined for {\em owave1}, 
+{\em biowave1}, and {\em biowave2}, so the reader is refered 
+to the documentation of these modules to see their signification. 
+
+{\em WavTrans} is the prefix name of a sequence of files containing 
+the coefficients of a wavelet decomposition  $D^{1}_{1}, D^{1}_{2}, \ldots, 
+D^{1}_{J}, D^{2}_{1}, \ldots D^{2}_{J}, D^{3}_{1}, \ldots, D^{3}_{J}, A_{J}$. 
+{\em ibiowave2} computes \( A_{0} \), i.e. the inverse wavelet transform 
+of {\em WavTrans}. 
+
+The algorithm has the same 2D structure as the one implemented in 
+{\em iowave2}. The difference lies in the fact that at each step, 
+a biortogonal 1D inverse transform is applied to the lines and 
+columns of average and detail sub-images instead of an orthogonal one. 
+
+The edge processing modes are the same as those of {\em ibiowave1}.
+
+The complexity of the algorithm is roughly the same as for {\em biowave2}.
+
+The name of the files containing the sub-signals 
+$D^{1}_{1}, D^{1}_{2}, \ldots, D^{1}_{J}, D^{2}_{1}, \ldots D^{2}_{J}, 
+D^{3}_{1}, \ldots, D^{3}_{J}, A_{J}$ must have the same prefix 
+and their syntax obeys the rules described in {\em owave2}. 
+The sample values of the reconstructed signal are stored in the file 
+{\em RecompImage}. 
+
+The coefficients $(h_{k})$ and $(\tilde{h}_{k})$ of the filter's impulse 
+responses are read in the file {\em ImpulseResponse1} 
+and {\em ImpulseResponse2}.
+
+\begin{itemize}
+\item
+The -r, -h and -e options are exactly the same as in the orthogonal inverse 
+transform. See {\em iowave2} module documentation for explanations. 
+\item
+The -n option specifies the normalisation mode of the filter impulse 
+responses' coefficients. It should be selected according to the mode 
+used for the decomposition in order to get exact reconstruction. 
+\end{itemize}
+
+These options should be tuned in the same way as they were 
+for the decomposition (with the {\em owave2} module). 
+
+\begin{thebibliography}{CDF}
+
+\bibitem[CDF]{kn:cdv} A. Cohen, I. Daubechies, J.C. Feauveau. 
+{\em Biorthogonal bases of compactly supported wavelets, } 
+Comm. pure and applied math. 45, pp 485-560, 1992.
+
+\end{thebibliography}

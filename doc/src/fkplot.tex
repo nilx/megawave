@@ -1,0 +1,11 @@
+This module bitmaps the points of a Fcurves structure on a Cimage.
+The points are drawn in black
+(grey level 0) on a white (grey level 255) background. 
+If the \verb+-s+ option is selected, the curves are 
+first translated in order that the upleft corner of the bounding box
+is  $(0,0)$~; if not, the points with non-positive 
+coordinates are not drawn.
+The image is then sized in order to contain all the (remaining) points.
+The coordinates of the points of the curves are
+rounded to integers using the \verb+nint()+ function. 
+

@@ -1,0 +1,27 @@
+This module compresses a graylevel image (fimage) using a uniform scalar
+ quantization algorithm. 
+
+Compress is the output compressed file. Notice that the list 
+of quantization symbols is arithmetically encoded using the 
+{\em arithm\_encode2} module (see the documentation of this module 
+for further details). 
+
+QantizedImage is the quantized image, which can be reconstructed 
+from Compress. 
+
+The -h option indicates that only a reduced header (not including 
+the dimensions of image) should be inserted at the beginning 
+of the Compress file. 
+
+The -n option specifies the number of steps for the quantization. 
+If we call $m$ and $M$ respectively the minimum and the maximum gray level 
+values in Input, then the stepsize is computed so that $m$ and $M$ fall 
+in the two extremal cells. 
+
+The -s option specifies the stepsize for the quantization. Once again, 
+the number of steps is then computed in order that $m$ and $M$ fall 
+in the two extremal cells. Note that the -n and -s options are mutually 
+exclusive. 
+
+The -c option forces the quantization grid to contain 0. Thus 0 
+is a quantization step. 

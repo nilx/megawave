@@ -1,0 +1,304 @@
+#! /bin/sh 
+#--------------------------- Shell MegaWave Macro ----------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="`basename $0`"
+_Vers="1.15";
+_Date="1999";
+_Func="Compile all MegaWave2 modules and user's macros, recursively on each subdirectory";
+_Auth="Jacques Froment";
+_Usage="[-gnu] [-clear] [-g] [-X] [-O] [-c compiler_option] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-2p] [-sp] [-dep] [-pubsyslib] [-force] [-N errorfile] group_directory"
+
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+if [ "${MW_MACHINETYPE}" = "" ]; then
+   echo "Please set the \$MW_MACHINETYPE environment variable" 1>&2
+   exit 1
+fi
+
+BIN=bin/$MW_MACHINETYPE
+LIB=lib/$MW_MACHINETYPE
+OBJ=obj/$MW_MACHINETYPE
+DOC=doc/obj
+MWI=mwi
+
+# test entree
+if [ $# -lt 1 ]; then
+   . .mw2_help_lg_com
+fi
+
+force=0
+clear=0
+twopass=0
+secondpass=""
+cmw_opt=""
+
+while [ "$1" != "" ]
+do
+    case "$1" in
+
+    "-clear")  clear=1
+               shift
+               ;;
+
+    "-force")  force=1
+               shift
+               ;;
+
+	       
+    "-2p")  twopass=1
+	    shift
+            ;;
+
+    "-sp")  secondpass=-sp
+	    shift
+            ;;
+
+    "-dep") cmw_opt="$cmw_opt -dep"
+            shift
+            ;;
+
+    "-pubsyslib") cmw_opt="$cmw_opt -pubsyslib"
+            shift
+            ;;
+
+     -c)	shift
+		cmw_opt="$cmw_opt -c $1"
+		shift
+		;;
+
+    -N)   NoDisplay=yes;
+          shift;
+          errorfile=$1;
+          shift;
+          ;;
+          
+    -g)   cmw_opt="$cmw_opt -g";
+          shift;
+          ;;
+
+    -gnu)	cmw_opt="$cmw_opt -gnu"
+    		shift
+		;;
+		
+    -X)         cmw_opt="$cmw_opt -X"
+    		shift
+    		;;
+
+    -O)         cmw_opt="$cmw_opt -O"
+    		shift
+    		;;
+
+    -D*|-I*|-U*) cmw_opt="$cmw_opt $1"
+                shift
+		;;
+
+    -w)         cmw_opt="$cmw_opt $1"
+		shift
+		;;
+
+    -L*)	cmw_opt="$cmw_opt $1"
+		shift
+		;;
+
+    -l*)	cmw_opt="$cmw_opt $1"
+		shift
+		;;
+
+    -*)   . .mw2_help_lg_com;
+	  ;;
+
+    *)  dir=$1
+	shift
+	;;
+
+    esac
+done
+
+if [ ! -d $dir ]; then
+  echo "$_Prog : Bad directory '$dir' !" 1>&2
+  exit 2
+fi
+
+CWD=`pwd`
+cd $dir
+TD=`pwd`
+cd $CWD
+MWDESTDIR=`echo $TD | grep $MY_MEGAWAVE2`
+if [ "$MWDESTDIR" = "$TD" ]; then
+  MWDESTDIR=$MY_MEGAWAVE2
+else
+  MWDESTDIR=`echo $TD | grep $MEGAWAVE2`
+  if [ "$MWDESTDIR" = "$TD" ]; then
+    MWDESTDIR=$MEGAWAVE2
+    if [ ! -w  $MWDESTDIR ]; then
+      echo "$_Prog : No write permission on '$MWDESTDIR' !" 1>&2
+      echo "           Are you sure you are the MegaWave2 Administrator ?" 1>&2
+      exit 4
+    fi
+  else
+    echo "$_Prog : Directory '$dir' is not a subdir of \$MY_MEGAWAVE2 or of \$MEGAWAVE2" 1>&2
+    exit 3
+  fi
+fi
+
+if [ "$NoDisplay" != "yes" ]; then
+
+# First entry for this command
+
+ if [ "$MWDESTDIR" = "$MEGAWAVE2" ] && [ $force -eq 0 ]; then
+   echo "Warning: you will modify the system files on $MWDESTDIR"
+   mwechon "         do you wish to continue [y or n] ?"
+   a="N"
+   read a
+   if [ "$a" = "n" ] || [ "$a" = "N" ]; then
+     exit 1
+   fi
+ fi
+
+ if [ $twopass = 1 ]; then
+   clear=1
+   echo "Warning: using two-pass compilation to make a complete new version."
+   echo "         I have to clear the current version of the objects."
+ fi
+
+ if [ "$clear" = "1" ]; then
+
+# Clear target directories
+
+  a="N"
+  rep=$MWDESTDIR/$BIN
+  arep=""
+  if [ -d $rep ]; then
+   echo "           $rep"
+   arep="$arep $rep"
+  fi
+  rep=$MWDESTDIR/$LIB
+  if [ -d $rep ]; then
+   echo "           $rep"
+   arep="$arep $rep"
+  fi
+  rep=$MWDESTDIR/$OBJ
+  if [ -d $rep ]; then
+   echo "           $rep"
+   arep="$arep $rep"
+  fi
+  rep=$MWDESTDIR/$MWI
+  if [ -d $rep ]; then
+   echo "           $rep"
+   arep="$arep $rep"
+  fi
+  rep=$MWDESTDIR/$DOC
+  if [ -d $rep ]; then
+   echo "           $rep"
+   arep="$arep $rep"
+  fi
+  if [ "$arep" != "" ] && [ $force -eq 0 ]; then
+   mwechon "         Ok to remove these target directories [y or n] ?"
+   read a
+   if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
+     echo "Removing..."
+     rm -rf $arep
+   else
+     echo "Cannot continue."
+     exit 1
+   fi
+  else
+    if [ "$arep" != "" ]; then
+      rm -rf $arep
+    fi
+  fi
+
+# End clear
+ fi
+
+errorfile=/usr/tmp/cmw2_all_$$.error
+echo "List of unsuccessful compilations :" > $errorfile
+echo "--------------------------------- " >> $errorfile
+echo '' >> $errorfile
+
+echo ''
+echo "          ----------------------------"
+echo "               Generic MegaWave2 "
+echo "          Commands Package Compilation"
+echo "          ----------------------------"
+echo ''
+mwechon "------ Beginning at "
+date
+echo ''
+
+# End first entry for this command
+fi
+
+# trap
+trap "echo interrupt; /bin/rm -f $errorfile; exit 1" 2
+trap "echo quit; /bin/rm -f $errorfile; exit 1" 3
+
+if [ $twopass = 1 ]; then
+  echo '' >> $errorfile
+  echo 'First pass:' >> $errorfile
+  echo '' >> $errorfile
+  echo ' '
+  echo '-----------------------'
+  echo 'Beginning First pass...'
+  echo '-----------------------'
+  echo ' '
+  cmw2_all $cmw_opt -N $errorfile ${dir}
+  echo '' >> $errorfile
+  echo 'Second pass:' >> $errorfile
+  echo '' >> $errorfile
+  echo ' '
+  echo '------------------------'
+  echo 'Beginning Second pass...'
+  echo '------------------------'
+  echo ' '
+  secondpass="-sp"
+fi
+
+for file in `ls ${dir}`
+do
+  if [ ! -d ${dir}/${file} ]; then
+    if [ "$secondpass" != "-sp" ] || 
+	[ ! -x $MWDESTDIR/bin/$MW_MACHINETYPE/`basename $file .c` ]; then 
+	mwechon "$file "
+        (cd ${dir}; cmw2 -N $cmw_opt $file >> /dev/null 2>> /dev/null;)
+      if [ $? -ne 0 ]; then
+         echo "${dir}/${file}" >> $errorfile
+	 mwechon "(failed) " 
+      fi
+    fi
+  else
+   echo "---> Scan Subdirectory ${dir}/${file} <---"
+   cmw2_all $cmw_opt $secondpass -N $errorfile ${dir}/${file}
+   echo ''
+   echo ''
+  fi
+done
+
+if [ "$NoDisplay" != "yes" ]; then
+
+echo ''
+mwechon "------ End at "
+date
+echo ''
+
+cat $errorfile
+\rm $errorfile
+echo ''
+
+fi
+exit 0
+
+
+
+
+
+
+
+

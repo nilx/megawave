@@ -1,0 +1,42 @@
+Using the {\tt morpho\_lines} of {\em m\_image} this 
+module reconstructs an {\tt fimage} {\em image\_out}.
+
+\smallskip
+
+The background of {\em image\_out} is set to the minvalue
+of {\em m\_image} and the list of {\tt morpho\_lines}
+is read from the first to the last element. 
+For each {\tt morpho\_line} the interior is set to
+the minvalue associated to the current line.\\
+This allows to reconstruct exactly an image decomposed
+by {\bf ml\_decompose} with option {\bf -o 0}.
+
+\medskip
+
+If the {\bf -i} flag is on, the background of {\em image\_out} 
+is set to the maxvalue of {\em m\_image} and the list of 
+{\tt morpho\_lines} is read from the first to the last element.
+For each {\tt morpho\_line} the interior is set to the
+maxvalue associated to the current line.\\
+This allows to reconstruct exactly an image decomposed
+by {\bf ml\_decompose} with option {\bf -o 1}.
+
+\medskip
+
+To reconstruct an {\tt m\_image} containing isolines
+it doesn't matter if the {\bf -i} flag is on or not.
+
+\medskip
+
+If you have transformed the {\tt morpho\_lines}, you
+have to verify  that the points are 4 adjacent and 
+that the conventions, defined in {\bf ml\_extract}, are verified
+by the coordinates. Else the reconstruction will fail.
+
+\smallskip
+
+The program always draws the {\tt morpho\_sets} following the order
+in which the {\tt morpho\_lines} appear in {\em m\_image}, 
+the (background) color being defined by the {\bf -i} flag.\\
+Thus you are supposed to know the order in which the {\tt morpho\_lines}
+ appear in the input of {\bf ml\_reconstruct}.

@@ -1,0 +1,14 @@
+This module reconstructs an image from the compressed file {\em Compress}, 
+which has been generated using the compression modules {\em ezw} 
+or {\em fezw}. The reconstructed image is put in Qimage. 
+
+First the wavelet transform of {\em Qimage} is reconstructed from 
+the information contained in the {\em Compress} file. 
+Then a scaling of the coefficients is made if he -w option is selected. 
+Finally an inverse wavelet transform is applied to reconstruct the image
+{\em Qimage}. 
+
+All the options should be selected and tuned in exactly the same 
+manner at the compresion ({\em fezw}) and decompression ({\em fiezw}). 
+Likewise, {\em ImpulseResponse} should be the same 
+at the compresion and decompression. 

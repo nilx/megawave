@@ -1,0 +1,24 @@
+%
+MegaWave2 - DATA ASCII file -
+%
+def Fsignal
+%
+comments: Less dissimilar lengths
+%
+size: 9
+scale: 1.000000e+00
+shift: -4.0
+gain: 1.000000e+00
+sgrate: 1.000000e+00
+firstp: 0
+lastp: 0
+param: 0.000000e+00
+0.026748757411
+-0.016864118443
+-0.078223266529
+0.266864118443
+0.602949018236
+0.266864118443
+-0.078223266529
+-0.016864118443
+0.026748757411

@@ -1,0 +1,469 @@
+/*--------------------------- Commande MegaWave -----------------------------*/
+/* mwcommand
+  name = {fview};
+  version = {"1.1"};
+  author = {"Jacques Froment"};
+  function = {"View a floating point image on a window"};
+  usage = {
+  'x':[pos_x=50]->x0
+      "X coordinate for the upper-left corner of the Window",
+  'y':[pos_y=50]->y0
+      "Y coordinate for the upper-left corner of the Window",
+  'z':[zoom=1.0]->zoom
+      "Zoom factor (float value)",
+  'N'->no_refresh
+      "Do not refresh the window (library call)",
+  fimage->input
+        "Input image (should be a fimage)",
+   notused->window 
+      "Window to view the image (internal use)"
+  };
+*/
+/*--- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. ---*/
+
+#include <stdio.h>
+
+/* Include always the MegaWave2 include file */
+#include "mw.h"
+
+/* Include the window since we use windows facility */
+#include "window.h"
+
+/* External modules called */
+#ifdef __STDC__
+extern Cimage clocal_zoom(Cimage, int *, int *, int *, int *);
+extern Fimage flocal_zoom(Fimage, int *, int *, int *, int *);
+extern void fzoom(Fimage, Fimage, char *, char *, float *);
+extern splot(Fsignal,int *,int *, int *, int *,int *, char *);
+extern void fline_extract(char *, Fimage, Fsignal, long);
+#else
+extern Cimage clocal_zoom();
+extern Fimage flocal_zoom();
+extern void fzoom();
+extern splot();
+extern void fline_extract();
+#endif
+
+static Wframe *PlotWindow=NULL;  
+
+/* Param structure used to send parameters to cview_notify() */
+
+typedef struct cview_SParam {
+  Fimage image_float;
+  Cimage image_work;  
+  unsigned char *image_save;
+  float *fimage_save;
+  unsigned char *image_cscale;    
+  float *fimage_cscale;    
+  char has_to_delete_image;
+  Fsignal section;
+} *cview_Param;
+
+#define H_CSCALE 20 /* Height of the color_scale box */
+
+int GLprint;  /* Toggle to print the Gray Level values */
+int oldx1,oldy1,oldevent,zfactor,cscale_shown;
+
+void cview_notify_help()
+
+{
+  printf("\n\t\tHelp on line\n");
+
+  printf("\nMouse:\n");
+  printf("\tLeft button: toggle to print the gray level at the current coordinates (x,y).\n");
+
+  printf("\tMiddle button: Restore the image\n");
+  printf("\tRight button: Local zooming\n");
+
+  printf("\nKeyboard:\n");
+  printf("\tQ: Quit.\n");
+  printf("\tH: Help.\n");
+  printf("\tS: Show the color scale box.\n");
+  printf("\tL: Plot the current Line section.\n");
+  printf("\tC: Plot the current Column section.\n");
+}
+
+
+/*     A notify function must return a value ....      */
+/*       0 if there was no event catched               */
+/*     > 0 if there was an event catched (but Destroy) */
+/*      -1 if the event Destroy was catched (or 'Q')   */
+
+int cview_notify(ImageWindow,param)
+
+Wframe *ImageWindow;
+void *param;          /* Users's parameters: don't forget the cast ! */
+
+{
+  int x1,y1,wz,event,button_mask,ret;
+  char c,mess[80];
+  float ng;
+  cview_Param images;
+  Cimage image;
+  Fimage fimage;
+  unsigned char *gray_save,*color_scale;
+  float *fgray_save,*fcolor_scale;
+  char delete_image;
+
+  /* For section */
+  Fsignal section;
+  int x0=0;
+  int y0=0;
+  int sx=500;
+  int sy=200;
+  char cflag=1;
+  int norefresh=1;
+
+  images = (cview_Param) param;  /* Cast */
+  image = images->image_work;
+  fimage = images->image_float;
+  gray_save = images->image_save;
+  fgray_save = images->fimage_save;
+  color_scale = images->image_cscale;
+  fcolor_scale = images->fimage_cscale;
+  delete_image = images->has_to_delete_image;
+  section = images->section;
+
+#define ZFMAX 4 /* Zoom Factor Max */
+
+  event = WUserEvent(ImageWindow); /* User's event on ImageWindow */
+  if (event < 0) ret=1; else ret=event;
+  if (event != W_DESTROY)
+    {
+      WGetStateMouse(ImageWindow,&x1,&y1,&button_mask);
+      if (GLprint == 1)  
+	{
+	  if ((x1>=0)&&(x1<image->ncol)&&(y1>=0)&&(y1<image->nrow))
+	    {
+	      if ((cscale_shown == 1) && (y1 < H_CSCALE))
+		ng = fcolor_scale[ x1 + (image->ncol)* y1 ];
+	      else ng = fimage->gray[ x1 + (image->ncol)* y1 ];
+	      sprintf(mess," (%3d,%3d): %f ",x1,y1,ng);
+	    }
+	  else sprintf(mess," (%3d,%3d): ----------",x1,y1);
+	  WDrawString(ImageWindow,0,10,mess);
+	  WFlushAreaWindow(ImageWindow,0,0,image->ncol-1,12);
+	  usleep(100);
+	}
+    }
+
+  switch(event)
+    {
+    case W_MS_LEFT:
+      GLprint = 1 - GLprint;
+      if (GLprint == 0)
+	{
+	  WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
+	  WFlushWindow(ImageWindow);
+	}
+      oldevent = event;
+      break;
+      
+    case W_MS_MIDDLE: 
+      memcpy(image->gray,gray_save,image->ncol*image->nrow);
+      memcpy(fimage->gray,fgray_save,fimage->ncol*fimage->nrow*sizeof(float));
+      if (WLoadBitMapImage(ImageWindow,image->gray,image->ncol,image->nrow)
+	  != 0) return(-1);
+      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
+      WFlushWindow(ImageWindow);
+      zfactor = 2; 
+      cscale_shown = 0;
+      oldevent = event;
+      break;
+
+    case W_MS_RIGHT:
+      if ((oldx1 == x1) && (oldy1 == y1) && (oldevent == event)) 
+	{
+	  zfactor+=1;
+	  if (zfactor > ZFMAX) zfactor = ZFMAX;
+	}
+      else 
+	{
+	  if (zfactor > 2)
+	    {
+	      memcpy(image->gray,gray_save,image->ncol*image->nrow);
+	      memcpy(fimage->gray,fgray_save,
+		     fimage->ncol*fimage->nrow*sizeof(float));
+	      if (WLoadBitMapImage(ImageWindow,image->gray,image->ncol,image->nrow) != 0) return(-1);
+	      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow);
+	      WFlushWindow(ImageWindow);
+	      zfactor = 2; 
+	      oldevent = event;
+	      oldx1 = x1;
+	      oldy1 = y1;
+	      break;
+	    }
+	  zfactor = 2;
+	  memcpy(image->gray,gray_save,image->ncol*image->nrow);
+	  memcpy(fimage->gray,fgray_save,
+		 fimage->ncol*fimage->nrow*sizeof(float));
+	}
+      
+      /* Size of the zoom window */
+      if (image->ncol >= image->nrow) 
+	wz = zfactor*image->nrow/16;
+      else 
+	wz = zfactor*image->ncol/16;
+
+      image = (Cimage) clocal_zoom(image, &x1, &y1, &wz, &zfactor);
+      fimage = (Fimage) flocal_zoom(fimage, &x1, &y1, &wz, &zfactor);
+      if (WLoadBitMapImage(ImageWindow,image->gray,image->ncol,image->nrow)
+	  != 0) return(-1);
+      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
+      WFlushWindow(ImageWindow);
+      oldevent = event;
+      oldx1 = x1;
+      oldy1 = y1;
+      break;
+
+    case W_RESIZE:
+      oldevent = event;
+      WLoadBitMapImage(ImageWindow,image->gray,image->ncol,image->nrow); 
+      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
+      WFlushWindow(ImageWindow);	 
+      break;  
+
+    case W_DESTROY:
+      ret=-1;
+      break;
+
+    case W_KEYPRESS:
+      c = (char) WGetKeyboard();
+      switch(c)
+	{
+	case 'q': case 'Q': ret = -1;
+	  break;
+
+	case 'h': case 'H': cview_notify_help();
+	  break;
+
+	case 's': case 'S': 
+	  if ((color_scale != NULL)&&(fcolor_scale != NULL))
+	    {
+	      WLoadBitMapImage(ImageWindow,color_scale,image->ncol,H_CSCALE);
+	      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
+	      WFlushWindow(ImageWindow);	  
+	      cscale_shown = 1;
+	    }
+	  break;
+
+	case 'l' :
+	  if ((y1>=0)&&(y1<fimage->nrow))
+	    {
+	     /* Draw an horizontal red line */
+	      WSetTypePencil(W_COPY);
+	      WSetSpecialColorPencil(ImageWindow);
+	      if (WLoadBitMapImage(ImageWindow,image->gray,image->ncol,
+				   image->nrow)!= 0) return(-1);
+	      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
+	      WDrawLine(ImageWindow,0,y1,image->ncol-1,y1);  
+	      WFlushWindow(ImageWindow);	  
+	      cscale_shown = 0;
+	      
+	      /* Compute and plot section */
+	      if (PlotWindow != NULL) {x0=PlotWindow->x;y0=PlotWindow->y;}
+	      else 
+		{
+		  x0 = ImageWindow->x + 2 + fimage->ncol;
+		  y0 = ImageWindow->x + 2 + ((fimage->nrow - sy) / 2);
+		  if (y0 < 0) y0 = 0;
+		}
+	      fline_extract((char *) NULL, fimage, section, y1);
+	      sprintf(section->name,"Plot a section");
+	      PlotWindow = (Wframe *)
+		mw_get_window(PlotWindow,sx,sy,x0,y0,"");
+	      splot(section,&x0,&y0,&sx,&sy,&norefresh,(char *)PlotWindow);
+
+	      /* Restore image without red line */
+	      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
+	      WFlushWindow(ImageWindow);
+	    }
+	  break;
+	    
+	case 'c' :
+	  if ((x1>=0)&&(x1<fimage->nrow))
+	    {
+	      /* Draw a vertical red line */
+	      WSetTypePencil(W_COPY);
+	      WSetSpecialColorPencil(ImageWindow);
+	      if (WLoadBitMapImage(ImageWindow,image->gray,image->ncol,
+				   image->nrow)!= 0) return(-1);
+	      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
+	      WDrawLine(ImageWindow,x1,0,x1,image->nrow-1);  
+	      WFlushWindow(ImageWindow);	  
+	      cscale_shown = 0;
+
+	      /* Compute and plot section */
+	      if (PlotWindow != NULL) {x0 = PlotWindow->x;y0 = PlotWindow->y;}
+	      else 
+		{
+		  x0 = ImageWindow->x + 2 + fimage->ncol;
+		  y0 = ImageWindow->x + 2 + ((fimage->nrow - sy) / 2);
+		  if (y0 < 0) y0 = 0;
+		}
+	      fline_extract(&cflag, fimage, section,x1);
+	      sprintf(section->name,"Plot a section");
+	      PlotWindow = (Wframe *)
+		mw_get_window(PlotWindow,sx,sy,x0,y0,"");
+	      splot(section,&x0,&y0,&sx,&sy,&norefresh,(char *)PlotWindow);
+
+	      /* Restore image without red line */
+	      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
+	      WFlushWindow(ImageWindow);
+	    }
+	  break;
+
+	default:
+	  mwerror(WARNING,1,"Unrecognized Key '%c'. Type H for Help.\n",c);
+	}    
+      oldevent = event;
+      break;
+    }
+
+  if (ret == -1)
+    {
+      if (delete_image == 1) mw_delete_cimage(image);
+      free(gray_save);
+      free(fgray_save);
+      free(images);
+    }
+
+  return(ret);
+
+}
+
+
+Cimage normalize(im,s,fs)
+
+Fimage im;
+unsigned char *s;
+float *fs;
+
+{
+  Cimage cim;
+  unsigned char *C;
+  float *F;
+  int i;
+  float min,max,a,b,bsura;
+
+  cim = mw_change_cimage(NULL,im->nrow,im->ncol);
+  if (cim == NULL) mwerror(FATAL,1,"Not enough memory\n");
+  
+  min=1e30; max=-min;
+  for (i=0,F=im->gray; i<im->ncol*im->nrow; i++,F++)
+    {
+      if (*F < min) min=*F;
+      if (*F > max) max=*F;
+    }
+  if (max==min) mwerror(FATAL,1,"Input image has constant values !\n");
+  a=255.0/(max-min);
+  b=-a*min;
+
+  for (i=0,F=im->gray,C=cim->gray; i<im->ncol*im->nrow; i++,F++,C++)
+    *C = (int) (a * *F + b + 0.5);
+
+  if ((s!=NULL)&&(fs!=NULL))
+      {
+	bsura= b / a;
+	for (i=0,F=fs,C=s; i< im->ncol*H_CSCALE; i++,F++,C++)
+	  *F = *C / a - bsura;
+      }
+
+  return(cim);
+}
+
+
+fview(input,x0,y0,zoom,no_refresh,window)
+
+int *x0,*y0,*no_refresh;
+float *zoom;
+Fimage input;
+char *window;
+
+{
+  Wframe *ImageWindow;
+  Fimage fimage=NULL;
+  Cimage cimage=NULL;
+  float *fgray_save,*fcolor_scale;
+  unsigned char *gray_save,*color_scale;
+  Fsignal section;
+  cview_Param param;
+  int i,j,smax;
+
+  if (*zoom != 1.0) 
+    {
+      fimage = mw_change_fimage(fimage,0,0);
+      if (fimage == NULL) mwerror(FATAL,1,"Not enough memory\n");
+      fzoom(input,fimage,NULL,NULL,zoom);
+      sprintf(fimage->name,"%s %.1fX",input->name,*zoom);
+    }
+  else 
+      fimage=input;
+
+  ImageWindow = (Wframe *)
+    mw_get_window((Wframe *) window,fimage->ncol,fimage->nrow,*x0,*y0,
+		  fimage->name);
+  if (ImageWindow == NULL)
+    mwerror(INTERNAL,1,"NULL window returned by mw_get_window\n");
+
+  if ((fimage->ncol >= 128) && (fimage->nrow > H_CSCALE))
+    {
+      color_scale = (unsigned char *) malloc(fimage->ncol*H_CSCALE);
+      if (color_scale == NULL) mwerror(FATAL,1,"Not enough memory\n");
+      fcolor_scale = (float *) malloc(fimage->ncol*H_CSCALE*sizeof(float));
+      if (fcolor_scale == NULL) mwerror(FATAL,1,"Not enough memory\n");
+      for (i=0;i<fimage->ncol;i++) 
+	for (j=0;j<H_CSCALE*fimage->ncol;j+=fimage->ncol)
+	  color_scale[i+j] = i*255/(fimage->ncol-1);
+    }
+  else { color_scale = NULL; fcolor_scale = NULL; }
+  
+  
+  cimage=normalize(fimage,color_scale,fcolor_scale);
+
+  WLoadBitMapImage(ImageWindow,cimage->gray,cimage->ncol,cimage->nrow); 
+  WRestoreImageWindow(ImageWindow,0,0,cimage->ncol,cimage->nrow); 
+  WFlushWindow(ImageWindow);
+
+  GLprint = 0;
+  oldx1 = oldy1 = oldevent = -1;
+  zfactor = 2;
+  gray_save = (unsigned char *) malloc(cimage->ncol * cimage->nrow);
+  if (gray_save == NULL) mwerror(FATAL,1,"Not enough memory\n");
+  fgray_save = (float *) malloc(cimage->ncol * cimage->nrow * sizeof(float));
+  if (fgray_save == NULL) mwerror(FATAL,1,"Not enough memory\n");
+
+  cscale_shown = 0;
+
+  /* Allocate section signal */
+  smax = fimage->ncol;
+  if (smax < fimage->nrow) smax = fimage->nrow;
+  if ((section = mw_change_fsignal(NULL, smax)) == NULL)
+      mwerror(FATAL,1,"Not enough memory\n");
+
+  param = (cview_Param) malloc(sizeof(struct cview_SParam));
+  if (param == NULL) mwerror(FATAL,1,"not enough memory\n");
+
+  memcpy(gray_save,cimage->gray,cimage->ncol * cimage->nrow);
+  memcpy(fgray_save,fimage->gray,fimage->ncol * fimage->nrow*sizeof(float));
+  WSetUserEvent(ImageWindow,W_MS_BUTTON | W_KEYPRESS);
+  param->image_float = fimage;
+  param->image_work = cimage;
+  param->image_save = gray_save;
+  param->fimage_save = fgray_save;
+  param->image_cscale = color_scale;
+  param->fimage_cscale = fcolor_scale;
+  param->section = section;
+
+  if (fimage == input) param->has_to_delete_image=0;
+  else param->has_to_delete_image=1;
+  mw_window_notify(ImageWindow,(void *)param,cview_notify);
+  if (!no_refresh) mw_window_main_loop();
+}
+
+
+
+
+
+
+

@@ -1,0 +1,207 @@
+%
+% LaTeX Macros for the MegaWave2 Software Documentation
+% V 1.0  1994-99
+%----------------------------------------------------------------------------
+% This file is part of the MegaWave2 system macros. 
+% MegaWave2 is a "soft-publication" for the scientific community. It has
+% been developed for research purposes and it comes without any warranty.
+% The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+% CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+%       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+%-----------------------------------------------------------------------------
+
+% ===== insertps =====
+
+\def\insertps#1#2#3{\par
+ \hbox{%
+    \hskip #3
+    \vbox to #2{
+    \vspace*{\fill}
+     \special{psfile=#1}
+}%
+}
+}
+
+\def\Next{
+\vspace{10mm}
+\pagebreak[0]
+}
+
+% Definit l'ancien symbole $\Box (inconnu sous LaTeX 3.14 !)
+
+\def\Mark{\raisebox{.5ex}{$\bigcirc$}}
+
+% ===== Commands format =====
+
+\newcommand{\Index}[3]{
+{\bf #1} {\small #2}
+\dotfill~\mbox{\ \pageref{#3}}
+
+}
+
+\newcommand{\Name}[2]{
+\samepage
+\Mark{\Large\bf  Name} \nopagebreak\bigskip
+\nopagebreak
+
+\nopagebreak
+{\large\bf #1} #2
+
+\Next
+}
+
+\newcommand{\Macro}[2]{
+\samepage
+\Mark{\Large\bf  Macro} \nopagebreak\bigskip
+\nopagebreak
+
+\nopagebreak
+{\large\bf #1} #2
+
+\Next
+}
+
+\newcommand{\Restriction}[1]{
+$\bigtriangleup$ #1
+\Next
+
+}
+
+\newcommand{\Synopsis}[2]{
+\samepage
+\Mark{\Large\bf  Command Synopsis} \nopagebreak\bigskip
+\nopagebreak
+
+\nopagebreak
+{\bf #1} #2
+\Next
+
+}
+
+\newcommand{\Usage}[2]{
+\samepage
+\Mark{\Large\bf  Usage} \nopagebreak\bigskip
+\nopagebreak
+
+\nopagebreak
+{\bf #1} #2
+\Next
+
+}
+
+\newcommand{\Arguments}[1]{
+\samepage
+\nopagebreak
+
+\nopagebreak
+\vspace{-5mm}
+\nopagebreak
+\begin{quotation}
+#1
+\end{quotation}
+\Next
+
+}
+
+\newcommand{\Summary}[1]{
+\samepage
+\Mark{\Large\bf  Function Summary} \nopagebreak\bigskip
+\nopagebreak
+
+\nopagebreak
+#1
+
+\Next
+
+}
+
+\newcommand{\Description}[1]{
+\samepage
+\Mark{\Large\bf  Description} \nopagebreak\bigskip
+\nopagebreak
+
+\nopagebreak
+#1
+\Next
+
+}
+
+\newcommand{\Example}[2]{
+\samepage
+\Mark{\Large\bf  Example} \nopagebreak\bigskip
+\nopagebreak
+
+\nopagebreak
+{\bf #1} #2
+
+\Next
+
+}
+
+\newcommand{\Options}[1]{
+\samepage
+\Mark{\Large\bf  Options} \nopagebreak\bigskip
+\nopagebreak
+
+\nopagebreak
+#1
+\Next
+
+}
+
+\newcommand{\SeeAlso}[1]{
+\samepage
+\Mark{\Large\bf  See Also} \nopagebreak\bigskip
+\nopagebreak
+
+\nopagebreak
+#1
+\Next
+
+}
+
+\newcommand{\Author}[3]{
+\samepage
+\Mark{\Large\bf  Author} \nopagebreak\bigskip
+
+\nopagebreak
+#1
+\nopagebreak
+\medskip
+\nopagebreak
+
+\nopagebreak
+Copyright (C) #2 {\em #3} -
+All rights reserved.
+
+\Next
+
+}
+
+
+\newcommand{\Bugs}[1]{
+\samepage
+\Mark{\Large\bf  Bugs} \nopagebreak\bigskip
+\nopagebreak
+
+\nopagebreak
+#1
+\Next
+
+}
+
+\newcommand{\Version}[2]{
+\samepage
+\Mark{\Large\bf  Version #1} \nopagebreak\bigskip
+\nopagebreak
+
+\nopagebreak
+Last Modification date : #2
+\Next
+
+}
+
+
+
+
+

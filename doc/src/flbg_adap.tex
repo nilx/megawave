@@ -1,0 +1,34 @@
+This module enables to generate a set of codebooks adapted for classified 
+vector quantization using the LBG algorithm 
+(see {\em flbg\_train} documentation or \cite{kn:gg}, \cite{kn:lbg}). 
+Here the classification of the vectors is made according to their energy 
+(see {\em fvq} or {\em mk\_trainset} documentations). 
+
+The training sets of vectors for the LBG algorithm are extracted from 
+the floating point images read in {\em TrainImage1}, ..., {\em TrainImage8} 
+files. There is one training set for each generated codebook. 
+These codebooks are stored in the files {\em Output1}, ..., {\em Output4} 
+files. Their respective sizes are {\em CBSize1}, ..., {\em CBSize4}. 
+
+The -w and -h options have the same meaning as in {\em mk\_trainset} : 
+they enable to tune the size and shape of vectors. 
+
+The -l, -d and -e options have the same meaning as in {\em mk\_trainset} : 
+they permit to control of the construction of training sets. 
+
+The -S, -T and -U options have the same meaning respectively as the -t, -u 
+and -v options in {\em mk\_trainset}.  
+
+The -W, -M and -p options have the same effect as in {\em flbg\_train} 
+module. 
+
+
+\begin{thebibliography}{999999}
+
+\bibitem[GG]{kn:gg} A. Gersho, R.M. Gray, {\em ``Vector quantization 
+and signal compression'', } Kluwer Ac. Pub., Boston (1992). 
+
+\bibitem[LBG]{kn:lbg} Y. Linde, A. Buzo, R.M. Gray, {\em ``An algorithm for 
+vector quantizer design", } IEEE-COM 28, pp. 84--95, (1980).
+
+\end{thebibliography}

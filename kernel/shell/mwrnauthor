@@ -1,0 +1,73 @@
+#! /bin/sh 
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
+_Func="Rename the contributors of one MegaWave2 module or macro (misspelled names)"
+_Prog="`basename $0`"
+_Vers="0.0"
+_Date="1997"
+_Auth="Jacques Froment";
+_Usage="old_pattern new_pattern file"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+if [ $# -ne 3 ]; then
+  . .mw2_help_lg_com
+fi
+
+Old=$1
+New=$2
+file=$3
+if [ ! -f $file ]; then
+  echo "Error ($_Prog): file $file not found !"  1>&2
+  exit 1
+fi
+nfile=${file}.new
+if [ -f $nfile ]; then
+  echo "Error ($_Prog): new file $nfile of file $file already exists !"  1>&2
+  exit 1
+fi
+ofile=${file}.old
+if [ -f $ofile ]; then
+  echo "Error ($_Prog): old file $ofile of file $file already exists !"  1>&2
+  exit 1
+fi
+
+bfile=`basename $file .c`
+if [ "$bfile" = "$file" ]; then
+  macro=1
+else
+  macro=0
+fi
+
+if [ $macro -eq 1 ]; then
+# This is a macro
+ list=`cat $file | cut -d = -f 1,2 -s | grep "_Auth=" | cut -d \" -f 2`
+else
+# This is a module
+ list=`cat $file | cut -d = -f 1,2 -s | grep "author.=.{" | cut -d \" -f 2`
+fi
+
+new_list=`echo $list | sed "s/${Old}/${New}/g"`
+sed "s/${list}/${new_list}/g" ${file}  > ${nfile}
+dif=`diff ${nfile} ${file}`
+if [ ! "${dif}" ]; then
+  echo "($_Prog): ${file} unchanged (pattern not found)"
+  \rm ${nfile}
+else
+  echo "($_Prog): author renamed in ${file}"
+  mv ${file} ${ofile}
+  mv ${nfile} ${file}
+fi
+
+
+exit 0
+
+
+
+

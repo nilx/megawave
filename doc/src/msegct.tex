@@ -1,0 +1,116 @@
+%\newcommand{\Disp}[1]{{\displaystyle #1}}
+\def\Disp#1{{\displaystyle #1}}
+% Displaystyle en mode ligne
+%\newcommand{\Dfrac}[2]{{\displaystyle \frac{#1}{#2}}}
+\def\Dfrac#1#2{{\displaystyle \frac{#1}{#2}}}
+% Donne des fractions en 'display' en mode texte
+
+\def\R{{\rm I\!\!R}}
+\def\NC{{\tt nb\_ch}}
+
+The command {\bf msegct} computes a segmentation of multichannel data.
+Each channel is an {\tt fimage} which is part of the input {\em fmovie}.
+Thus we consider a picture where to each pixel are associated 
+\NC ({\tt float}-type) numbers. The number of channels,
+\NC, is equal to the number of images of is which made {\em fmovie}
+(see how an {\tt fmovie} is loaded in MW2).
+
+The algorithm computes  2-normal segmentation of this picture 
+as will be described below.\\
+The initial picture is broken in a grid of elementary cells, composed of
+$D\times D$-pixel squares ($D$={\em size\_of\_grid}). 
+We use a classical region-growing algorithm to achieve the partition of the 
+image in homogeneous regions.
+
+The criterion which measures the resemblance of regions is given by the 
+Mumford and Shah model. Call $g$ the picture defined on an open rectangle $R\subset\R$,
+$u$ a piecewise constant function, which approximates $g$, and
+let $B$ be the boundaries between the regions, i.e. the set of jump points of
+$u$ (remember that $g$ and $u$ are elements of $\R^{\mbox{\small \NC}}$).
+With Mumford and Shah we introduce the following functional which has
+to be minimized
+$$ {\rm E}(B)=\int_{R} \|u-g\|^{2} + \lambda\ell(B),$$
+where $\|.\|$ is the (weighted) norm we put on $g$-space:
+$$\|u-g\|^{2}=\sum_{i=1}^{\mbox{\small\NC}} w_i\cdot(u_i-g_i)^2,$$
+with $w=(w_1,\ldots,w_{\mbox{\NC}})$ the weights the user puts on the channels.
+Moreover $\ell$ is the 1-dimensional Hausdorff measure and $\lambda$ a real
+scaling coefficient. The parameter $\lambda$ gives a weight to the length
+of the boundaries: a small value allows a lot of boundaries whereas a big
+value tends to reduce the boundary length $\ell(B)$.\\
+The property of being 2-normal for a segmentation of $R$ in regions
+$\Disp{\bigcup_{i}O_{i}}$ has been used by Pavlidis in the seventies.
+We say that $B$ is 2-normal if, given any two regions $O_{i},O_{j}$ having
+common boundary $\partial(O_{i},O_{j})$, the following inequality for
+the energy holds 
+$$ {\rm E}(B) \leq {\rm E}(B\setminus\partial(O_{i},O_{j})). $$
+Which yields
+$$ \lambda\ell(\partial(O_{i},O_{j}))\leq\frac{|O_{i}|\cdot |O_{j}|}{|O_{i}|+|O_{j}|}\|u^{i}-u^{j}\|^{2},$$
+where $|.|$ denotes the surface measure and $u^{i},u^{j}$ are the mean values
+of $g$ on $O_{i},O_{j}$, for example 
+$u^{i}=\Dfrac{1}{|O_{i}|}\Disp{\int_{O_{i}}}g\;\;
+=(u^i_1,\ldots,u^i_{\mbox{\small\NC}}) \in \R^{\mbox{\small\NC}}$.
+
+The algorithm proceeds as follows. 
+The initial picture is partitioned in squares of side {\em size\_of\_grid}
+pixels. 
+Construct a list of the corresponding 
+symbolic regions containing all the information needed: surface, sum 
+of gray-levels in the square (for each channel), length of boundaries.
+Construct a table in which to each boundary is associated the 
+value of $\lambda$ for which this boundary will disappear (i.e.
+ $E$ decreases by merging the two adjacent regions).
+Using and updating this ``merit'' table the algorithm proceeds.
+The information on the new region, constructed when a merging decision occurred,
+ is taken
+from the two old one's, so there is no need to return on pixel level.
+
+There are two (incompatible) options : either one wants the segmentation
+to stop at {\em nb\_of\_regions} regions or the final segmentation is
+at scale {\em lambda}.
+
+If the first option is chosen the program stops when the desired 
+number of regions ({\em nb\_of\_regions})
+is reached. To be more precise it stops at the value of $\lambda$ for which
+ this particular number of regions is reached, there might be less regions
+remaining if {\em nb\_of\_regions} doesn't correspond to a 2-normal 
+segmentation for any $\lambda$.
+
+In case the final $\lambda$ is fixed the program stops at {\em lambda} or
+for the value of $\lambda$ just lower than {\em lambda}. For example if
+{\em lambda}=13.45 and the current $\lambda_c$=13.09, then if the next
+boundary in the segmentation will vanish for $\lambda_n$=14.67 the program
+stops. The obtained segmentation is also valid for each $\lambda$ strictly
+lower than the next value $\lambda_n$.
+
+If the program is used as module in another program the final values
+of $\lambda$ and the number of regions are passed to the corresponding
+variables. On command line execution this information is anyway displayed.
+
+The program estimates the memory used by the process, this mainly depends
+on the precision of the initial grid, for example $D=1$ is the best possible
+precision, but it needs a lot of memory for the data structure 
+(1 pixel = 1 region). So the program turns out to be most efficient 
+(i.e. fast) on machines with a big amount of central memory (RAM). 
+Indeed as there
+is no previous information on the picture available and as regions can grow
+in any direction, the whole structure should be available in central memory.
+
+The output shows the initial quadratic error, the total boundary length and
+the number of regions the algorithm starts with, after reaching 
+{\em nb\_of\_regions} the quadratic error, boundary length, number of region
+and the current value of $\lambda$.
+
+The output is file {\em boundary} which represents the boundary set
+on a white background and is stored under {\tt cimage}-format.
+
+An optional output is file {\em curves}
+ which contains the boundary set under 
+{\tt curve}-format (use {\bf -c}).
+Using {\bf curves\_cimage} the result can be visulized
+on the original {\em fimage} for example.
+
+To obtain the gray-level reconstruction of
+the piecewise constant approximation 
+for each channel use {\bf -r}.
+This will write an {\tt Fmovie}
+in file {\em reconstruction}.%

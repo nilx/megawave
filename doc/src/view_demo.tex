@@ -1,0 +1,12 @@
+This module shows how to call modules which open a window (here, cview and ccview) from another module (\verb+view_demo+).
+Each main function of a module is put into the user's library. 
+Make sure to call such function with the right parameters, cview and cciew in 
+this example.
+
+When calling several view modules, set the {\em no\_refresh} flag in order to continue 
+after the call (this is done by passing a non NULL adress to cview). The flag has
+to be unset only for the call to the last view module.
+
+When you want to use the same window for different view modules (as it is the case here
+for the first two calls), call each view modules with the adress of the window (instead of a NULL adress). The window has to be opened using the function \verb+mw_get_window()+.
+

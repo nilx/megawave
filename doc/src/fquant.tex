@@ -1,0 +1,21 @@
+This module uniformly quantifies a fimage $A$ on $M$ gray levels,
+using the following scheme :
+
+Let be $a$ the minimum value of $A$ and $b$ the maximum value.
+Then we set 
+\[\left. \begin{array}{l}
+\delta = \frac{b-a}{M} \\
+\; \mbox{and} \\ 
+\forall r = 
+0,1, \ldots, M-1, \, \forall (x,y) \\
+\; \mbox{if} \\
+a + r \delta \leq A(x,y) < a + (r+1)\delta \\
+\; \mbox{then set} \\
+Q(x,y) = a + r\delta + \frac{\delta}{2} \mbox{ (without option \verb+-l+)}\\
+\; \mbox{or} \\
+Q(x,y) = a + r\delta \mbox{ (with option \verb+-l+)}\\
+\end{array} \right.\]
+The last inequality being not strict when $r = M-1$.
+
+The module returns the value of $\delta$.
+

@@ -1,0 +1,93 @@
+\def\Om{\Omega}
+\def\la{\lambda}
+\def\gu{\nabla u}
+\def\ve{\varepsilon}
+\def\lp#1{{L}^{#1}}
+\def\wlp#1#2{{W}^{#1,#2}}
+\def\HunO{{H}^1(\Om)}
+\def\ltwo{\lp{2}}
+\def\ltwoO{\ltwo(\Om)}
+\def\ds{\displaystyle}
+\def\Ref#1{(\ref{#1})}
+
+This module applies the Total Variation Minimization algorithm described
+below to a color image \verb+in+, during the time $\delta t$ given by
+\verb+deltat+.
+The result is a diffused (smoothed) color image put in \verb+out+ which 
+keeps the sharpness of the edges.
+Such algorithm may be used to restore a noisy image.
+
+To get a sequence of diffused images, see the module \verb+cfmdiffuse+.
+
+\medskip
+
+The following is a short description of the used scheme, the Total Variation Minimization via a Relaxation Algorithm.
+For more information please see \cite{ChambolleLions}.
+
+Let $\Phi_\ve$ be the following $C^1$ function:
+\begin{equation}\label{defphi}
+\Phi_\ve : x \mapsto \left\{ \begin{array}{ll}
+\ds{{1\over 2\ve} x^2} & \mbox{if } |x|\leq \ve \\
+\ds{|x|-{\ve\over 2}}  & \mbox{if } \ve \leq |x| \leq \ds{1\over \ve} \\
+\ds{{\ve\over 2} x^2 + {1\over 2}({1\over \ve}-\ve)}
+& \mbox{if } |x|\geq \ds{1\over \ve}
+\end{array}\right.
+\end{equation}
+and consider the problem
+\begin{equation}\label{PLMap}
+\mbox{Minimize } \int_\Om \Phi_\ve(|\gu|) + \frac{\la}{2} |u-u_0|^2
+\end{equation}
+where $u\in \HunO = \wlp{1}{2}(\Om)$.
+
+As $\ve$ goes to zero it may be shown that the minimizer of~\Ref{PLMap}
+goes to the minimizer of the following energy:
+\begin{equation}\label{PLMap2}
+\int_\Om |\gu| + \frac{\la}{2} |u-u_0|^2.
+\end{equation}
+
+Now, set for simplicity's sake
+$\la = 1$ and choose a small, fixed $\ve$ (for instance, 1).
+In the sequel we will denote $\Phi_\ve$ simply by $\Phi$.
+Consider the following functional:
+\begin{equation} \label{erelax}
+E(u,v) = \int_\Om v |\gu|^2 + {1\over v} + |u-u_0|^2
+\end{equation}
+where $u\in \HunO$ and $v\in \ltwoO$, $\ve \leq v \leq 1/\ve$.
+
+Start from any $u^1$ and $v^1$ (for instance $v^1\equiv 1$) and
+let:
+\begin{equation}
+\begin{array}{rcccl}
+u^{n+1} &=& \ds{\mbox{arg}\min_{u\in \HunO} E(u,v^n)} & & \\
+v^{n+1} &=& \ds{\mbox{arg}\min_{\ve \leq v \leq 1/\ve} E(u^{n+1},v)} &=&
+\ds{ \ve \vee {1\over |\gu^{n+1}|} \wedge {1\over \ve}}
+\end{array}\end{equation}
+($u^{n+1}$ is therefore characterized by
+\[ \forall \phi\in \HunO, \int_\Om v^n\gu^{n+1}\cdot\nabla \phi
++ (u^{n+1}-u_0) \phi = 0, \]
+{\em i.e.\/} $-\mbox{div}(v^n\gu^{n+1}) + u^{n+1} = u_0$ in ${\HunO}'$.)
+
+We have the following result.
+\medskip
+
+%\begin{proposition}
+{\sc Proposition. }
+{\em The sequence $(u_n)$
+converges (strongly in $\ltwoO$ and weakly in $\HunO$)
+to the minimizer of~\Ref{PLMap}.}
+%\end{proposition}
+\medskip
+
+Now, to solve the PDE
+\[ \frac{\partial u}{\partial t} = \mbox{div} \frac{\gu}{|\gu|} \]
+or, to be more precise,
+\[ \frac{\partial u}{\partial t} = \mbox{div} \frac{\Phi{\gu}}{|\gu|}\gu \]
+we simply compute $u(t+\delta t)$ by minimizing~\Ref{PLMap} with
+$u_0 = u(t)$ and $\lambda = 1/\delta t$.
+
+\begin{thebibliography}{99}
+\bibitem{ChambolleLions}
+A.~Chambolle and P.-L. Lions.
+\newblock Image recovery via total variation minimization and related problems.
+\newblock Preprint, 1995.
+\end{thebibliography}

@@ -1,0 +1,82 @@
+/*----------------------------- MegaWave Module -----------------------------*/
+/* mwcommand
+  name = {clocal_zoom};
+  version = {"1.2"};
+  author = {"Jacques Froment"};
+  function = {"In-place local Zoom of a char image"};
+  usage = {
+    'x':[center_x=256]->X  "X coordinate for the center of the zoom array",
+    'y':[center_y=256]->Y  "Y coordinate for the center of the zoom array",
+    'W':[width=40]->W      "Width of the zoom array",
+    'X':[factor=2]->factor [1,10] "Zoom factor",
+    A->Input        "Input (could be a cimage)", 
+    B<-clocal_zoom  "Output (zoomed image)"
+};
+*/
+/*--- MegaWave2 - Copyright (C)1994 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v1.2: fixed bug: values of x0 and y0 (*factor-1 term) (L.Moisan)
+----------------------------------------------------------------------*/
+
+#include <stdio.h>
+
+/* Include always the MegaWave2 Library */
+#include "mw.h"
+
+Cimage clocal_zoom(Input, X, Y, W, factor)
+
+int *X,*Y,*W,*factor;
+Cimage Input;
+
+{
+  unsigned char *square,c;
+  register unsigned char *ptr;
+  register int x,y,i,j;
+  int  dx,dy;      /* Size of Input & Ouput */
+  int  sx,sy;      /* Size of square */     
+  int x0,x1,y0,y1;
+  int D,Df,l;
+
+  dx = Input->ncol; 
+  dy = Input->nrow;
+  
+  D = *W/2;
+  if (*X-D < 0) D=*X;
+  if (*X+D >= dx) D=dx-*X-1;
+  if (*Y-D < 0) D=*Y;
+  if (*Y+D >= dy) D=dy-*Y+1;
+
+  sx = 2*D+1; sy = sx;
+
+  square = (unsigned char *) malloc(sx*sy);
+  if (square == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+  ptr = Input->gray;
+  for (y=0;y<sy;y++) memcpy(&square[sx*y],&ptr[*X-D+dx*(y+*Y-D)],sx);
+
+  Df = (*factor)*D;
+  x0 = 0; x1 = sx-1;
+  l = (*X-Df-(*factor-1))/ (*factor); 
+  if (l < 0) x0 = -l;
+  l = (dx+Df-*X)/ (*factor);
+  if (l <= sx) x1 = l-1;
+
+  y0 = 0; y1 = sy-1;
+  l = (*Y-Df-(*factor-1))/ (*factor); 
+  if (l < 0) y0 = -l;
+  l = (dy+Df-*Y)/ (*factor);
+  if (l <= sy) y1 = l-1;
+
+  for (x=x0;x<=x1;x++) for(y=y0;y<=y1;y++) 
+      {
+	c = square[x+sx*y];
+	l = *X+((*factor)*x)-Df + dx*(*Y+((*factor)*y)-Df);
+	for (i=0;i<(*factor);i++) for (j=0;j<(*factor);j++) ptr[l+j*dx+i] = c;
+      }
+
+  free(square);
+  return(Input);
+}
+
+
+

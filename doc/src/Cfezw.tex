@@ -1,0 +1,20 @@
+This macro compresses a RGB color image using the EZW
+algorithm applied to the orthogonal/biorthogonal wavelet coefficients. 
+It is based on the {\em cfezw} module, but is simpler to use. 
+
+It works exactly in the same way that the {\em Fezw} macro for graylevel 
+images, except that there is a possibility to convert the image from 
+RGB to YUV representation before compression, using the -c option. 
+
+The target rate (if -R option is selected) is the same for red, green and 
+blue channels. Notice that {\em Rate} is a target bit rate per point {\bf and} 
+per channel. Unlike {\em Cfwvq}, only one compressed file is generated 
+(*\_{\em Rate}c.comp if the input image file is *.rim or *.img). 
+The quantized image is put in *\_{\em Rate}q.rim. 
+
+Details about wavelet transform are the same as for {\em Fwlbg\_adap} macro. 
+The reader is refered to its documentation for information about the -b1, -b2, 
+-o and -e options. 
+
+As for {\em Fezw}, none of the -r, -n, -w, -P and -s option is 
+selected when calling {\em cfezw} module. 

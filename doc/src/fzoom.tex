@@ -1,0 +1,8 @@
+This module performs a zoom of an image using floating point representation.
+The zoom ratio {\em factor} may be an integer or a float.
+In the first case, each pixel of the
+original image is duplicated in X and Y direction {\em factor} times.
+Note that it's possible to make the duplication only in the X or in the Y
+direction.
+
+You can also do unzooming: in this case, each block of $1/\mbox{\em factor} \times 1/\mbox{\em factor}$ pixels are averaging to one pixel (when $1/\mbox{\em factor}$ is an integer; otherwise, no averaging is done).

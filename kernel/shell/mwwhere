@@ -1,0 +1,70 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave Macro ----------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="mwwhere"
+_Vers="1.01";
+_Date="1999";
+_Func="Give the location(s) where the module is";
+_Auth="Jacques Froment";
+_Usage="[-macro] module"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+# test entree
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+   . .mw2_help_lg_com
+fi
+
+
+# Defaults
+macro=0
+
+while [ "$1" != "" ]
+do
+    case "$1" in
+
+# Identify a module as a macro
+    -macro) macro=1
+            shift
+ 	    ;;
+
+    -*)   . .mw2_help_lg_com;
+	  ;;
+
+    *)  module=$1
+        shift
+	;;
+
+    esac
+done
+
+# Automatically identifies a module as a macro when its name 
+# begins with a capital letter.
+mwisupper $module > /dev/null
+macro=$?
+
+module=`basename $module .c`
+
+if [ $macro -eq 1 ]; then
+  find ${MY_MEGAWAVE2}/src -name "${module}" -print
+  find ${MEGAWAVE2}/src -name "${module}" -print
+else
+  find ${MY_MEGAWAVE2}/src -name "${module}.c" -print
+  find ${MEGAWAVE2}/src -name "${module}.c" -print
+fi
+
+exit 0
+
+
+
+
+
+
+
+

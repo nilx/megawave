@@ -1,0 +1,75 @@
+\parindent 0.6cm 
+\parskip 0.4cm
+
+\def\real{I\!\!R}
+
+{\em biowave2} computes the two-dimensional discrete wavelet transform 
+of the floating point image stored in the file {\em Image}, 
+using filter banks associated to biorthogonal bases of wavelets. 
+See {\em owave1} and {\em biowave1} modules' documentation for definitions 
+and notations.
+
+As in {\em owave2} module, this transform is semi-separable, i.e. it can be 
+decomposed at each level in two one-level and one-dimensional wavelet 
+transforms applied successively on the lines and on the columns of the image. 
+It corresponds to separable multiresolution analysis and semi-separable 
+wavelet bases on \( L^{2}(\real^{2}) \).
+The one-dimensional algorithm is the one that is implemented in 
+{\em biowave1}, and the multidimensional construction is the same 
+as that of the orthogonal case ({\em owave2}). The reader is refered 
+to the documentation of these modules for their description.  
+
+At each step the average sub-image is splitted into four sub-images, 
+corresponding to the four generating functions 
+$\tilde{\varphi}(x) \tilde{\varphi}(y), \tilde{\varphi}(x) \tilde{\psi}(y), 
+\tilde{\psi}(x) \tilde{\varphi}(y), \tilde{\psi}(x) \tilde{\psi}(y)$. 
+
+The different methods for computing the edge coefficients are the same as 
+in the univariate case (see {\em biowave1}), unless the dimensions of the 
+image are not multiples of $2^J$. Then the processing is done in the same 
+way as in the 2D orthogonal case (see {\em owave2} module documentation). 
+
+As for orthogonal decomposition, the size of sub-images is divided by four 
+at each step, so that the total size of the wavelet transform is equal 
+to the size of the original image, and the number $J$ of levels 
+in the decomposition is upperbounded.
+
+The complexity of the algorithm is $(2-2^{-J+1}) (N+\tilde{N}) \, dx\, dy$ 
+multiplications and additions, where $dx$ and $dy$ are respectively 
+the number of columns and the number of lines in the original image. 
+
+The resulting sub-images  $A_{J}$, \( D^{1}_{1}, D^{1}_{2}, \ldots, D^{1}_{J} \), \( D^{2}_{1}, D^{2}_{2}, \ldots, D^{2}_{J} \), and \( D^{3}_{1}, D^{3}_{2}, \ldots, D^{3}_{J} \) are stored in files having all the same prefix {\em Wavtrans}. The name of the file is {\em prefix\_j\_A.wtrans2d} for \( A_{j} \) and {\em prefix\_j\_D.wtrans2d} for \( D_{j} \).
+
+The coefficients $(h_{k})$ and $(\tilde{h}_{k})$ of the filter's impulse responses are read in the file {\em ImpulseResponse1} and {\em ImpulseResponse2}.
+
+\begin{itemize}
+\item
+The -r, -h and -e options are exactly the same as in the orthogonal transform.
+See {\em owave2} module documentation for explanations. 
+\item
+The -n option specifies the normalisation mode of the filter impulse responses' coefficients. Be careful, the normalisation possibilties are slightly different from the 1D case.
+\begin{itemize}
+\item
+$0$ \ No normalisation occurs.
+\item
+$1$ \ $ \sum_{k} \tilde{h}_{k} =  \sum_{k} {h}_{k}, \;\;  \sum_{k} \tilde{h}_{k}{h}_{k} = 1.0$
+\item 
+$2$ \ $ \sum_{k} \tilde{h}_{k}^2 =  \sum_{k} {h}_{k}^2, \;\;  \sum_{k} \tilde{h}_{k}{h}_{k} = 1.0$
+\end{itemize}
+
+\end{itemize}
+
+
+\begin{thebibliography}{CDF}
+
+\bibitem[CDF]{kn:cdv} A. Cohen, I. Daubechies, J.C. Feauveau. 
+{\em Biorthogonal bases of compactly supported wavelets, } 
+Comm. pure and applied math. 45, pp 485-560, 1992.
+
+\end{thebibliography}
+
+
+
+
+\parindent 0.0cm 
+\parskip 0.0cm

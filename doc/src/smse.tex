@@ -1,0 +1,30 @@
+{\em smse} computes the maximal relative difference, mean square error, signal to noise ratio, and peak signal to noise ratio between two univariate digitized signals whose sample values are read in files {\em Signal1} and {\em Signal2}. 
+
+The maximal relative difference is given by 
+\[
+MRD = 100 \times \frac{\max_{x}|f_{1}(x) - f_{2}(x)|}{\max_{x,i=1,2}f_{i}(x) - \min_{x,i=1,2}f_{i}(x)}
+\]
+where $f_{i}(x)$ is the $x^{st}$ sample value in signal $i$, $i=1,2$. 
+
+The mean square error is defined by 
+\[
+MSE = \frac{\sum_{x}|f_{1}(x) - f_{2}(x)|^{2}}{n}
+\]
+where $n$ is the number of samples in {\em Signal1} and {\em Signal2}.
+
+In maximal relative difference and mean square difference the two signals have symetric roles. This is no longer the case in (peak) signal to noise ratio. 
+These quantities can be calculated for any two signals, but are more meaningful if $f_{1}$ is considered as an original signal and $f_{2}$ as an approximation to it. The signal to noise ratio and peak signal to noise ratio are defined as follows
+\[
+SNR = 10 \times \log_{10} \frac{\sigma_{1}^{2}}{MSE} 
+\]
+\[
+PSNR = 10 \times \log_{10} \frac{(\max_{x} f_{1}(x) - \min_{x} f_{1}(x))^{2}}{MSE}
+\]
+where $\sigma_{1}^{2}$ is the empirical variance of the original signal.
+
+The -n option specifies that the two signals are normalized to $0.0$ mean and $1.0$ variance before the computation of the quantities listed above.
+
+
+
+
+

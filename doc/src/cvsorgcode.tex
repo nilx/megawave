@@ -1,0 +1,25 @@
+This module computes the bit rate needed to encode
+the origin points of the curves contained in the input set.
+The bit rate is given in bit per point, the number of points being
+the total number of points contained in all curves.
+
+Two structures are considered to represent the coordinates of the
+origin points : a binary bitmap (a pixel is set to $1$ if it is
+an origin point, or to $n$ if it is a multiple origin point of multiplicity 
+order $n$) and the sequence of the distances between two successive
+origin points, the points being scanned in the natural order (from left
+to right and up to down).
+
+Several coding schemes are considered over all the following algorithms,
+to code the former structures :
+entropy coding, arithmetic coding, predictive arithmetic coding.
+
+The bit rate returned by the function is the best bit rate over the
+two structures and over all coding schemes.
+The function outputs also the total number of points \verb+N+
+and the number of bits \verb+B+ needed to code the structure.
+
+Use the module \verb+cvsencode+ to get the total bit rate to encode
+a set of curves.
+See the module \verb+arencode2+ for more information on the arithmetic
+coding algorithms.

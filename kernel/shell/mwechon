@@ -1,0 +1,52 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="`basename $0`"
+_Vers="1.2"
+_Date="1994-99"
+_Func="Echo without linefeed on every Unix machines";
+_Auth="Jacques Froment";
+_Usage="[arg]"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+# Warning: the $MACHINETYPE variable must be set
+
+if [ "${MW_SYSTEMTYPE}" = "" ]; then
+   echo "Please set the \$MW_SYSTEMTYPE environment variable"
+   exit 1
+fi
+
+if [ $MW_SYSTEMTYPE = SunOS ]; then
+# On Solaris, use printf instead of echo
+  if [ $MW_MACHINETYPE = sun4_5 ]; then
+    printf "$1"
+  else
+    if [ -x /usr/ucb/echo ]; then
+      /usr/ucb/echo -n "$1"
+    else
+     echo -n "$1"
+    fi
+  fi
+else
+  if [ $MW_SYSTEMTYPE = Linux ]; then
+    echo -n "$1"
+  else
+    echo $1"\c"
+  fi
+fi
+
+
+
+
+
+
+
+
+

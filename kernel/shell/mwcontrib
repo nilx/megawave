@@ -1,0 +1,59 @@
+#! /bin/sh 
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
+_Func="Return the contributors of one MegaWave2 module or macro"
+_Prog="`basename $0`"
+_Vers="0.0"
+_Date="1997"
+_Auth="Jacques Froment";
+_Usage="file"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+if [ $# -ne 1 ]; then
+  . .mw2_help_lg_com
+fi
+
+file=$1
+if [ ! -f $file ]; then
+  echo "Error ($_Prog): file $file not found !"  1>&2
+  exit 1
+fi
+
+bfile=`basename $file .c`
+if [ "$bfile" = "$file" ]; then
+  macro=1
+else
+  macro=0
+fi
+
+if [ $macro -eq 1 ]; then
+# This is a macro
+ list=`cat $file | cut -d = -f 1,2 -s | grep "_Auth=" | cut -d \" -f 2`
+ while [ "$list" != "" ]; do
+  auth=`echo $list | cut -d , -f 1`
+  echo $auth
+  list=`echo $list | cut -d , -f 2- -s | cut -d " " -f 2-`
+ done
+else
+# This is a module
+ list=`cat $file | cut -d = -f 1,2 -s | grep "author.=.{" | cut -d \" -f 2`
+ while [ "$list" != "" ]; do
+  auth=`echo $list | cut -d , -f 1`
+  echo $auth
+  list=`echo $list | cut -d , -f 2- -s | cut -d " " -f 2-`
+ done
+fi
+# end of if [ $macro -eq 1 ];
+
+exit 0
+
+
+
+

@@ -1,0 +1,22 @@
+		----------------------
+		Note for Solaris users
+		----------------------
+
+Warning : This include directory in needed by Solaris users only ! 
+          If your system is not Solaris, you can remove it.
+
+Strange instructions (which are not, for my point of view,
+nor ANSI C nor K&R compliant) in the Solaris include files lead 
+the MegaWave2 preprocessor to fail during the C lexical analysis phase.
+We had to change some lines and the new include files are located in
+this directory. They will be automatically read instead of the standard 
+include files.
+
+The problem which occurs on SunOS 5.7 is the following :
+Line 21 of stdio_tag.h says
+  typedef struct __FILE_TAG __FILE;
+and after that, line 38 of stdio_tag.h redefines __FILE_TAG by
+  struct __FILE_TAG {...}
+
+This seems not disturb cc, but our lexical analyzer is definitely lost by
+this kind of references.

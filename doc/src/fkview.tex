@@ -1,0 +1,39 @@
+This module is designed to allow an interactive visualization of curves.
+The requested input is a Fcurves structure, but thanks to
+MegaWave2 automatic format conversions, all kinds of curves 
+(Fcurve, Curve, Curves, Polygon, etc\ldots) can be 
+used as input in a shell call. The visualization window has a default
+size of $800\times 600$, but it can be changed using the \verb+-x+ and
+\verb+-y+ options. A background image (\verb+-b+ option)
+can also be specified (this may
+be useful when the curves to visualize are related to the geometry of this
+image for example). In this case, the window size is set by the
+background image. A translation and zoom is then performed in order that
+the Fcurves size fits at least one of the window dimensions. 
+If the \verb+-a+ option is specified, the zoom factor may differ in the
+$x$ and in the $y$ direction, yielding an affine scaling. 
+The \verb+-s+ option places origin in the downleft corner of the window
+(instead of upleft). The display style is set by the \verb+-d+ option~:
+the curves can be drawn as isolated points ($d=1$), as lines ($d=2$, 
+the default) or as lines plus points ($d=3$). The endpoints of the curves
+can also be marked using the \verb+-e+ option. The \verb+-o+ option allows
+to save the last visualized image as a Cimageé; it can be combined with
+the \verb+-n+ option (that prevents the display) to bitmap a Fcurves
+in a Cimage.
+
+\medskip
+
+{\bf Interactive commands~:}
+\medskip
+
+\begin{tabular}{ll}
+Key 'q'			& quit \\
+Key 'h'			& help \\
+Key 'u'			& unzoom $\times 2$ \\
+Key 's'			& symmetrize along y coordinate (\verb+-s+ option)\\
+Key 'p'			& toggle display style (\verb+-d+ option)\\
+Key 'e'			& toggle extremal points (\verb+-e+ option) \\
+Mouse Left button 	& center the window at mouse origin \\
+Mouse Middle button 	& restore original settings \\
+Mouse Right button	& zoom $\times 2$, centered at mouse origin \\
+\end{tabular}

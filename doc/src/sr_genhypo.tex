@@ -1,0 +1,16 @@
+This module produces hypotheses for the affine-invariant shape recognition. 
+Given a image {\it img} to recognize and a set of signatures {\it sg}
+(computed as a Fimage
+using the \verb+SR_Signature+ module), it proceeds this way~:
+\begin{itemize}
+\item First, it extracts the shape represented by the input image using the 
+\verb+extract_connex+ module.
+\item Then, it normalizes this shape using \verb+SR_Normalize+.
+\item Then, the signature of this normalized shape is computed and compared to
+the given signatures {\sf sg}. The 10 best matching signatures are extracted, 
+and a list of hypotheses (the corresponding row numbers in the signature 
+Fimage {\sf sg})
+are printed to the standart output or writen into a one-row Fimage if the
+-o option is specified.
+\item Last, the normalized shape is returned.
+\end{itemize}

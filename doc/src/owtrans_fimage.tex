@@ -1,0 +1,14 @@
+{\em owtrans\_fimage} creates a file of type Fimage for the visualization of a wavelet decomposition (see {\em owave2} module's documentation). 
+The sub-images are displayed in the following telescopic way. 
+The visualization image is divided in four identical rectangles. 
+The details $D_{1}^{1}$, $D_{1}^{2}$, and $D_{1}^{3}$ are respectively in the upper right, lower left, and lower right corners of the visualization image. 
+The sub-images corresponding to coarser scales are displayed in the upper left rectangle. The organization in this rectangle is the same as for the level one : the details $D_{2}^{1}$, $D_{2}^{2}$, and $D_{2}^{3}$ are respectively in the upper right, lower left, and lower right corners, a.s.o.. 
+At the coarsest level, the average sub-image is displayed in the upper left corner. 
+
+The prefix names of the files containing the wavelet decomposition's sub-image is {\em WavTrans}, and their syntax must obey the rules described in {\em owave1} module's documentation. 
+The visualization image is stored in the file {\em VisuImage}.
+
+The -r option specifies the number of level in the decomposition (default : 1).
+
+The -c oprion specifies the multiplicative constant by which the detail coefficients are multiplied (default : 1.0).
+

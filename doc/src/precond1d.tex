@@ -1,0 +1,16 @@
+{\em precond1d} performs the preconditionning (resp. unpreconditionning) 
+of the first and last coefficients of a univariate digitized signal, 
+before (resp. after) an orthogonal wavelet decomposition or reconstruction 
+with adapted filters for edge coefficients. 
+If the Daubechies wavelet used for the wavelet transform has cancellation degree $N$, 
+then the (un)preconditionning consists in applying an invertible linear transformation 
+to the first $N$ and last $N$ coefficients of the signal.
+
+The sample values of the input signal are read in the file {\em Signal}.
+
+The sample values of the output (un)preconditionned signal are stored in the file {\em PrecSignal}.
+
+The coefficients of the preconditionning matrices or filters are read in the file {\em FicEdgeRi}. This file contains also the coefficients of the edge adapted filters for the wavelet decomposition.
+
+The -i option specifies the inverse transformation.
+

@@ -1,0 +1,43 @@
+This module applies an affine or a projective transformation to an image.
+The original image $(x,y)\mapsto u(x,y)$ is transformed into the image
+$(x,y)\mapsto v(x,y)=u(F(x,y))$ where $F$ is defined by its values on three
+(affine case) or four (projective case) points of the original 
+image. 
+
+\medskip
+
+$\bullet$ In the affine case, one has
+$$F(x,y) = (a x + b y +c, d x +  e y + f),$$
+and the constants $a,b,c,d,e,f$ are computed in order that
+\begin{eqnarray*}
+F(x_1,y_1) &=& (0,0) \\
+F(x_2,y_2) &=& (sx,0) \\
+F(x_3,y_3) &=& (0,sy) .
+\end{eqnarray*}
+This means that the new image is extracted from the original one 
+in a parallelogram domain.
+
+\medskip
+
+$\bullet$ In the projective case, one has
+$$F(x,y) = (\frac{a x + b y +c}{gx + hy +1}, 
+\frac{d x + e y + f}{gx + hy +1},$$
+and the constants $a,b,c,d,e,f,g,h$ are computed in order that
+\begin{eqnarray*}
+F(x_1,y_1) &=& (0,0) \\
+F(x_2,y_2) &=& (sx,0) \\
+F(x_3,y_3) &=& (0,sy) \\
+F(x_4,y_4) &=& (sx,sy) 
+\end{eqnarray*}
+This means that the new image is extracted from the original one 
+in a quadrilateral domain.
+
+\medskip
+
+By default, a bilinear interpolation is used to compute $v$.
+If the \verb+-z+ option is specified, a zero-order interpolation
+is used (nearest neighbor interpolation).
+
+
+
+

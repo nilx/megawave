@@ -1,0 +1,65 @@
+This function computes a decomposition of {\em image\_in}
+into {\tt morpho\_lines}. The algorithm is based on the
+MW2 modules {\bf fvalues} and {\bf ml\_extract}, it is recommended
+to read first the description of these modules.
+
+\medskip
+
+Let the set of pixel values in {\em image\_in} be 
+$\{v_0,\ldots,v_N\}$\,, with $v_i<v_{i+1}$\,.
+Using option {\bf -o} we have the following possibilities
+for the decomposition\,:
+\begin{itemize}
+\item[ 0 ] decompose into level lines such that $v_i\leq g(i,j)$
+  (default)
+\item[ 1 ] decompose into level lines such that $g(i,j)\leq v_i$
+\item[ 2 ] decompose into isolines, $g(i,j)= v_i$. 
+\end{itemize}
+
+The {\bf -m} flag allows to optimize memory occupation during
+the decomposition. This is interesting if you use {\bf ml\_decompose}
+on the UNIX command line. Using this flag in an internal call
+of the module {\bf ml\_decompose()} and trying to delete
+points separately in the sequel of your program will corrupt
+the data structure.
+
+The module will set the dimensions of {\em m\_image}, to those
+of {\em image\_in}, the minvalue of {\em m\_image} is set to $v_0$ 
+and the maxvalue to $v_N$\,. At last, the {\tt morpho\_lines}
+are created.\\
+If the option {\bf -c} is used, this information is set in the
+{\tt mimage} {\em m\_image\_in}, else a new {\tt mimage} is created.
+This option is useful if you have, for example, already an {\tt mimage}
+with its {\tt morpho\_sets} and you want to add the {\tt morpho\_lines}
+into this structure (instead of creating a new {\tt mimage} structure).
+
+\bigskip 
+
+Let us discuss in more detail the different decompositions.
+\begin{itemize}
+
+\item[ 0 ] {\em image\_in} is decomposed into level sets
+$L_i=\{ (i,j)\,/\, g(i,j)\geq v_i\}$, for $i=1,\ldots,N$.
+Notice that $L_0$={\em image\_in}. The list of {\tt morpho\_lines}
+is in \underline{increasing} order\,: 
+first all the {\tt morpho\_lines} for $v_1$,
+those then for $v_2$, and so on, up to $v_N$.
+
+\item[ 1 ] {\em image\_in} is decomposed into level sets
+$L_i=\{ (i,j)\,/\, g(i,j)\leq v_i\}$, for $i=0,\ldots,N-1$.
+Notice here that $L_N$={\em image\_in}. The list of {\tt morpho\_lines}
+is in \underline{decreasing} order\,: 
+first all the {\tt morpho\_lines} 
+for $v_{N-1}$, than those for $v_{N-2}$, 
+and so on, down to $v_0$.
+
+\item[ 2 ] {\em image\_in} is decomposed into isosets
+$I_i=\{ (i,j)\,/\, g(i,j)= v_i\}$, for $i=0,\ldots,N$.
+In this case the list of {\tt morpho\_lines} is in increasing order,
+from $v_0$ up to $v_N$.
+
+\end{itemize}
+
+In case 0 and 1 the order in which the {\tt morpho\_lines} are listed
+is essential to obtain a correct reconstruction by {\bf ml\_reconstruct}.
+For isosets the order doesn't matter in the reconstruction.

@@ -1,0 +1,33 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="`basename $0`"
+_Vers="1.1"
+_Date="1993-99"
+_Func="Create the directory hierarchy for a new user";
+_Auth="Jacques Froment & Sylvain Parinno";
+_Usage=""
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+if [ ! -d ${MY_MEGAWAVE2?"Please set the MegaWave2 variables up before running ${_Prog}."} ]; then
+    mwechon "Creating directory $MY_MEGAWAVE2 and sub-dir..."
+    mkdir -p $MY_MEGAWAVE2/src
+    mkdir $MY_MEGAWAVE2/obj
+    mkdir $MY_MEGAWAVE2/doc
+    mkdir $MY_MEGAWAVE2/bin
+    mkdir $MY_MEGAWAVE2/mwi
+    mkdir $MY_MEGAWAVE2/lib
+    mkdir $MY_MEGAWAVE2/data
+    mkdir $MY_MEGAWAVE2/tmp
+    echo "done."
+else
+   echo "Directory $MY_MEGAWAVE2 already exists. Nothing done."
+fi
+

@@ -1,0 +1,100 @@
+\parindent 0.6cm 
+\parskip 0.4cm
+
+{\em biowave1} computes the discrete wavelet transform of the univariate digitized signal whose sample values are in the file {\em Signal}, using filter banks associated to biorthogonal bases of wavelets. See {\em owave1} module's documentation for definitions and notations.
+
+Let \( \{V_{j}\}_{j \in Z} \), \( \{\tilde{V}_{j}\}_{j \in Z} \) be a pair of dual multiresolution analysis. The integer translates of the the two associated scaling functions are no longer required to be orthogonal, but they do satisfy
+\[
+<\varphi_{j,k},\varphi_{j'k'}> = \delta_{j,j'} \delta_{k,k'}.
+\]
+The approximation of a signal $f$ is now defined using the projector :
+\[
+P_{\tilde{V}_{j}} f = \sum_{k} < f, \varphi_{j,k} (x)> \tilde{\varphi}_{j,k}
+\]
+The associated wavelet spaces are defined as follows :
+\begin{eqnarray*}
+V_{j-1} = V_{j} \stackrel{\perp}{\oplus} \tilde{W}_{j} \\
+\tilde{V}_{j-1} = \tilde{V}_{j} \stackrel{\perp}{\oplus} W_{j}
+\end{eqnarray*}
+
+Let $\psi$ and $\tilde{\psi}$ be the two corresponding mother wavelets. Their integer translates are no longer orthogonal, although the orthogonal property is preserved across scales :
+\begin{eqnarray*}
+\psi_{j,k} \perp \psi_{j',k'}  \mbox{ if } j \neq j' \\
+\tilde{\psi}_{j,k} \perp \tilde{\psi}_{j',k'}  \mbox{ if } j \neq j'
+\end{eqnarray*}
+
+If the signal $f$ is in $\tilde{V}_{0}$ it can be decomposed as 
+\[
+f = \sum_{k} < f, \varphi_{J,k} (x)> \tilde{\varphi}_{J,k} + \sum_{j=1}^{J} \sum_{k} < f, \psi_{j,k} (x)> \tilde{\psi}_{j,k}
+\]
+where $J$ is any positive integer.
+As in {\em owave1}, $<f,\varphi_{j,k}>$ is noted $A_{j}[k]$ and $<f,\psi_{j,k}>$ is noted $D_{j}[k]$. 
+
+From the coefficients $A_{0}[k]$ (which are stored in the file {\em Signal}) {\em biowave1} computes the wavelet decomposition $D_{1}, D_{2}, \ldots, D_{J}, A_{J}$. As for orthogonal decomposition this is done recursively, and the two-scales relationships 
+\[
+\begin{array}{ll}
+\varphi(t) = \sqrt{2} \sum_{k} h_{k} \varphi(2t-k)  \;\;\; &
+\tilde{\varphi}(t) = \sqrt{2} \sum_{k} \tilde{h}_{k} \tilde{\varphi}(2t-k) \\
+\psi(t) = \sqrt{2} \sum_{k} g_{k} \varphi(2t-k) &
+\tilde{\psi}(t) = \sqrt{2} \sum_{k} \tilde{g}_{k} \tilde{\varphi}(2t-k)
+\end{array}
+\]
+where \( g_{k} = (-1)^{k} \tilde{h}_{1-k} \) and \( \tilde{g}_{k} = (-1)^{k} h_{1-k} \), enable one to simplify each step :
+\begin{eqnarray*}
+A_{j+1}[n] = \sum_{k} \tilde{h}_{k-2n} A_{j}[k] \\
+D_{j+1}[n] = \sum_{k} \tilde{g}_{k-2n} A_{j}[k] 
+\end{eqnarray*}
+Once again if \( (\tilde{h}_{k}) \) is a low-pas filter, regardless of its definition by the two-scale relationships, then \( A_{j+1}[k] \) is effectively an average of \( A_{j}[k] \), and from this point of view {\em biowave1} does nothing more than a subband coding of the signal. If \( (\tilde{h}_{k}) \) comes from the two-scales relationships above, then it has the exact reconstruction property and the associated filter for reconstruction is $(h_{k})$. $(h_{k})$ and $(\tilde{h}_{k})$ are then called quadrature mirror filters (QMF). 
+
+The different ways of edge processing are the following :
+\begin{itemize}
+\item
+Extension of the signal with \( 0 \)-valued samples.
+\item
+Reflexion of the signal around each edge.
+\item
+Periodization of the signal.
+\end{itemize}
+Notice that if one uses the reflexion mode with linear phase filter, then one doesn't have to keep extra coefficients near edges in order to get the exact reconstruction property. 
+This is because the symmetry of the filters implies the symmetry of the sub-signals around each edge.
+
+As for the orthogonal case, the size of the wavelet decomposition (omitting edge problems) is equal to the size of the original signal, the scale parameter \( J \) is upperbounded, and when edge processing is performed via periodization, the size of the signal should be a multiple of $2^J$. 
+
+If the impulse responses have size $N$ and $\tilde{N}$ then the complexity of the algorithm is roughly $(1 - 2^{-(J-2)})(N+\tilde{N})n$ multiplications and additions, where $n$ is the size of the signal. 
+
+The resulting sub-signals \( A_{1}, A_{2}, \ldots, A_{J} \) and \( D_{1}, D_{2}, \ldots, D_{J} \) are stored in files having all the same prefix {\em Wavtrans}. The name of the file is {\em prefix\_j\_A.wtrans1d} for \( A_{j} \) and {\em prefix\_j\_D.wtrans1d} for \( D_{j} \).
+
+The coefficients $(h_{k})$ and $(\tilde{h}_{k})$ of the filter's impulse responses are stored in the file {\em ImpulseResponse1} and {\em ImpulseResponse2}.
+
+\begin{itemize}
+\item
+The -r option specifies the number of levels $J$ in the decomposition.
+\item
+The -e option specifies the edge processing mode.
+\begin{itemize}
+\item
+0 : 0 extension (default).
+\item
+1 : periodization.
+\item
+2 : reflexion.
+\end{itemize}
+\item
+The -n option specifies the normalisation mode of the filter impulse responses' coefficients. If selected the coefficients $h_{k}$ and $\tilde{h_{k}}$ are multiplied by a constant so that their sum is $1.0$. If -n is not selected the coefficients are normalized so that their cross-correlation is 1.0 and their sums equal. 
+\end{itemize}
+
+
+\begin{thebibliography}{CDF}
+
+\bibitem[CDF]{kn:cdv} A. Cohen, I. Daubechies, J.C. Feauveau. 
+{\em Biorthogonal bases of compactly supported wavelets, } 
+Comm. pure and applied math. 45, pp 485-560, 1992.
+
+\end{thebibliography}
+
+
+
+
+
+\parindent 0.0cm 
+\parskip 0.0cm

@@ -1,0 +1,21 @@
+This module applies a morphological thresholding of extrema gray levels values
+in small areas.
+The critical size of the area in given by the minimal length of the level lines
+to keep (in pixels).
+This length threshold ($10$ by default) can be changed using the options
+\verb+-l+ and \verb+-L+.
+The option \verb+-l+ is related to the minima gray levels while the option
+\verb+-L+ is for the maxima.
+
+You don't get the same result if you begin by removing the gray levels maxima
+and then the gray levels minima (the default) or if you remove first the
+gray levels minima, and after the the gray levels maxima. 
+Select the option \verb+-i+ if you want this second order.
+This order of thresholding is important since, by removing a level
+line (and therefore a level set), close but non-connex level sets of same 
+value can be made connex so that the length of the new level line is upper
+the threshold, and the new level line will not be removed.
+
+Therefore, the gray levels average of the output image obtained by this
+module called without the option \verb+-i+ is always less than the 
+one obtained with the option \verb+-i+.

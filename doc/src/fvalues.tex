@@ -1,0 +1,24 @@
+Let $NC$={\em image\_in-$>$ncol} and $NL$={\em image\_in-$>$nrow}, then
+the image {\em image\_in} is defined by the set of pixels
+$\{ g(i,j)\, /\, i=0, \ldots, NC\, , j=0, \ldots, NL\}$.
+The module {\bf fvalues} computes the range of the function 
+$g\,: [0,NC-1]\times[0,NL-1]\longrightarrow {\rm I\!\!R}$, which
+gives all the different pixel values $g(i,j)\in{\rm I\!\!R}$,
+
+\smallskip
+
+The output is an {\tt fsignal} of size $N+1$, with float values 
+$\{v_0, v_1, \ldots, v_N\}$, where $N+1$ is the number of different
+values in {\em image\_in} ($1\leq N+1\leq NC*NL$).
+
+\smallskip
+
+The module uses a heap sort to put the values in increasing order
+and decreasing if the {\bf -i} flag is set.
+
+\smallskip
+
+The {\bf -m} option allows to save the multiplicities of the 
+corresponding values in {\em values} into the {\tt fsignal} 
+{\em multiplicity} and thus allows to compute the histogram
+of {\em image\_in}.

@@ -1,0 +1,16 @@
+Let $U$ be the input image, $(x_0,y_0)$ the input coordinates and
+$a,b$ the minimum and maximum value.
+The module computes the connex component of the following morpho-set $S$, such
+that the point $(x_0,y_0)$ belongs to it:
+\[
+S = \{ (x,y) / a \leq U(x,y) \leq b \}
+\]
+More precisely, the module returns the area (computed as the number of pixels)
+associated to the connex component of $S$.
+By default, the 4-connexity is considered. Use the option  \verb+-c+ 
+to get the 8-connexity.
+
+If the option \verb+-o+ is selected, the connex component is copied into
+the output image $O$.
+The option \verb+-s+ allows to stop the computation when the given area
+is reached.

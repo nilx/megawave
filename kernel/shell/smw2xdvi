@@ -1,0 +1,135 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave Macro ----------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="smw2xdvi"
+_Vers="2.03";
+_Date="1998-99";
+_Func="Display on the screen the documentation of a given module";
+_Auth="Jacques Froment";
+_Usage="[-adm] [-macro] module"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+# test entree
+if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+   . .mw2_help_lg_com
+fi
+
+# Defaults
+DOCDIR=$MY_MEGAWAVE2/doc
+SRCDIR=$MY_MEGAWAVE2/src
+macro=0
+opt=""
+
+while [ "$1" != "" ]
+do
+    case "$1" in
+
+# Identify a module as a macro
+    -macro) macro=1
+            shift
+ 	    ;;
+
+    -adm)  DOCDIR=$MEGAWAVE2/doc
+	   SRCDIR=$MEGAWAVE2/src
+	   opt="$opt -adm"
+           shift
+           ;;
+
+    -*)   . .mw2_help_lg_com;
+	  ;;
+
+    *)  module=$1
+        shift
+	;;
+
+    esac
+done
+
+# Automatically identifies a module as a macro when its name 
+# begins with a capital letter.
+mwisupper $module > /dev/null
+macro=$?
+
+module=`basename $module .doc`
+docmod=${DOCDIR}/obj/${module}.doc
+dmod=${DOCDIR}/obj/${module}.dvi
+tmod=${DOCDIR}/src/${module}.tex
+notdmod=0
+
+# If the doc of a public module has been compiled by a plain user
+if [ ! -f $dmod ]; then
+  dmod=$MY_MEGAWAVE2/tmp/megawave2_doc/user/${module}.dvi
+fi
+
+if [ ! -f $dmod ]; then
+# doc not already compiled : make dvi file
+  smw2latex $opt $module > /dev/null
+else
+
+# check if the sources (module, tex) exist
+
+ if [ $macro -eq 1 ]; then
+  smod=`find ${SRCDIR} -name "${module}" -print`
+ else
+  smod=`find ${SRCDIR} -name "${module}.c" -print`
+ fi
+ if [ "${smod}" = "" ] || [ ! -r ${smod} ]; then
+
+    echo "$_Prog : module '${module}' does no longer exists in ${SRCDIR} !" 1>&2
+    exit 1
+  fi
+  if [ ! -r ${tmod} ]; then
+    echo "$_Prog : tex file of '${module}' has been removed in ${DOCDIR}/src !" 1>&2
+    exit 1
+  fi
+  if [ ! -r ${docmod} ]; then
+    echo "$_Prog : doc file of '${module}' does not exist in ${DOCDIR}/obj !" 1>&2
+    exit 1
+  fi
+
+# check if the tex or the doc is newer than the dvi
+
+  tnewer=`find ${tmod} -newer $dmod`
+  docnewer=`find ${docmod} -newer $dmod`
+  if [ "$tnewer" = "$tmod" ] || [ "$docnewer" = "$docmod" ]; then
+# Yes, newer : try to recompile it.
+  echo "$_Prog : Warning ! Tex file or module has been modified more recently than dvi file." 1>&2
+  if [ -w $dmod ]; then
+    echo "$_Prog : Destroy old dvi file and compute the new one..." 1>&2   
+    rm -f $dmod
+  else
+    notdmod=1
+    echo "$_Prog : Compute a new one..." 1>&2   
+  fi
+  smw2latex $opt $module > /dev/null
+ fi
+fi
+
+dmod=${DOCDIR}/obj/${module}.dvi
+if [ ! -f $dmod ] || [ $notdmod -eq 1 ]; then
+# Check if the doc of a public module has been compiled by a plain user
+  dmod=$MY_MEGAWAVE2/tmp/megawave2_doc/user/${module}.dvi
+  if [ ! -f $dmod ]; then
+    echo "$_Prog : cannot generate dvi file. Abort." 1>&2
+    exit 1
+  fi
+fi
+
+xdvi -bg white -fg black -s 8 $dmod
+
+exit 0
+
+
+
+
+
+
+
+

@@ -1,0 +1,35 @@
+This module compresses a floating point image contained in file Image using 
+Shapiro's EZW algorithm applied to its orthogonal/biorthogonal wavelet 
+transform. 
+
+A wavelet transform is first applied to the image. If the -b option is 
+selected, then a biorthogonal transform is applied using the filter pair 
+contained in {\em ImpulseResponse} and {\em ImpulseResponse2}. 
+The edge processing is made by reflecting the image across the edges. 
+If the -b option is not selected, then an orthogonal transform 
+is performed using the filter contained in {\em ImpulseResponse} and, 
+if the -e option is selected, the special filters for edge processing 
+contained in {\em EdgeIR} (only for Daubechies wavelets). 
+If neither the -e and -b options are selected, then an orthogonal transform 
+is performed with periodization of the image. 
+
+The -n option enables to control the filters normalisation. It has the same 
+effect as in {\em owave1} (if an orthogonal transform is performed) or 
+{\em biowave1} (if a biorthogonal transform is performed) modules.
+
+The -r option specifies the number of level of wavelet transform (NLevel 
+must be a positive integer). 
+
+After the wavelet transform has been computed, it is compressed 
+with the EZW algorithm. It generates both a compressed representation, 
+which is stored in {\em Compress} (if the -o option is selected) and 
+a quantized wavelet transform, which can be reconstructed with 
+the data contained in {\em Compress}. A inverse wavelet transform is then 
+applied to the quantized wavelet transform in order to obtain the quantized 
+image which is stored in {\em Qimage} (if selected). This is the image 
+which can be reconstructed by applying the decompression module {\em fiezw} 
+to {\em Compress}. 
+
+The -w, -d, -R, -P and -s options have the same effect 
+as in {\em ezw} module.  
+

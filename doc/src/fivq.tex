@@ -1,0 +1,17 @@
+This module reconstructs an image from the compressed file Compress, 
+which has been generated using the vector quantization module {\em fvq}. 
+The reconstructed image is put in Result. 
+
+Result is reconstructed using the sequences of codebooks contained 
+in CodeBook1, CodeBook2, CodeBook3, CodeBook4, ResCodeBook1, 
+ResCodeBook2, ResCodeBook3, ResCodeBook4, ResResCodeBook1 and ResResCodeBook2 
+(see {\em fvq} module documentation for information on these codebooks). 
+The same codebooks should be used during the encoding ({\em fvq}) and 
+decoding ({\em fivq}) phases. Then Result should be identical 
+to the image QImage obtained with {\em fvq}. 
+
+
+The -r and -h options enable to specify the number of rows and columns 
+in the reconstructed image. They must be activated if the -h option has 
+been activated during the encoding process ({\em fvq}) because then this 
+information is not included in the header of Compress. 

@@ -1,0 +1,250 @@
+\def\vfp{\vspace{5mm}}
+\def\la{_\lambda }
+\def\ut& {\frac{\partial u}{\partial t}}
+\def\equi& {\Leftrightarrow}
+\def\fb& {\begin{equation}}
+\def\fe& {\end{equation}}
+\def\med{\hbox{med}}
+\def\real{I\!\!R}
+\def\entier{I\!\!N}
+\def\MONO {{\tt [Order Preserving] }}
+\def\Morp {{\tt [Morphology] }}
+\def\MORP {{\tt [Pure Morphology] }}
+\def\CONS {{\tt [Consistency] }}
+\def\CONV {{\tt [Convergence] }}
+\def\ECHE {{\tt [Scale invariance] }}
+\def\ROTA {{\tt [Isom. invariance] }}
+\def\AFFI {{\tt [Affine invariance] }}
+\def\skipaline {\vspace{4 mm}}
+
+{\center {\bf \underbar{ Multiscale Analysis of image.}}}
+
+The fundamental equation of image processing
+\fb&
+\hbox{AMSS} \qquad \frac{\partial u}{\partial t} = \vert Du \vert (curv(u))^{\frac{1}{3}} 
+\fe&
+$$ u(0,.) = u_0(.)$$
+has been discovered recently with existence proofs in the sense of viscosity
+solutions [AGLM-1-2-3]. 
+This is the unique model of multiscale analysis of image, affine invariant and morphological
+invariant.
+
+Another useful, less invariant (not affine invariant), but more easy for a numerical viewpoint,
+is the same equation without the power $1/3$ : ``the mean curvature motion".
+
+\fb&
+\hbox{MCM} \qquad
+\frac{\partial u}{\partial t} = \vert Du \vert (curv(u)) 
+\fe&
+
+
+The function {\bf amss} will process the model AMSS or the mean curvature motion, from $t = t_{begin}$ to $t = t_{end}$.
+
+
+\skipaline
+{\bf INPUTS of amss.}
+
+
+\begin{description}
+
+\item[ image] \ = {\bf u } is the original picture (type : fimage).
+
+\item[- p] 
+
+By default, the module process the mean curvature motion (MCM). 
+By selecting this option, the module process the AMSS model.
+
+\item[- l] \ lastScale =LS \\
+{\bf amss} will process the equation (1) or (2) until the normalised scale equals LS.
+
+The normalised scale is defined such
+ that a circle of radius LS in the original image, 
+disapears when the normalised scale = LS.
+Then the rescaling depends of the power of the curvature :
+
+If MCM (equation(2)), then $t_{end} = $ LS$^2 / 2$.
+
+If AMSS (equation(1)), then $t_{end} = $ LS$^\frac{4}{3} \times 3 /4$.
+
+If this option is not used LS$=2.0$.
+
+\item[- f] \ firstScale = FS \\
+This option allows to fix $t_{begin}$ non equal to zero. Suppose that, for example,
+we have already calculated the image $u$ at scale 2: $u_2$, and we want to have 
+it at scale 4: $u_4$.
+We can apply {\bf amss} to $u_2$. But, we must precise to {\bf amss} that $u_2$ 
+is already at scale 2, by using option
+-f 2. Then, the instruction : amss -f 2 -t 4 $u_2$ will process $u_4$.
+
+As for LS, FS is a normalized scale.
+
+If this option is not used, FS is 0.
+
+\item[ -s] \ OutPutStep \\
+
+OutPutStep is the scale interval between two diffusions (default is $0.1$):
+the module will process the image at each normalised scale : 
+k $\times$ OutPutScale + FS, until LS (k $\in \entier$).
+
+\item[ -S] \ Step \\
+ Step is the interval of scale for the discretization of the equations.
+$$\frac{\partial u}{\partial t} = \frac{u(.,t+step) - u(.,t)}{step} $$
+It must be a float number and nonnegative (default value is $0.1$).
+
+For AMSS model Step must be lower than 0.1, for the mean curvature motion Step must 
+be lower than 0.5. Then, \par
+
+If MCM,  then Step must be $\leq$ 0.1. 
+
+If AMSS,  then Step must be $\leq$ 0.5.
+
+
+The number of iterations needed by {\bf amss} is calculated as following :
+If MCM
+$$ \hbox{Number of iterations} = \frac{LS^2 - FS^2}{2*Step}$$
+
+If AMSS
+$$ \hbox{Number of iterations} =  \frac{3}{4}\frac{ LS^\frac{4}{3} - FS^\frac{4}{3}}{Step}
+$$
+
+\item[ -i]
+
+By default, the module will process an isotropic diffusion 
+when the estimated gradient is less than {\it MinGrad}. 
+This can be useful to avoid a problem of our discretization :
+suppose the image is a black point on white background, then our estimated
+gradient by centered finite differences is equal to zero at this point. 
+Then, it never disappears.
+
+The \verb+-i+ flag cancels this isotropic diffusion : 
+nothing will be done at points with gradient norm less than {\it MinGrad}.
+
+
+
+\end{description}
+
+
+{\bf OUTPUTS of amss.}
+
+Several outputs can be selected among diffusion image, gradient and curvature,
+ in the Fimage type (for last scale) or Cmovie type 
+(for all intermediate scales). Notice that for Cmovie type, precision
+may be lost since a conversion from floating point values to char 
+values is necessary. For the curvature, a normalization $k\mapsto 100k+128$
+is performed, but it can be cancelled using the \verb+-n+ option.
+
+\vskip 3cm
+
+{\bf \Large Numerical scheme.}
+
+Equations (1) and (2) verify the following properties 
+\begin{itemize}
+\item \MONO, because they both are parabolic equations.
+\item \Morp, the analysis commute with a monotonous rescaling of the grey level scale.
+\item \ECHE, the analysis commute with zoom.
+\item \ROTA, the analysis commute with isometry.
+\item \AFFI, for only the equation (1) AMSS model.
+\end{itemize}
+
+The scheme is based on a diffusive interpretation of the equations.
+Indeed, if $\xi$ is a unit vector, such that $\nabla u . \xi = 0$,
+and $u_{\xi\xi}$ the second derivative of u in the direction $\xi$,
+we have :
+$$ (2) \equi& \ut& = u_{\xi\xi} $$
+This formulation yields an anisotropic diffusion equation. Anisotropic,
+because we diffuse only in one direction $\xi$, depending on the gradient.
+(compare with the isotropic diffusion ($\ut& = \Delta u$) i.e. the
+heat equation).
+
+Equation (1) can be rewritten as
+$ \ut& = ( \nabla u )^{\frac{2}{3}} (u_{\xi\xi})^{\frac{1}{3}} $,
+where $( \nabla u )^{\frac{2}{3}}$ is understood as the speed of the diffusion.
+
+
+The schemes which we wish to discuss compute $u_{\xi\xi}$ by a quasilinear formula in the sense defined above.
+
+\skipaline
+In order to have consistency, we must find $\lambda_0 , \lambda_1 , \lambda_2 ,
+\lambda_3, \lambda_4$, such that :
+\fb& \label{KKK}
+u_{\xi\xi} = \frac{1}{\Delta x^2} ( -4 \lambda_0 u_{i,j} + \lambda_1 (u_{i+1,j}
++u_{i-1,j}) + \lambda_2 (u_{i,j+1} +u_{i,j-1})
+\fe&
+$$
+    \qquad + \lambda_3 (u_{i-1,j-1} +u_{i+1,j+1}) +\lambda_4 (u_{i-1,j+1} +u_{i+
+1,j-1}))
++o(1)
+$$
+
+\CONS implies
+
+$$
+\begin{array}{l}
+ \lambda_1(\theta) = 2 \lambda_0(\theta) - \sin^2\theta \\
+ \lambda_2(\theta) = 2 \lambda_0(\theta) - \cos^2\theta \\
+ \lambda_3(\theta) = - \lambda_0(\theta) + 0.5(\sin \theta \cos \theta + 1) \\
+ \lambda_4(\theta) = - \lambda_0(\theta) + 0.5(-\sin \theta \cos \theta + 1) 
+ \end{array}
+$$
+We choose for several reasons (see [CEGLM]):
+$$ \lambda_0(\theta) = 0.5 - \cos^2(\theta) +\cos^4(\theta) $$
+
+We deduce the others $\lambda$'s:
+
+$$
+\left\{
+\begin{array}{l}
+-4 \lambda_0 = -2 + 4 \cos^2(\theta)\sin^2(\theta) \\
+\lambda_1 = \cos^2(\theta) (\cos^2(\theta) - \sin^2(\theta)) \\
+\lambda_2 = \sin^2(\theta) (\sin^2(\theta) - \cos^2(\theta)) \\
+\lambda_3 = \cos^2(\theta)\sin^2(\theta) + 0.5 \sin(\theta)\cos(\theta) \\
+\lambda_4 = \cos^2(\theta)\sin^2(\theta) - 0.5 \sin(\theta)\cos(\theta) \\
+\end{array}
+\right.
+$$
+
+
+Then our estimation of $u_{\xi\xi}$, is exact for all the linear combinations of the polynom
+ials
+ of degree 0,1,2 and 3, plus the polynomial :$(x^2+y^2)(x \sin\theta - y \cos\theta ) ^2$. 
+Of course, the calculus can be false for the other polynomials.
+
+{\bf algorithm.}
+
+
+  Our algorithm is following:
+
+
+\begin {itemize}
+
+\item We estimate the gradient direction $\theta$, and $\xi$ the orthogonal direction
+using the 9 points of the stencil 3x3.
+
+\item Computation of $curv(u)$ as above.
+
+\item We proceed, in case of equation
+
+\end {itemize}
+
+$$ \begin{array}{l} \hbox{(2) : } \qquad u^{n+1}(x) = u^{n}(x) + \Delta t u^n_{\xi\xi}(x)
+\\ \hbox{(1) : } \qquad u^{n+1}(x) =u^{n}(x) +
+ \Delta t (Du)^{2/3} (u^n_{\xi\xi}(x))^{1/3} \end{array} $$
+
+In the case of (2) i.e. mean curvature motion, we must choose $\Delta t \leq 0.5 (\Delta x)^2$
+ in order to have some stability.
+Whereas for (1) i.e. AMSS model , the maximum value of $\Delta t$ cannot be imposed
+theoretically.
+
+
+This scheme verifies \CONS, because it is exact at order 2.
+All the geometrical properties (\ROTA, \ECHE, ...) are true for
+all the polynomials mentionned above. For other functions, we have these properties only
+ for the affine transforms which leave the grid invariant.
+
+\underbar{But, the scheme is not morphological.}
+And, it does not satisfy \MONO. However, it is experimentally
+quite stable.
+In fact, we do not expect to have \MONO and \CONS in such a quasilinear scheme
+with a fixed stencil. If you impose both, as noticed in [ALM] and proved 
+by [CrLi], you do not limit the size of the stencil.
+ 

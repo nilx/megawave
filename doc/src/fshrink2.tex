@@ -1,0 +1,9 @@
+This module is required for the 2D Fast Fourier transform ({\sf fft2d}).
+It extracts of an input image its largest centered part which dimensions 
+are power of $2$.
+For example, an original image of size $600 \times 300$ will be shrinked to 
+size $512 \times 256$, by extracting the part $[44,555]\times [22,277]$.
+
+\vskip 0.5cm
+
+NB: Calling this C-subroutine with $out=in$ is nonsense.

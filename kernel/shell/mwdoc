@@ -1,0 +1,74 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave Macro ----------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="mwdoc"
+_Vers="1.01";
+_Date="1999";
+_Func="Enter the MegaWave2 documentation";
+_Auth="Jacques Froment";
+_Usage="[<name> || L || 1 || 2 || 3]"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+if [ $# -ne 1 ]; then
+ echo " "
+ echo "> Type the MegaWave2 documentation you want to display <"
+ echo " "
+ echo "<name> : Name of a module or of a user's macro"
+ echo "L      : List of all modules and user's macros "
+ echo "1      : Vol.1  User's Guide"
+ echo "2      : Vol.2  System Library"
+ echo "3      : Vol.3  User's Modules and Macros Library"
+ echo " "
+ mwechon ">"
+ read X
+else
+ X=$1 
+fi
+
+if [ "$X" = "" ]; then
+  exit 0
+fi
+ 
+if [ "$X" = "1" ] || [ "$X" = "2" ] || [ "$X" = "3" ]; then
+
+  guid=$MEGAWAVE2/doc/guid$X.dvi
+  if [ ! -r ${guid} ]; then
+    echo "$_Prog : no such guide available !" 1>&2
+    exit 1  
+  fi
+  xdvi -bg white -fg black -s 8 $guid
+  exit 0
+fi
+
+if [ "$X" = "l" ] || [ "$X" = "L" ]; then
+  echo ""
+  echo "----- OWN modules and user's macros -----"
+  mwmodlist $MY_MEGAWAVE2
+  echo ""
+  echo "----- PUBLIC modules and user's macros -----"
+  mwmodlist $MEGAWAVE2
+  exit 0
+fi
+
+tmod=${X}.tex
+# Defaults
+SRCDIR=$MY_MEGAWAVE2/doc/src
+opt=""
+
+if [ ! -r ${SRCDIR}/${tmod} ]; then
+  SRCDIR=$MEGAWAVE2/doc/src
+  opt="-adm"
+  if [ ! -r ${SRCDIR}/${tmod} ]; then
+    echo "$_Prog : no such documented module !" 1>&2
+    exit 1
+  fi
+fi
+smw2xdvi $opt $X
+

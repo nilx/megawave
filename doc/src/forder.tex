@@ -1,0 +1,21 @@
+This basic module applies on the input image an order filtering defined
+in a 3x3 window.
+Depending on the level $e$ chosen, one can compute an erosion, a dilation or a median filtering.
+
+The algorithm uses the qsort() function in order to 
+sort in an ascending list all the pixels included in the
+3*3 window around the considered pixel.
+The level $e$ corresponds to the index of the pixels 
+in this sorted list, for which the value is put in the 
+output image.
+For example, if $e=1$ then the module dilates the image, if $e=9$ it erodes the image.
+Between those two extreme values, if $e=5$ then a dicrete median is applied. 
+The median is usually used as a denoising operator.
+
+From this module, it is possible to compute an opening by doing an erosion followed by a dilatation.
+If doing a dilatation followed by an erosion, a closing is computed.
+
+These morphological operations can be applied 
+on larger or more complex neighborhoods
+with the modules \verb+erosion+, \verb+median+ and 
+\verb+opening+.

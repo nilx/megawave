@@ -1,0 +1,29 @@
+This module returns the type of junction of the given point $(x_0,y_0)$
+of the input cimage $U$. 
+It returns $0$ if this point is not a junction, $1$ if it is a T-junction
+and $2$ if it is a X-junction.
+For a description of the Junction Detection Algorithm, please
+see~\cite{KP}.
+
+The option \verb+-a+ allows to choose the area threshold associated
+to the detection, while the option \verb+-q+ is related to the quantization 
+threshold. Those thresholds are used to avoid false detections.
+
+The options \verb+-l+ and \verb+-m+ allow to get the $\lambda_1$ and
+$\mu_1$ values computed by the algorithm, when  $(x_0,y_0)$ is a junction.
+The borders of the two significant level sets 
+$L_{\lambda_1} = \left\{(x,y) /U(x,y) \leq \lambda_1 \right\}$ and 
+$M_{\mu_1} = \left\{(x,y) /U(x,y) \geq \mu_1 \right\}$ are going 
+through the junction.
+
+The options \verb+-x+, \verb+-y+, \verb+-X+ and \verb+-Y+ allow to get
+the points $(x_{\lambda_1}, y_{\lambda_1})$ 
+and $(x_{\mu_1}, y_{\mu_1})$ of the
+four neighbour points of the junction, so that 
+$(x_{\lambda_1}, y_{\lambda_1})$ belongs to the border of 
+$L_{\lambda_1}$ and  $(x_{\mu_1}, y_{\mu_1})$ to $M_{\mu_1}$.
+
+\begin{thebibliography}{Dau1}
+\bibitem{KP} V.Caselles, B.Coll, J.M. Morel.
+{\em A Kanizsa Programme}, Preprint CEREMADE.
+\end{thebibliography}

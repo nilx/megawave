@@ -1,0 +1,10 @@
+This macro clears the SR (Shape Recognition) database and checks
+the \verb+$MY_MEGAWAVE2/tmp+ directory (this one is created if you
+don't have it already). 
+
+The use of the SR macros implies to build a database of shapes, which
+is located in the \verb+$BASEDIR+ directory (if you don't set this
+variables, it will be set to \verb+$MY_MEGAWAVE2/tmp/SR_BASE+).
+To build the database, call the macro \verb+PUT_TO_BASE+ with the
+images you want to put in.
+

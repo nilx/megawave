@@ -1,0 +1,49 @@
+This module applies the so-called grain filter to an image \cite{Masnou}.
+This is a filter close to the extrema killer of Vincent \cite{Vincent}, with
+one major difference: it is self-dual, meaning that it commutes with the
+negative operator,
+$$
+T(-u) = -T(u).
+$$
+Its other properties are mainly that it is morphological, affine invariant,
+idempotent,
+it does not destroy T-junctions and does not move level lines. It is a
+semi-local operator, but not local (no associated PDE).
+As it is a morphological filter, it can be written as an inf-sup, and the
+sup-inf version is the same (it is simultaneously an opening and a closing).
+
+This filter removes the shapes of an image (see module \verb+flst+) that
+have a too small area. So this requires the datum of a threshold of area, this
+area could be interpreted as the scale to define a scale-space
+\cite{ss99,fllt_theory}.
+It is a good example of a very simple use of the modules \verb+flst+ and
+\verb+flst_recontruct+.
+
+\begin{thebibliography}{9}
+\bibitem{Vincent}
+Vincent, L.:
+Grayscale Area Openings and Closings, Their Efficient
+  Implementation and Applications,
+Proc. of $1^{st}$ Workshop on Math. Morphology and its Appl.
+  to Signal Proc., J.~Serra and Ph. Salembrier, Eds. (1993) 22--27
+                                                                               \bibitem{Masnou}
+Masnou, S., Morel, J.M.:
+Image Restoration Involving Connectedness,
+Proc. of the $6^{th}$ Int. Workshop on Digital I.P. and Comp.
+  Graphics, SPIE {\bf 3346}, Vienna, Austria (1998)
+                                                                               \bibitem{fllt} Monasse, P., Guichard, F.:~
+Fast Computation of a Contrast-Invariant Image Representation,
+to appear in IEEE Trans. on Image Processing,
+Preprint CMLA 9815, available from {\texttt
+http://www.cmla.ens-cachan.fr/index.html} (1998)
+
+\bibitem{ss99} Monasse, P., Guichard, F.:~
+Scale-Space from a Level Lines Tree,
+Proc. of 2nd Int. Conf. on Scale-Space Theories in Computer
+Vision, Corfu, Greece, LNCS 1682, pp. 175--186.
+
+\bibitem{fllt_theory}
+Monasse, P.:
+An Inclusion Tree Describing the Topological Structure of an Image,
+in preparation.
+\end{thebibliography}

@@ -1,0 +1,118 @@
+This function generates a level set out of {\em fimage}. More precisely
+the program segments the original image into two classes of regions.
+First the regions which have gray level lower or equal than {\em level},
+the other regions are those with gray level above {\em level}.
+
+In this application we consider the level set $L$ to be given by
+$$ L=\{(x,y) \;/\; g(x,y)\leq \mbox{\em level} \}$$
+where $g$ is the original picture.
+
+Different possibilities to view the result are given. Either one wants 
+the boundary of the level set, the {\bf -b} option draws the boundary set
+in a {\tt cimage} {\em boundary} and {\bf -p} writes the coordinates of the
+contours into {\tt fpolygons} {\em polygons}. Or one wants an image 
+of the level set, then with {\bf -B} we obtain a black and white picture
+(the pixels of $L$ being black) and with {\bf -G} the pixels of $L$ will
+be drawn in color $\sup\{g(x,y)\;/\; (x,y)\in L\}$ and the other pixels
+will be in color $\sup\{g(x,y)\;/\; (x,y)\not\in L\}$. For example you
+want the {\em f\_levelset} for {\em level}=127 of an image which has only
+gray values 0,20,50,100,200 and 220. Then the set $L$ will be drawn with
+gray 100 and the other pixels with gray 220. 
+
+Notice that $L$ is made of
+disjoined (in the 4-neighborhood sense) connected sets 
+which thus have \underline{closed} Jordan curves as boundaries. 
+
+Let us give some more details about the {\bf -p} option. The file {\em polygons}
+will be in the {\tt MW2}-format {\tt fpolygons}. The coordinates of the
+boundary are {\tt floats} as they always have a decimal part of 0.5\ .
+In figure \ref{fig_point_coord} we represent a image where
+the pixels are represented by squares (white or gray). The level set 
+(gray squares) is bounded by its border, the black dots ($\bullet$) which are
+drawn are the points  you will find in the {\tt fpolygons} structure,
+the coordinates can be read on the axes drawn above and besides the ``pixels''.
+
+
+%--------------------------
+\begin{figure}[htb]
+  \begin{center}
+  \begin{picture}(170,160)(-2,-2)
+  \thicklines
+     \multiput(0,0)(0,30){5}{\multiput(-8,-8)(30,0){6}{\framebox(16,16)}}
+     \multiput(15,15)(0,30){4}{\circle*{4}}
+     \multiput(75,15)(30,0){3}{\multiput(0,0)(0,30){4}{\circle*{4}}} 
+     \multiput(45,15)(0,90){2}{\circle*{4}}
+     \multiput(-27,0)(0,30){5}{\line(1,0){7}}
+     \multiput(0,145)(30,0){6}{\line(0,-1){7}}
+     \multiput(-27,15)(0,30){4}{\line(1,0){3}}
+     \multiput(15,145)(30,0){5}{\line(0,-1){3}}
+  \thinlines
+     \multiput(0,0)(30,0){2}{
+        \multiput(22,22)(0,30){3}{
+         	\put(0,0){\line(1,1){16}}
+		\multiput(0,4)(4,-4){2}{\line(1,1){12}}
+         	\put(0,16){\line(1,-1){16}}
+		\multiput(0,12)(4,4){2}{\line(1,-1){12}}
+	        }
+     }
+     \multiput(112,22)(0,30){3}{
+       	\put(0,0){\line(1,1){16}}
+	\multiput(0,4)(4,-4){2}{\line(1,1){12}}
+       	\put(0,16){\line(1,-1){16}}
+	\multiput(0,12)(4,4){2}{\line(1,-1){12}}
+     }
+     \multiput(82,22)(0,60){2}{
+       	\put(0,0){\line(1,1){16}}
+	\multiput(0,4)(4,-4){2}{\line(1,1){12}}
+       	\put(0,16){\line(1,-1){16}}
+	\multiput(0,12)(4,4){2}{\line(1,-1){12}}
+     }
+     \multiput(25,15)(0,90){2}{\multiput(0,0)(30,0){4}{\line(1,0){10}}}
+     \multiput(15,25)(120,0){2}{\multiput(0,0)(0,30){3}{\line(0,1){10}}}
+     \multiput(85,45)(0,30){2}{\line(1,0){10}}
+     \multiput(75,55)(30,0){2}{\line(0,1){10}}
+     \put(34,105){\vector(-1,0){6}}
+     \put(86,15){\vector(1,0){6}}
+     \put(94,45){\vector(-1,0){6}}
+     \multiput(-38,120)(38,36){2}{\makebox(0,0){\tiny 0}}
+     \multiput(-38,105)(53,51){2}{\makebox(0,0){\tiny 0.5}}
+     \multiput(-38,90)(68,66){2}{\makebox(0,0){\tiny 1}}
+  \end{picture}
+  \end{center}
+  \caption{$6\times 5$ pixels image.}
+  \label{fig_point_coord}
+\end{figure}
+%----------------
+
+
+Each {\tt fpolygon} has two channels of 
+information, the first is the {\em level}, the second is a signed label.
+This label ({\tt int}) shows which contours belong to the same set, if the
+label is positive the current contour is the `outer' boundary of the set
+(thus it is unique),
+if the label is negative the current contour is `inside' the set (it is
+a hole). For example the image of figure \ref{fig_point_coord} will 
+yield one {\tt fpolygon} labeled 1 with 14 points and one {\tt fpolygon},
+ labeled -1, made out of 4 points only.
+
+The contour is oriented (the pixels are ordered)
+ such that the set is always on the \underline{left}
+ if you follow the list of points.
+
+For example lets say that the result in {\em polygons} is made
+out of  5 {\tt fpolygon} elements with labels 1,-1,2,-2,-2. This 
+means that there are 2 connected sets which compose $L$, one having
+one hole the other one two. There is no information available
+whether  set 1 is in a hole of set 2, or set 2 in the hole of set 1, or if
+both sets are completely apart. 
+
+Notice that if a set has just negative
+labeled contours then it is the background (as the image boundary is
+not coded).
+
+Currently there are a ``few'' restrictions for the use of the {\bf -p} option.
+The result of the segmentation should just contain regions which
+have only boundaries made out of one (1!) connected component. Also
+should a set of $L$ either be the background or not touch at all the
+boundary of the image. If one of these cases occurs the program will exit
+the construction of the {\em polygons} file.

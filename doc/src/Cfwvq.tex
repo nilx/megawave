@@ -1,0 +1,34 @@
+This macro compresses a RGB color image using a vector quantization 
+algorithm applied to the orthogonal/biorthogonal wavelet coefficients. 
+It is based on the {\em fwvq} module (which is applied separately 
+to each channel), and is simpler to use. 
+
+It works exactly in the same way that the {\em Fwvq} macro for graylevel 
+images, except that there is a possibility to use different codebooks 
+for the red, green and blue channels. If the optional argument 
+{\em codebook\_green} and {\em codebook\_blue} are activated, 
+then the codebook sets whose prefix is {\em codebook\_red} are used 
+to compress the red channel, the codebook sets whose prefix is 
+{\em codebook\_green} are used to compress the green channel and 
+the codebook sets whose prefix is {\em codebook\_blue} are used 
+to compress the blue channel. Otherwise the same codebook sets whose prefix 
+is {\em codebook\_red} are used to compress all three red, green and 
+blue channels. 
+
+The target rate (if -R option is selected) is the same for red, green and 
+blue channels. Notice that {\em Rate} is a target bit rate per point {\bf and} 
+per channel. Three separate compressed files are generated 
+(*\_{\em Rate}r.comp, *\_{\em Rate}g.comp and *\_{\em Rate}b.comp 
+if the input image file is *.rim or *.img). 
+The quantized image is put in *\_{\em Rate}q.rim. 
+
+Like in {\em Fwvq} the dimensions of the image should have a minimum 
+of factor 2 in their decomposition in prime numbers. If not then a part of the 
+image as large as possible is extracted and having the required 
+number of factor 2. 
+
+Notice that {\em codebook\_red}, {\em codebook\_green} 
+and {\em codebook\_blue} are prefixes for one channel codebook sets 
+which may be simply generated with {\em Fwlbg\_adap} macro. 
+One must however first extract the channel images of the training color 
+images using the {\em cfcolor2channels} module.

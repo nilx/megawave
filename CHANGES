@@ -1,0 +1,163 @@
+			----------------------------
+			MegaWave2 : Revision History
+			----------------------------
+
+Version 2.00	04/02/2000
+============
+
+- No more registration procedure to get a free license : with versions 2.x you 
+  do not have any registration form to send.
+
+- Full source code given : The sources of MegaWave2 kernel (preprocessor and 
+  libraries) are given. Therefore, you are now able to modify the kernel, for 
+  example to adapt it on a new machine architecture.
+
+- No more pre-compiled kernels : the local MegaWave2 administrator has to compile 
+  the kernel for its machine architecture by himself.
+
+- MegaWave2 has been adapted for Linux on i386.
+
+- The modules library has deeply changed : new modules appear, former modules have 
+  been fully checked and some of them have been renamed. Group hierarchy and name
+  has changed. See guide #3 "User's Modules and Macros Library".
+
+- The doc directory structure has changed. Now put the documentation you write in
+  the src subdirectory, without creating subdirectories for groups.
+  See guide #1 "User's Guide" Section "Documentation".
+
+- The data directory structure has changed, together with the search path convention.
+  A PUBLIC subdirectory has been created where all public data not specifically 
+  associated to some modules have to be put. To resolve an input filename, a module
+  now searches inside all subdirectories of data.
+  See guide #2 "System Library" Section "Search path convention".
+
+- System's macros have been enhanced. For example, access to the documentation has
+  been simplified (see macro mwdoc).
+
+- System library update.
+
+
+Version 1.05	07/05/97
+============
+
+- Add binaries and libraries for Silicon Graphics SGI IRIX 5.x.
+
+- System library update: 
+	
+	New structures have been added, in order to implement morphological 
+		data types and associated algorithms. This is a consequence of some
+		current research subjects we develop, based on morphological image
+		processing. These structures are not currently documented, and the
+		morphological modules using them are not currently furnished. This is
+		because they are still in development and subject to important changes.
+	PGM (portable graymap file format) standard is now recognized to load/save 
+		gray levels images, both in the rawbits version (PGMR) and in the 
+		Ascii version (PGMA).
+	Another alternative is given to access to the pixel of an image, using a 
+		bi-dimensional tab (see the guide #1 and the module demo/fadd4).
+
+- Module update:
+	In the "common/float_image" group, modules have been put to perform
+		some linear filtering operations, as the classical Canny-Deriche's
+		edge detector.
+	In the "seg" group, modules to perform texture discrimination and 
+		segmentation have been added.
+
+- Revision of the guides #1, #2 and #3 to reflect the changes (except for the
+	morphological functions, not documented in the guide #2).
+
+
+Version 1.04	03/06/96
+============
+
+- Solaris users : we apologize that the libraries for Sparc SunOS 5.xx 
+	(Solaris) could not be included with this version (just because we 
+	do not have anymore access to such a system). On the other hand, we 
+	expect to distribute a Silicon Graphics version by the end of 
+	summer 96.
+
+- User's macro :
+	They are now managed in the same way than modules. It means that
+	the location of the user's macro has changed (to be the same
+	than modules, into a group) and that each user's macro has to
+	be documented.
+
+- System library update: 
+	dynamic (shared) library is now given: this save a lot of space
+		disk since the system library is no more duplicated into
+		each executable module;
+	TIFF format may be recognized to load/save images. This assumes you
+		have the TIFF library (libtiff);
+	change in the file formats of types "MW2_CURVE" and "MW2_CURVES"
+		(internal formats "Curve" and "Curves"): Now the (x,y)
+		coordinates are recorded using integers (int) instead of
+                short integers (short). There is no compatibility between
+                the old and new formats;
+	change in some system's macros to reflect the way user's macros
+		are now managed.
+
+- Module update:
+	add group "morpho" where are put the mathematical morphology
+		algorithms derived from PDE's methods. 
+	add group "shape_recognition" which allows to recognize an image
+		among a database of shapes.
+	add 2D-FFT and related modules, including "texturization" by
+		phase randomization (group common/float_image).
+
+- Revision of the guides #1, #2 and #3 to reflect the changes.
+
+Version 1.03	25/07/95
+============
+
+- System library update: 
+	important changes in the Wdevice library, needed by the future
+		XMegaWave2 environment; see the new version of the display
+		modules (e.g. cview, cmview, splot, ...) and the new display
+		demo module called demo/view_demo;
+	add the memory types: Fcurve, Fcurves (Float Curves) and
+		Fpolygon, FPolygons (Float Polygons);
+	new options for cmw2 and cmw2_all, add dependencies list for modules;
+
+- Module update:
+	add various basic modules in the common group;
+	add the main modules PDE/mam and seg/one_levelset as well as
+		various modules in the new group "regular" (pattern 
+		recognition by regularity estimation);
+	changes in the display modules (needed by the changes in Wdevice):
+		cview, ccview, cmview (new name for cmovie), ccmview
+		(new name for ccmovie), splot, readpoly;
+	
+- Revision of the guides #1, #2 and #3 to reflect the changes.
+
+
+Version 1.02	17/03/95
+============
+
+- Add binaries for Sun sparc SunOS 5.xx (Solaris):
+	now the macro "mwarch" has to be called with the option "-s".
+- System library update: 
+	add the file type "PS" (PostScript) for images;
+	add the memory types "ccmovie" and "cfmovie" for color movies;
+- Modules update:
+	fix slight bugs in PDE/extgc, PDE/amss and in owave;
+        add modules for anisotropic diffusion of color images (in PDE);
+- Revision of the guides #1, #2 and #3 to reflect the changes.
+
+
+Version 1.01	23/01/95
+============
+
+Fix bugs in the "owave" group's modules (doc revision will come later).
+
+
+Version 1.00	20/12/94
+============
+
+Initial release.
+
+
+
+
+
+
+

@@ -1,0 +1,22 @@
+Like the {\sf fft2d} module, this one computes the Fast Fourier Transform 
+of a 2D input, given by two Fimages (real and imaginary parts). However,
+it returns the Fourier Transform in polar coordinates, meaning the modulus
+and the phase (in $[-\pi,\pi]$) as Fimages. 
+
+\vskip 0.3cm
+
+Since FFT only applies
+to images which dimensions are power of $2$, the input will be shrinked 
+to proper dimensions if necessary using the {\sf fshrink2} module. In this
+case a warning message will be produced.
+
+\vskip 0.3cm
+
+Several special cases can occur when you use this module as a 
+C subroutine~:
+\begin{itemize}
+\item If $in\_im=NULL$, the input imaginary part is assumed to be zero 
+everywhere.
+\item If $out\_rho=NULL$ or $out\_theta=NULL$, the module assumes that you
+don't need the corresponding output.
+\end{itemize}

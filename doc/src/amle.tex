@@ -1,0 +1,34 @@
+This module implements the numerical scheme associated to the
+AMLE model (absolutely minimizing Lipschitz interpolant).
+
+The following evolution problem
+\[
+\frac{\delta u}{\delta t} = D^2 u \left( \frac{Du}{\mid Du \mid }, \frac{Du}{\mid Du \mid } \right) \; \mbox{ with } u(0,x)=u_0(x)
+\]
+is solved using an implicit Euler scheme.
+
+The input image corresponds to the initial function $u_0$, and the output
+image to the solution $u(t,x)$ at the time $t = n \times h_t$ where
+$n$ is the number of iterations and $h_t$ the time increment.
+
+In practice, the input image must have the value $0$ at pixel locations where
+no initial data have to be set (e.g. unknown values) and non $0$ values
+to set initial data. 
+The output image has the same values that the input image for the
+pixel locations set as initial data. For the other locations (set to $0$ in
+the input image), the diffusion process of AMLE interpolates a new value.
+
+You may use the module \verb+amle_init+ to create the input image
+from an original image, this last one being typically a quantized image:
+the AMLE model will reconstuct (or ``dequantize'') the image by
+interpolating the missing level lines.
+
+It is possible to make the interpolation faster by setting values closed
+to the reconstructed values at pixel locations which do not correspond
+to the initial data (i.e. at locations set to $0$ in the input image).
+To do so, include the image of the estimated values using the \verb+-i+
+option.
+In practice, the estimated image is the quantized image put in the input
+of the \verb+amle_init+ module.
+
+

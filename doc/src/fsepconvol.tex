@@ -1,0 +1,9 @@
+This modules allows to quickly apply a 2D-convolution to a Fimage in the 
+case of a separable kernel,
+$$K(x,y)=xker(x)\cdot yker(y).$$
+The kernel $K$ can be given with $xker$ and $yker$ (Fsignal), or 
+chosen between a constant kernel or a Gaussian kernel, both
+with total mass $1$. The boundary assumption is that the initial
+image is periodic. See module \verb+fconvol+ for general
+convolution with non-separable 2D kernels.
+

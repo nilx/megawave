@@ -1,0 +1,14 @@
+This module performs an Euclidean transformation (zoom, rotation and
+translation) on a set of Fcurves. The needed
+parameters are the zoom factor $zoom$, the rotation angle
+$angle$, and the translation vector $(x,y)$. To
+each point of the original Fcurves the transformation
+$$\left( \begin{array}{c} X \\ Y \end{array} \right) \quad
+\mapsto \quad 
+\left( \begin{array}{cc} zoom \cdot \cos(\theta) & - zoom \cdot\sin(\theta) \\
+zoom \cdot \sin(\theta) & \;\;\;zoom\cdot\cos(\theta) \\ \end{array} \right) \;
+\left( \begin{array}{c} X \\ Y \end{array} \right) \;+\;
+\left( \begin{array}{c} x \\ y  \end{array} \right)$$
+is applied,
+where $\displaystyle \theta = angle \cdot \frac{\pi}{180}$.
+

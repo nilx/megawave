@@ -1,0 +1,13 @@
+{\em precond2d} performs the preconditionning (resp. unpreconditionning) of the first and last columns and lines of a digitized image, before (resp. after) an orthogonal wavelet decomposition or reconstruction 
+with adapted filters for edge coefficients. 
+This transformation is separable, i.e. the corresponding one-dimensional transform is applied successively to each line and each column of the image. 
+See {\em precond1d} module's documentation for a descripton of the one-dimensional algorithm. 
+
+The sample values of the input image are read in the file {\em Image}.
+
+The sample values of the output (un)preconditionned signal are stored in the file {\em PrecImage}.
+
+The coefficients of the preconditionning matrices or filters are read in the file {\em FicEdgeRi}. This file contains also the coefficients of the edge adapted filters for the wavelet decomposition.
+
+The -i option specifies the inverse transformation.
+

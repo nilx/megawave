@@ -1,0 +1,28 @@
+Draw all the {\tt morpho\_lines} of {\em m\_image} in
+black (0) on a white background (255) into  the
+{\tt cimage} {\em image\_out}.
+
+If the option \verb+-o movie+ is selected, the {\tt morpho\_lines}
+are drawn is the {\tt Cmovie} \verb+movie+ so that an image number
+$n$ contains the {\tt morpho\_lines} associated to the $n$-th 
+gray level. Warning : this option may cause huge data output.
+
+If the option \verb+-a bimage+ is selected, the background of the
+image output is made by the zoomed image \verb+bimage+, this last
+one being the original bitmap image used to compute the morpho\_lines
+(in that case, it should be a Cimage).
+
+If the option \verb+-b+ is selected, the image output has two columns
+and to rows more than the size indicated below. This is usefull to
+draw the border image. 
+
+\smallskip
+
+If {\em m\_image} is of size $NC\times NL$, 
+the output {\em image\_out} will be of size $(2NC-1)(2NL-1)$.\\
+Indeed the boundary between regions is drawn ``between'' the pixels,
+thus we have to add $NC-1$ columns and $NL-1$ lines to be able
+to draw the boundaries. \\
+The ``corners'' obtained in this way are the correct locations
+of the vertices of a {\tt morpho\_line} (see the figure in
+{\bf ml\_extract}).

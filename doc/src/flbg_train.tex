@@ -1,0 +1,157 @@
+This module generates a codebook (or a set of codebooks) adapted to a given 
+training set of vectors using the LBG algorithm. The training set is read 
+in the {\em TrainSet} file which must have been created with 
+the {\em mk\_trainset} module (see {\em mk\_trainset} documentation for 
+further details). The generated codebook is stored in the {\em CodeBook} 
+file. It can be used for example for the vector quantization of images 
+with the {\em fvq} module. 
+
+The LBG or generalized Lloyd's algorithm is a two step iterative algorithm 
+which is meant to adapt an initial codebook to a given probability 
+density function or a training set of vectors (see \cite{kn:lbg}, 
+\cite{kn:gg}). We are only considering here the training set version 
+of this algorithm.
+
+If ${\cal Y} = \{Y_i\}_{1\leq i\leq I}$, is the training set of 
+$K$-dimensional vectors $Y_i=(Y_{i,k})_{1\leq k\leq K}$, and if 
+${\cal C} = \{C_m\}_{1\leq m\leq M}$ is a codebook, then the LBG algorithm 
+searches a local minimum of 
+\[
+D({\cal Y}, Q) = \frac{1}{I} \sum_{i=1}^I d(Y_i, Q(Y_i)),
+\]
+over all possible codebooks with a given size $M$, 
+where $Q(Y_i)$ is the quantized approximation of $Y_i$ (see the {\em fvq} 
+module documentation) and $d$ is the mean square error (m.s.e.). 
+This is done iteratively by repeting until convergence the following steps : 
+\begin{enumerate}
+\item
+Compute $Q(Y_i)$, or more precisely the index of $Q(Y_i)$. 
+\item
+Denote $P_m=\{i : Q(Y_i) = X_m\}$, and compute for each $m$ 
+\[
+\tilde{C}_m = \frac{1}{{\mathrm Card} P_m} \sum_{i\in P_m} Y_i.
+\]
+Replace for each $m$ $C_m$ by $\tilde{C}_m$ and go to step 1.
+\end{enumerate}
+In practice the convergence test is made on the average m.s.e.. 
+More precisely one fixes a threshold $\epsilon$ and stops the algorithm 
+when 
+\[
+\frac{D({\cal Y}, Q) - D({\cal Y}, \tilde{Q})}{D({\cal Y}, Q)}
+\]
+falls below the threshold $\epsilon$ ($Q$ and $\tilde{Q}$ being the vector 
+quantizers associated to $\{C_m\}$ and $\{\tilde{C}_m\}$ respectively). 
+
+One has to find an initial codebook to feed the iterative LBG algorithm. 
+To do this, the {\em flbg\_train} module offers two possiblities : 
+\begin{itemize} 
+\item
+The initial codebook can be specified by the user with the -i option. 
+\item
+The initial codebook can be computed using the ``splitting trick'' 
+(see \cite{kn:lbg}).
+\end{itemize}
+Basically, the splitting trick consists in starting with a size $M/2$ 
+codebook, optimizing it with the LBG algorithm, and then ``splitting'' 
+each vector $C_m$ in the resulting codebook in two vectors 
+$C_m+\epsilon_m$ and $C_m-\epsilon_m$. One thus obtains a size $M$ 
+codebook which serves as initial data for the LBG algorithm. 
+One can iterate this process, starting with a size one codebook 
+(or in fact any user specified codebook), and get an optimized codebook 
+with arbitrary size $M$ (if $M$ is not a power of 2, then one only splits 
+the ad hoc number of vectors at last step). The resulting algorithm 
+is a nested two-layers iterative algorithm. 
+
+The size of the codebook ($M$) is specified by the -s option. 
+{\em CodeBookSize} must be a strictly positive integer. 
+
+It is possible to replace the plain m.s.e. by a weighted version of it 
+using the -W option. {\em Weight} is a Fsignal file containing the weights 
+which must be distributed to each component of the vectors. 
+
+If the -M option is selected, then all the optimized codebooks of size 
+equal to a power of two (or a power of two multiplied by the size of 
+the initial codebook if the -i option has been selected) which are generated 
+before each new splitting are kept in memory and stored together 
+with the final codebook of size {\em CodeBookSize} in the {\em CodeBook} file. 
+This means that this file contains not one, but several codebooks 
+of different sizes. These codebooks are indexed, starting from 0 
+for the smallest one, up to $\lceil \log_2 CodeBookSize \rceil$. 
+If the -M option is not selected, then only the final size {\em CodeBookSize} 
+codebook is stored in {\em CodeBook} file. 
+
+It is possible to generate codebooks which are specially adapted to residual 
+vector quantization (see {\em fvq} documentation and \cite{kn:gg}) 
+with the help of -a, -b, -f and -g options. If the -a option is selected, 
+then the training set is first quantized using the codebook read in 
+{\em ResCodeBook} file, and each vector in the training set is 
+replaced by the residue of this quantization, i.e. $Y_i$ is replaced 
+by $Y_i-Q_{Res}(Y_i)$. If the -b option is selected, then this resulting 
+training set is further quantized using the codebook read in 
+{\em ResResCodeBook} file, and each vector in the training set is 
+replaced by the residue of this quantization, i.e. $Y_i-Q_{Res}(Y_i)$ 
+is replaced by $Y_i-Q_{Res}(Y_i) - Q_{ResRes}(Y_i-Q_{Res}(Y_i))$. 
+The resulting training set serves as input for the splitting/LBG loop. 
+If the -f option is selected, this means that {\em ResCodeBook} 
+contains in fact several codebooks of different sizes (i.e. it has 
+been generated with the -M option). Then {\em NResCB} is the index 
+of the codebook to choose in {\em ResCodeBook} in order to quantize 
+the training set. The -g option does the equivalent for {\em ResResCodeBook}. 
+To be consistent, {\em ResCodeBook}, {\em ResResCodeBook} and {\em CodeBook}
+should be generated using the same training set file {\em TrainSet}. 
+{\em NResCB} and {\em NResResCB} must be of course positive integers. 
+Notice that the -a, -b, -f and -g options do not modify the LBG 
+or splitting algorithms at all. They only change the input training set. 
+
+The -p option enables to choose the printed information on the 
+generating process. If selected, it gives the constant rate 
+($= \frac{1}{K} \log_2 M$), the entropic rate, and the signal to noise ratio 
+for each generated codebook. If not selected, it only gives the number 
+of iteration in the LBG algorithm for each outer (splitting) loop. 
+
+
+\begin{thebibliography}{999999}
+
+\bibitem[GG]{kn:gg} A. Gersho, R.M. Gray, {\em ``Vector quantization 
+and signal compression'', } Kluwer Ac. Pub., Boston (1992). 
+
+\bibitem[LBG]{kn:lbg} Y. Linde, A. Buzo, R.M. Gray, {\em ``An algorithm for 
+vector quantizer design", } IEEE-COM 28, pp. 84--95, (1980).
+
+\end{thebibliography}
+
+\vspace{0.5cm}
+
+\Example{}{
+In order to generate a set of codebooks of size 1, 2, $2^2$, ..., $2^8$, 
+adapted to the training set contained in the file {\em TrainSet} and 
+put them in the file {\em CodeBook}, run 
+
+\vspace{0.3cm}
+{\bf flb\_train} -s 256 -M {\em TrainSet} {\em CodeBook}
+
+\vspace{0.5cm}
+In order to generate a set of codebooks of size 1, 2, $2^2$, ..., $2^8$, 
+for the residual vector quantization after quantization with the 
+codebook with index 9 in {\em CodeBook} file (i.e. the codebook with size 
+256), and put them in the file {\em ResCodeBook}, run 
+
+\vspace{0.3cm}
+{\bf flb\_train} -s 256 -M -a {\em CodeBook} -f 9 {\em TrainSet} 
+{\em ResCodeBook}
+
+\vspace{0.5cm}
+In order to generate a set of codebooks of size 1, 2, $2^2$, ..., $2^8$ 
+and 347 for the residual vector quantization after quantization with the 
+codebook with index 9 in {\em CodeBook} file (i.e. the codebook with size 
+256) and the codebook with index 7 in {\em ResCodeBook} file 
+(i.e. the codebook with size 64), and put them in the file 
+{\em ResResCodeBook}, run 
+
+\vspace{0.3cm}
+{\bf flb\_train} -s 347 -M -a {\em CodeBook} -f 9 {\em TrainSet} 
+-b {\em ResCodeBook} -g 7 {\em TrainSet} {\em ResResCodeBook}
+
+}
+
+

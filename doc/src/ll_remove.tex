@@ -1,0 +1,23 @@
+This module copies the level lines recorded in the 
+input mimage to the output mimage, but the ones with length (number of pixels)
+less than a given threshold. 
+The length threshold ($10$ by default) can be changed using the option
+\verb+-l+.
+
+The morpho line \verb+first_ml+ field of the input mimage must contain a
+chain of level lines only that is, the boundaries of the connex components 
+of the level sets 
+$K_i=\{ (x,y)\,/\, g(x,y)\geq v_i\}$, for $i=1,\ldots,N$.
+or of the level sets
+$L_i=\{ (x,y)\,/\, g(x,y)\leq v_i\}$,
+$g$ being the gray levels image, $N$ the number of gray levels in $g$
+and $(v_i)_i$ the sequence of gray levels sorted in increasing order.
+Such mimage can be computed from a bit-mapped image using the module
+\verb+ll_decompose+.
+
+The operation of removing the smallest level lines can be interpreted, because
+of the level lines inclusion principle, as a thresholding of extrema gray
+levels values in small areas.
+When the input mimage contains level lines associated to $K_i$, the extrema
+gray levels are maxima; when the level lines are associated to $L_i$, they
+are minima.

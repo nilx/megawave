@@ -1,0 +1,22 @@
+This module produces a basic representation of the level lines borders of an 
+image. To get a more sophisticated representation, see the modules 
+\verb+ml_decompose+ and \verb+ml_draw+.
+Because this is a bitmap representation, borders at the same location are
+represented only once : the borders are also borders of the iso lines.
+
+The parameter \verb+level_set+ is a step on the gray level. If set to $1$, 
+all the level lines are caught. If set to a larger value then only the
+level lines coresponding to a gray level value which is a multiple of  
+\verb+level_set+ are catched.
+
+For a better representation of the level lines, we invit the user to 
+do a zoom of factor $2$ on the input image, before calling this module.
+
+The option \verb+-t+ allows to code the type of border : not a border 
+corresponds to value $255$, left border to $200$, upper border to $100$ 
+and corner (up and left border) to $0$. Without this option, only the
+values $255$ (not a border) and $0$ (any type of border) are used.
+The map obtained with the option \verb+-t+ allows, together with the
+gray levels sequence of the image (one pixel for each connex component,
+see module \verb+encodelevels+), to reconstruct the original image
+(see module \verb+glmaprecons+).

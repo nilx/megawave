@@ -1,0 +1,116 @@
+
+				MegaWave2 Versions 2.x
+
+
+
+Please read this note entirely before installing MegaWave2.
+
+
+1) COPYRIGHT AND LICENSE
+
+  MegaWave2 is a "software publication" from a french laboratory of applied mathematics, 
+the CMLA (CNRS UMR-8536). Please read the file COPYRIGHT to learn more on the different
+contributions. 
+  This is a free, open source software : you may freely use it, copy it, distribute it 
+and modify it providing that you follow the conditions set in the file LICENSE. 
+
+
+2) WHAT IS MEGAWAVE2
+
+  MegaWave2 is a Unix software environment which help human being to write algorithms
+on signal processing and image analysis. 
+  The human being is actually assumed to be non-computer scientist, in 
+particular he is likely to be a mathematician (notice however that a good 
+knowledge of the C language is assumed).
+
+  This means that the programmer should focus its mind on the algorithm only and
+not on pure computer problems (such how to read an image, how to display a movie
+on the screen, how to select a curve with the mouse, how to manage an object 
+library). 
+
+  The solution adopted by MegaWave2 is the concept of modules that is, of black
+boxes where the algorithms are described as C functions, without any 
+assumption about the context in which the modules may be executed.
+This is the task of the MegaWave2 compiler (basically a MegaWave2 preprocessor
+followed by a standard C compiler) to make from a module a run-time command, 
+a function of a library or a function to be run under a window-oriented 
+interpreter.
+
+  Anyway, there exists other very good signal and image processing softwares.
+Therefore, the main advantage you may see by using MegaWave2 is to have access to
+some modules implementing new algorithms not available elsewhere. Indeed, if
+MegaWave2 is first used as a research tool inside our team, its publication outside
+our lab participates in reproducible research : you will find here most of the
+source codes that have been used to perform the experiments presented in our
+traditional paper publication.
+
+
+3) HOW TO GET THE LAST VERSION OF MEGAWAVE2 2.x
+
+  From the Web site http://www.cmla.ens-cachan.fr/Cmla/Megawave
+download the main package named MegaWave2_V2.<x>.tar.gz (if you have gunzip) or
+MegaWave2_V2.<x>.tar.Z (if you don't), where <x> is a minor version number.
+
+  Decompress the main package using the command:
+		gunzip MegaWave2_V2.<x>.tar.gz
+	  or 
+		uncompress MegaWave2_V2.<x>.tar.Z  
+
+  Then restore the main package MegaWave2 by typing
+		tar xf MegaWave2_V2.<x>.tar
+
+  in the current local directory where you want to put the software.
+
+
+4) HOW TO INSTALL MEGAWAVE2
+  
+  The complete procedure to install MegaWave2 is described in the section 2 of 
+the guide #1 "MegaWave2 User's Guide".
+  So the first step of the installation should be to print this guide. You will 
+find it in the subdirectory "doc" of the main package, under two formats: 
+guid1.dvi (DVI format produced by LaTeX) and guid1.ps (PostScript format). You may 
+also want to print the other guides but there are not needed for the installation.
+
+  There exists a shell script Install that will try to do the installation for you. 
+To run it, just call ./Install from the MegaWave2 root directory. This shell works
+for the very common systems and machine architectures only. 
+
+
+5) SYSTEM REQUIREMENT AND COMPATIBILITY
+
+  MegaWave2 needs a Unix system with the following standard tools :
+
+  C compiler K&R or ANSI-compliant;
+  C language preprocessor cpp;
+  Lexical analyzer generator lex or flex;
+  Parser generator yacc or bison;
+  Bourne shell script /bin/sh;
+  X11 libraries and include files;
+  LaTeX (to compile the guide #3).
+
+  The installation procedure has been successfully checked on the following Unix
+systems :
+
+  Linux RedHat 5.2, Mandrake 6.0
+  HP-UX B.10.20 (with optional HP-UX C compiler)
+  SunOS 5.6, SunOS 5.7 (with optional Solaris C compiler)
+
+  We guess that MegaWave2 V.2.x may be installed without to much work on the
+following Unix systems :
+
+  Linux x.x
+  HP-UX A.09.x
+  SGI IRIX 5.x
+  SunOS 4.1.x, SunOS 5.x
+
+6) BUGS AND COMMENTS
+
+  Remember that there is no warranty on MegaWave2 : this is a research software.
+If you have bugs, comments or anything else to report, feel free to send an e-mail to 
+megawave@cmla.ens-cachan.fr. We will try to take your remarks into account for the
+next public versions.
+
+  Warning : do not wait for an answer, this e-mail is not a hotline, we cannot 
+            offer any support !
+
+

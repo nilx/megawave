@@ -1,0 +1,127 @@
+\parindent 0.6cm 
+\parskip 0.4cm
+
+\def\real{I\!\!R}
+
+
+{\em owave1} computes the J level discrete wavelet transform of the univariate digitized signal whose sample values are in the file {\em Signal}, according to the pyramidal algorithm of S. Mallat \cite{kn:ma1}. The reader is assumed to be familiar with the wavelet theory. 
+
+Let \( \{V_{j}\}_{j \in Z} \) be a multiresolution analysis of \( L^{2}(\real) \). \( \{V_{j}\} \) is a non-increasing sequence of closed subspaces of \( L^{2}(\real) \), and there exists a function \( \varphi \), called the scaling function, such that \( \{\varphi_{j,k} = 2^{-j/2}\varphi(2^{-j}.-k)\}_{k \in Z} \) is an orthonormal basis of \( V_{j} \). If \( f \) is a continuous-time signal then the orthogonal projection \( P_{V_{j}}f \) of \( f \) on \( V_{j} \) is an approximation of \( f \) at the scale \( 2^{j} \). One has
+\[
+P_{V_{j}}f = \sum_{k} <f,\varphi_{j, k}> \varphi_{j, k}
+\]
+where \( <.,.> \) is the scalar product of \( L^{2}(\real) \).
+The coefficients \( <f,\varphi_{j, k}> \) are now denoted \( A_{j}[k] \) ($A$ is for approximation or average). 
+\[
+A_{j}[k] = < f,\varphi_{j,k} > 
+\]
+
+Let \( W_{j} \) be the orthonormal complement of \( V_{j} \) in \( V_{j-1} \), and \( \psi \) the mother wavelet associated to \( \{V_{j}\} \). Then \( \{\psi_{j,k} = 2^{-j/2}\psi(2^{-j}.-k)\}_{k \in Z} \) is an orthonormal basis of \( W_{j} \). The orthonormal projection \( P_{W_{j}}f \) of \( f \) on \( W_{j} \) represents the difference of information between scales \( 2^{j-1} \) and \( 2^{j} \) that is, the detail at the scale \( 2^{j} \). One has
+\[
+P_{W_{j}}f = \sum_{k} <f,\psi_{j, k}> \psi_{j, k}
+\]
+The coefficients \( <f,\psi_{j, k}> \) are denoted \( D_{j}[k] \) ($D$ is for detail).
+\[
+D_{j}[k] = < f,\psi_{j,k} >
+\]
+
+Consider now the function \( f \) in \( V_{0} \) defined by
+\[
+f = \sum_{k} A_{0}[k] \, \varphi_{0,k}
+\]
+where $A_{0}[k]$ are the sample values stored in the file {\em Signal}.
+
+Since \( V_{0} = W_{1} \oplus W_{2} \oplus \cdots \oplus W_{J} \oplus V_{J} \) for any positive integer $J$, one also has
+\[
+f = \sum_{k} A_{J}[k] \varphi_{J,k} + \sum_{j = 1}^{J} \sum_{k} D_{j}[k] \psi_{j,k}
+\]
+
+{\em owave1} performs the wavelet decomposition of \( f \) up to the level \( J \), i.e. computes the coefficients of the detail sub-signals \( (D_{j}[k])_{k \in Z}, 1 \leq j \leq J \) and of the average sub-signal \( (A_{J}[k])_{k \in Z} \). This is done recursively : the sequence \( A_{1}[k] \) and \( D_{1}[k] \) are computed from the sequence \( A_{0}[k] \) , the sequences \( A_{2}[k] \)  and \( D_{2}[k] \) are computed from \( A_{1}[k] \) , a.s.o.. The same algorithm is applied at each step. This algorithm is very simple due to the two-scales relationships : 
+\begin{eqnarray*}
+\varphi(t) = \sqrt{2} \sum_{k} h_{k} \varphi(2t-k) \\
+\psi(t) = \sqrt{2} \sum_{k} g_{k} \varphi(2t-k)
+\end{eqnarray*}
+where \( g_{k} = (-1)^{k} h_{1-k} \).
+And thus
+\begin{eqnarray*}
+A_{j+1}[n] = \sum_{k} h_{k-2n} A_{j}[k] \\
+D_{j+1}[n] = \sum_{k} g_{k-2n} A_{j}[k] 
+\end{eqnarray*}
+If the filter \( (h_{k}) \) is a low-pas filter, regardless of its definition by the two-scales relationships, then \( A_{j+1}[k] \) is effectively an average of \( A_{j}[k] \). From this point of view {\em owave1} performs a subband coding of the signal. 
+\( (h_{k}) \) is said to have the exact reconstruction property if one can reconstruct exactly \( A_{j}[k] \) from \( A_{j+1}[k] \) and \( D_{j+1}[k] \) by interpolating and filtering this two sub-signals and adding the results. 
+If moreover the same filter bank is used for the reconstruction, then  $(h_{k})$ is called conjugate quadrature filter (CQF) (see \cite{kn:sb}) . Filters associated to orthogonal wavelet bases, i.e. that stems from the two-scales relationships above are always CQF and are indeed low-pass filters (see {\em iowave1 } for the description of the reconstruction algorithm).
+
+Notice that the filters that are associated to compactly supported wavelets are of finite length : \( h_{k} = 0 \), if \( |k| > K \) where \( K \) is a positive integer. See \cite{kn:dau1} for the construction and properties of these filters. 
+
+The fact that the discrete signal is of finite size raises some problems near edges, i.e. when computing the first and last coefficients of the average and detail sub-signals. There are several ways of dealing with these problems. 
+\begin{itemize}
+\item
+One can extend the signal with \( 0 \)-valued samples.
+\item
+One can also reflect the signal around each edge.
+\item
+One can periodize the signal.
+\item
+Finally one can use special filters to compute the coefficients near edges. This corresponds to wavelet basis adapted to the interval which have been constructed by A. Cohen, I. Daubechies, and P. Vial \cite{kn:cdv}. They have been derived from the orthonormal bases of compactly supported wavelets on \( \real \) constructed by I. Daubechies \cite{kn:dau1}. 
+\end{itemize}
+
+Because of the down-sampling, the size of the average and detail signals is divided by two at each step (omitting edge problems). As a consequence the size of the wavelet decomposition (obtained by adding the sizes of each sub-signal in it) is equal to the size of the original signal, and the scale parameter \( J \) is upper bounded since obviously one should have \( n \geq 2^{J} \) where \( n \) is the size of the signal. Moreover, when edge processing is performed via periodization or application of special filters, the size of the signal should be a multiple of $2^J$.
+
+If one chooses the 0-extension or the reflexion for edge processing, and one wants to get the exact reconstruction property, then one has to keep extra coefficients near edges. Thus the size of the wavelet decomposition is in fact slightly larger than the size of the original signal. To overcome this problem one can use one of the two other methods of edge processing. 
+
+When the edge processing is done with special filters, then one has the possibility to do a preconditionning of the coefficients near edges before applying the wavelet decomposition. Then one recovers the cancellation property (any polynomial signal of degree less than the cancellation degree of the mother wavelet is decomposed in a zero valued detail sub-signal and a polynomial average sub-signal). This is an inversible linear (but not orthogonal in general) transform.
+
+If the impulse response has size \( N \) then the complexity of the algorithm is roughly \( (2 - 2^{-(J-1)})nN \) multiplications and additions. 
+
+The resulting sub-signals \( A_{1}, A_{2}, \ldots, A_{J} \) and \( D_{1}, D_{2}, \ldots, D_{J} \) are stored in files having all the same prefix {\em Wavtrans}. The name of the file is {\em prefix\_$j$\_$A$.wtrans1d} for \( A_{j} \) and {\em prefix\_$j$\_$D$.wtrans1d} for \( D_{j} \).
+
+The coefficients \( h_{k} \) of the filter's impulse response are stored in the file {\em ImpulseResponse}. The coefficients of the filter's impulse response for computing the edge coefficients are stored in the file {\em EdgeIR}. Notice that the underlying Daubechies wavelet basis must be the same for edge and inner filter. 
+
+\begin{itemize}
+\item
+The -r option specifies the number of levels $J$ in the decomposition.
+\item
+The -e option specifies the edge processing mode.
+\begin{itemize}
+\item
+0 : 0 extension.
+\item
+1 : periodization.
+\item
+2 : reflexion.
+\item
+3 : Adapted filtering (default).
+\end{itemize}
+\item
+The -p option specifies the preconditionning mode.
+\begin{itemize}
+\item
+0 : no preconditionning (default).
+\item
+1 : preconditionning of the signal.
+\item
+2 : preconditionning of the signal and inverse preconditionning of the average at level~$J$.
+\end{itemize}
+\item
+The -i option enables to have invertible transform. Since the transform is invertible when EdgeMode is equal to 1 or 3, this only makes sense when EdgeMode is equal to 0 or 2. 
+\item
+The -n option specifies the normalisation mode of the filter impulse responses' coefficients. If selected the coefficients $h_{k}$ are multiplied by a constant so that their sum is $1.0$. If -n is not selected the coefficients are normalized so that the decomposition is orthogonal. 
+\end{itemize}
+
+\begin{thebibliography}{Dau1}
+
+\bibitem[CDV]{kn:cdv} A. Cohen, I. Daubechies, P. Vial. 
+{\em Wavelets and Fast Wavelet Transform on an Interval, } 
+preprint AT\&T Bell Laboratories, 1992.
+\bibitem[Dau]{kn:dau1} I. Daubechies. 
+{\em Orthonomal Bases of Compactly Supported Wavelets, } 
+Comm. pure and applied math., 41, pp.909--996, 1988.
+\bibitem[Mal]{kn:ma1} S. Mallat. {\em A theory for multiresolution signal decomposition, the wavelet representation, } IEEE PAMI Vol. 2, n 7, 1989.
+\bibitem[SB]{kn:sb} M.J.T. Smith, T.P. Barnwell. {\em Exact reconstruction techniques for tree structured subband coders, } IEEE ASSP Vol.34, pp.434-441, 1986.
+
+\end{thebibliography}
+
+
+
+\parindent 0.0cm 
+\parskip 0.0cm

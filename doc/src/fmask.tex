@@ -1,0 +1,11 @@
+This function uses a mask given by the cimage {\em mask} to choose
+at each point of the result between two images $A$ and $B$ 
+(with $B(\cdot)=c$ if \verb+-c+ option is used).
+If the \verb+-i+ option is not selected, 
+the output image $out$ is defined by
+$$out(x,y) = \left\{ \begin{array}{l}
+A(x,y) \mbox{ if } mask(x,y) \neq v,\\
+B(x,y) \mbox{ if } mask(x,y) = v.
+\end{array}\right.$$
+If the \verb+-i+ option is selected, the roles of $A$ and $B$
+are exchanged.

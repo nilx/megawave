@@ -1,0 +1,74 @@
+
+\paragraph{Mathematical description} \mbox{}
+
+Given a shape which is define as a level set,
+we compute the skeleton of this shape.
+The underlying partial differential equation for this
+algorithm is:
+$$ \frac{\partial u}{\partial t} = |Du| (1+curv(u)).X_a$$
+where $X_a$ is the stopping test based on the computation
+of the width of the shape at the point x. If the width is too small,
+the algorithm is stopped at the point x.
+
+\paragraph{Options } \mbox{}
+
+The option \verb+-n iteration+ fix the number of iterations to be done. 
+
+The option \verb+-c Niter+ fix the number of iterations of the 
+mean curvature motion. 
+
+The option \verb+-l larg_min+ fix the minimal width for the skeleton.
+
+The option \verb+-r radius+ fix the radius for the erosion.
+
+The option \verb+-a+ changes the way the mean curvature motion is
+computed: by default, the inf-sup filtering is iterated and 
+with the option set, it is the following filtering:
+(inf-sup + sup-inf)/2.
+
+\paragraph{Inputs} \mbox{}
+
+This module needs the name of a original image : {\it image}, and the
+name of a Cmovie which corresponds to the set of the masks :$\cal B$. 
+You can use any set of masks made, for example, using the module 
+\verb+rotaffin+.
+However, we advice you to use the standard set of masks called 
+\verb+seg_mask+ (a plain segment).
+
+\paragraph{Output} \mbox{}
+
+This module generates in output a Cmovie where the successive skeletons 
+are recorded.
+
+
+\paragraph{References} \mbox{}
+
+This program is associated to the article :
+
+D. Pasquignon {\em Computation of a skeleton by partial differential
+equation}
+ICIP 1995.
+
+See also :
+
+F. Catte, F. Dibos. {\em A morphological approach of mean curvature motion.}, Report 9310, Ceremade, Univ. Paris-Dauphine 1993.
+
+F. Catte, F. Dibos, G. Koepfler. {\em A morphological scheme for mean curvature motion and applications to anisotropic diffusion and motion of level sets.}, Report 9338, Ceremade, Univ. Paris-Dauphine 1993.
+
+F. Catte, {\em Convergence of iterated affine and morphological filters by nonlinear semi-group theory} Preprint No 9528 CEREMADE 1995.
+
+F. Guichard, {\em Axiomatisation des analyses multi-echelles d'images et de films.} PhD. Universite Paris IX, 1994.
+
+
+
+
+
+
+
+
+
+
+
+
+
+

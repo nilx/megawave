@@ -1,0 +1,226 @@
+Let us denote the data of the {\tt fsignal} {\em levels} ({\bf -l} option) by
+$v_0, v_1,\ldots, v_N$, e.g. {\em levels-$>$size}$=N+1$\,. \\
+For the {\bf -L} option we have $N=0$\,.
+
+\smallskip
+
+Moreover we recall that a {\tt morpho\_line} is the boundary of the set
+$$ MS=\{(i,j) \;/\; \mbox{\em minvalue}\leq 
+                       g(i,j)\leq\mbox{\em maxvalue} \}$$
+where $g$ is the original picture {\em image\_in}. The {\em minvalue} and
+the {\em maxvalue} define the ``thickness'' of the slice which is cut
+ through the graph of {\em image\_in}. The set $MS$ is made out of 
+connected sets and its boundary is composed of closed curves and of
+open curves (which necessarily go from one border of the image to another).
+Notice that the inequalities which define $MS$ are not strict.
+
+\smallskip
+
+The module {\bf ml\_extract} computes 
+the {\tt morpho\_lines} of {\em image\_in}
+where the {\em minvalue} and {\em maxvalue} are defined 
+through the choice of option {\bf -o}.  \\
+The different possibilities for {\em ml\_opt} are\,:
+\begin{itemize}
+\item[ 0 ] Here {\em minvalue}=$v_i$ and 
+  {\em maxvalue}=$+\infty$\,, this gives the boundary of level sets \\
+such that $v_i\leq g(i,j)$\,.
+This is the default. 
+\item[ 1 ] With this option  {\em minvalue}=$-\infty$ and 
+  {\em maxvalue}=$v_i$\,, which gives the boundary of level sets 
+such that $g(i,j)\leq v_i$\,.
+\item[ 2 ] This option allows to compute isolines, thus 
+ {\em minvalue}={\em maxvalue}=$v_i$\, .
+\item[ 3 ] Computes general {\tt morpho\_lines} with 
+{\em minvalue}=$v_i$ and {\em maxvalue}=$v_{i+1}$.
+\item[ 4 ] Computes (more) general {\tt morpho\_lines} with 
+{\em minvalue}=$v_{2i}$ and {\em maxvalue}=$v_{2i+1}$.
+\end{itemize}
+Where $i$ goes from 0 to $N$ for {\em ml\_opt} equal to 0, 1 or 2, 
+thus obtaining $N+1$ slices.\\
+For {\em ml\_opt}=3, $i$ will range from 0 to $N-1$, yielding $n$ slices. \\
+Finally, for {\em ml\_opt}=4, there has to be an even number of values 
+(i.e. $N+1$ even) and $i$ will range from 0 to $(N-1)/2$. This choice 
+yields  $(N-1)/2$ different slices.
+
+\bigskip
+
+Exactly one option out of {\bf -L} and {\bf -l} has to be chosen.\\
+For {\bf -L} only {\em ml\_opt} 0, 1 and 2 are available. \\
+For {\em ml\_opt}=3
+one must have {\em levels-$>$size}$\geq 2$\, , if {\em ml\_opt}=4 \,,
+{\em levels-$>$size} has to be even. \\
+Option {\bf -d} allows to obtain a b/w {\tt cimage} {\em c\_out}
+of the {\tt morpho\_lines}. This option uses {\bf ml\_draw}. \\
+{\em image\_in} is of format {\tt fimage} and {\em m\_image} of format
+{\tt mimage}.\\
+Notice that only {\em m\_image-$>$nrow}\, ,
+{\em m\_image-$>$ncol}\, and {\em m\_image-$>$first\_ml} are set by the
+module {\bf ml\_extract}.
+
+The {\bf -m} flag allows to optimize memory occupation during
+the decomposition. This is interesting if you use {\bf ml\_extract}
+as UNIX command. Using this flag in an internal call
+of the module {\bf ml\_extract()} and trying to delete
+points separately in the sequel of your program will corrupt
+the data structure.
+
+\medskip
+
+The {\tt morpho\_line} list {\em m\_image-$>$first\_ml} is ordered like
+the data of {\em levels}, thus first  all the {\tt morpho\_lines}
+associated to $v_0$ (and perhaps $v_1$) are listed, then those
+associated to the next slice (see above how $i$ is incremented,
+following the value of {\em ml\_opt}) until up to the 
+last values of {\em levels-$>$values}.\\
+Thus the order of the data in {\em levels} induces the order
+of the slices (e.g. the {\tt morpho\_lines}) in {\em m\_image}. 
+This is of importance if the {\tt mimage} is to be reconstructed
+(see {\bf ml\_decompose} and {\bf ml\_reconstruct}).\\
+Notice that we consider only 4-neighbourhood adjacancies to determine
+which pixels are inside the set.
+
+%--------------------------
+\begin{figure*}[ht]
+  \begin{center}
+  \begin{picture}(170,160)(-2,-2)
+  \thicklines
+     \multiput(0,0)(0,30){5}{\multiput(-8,-8)(30,0){6}{\framebox(16,16)}}
+     \put(-15,105){\circle*{4}}
+     \multiput(15,15)(0,30){4}{\circle*{4}}
+     \multiput(75,15)(0,30){4}{\circle*{4}} 
+     \multiput(105,15)(30,0){2}{\multiput(0,0)(0,30){5}{\circle*{4}}} 
+     \multiput(45,15)(0,90){2}{\circle*{4}}
+     \put(45,135){\circle*{4}}
+     \multiput(-27,0)(0,30){5}{\line(1,0){7}}
+     \multiput(0,145)(30,0){6}{\line(0,-1){7}}
+  \thinlines
+    \multiput(-8,112)(30,0){2}{
+       \put(0,0){\line(1,1){16}}
+       \multiput(0,4)(4,-4){2}{\line(1,1){12}}
+       \put(0,16){\line(1,-1){16}}
+       \multiput(0,12)(4,4){2}{\line(1,-1){12}}
+    }
+    \multiput(0,0)(30,0){2}{
+        \multiput(22,22)(0,30){3}{
+           \put(0,0){\line(1,1){16}}
+           \multiput(0,4)(4,-4){2}{\line(1,1){12}}
+           \put(0,16){\line(1,-1){16}}
+           \multiput(0,12)(4,4){2}{\line(1,-1){12}}
+        } 
+   }
+   \multiput(112,22)(0,30){4}{
+        \put(0,0){\line(1,1){16}}
+        \multiput(0,4)(4,-4){2}{\line(1,1){12}}
+        \put(0,16){\line(1,-1){16}}
+        \multiput(0,12)(4,4){2}{\line(1,-1){12}}
+   }
+   \multiput(82,22)(0,60){2}{
+        \put(0,0){\line(1,1){16}}
+        \multiput(0,4)(4,-4){2}{\line(1,1){12}}
+        \put(0,16){\line(1,-1){16}}
+        \multiput(0,12)(4,4){2}{\line(1,-1){12}}
+   }
+     \multiput(25,15)(30,0){4}{\line(1,0){10}}
+     \multiput(15,25)(120,0){2}{\multiput(0,0)(0,30){3}{\line(0,1){10}}}
+     \multiput(85,45)(0,30){2}{\line(1,0){10}}
+     \multiput(75,55)(30,0){2}{\line(0,1){10}}
+     \put(-5,105){\line(1,0){10}}
+     \multiput(55,105)(30,0){2}{\line(1,0){10}}
+     \put(45,115){\line(0,1){10}} 
+     \multiput(105,115)(30,0){2}{\line(0,1){10}} 
+     \put(-4,105){\vector(1,0){6}}
+     \put(94,105){\vector(-1,0){6}}
+     \put(86,15){\vector(1,0){6}}
+     \put(94,45){\vector(-1,0){6}}
+     \put(135,117){\vector(0,1){6}}
+     \multiput(-38,120)(38,36){2}{\makebox(0,0){\tiny 0}}
+     \multiput(-38,90)(68,66){2}{\makebox(0,0){\tiny 1}}
+     \put(-40,0){\makebox(0,0){\tiny $NL-1$}}
+     \put(150,156){\makebox(0,0){\tiny $NC-1$}}
+ \end{picture}
+  \end{center}
+  \label{fig_point_coord}
+\end{figure*}
+%----------------
+
+\medskip
+
+For each {\tt morpho\_line} the {\bf ml\_extract} module will set
+a {\em minvalue} and a {\em maxvalue}, an open curve flag, 
+a list of integer point coordinates and a list 
+of the corresponding point types.
+
+\smallskip
+
+Notice that in a {\tt morpho\_line} a point never appears twice, 
+thus for a closed line the first point and last point 
+in the list are different.
+
+\smallskip
+
+In a {\tt morpho\_line} the points are listed such that 
+the set is always left of the line. 
+
+\smallskip
+
+Be aware that {\bf ml\_extract} might create a very (!) large
+data structure, depending on $N$ and  $NC*NL$.
+
+\bigskip
+
+Let us now give more details about the point coordinates of a
+{\tt morpho\_line}. The figure\ref{fig_point_coord} below
+ can be taken as illustration.
+We have represented a {\tt morpho\_set} $MS$ with dashed squares
+in an $5\times 6$ image (a pixel=a square), 
+notice that in this example $MS$ is connected
+(but not $MS^c$).
+
+\medskip
+
+The boundary between pixels is given by the list of their vertices,
+drawn as black dots. The pixel coordinates being integer, $(i,j)$, the
+vertices will have float coordinates $(i\pm 0.5 , j\pm 0.5)$\,,
+but as {\tt morpho\_lines} are supposed to have integer coordinates
+we will adopt the following\,: each vertex will be represented
+by the integer coordinates obtained through a $(+0.5,+0.5)$
+translation (see {\bf ml\_fml} and {\bf fml\_ml}).
+
+\smallskip
+
+Thus let $(k,l)$ be the coordinates  of a {\tt morpho\_line} point,
+then the vertex it represents has float coordinates 
+$(k-0.5 , l-0.5)$, where $k\in\{0,\ldots,NC\}$ and 
+$l\in\{0,\ldots,NL\}$\,.
+
+\smallskip
+
+In the example the pixel $(3,2)\not\in MS$, has a boundary
+defined by the float vertices $(2.5,1.5)$, $(3.5,1.5)$, 
+$(3.5,2.5)$ and $(2.5,2.5)$. This {\tt morpho\_line}
+will be saved as $(3,2)$, $(4,2)$, $(4,3)$ and $(3,3)$.
+An open {\tt morpho\_line} starts/stops at points
+having one coordinate either equal to 0, to $NC$ or to $NL$.
+
+\medskip
+These conventions are very important, they allow the
+{\bf ml\_reconstruct} module to work correctly.
+
+\medskip
+Notice that a morpho\_line might be sometimes self-intersecting!\\
+ Indeed look at the following ``picture'' $g$\,: 
+\begin{tabular}{|c|c|c|}  \hline
+0 & 0 & 0 \\ \hline
+0 & 1 & 0 \\ \hline
+1 & 0 & 0 \\ \hline
+\end{tabular}
+
+If we look for the sets $\{(i,j) \;/\; 1\leq g(i,j) \}$, we will
+find two 4-connected sets (the two 1 pixels), 
+there remains one region which is actually 8-connected. 
+Now if we look for $\{(i,j) \;/\; g(i,j)\leq 0 \}$,
+there is only one 4-connected set, having one boundary which
+self-intersects ! \\
+Thus if your application needs true Jordan curves
+you should shrink the morpho\_lines around the morpho\_set.

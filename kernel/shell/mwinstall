@@ -1,0 +1,545 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
+_Func="Install a new MegaWave2 full version (adm only)";
+_Prog="`basename $0`"
+_Vers="1.6"
+_Date="1999-2000"
+_Auth="Jacques Froment";
+_Usage="[-static] [-public || -public=private] [-clear] [-debug] [-level l] mw2distribution"
+#-----------------------------------------------------------------------------
+# This file is part of the MegaWave2 kernel.
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+# Run this shell-script to make a new version of MegaWave2
+# <mw2distribution> must be a MegaWave2 distribution main directory.
+# Options :
+# -static : Make static kernel libraries (default : shared)
+# -public : Install MegaWave2 both for adm and plain users (default: adm only),
+#           using two different locations. 
+#           If you select this option and if a previous PUBLIC MegaWave2 is 
+#           already installed, select also -clear.
+# -public=private : Install MegaWave2 both for adm and plain users (default: adm 
+#           only), using only one location.
+# -clear : Clear previous version. If a previous version is installed, this
+#          option may be required to perform the action you expect.
+# -debug : Produce debugging information (default : optimize the code).
+# -level l : Install levels greater or equal than l only.
+#-----------------------------------------------------------------------------
+
+NewTrap()
+{
+trap "echo '***********************************'; \
+      echo '***** Installation canceled ! *****'; \
+      echo '***********************************';\
+      Abort" 2 3
+}
+
+Answer()
+
+{
+ok=0
+while [ $ok -ne 1 ]; do
+ if  [ "$2" != "" ]; then
+   echo "$1 [Y/N] ? [default $2]" 2>&1
+ else
+   echo "$1 [Y/N] ?" 2>&1
+ fi
+ read ans
+ if [ "$ans" = "" ] && [ "$2" != "" ]; then
+  ans=$2
+ fi
+ if [ "$ans" = "y" ] ||  [ "$ans" = "Y" ]; then
+   ans="Y"
+   ok=1
+ fi
+ if [ "$ans" = "n" ] ||  [ "$ans" = "N" ]; then
+   ans="N"
+   ok=1
+ fi
+ if [ $ok -ne 1 ]; then
+  if  [ "$2" != "" ]; then
+   echo "Please, answer Y for Yes or N for No (default means $2) !" 2>&1
+  else
+   echo "Please, answer Y for Yes or N for No !" 2>&1
+  fi
+ fi
+done
+echo ""
+}
+
+Abort()
+{
+  cd $CWD
+  echo "***** Abort $_Prog at level $level." 2>&1
+  if [ -d $MWNEWPUB ]; then
+    echo "***** If you don't plan to continue the installation later using '$_Prog -level $level'," 2>&1
+    echo "***** you should remove $MWNEWPUB." 2>&1 
+    Answer "***** Remove it now" "Y"
+    if [ "$ans" = "Y" ]; then
+      rm -rf $MWNEWPUB
+    fi
+  fi
+ exit 1
+} 
+
+
+# Usage
+if [ $# -lt 1 ] || [ $# -gt 7 ]; then
+  . .mw2_help_lg_com
+fi
+
+
+CWD=`pwd`
+pubinstall=0
+clear=0
+kernelopt=""
+cmw2opt="-2p -dep -force"
+setenvopt="-privateonly"
+l=1
+level=0
+MWNEWPUB="/void$$"
+NewTrap
+
+while [ "$1" != "" ]
+do
+        case "$1" in
+	  "-static") kernelopt="${kernelopt} -static"
+		     shift
+		     ;;
+	  
+	  "-public") kernelopt="${kernelopt} -public"
+                     setenvopt=""
+		     pubinstall=1
+		     shift
+		     ;;
+
+	  "-public=private") setenvopt="-public=private"
+		     pubinstall=2
+		     shift
+		     ;;
+
+	  "-clear") kernelopt="${kernelopt} -clear"
+		    cmw2opt="${cmw2opt} -clear"
+		    clear=1
+		    shift
+		    ;;
+
+	  "-debug") kernelopt="${libopt} -debug"
+		    cmw2opt="${cmw2opt} -g"
+		    shift
+		    ;;
+
+	  "-level") l=$2
+		    shift; shift
+		    ;;
+	  
+           -*)      . .mw2_help_lg_com
+                ;;
+ 
+           *)       MWSRC=$1
+		    shift
+		    ;;
+       
+       esac
+done
+
+# Set optimization flag for cmw2 if -g not set
+a=`echo $cmw2opt | grep "\-g"`
+if [ "$a" = "" ]; then
+   cmw2opt="${cmw2opt} -O"
+fi 
+
+if [ ! -r $MWSRC/VERS ]; then
+ echo "***** Cannot find version file in $MWSRC : Are you sure that" 2>&1
+ echo "***** $MWSRC is the MegaWave2 Distribution home directory ?" 2>&1
+ Abort
+fi
+
+if [ ! -r $MWSRC/kernel/Install ]; then
+ echo "***** Cannot find kernel Install in $MWSRC : Are you sure that" 2>&1
+ echo "***** $MWSRC is the MegaWave2 Distribution home directory ?" 2>&1
+ Abort
+fi
+
+echo "************************************************************************"
+echo "***** Begin the MegaWave2 Installation Process (cross the fingers) *****"
+echo "************************************************************************"
+echo "***** `date`"
+
+level=`echo "$level 1 + p" | dc`
+NewTrap
+if [ $l -le $level ]; then 
+ echo "*****************************************"
+ echo "***** Level $level : Set the environment *****"
+ echo "*****************************************"
+
+ MWSHELL=$MWSRC/kernel/shell
+ if [ ! -x $MWSHELL/mwsetenv ]; then
+   echo "***** Cannot exec $MWSHELL/mwsetenv : Are you sure that" 2>&1
+   echo "***** $MWSRC is the MegaWave2 Distribution home directory ?" 2>&1
+   Abort
+ fi
+ $MWSHELL/mwsetenv $setenvopt $MWSRC
+ if [ $? -ne 0 ]; then
+   echo "***** Error while setting environment !" 2>&1
+   Abort
+ fi
+ MWSHELL=$MWSRC/kernel/shell
+ machinetype=`$MWSHELL/mwarch -s`
+ MWPROFILE=$MWSRC/sys/lib/$machinetype/.profile_adm_megawave2
+ if [ ! -x $MWPROFILE ]; then
+   echo "***** Cannot exec profile $MWPROFILE !" 2>&1
+   Abort
+ fi
+ . $MWPROFILE
+
+# end of level
+fi
+
+if [ $pubinstall -eq 1 ]; then
+  if [ "$PUBLIC_MEGAWAVE2" = "$PRIVATE_MEGAWAVE2" ]; then
+    echo "***** Option -public is meaningless since PUBLIC MegaWave2 is the same than PRIVATE." 2>&1
+    echo "***** Please rerun $_Prog with right options or change PUBLIC_MEGAWAVE2 value." 2>&1
+    Abort
+  fi
+  MWDIRPUB=`dirname $PUBLIC_MEGAWAVE2`
+  if [ ! -w $MWDIRPUB ]; then
+    echo "***** You don't have permission to install PUBLIC MegaWave2 on $MWDIRPUB !"
+    echo "***** Are you sure you are the MegaWave2 Administrator ?" 2>&1
+    Abort
+  fi
+  if [ $clear -eq 1 ] && [ -d $PUBLIC_MEGAWAVE2 ]; then
+    MWORGPUB=$PUBLIC_MEGAWAVE2
+    if [ -d $MWORGPUB ] && [ ! -r  $MWORGPUB/VERS ]; then
+      echo "***** Cannot find version file in $MWORGPUB !" 2>&1
+      echo "***** I suppose this PUBLIC MegaWave2 is an obsolete version." 2>&1
+      Answer "***** Ok to rename it ${MWORGPUB}_old and continue the installation" "Y"
+      if [ "$ans" = "Y" ]; then
+        if [ -d ${MWORGPUB}_old ]; then
+          echo "***** This old directory already exists !"  2>&1
+          Answer "***** Ok to remove it and continue the installation" "Y"
+          if [ "$ans" = "Y" ]; then
+            rm -rf ${MWORGPUB}_old
+          else
+            Abort
+          fi
+        fi                  
+        mv $MWORGPUB ${MWORGPUB}_old
+      else
+        Abort
+      fi                  
+    fi
+  fi
+fi
+
+# If Install PUBLIC, check if $PUBLIC_MEGAWAVE2 comes from a former incomplete
+# installation. If yes, do not create a temporary directory.
+
+if [ $pubinstall -ne 1 ] || [ ! -r $PUBLIC_MEGAWAVE2/INSTALL_NOT_COMPLETE ]; then
+
+# If Install PUBLIC with clear option selected, it means that users may
+# use current version of PUBLIC_MEGAWAVE2 : make the installation in a
+# temporary directory.
+
+  if [ $pubinstall -eq 1 ] && [ $clear -eq 1 ] && [ -d $PUBLIC_MEGAWAVE2 ]; then
+
+# Check if the version number major.minor is the same or not that the current
+# installation. If the same, increment the variant number of the current
+# installation. If not, of the distribution.
+
+    oldvers=`cat $MWORGPUB/VERS`
+    mmoldvers=`echo $oldvers | cut -f 1-2 -d "."`
+    mmsrcvers=`cat $MWSRC/VERS | cut -f 1-2 -d "."`
+    if [ "$mmoldvers" = "mmsrcvers" ]; then
+      newvers=`$MWSHELL/mwincvers $MWORGPUB`
+    else
+      newvers=`$MWSHELL/mwincvers $MWSRC`
+    fi
+
+    MWNEWPUB=$MWDIRPUB/MegaWave2_new_V${newvers}
+    PUBLIC_MEGAWAVE2=$MWNEWPUB
+    echo "***** Make PUBLIC installation in the temporary directory $PUBLIC_MEGAWAVE2"
+    if [ -d $PUBLIC_MEGAWAVE2 ] && [ $l -le 1 ]; then
+      Answer "***** This directory already exists. May I remove it" "Y"
+      if [ "$ans" = "Y" ]; then
+        rm -rf $PUBLIC_MEGAWAVE2
+      else
+        echo "***** OK, hope you know what you are doing..."       
+      fi              
+    fi
+  else
+
+# If Install PUBLIC with no former PUBLIC_MEGAWAVE2, set version to be the 
+# version of the distribution in MWSRC.
+
+    if [ $pubinstall -eq 1 ] && [ ! -d $PUBLIC_MEGAWAVE2 ]; then
+      newvers=`$MWSHELL/mwincvers $MWSRC`
+    fi
+  fi
+
+# Make the PUBLIC_MEGAWAVE2 dir if needed
+
+ if [ ! -d $PUBLIC_MEGAWAVE2 ]; then
+      mkdir $PUBLIC_MEGAWAVE2
+      chmod 755 $PUBLIC_MEGAWAVE2
+ fi
+ echo $newvers > $PUBLIC_MEGAWAVE2/VERS
+ chmod 644 $PUBLIC_MEGAWAVE2/VERS 
+fi
+
+if [ $pubinstall -eq 1 ]; then
+  touch $PUBLIC_MEGAWAVE2/INSTALL_NOT_COMPLETE
+fi
+
+level=`echo "$level 1 + p" | dc`
+NewTrap
+if [ $l -le $level ]; then 
+ echo "****************************************"
+ echo "***** Level $level : Compile the kernel *****"
+ echo "*****************************************"
+
+ cd kernel; 
+ ./Install $kernelopt
+ if [ $? -ne 0 ]; then
+   echo "***** Error while compiling kernel !" 2>&1
+   Abort
+ fi
+# end of level
+fi
+
+level=`echo "$level 1 + p" | dc`
+NewTrap
+if [ $l -le $level ]; then 
+ echo "*****************************************"
+ echo "***** Level $level : Compile the modules *****"
+ echo "*****************************************"
+
+ cd $MWSRC
+ cmw2_all $cmw2opt src
+ if [ $? -ne 0 ]; then
+   echo "***** Error while compiling modules !" 2>&1
+   Abort
+ fi
+# end of level
+fi
+
+level=`echo "$level 1 + p" | dc`
+NewTrap
+if [ $l -le $level ]; then 
+ echo "*******************************************************"
+ echo "***** Level $level : Compile the documentation (guid3) *****"
+ echo "*******************************************************"
+
+ mwdep -adm
+ if [ $? -ne 0 ]; then
+   echo "***** Error while making dependencies list ! I continue but" 2>&1
+   echo "***** you will not get modules dependencies in the documentation." 2>&1
+ fi
+ make_mw2doc $MWSRC
+ if [ $? -ne 0 ]; then
+   echo "***** Error while making documentation !" 2>&1
+   Abort
+ fi
+ cd $MWSRC/doc
+ latex guid3
+ latex guid3
+ latex guid3
+# end of level
+fi
+
+# If public=private, set right uid
+if  [ $pubinstall -eq 2 ]; then
+  chmod -R a+rX $PRIVATE_MEGAWAVE2
+else 
+  chmod o-rx $PRIVATE_MEGAWAVE2
+  chmod g-rx $PRIVATE_MEGAWAVE2
+fi
+
+level=`echo "$level 1 + p" | dc`
+NewTrap
+if [ $l -le $level ] && [ $pubinstall -eq 1 ]; then
+  echo "*********************************************"
+  echo "***** Level $level : Install PUBLIC modules  *****"
+  echo "*********************************************"
+
+  if [ ! -d $PUBLIC_MEGAWAVE2 ]; then
+    echo "***** Cannot find previous temporary PUBLIC installation" 2>&1
+    echo "***** in $PUBLIC_MEGAWAVE2 !" 2>&1
+    echo "***** You have to rerun $_Prog from level 1." 2>&1
+    Abort
+  fi
+
+# Make the MODULES file
+  mwmodlist -mfile $MWSRC > $MWSRC/MODULES.${MW_MACHINETYPE}
+  if [ $? -ne 0 ]; then
+    echo "***** Cannot generate MODULES file on ${MW_MACHINETYPE} !" 2>&1
+    Abort
+  fi
+  mwmodinstall $MWSRC/MODULES.${MW_MACHINETYPE}
+  if [ $? -ne 0 ]; then
+    echo "***** Cannot install PUBLIC modules !" 2>&1
+    Abort
+  fi
+# end of level
+fi
+
+level=`echo "$level 1 + p" | dc`
+NewTrap
+if [ $l -le $level ] && [ $pubinstall -eq 1 ]; then
+  echo "**************************************************"
+  echo "***** Level $level : Install miscellaneous files  *****"
+  echo "**************************************************"
+
+  if [ ! -d $PUBLIC_MEGAWAVE2 ]; then
+    echo "***** Cannot find previous temporary PUBLIC installation" 2>&1
+    echo "***** in $PUBLIC_MEGAWAVE2 !" 2>&1
+    echo "***** You have to rerun $_Prog from level 1." 2>&1
+    Abort
+  fi
+
+# Compiled doc files
+  cp $PRIVATE_MEGAWAVE2/doc/*.dvi $PUBLIC_MEGAWAVE2/doc
+  chmod 644 $PUBLIC_MEGAWAVE2/doc/*.dvi
+
+# Profile and Cshrc User files
+  userprofile=0
+  usercshrc=0
+  if [ -r $PRIVATE_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.profile_megawave2 ]; then
+    cp -f $PRIVATE_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.profile_megawave2  $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.
+    chmod 755 $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.profile_megawave2
+    userprofile=1
+  else
+    if [ -d $MWNEWPUB ] &&  [ -r $MWORGPUB/sys/lib/$MW_MACHINETYPE/.profile_megawave2 ]; then
+      cp -f $MWORGPUB/sys/lib/$MW_MACHINETYPE/.profile_megawave2 $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.
+      chmod 755 $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.profile_megawave2
+      userprofile=1
+    fi
+  fi
+  if [ -r $PRIVATE_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.cshrc_megawave2 ]; then
+    cp -f $PRIVATE_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.cshrc_megawave2  $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.
+    chmod 755 $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.cshrc_megawave2
+    usercshrc=1
+  else 
+    if [ -d $MWNEWPUB ] && [ -r $MWORGPUB/sys/lib/$MW_MACHINETYPE/.cshrc_megawave2 ]; then
+      cp -f $MWORGPUB/sys/lib/$MW_MACHINETYPE/.cshrc_megawave2 $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.
+      chmod 755 $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.cshrc_megawave2
+      usercshrc=1
+    fi
+  fi
+
+# List of modules
+  if [ -r $MWSRC/MODULES.${MW_MACHINETYPE} ]; then
+    echo "%----------------------------------------------------------------" >  $PUBLIC_MEGAWAVE2/MODULES.${MW_MACHINETYPE}
+    echo "% List of MegaWave2 modules available on $MW_MACHINETYPE architecture" >>  $PUBLIC_MEGAWAVE2/MODULES.${MW_MACHINETYPE}
+    echo "%----------------------------------------------------------------" >>  $PUBLIC_MEGAWAVE2/MODULES.${MW_MACHINETYPE}
+    cat $MWSRC/MODULES.${MW_MACHINETYPE} >> $PUBLIC_MEGAWAVE2/MODULES.${MW_MACHINETYPE}
+    chmod 644 $PUBLIC_MEGAWAVE2/MODULES.${MW_MACHINETYPE}
+  fi
+
+# README file
+  echo "This is the MegaWave2 PUBLIC directory, generated by your local MegaWave2 administrator $LOGNAME." > $PUBLIC_MEGAWAVE2/README
+  echo "" >> $PUBLIC_MEGAWAVE2/README
+  echo "This is NOT the original distribution : please do not copy it, it may not work on another machine !" >> $PUBLIC_MEGAWAVE2/README
+  echo "To get the original distribution, ask your local MegaWave2 administrator or download the latest"  >> $PUBLIC_MEGAWAVE2/README
+  echo "version available on the Web at"  >> $PUBLIC_MEGAWAVE2/README
+  echo "     http://www.cmla.ens-cachan.fr/Cmla/Megawave"  >> $PUBLIC_MEGAWAVE2/README
+  echo "" >> $PUBLIC_MEGAWAVE2/README
+
+  if [ $userprofile -eq 1 ] || [ $usercshrc -eq 1 ]; then
+    echo "To get the environement needed to use this PUBLIC MegaWave2, source the following files " >> $PUBLIC_MEGAWAVE2/README
+    if [ $userprofile -eq 1 ]; then
+      if  [ -d $MWNEWPUB ]; then
+        echo "     $MWORGPUB/sys/lib/$MW_MACHINETYPE/.profile_megawave2"  >> $PUBLIC_MEGAWAVE2/README
+      else
+        echo "     $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.profile_megawave2" >> $PUBLIC_MEGAWAVE2/README
+      fi
+      echo "if your shell is bsh-compatible."  >> $PUBLIC_MEGAWAVE2/README
+    fi
+    if [ $usercshrc -eq 1 ]; then
+      if  [ -d $MWNEWPUB ]; then
+        echo "     $MWORGPUB/sys/lib/$MW_MACHINETYPE/.cshrc_megawave2"  >> $PUBLIC_MEGAWAVE2/README
+      else 
+        echo "     $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE/.cshrc_megawave2"  >> $PUBLIC_MEGAWAVE2/README
+      fi
+      echo "if your shell is csh-compatible."  >> $PUBLIC_MEGAWAVE2/README
+    fi
+  else
+    echo "To get the environement needed to use this PUBLIC MegaWave2, ask your MegaWave2 administrator" >> $PUBLIC_MEGAWAVE2/README    
+    echo "or see Volume 1 located at $PUBLIC_MEGAWAVE2/doc/guid1.dvi" >> $PUBLIC_MEGAWAVE2/README
+  fi  
+  chmod 644  $PUBLIC_MEGAWAVE2/README
+
+# COPYRIGHT file
+  if [ -r $MWSRC/COPYRIGHT ]; then
+    cp $MWSRC/COPYRIGHT $PUBLIC_MEGAWAVE2/.
+    chmod 644  $PUBLIC_MEGAWAVE2/COPYRIGHT
+  fi
+
+# Guides
+  if [ -r $MWSRC/doc/guid1.dvi ]; then
+    cp $MWSRC/doc/guid1.dvi $PUBLIC_MEGAWAVE2/doc/.
+    chmod 644 $PUBLIC_MEGAWAVE2/doc/guid1.dvi
+  fi
+  if [ -r $MWSRC/doc/guid2.dvi ]; then
+    cp $MWSRC/doc/guid2.dvi $PUBLIC_MEGAWAVE2/doc/.
+    chmod 644 $PUBLIC_MEGAWAVE2/doc/guid2.dvi
+  fi
+  
+# end of level
+fi
+
+
+level=`echo "$level 1 + p" | dc`
+NewTrap
+if [ -d $MWNEWPUB ]; then
+  echo "*****************************************************************"
+  echo "***** Level $level : Make changes in effect in PUBLIC MegaWave2  *****"
+  echo "*****************************************************************"
+  mv -f $MWORGPUB $MWDIRPUB/MegaWave2_V${oldvers}
+  if [ $? -ne 0 ]; then
+    echo "***** Cannot rename $MWORGPUB !" 2>&1
+    Abort
+  fi
+  mv -f $PUBLIC_MEGAWAVE2 $MWORGPUB
+  if [ $? -ne 0 ]; then
+    echo "***** Cannot rename $PUBLIC_MEGAWAVE2 !" 2>&1
+    Abort
+  fi
+  chmod 755 $MWORGPUB
+  echo $newvers > $MWORGPUB/VERS
+  chmod 644 $MWORGPUB/VERS
+  echo "***** Now, users should experiment in $MWORGPUB the new PUBLIC version $newvers"
+  echo "***** They still may get the old PUBLIC version $oldvers in $MWDIRPUB/MegaWave2_V${oldvers}"
+  PUBLIC_MEGAWAVE2=$MWORGPUB
+fi
+
+if [ $pubinstall -eq 1 ]; then
+  rm -f $PUBLIC_MEGAWAVE2/INSTALL_NOT_COMPLETE
+fi
+cd $CWD
+echo " "
+echo "***** `date`"
+echo "*******************************************************************"
+echo "***** Install done for MegaWave2 ! (Leave your fingers quiet) *****"
+echo "*******************************************************************"
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+

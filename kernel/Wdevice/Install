@@ -1,0 +1,125 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
+_Func="Install a new version of the Wdevice Library";
+_Prog="`basename $0`"
+_Vers="0.0"
+_Date="1999"
+_Auth="Jacques Froment";
+_Usage="[-static] [-public] [-clear] [-debug]"
+#-----------------------------------------------------------------------------
+# This file is part of the MegaWave2 system library 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+# Run this shell-script to make a new version of the MegaWave2 system library
+# on your machine. Notice : you must have configured your environment to be 
+# the MegaWave2 administrator (it does not mean to be the super-user root).
+# Options :
+# -static : generates static library (default : shared).
+# -public : change the system library of the PUBLIC version of MegaWave2
+#           (the version used by everybody else than you in your lab), in
+#           addition to the PRIVATE version of MegaWave2.
+# -clear : clear previous objects and libraries.
+# -debug : produce debugging information to debug the libraries.
+
+if [ "${MW_MACHINETYPE}" = "" ]; then
+   echo "Please set the \$MW_MACHINETYPE environment variable"
+   exit 1
+fi
+if [ "${MW_SYSTEMTYPE}" = "" ]; then
+   echo "Please set the \$MW_SYSTEMTYPE environment variable"
+   exit 1
+fi
+if [ "${PRIVATE_MEGAWAVE2}" = "" ]; then
+   echo "Please set the \$PRIVATE_MEGAWAVE2 environment variable"
+   exit 1
+fi
+if [ "${PUBLIC_MEGAWAVE2}" = "" ]; then
+   echo "Please set the \$PUBLIC_MEGAWAVE2 environment variable"
+   exit 1
+fi
+
+lib="shared"
+clear=0
+public=0
+opt=""
+
+while [ "$1" != "" ]
+do
+        case "$1" in
+	  "-static") lib="static"
+		     shift
+		     ;;
+	  
+	  "-public") public=1
+		     shift
+		     ;;
+
+	  "-clear") clear=1
+		    shift
+		    ;;
+
+	   "-debug") opt="$opt debug"
+		     shift
+		     ;;
+
+        *)      . .mw2_help_lg_com
+                ;;
+       
+       esac
+done
+opt="$lib $opt"
+
+echo " "
+echo "*** Install the Wdevice library  (Wdevice Install) ***"
+
+needir=${PRIVATE_MEGAWAVE2}/kernel_obj/Wdevice/obj/${MW_MACHINETYPE}
+if [ ! -d ${needir} ]; then
+  echo "Create directory ${needir}..."
+  mkdir -p ${needir}
+fi
+
+needir=${PRIVATE_MEGAWAVE2}/kernel_obj/Wdevice/lib/${MW_MACHINETYPE}
+if [ ! -d ${needir} ]; then
+  echo "Create directory ${needir}..."
+  mkdir -p ${needir}
+fi
+
+../shell/mwconfig "$opt"
+if [ $? -ne 0 ]; then
+  echo "*** Error in mwconfig ! Abort Wdevice Install. ***" 2>&1
+  exit 1
+fi
+if [ $clear -eq 1 ]; then
+  make clean
+fi
+make $lib
+if [ $? -ne 0 ]; then
+  echo "*** Error in 'make $lib' ! Abort Wdevice Install. ***" 2>&1
+  exit 1
+fi
+make install
+if [ $? -ne 0 ]; then
+  echo "*** Error in 'make install' ! Abort Wdevice Install. ***" 2>&1
+  exit 1
+fi
+if [ $public -eq 1 ]; then
+  make sysinstall
+  if [ $? -ne 0 ]; then
+    echo "*** Error in 'make sysinstall' ! Abort Wdevice Install. ***" 2>&1
+    exit 1
+  fi
+fi
+
+echo " "
+echo "*** Install done for the Wdevice library on $PRIVATE_MEGAWAVE2 ***"
+if [ $public -eq 1 ]; then
+  echo "*** Install done for the Wdevice library on $PUBLIC_MEGAWAVE2 ***"
+fi  
+exit 0
+
+

@@ -1,0 +1,204 @@
+The Fast Level Sets Transform is a decomposition of an image
+(an \texttt{Fimage} or a \texttt{Cimage}) into ``shapes'', based on connected
+components of level sets and on level lines. As the name
+indicates, it is a fast algorithm, of complexity $O(N\log N)$
+where $N$ is the number of pixels, but the complexity depends
+also on the content of the image: a highly textured image would
+take more time to decompose than an image with many flat zones.
+
+A shape is based on a connected component of superior level set
+(${\cal X}^{\geq \lambda} = [u\geq \lambda]$) or of inferior
+level set (${\cal X}^{\leq \lambda} = [u \leq \lambda]$). More
+precisely, it is such a component in which we have filled the
+holes, where the definition of a hole is as follows:
+\begin{itemize}
+\item for a component not meeting the frame of the image, a hole
+is any connected component of the complementary that does not meet
+the frame of the image.
+\item for a component containing all the frame of the image, a
+hole is any connected component of the complementary.
+\item for a component meeting the frame of the image without
+containing it, it is a connected component of the
+complementary not meeting the frame or a connected component of
+the complementary meeting the frame but having an area less than
+half the image.
+\end{itemize}
+In all cases, it is easily seen that a shape contains all the
+connected components of the complementary, except possibly one,
+called its exterior.
+
+The reason for considering such things is that in the physical world,
+most objects are full, without holes, so that if an object appears in
+the image with a hole, it means that it is partially occluded by another
+object. The definition of a hole for a connected component of the
+complementary not meeting the frame of the image is natural, but much
+more ambiguous otherwise. Actually, such holes are defined so as to make
+the shape as small as possible leaving a connected exterior. All these
+considerations are justified mainly by technical reasons: it allows to have
+a convenient structure for the family of shapes.
+
+In the same manner that superior level sets are decreasing and inferior level
+sets are increasing when $\lambda$ increases, it is not hard to see that
+connected components of upper level sets have a structure of tree, so as
+connected components of lower level sets: indeed, a node is associated to
+a connected component of level set and a link (an ``edge'' in graph theory)
+is put between two nodes if and only if one is included into the other and
+no third shape is nested between both. The entire image is a connected
+component of level set ($[u\geq \min u] = [u \leq \max u]$ and it is the only
+one that is simultaneously an upper and a lower level set).
+
+In that sense, it seems that we
+have two trees to represent the image. Both are interesting, because one
+contains light objects on a dark background and the other dark objects on
+a light background. But it seems better to have both kinds of objects in
+the same structure. That is the role of the shapes; of course, that means that
+some connected components of level sets must have been ignored in the
+resulting structure: they are the ones whose associated shapes are the image
+itself, that is the ones containing all the frame of the image or containing
+only a part of the frame but where each component of the complementary has
+an area smaller than half the image.
+
+Shapes also have a tree structure, and two shapes are whether disjoint or
+nested. The tree is encoded in the following manner in the structure
+\texttt{Shape}:
+\begin{itemize}
+\item \texttt{parent} points to the parent shape. It is a valid pointer,
+except for the root of the tree, for which it is \texttt{NULL}.
+\item \texttt{next\_sibling} points to another child of its father.
+\item \texttt{child} is one child of the shape. The other ones can be found
+by following the links \texttt{next\_sibling} of the \texttt{child} until it is
+the \texttt{NULL} pointer.
+\end{itemize}
+In this way, we can follow each direction in the tree (going toward the
+root or toward the leaves) with few pointers. A leaf in the tree has a
+\texttt{child} field of value \texttt{NULL}.
+
+The other fields of the \texttt{Shape} structure have the meaning:
+\begin{itemize}
+\item \texttt{inferior\_type} is a boolean value indicating if the shape is
+extracted from an inferior or superior (connected component of) level
+set. This has no meaning for the root of the tree.
+\item \texttt{value} is the value of the threshold for the level set whose
+connected component generated the shape. If it is sufficiently contrasted
+compared to the background, there are several such thresholds, only the
+extremal one is kept (shapes are not duplicated in the tree).
+\item \texttt{open} is a boolean value indicating if the boundary (the level
+line) is open or closed. That is if the shape meets the frame of the image or
+not.
+\item \texttt{area} is the number of pixels in the shape, that is the number
+of pixels in the connected component of level set plus the areas of the holes.
+\item \texttt{removed} is a boolean value indicating if the shape should be
+considered in the tree or removed (see below).
+\item \texttt{pixels} is an array of points in the plane, the list of pixels
+in the shapes. The size of the array is the field \texttt{area}.
+\item \texttt{boundary} is the boundary of the shape (the level line), each
+point being at the junction of 4 pixels. The point of coordinates $(i,j)$ is
+considered to be at the upper-left corner of the pixel $(i,j)$.
+\item \texttt{data} is left free for the user to store what needed.
+\end{itemize}
+
+The number of shapes in the tree is not more than the number of pixels. But
+the number of holes cannot be bounded so easily.
+
+Removing a shape from the tree means connecting its children directly to its
+father. In fact no connection is changed, but the functions
+\texttt{mw\_get\_parent\_shape}, \texttt{mw\_get\_first\_child\_shape} and
+\texttt{mw\_get\_next\_sibling\_shape} take this field into account, so they
+should be used instead of the fields directly. Of course, when the tree is the
+output of \texttt{flst}, no shape is removed initially.
+
+The fields of the tree structure, \texttt{Shapes}, are:
+\begin{itemize}
+\item \texttt{nrow} and \texttt{ncol} are the dimensions of the image.
+\item \texttt{the\_shapes} is an array containing all the shapes, in no
+particular order, except that the one at index zero is always the root.
+\item \texttt{nb\_shapes} is the size of this array.
+\item \texttt{smallest\_shape} is an array of size
+\texttt{nrow}$\times$\texttt{ncol} where element $y\times$\texttt{ncol}$+x$
+is the smallest shape containing pixel $(i,j)$. This does not take into
+account that this shape could be removed, so the function
+\texttt{mw\_get\_smallest\_shape} should be used instead.
+\item \texttt{data} is left free for the user.
+\end{itemize}
+
+Of course, the flst is called a ``transform'', that means that we can
+reconstruct the image when we know the tree of shapes. This is the role of the
+module \texttt{flst\_reconstruct}.
+
+The arguments of the function are:
+\begin{itemize}
+\item \texttt{pFloatImageInput}: the image to decompose
+\item \texttt{pTree}: the tree of shapes, filled as output.
+\item \texttt{pStoreCurves}: if non \texttt{NULL}, indicates to store also the
+curve corresponding to the boundary of each shape.
+\item \texttt{pMinArea, pMode}: arguments to a possible extrema killer, see below.
+\end{itemize}
+
+Before decomposing the image, it is possible to apply an extrema killer to the
+image. This reduces the number of shapes, and so the memory requirement of the
+output structure is also reduced, so as computation time. An extrema killer is
+applied only in the case where \texttt{pMinArea} is a non \texttt{NULL}
+pointer and the pointed value is strictly greater than 1. In this case, the
+input image \texttt{pFloatImageInput} is modified, the extrema killer is
+applied to it. In this manner, the tree and the image after the call to the
+function \texttt{flst} are always equivalent.
+
+We call extremum a connected component of level set. If it is of a superior
+level set (resp. inferior), that means that all its neighbors have a strictly
+inferior (resp. superior) gray level. Removing it means putting the
+restriction of the image to it to the level determined by the greatest
+(resp. lowest) gray value of its neighbors. The extrema killer removes all
+extrema of area strictly lower than \texttt{*pMinArea}. This is equivalent to
+applying an inf-sup $IS$ (resp. sup-inf $SI$) operator with all connected
+subsets of area \texttt{*pMinArea} as structuring elements. These operators do
+not commute, so that we have four choices, applying whether $IS$, $SI$,
+$IS\circ SI$ or $SI\circ IS$. Moreover, each one of these filters can be
+applied with a certain notion of connectedness (4- or 8-). The value of
+\texttt{*pMode} is meant to allow the choice (if \texttt{pMode} is the
+\texttt{NULL} pointer, it is understood as the value 0). It is a concatenation
+of the different choices we make:
+
+\begin{enumerate}
+\item We have to put whether \texttt{MW\_LS\_4} or \texttt{MW\_LS\_8}, this is the
+choice of connectedness for inferior level sets (for superior level sets, it
+is automatically the other notion).
+\item We have to choose if the last extrema killer before extraction of
+shapes is IS (\texttt{MW\_LS\_INF}) or SI (\texttt{MW\_LS\_SUP}). This is applied
+with the connectedness of choice 1. For example, if we have chosen
+4-connectedness for inf level sets, the minima killer (if chosen here) is
+applied with 4-connectedness.
+\item We have to choose if we apply a composed filter (ISoSI or SIoIS) (value
+\texttt{MW\_LS\_COMPOSED} or a simple filter (SI or IS) (value
+\texttt{MW\_LS\_UNCOMPOSED}).
+\item Notion of connectedness for the first filter in a composed filter (value
+\texttt{MW\_LS\_4\_FIRST} or \texttt{MW\_LS\_8\_FIRST}). This
+parameter is meaningless if a simple filter is chosen.
+\end{enumerate}
+
+The value of the mode is a combination of the modes with the binary ``or''
+operator. For example, value 0 corresponds to \texttt{MW\_LS\_4 | MW\_LS\_INF |
+MW\_LS\_COMPOSED | MW\_LS\_4\_FIRST}, meaning: apply a composed Luc Vincent filter
+(\texttt{MW\_LS\_COMPOSED}), which is $IS\circ SI$ (maxima killer before
+minima killer), with 4-connectedness for $IS$ (\texttt{MW\_LS\_4}) and also
+4-connectedness for $SI$ (\texttt{MW\_LS\_4\_FIRST}).
+
+Some very simple manipulations of the tree structure are made in the modules
+\texttt{fkill\_grains} and \texttt{fkill\_gradations}.
+
+\begin{thebibliography}{10}
+\bibitem{fllt} Monasse, P., Guichard, F.:~
+Fast Computation of a Contrast-Invariant Image Representation,
+to appear in IEEE Trans. on Image Processing,
+Preprint CMLA 9815, available from {\texttt
+http://www.cmla.ens-cachan.fr/index.html} (1998)
+
+\bibitem{ss99} Monasse, P., Guichard, F.:~
+Scale-Space from a Level Lines Tree,
+Proc. of 2nd Int. Conf. on Scale-Space Theories in Computer
+Vision, Corfu, Greece, LNCS 1682, pp. 175--186.
+
+\bibitem{fllt_theory}
+Monasse, P.:
+An Inclusion Tree Describing the Topological Structure of an Image,
+in preparation.
+\end{thebibliography}

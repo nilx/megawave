@@ -1,0 +1,19 @@
+This macro reconstructs an image from the compressed file {\em compressfile}, 
+which has been generated using the wavelet transform + vector quantization 
+module {\em fwvq} (or the {\em Fwvq} macro). It is based on the {\em fwivq} 
+module, but is simpler to use. 
+
+One only has to specify the prefix {\em codebook} of all codebook sets 
+(see {\em Fwvq} and {\em Fwlbg\_adap} macro documentations for further 
+details on the codebook sets managment) and the input compressed file 
+(typically a *.comp file generated with {\em Fwvq} macro). 
+
+If the input compressed file has the form *c.comp, then the reconstructed 
+image is put in *r.rim. 
+
+
+All the options should be selected and tuned in exactly the same 
+manner at the compression ({\em Fwvq}) and decompression ({\em Fwivq}) steps. 
+Likewise, {\em codebook} should be the same 
+at the compression ({\em Fwvq}) and decompression ({\em Fwivq}) steps. 
+Then *r.rim should be identical to the image *q.rim obtained with {\em Fwvq}. 

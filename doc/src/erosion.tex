@@ -1,0 +1,23 @@
+In this module, we have implemented two basic operators of mathematical 
+morphology, the so-called erosion and dilation. Let $u(x)$ be an image 
+and $F$ a shape, i.e. a subset of $R^2$, then the erosion of $u$ by the 
+``structuring element'' $F$ is the image $v$ defined by
+$$v(x) = \inf_{\delta \epsilon F} u(x+\delta).$$
+This operation ``erodes'' high-intensity shapes of $u$ and ``dilates'' dark 
+ones. 
+When two or more erosions are successively processed, the resulting operation 
+is a single erosion with a shape given the convolution of the successive 
+shapes.
+The ``inverse'' operation, called dilation, is defined by
+$$v(x) = \sup_{\delta \epsilon F} u(x+\delta).$$
+However, the combination of these operators does not produce a null 
+operation in general.
+
+The {\sf erosion} module iterates $n$ erosions (or dilations if the -i option 
+is set) 
+on a cimage $u$, taking shape $s$ as structuring element, or a disk of radius
+$r$ (default $r=1.0$) if no shape is specified.
+
+The complexity of the algorithm is $O(n r^2 |u|)$, so that it is faster to
+process many ``little'' erosions than a ``big'' one. 
+

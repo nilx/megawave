@@ -1,0 +1,60 @@
+\def\real{I\!\!R}
+
+
+{\em iowave1} reconstructs a signal from a sequence of sub-signals forming a wavelet decomposition, according to the pyramidal algorithm of S. Mallat \cite{kn:ma1}. 
+The notations that are used here have been already defined in {\em owave1} module's documentation, and the reader is refered there to see their signification. 
+
+{\em WavTrans} is the prefix name of a sequence of files containing the coefficients of a wavelet decomposition \( A_{J}, D_{J}, D_{J-1}, \ldots, D_{1} \). {\em iowave1} computes \( A_{0} \), i.e. the inverse wavelet transform of {\em WavTrans}. 
+As for the decomposition this is done recursively : \( A_{j-1} \) is computed from \( A_{j} \) and \( D_{j} \). Here again the one-step algorithm is very simple due to the two-scale relationship 
+\[
+\sqrt{2} \, \varphi(2x) = \sum_{l} h_{k-2l} \varphi(x-l) + \sum_{l} g_{k-2l} \psi(x-l)
+\]
+And thus
+\[
+A_{j-1}[k] = \sum_{l} h_{k-2l} A_{j}[l] + \sum_{l} g_{k-2l} D_{j}[l]
+\]
+
+The edge processing methods are corresponding to those described for {\em owave1}.
+
+The complexity of the algorithm is roughly the same as for {\em owave1}.
+
+The sample values of the reconstructed signal are stored in the file {\em RecompSignal}. 
+
+The coefficients \( h_{k} \) of the filter's impulse response are stored in the file {\em ImpulseResponse}. The coefficients of the filter's impulse response for computing the edge coefficients are stored in the file {\em EdgeIR}. 
+
+\begin{itemize}
+\item
+The -r option specifies the number of levels $J$ in the decomposition.
+\item
+The -e option specifies the edge processing mode (see {\em owave1}).
+\item
+The -p option specifies the preconditionning mode.
+\begin{itemize}
+\item
+0 : no preconditionning (default).
+\item
+1 : inverse preconditionning of the reconstructed signal.
+\item
+2 : preconditionning of the average at level~$J$ and inverse preconditionning of the reconstructed signal.
+\end{itemize}
+\item
+The -i option enables to have invertible transform. Since the transform is invertible when EdgeMode is equal to 1 or 3, this only makes sense when EdgeMode is equal to 0 or 2. 
+\item
+The -n option specifies the normalisation mode of the filter impulse responses' coefficients. It should be selected according to the mode used for the decomposition in order to get exact reconstruction. 
+\end{itemize}
+
+
+
+\begin{thebibliography}{Dau1}
+
+\bibitem[CDV]{kn:cdv} A. Cohen, I. Daubechies, P. Vial. 
+{\em Wavelets and Fast Wavelet Transform on an Interval, } 
+preprint AT\&T Bell Laboratories, 1992.
+\bibitem[Dau]{kn:dau1} I. Daubechies. 
+{\em Orthonomal Bases of Compactly Supported Wavelets, } 
+Comm. pure and applied math., 41, pp.909--996, 1988.
+\bibitem[Mal]{kn:ma1} S. Mallat. {\em A theory for multiresolution signal decomposition, the wavelet representation, } IEEE PAMI Vol. 2, n 7, 1989.
+\bibitem[SB]{kn:sb} M.J.T. Smith, T.P. Barnwell. {\em Exact reconstruction techniques for tree structured subband coders, } IEEE ASSP Vol.34, pp.434-441, 1986.
+
+\end{thebibliography}
+

@@ -1,0 +1,431 @@
+#! /bin/sh 
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_Func="Install a new MegaWave2 public modules environment (adm only)";
+_Prog="`basename $0`"
+_Vers="2.03"
+_Date="1997-99"
+_Auth="Jacques Froment";
+_Usage="[-clear] [-tdir target_directory] [-X file_of_modules_for_xmw2] file_of_modules"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+if [ "${MW_MACHINETYPE}" = "" ]; then
+   echo "Please set the \$MW_MACHINETYPE environment variable"
+   exit 1
+fi
+
+if [ "${MW_SYSTEMTYPE}" = "" ]; then
+   echo "Please set the \$MW_SYSTEMTYPE environment variable"
+   exit 1
+fi
+
+if [ "$PUBLIC_MEGAWAVE2" = "" ]; then
+   echo "Please set the \$PUBLIC_MEGAWAVE2 environment variable"
+   exit 1
+fi
+
+if [ "$PRIVATE_MEGAWAVE2" = "" ]; then
+   echo "Please set the \$PRIVATE_MEGAWAVE2 environment variable"
+   exit 1
+fi
+
+# Usage
+if [ $# -lt 1 ] || [ $# -gt 6 ]; then
+  . .mw2_help_lg_com
+fi
+
+# Default Target MegaWave2 (could be overwritten using -tdir)
+MW_TARGET=$PUBLIC_MEGAWAVE2
+# Default Source MegaWave2 (could be overwritten using #dir in the modules file)
+MW_SOURCE=$PRIVATE_MEGAWAVE2
+# Default source subdir (could be overwritten using #group in the modules file)
+MW_GROUP=""
+
+# Permission mode
+umask 022
+pmodeR=644
+pmodeRX=755
+
+clear=0
+XMW2file=""
+
+while [ "$2" != "" ]
+do
+        case "$1" in
+        "-clear")     clear=1
+                      shift
+                      ;;
+
+        "-tdir")     shift
+                     MW_TARGET=$1
+                     shift
+                     ;;
+
+        "-X")        shift
+                     XMW2file=$1
+                     shift
+                     ;;
+
+        *)      . .mw2_help_lg_com
+                ;;
+       
+       esac
+done
+
+BIN=bin/$MW_MACHINETYPE
+LIB=lib/$MW_MACHINETYPE
+OBJ=obj/$MW_MACHINETYPE
+
+
+MW_DIRTARGET=`dirname $MW_TARGET`
+if [ ! -d $MW_TARGET ]; then
+  newtarget=1
+  if [ ! -w $MW_DIRTARGET ]; then
+    echo "Sorry, you don't have permission to install MegaWave2 on $MW_DIRTARGET"
+    echo "This macro is for the MegaWave2 Administrator only."
+    exit 1
+  fi
+else
+  newtarget=0
+  if [ ! -w $MW_TARGET ]; then
+    echo "Sorry, you don't have permission to install MegaWave2 modules on $MW_TARGET"
+    echo "This macro is for the MegaWave2 Administrator only."
+    exit 1
+  fi
+fi
+
+
+
+echo "Install modules on $MW_TARGET..."
+
+#---
+
+if [ "$clear" = "1" ] && [ $newtarget -eq 0 ]; then
+
+# I use the temporary directory since, when people run a public module,
+# I cannot directly remove the executable.
+
+ MW_ORG_TARGET=$MW_TARGET
+ MW_TARGET=$MW_DIRTARGET/MegaWave2_new
+ MW_OLD_TARGET=$MW_DIRTARGET/MegaWave2_old
+ echo " "
+ echo "In order to minimize inconveniences for MegaWave2 Users, the" 
+ echo "installation will be done by copying the target directory"
+ echo "$MW_ORG_TARGET in a temporary directory, by making the"
+ echo "installation in the temporary directory and, at the end, by"
+ echo "moving the temporary directory to the target directory".
+ echo " "
+ echo "Mirror temporary directory of $MW_ORG_TARGET is $MW_TARGET"
+
+ if  [ ! -w $MW_DIRTARGET ]; then
+   echo "Error: do not have write permission into $MW_DIRTARGET"
+   exit 2
+ fi
+ 
+ if [ -d $MW_OLD_TARGET ]; then
+  a="N"
+  mwechon "Ok to remove old target directory $MW_OLD_TARGET [y or n] ?"
+  read a
+  if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
+    echo "  Removing..."
+    \rm -rf $MW_OLD_TARGET 
+  else
+   echo "Cannot continue. Exit."
+   exit 2
+  fi
+ fi
+
+ if [ -d $MW_TARGET ]; then
+  echo "Mirror temporary directory already exists !!"
+  a="N"
+  mwechon "Should I use it as the good one ?"
+  read a
+  if [ "$a" != "y" ] && [ "$a" != "Y" ]; then
+    echo "Aborting. You should remove $MW_TARGET and re-run this command."
+    exit 2
+  fi
+ else
+  mkdir $MW_TARGET
+  mwechon "Making mirror copy..."
+  (cd $MW_ORG_TARGET; tar cf $MW_TARGET.tar .)
+  (cd $MW_TARGET; tar xfp $MW_TARGET.tar; \rm $MW_TARGET.tar)
+  echo "Done"
+  echo " "
+ fi
+
+
+ a="N"
+ rep=$MW_TARGET/src
+ if [ -d $rep ]; then
+  mwechon "Ok to remove directory $rep [y or n] ?"
+  read a
+  if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
+    echo "  Removing..."
+    \rm -rf $rep
+  fi
+ fi
+
+ a="N"
+ rep=$MW_TARGET/doc
+ if [ -d $rep ]; then
+  mwechon "Ok to remove directory $rep [y or n] ?"
+  read a
+  if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
+    echo "  Removing..."
+    \rm -rf $rep
+  fi
+ fi
+
+ a="N"
+ rep=$MW_TARGET/data
+ if [ -d $rep ]; then
+  mwechon "Ok to remove directory $rep [y or n] ?"
+  read a
+  if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
+    echo "  Removing..."
+    \rm -rf $rep
+  fi
+ fi
+
+ echo "  Removing $MW_TARGET/$BIN and $MW_TARGET/shell..."
+ \rm -rf $MW_TARGET/$BIN $MW_TARGET/shell
+
+# End of if [ "$clear" = "1" ]; then
+fi
+
+file=$1
+nl=0
+
+if [ ! -f $file ]; then
+  echo "${_Prog}: Cannot open file ${file}" 1>&2
+  exit 1
+fi
+if [ "$XMW2file" != "" ] && [ ! -f $XMW2file ]; then
+  echo "${_Prog}: Cannot open file ${XMW2file}" 1>&2
+  exit 1
+fi
+
+# Get the number of lines in the file 
+nlines=`sed -n "$ =" $file`
+
+if [ "$nlines" = "" ]; then
+  echo "${_Prog}: Missing <end of line> at the end of file ${file}" 1>&2
+  exit 1
+fi
+
+if [ -f $MW_TARGET/$LIB/libmw.a ]; then
+  mv $MW_TARGET/$LIB/libmw.a $MW_TARGET/$LIB/libmw.a.old
+fi
+if [ -f $MW_TARGET/$LIB/libxmw.a ]; then
+  mv $MW_TARGET/$LIB/libxmw.a $MW_TARGET/$LIB/libxmw.a.old
+fi
+mkdir -p $MW_TARGET/$BIN
+mkdir -p $MW_TARGET/shell
+mkdir -p $MW_TARGET/$LIB
+mkdir -p $MW_TARGET/doc/src
+mkdir -p $MW_TARGET/doc/obj/DEPENDENCIES
+if [ -d $MW_SOURCE/data/PUBLIC ]; then
+  mkdir -m 755 -p $MW_TARGET/data/PUBLIC
+  cp -r $MW_SOURCE/data/PUBLIC/* $MW_TARGET/data/PUBLIC
+  chmod -R a+rX $MW_TARGET/data/PUBLIC/*
+fi
+
+while [ $nl -ne $nlines ]
+do
+
+ module=""
+
+ nl=`echo "$nl 1 + p" | dc`
+ line=`sed -n "$nl,$nl p" $file`
+
+ void=`echo $line | cut -d% -f1`
+ if [ ! "$void" = "" ]; then
+
+  command=`echo $line | cut -d" " -f1 | grep "#"`
+  case "$command" in
+
+
+#----- New directory
+    "#dir") MW_SOURCE=`echo $line | cut -d" " -f2`
+	    if [ ! -d $MW_SOURCE ]; then
+ 	      echo "${_Prog}: Illegal directory $MW_SOURCE" 1>&2
+	      exit 1
+	    fi
+            ;;
+
+#----- New group
+
+    "#group")  MW_GROUP=`echo $line | cut -d" " -f2`
+	    if [ ! -d $MW_SOURCE/src/$MW_GROUP ]; then
+ 	      echo "${_Prog}: Illegal group directory $MW_SOURCE/src/$MW_GROUP" 1>&2
+	      exit 1
+	    fi
+            echo " "
+            echo "<< Group \"${MW_GROUP}\" >>"
+            echo " "
+            mkdir -p $MW_TARGET/src/$MW_GROUP
+	    if [ -d $MW_SOURCE/data/$MW_GROUP ]; then
+	      mkdir -p $MW_TARGET/data/$MW_GROUP
+	      cp -r $MW_SOURCE/data/$MW_GROUP/* $MW_TARGET/data/$MW_GROUP
+#	      if [ $MW_SYSTEMTYPE !=  ] 
+	       chmod -R a+rX $MW_TARGET/data/$MW_GROUP/*
+#	      else
+# Some old systems do not recognize +X (but I don't remember which one !)
+#	       chmod -R $pmodeRX $MW_TARGET/data/$MW_GROUP/*
+#	      fi
+            fi
+            ;;
+
+
+#----- New module
+    "")  module=`echo $line | cut -d" " -f2`
+         if [ ! -r $MW_SOURCE/src/$MW_GROUP/${module}.c ]; then
+           if [ -x  $MW_SOURCE/src/$MW_GROUP/${module} ]; then
+# This is a macro (Shell)
+             modfile=${module}
+           else
+             echo "${_Prog}: Cannot read module $MW_SOURCE/$MW_GROUP/${module}.c or macro $MW_SOURCE/$MW_GROUP/${module}" 1>&2
+             exit 1
+           fi
+	 else
+# This is a module (C file)
+           modfile=${module}.c
+           if [ ! -r $MW_SOURCE/$OBJ/m_${module}.o ] || \
+              [ ! -r $MW_SOURCE/$OBJ/${module}.o ]; then
+ 	     echo "${_Prog}: Cannot read object module ${module} (Is module compiled ?)" 1>&2
+	     exit 1
+	   fi
+           if [ ! -r $MW_SOURCE/$BIN/${module} ]; then
+ 	     echo "${_Prog}: Cannot read executable module ${module} (Is module linked ?)" 1>&2
+	     exit 1
+	   fi
+         fi
+         if [ ! -r $MW_SOURCE/doc/obj/${module}.doc ]; then
+ 	     echo "${_Prog}: Cannot read doc of module or macro ${module} (Maybe a wrong group declaration)" 1>&2
+	     exit 1
+	   fi
+
+         ;;
+
+
+#----- Illegal command
+    *) echo "${_Prog}: Illegal command $command" 1>&2
+       exit 1
+       ;;
+  esac
+
+  if [ ! "$module" = "" ]; then
+    echo "     ${module}"
+    cp -f $MW_SOURCE/src/$MW_GROUP/${modfile} $MW_TARGET/src/$MW_GROUP
+
+# Module only (not a macro)
+    if [ $module != $modfile ]; then
+
+     chmod $pmodeR $MW_TARGET/src/$MW_GROUP/${modfile}
+     if [ ! -r $MW_SOURCE/doc/obj/DEPENDENCIES/${module}.dep ]; then
+      echo "   WARNING: module ${module} has no dependencies list !" 1>&2
+     else
+      cp -f $MW_SOURCE/doc/obj/DEPENDENCIES/${module}.dep $MW_TARGET/doc/obj/DEPENDENCIES
+      chmod $pmodeR  $MW_TARGET/doc/obj/DEPENDENCIES/${module}.dep
+     fi
+    cp -f $MW_SOURCE/$BIN/${module} $MW_TARGET/$BIN
+    ar r $MW_TARGET/$LIB/libmw.a $MW_SOURCE/$OBJ/m_${module}.o  $MW_SOURCE/$OBJ/${module}.o
+    if [ -r $MW_SOURCE/$OBJ/x_${module}.o ]; then
+     ar r $MW_TARGET/$LIB/libxmw.a $MW_SOURCE/$OBJ/i_${module}.o $MW_SOURCE/$OBJ/x_${module}.o
+    fi
+   else
+
+# This is a macro
+    chmod $pmodeRX $MW_TARGET/src/$MW_GROUP/${modfile}
+    if [ -r $MW_TARGET/shell/${modfile} ] || \
+       [ -h $MW_TARGET/shell/${modfile} ]; then
+      rm $MW_TARGET/shell/${modfile}
+    fi
+    ln -s ../src/$MW_GROUP/${modfile} $MW_TARGET/shell/${modfile}
+   fi
+
+   cp -f $MW_SOURCE/doc/obj/${module}.doc $MW_TARGET/doc/obj
+   chmod $pmodeR $MW_TARGET/doc/obj/${module}.doc
+   if [ ! -r $MW_SOURCE/doc/src/${module}.tex ]; then
+    echo "   WARNING: module or macro ${module} is not documented" 1>&2
+   else
+    cp -f $MW_SOURCE/doc/src/${module}.tex $MW_TARGET/doc/src
+    chmod $pmodeR $MW_TARGET/doc/src/${module}.tex
+   fi
+
+   echo " "
+ fi
+
+
+fi
+done
+
+# Ranlib is needed for SunOS 4.x
+if [ $MW_SYSTEMTYPE = SunOS ] && [ $MW_MACHINETYPE != sun4_5 ]; then
+  ranlib $MW_TARGET/$LIB/libmw.a 
+  if [ -r  $MW_TARGET/$LIB/libxmw.a ]; then
+    ranlib $MW_TARGET/$LIB/libxmw.a 
+  fi
+fi
+
+if [ -r  $MW_TARGET/$LIB/libxmw.a ]; then
+    if [ -r $MW_SOURCE/$BIN/myxmw2 ]; then
+      cp -f $MW_SOURCE/$BIN/myxmw2 $MW_TARGET/$BIN/xmw2
+    fi
+fi
+
+chmod $pmodeRX $MW_TARGET/$LIB
+chmod $pmodeR $MW_TARGET/$LIB/*
+
+if [ "$XMW2file" != "" ]; then
+
+  echo "Compiling myxmw2 and installing it as xmw2..."
+  if [ ! -f $XMW2file ]; then
+    echo "${_Prog}: Cannot open file ${XMW2file}" 1>&2
+    exit 1
+  fi
+  if [ ! -r  $MW_TARGET/$LIB/libxmw.a ]; then
+    echo "${_Prog}: No libxmw.a in $MW_TARGET/$LIB. Abort." 1>&2
+    exit 1
+  fi
+  if [ -f  $MW_SOURCE/$BIN/myxmw2 ]; then
+    \rm $MW_SOURCE/$BIN/myxmw2 
+  fi
+  cxmw2 -O -pubsyslib $XMW2file
+  if [ ! -x  $MW_SOURCE/$BIN/myxmw2 ]; then
+    echo "${_Prog}: Couldn't compile correctly myxmw2. Abort." 1>&2
+    exit 1
+  fi
+  cp -f $MW_SOURCE/$BIN/myxmw2 $MW_TARGET/$BIN/xmw2
+  echo " "
+fi
+
+chmod $pmodeRX $MW_TARGET/$BIN/* $MW_TARGET/shell/*
+
+if [ "$clear" = "1" ] && [ $newtarget -eq 0 ]; then
+ chmod -R a+rX $MW_TARGET
+ mwechon "Moving temporary directory to the target directory ?"
+ read a
+ if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
+  \mv -f $MW_ORG_TARGET $MW_OLD_TARGET
+  \mv -f $MW_TARGET $MW_ORG_TARGET
+  echo "Done"
+ else 
+  echo "Installation NOT COMPLETE for modules !"
+  exit 1
+ fi
+fi
+
+echo " "
+echo "Install DONE for modules !"
+
+exit 0
+
+
+

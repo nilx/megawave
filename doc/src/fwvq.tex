@@ -1,0 +1,130 @@
+This module compresses a 8 bits graylevel image using a vector quantization 
+algorithm applied to the orthogonal/biorthogonal wavelet coefficients. 
+
+A wavelet transform is first applied to the image. If the -b option 
+is not selected, then an orthogonal transform is performed using the 
+filter contained in ImpulseResponse, and (if selected) the special 
+filters for edge processing contained in EdgeIR (only for Daubechies 
+wavelets). If the -b option is selected, then a biorthogonal transform 
+is applied using the filter pair contained in ImpulseResponse 
+and ImpulseResponse2. ImpulseResponse, ImpulseResponse2 and EdgeIR 
+are file with dedicated format (see WCP/data/filter directory). 
+
+The -n option enables to control the filter normalisation. FilterNorm 
+must be an integer ranging from 0 to 2 (default is 2 in the orthogonal case, 
+and 1 in the biorthogonal one). 
+\begin{itemize} 
+\item 
+If FilterNorm is 0, then no normalisation is done.
+\item 
+If FilterNorm is 1, then the sum of coefficients in ImpulseResponse 
+is set to 1.0 in the orthogonal case, and the crosscorrelation of 
+coefficients in ImpulseResponse and ImpulseResponse2 is set to 1.0 
+while the sum of coefficients in ImpulseResponse and ImpulseResponse2 
+are set equal in the biorthogonal case. 
+\item
+If FilterNorm is 2, then the sum of squared coefficients in ImpulseResponse 
+is set to 1.0 in the orthogonal case, and the crosscorrelation of 
+coefficients in ImpulseResponse and ImpulseResponse2 is set to 1.0 
+while the sum of squared coefficients in ImpulseResponse and ImpulseResponse2 
+are set equal in the biorthogonal case. 
+\end{itemize}
+
+The -r option controls the number of level of wavelet transform (WavLev 
+must be a positive integer). If not activated, then the number of levels 
+is taken to be equal to the number of levels in CodeBook1. 
+
+The -w option enables to multiply the wavelet coefficients by a different 
+factor WeightFac$^J$ (WeightFac must be a positive floating point number) 
+according to the scale $J$. This sometimes permits to obtain better 
+psychovisual quality for the reconstructed image. 
+
+Once the wavelet transform has been performed, the vector quantization 
+algorithm is applied to wavelet coefficients. Each sub-image is 
+quantized separately using a classified and/or multistaged/residual 
+vector quantization algorithm (see {\em fvq} module documentation). 
+The codebooks for the first class are contained in the CodeBook1 file.  
+The codebooks for the second and third classes 
+are contained respectiveley in the CodeBook2 and CodeBook3 files. 
+ResCodeBook1, ResCodeBook2 and ResCodeBook3 contain codebooks 
+for the quantization of the residual vectors coming from the 
+quantization with CodeBook1, CodeBook2 and CodeBook3 respectively. 
+ResResCodeBook1 and ResResCodeBook2 contain codebooks 
+for the quantization of the residual vectors coming from the 
+quantization with ResCodeBook1 and ResCodeBook2 respectively. 
+Compress is the output compressed file. 
+Qimage is the quantized image, which can be reconstructed from Compress. 
+
+It is possible to apply uniform scalar quantization instead of vector 
+quantization to the upper level subimages with the help of the -s option 
+(see {\em fscalq} module documentation for further details). 
+If ScalQuant is equal to the number of level in the wavelet transform, then 
+only the average subimage is scalar quantized. Otherwise all subimages 
+at level strictly greater than ScalQuant are scalar quantized. 
+With the -u option, it is possible to specify the number of steps 
+for the quantization of the average subimage. 
+
+The -m option enables to select what will be the input to the memory 
+allocation algorithm between the different subimages. It only makes sense 
+when the codebook files contain more than one codebook per sub-image. 
+
+The input to the memory allocation algorithm is a set of discrete rate 
+distortion curves, one for each sub-image in the wavelet transform 
+and each sequence of codebooks (note that in CodeBook1, there is a 
+sequence of codebooks of different sizes for each sub-image, and the 
+same holds for CodeBook2, CodeBook3, ResCodeBook1, a.s.o.). 
+Each point in a rate distortion curve corresponds to the rate and m.s.e. 
+obtained when quantizing a given sub-image with one codebook 
+picked up in a given file CodeBook1, CodeBook2, CodeBook3, ResCodeBook1, 
+a.s.o.. The goal of the algorithm is to select one codebook in each 
+sequence (note that there may be several sequences of codebooks for 
+one sub-image : one in CodeBook1, one in CodeBook2, a.s.o.) 
+in order to minimize the resulting total m.s.e. with 
+the constraint that the total rate remains smaller than a given 
+target bit rate. It begins by taking the smallest codebook in each sequence 
+(typically, it is a size one codebook). The global rate is then 0.0 
+(if we omit the header inserted at the beginning of the output compressed 
+file, whose size is negligible except at extremely low bit rates). 
+The algorithm works in a greedy fashion, replacing at each step 
+one codebook by a larger one picked up in the same sequence. 
+This codebook is chosen in order to get the best improvement 
+in terms of rate distortion while respecting the bit-rate constraint. 
+If codebook A is replaced by codebook B, then the rate distortion improvement
+is measured by 
+\[
+\frac{mse_A - mse_B}{rate_B - rate_A}.
+\]
+One thus choose the sub-image, sequence and codebook which maximize this 
+quantity. The algorithm stops when it is not possible anymore to perform 
+a replacement while satisfying the constraint. This algorithm is not optimal, 
+but it is fast and it gives fairly good results. 
+
+MultiCB is an integer ranging from 1 to 2. If MultiCB is equal to 2, 
+then exact rate-distortion curves are given as input to the 
+memory allocation algorithm. The problem is then that the running time may be 
+very long, especially if large codebooks are used. 
+
+If MultiCB is equal to 1, then approximative rate-distortion curves are given 
+as input to the memory allocation algorithm. It substantially reduces 
+the computation time, but it gives suboptimal allocation. 
+The approximative curves are derived from the rate distortion theory 
+(see \cite{kn:gg}). They can be written as 
+\[
+mse = a 2^{-2R/N}
+\]
+where $R$ is the rate, $N$ is the dimension of vectors, and $a$ is a constant 
+which depends on the variance of vectors in the corresponding subimage. 
+
+The -d option enables to compute a discrete rate-distortion curve. 
+
+The -R option specifies the target bit rate for the compression (cancelled 
+if the -d option is selected). TargetRate must be  a positive floating point 
+number. 
+
+
+\begin{thebibliography}{999999}
+
+\bibitem[GG]{kn:gg} A. Gersho, R.M. Gray, {\em ``Vector quantization 
+and signal compression'', } Kluwer Ac. Pub., Boston (1992). 
+
+\end{thebibliography}

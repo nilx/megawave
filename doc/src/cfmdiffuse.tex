@@ -1,0 +1,16 @@
+
+This module applies \verb+N+ times the Total Variation Minimization algorithm 
+implemented in \verb+cfdiffuse+ to a color image \verb+in+.
+The result is a color movie \verb+out+ built with the successive diffused (smoothed) images of \verb+in+.
+Each output image is the smoothed version of the previous image during the time $\delta t$ given by \verb+deltat+.
+Such algorithm may be used to restore a noisy image.
+
+To get a description of the used scheme, please see \cite{ChambolleLions} and
+the documentation of the module \verb+cfdiffuse+.
+
+\begin{thebibliography}{99}
+\bibitem{ChambolleLions}
+A.~Chambolle and P.-L. Lions.
+\newblock Image recovery via total variation minimization and related problems.
+\newblock Preprint, 1995.
+\end{thebibliography}

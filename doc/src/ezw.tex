@@ -1,0 +1,168 @@
+This module compresses the wavelet transform of an image using 
+Shapiro's EZW algorithm \cite{kn:shp}. It can produce both 
+the compressed file and the quantized wavelet transform 
+(which can be reconstructed from the compressed file). 
+\newline 
+
+{\bf Description of the algorithm} 
+\newline
+
+This is a brief description of EZW algorithm. We refer the reader 
+to \cite{kn:shp} for a full explanation. 
+
+The EZW algorithm is a two steps iterative algorithm. The first step 
+is called the {\em dominant pass,} and it alternates with the second step, 
+which is called the {\em subordinate pass.} Another important feature of 
+the EZW algorithm is that it strongly relies on the tree structure 
+of the wavelet transform. 
+\begin{itemize} 
+\item
+For the {\em dominant pass,} a threshold $T$ is chosen (usually it is the half 
+of the threshold used for the preceding dominant pass). Each coefficient 
+in the wavelet transform is compared to this threshold $T$; if its amplitude 
+is bigger than $T$, then it is said significant, otherwise it is said 
+non-significant and it is quantized to zero. If a coefficient is found 
+significant for the first time (which means that it was found non-significant 
+at the preceding dominant pass), then it is quantized to $-3T/2$ or $3T/2$, 
+according to its sign. If it was already found significant at the preceding 
+dominant pass, then it is put on a list, called the {\em subordinate list}; 
+its quantization shall be refined during the next subordinate pass. 
+
+During the dominant pass, one constructs a {\em significance map} 
+by associating to each coefficient in the wavelet tree a symbol, 
+according to its significance. More precisely, among significant coefficients, 
+one distinguishes between coefficients which have already be found significant 
+at a preceding dominant pass, coefficients which are newly significant and 
+positive, and coefficients which are newly significant and negative. 
+Among coefficients which are non-significant, one distinguishes between 
+those which are {\em isolated zero} (which means that one of their descendents 
+is significant), those which are {\em zero tree root} (which means that 
+all their descendents are non-significant, and their parent is significant 
+or isolated zero), and those which are part of a zero tree (which means 
+that they are a descendent of a zero tree root). 
+
+To encode the changes in the significance map, one scans the wavelet tree, 
+beginning with the root and following an order such that a parent 
+is scanned before its children. 
+For each coefficient, one encodes 0 if it is a zero tree root, 1 if it is 
+an isolated zero, 2 if it is newly significant positive, 3 if it is newly 
+significant negative, and nothing otherwise. This list of symbols (with 
+a four-letters alphabet) is arithmetically encoded 
+(using a customized version of the algorithm presented in \cite{kn:wnc}). 
+
+\item
+During the {\em subordinate pass} one refines the quantization 
+of the coefficients on the subordinate list (those coefficients which 
+have been found significant). This is done by dividing by two the incertitude 
+interval of their value. More precisely, this incertitude interval has always 
+the form $[2nT, (2n+2)T[$ (which means that the coefficient is quantized to 
+$(2n+1)T$). Thus, one checks if the wavelet coefficient in the original 
+transform is bigger or smaller than $(2n+1)T$, and encodes the information 
+(which requires one bit). The incertitude interval then becomes 
+$[2nT, (2n+1)T[$ or $[(2n+1)T, (2n+2)T[$. Again, the resulting sequence 
+of bits is arithmetically encoded. 
+
+The threshold $T$ is divided by two for the next dominant pass.  
+
+\end{itemize} 
+
+For the first dominant pass, one has to choose an initial threshold. 
+This should be preferably smaller than the amplitude $S$ of the biggest 
+wavelet coefficient in the transform, and larger than $S/2$. 
+
+An important feature of the algorithm is that one can compute at any moment 
+the number of bit transmitted or encoded, as well as the error between 
+the original and the quantized wavelet transform. Thus one can stop 
+the algorithm whenever a target bit rate or SNR (error) is reached. 
+This is the {\em progressive transmission} capability of the EZW algorithm. 
+\newline 
+
+{\bf Options} 
+\newline 
+
+$-p$ : \parbox[t]{15.2cm}{Print full information (number of zero tree roots, 
+isolated zeros, arithmetic bit rate for encoding of significance map (RM) 
+and refinement of quantization (RQ), ...).}
+\newline 
+
+$-r \;\; NLevel$ :  \parbox[t]{12.9cm}{Applies the algorithm 
+to the transform with $NLevel$ levels (default : number of levels 
+in $WavTrans$). }
+\newline 
+
+$-w \;\; WeightFac$ :  \parbox[t]{13.0cm}{Multiplies wavelet coefficients 
+at level $J$ by $WeightFac^J$ before quantization (one should use the same 
+option at the decompression, in order to rescale the wavelet coefficients 
+by multiplying them by $1/WeightFac^J$). This option enables to improve 
+(sometimes...) the visual quality of the image, while degrading the PSNR. }
+\newline 
+
+$-m \;\; Max\mbox{\_}Count\mbox{\_}AC$ : \parbox[t]{12.1cm}{Specifies 
+the capacity of the histogram representing the model of the source 
+for arithmetic coding (default : 256).} 
+\newline 
+
+$-t \;\; Threshold$ : \parbox[t]{13.3cm}{Specifies the initial threshold $T$ 
+for the first dominant pass (default : $T$ is half of the amplitude 
+of the biggest coefficient in the transform $WavTrans$). }
+\newline 
+
+$-d$ : \parbox[t]{15.2cm}{Print bit rate and PSNR for different values of 
+bit rate (enables to draw a distortion-rate curve). }
+\newline 
+
+$-R \;\; TargetRate$ : \parbox[t]{13.0cm}{Stops encoding when the target bit 
+rate $TargetRate$ is reached (default : 8bpp). }
+\newline 
+
+$-P \;\; TargetPSNR$ : \parbox[t]{13.3cm}{Stops encoding when the target PSNR 
+$TargetPSNR$ is reached. } 
+\newline 
+
+$-s \;\; SelectArea$ : \parbox[t]{13.3cm}{Encode regions enclosed 
+by polygonal lines with a different target PSNR or rate. 
+SelectArea is a Polygons structure. Each polygon in SelectedArea 
+determines a region which will be encoded at a different rate or PSNR. 
+The target PSNR (if the -P option is activated) or rate (if the -R option 
+is activated) for each region is read in the field channel[0] 
+of the Polygon structure. TargetRate and TargetPSNR represent respectively 
+the target rate or PSNR for the background (pixels which belong to none 
+of the selected areas).  As soon as the target bit rate or PSNR is reached 
+in a selected region or in the background, the encoding stops in this 
+region (i.e. the pixels of this region are not considered in the subsequent 
+dominant and subordinate passes). The global encoding stops when encoding 
+has stopped in all selected regions and in the background. } 
+\newline 
+
+$-o \;\; Compress$ : \parbox[t]{13.3cm}{Generates the compressed file 
+and put it in $Compress$ (output cimage). } 
+\newline 
+
+{\bf Input} 
+\newline 
+
+$WavTrans$ is a wavelet transform of an image in the Wtrans2d format. 
+It is the wavelet transform to be compressed.
+\newline 
+
+{\bf Output} 
+\newline \nopagebreak
+
+$QWavTrans$ is a wavelet transform of an image in the Wtrans2d format. 
+It is the result of the quantization of $WavTrans$. It can be reconstructed 
+from $Compress$. 
+
+
+
+
+
+\begin{thebibliography}{999999}
+
+\bibitem[Shp]{kn:shp} J. Shapiro, {\em ``Embedded image coding using zerotrees 
+of wavelet coefficients'', } IEEE-SP~41 (12), pp. 3445--3462, (1993).  
+
+\bibitem[WNC]{kn:wnc} I.H. Witten, R.M. Neal, J.G. Cleary, {\em ``Arithmetic 
+coding for data compression'', } Comm. of the ACM, Vol.~30, no~6, pp.520--540, 
+(1987). 
+
+\end{thebibliography}

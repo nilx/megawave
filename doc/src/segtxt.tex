@@ -1,0 +1,23 @@
+{\it segtxt} is an easy and fast 
+way to get a segmentation from a textured input fimage.\\
+This module uses directly the modules {\it mschannel} and {\it msegct} in order to have a direct segmentation 
+of the input fimage. So the user has to enter both the parameters for the {\it mschannel}
+ module and the {\it msegct} one. The only difference between 
+ this module and {\it mschannel} is the number of desired regions that the user wants to reach (needed for the {\it msegct} 
+ module). An output Cimage is then required.\\
+ Same as {\it mschannel}, the user must enter an output fmovie. This one is used for {\it msegct}.
+ Moreover, it can be usefull for the user to see the output fmovie so as to change the parameters
+  if the segmentation is not correctly computed. Just by viewing the output fmovie, the user can fixed the parameters.\\
+  In fact, the result of the segmentation depends of the kind of the input fimage. 
+ Be not surprised if, at the first time, you don't get what you are expected. 
+ Generally, the first parameter {\it N} has to be set between 2 and 6. (more if your computer has plenty of memory), it depends if the  input fimage contains a lot of litlle details. 
+ In this case, {\it N} has to be more than 4. Otherwise if your image is not very complex, default parameters could be good.\\
+ The others parameters are also important, be carfull in using the parameter {\it S - standard deviation} used for the smoothing filter {\it fsmooth}, 
+ no more than 3, if not, the segmentation won't be good and the computing time huge. Set 
+ {\it S} to 1 or 2. Same for {\it W} (1 or 2). At last {\it p=1} is better if the image is not
+ very contrasted.\\
+ 
+ {\Large \bf Reference}\\  
+ 
+ {\it A Multiscale Algorithm For Image Segmentation By Variationnal Method, G. Koepfler, C. Lopez, J.M. Morel, Society for Industrial And Applied Mathematics.} 
+ 

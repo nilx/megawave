@@ -1,0 +1,18 @@
+This macro reconstructs a color image from the compressed files 
+with prefix {\em compressfile}, 
+which have been generated using the wavelet transform + vector quantization 
+macro {\em Cfwvq}. It is based on the {\em fwivq} module (applied to 
+each channel separately), and is simpler to use. 
+
+It works exactly in the same way that the {\em Fwivq} macro for graylevel 
+images, except that there is a possibility to use different codebooks 
+for the red, green and blue channels. The codebook arguments should 
+be tuned in the same way as during the compression step ({\em Cfwvq}). 
+
+The macro looks for the input compressed files {\em compressfile}r.comp, 
+{\em compressfile}g.comp and {\em compressfile}b.comp. 
+The reconstructed image is put in {\em compressfile}r.rim. 
+
+All the options should be selected and tuned in exactly the same 
+manner at the compression ({\em Cfwvq}) and decompression ({\em Cfwivq}) 
+steps. 

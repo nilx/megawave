@@ -1,0 +1,264 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="`basename $0`"
+_Vers="1.05"
+_Date="1997"
+_Func="Compile your own XMegaWave2 software";
+_Auth="Jacques Froment";
+_Usage="[-gnu] [-g] [-O] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-pubsyslib] modules_file"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+if [ "${MW_MACHINETYPE}" = "" ]; then
+   echo "Please set the \$MW_MACHINETYPE environment variable"
+   exit 1
+fi
+if [ "${MW_SYSTEMTYPE}" = "" ]; then
+   echo "Please set the \$MW_SYSTEMTYPE environment variable"
+   exit 1
+fi
+if [ "${MW_LIBX11}" = "" ]; then
+   echo "Please set the \$MW_LIBX11 environment variable"
+   exit 1
+fi   
+
+# trap
+trap "echo interrupt; exit 1" 2
+trap "echo quit; exit 1" 3
+
+# TMP Directory
+TMP=/usr/tmp
+if [ "$TMPDIR" != "" ]; then
+  TMP=$TMPDIR
+fi
+
+# XMegaWave2 executable name
+XMW2=myxmw2
+
+# C Compiler
+CC=cc
+
+# Binary directory
+EXEDIR=$MY_MEGAWAVE2/bin/$MW_MACHINETYPE
+
+# --- Include files
+
+# X11 include files
+if [ "${MW_INCLUDEX11}" != "" ]; then
+ IX11=${MW_INCLUDEX11}
+else
+ IX11=/usr/include
+fi   
+if [ ! -f $IX11/X11/Xlib.h ]; then
+ echo "Cannot compile ${XMW2}: no X11 include file !" 1>&2
+ exit 1
+fi
+IX11=-I$IX11
+
+# Motif include file
+if [ "$MW_INCLUDEXm" != "" ]; then
+  IXm=${MW_INCLUDEXm}
+else
+  IXm=/usr/include
+fi
+if [ ! -f $IXm/Xm/Xm.h ]; then
+ echo "Cannot compile ${XMW2}: no Motif include file !" 1>&2
+ exit 1
+fi
+IXm=-I$IXm
+
+if [ ! -f $MEGAWAVE2/sys/include/XMW2.h ]; then 
+ echo "Cannot compile ${XMW2}: no XMegaWave2 include file !" 1>&2
+ exit 1
+fi
+
+INCLUDES="$IX11 $IXm -I$MEGAWAVE2/sys/include"
+
+# --- Libraries
+
+# Tiff and xmwcom libraries
+if [ "${MW_LIBTIFF}" != "" ]; then
+ ASLIBS="-ltiff -lxmwcom"
+else
+ ASLIBS="-lnotiff -lxmwcom"
+fi   
+
+# libXMW2 : XMegaWave2 system library
+if [ ! -r $MEGAWAVE2/sys/lib/$MW_MACHINETYPE/libXMW2.a ]; then
+ echo "Cannot link ${XMW2}: no system XMegaWave2 library !" 1>&2
+ exit 1
+fi
+
+# libxmymw : XMegaWave2 interface for the modules (user)
+# libmymw : modules library for the user
+if [ -r $MY_MEGAWAVE2/lib/$MW_MACHINETYPE/libmyxmw.a ]; then
+ if [ ! -r $MY_MEGAWAVE2/lib/$MW_MACHINETYPE/libmymw.a ]; then
+   echo "Cannot link ${XMW2}: no user MegaWave2 modules library associated with the XMegaWave2 modules library !" 1>&2
+   exit 1
+ fi
+ XUSER_LIBMW="-lmyxmw"
+ USER_LIBMW="-lmymw"
+else
+ XUSER_LIBMW=
+ USER_LIBMW=
+fi
+
+# libxmw : XMegaWave2 interface for the modules (administrator)
+if [ -r $MEGAWAVE2/lib/$MW_MACHINETYPE/libxmw.a ]; then
+ if [ ! -r $MEGAWAVE2/lib/$MW_MACHINETYPE/libmw.a ]; then
+   echo "Cannot link ${XMW2}: no system MegaWave2 modules library associated with the XMegaWave2 modules library !" 1>&2
+   exit 1
+ fi
+ XADM_LIBMW="-lxmw"
+ ADM_LIBMW="-lmw"
+else
+ XADM_LIBMW=
+ ADM_LIBMW=
+fi
+
+if [ "$XUSER_LIBMW" = "" ] &&  [ "$XADM_LIBMW" = "" ]; then
+ echo "Cannot link ${XMW2}: no system nor user XMegaWave2 modules library !" 1>&2
+ exit 1
+fi
+
+# X11 library
+if [ "${MW_LIBX11}" != "" ]; then
+ LX11=-L${MW_LIBX11}
+else
+ LX11=
+fi   
+
+# Motif library
+if [ "${MW_LIBXm}" != "" ]; then
+ LXm=-L${MW_LIBXm}
+else
+ LXm=
+fi   
+
+
+# Libraries path
+LIBRARIES="$LX11 $LXm -L$MEGAWAVE2/sys/lib/$MW_MACHINETYPE -L$MY_MEGAWAVE2/lib/$MW_MACHINETYPE -L$MEGAWAVE2/lib/$MW_MACHINETYPE"
+if [ "${MW_LIBTIFF}" != "" ]; then
+ LIBRARIES="${LIBRARIES} -L${MW_LIBTIFF}"
+fi
+
+# Libraries list 
+# Warning: we really need  -lmyxmw -lsysmw -lmyxmw...
+
+LIBS="-lXMW2 $USER_LIBMW $XUSER_LIBMW $ADM_LIBMW $XADM_LIBMW -lsysmw $XADM_LIBMW $ADM_LIBMW $XUSER_LIBMW $USER_LIBMW -lXMW2 -lW_X11R4 -lXm -lXt -lX11 -lPW -lmalloc -lm -lsysmw $ASLIBS" 
+
+# --- Usage
+if [ "$1" = "" ]; then
+  . .mw2_help_lg_com
+fi
+
+# Scan options
+STOP="FALSE"
+COPTS=$INCLUDES
+LOPTS=$LIBRARIES
+debug=0
+
+while [ "$1" != "" -a "$STOP" = "FALSE" ]
+do
+  case "$1" in
+    # MegaWave 2 options
+    # C compiler options
+    -g)		COPTS="$COPTS $1"
+		debug=1
+		;;
+
+    -O)         COPTS="$COPTS $1"
+    		;;
+
+   -D*|-I*|-U*) COPTS="$COPTS $1"
+    		;;
+
+    -w)         COPTS="$COPTS $1"
+    		;;
+
+    -L)         COPTS="$COPTS $1"
+    		;;
+
+    -l)         COPTS="$COPTS $1"
+    		;;
+
+   # Ask for Gnu CC
+    -gnu)	CC=gcc
+		;;
+
+   # Link with sysmw from $PUBLIC_MEGAWAVE2 instead of $MEGAWAVE2
+    -pubsyslib) if [ -d $PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE ]; then
+		 LOPTS="-L$PUBLIC_MEGAWAVE2/sys/lib/$MW_MACHINETYPE $LOPTS"
+                else
+                 echo "Cannot read public libraries in $PUBLIC_MEGAWAVE2 !"
+                 exit 1
+                fi
+		;;
+ 
+    # Error
+    -*)		echo "arg \"$1\" cannot be used in `basename $0`"
+		exit 1
+		;;
+
+     *)		MODFILE=$1
+		;;
+  esac
+  shift
+done
+
+if [ "$MODFILE" = "" ]; then
+  echo "Missing file of modules"
+  . .mw2_help_lg_com
+fi
+
+if [ ! -f $MODFILE ]; then
+  echo "File $MODFILE not found !"
+  exit 0
+fi
+
+# own xmw2.c file
+XMW2FILE=$TMP/${XMW2}_$$.c
+# Body of xmw2 (output of genxmw2)
+BXMW2FILE=$TMP/b${XMW2}_$$.c
+
+# new trap
+trap "echo interrupt; /bin/rm -f $XMW2FILE $BXMW2FILE; exit 1" 2
+trap "echo quit; /bin/rm -f $XMW2FILE $BXMW2FILE; exit 1" 3
+
+echo " "
+echo ">>> Compiling your own XMegaWave2 software <<<"
+echo " "
+echo "  Phase 1 : Writing ${XMW2}.c main file"
+
+genxmw2 $MODFILE $BXMW2FILE
+if [ ! -f $BXMW2FILE ]; then
+  echo "Something wrong with genxmw2... Maybe a bad modules file ?" 1>&2
+  exit 1
+fi
+
+cat $MEGAWAVE2/sys/shell/xmw2_header.c > $XMW2FILE
+cat $BXMW2FILE >> $XMW2FILE
+cat $MEGAWAVE2/sys/shell/xmw2_foot.c >> $XMW2FILE
+
+echo "  Phase 2 : Compiling ${XMW2}.c"
+
+$CC $XMW2FILE $COPTS $LOPTS $LIBS -o $EXEDIR/${XMW2}
+
+/bin/rm -f $XMW2FILE $BXMW2FILE 
+if [ -f ${XMW2}_$$.o ]; then
+ /bin/rm  ${XMW2}_$$.o
+fi
+
+if [ -x $EXEDIR/${XMW2} ]; then
+    if [ $debug = 0 ]; then
+     strip $EXEDIR/${XMW2}
+    fi
+fi
+

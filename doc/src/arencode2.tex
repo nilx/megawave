@@ -1,0 +1,39 @@
+This module performs arithmetic encoding of symbols contained in the Input 
+fimage according to the algorithm described in \cite{kn:wnc}. 
+
+The -s option enables to specify that only the first Size symbols should 
+be encoded. 
+
+If the -n option is selected, then symbols in input are supposed to be 
+integer in floating point representation ranging from 0 to NSymbol - 1. 
+If it is not activated, then a first pass is made on Input to search 
+for the minimal alphabet. 
+
+The -c option enables to specify the capacity of the empirical source 
+distribution histogram used for arithmetic encoding (see \cite{kn:wnc}). 
+The default value is 100 times the size of alphabet. This only makes sense 
+when adaptive encoding is performed (i.e. the -h option is not selected). 
+
+The -p option specifies that predictive encoding should be performed. 
+
+If the -h option is activated, then the histogram contained in the fsignal 
+Histo is used as the fixed source distribution histogram.  
+If this option is not activated, then adaptive encoding is performed, 
+meaning that the source distribution histogram is flat at the beginning, 
+and is updated after the encoding of each symbol so that it is 
+adapted to the sequence of symbols encoded in the past. 
+
+If the -H option is selected, then a header is inserted at the beginning 
+of input with information on size of Input alphabet and predictive encoding. 
+
+Notice that the 2D structure of the input fimage is not used in this module. 
+The symbols are read in the natural order in the ``gray'' field of the fimage. 
+
+
+\begin{thebibliography}{999999}
+
+\bibitem[WNC]{kn:wnc} I.H. Witten, R.M. Neal, J.G. Cleary, {\em ``Arithmetic 
+coding for data compression'', } Comm. of the ACM, Vol.~30, no~6, pp.520--540, 
+(1987). 
+
+\end{thebibliography}

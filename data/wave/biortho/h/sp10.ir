@@ -1,0 +1,26 @@
+%
+MegaWave2 - DATA ASCII file -
+%
+def Fsignal
+%
+comments: iotest_fsignal(No comments)
+%
+size: 11
+scale: 0.000000e+00
+shift: -5.0
+gain: 1.000000e+00
+sgrate: 1.000000e+00
+firstp: 0
+lastp: 0
+param: 0.000000e+00
+0.0009765625
+0.009765625
+0.0439453125
+0.1171875
+0.205078125
+0.24609375
+0.205078125
+0.1171875
+0.0439453125
+0.009765625
+0.0009765625
