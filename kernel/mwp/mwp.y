@@ -2,7 +2,7 @@
  **  Analyse syntaxique du module et creation de l'arbre         
  **  syntaxique. On analyse egalement les erreurs grammaticale de 
  **  l'entete. 
- **  Version 1.2 (c)1993-2003 J.Froment - S.Parrino
+ **  Version 1.3 (c)1993-2004 J.Froment - S.Parrino
  **/
 
 /*~~~~~~~~~~~  This file is part of the MegaWave2 preprocessor ~~~~~~~~~~~~~~~~
@@ -21,7 +21,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #include "symbol.h"
 #include "token.h"
 #include "io.h"
-
 
 #ifdef __STDC__
 char *toktos(char *);
@@ -2935,7 +2934,7 @@ Node *access;
 #ifdef DEBUG
             PRDBG("declarate : error : GET_OBJ(s) = %M\n", GET_OBJ(s));
 #endif
-            INT_ERROR("declarate");
+            INT_ERROR("declarate 1");
             break;
         }
       }
@@ -2966,8 +2965,15 @@ Node *access;
 #ifdef DEBUG
       PRDBG("declarate, error : var->name = %M\n", (int)var->name);
 #endif
-      INT_ERROR("declarate");
+      /* JF 08/10/04
+	 This case generates unexpected errors on Mandrake 10.0,
+	 probably due to bad modification of .h include files.
+	 Should be corrected in the future - and this error
+	 should be re-established.
+      INT_ERROR("declarate 2");
       return (Symbol *)NULL;
+      */
+      return s;
       break;
   }
   return s;

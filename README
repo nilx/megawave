@@ -97,6 +97,12 @@ for the very common systems and machine architectures only.
   The installation procedure has been successfully checked on the following Unix
 systems :
 
+  MegaWave2 Vers 2.31 :
+    - Linux :
+      + Mandrake 10.0 kernel 2.6.3-7mdk (gcc 3.3.2, glibc 2.3.3)
+      + Mandrake 9.2 kernel 2.4.22-10mdk (gcc 3.3.1, glibc 2.3.2)
+      + Mandrake 9.0 kernel 2.4.19-16mdk (gcc 3.2, glibc 2.2.5)
+
   MegaWave2 Vers 2.30 :
     - Linux :
       + Mandrake 9.2 kernel 2.4.22-10mdk (gcc 3.3.1, glibc 2.3.2)

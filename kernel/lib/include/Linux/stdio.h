@@ -1,5 +1,5 @@
 /* stdio.h : try to fix syntax errors.
-   V1.0 : Update for linux kernel 2.4.22 (libc 2.3.2)
+   V1.1 : Update for linux kernel 2.6.3 (libc 2.3.3)
 */
 
 #ifndef _KERNEL_MAJOR_
@@ -28,7 +28,7 @@
 #endif
 #else
 /* kernels 2.5.x and greater */
-#include "/usr/include/stdio.h"
+#include <stdio_2.3.3.h>
 #endif
 #endif
 #endif
