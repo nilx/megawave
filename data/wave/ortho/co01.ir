@@ -1,0 +1,21 @@
+%
+MegaWave2 - DATA ASCII file -
+%
+def Fsignal
+%
+comments: low-pass filter associated to Coiflet wavelet of order 1
+%
+size: 6
+scale: 0.000000e+00
+shift: -2.0
+gain: 1.000000e+00
+sgrate: 1.000000e+00
+firstp: 0
+lastp: 0
+param: 0.000000e+00
+-0.07273261951285
+0.33789766245781
+0.85257202021226
+0.38486484686420
+-0.07273261951285  
+-0.01565572813546

@@ -1,0 +1,10 @@
+This module thresholds a 1D wavelet transform so that a 
+wavelet denoising can be performed using the scheme 
+wavelet transform $\rightarrow$ thresholding $\rightarrow$ inverse wavelet transform.
+
+In addition, a mask that gives the location of coefficients
+that have been thresholded (and the ones that have been kept) can be
+generated. Such a mask is needed to perform restoration using TV-minimization
+method, see module {\tt stvrestore} and user's macro {\tt Swtvdenoise} for
+more about that.
+

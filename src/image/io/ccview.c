@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {ccview};
-  version = {"1.12"};
+  version = {"1.13"};
   author = {"Jacques Froment"};
   function = {"View a color image on a window"};
   usage = {
@@ -23,6 +23,7 @@
 */
 /*----------------------------------------------------------------------
  v1.12: added -o option + several minor modifications (L.Moisan)
+ v1.13: fixed lag due to usleep() (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -107,7 +108,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	  sprintf(mess," (%3d,%3d): (%3d,%3d,%3d) ",x1,y1,nred,ngreen,nblue);
 	  WDrawString(ImageWindow,0,10,mess);
 	  WFlushAreaWindow(ImageWindow,0,0,image->ncol-1,12);
-	  usleep(100);
+	  /* usleep(100);*/
 	}
     }
 

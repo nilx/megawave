@@ -1,0 +1,10 @@
+This module applies a contrast change (2-Flist) $g=(t_i,g_i)_{0\leq i <n}$ 
+to a Fimage $in$. The $(t_i)$ sequence is assumed to be increasing.
+The result is a Fimage
+$$out(x,y) = \tilde g(in(x,y)),$$
+where the graph of $\tilde g$ is 
+the continuous piecewise-linear interpolate of the sequence
+$(t_i,g_i)$.
+The function $\tilde g$ is 
+extended linearly outside $[t_0,t_{n-1}]$ by the affine function
+passing through $(t_0,g_0)$ and $(t_{n-1},g_{n-1})$.

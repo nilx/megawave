@@ -3,7 +3,7 @@ MegaWave2 - DATA ASCII file -
 %
 def Fsignal
 %
-comments: iotest_fsignal(No comments)
+comments: low-pass filter associated to Daubechies wavelet of order 2
 %
 size: 4
 scale: 0.000000e+00

@@ -1,0 +1,28 @@
+The repartition function of a Fimage $u$ 
+defined on the domain $\Omega=\{0..M-1\}\times\{0..N-1\}$ is
+the nondecreasing function 
+$$H_u(t) = \frac{|\{(x,y) \in \Omega;u(x,y)\leq t\}|}{|\Omega|}.$$
+As well, its lower repartition may be defined by
+$$H^-_u(t) = \frac{|\{(x,y) \in \Omega;u(x,y)< t\}|}{|\Omega|}.$$
+This module computes an average repartition function
+$$g(t) = w\cdot H_u(t)+ (1-w)H^-_u(t),$$
+usually with $w=0.5$, but this weight may be changed with the \verb+-w+
+option. If the \verb+-c+ option us selected, then $g$ is multiplied
+by $256$ (so that $\lim_\infty g=256$ instead of $\lim_\infty g=1$). 
+This function $g$ may serve as a contrast change to produce
+the rank image $rank=g(u)$, performing the so-called histogram equalization
+of $u$, which is optimal in a general framework
+(see \cite{moisan} for more details). 
+
+If requested by the \verb+-g+ option, the function $g$ is returned
+as the 2-Flist $(t_i,g(t_i))$, where $(t_i)$ is the (increasing) sorted
+sequence of all values taken by $u$.
+
+\begin{thebibliography}{1}
+
+\bibitem{moisan}
+L. Moisan, {\it Modelling in image processing},
+course notes, DEA Math\'ematiques, Vision, Apprentissage (MVA),
+Ecole Normale Sup\'erieure de Cachan, 2002.
+
+\end{thebibliography}

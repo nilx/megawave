@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="`basename $0`"
-_Vers="1.47"
-_Date="2002"
+_Vers="1.49"
+_Date="2003"
 _Func="Compile a MegaWave2 Module or Macro";
 _Auth="Jacques Froment, Sylvain Parrino";
 _Usage=" [-gnu] [-g] [-X] [-O] [-v] [-c compiler_option] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-dep] [-pubsyslib] [-N] module"
@@ -15,6 +15,21 @@ _Usage=" [-gnu] [-g] [-X] [-O] [-v] [-c compiler_option] [-Dname[=def]] [-Uname]
 # CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 #-----------------------------------------------------------------------------
+
+ChooseTMP()
+
+{
+if  [ "$TMP" = ""  ] || [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+ TMP=/usr/tmp
+ if  [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+  TMP=/tmp
+  if  [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+   echo "$_Prog : Fatal Error : cannot choose TMP !"
+   exit 1
+  fi
+ fi
+fi
+}
 
 # Remove given file(s) if verbose flag not set; if set, output file name.
 
@@ -73,10 +88,7 @@ trap "echo quit; exit 1" 3
 
 # Defaults
 MWDIR=$HOME/megawave2
-TMP=/usr/tmp
-if  [ ! -w $TMP ]; then
-  TMP=/tmp
-fi
+ChooseTMP
 
 # C Compiler
 CC=cc
@@ -144,7 +156,7 @@ if [ "$dir" = "" ]; then
   ULIB=$ADM_LIBMW
   XULIB=$XADM_LIBMW
   macropt="-adm"
-  echo "Warning: the target user is the system on $MWDESTDIR"
+  echo "Beware, the target user is the system on $MWDESTDIR"
  fi
 else
 # user mode
@@ -277,12 +289,12 @@ do
    # XMegaWave extension
     -X)         XMW=1
     		if [ ! -f $MWDIR/sys/include/XMW2.h ]; then 
-    		 echo "Warning: option -X cannot be activated (No XMegaWave2 include file)"
+    		 echo "WARNING: option -X cannot be activated (No XMegaWave2 include file)"
     		 XMW=0
     		else
     		 if [ ! -f /usr/include/Xm/Xm.h ] && \
 			[ ! -f ${MW_INCLUDEXm}/Xm/Xm.h ]; then
-    		  echo "Warning: option -X cannot be activated (No Motif include file)"
+    		  echo "WARNING: option -X cannot be activated (No Motif include file)"
     		  XMW=0
       		 fi
       		fi
@@ -299,11 +311,11 @@ do
     # Objects file
     *.o)	OBJ="$OBJ $1"
 		;;
-    # MegaWave 2 module 
+    # MegaWave2 module 
     *.$EXT)	MWFILE=$1
 		STOP="TRUE"
 		;;
-    # MegaWave 2 module without extension
+    # MegaWave2 module without extension
     [!-]*)	if  [ -f $1.$EXT ]; then
                   # It is a module
  		  MWFILE=$1.$EXT
@@ -570,12 +582,12 @@ else
     echo "done."
   fi
 
-  # Teste si nouvelle commande ou non
-  if [ -x $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE ] || \
-     [ -x $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE.old ]; then
-     NEW=0;
+  # Check whether or not this is a new MegaWave2 module
+  if [ -x $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE ]; then
+     NEW_MODULE=0;
   else
-     NEW=1;
+     NEW_MODULE=1;
+     current=`which $MODULE 2> /dev/null`
   fi
 
   # Recherche des librairies 
@@ -661,8 +673,12 @@ else
 #     echo "          striping the command"
      strip $MWDESTDIR/bin/$MW_MACHINETYPE/$MODULE
     fi
-    if  [ $NEW -eq 1 ]; then
-       echo "     (New command added)"
+    if  [ $NEW_MODULE -eq 1 ]; then
+       echo "     New MegaWave2 command added !"
+       if [ "$current" != "" ] && [ -x $current ]; then
+       echo "     WARNING : same name than command '$current' ! One will be hidden..."
+       fi
+
     fi
   fi
 

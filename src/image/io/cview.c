@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {cview};
-  version = {"1.9"};
+  version = {"1.11"};
   author = {"Jacques Froment"};
   function = {"View an image on a window"};
   usage = {
@@ -24,6 +24,8 @@
 /*----------------------------------------------------------------------
  v1.8: added -o option + several minor modifications (L.Moisan)
  v1.9: fixed bug with non char input keys (L.Moisan)
+ v1.10: fixed lag due to usleep() (L.Moisan)
+ v1.11: fixed 'c' bug (nrow->ncol) (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -129,7 +131,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	  sprintf(mess," (%3d,%3d): %3d ",x1,y1,ng);
 	  WDrawString(ImageWindow,0,10,mess);
 	  WFlushAreaWindow(ImageWindow,0,0,image->ncol-1,12);
-	  usleep(100);
+	  /*	  usleep(100);*/
 	}
     }
 
@@ -258,7 +260,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	  break;
 	    
 	case 'c' :
-	  if ((x1>=0)&&(x1<image->nrow))
+	  if ((x1>=0)&&(x1<image->ncol))
 	    {
 	      /* Draw a vertical red line */
 	      WSetTypePencil(W_COPY);

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    pgm_io.c
    
-   Vers. 1.0
-   (C)1996-99 Jacques Froment
+   Vers. 1.1
+   (C)1996-2002 Jacques Froment
    load/save functions for the PGM (portable graymap file) formats
    (gray levels being unsigned chars)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -19,7 +19,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 
 /*~~~~~~ Return the next integer item or a the appened comments lines ~~~~~*/
 
-static int get_next_item(fp,comment)
+int _mw_pgm_get_next_item(fp,comment)
 
 FILE *fp;
 char *comment;
@@ -80,10 +80,10 @@ char *file;
     mwerror(INTERNAL,1,"[_mw_cimage_load_pgma] Error while reading file \"%s\": not a PGMA format !\n",file);
 
   comment[0]='\0';
-  ncol=get_next_item(fp,comment);
-  nrow=get_next_item(fp,comment);
+  ncol=_mw_pgm_get_next_item(fp,comment);
+  nrow=_mw_pgm_get_next_item(fp,comment);
 
-  maxgl=get_next_item(fp,comment);
+  maxgl=_mw_pgm_get_next_item(fp,comment);
   if ((ncol<=0) || (nrow<=0) || (maxgl <=0)) 
     {
       mwerror(ERROR,0,"Error while reading file \"%s\": bad PGMA format !\n",file);
@@ -103,7 +103,7 @@ char *file;
 
   for (l=0;l<ncol*nrow;l++) 
     {
-      c=get_next_item(fp,comment);
+      c=_mw_pgm_get_next_item(fp,comment);
       if (c==EOF) 
 	{
 	  mwerror(ERROR,0,"Error while reading PGMA image \"%s\": unexpected end of file !\n",file);
@@ -184,10 +184,10 @@ char *file;
     mwerror(INTERNAL,1,"[_mw_cimage_load_pgmr] Error while reading file \"%s\": not a PGMR format !\n",file);
 
   comment[0]='\0';
-  ncol=get_next_item(fp,comment);
-  nrow=get_next_item(fp,comment);
+  ncol=_mw_pgm_get_next_item(fp,comment);
+  nrow=_mw_pgm_get_next_item(fp,comment);
 
-  maxgl=get_next_item(fp,comment);
+  maxgl=_mw_pgm_get_next_item(fp,comment);
   if ((ncol<=0) || (nrow<=0) || (maxgl <=0) || (maxgl > 255)) 
     {
       mwerror(ERROR,0,"Error while reading file \"%s\": bad PGMR format !\n",file);

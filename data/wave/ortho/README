@@ -1,0 +1,28 @@
+In this directory you will find low-pass impulse response filters associated
+to various orthogonal wavelets, as needed by the owave1/iowave1/owave2/iowave2
+modules to perform the orthogonal wavelet transform.
+
+For some of Daubechies wavelets, edge filters are available in the edge 
+directory. Use the corresponding edge filter together with the low-pass
+filter when calling modules with -e 3 option (adapted filtering).
+
+Beware : At this time, -e 3 is the default value for the -e option.
+         Therefore, if you do not set the -e option in the command
+         line, you have to specify an edge filter (and you are
+         restricted to Daubechies wavelets).
+
+Examples :
+
+*  Perform a 2D wavelet transform on fimage using Coiflet wavelet of order 2 and
+   periodic extension with number of level 3 :
+        owave2 -r 3 -e 1 fimage w ortho/co02.ir
+   Perform the reconstruction :
+        iowave2 -r 3 -e 1 w recons ortho/co02.ir
+
+*  Perform a 2D wavelet transform on fimage using Daubechies wavelet of order 4,
+   adapted edge filtering and number of level 4 :
+        owave2 -r 4 fimage w ortho/da04.ir ortho/edge/da04.ir
+   Perform the reconstruction :
+        iowave2 -r 4 w recons ortho/da04.ir ortho/edge/da04.ir
+
+

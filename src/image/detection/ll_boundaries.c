@@ -1,12 +1,13 @@
 /*----------------------------- MegaWave Module -----------------------------*/
 /* mwcommand 
   name = {ll_boundaries}; 
-  version = {"1.0"}; 
+  version = {"1.1"}; 
   author = {"Lionel Moisan"}; 
   function = {"Extract meaningful boundaries (contrasted level lines) from a Fimage"}; 
   usage = { 
 'e':[eps=0]->eps      "-log10(max. number of false alarms), default 0",
 'a'->all              "get all contrasted level lines (not only maximal ones)",
+'w'->weak             "select weak maximality",
 's':step->step        "quantization step (bilinear), default 1.",
 'p':p->precision      "sampling precision (bilinear), default 2",
 't':tree->tree        "use a precomputed FLST tree",
@@ -15,6 +16,9 @@ in->in                "input Fimage",
 out<-ll_boundaries    "output boundaries (Flists)"
     }; 
 */ 
+/*----------------------------------------------------------------------
+ v1.1: added weak maximality, fixed Sonylogo 'type' bug (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <float.h>
@@ -36,7 +40,7 @@ extern Fsignal fhisto();
 typedef struct mydata {
   int ndetect;
   float nfa;
-  char type;
+  char type; /* inferior_type of nearest ascending meaningful boundary */
 } *Mydata;
 
 /*----- global variables -----*/
@@ -140,7 +144,7 @@ char type;
 
   }
 
-  /* visit children and update bestnfa_inf from children */
+  /* visit children and update ndetect from children */
   sdata->ndetect = 0;
   for (t=s->child;t;t=t->next_sibling) {
     update_mydata(t,threshold,sdata->type);
@@ -204,6 +208,7 @@ char type;
       else 
 	flstb_boundary(&precision2,image,ref_tree,s,NULL,boundary,tabsaddles);
       boundaries->list[boundaries->size++] = mw_copy_flist(boundary,NULL);
+      printf("nfa=%f bestnfa_inf=%f bestnfa_sup=%f type=%d %d %d\n",nfa,*bestnfa_inf,bestnfa_sup,type,sdata->type,s->inferior_type);
 
     } else s->removed = (char)1;
     if (nfa<*bestnfa_inf) *bestnfa_inf = nfa;
@@ -216,15 +221,86 @@ char type;
   }
 }
 
+/*===== simplified recursive algorithm for no or weak maximality =====*/
+
+void add_boundary_weak(s,threshold,bestnfa_inf,bestnfa_sup)
+Shape s;
+float threshold;
+float *bestnfa_inf,bestnfa_sup;
+{ 
+  Shape t;
+  float mu,nfa,new_bestnfa_inf,new_bestnfa_sup,length;
+  int nchildren;
+
+  if (!s) {
+    *bestnfa_inf = threshold;
+    return;
+  }
+  
+  for (nchildren=0,t=s->child;t;t=t->next_sibling) nchildren++;
+  
+  if (s->parent) {
+    
+    /* extract boundary */
+    if (zero_order) 
+      flst_boundary(ref_tree,s,boundary);
+    else
+      flstb_boundary(&precision1,image,ref_tree,s,NULL,boundary,tabsaddles);
+
+    /*** compute nfa (-log10) ***/
+    mu = min_contrast(boundary,&length);
+    nfa = length*logH(mu)/(zero_order?3.:2.);
+
+    /* check for 'type' chain break */
+    if (s->parent->inferior_type!=s->inferior_type) bestnfa_sup = threshold;
+    
+    /* compute new_bestnfa_sup */
+    if (nchildren>1) new_bestnfa_sup = threshold; 
+    else new_bestnfa_sup = bestnfa_sup;
+    if (nfa<new_bestnfa_sup) new_bestnfa_sup = nfa;
+    
+    /* visit children and comput new_bestnfa_inf from children */
+    new_bestnfa_inf = threshold;
+    for (t=s->child;t;t=t->next_sibling) {
+      add_boundary_weak(t,threshold,bestnfa_inf,new_bestnfa_sup);
+      if (nchildren<=1 && *bestnfa_inf<new_bestnfa_inf)
+	new_bestnfa_inf = *bestnfa_inf;
+    }
+    
+    /* test if this shape has to be kept */
+    if (nfa<threshold && (!max_only || 
+			  (nfa <= bestnfa_sup && nfa < new_bestnfa_inf))) {
+      
+      /* store boundary */
+      if (zero_order)
+	flst_boundary(ref_tree,s,boundary);
+      else 
+	flstb_boundary(&precision2,image,ref_tree,s,NULL,boundary,tabsaddles);
+      boundaries->list[boundaries->size++] = mw_copy_flist(boundary,NULL);
+      
+    } else s->removed = (char)1;
+
+    *bestnfa_inf = new_bestnfa_inf;
+    if (nfa<*bestnfa_inf) *bestnfa_inf = nfa;
+    if (s->parent->inferior_type!=s->inferior_type) *bestnfa_inf = threshold;
+
+  } else {
+
+    for (t=s->child;t;t=t->next_sibling) 
+      add_boundary_weak(t,threshold,bestnfa_inf,bestnfa_sup);
+    
+  }
+}
+
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Flists ll_boundaries(in,tree,eps,all,step,precision,z)
+Flists ll_boundaries(in,tree,eps,all,step,precision,z,weak)
 Fimage in;
 Shapes tree;
 float *eps,*step;
 int *precision;
-char *all,*z;
+char *all,*z,*weak;
 {
   Shape s;
   Fimage saddles,copy_in;
@@ -232,6 +308,9 @@ char *all,*z;
   int newtree=0,nsize,i;
 
   /* check consistency */
+  if (all && weak) 
+    mwerror(WARNING,0,"-w option is useless when -a option is selected\n");
+
   zero_order = (z != NULL);
   if (tree) {
     if (zero_order && tree->interpolation!=0)
@@ -296,8 +375,12 @@ char *all,*z;
   threshold = -*eps-(float)log10((double)(ref_tree->nb_shapes));
   nfa_inf = nfa_sup = threshold;
   mwdebug("NFA threshold: %g\n",threshold);
-  update_mydata(ref_tree->the_shapes,threshold,0);
-  add_boundary(ref_tree->the_shapes,threshold,&nfa_inf,nfa_sup,0);
+  if (weak || all) {
+    add_boundary_weak(ref_tree->the_shapes,threshold,&nfa_inf,nfa_sup);
+  } else {
+    update_mydata(ref_tree->the_shapes,threshold,0);
+    add_boundary(ref_tree->the_shapes,threshold,&nfa_inf,nfa_sup,0);
+  }
   printf("%d %sboundaries detected\n",boundaries->size,(all?"":"maximal "));
 
   /* free memory and exit */

@@ -3,8 +3,8 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Install a new version of the MegaWave2 kernel";
 _Prog="`basename $0`"
-_Vers="0.0"
-_Date="1999"
+_Vers="1.0"
+_Date="1999-2003"
 _Auth="Jacques Froment";
 _Usage="[-static] [-public] [-clear] [-debug]"
 #-----------------------------------------------------------------------------
@@ -43,6 +43,7 @@ if [ "${PUBLIC_MEGAWAVE2}" = "" ]; then
    exit 1
 fi
 
+CWD=`/bin/pwd`
 lib="shared"
 clear=0
 public=0
@@ -85,26 +86,26 @@ done
 echo "=== `date`"
 echo "=== Install the MegaWave2 kernel ==="
 
-cd Wdevice
+cd $CWD/Wdevice
 ./Install $libopt
 if [ $? -ne 0 ]; then
   echo "=== Error in Wdevice Install ! Abort kernel Install. ===" 2>&1
   exit 1
 fi
-cd ../lib
+cd $CWD/lib
 ./Install $libopt
 if [ $? -ne 0 ]; then
   echo "=== Error in lib Install ! Abort kernel Install. ===" 2>&1
   exit 1
 fi
-cd ../mwp
+cd  $CWD/mwp
 ./Install $mwpopt
 if [ $? -ne 0 ]; then
   echo "=== Error in mwp Install ! Abort kernel Install. ===" 2>&1
   exit 1
 fi
 
-cd ../shell
+cd $CWD/shell
 make install
 if [ $? -ne 0 ]; then
   echo "=== Error in 'make install (shell)' ! Abort kernel Install. ===" 2>&1
@@ -117,7 +118,7 @@ if [ $public -eq 1 ]; then
     exit 1
   fi
 fi
-cd ..
+cd $CWD
 
 echo " "
 echo "=== `date`"

@@ -3,8 +3,8 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Install a new MegaWave2 full version (adm only)";
 _Prog="`basename $0`"
-_Vers="1.14"
-_Date="1999-2002"
+_Vers="1.19"
+_Date="1999-2003"
 _Auth="Jacques Froment";
 _Usage="[-static] [-public || -public=private] [-clear] [-debug] [-level l] mw2distribution"
 #-----------------------------------------------------------------------------
@@ -30,6 +30,21 @@ _Usage="[-static] [-public || -public=private] [-clear] [-debug] [-level l] mw2d
 # -debug : Produce debugging information (default : optimize the code).
 # -level l : Install levels greater or equal than l only.
 #-----------------------------------------------------------------------------
+
+ChooseTMP()
+
+{
+if  [ "$TMP" = ""  ] || [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+ TMP=/usr/tmp
+ if  [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+  TMP=/tmp
+  if  [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+   echo "$_Prog : Fatal Error : cannot choose TMP !"
+   exit 1
+  fi
+ fi
+fi
+}
 
 Echo()
 
@@ -106,7 +121,11 @@ CWD=`/bin/pwd`
 pubinstall=0
 clear=0
 kernelopt=""
-cmw2opt="-2p -dep -force"
+
+ChooseTMP
+cmw2trace=${TMP}/cmw2_all$$.trace
+cmw2opt="-2p -dep -force -v $cmw2trace"
+
 setenvopt="-privateonly"
 l=1
 level=0
@@ -264,7 +283,8 @@ newvers=`cat $MWSRC/VERS`
 # If Install PUBLIC, check if $PUBLIC_MEGAWAVE2 comes from a former incomplete
 # installation. If yes, do not create a temporary directory.
 
-if [ $pubinstall -ne 1 ] || [ ! -r $PUBLIC_MEGAWAVE2/INSTALL_NOT_COMPLETE ]; then
+#if [ $pubinstall -ne 1 ] || [ ! -r $PUBLIC_MEGAWAVE2/INSTALL_NOT_COMPLETE ]; then
+if [ $pubinstall -eq 1 ] && [ ! -r $PUBLIC_MEGAWAVE2/INSTALL_NOT_COMPLETE ]; then
 
 # If Install PUBLIC with clear option selected, it means that users may
 # use current version of PUBLIC_MEGAWAVE2 : make the installation in a
@@ -279,7 +299,7 @@ if [ $pubinstall -ne 1 ] || [ ! -r $PUBLIC_MEGAWAVE2/INSTALL_NOT_COMPLETE ]; the
     oldvers=`cat $MWORGPUB/VERS`
     mmoldvers=`echo $oldvers | cut -f 1-2 -d "."`
     mmsrcvers=`cat $MWSRC/VERS | cut -f 1-2 -d "."`
-    if [ "$mmoldvers" = "mmsrcvers" ]; then
+    if [ "$mmoldvers" = "$mmsrcvers" ]; then
       newvers=`$MWSHELL/mwincvers $MWORGPUB`
     else
       newvers=`$MWSHELL/mwincvers $MWSRC`
@@ -327,7 +347,7 @@ if [ $l -le $level ]; then
  Echo "***** Level $level : Compile the kernel *****"
  Echo "*****************************************"
 
- cd kernel; 
+ cd $CWD/kernel; 
  ./Install $kernelopt
  if [ $? -ne 0 ]; then
    Echo "***** Error while compiling kernel !" 
@@ -355,9 +375,16 @@ if [ $l -le $level ]; then
 # Now, compile all modules.
 
  cd $MWSRC
- cmw2_all $cmw2opt src
+ cmw2_all $cmw2opt $MWSRC/src
+
  if [ $? -ne 0 ]; then
    Echo "***** Error while compiling modules !" 
+   if [ -f $cmw2trace ]; then
+    echo "***** To see why errors occurred, here is the content of '$cmw2trace' trace file :" >> $MWSRC/Install.log
+    cat $cmw2trace >> $MWSRC/Install.log
+    rm -f $cmw2trace > /dev/null
+    echo "***** End of content of trace file" >> $MWSRC/Install.log
+   fi  
    Answer "***** Some module(s) could not be successfully compiled ! Abort the installation" "Y"
    if [ "$ans" = "Y" ]; then
     Abort       
@@ -365,6 +392,10 @@ if [ $l -le $level ]; then
     Echo "***** I continue, but remember that some module(s) won't be available..."       
    fi 
  fi
+
+# Remove trace file
+ rm -f $cmw2trace > /dev/null
+
 # end of level
 fi
 

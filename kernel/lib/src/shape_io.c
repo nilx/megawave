@@ -19,7 +19,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #include <stdio.h>
 #include <sys/file.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 
 #include "mw.h"
 
@@ -260,7 +259,7 @@ char  *fname;  /* Name of the file */
 	return(NULL);
       }
 
-  printf("[_mw_load_mw2_shape] version=%f\n",version);
+  /*printf("[_mw_load_mw2_shape] version=%f\n",version);*/
   if (version==1.0) 
     sh = _mw_read_mw2_shape_1_00(fname,fp,need_flipping,NULL,NULL);
   else 

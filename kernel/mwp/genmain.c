@@ -7,19 +7,25 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /* Generation of C code - main function 
-   V 2.04
+   V 2.05
+
    Original version : Sylvain Parrino 
    Main modifications :
-   21/3/94 by Jacques Froment : statements never reached corrected.
-   22/3/94 by JF : Name of allocation functions corrected.
-   29/9/98 by JF : Function print_ndecl() (to initialize variables) added.
-   20/06/00 by JF : - Function make_printable() replaces noquote() and now used
-                      to compute strings Vers[],Fonc[],Labo[].
-                    - Added <stdlib.h> in the generated main file.
-   06/10/00 & 13/10/00 & 07/06/01 by JF : changes related to screen output.
-   11/08/01 by JF : change in the "MegaWave function call" generation (no '&' for 
-                    scalar optional output variables). Warning is issued in case
-		    of new code generation.
+
+         21/3/94 by Jacques Froment : statements never reached corrected.
+         22/3/94 by JF : Name of allocation functions corrected.
+         29/9/98 by JF : Function print_ndecl() (to initialize variables) added.
+         20/06/00 by JF : - Function make_printable() replaces noquote() and now used
+                            to compute strings Vers[],Fonc[],Labo[].
+                          - Added <stdlib.h> in the generated main file.
+         06/10/00 & 13/10/00 & 07/06/01 by JF : changes related to screen output.
+         11/08/01 by JF : change in the "MegaWave function call" generation (no '&' for 
+                          scalar optional output variables). Warning is issued in case
+		          of new code generation (See e.g. module dsplit_convex).
+V 2.05 : 04/09/03 by JF : - Warning added 11/08/01 is now removed.
+                          - Added same change than the one of 11/08/01 for the last
+                            variable in the function call (See e.g. module perimeter).
+
 */
 
 #include <stdio.h>
@@ -499,7 +505,8 @@ FILE *fd;
 			
 			fprintf(fd, "%c%s, ",newtest,(char *)id->val.text);
 			
-			  /* Warning if the new test generated a different code */
+			/* Warning if the new test generated a different code */
+			/*
 			if (newtest != orgtest)
 			  {
 			    printf("\tgenmain warning : new function call (old '%c%s', new '%c%s')\n",
@@ -516,6 +523,7 @@ FILE *fd;
 			    else printf("\tNOT OPTION");
 			    printf("\n");
 			  }
+			*/
 		      }
 		    else
 		      error("'%s' : not declared in usage statement\n", id->val.text);
@@ -528,14 +536,31 @@ FILE *fd;
 	  {
 	    if ((e = (Mwarg *)GET_SFATHER(s)) != NULL) 
 	      {
-		if ((e->t==OPTION && 
-		     ((e->d.o.d.t==FILEARG&&e->access==NULL) || e->d.o.d.rw==READ)) ||
-		    (e->t!=OPTION && ((e->d.a.t==FILEARG && e->access==NULL) ||
+		char orgtest,newtest;
+
+		/* Original test */
+		if ((e->t==OPTION && ((e->d.o.d.t==FILEARG && e->access==NULL)||e->d.o.d.rw==READ)) ||
+		    (e->t!=OPTION && ((e->d.a.t==FILEARG && e->access==NULL) ||	
 				      (e->d.a.rw!=WRITE || (e->t==NEEDEDARG && e->d.a.rw==WRITE &&
 							    !IS_PTR(e->access))))))
-		  fprintf(fd, "%s) ;\n", (char *)e->name);
+		  orgtest=' ';
 		else
-		  fprintf(fd, "&%s) ;\n", (char *)e->name);
+		  orgtest='&';
+		
+		/* New test (modified by JF 04/09/03) : no '&' for scalar optional output variables,
+		   as already done the 11/08/01 for previous variable in the call of the function. 
+		*/
+		if ((e->t==OPTION && ((e->d.o.d.t==FILEARG && e->access==NULL)||e->d.o.d.rw==READ
+				      ||e->d.o.d.t!=FILEARG))
+		    ||
+		    ((e->t!=OPTION && ((e->d.a.t==FILEARG && e->access==NULL) ||	
+				       (e->d.a.rw!=WRITE || (e->t==NEEDEDARG && e->d.a.rw==WRITE &&
+							     !IS_PTR(e->access)))))))
+		  newtest=' ';
+		else
+		  newtest='&';
+		
+		fprintf(fd, "%c%s) ; \n ",newtest,(char *)e->name);
 	      }
 	    else
 	      error("'%s' : not declared in usage statement\n", n->val.text);

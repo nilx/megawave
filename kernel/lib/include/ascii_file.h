@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ascii_file.h
    
-   Vers. 1.0
-   (C) 1993 Jacques Froment
+   Vers. 1.1
+   (C) 1993-2002 Jacques Froment
    Functions for the MW DATA ASCII files
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -26,6 +26,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 
 int _mw_fascii_search_string(FILE *, char *);
 int _mw_fascii_get_field(FILE *, char *, char *, char *, void *);
+int _mw_fascii_get_optional_field(FILE *, char *, char *, char *, void *);
 FILE *_mw_open_data_ascii_file(char *);
 FILE *_mw_create_data_ascii_file(char *);
 
@@ -33,6 +34,7 @@ FILE *_mw_create_data_ascii_file(char *);
 
 int _mw_fascii_search_string();
 int _mw_fascii_get_field();
+int _mw_fascii_get_optinal_field();
 FILE *_mw_open_data_ascii_file();
 FILE *_mw_create_data_ascii_file();
 

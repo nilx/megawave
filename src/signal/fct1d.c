@@ -2,7 +2,7 @@
 /* mwcommand
  name = {fct1d};
  author = {"Chiaa Babya, Jacques Froment"};
- version = {"1.0"};
+ version = {"1.2"};
  function = {"Computes the Fast Cosine Transform of a signal"};
  usage = {     
  'i'->inverse "Compute the Inverse Transform",
@@ -12,6 +12,7 @@
 */
 /*----------------------------------------------------------------------
  v1.1: fixed bug : power_of_two test (L.Moisan)
+ v1.2: preserve header info for e.g. sound processing (JF) 
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -110,6 +111,7 @@ char *inverse;
  Y=mw_change_fsignal(Y,n);
  if (Y == NULL) mwerror(FATAL,1,"Not enough memory !\n");
  mw_copy_fsignal(X,Y);
+ mw_copy_fsignal_header(X,Y);
 
  theta=M_PI/(double) n;
  wtemp=sin(0.5*theta);

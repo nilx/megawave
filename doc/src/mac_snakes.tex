@@ -1,0 +1,178 @@
+This module implements the Kimmel and Bruckstein snake model
+\cite{KB2} for contour detection 
+(or optimization). Its goal is to maximize with respect with 
+$\gamma$ (an arclength parameterized curve) the average contrast
+$$E(\gamma) =\frac 1 {L(\gamma)}\int_{0}^{L(\gamma)} g\left(\frac{}{}\!\!
+Du(\gamma(s))\cdot n(s)\right)ds,$$
+where $g$ is an increasing scalar function, $L(\gamma)$ the length of
+the curve $\gamma$ and $n(s)$ its normal vector (that is, orthogonal
+to $\gamma'(s)$). Such a model has several advantages compared to
+the classical Kass-Witjin-Terzopoulos model \cite{KWT} and
+the more elaborate model of geodesic active contours from 
+Caselles, Kimmel and Sapiro \cite{CKS}. 
+The use of a normal contrast (instead
+of a gradient norm) is an improvement to the model of Fua
+and Leclerc \cite{FL}.
+
+This module only implements the case
+$g(s)=|s|^{power}$, but it could be easily adapted to more general 
+functions $g$. The influence of the
+choice of $g$ is discussed in \cite{DMM}.
+The default is $g(s)=|s|$, but powers smaller than 1 could be preferred
+in order to reduce even more the sensitivity to the image contrast.
+
+The numerical scheme is based on a gradient descent (with step {\it step})
+associated to a discrete version of $E(\gamma)$ (see the description 
+below, and \cite{DMM} for a complete discussion and full details).
+An input Fimage ($u$) and an initial set {\it in}
+of curves (Dlists) should be provided
+to the module, which outputs a new (final) set of curves {\it out}
+after {\it niter} iterations (\verb+-n+ option). Intermediate
+states can be monitored by printing the energy evolution (with
+\verb+-v+ option) or visually with the \verb+-V+ option followed by
+a zoom factor (try 2 for example). Note that the number of points of
+each curve is kept constant during the evolution, 
+so that an appropriate (fine enough) sampling 
+of each initial curve is needed: rough polygons will not do in general!
+
+\vskip 8mm
+
+\centerline {\bf \large Practical Use}
+
+\vskip 6mm
+
+Due to their sensitivity to initial conditions, snakes models should
+be used for interactive contour optimization rather than for contour
+detection. To obtain good results, one should
+
+\begin{itemize}
+\item choose an initial contour close enough to the optimal solution seeked;
+\item used a smoothed initial image (obtained for example with 
+\verb+fsepconvol+ or \verb+amss+) in order to avoid local maxima
+of the snakes model;
+\item use a correctly sampled initial contour (if used, \verb+readpoly+ 
+should be followed by \verb+gass+);
+\item select an appropriate value for the gradent step (\verb+-s+ option),
+which can easily go from 0.01 to more than 1000.
+\end{itemize}
+
+An example is given by the following sequence of commands:
+
+\begin{verbatim}
+circle -r 20 -n 100 c
+fkzrt c c 1 0 115 170
+fkview -s -b cimage c &
+fsepconvol -g 1 cimage u
+mac_snakes -V 2 -s 1 -n 3000 u c out
+\end{verbatim}
+
+For an interactive choice of the initial
+contour, the first two lines may be replaced by 
+\begin{verbatim}
+readpoly cimage c
+gass -e 2 c c
+\end{verbatim}
+(type 'q' after drawing manually the initial contour).
+
+%\vskip 8mm
+\newpage
+
+\centerline {\bf \large Numerical Scheme}
+
+\vskip 6mm
+
+For a non-Euclidean
+parameterization $\gamma(p):[a,b]\to I\!\!R^2$, the energy we want to
+maximize writes
+\begin{equation}
+F(\gamma) = \frac{\int_a^b g\left(Du.\frac{\gamma'(p)^\perp}{|\gamma'(p)|}\right) \,|\gamma'(p)|\, dp}
+{\int_a^b |\gamma'(p)|\, dp}.
+\label{energy_cont.equ}
+\end{equation}
+Rather than writing the Euler equation for (\ref{energy_cont.equ})
+and {\it then} discretizing it, we discretize the energy and
+compute its exact derivative with respect to the discrete curve.
+Let us suppose that the snake is represented by a polygonal curve
+$M_1..M_n$ (either closed or with fixed endpoints). For the curve
+length, we can take
+$$L = \sum_i \|\Delta_i\|\qquad\mathrm{with}\qquad \Delta_i=M_{i+1}-M_i.$$
+Now the discrete energy can be written $F = \frac EL$,
+with
+$$E=\sum_i g(t_i)\|\Delta_i\|,$$
+$$t_i = w_i \cdot \frac{\Delta_i}{\|\Delta_i\|},\quad
+w_i = {D u}^{\bot}(\Omega_i),\quad \mathrm{and}\quad \Omega_i =
+\frac{M_i+M_{i+1}}2.$$ Differentiating $E$ with respect to $M_k$,
+we obtain
+$$\nabla_{M_k} F = \frac 1L \left( \frac{}{}\!\!
+\nabla_{M_k} E- F\nabla_{M_k} L\right)$$
+with
+$$\nabla_{M_k} L= \frac{\Delta_{k-1}}{\|\Delta_{k-1}\|}
+- \frac{\Delta_k}{\|\Delta_k\|},$$
+$$\nabla_{M_k} E= v_k+v_{k-1}+z_{k-1}-z_k,$$
+$$v_i = \frac 12
+g'(t_i)D(({D u}^{\bot})^T)(\Omega_i) \Delta_i,$$
+$$z_i = g'(t_i) w_i +h(t_i)\frac{\Delta_i}{\|\Delta_i\|}$$
+and $h(t)=g(t)-tg'(t)$. Note that
+$$D(({D u}^{\bot})^T)
+= D ( -u_y\;\; u_x) = \left(\begin{array}{cc}
+-u_{xy} & u_{xx} \\
+-u_{yy} & u_{xy}
+\end{array}\right).$$
+Numerically, we compute $Du$ at integer points
+with a $3\times 3$ finite differences scheme,
+and $D^2 u$ with the same scheme applied to the computed components of
+$Du$. This introduces a slight smoothing of the derivatives, which
+counterbalances a little the strong locality of the snake model.
+These estimations at integer points are then extended to the whole
+plane using a bilinear interpolation.
+
+\medskip
+
+To compute the evolution of the snake, we use a two-steps iterative
+scheme.
+\begin{enumerate}
+\item The first step consists in a reparameterization of the snake
+according to arc length. It can be justified in several ways~:
+aside from bringing stability to the scheme, it guarantees a {\it
+geometric} evolution of the curve, it ensures an homogeneous
+estimate of the energy, and it prevents singularities to appear
+too easily. However, we do not prevent self-intersections of the
+curve.
+\item The second step is simply a gradient evolution with a fixed step.
+If $(M_i^n)_i$ represents the (polygonal) snake at iteration $n$ and
+$(\tilde M_i^n)_i$ its renormalized version after step 1, then we set
+$$M_i^{n+1} = \tilde M_i^n + step \cdot  \nabla_{\tilde M_i^n} F.$$
+\end{enumerate}
+
+\begin{thebibliography}{1}
+
+\bibitem{CKS}
+V. Caselles, R. Kimmel and G. Sapiro,
+``Geodesic active contours'',
+{\it International Journal of Computer Vision} 1:22, pp. 61-79, 1997.
+
+\bibitem{DMM}
+A. Desolneux, L. Moisan, J.-M. Morel,
+``Variational Snakes Theory'',
+in {\it Geometric Level Set Methods in Imaging, Vision and Graphics}, 
+S. Osher and N. Paragios edts, Springer Verlag, march 2003.
+
+\bibitem{FL}
+P. Fua, Y.G. Leclerc,
+``Model driven edge detection'',
+{\it Machine Vision and Applications} 3, pp. 45-56, 1990.
+
+\bibitem{KWT}
+M. Kass, A. Witkin, D. Terzopoulos,
+``Snakes: active contour models'',
+{\it IEEE Int. Comp. Vis. Conf.}, vol. 777, 1987.
+
+\bibitem{KB2}
+R. Kimmel, A. Bruckstein,
+``On edge detection, edge integration and geometric active contours'',
+{\it Proceedings of Int. Symposium on Mathematical Morphology} (ISMM 2002), 
+Sydney, april 2002.
+
+\end{thebibliography}
+
+

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    file_type.h
    
-   Vers. 2.02
-   (C) 1993-2001 Jacques Froment
+   Vers. 2.03
+   (C) 1993-2002 Jacques Froment
    Functions declaration in file_type.c
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -43,6 +43,9 @@ int _mw_ftype_exists_for_output(char *, char *);
 void _mw_make_type(char [], char [], char *);
 void _mw_print_available_ftype_for_output(char *);
 void _mw_choose_type(char [], char *, char *);
+char *_mw_get_ftype_opt(char *);
+char *_mw_get_ftype_only(char *);
+int _mw_is_of_ftype(char *, char *);
 void  _mw_make_comment(char [], char []);
 int _mw_get_binary_file_type(char *, char *, char *, int *, float *);
 int _mw_get_ascii_file_type(char *, char *, char *, int *, float *);
@@ -62,6 +65,9 @@ int _mw_ftype_exists_for_output();
 void _mw_make_type();
 void _mw_print_available_ftype_for_output();
 void _mw_choose_type();
+char *_mw_get_ftype_opt();
+char *_mw_get_ftype_only();
+int _mw_is_of_ftype();
 void  _mw_make_comment();
 int _mw_get_binary_file_type();
 int _mw_get_ascii_file_type();

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfimage.c
    
-   Vers. 1.05
-   (C) 1994-99 Jacques Froment
+   Vers. 1.06
+   (C) 1994-2003 Jacques Froment
    Basic memory routines for the cfimage internal type
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -427,6 +427,7 @@ Cfimage in,out;
   memcpy(out->green,in->green,i);
   memcpy(out->blue, in->blue,i);
   strcpy(out->cmt,in->cmt);
+  out->model = in->model;
 }
 
 /* Return a tab T so that T[i][j] = image->red[i*image->ncol+j] */

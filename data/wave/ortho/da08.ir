@@ -3,7 +3,7 @@ MegaWave2 - DATA ASCII file -
 %
 def Fsignal
 %
-comments: pseudo symmetric Daubechies filter
+comments: low-pass filter associated to Daubechies wavelet of order 8
 %
 size: 16
 scale: 1.000000e+00

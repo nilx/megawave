@@ -56,6 +56,8 @@ extern int   _mwgetopt(int, char **, char *);
 /* Functions in mwio.c */
 extern void _mw_flip_image(unsigned char *,short,short,short,char);
 extern FILE *_mw_write_header_file(char *,char *,float);
+extern long _mw_find_pattern_in_file(FILE *fp,char *label);
+extern int _mw_byte_ordering_is_little_endian(void);
 
 /* I/O conversion functions called by mwp (data_io.c) 
    and defined in mw.c     
@@ -97,6 +99,8 @@ extern int   _mwgetopt();
 
 extern void _mw_flip_image();
 extern FILE *_mw_write_header_file();
+extern long _mw_find_pattern_in_file();
+extern int _mw_byte_ordering_is_little_endian();
 
 /* I/O conversion functions called by mwp (data_io.c) 
    and defined in mw.c     

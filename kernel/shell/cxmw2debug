@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="`basename $0`"
-_Vers="1.06"
-_Date="1997-2002"
+_Vers="1.07"
+_Date="1997-2003"
 _Func="Compile your own XMegaWave2 software (debug-mode)";
 _Auth="Jacques Froment";
 _Usage="[-gnu] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-pubsyslib] modules_file"
@@ -15,6 +15,21 @@ _Usage="[-gnu] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrar
 # CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 #-----------------------------------------------------------------------------
+
+ChooseTMP()
+
+{
+if  [ "$TMP" = ""  ] || [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+ TMP=/usr/tmp
+ if  [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+  TMP=/tmp
+  if  [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+   echo "$_Prog : Fatal Error : cannot choose TMP !"
+   exit 1
+  fi
+ fi
+fi
+}
 
 if [ "${MW_MACHINETYPE}" = "" ]; then
    echo "Please set the \$MW_MACHINETYPE environment variable"
@@ -33,11 +48,7 @@ fi
 trap "echo interrupt; exit 1" 2
 trap "echo quit; exit 1" 3
 
-# TMP Directory
-TMP=/usr/tmp
-if [ "$TMPDIR" != "" ]; then
-  TMP=$TMPDIR
-fi
+ChooseTMP
 
 # XMegaWave2 executable name
 XMW2=myxmw2

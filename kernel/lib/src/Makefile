@@ -1,7 +1,8 @@
-# Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.07 with arch = 'Linux ix86' option = 'shared '
+# Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.07 with arch = 'Linux ix86' option = 'jpeg shared '
 #-----------------------------------------------------------------------------
 # Makefile.in used to create Makefile using macro mw2config
-# MegaWave2 system library : Copyright (c) Jacques Froment 1996-2001
+# Version 2.1
+# MegaWave2 system library : Copyright (c) Jacques Froment 1996-2002
 #-----------------------------------------------------------------------------
 # This file is part of the MegaWave2 system library 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -30,10 +31,15 @@ LIBslNOTIFF = $(LIBTARGET)/libnotiff.so
 LIBslXMWCOM  = $(LIBTARGET)/libxmwcom.so
 
 # --- C compiler Options ---
+
+# JPEG flag
+CJPEG	=
+CJPEG   = -DJPEG 
+
 # XMWP : Add code for communication with XMegaWave (+ compile the lib xmwcom)
 
-#CFLAGS   = -I$(MWINCDIR) -I$(MW_INCLUDEX11) -D$(MW_SYSTEMTYPE) -D$(MW_MACHINETYPE) -DXMWP 
-CFLAGS   = -I$(MWINCDIR) -I$(MW_INCLUDEX11) -D$(MW_SYSTEMTYPE) -D$(MW_MACHINETYPE) 
+#CFLAGS   = -I$(MWINCDIR) -I$(MW_INCLUDEX11) -D$(MW_SYSTEMTYPE) -D$(MW_MACHINETYPE) -DXMWP $(CJPEG)
+CFLAGS   = -I$(MWINCDIR) -I$(MW_INCLUDEX11) -D$(MW_SYSTEMTYPE) -D$(MW_MACHINETYPE) $(CJPEG)
 
 CFLAGSLIB  = $(CFLAGS) -c 
 
@@ -65,14 +71,14 @@ AR       = ar $(ARFLAGS)
 # Library object
 SRC = mw.c mwio.c cimage.c \
       fimage.c cimage_io.c fimage_io.c window.c wpanel.c \
-      cmovie.c cmovie_io.c polygon.c \
+      cmovie.c cmovie_io.c polygon.c wave_io.c \
       polygon_io.c fsignal.c fsignal_io.c ascii_file.c file_type.c \
       wtrans2d.c wtrans2d_io.c basic_conv.c type_conv.c wmax2d.c wmax2d_io.c \
       wtrans1d.c wtrans1d_io.c pm_io.c gif_io.c curve.c curve_io.c \
       cfimage.c cfimage_io.c ccimage.c ccimage_io.c unix_bsd.c \
       module.c module_io.c fmovie.c fmovie_io.c ps_io.c epsf_io.c ccmovie.c \
       cfmovie.c fcurve.c fcurve_io.c fpolygon.c fpolygon_io.c tiff_io.c \
-      pgm_io.c dcurve.c dcurve_io.c rawdata.c rawdata_io.c
+      pgm_io.c ppm_io.c dcurve.c dcurve_io.c rawdata.c rawdata_io.c jpeg_io.c bmp_io.c 
 
 OBJ = 	$(OBJPATH)/mw.o \
 	$(OBJPATH)/mwio.o \
@@ -96,6 +102,7 @@ OBJ = 	$(OBJPATH)/mw.o \
 	$(OBJPATH)/fpolygon_io.o \
 	$(OBJPATH)/fsignal.o \
 	$(OBJPATH)/fsignal_io.o \
+	$(OBJPATH)/wave_io.o \
 	$(OBJPATH)/ascii_file.o \
 	$(OBJPATH)/file_type.o \
 	$(OBJPATH)/wtrans2d.o \
@@ -108,8 +115,11 @@ OBJ = 	$(OBJPATH)/mw.o \
 	$(OBJPATH)/wtrans1d_io.o \
 	$(OBJPATH)/pm_io.o \
 	$(OBJPATH)/tiff_io.o \
+	$(OBJPATH)/jpeg_io.o \
 	$(OBJPATH)/pgm_io.o \
+	$(OBJPATH)/ppm_io.o \
 	$(OBJPATH)/gif_io.o \
+	$(OBJPATH)/bmp_io.o \
 	$(OBJPATH)/ps_io.o \
 	$(OBJPATH)/epsf_io.o \
 	$(OBJPATH)/curve.o \
@@ -244,8 +254,14 @@ $(OBJPATH)/pm_io.o : $(MWINCDIR)/pm.h $(MWINCDIR)/mw.h pm_io.c
 $(OBJPATH)/tiff_io.o : $(MWINCDIR)/tiff.h $(MWINCDIR)/tiffio.h $(MWINCDIR)/mw.h tiff_io.c
 	$(CC) $(CFLAGSLIB) -o $@ tiff_io.c
 
+$(OBJPATH)/jpeg_io.o : $(MWINCDIR)/mw.h jpeg_io.c
+	$(CC) $(CFLAGSLIB) -o $@ jpeg_io.c
+
 $(OBJPATH)/gif_io.o :  $(MWINCDIR)/mw.h gif_io.c
 	$(CC) $(CFLAGSLIB) -o $@ gif_io.c
+
+$(OBJPATH)/bmp_io.o :  $(MWINCDIR)/mw.h bmp_io.c
+	$(CC) $(CFLAGSLIB) -o $@ bmp_io.c
 
 $(OBJPATH)/ps_io.o :  $(MWINCDIR)/mw.h ps_io.c
 	$(CC) $(CFLAGSLIB) -o $@ ps_io.c
@@ -255,6 +271,9 @@ $(OBJPATH)/epsf_io.o :  $(MWINCDIR)/mw.h epsf_io.c
 
 $(OBJPATH)/pgm_io.o :  $(MWINCDIR)/mw.h pgm_io.c
 	$(CC) $(CFLAGSLIB) -o $@ pgm_io.c
+
+$(OBJPATH)/ppm_io.o :  $(MWINCDIR)/mw.h ppm_io.c basic_conv.c
+	$(CC) $(CFLAGSLIB) -o $@ ppm_io.c
 
 $(OBJPATH)/cmovie.o : $(MWINCDIR)/cmovie.h $(MWINCDIR)/cimage.h cmovie.c
 	$(CC) $(CFLAGSLIB) -o $@ cmovie.c
@@ -347,6 +366,9 @@ $(OBJPATH)/fsignal.o : $(MWINCDIR)/fsignal.h fsignal.c
 
 $(OBJPATH)/fsignal_io.o : $(MWINCDIR)/fsignal.h ascii_file.c fsignal_io.c
 	$(CC) $(CFLAGSLIB) -o $@ fsignal_io.c
+
+$(OBJPATH)/wave_io.o : $(MWINCDIR)/fsignal.h wave_io.c
+	$(CC) $(CFLAGSLIB) -o $@ wave_io.c
 
 $(OBJPATH)/ifp_io.o : $(MWINCDIR)/fsignal.h ifp_io.c
 	$(CC) $(CFLAGSLIB) -o $@ ifp_io.c

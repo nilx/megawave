@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {snoise};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Lionel Moisan"};
   function = {"Put noise on a Fsignal"};
   usage = {
@@ -17,6 +17,9 @@
    out<-out         "output Fsignal"
   };
 */
+/*----------------------------------------------------------------------
+ v1.1: preserve header info for e.g. sound processing (JF) 
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -50,7 +53,8 @@ Fsignal snoise(in,out,std,t,n_flag)
   /* Allocate memory */
   out = mw_change_fsignal(out,in->size);
   if (!out) mwerror(FATAL,1,"Not enough memory.");
-  
+  mw_copy_fsignal_header(in,out);
+
   if (std) 
 
     /* Gaussian noise */

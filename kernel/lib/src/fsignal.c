@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fsignal.c
    
-   Vers. 1.0
-   (C) 1993 Jacques Froment
+   Vers. 1.2
+   (C) 1993-2002 Jacques Froment
    Basic memory routines for the fsignal internal type
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -38,6 +38,7 @@ Fsignal mw_new_fsignal()
   signal->shift = 0.0;
   signal->gain = 1.0;
   signal->sgrate = 1.0;
+  signal->bpsample=8*sizeof(float);
 
   strcpy(signal->cmt,"?");
   strcpy(signal->name,"?");
@@ -171,22 +172,74 @@ float v;
     *ptr = v;
 }
 
+
 /* Copy the values array of a fsignal into another fsignal */
 
-void mw_copy_fsignal(in, out)
-
+#ifdef __STDC__
+void mw_copy_fsignal_values(Fsignal in, Fsignal out)
+#else
+void mw_copy_fsignal_values(in, out)
 Fsignal in,out;
+#endif
 
 {
   if ((!in) || (!out) || (!in->values) || (!out->values) || (in->size != out->size))
     {
       mwerror(ERROR, 0,
-	      "[mw_copy_fsignal] NULL input or output signal or signals of different sizes\n");
+	      "[mw_copy_fsignal_values] NULL input or output signal or signals of different sizes !\n");
       return;
     }
 
   memcpy(out->values, in->values, sizeof(float) * in->size);
+}
+
+
+/* Copy the header of a fsignal into another fsignal */
+
+#ifdef __STDC__
+void mw_copy_fsignal_header(Fsignal in, Fsignal out)
+#else
+void mw_copy_fsignal_header(in, out)
+Fsignal in,out;
+#endif
+
+{
+  if ((!in) || (!out))
+    {
+      mwerror(ERROR, 0,
+	      "[mw_copy_fsignal_header] NULL input or output signal !\n");
+      return;
+    }
+  out->firstp = in->firstp;
+  out->lastp = in->lastp;  
+  out->param = in->param;
+  out->scale = in->scale;
+  out->shift = in->shift;
+  out->gain = in->gain;
+  out->sgrate = in->sgrate;
+  out->bpsample = in->bpsample;
   strcpy(out->cmt,in->cmt);
+}
+
+/* Copy a fsignal into another fsignal */
+
+#ifdef __STDC__
+void mw_copy_fsignal(Fsignal in, Fsignal out)
+#else
+void mw_copy_fsignal(in, out)
+Fsignal in,out;
+#endif
+
+{
+  if ((!in) || (!out) || (!in->values) || (!out->values) || (in->size != out->size))
+    {
+      mwerror(ERROR, 0,
+	      "[mw_copy_fsignal] NULL input or output signal or signals of different sizes !\n");
+      return;
+    }
+
+  memcpy(out->values, in->values, sizeof(float) * in->size);
+  mw_copy_fsignal_header(in, out);
 }
 
 

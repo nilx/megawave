@@ -8691,7 +8691,7 @@ char *ftype;    /* External type to be used to save the structure */
 
   if (strcmp(typein,"fimage") == 0)
     {
-      if ((strcmp(ftype,"IMG")==0)||(strcmp(ftype,"PM_C")==0)||(strcmp(ftype,"GIF")==0)||(strcmp(ftype,"TIFF")==0)||(strcmp(ftype,"PGMA")==0)||(strcmp(ftype,"PGMR")==0)||(strcmp(ftype,"PS")==0)||(strcmp(ftype,"EPSF")==0)||(strcmp(ftype,"INR")==0)||(strcmp(ftype,"MTI")==0)||(strcmp(ftype,"BIN")==0))
+      if ((_mw_is_of_ftype(ftype,"IMG"))||(_mw_is_of_ftype(ftype,"PM_C"))||(_mw_is_of_ftype(ftype,"GIF"))||(_mw_is_of_ftype(ftype,"TIFF"))||(_mw_is_of_ftype(ftype,"PGMA"))||(_mw_is_of_ftype(ftype,"PGMR"))||(_mw_is_of_ftype(ftype,"BMP"))||(_mw_is_of_ftype(ftype,"JFIF"))||(_mw_is_of_ftype(ftype,"PS"))||(_mw_is_of_ftype(ftype,"EPSF"))||(_mw_is_of_ftype(ftype,"INR"))||(_mw_is_of_ftype(ftype,"MTI"))||(_mw_is_of_ftype(ftype,"BIN")))
       /* Conversion to cimage */
       {
         cimage = (Cimage) mw_conv_internal_type(mwstruct,"fimage","cimage");
@@ -8700,7 +8700,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cimage(cimage);
         return(ret);
        }
-      if ((strcmp(ftype,"PMC_F")==0))
+      if ((_mw_is_of_ftype(ftype,"PMC_F")))
       /* Conversion to cfimage */
       {
         cfimage = (Cfimage) mw_conv_internal_type(mwstruct,"fimage","cfimage");
@@ -8709,7 +8709,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfimage(cfimage);
         return(ret);
        }
-      if ((strcmp(ftype,"PMC_C")==0)||(strcmp(ftype,"TIFFC")==0))
+      if ((_mw_is_of_ftype(ftype,"PMC_C"))||(_mw_is_of_ftype(ftype,"TIFFC"))||(_mw_is_of_ftype(ftype,"BMPC"))||(_mw_is_of_ftype(ftype,"PPM"))||(_mw_is_of_ftype(ftype,"JFIFC")))
       /* Conversion to ccimage */
       {
         ccimage = (Ccimage) mw_conv_internal_type(mwstruct,"fimage","ccimage");
@@ -8722,7 +8722,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"cimage") == 0)
     {
-      if ((strcmp(ftype,"RIM")==0)||(strcmp(ftype,"PM_F")==0))
+      if ((_mw_is_of_ftype(ftype,"RIM"))||(_mw_is_of_ftype(ftype,"PM_F")))
       /* Conversion to fimage */
       {
         fimage = (Fimage) mw_conv_internal_type(mwstruct,"cimage","fimage");
@@ -8731,7 +8731,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fimage(fimage);
         return(ret);
        }
-      if ((strcmp(ftype,"PMC_F")==0))
+      if ((_mw_is_of_ftype(ftype,"PMC_F")))
       /* Conversion to cfimage */
       {
         cfimage = (Cfimage) mw_conv_internal_type(mwstruct,"cimage","cfimage");
@@ -8740,7 +8740,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfimage(cfimage);
         return(ret);
        }
-      if ((strcmp(ftype,"PMC_C")==0)||(strcmp(ftype,"TIFFC")==0))
+      if ((_mw_is_of_ftype(ftype,"PMC_C"))||(_mw_is_of_ftype(ftype,"TIFFC"))||(_mw_is_of_ftype(ftype,"BMPC"))||(_mw_is_of_ftype(ftype,"PPM"))||(_mw_is_of_ftype(ftype,"JFIFC")))
       /* Conversion to ccimage */
       {
         ccimage = (Ccimage) mw_conv_internal_type(mwstruct,"cimage","ccimage");
@@ -8753,7 +8753,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"cfimage") == 0)
     {
-      if ((strcmp(ftype,"RIM")==0)||(strcmp(ftype,"PM_F")==0))
+      if ((_mw_is_of_ftype(ftype,"RIM"))||(_mw_is_of_ftype(ftype,"PM_F")))
       /* Conversion to fimage */
       {
         fimage = (Fimage) mw_conv_internal_type(mwstruct,"cfimage","fimage");
@@ -8762,7 +8762,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fimage(fimage);
         return(ret);
        }
-      if ((strcmp(ftype,"IMG")==0)||(strcmp(ftype,"PM_C")==0)||(strcmp(ftype,"GIF")==0)||(strcmp(ftype,"TIFF")==0)||(strcmp(ftype,"PGMA")==0)||(strcmp(ftype,"PGMR")==0)||(strcmp(ftype,"PS")==0)||(strcmp(ftype,"EPSF")==0)||(strcmp(ftype,"INR")==0)||(strcmp(ftype,"MTI")==0)||(strcmp(ftype,"BIN")==0))
+      if ((_mw_is_of_ftype(ftype,"IMG"))||(_mw_is_of_ftype(ftype,"PM_C"))||(_mw_is_of_ftype(ftype,"GIF"))||(_mw_is_of_ftype(ftype,"TIFF"))||(_mw_is_of_ftype(ftype,"PGMA"))||(_mw_is_of_ftype(ftype,"PGMR"))||(_mw_is_of_ftype(ftype,"BMP"))||(_mw_is_of_ftype(ftype,"JFIF"))||(_mw_is_of_ftype(ftype,"PS"))||(_mw_is_of_ftype(ftype,"EPSF"))||(_mw_is_of_ftype(ftype,"INR"))||(_mw_is_of_ftype(ftype,"MTI"))||(_mw_is_of_ftype(ftype,"BIN")))
       /* Conversion to cimage */
       {
         cimage = (Cimage) mw_conv_internal_type(mwstruct,"cfimage","cimage");
@@ -8771,7 +8771,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cimage(cimage);
         return(ret);
        }
-      if ((strcmp(ftype,"PMC_C")==0)||(strcmp(ftype,"TIFFC")==0))
+      if ((_mw_is_of_ftype(ftype,"PMC_C"))||(_mw_is_of_ftype(ftype,"TIFFC"))||(_mw_is_of_ftype(ftype,"BMPC"))||(_mw_is_of_ftype(ftype,"PPM"))||(_mw_is_of_ftype(ftype,"JFIFC")))
       /* Conversion to ccimage */
       {
         ccimage = (Ccimage) mw_conv_internal_type(mwstruct,"cfimage","ccimage");
@@ -8784,7 +8784,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"ccimage") == 0)
     {
-      if ((strcmp(ftype,"RIM")==0)||(strcmp(ftype,"PM_F")==0))
+      if ((_mw_is_of_ftype(ftype,"RIM"))||(_mw_is_of_ftype(ftype,"PM_F")))
       /* Conversion to fimage */
       {
         fimage = (Fimage) mw_conv_internal_type(mwstruct,"ccimage","fimage");
@@ -8793,7 +8793,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fimage(fimage);
         return(ret);
        }
-      if ((strcmp(ftype,"IMG")==0)||(strcmp(ftype,"PM_C")==0)||(strcmp(ftype,"GIF")==0)||(strcmp(ftype,"TIFF")==0)||(strcmp(ftype,"PGMA")==0)||(strcmp(ftype,"PGMR")==0)||(strcmp(ftype,"PS")==0)||(strcmp(ftype,"EPSF")==0)||(strcmp(ftype,"INR")==0)||(strcmp(ftype,"MTI")==0)||(strcmp(ftype,"BIN")==0))
+      if ((_mw_is_of_ftype(ftype,"IMG"))||(_mw_is_of_ftype(ftype,"PM_C"))||(_mw_is_of_ftype(ftype,"GIF"))||(_mw_is_of_ftype(ftype,"TIFF"))||(_mw_is_of_ftype(ftype,"PGMA"))||(_mw_is_of_ftype(ftype,"PGMR"))||(_mw_is_of_ftype(ftype,"BMP"))||(_mw_is_of_ftype(ftype,"JFIF"))||(_mw_is_of_ftype(ftype,"PS"))||(_mw_is_of_ftype(ftype,"EPSF"))||(_mw_is_of_ftype(ftype,"INR"))||(_mw_is_of_ftype(ftype,"MTI"))||(_mw_is_of_ftype(ftype,"BIN")))
       /* Conversion to cimage */
       {
         cimage = (Cimage) mw_conv_internal_type(mwstruct,"ccimage","cimage");
@@ -8802,7 +8802,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cimage(cimage);
         return(ret);
        }
-      if ((strcmp(ftype,"PMC_F")==0))
+      if ((_mw_is_of_ftype(ftype,"PMC_F")))
       /* Conversion to cfimage */
       {
         cfimage = (Cfimage) mw_conv_internal_type(mwstruct,"ccimage","cfimage");
@@ -8815,7 +8815,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"curves") == 0)
     {
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"curves","polygons");
@@ -8824,7 +8824,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"curves","fcurves");
@@ -8833,7 +8833,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"curves","fpolygons");
@@ -8842,7 +8842,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"curves","dcurves");
@@ -8851,7 +8851,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"curves","curve");
@@ -8860,7 +8860,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"curves","polygon");
@@ -8869,7 +8869,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"curves","fcurve");
@@ -8878,7 +8878,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"curves","fpolygon");
@@ -8887,7 +8887,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"curves","dcurve");
@@ -8896,7 +8896,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"curves","morpho_line");
@@ -8905,7 +8905,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"curves","fmorpho_line");
@@ -8914,7 +8914,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"curves","mimage");
@@ -8923,7 +8923,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"curves","morpho_set");
@@ -8932,7 +8932,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"curves","morpho_sets");
@@ -8941,7 +8941,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"curves","cmorpho_line");
@@ -8950,7 +8950,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"curves","cfmorpho_line");
@@ -8959,7 +8959,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"curves","cmimage");
@@ -8968,7 +8968,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"curves","cmorpho_sets");
@@ -8977,7 +8977,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"curves","cmorpho_set");
@@ -8986,7 +8986,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"curves","flists");
@@ -8995,7 +8995,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"curves","flist");
@@ -9004,7 +9004,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"curves","dlists");
@@ -9013,7 +9013,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"curves","dlist");
@@ -9026,7 +9026,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"polygons") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"polygons","curves");
@@ -9035,7 +9035,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"polygons","fcurves");
@@ -9044,7 +9044,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"polygons","fpolygons");
@@ -9053,7 +9053,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"polygons","dcurves");
@@ -9062,7 +9062,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"polygons","curve");
@@ -9071,7 +9071,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"polygons","polygon");
@@ -9080,7 +9080,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"polygons","fcurve");
@@ -9089,7 +9089,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"polygons","fpolygon");
@@ -9098,7 +9098,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"polygons","dcurve");
@@ -9107,7 +9107,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"polygons","morpho_line");
@@ -9116,7 +9116,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"polygons","fmorpho_line");
@@ -9125,7 +9125,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"polygons","mimage");
@@ -9134,7 +9134,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"polygons","morpho_set");
@@ -9143,7 +9143,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"polygons","morpho_sets");
@@ -9152,7 +9152,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"polygons","cmorpho_line");
@@ -9161,7 +9161,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"polygons","cfmorpho_line");
@@ -9170,7 +9170,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"polygons","cmimage");
@@ -9179,7 +9179,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"polygons","cmorpho_sets");
@@ -9188,7 +9188,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"polygons","cmorpho_set");
@@ -9197,7 +9197,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"polygons","flists");
@@ -9206,7 +9206,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"polygons","flist");
@@ -9215,7 +9215,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"polygons","dlists");
@@ -9224,7 +9224,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"polygons","dlist");
@@ -9237,7 +9237,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"fcurves") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"fcurves","curves");
@@ -9246,7 +9246,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"fcurves","polygons");
@@ -9255,7 +9255,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"fcurves","fpolygons");
@@ -9264,7 +9264,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"fcurves","dcurves");
@@ -9273,7 +9273,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"fcurves","curve");
@@ -9282,7 +9282,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"fcurves","polygon");
@@ -9291,7 +9291,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"fcurves","fcurve");
@@ -9300,7 +9300,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"fcurves","fpolygon");
@@ -9309,7 +9309,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"fcurves","dcurve");
@@ -9318,7 +9318,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"fcurves","morpho_line");
@@ -9327,7 +9327,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"fcurves","fmorpho_line");
@@ -9336,7 +9336,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"fcurves","mimage");
@@ -9345,7 +9345,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"fcurves","morpho_set");
@@ -9354,7 +9354,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"fcurves","morpho_sets");
@@ -9363,7 +9363,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"fcurves","cmorpho_line");
@@ -9372,7 +9372,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"fcurves","cfmorpho_line");
@@ -9381,7 +9381,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"fcurves","cmimage");
@@ -9390,7 +9390,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"fcurves","cmorpho_sets");
@@ -9399,7 +9399,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"fcurves","cmorpho_set");
@@ -9408,7 +9408,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"fcurves","flists");
@@ -9417,7 +9417,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"fcurves","flist");
@@ -9426,7 +9426,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"fcurves","dlists");
@@ -9435,7 +9435,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"fcurves","dlist");
@@ -9448,7 +9448,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"fpolygons") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"fpolygons","curves");
@@ -9457,7 +9457,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"fpolygons","polygons");
@@ -9466,7 +9466,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"fpolygons","fcurves");
@@ -9475,7 +9475,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"fpolygons","dcurves");
@@ -9484,7 +9484,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"fpolygons","curve");
@@ -9493,7 +9493,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"fpolygons","polygon");
@@ -9502,7 +9502,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"fpolygons","fcurve");
@@ -9511,7 +9511,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"fpolygons","fpolygon");
@@ -9520,7 +9520,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"fpolygons","dcurve");
@@ -9529,7 +9529,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"fpolygons","morpho_line");
@@ -9538,7 +9538,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"fpolygons","fmorpho_line");
@@ -9547,7 +9547,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"fpolygons","mimage");
@@ -9556,7 +9556,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"fpolygons","morpho_set");
@@ -9565,7 +9565,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"fpolygons","morpho_sets");
@@ -9574,7 +9574,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"fpolygons","cmorpho_line");
@@ -9583,7 +9583,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"fpolygons","cfmorpho_line");
@@ -9592,7 +9592,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"fpolygons","cmimage");
@@ -9601,7 +9601,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"fpolygons","cmorpho_sets");
@@ -9610,7 +9610,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"fpolygons","cmorpho_set");
@@ -9619,7 +9619,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"fpolygons","flists");
@@ -9628,7 +9628,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"fpolygons","flist");
@@ -9637,7 +9637,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"fpolygons","dlists");
@@ -9646,7 +9646,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"fpolygons","dlist");
@@ -9659,7 +9659,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"dcurves") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"dcurves","curves");
@@ -9668,7 +9668,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"dcurves","polygons");
@@ -9677,7 +9677,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"dcurves","fcurves");
@@ -9686,7 +9686,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"dcurves","fpolygons");
@@ -9695,7 +9695,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"dcurves","curve");
@@ -9704,7 +9704,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"dcurves","polygon");
@@ -9713,7 +9713,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"dcurves","fcurve");
@@ -9722,7 +9722,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"dcurves","fpolygon");
@@ -9731,7 +9731,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"dcurves","dcurve");
@@ -9740,7 +9740,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"dcurves","morpho_line");
@@ -9749,7 +9749,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"dcurves","fmorpho_line");
@@ -9758,7 +9758,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"dcurves","mimage");
@@ -9767,7 +9767,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"dcurves","morpho_set");
@@ -9776,7 +9776,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"dcurves","morpho_sets");
@@ -9785,7 +9785,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"dcurves","cmorpho_line");
@@ -9794,7 +9794,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"dcurves","cfmorpho_line");
@@ -9803,7 +9803,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"dcurves","cmimage");
@@ -9812,7 +9812,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"dcurves","cmorpho_sets");
@@ -9821,7 +9821,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"dcurves","cmorpho_set");
@@ -9830,7 +9830,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"dcurves","flists");
@@ -9839,7 +9839,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"dcurves","flist");
@@ -9848,7 +9848,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"dcurves","dlists");
@@ -9857,7 +9857,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"dcurves","dlist");
@@ -9870,7 +9870,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"curve") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"curve","curves");
@@ -9879,7 +9879,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"curve","polygons");
@@ -9888,7 +9888,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"curve","fcurves");
@@ -9897,7 +9897,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"curve","fpolygons");
@@ -9906,7 +9906,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"curve","dcurves");
@@ -9915,7 +9915,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"curve","polygon");
@@ -9924,7 +9924,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"curve","fcurve");
@@ -9933,7 +9933,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"curve","fpolygon");
@@ -9942,7 +9942,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"curve","dcurve");
@@ -9951,7 +9951,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"curve","morpho_line");
@@ -9960,7 +9960,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"curve","fmorpho_line");
@@ -9969,7 +9969,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"curve","mimage");
@@ -9978,7 +9978,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"curve","morpho_set");
@@ -9987,7 +9987,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"curve","morpho_sets");
@@ -9996,7 +9996,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"curve","cmorpho_line");
@@ -10005,7 +10005,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"curve","cfmorpho_line");
@@ -10014,7 +10014,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"curve","cmimage");
@@ -10023,7 +10023,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"curve","cmorpho_sets");
@@ -10032,7 +10032,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"curve","cmorpho_set");
@@ -10041,7 +10041,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"curve","flists");
@@ -10050,7 +10050,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"curve","flist");
@@ -10059,7 +10059,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"curve","dlists");
@@ -10068,7 +10068,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"curve","dlist");
@@ -10081,7 +10081,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"polygon") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"polygon","curves");
@@ -10090,7 +10090,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"polygon","polygons");
@@ -10099,7 +10099,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"polygon","fcurves");
@@ -10108,7 +10108,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"polygon","fpolygons");
@@ -10117,7 +10117,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"polygon","dcurves");
@@ -10126,7 +10126,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"polygon","curve");
@@ -10135,7 +10135,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"polygon","fcurve");
@@ -10144,7 +10144,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"polygon","fpolygon");
@@ -10153,7 +10153,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"polygon","dcurve");
@@ -10162,7 +10162,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"polygon","morpho_line");
@@ -10171,7 +10171,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"polygon","fmorpho_line");
@@ -10180,7 +10180,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"polygon","mimage");
@@ -10189,7 +10189,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"polygon","morpho_set");
@@ -10198,7 +10198,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"polygon","morpho_sets");
@@ -10207,7 +10207,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"polygon","cmorpho_line");
@@ -10216,7 +10216,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"polygon","cfmorpho_line");
@@ -10225,7 +10225,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"polygon","cmimage");
@@ -10234,7 +10234,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"polygon","cmorpho_sets");
@@ -10243,7 +10243,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"polygon","cmorpho_set");
@@ -10252,7 +10252,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"polygon","flists");
@@ -10261,7 +10261,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"polygon","flist");
@@ -10270,7 +10270,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"polygon","dlists");
@@ -10279,7 +10279,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"polygon","dlist");
@@ -10292,7 +10292,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"fcurve") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"fcurve","curves");
@@ -10301,7 +10301,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"fcurve","polygons");
@@ -10310,7 +10310,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"fcurve","fcurves");
@@ -10319,7 +10319,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"fcurve","fpolygons");
@@ -10328,7 +10328,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"fcurve","dcurves");
@@ -10337,7 +10337,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"fcurve","curve");
@@ -10346,7 +10346,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"fcurve","polygon");
@@ -10355,7 +10355,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"fcurve","fpolygon");
@@ -10364,7 +10364,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"fcurve","dcurve");
@@ -10373,7 +10373,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"fcurve","morpho_line");
@@ -10382,7 +10382,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"fcurve","fmorpho_line");
@@ -10391,7 +10391,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"fcurve","mimage");
@@ -10400,7 +10400,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"fcurve","morpho_set");
@@ -10409,7 +10409,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"fcurve","morpho_sets");
@@ -10418,7 +10418,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"fcurve","cmorpho_line");
@@ -10427,7 +10427,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"fcurve","cfmorpho_line");
@@ -10436,7 +10436,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"fcurve","cmimage");
@@ -10445,7 +10445,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"fcurve","cmorpho_sets");
@@ -10454,7 +10454,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"fcurve","cmorpho_set");
@@ -10463,7 +10463,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"fcurve","flists");
@@ -10472,7 +10472,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"fcurve","flist");
@@ -10481,7 +10481,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"fcurve","dlists");
@@ -10490,7 +10490,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"fcurve","dlist");
@@ -10503,7 +10503,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"fpolygon") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"fpolygon","curves");
@@ -10512,7 +10512,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"fpolygon","polygons");
@@ -10521,7 +10521,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"fpolygon","fcurves");
@@ -10530,7 +10530,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"fpolygon","fpolygons");
@@ -10539,7 +10539,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"fpolygon","dcurves");
@@ -10548,7 +10548,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"fpolygon","curve");
@@ -10557,7 +10557,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"fpolygon","polygon");
@@ -10566,7 +10566,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"fpolygon","fcurve");
@@ -10575,7 +10575,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"fpolygon","dcurve");
@@ -10584,7 +10584,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"fpolygon","morpho_line");
@@ -10593,7 +10593,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"fpolygon","fmorpho_line");
@@ -10602,7 +10602,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"fpolygon","mimage");
@@ -10611,7 +10611,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"fpolygon","morpho_set");
@@ -10620,7 +10620,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"fpolygon","morpho_sets");
@@ -10629,7 +10629,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"fpolygon","cmorpho_line");
@@ -10638,7 +10638,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"fpolygon","cfmorpho_line");
@@ -10647,7 +10647,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"fpolygon","cmimage");
@@ -10656,7 +10656,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"fpolygon","cmorpho_sets");
@@ -10665,7 +10665,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"fpolygon","cmorpho_set");
@@ -10674,7 +10674,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"fpolygon","flists");
@@ -10683,7 +10683,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"fpolygon","flist");
@@ -10692,7 +10692,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"fpolygon","dlists");
@@ -10701,7 +10701,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"fpolygon","dlist");
@@ -10726,7 +10726,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"dcurve") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"dcurve","curves");
@@ -10735,7 +10735,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"dcurve","polygons");
@@ -10744,7 +10744,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"dcurve","fcurves");
@@ -10753,7 +10753,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"dcurve","fpolygons");
@@ -10762,7 +10762,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"dcurve","dcurves");
@@ -10771,7 +10771,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"dcurve","curve");
@@ -10780,7 +10780,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"dcurve","polygon");
@@ -10789,7 +10789,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"dcurve","fcurve");
@@ -10798,7 +10798,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"dcurve","fpolygon");
@@ -10807,7 +10807,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"dcurve","morpho_line");
@@ -10816,7 +10816,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"dcurve","fmorpho_line");
@@ -10825,7 +10825,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"dcurve","mimage");
@@ -10834,7 +10834,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"dcurve","morpho_set");
@@ -10843,7 +10843,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"dcurve","morpho_sets");
@@ -10852,7 +10852,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"dcurve","cmorpho_line");
@@ -10861,7 +10861,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"dcurve","cfmorpho_line");
@@ -10870,7 +10870,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"dcurve","cmimage");
@@ -10879,7 +10879,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"dcurve","cmorpho_sets");
@@ -10888,7 +10888,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"dcurve","cmorpho_set");
@@ -10897,7 +10897,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"dcurve","flists");
@@ -10906,7 +10906,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"dcurve","flist");
@@ -10915,7 +10915,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"dcurve","dlists");
@@ -10924,7 +10924,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"dcurve","dlist");
@@ -10937,7 +10937,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"morpho_line") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"morpho_line","curves");
@@ -10946,7 +10946,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"morpho_line","polygons");
@@ -10955,7 +10955,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"morpho_line","fcurves");
@@ -10964,7 +10964,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"morpho_line","fpolygons");
@@ -10973,7 +10973,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"morpho_line","dcurves");
@@ -10982,7 +10982,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"morpho_line","curve");
@@ -10991,7 +10991,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"morpho_line","polygon");
@@ -11000,7 +11000,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"morpho_line","fcurve");
@@ -11009,7 +11009,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"morpho_line","fpolygon");
@@ -11018,7 +11018,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"morpho_line","dcurve");
@@ -11027,7 +11027,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"morpho_line","fmorpho_line");
@@ -11036,7 +11036,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"morpho_line","mimage");
@@ -11045,7 +11045,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"morpho_line","morpho_set");
@@ -11054,7 +11054,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"morpho_line","morpho_sets");
@@ -11063,7 +11063,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"morpho_line","cmorpho_line");
@@ -11072,7 +11072,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"morpho_line","cfmorpho_line");
@@ -11081,7 +11081,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"morpho_line","cmimage");
@@ -11090,7 +11090,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"morpho_line","cmorpho_sets");
@@ -11099,7 +11099,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"morpho_line","cmorpho_set");
@@ -11108,7 +11108,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"morpho_line","flists");
@@ -11117,7 +11117,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"morpho_line","flist");
@@ -11126,7 +11126,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"morpho_line","dlists");
@@ -11135,7 +11135,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"morpho_line","dlist");
@@ -11148,7 +11148,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"fmorpho_line") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"fmorpho_line","curves");
@@ -11157,7 +11157,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"fmorpho_line","polygons");
@@ -11166,7 +11166,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"fmorpho_line","fcurves");
@@ -11175,7 +11175,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"fmorpho_line","fpolygons");
@@ -11184,7 +11184,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"fmorpho_line","dcurves");
@@ -11193,7 +11193,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"fmorpho_line","curve");
@@ -11202,7 +11202,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"fmorpho_line","polygon");
@@ -11211,7 +11211,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"fmorpho_line","fcurve");
@@ -11220,7 +11220,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"fmorpho_line","fpolygon");
@@ -11229,7 +11229,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"fmorpho_line","dcurve");
@@ -11238,7 +11238,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"fmorpho_line","morpho_line");
@@ -11247,7 +11247,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"fmorpho_line","mimage");
@@ -11256,7 +11256,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"fmorpho_line","morpho_set");
@@ -11265,7 +11265,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"fmorpho_line","morpho_sets");
@@ -11274,7 +11274,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"fmorpho_line","cmorpho_line");
@@ -11283,7 +11283,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"fmorpho_line","cfmorpho_line");
@@ -11292,7 +11292,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"fmorpho_line","cmimage");
@@ -11301,7 +11301,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"fmorpho_line","cmorpho_sets");
@@ -11310,7 +11310,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"fmorpho_line","cmorpho_set");
@@ -11319,7 +11319,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"fmorpho_line","flists");
@@ -11328,7 +11328,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"fmorpho_line","flist");
@@ -11337,7 +11337,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"fmorpho_line","dlists");
@@ -11346,7 +11346,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"fmorpho_line","dlist");
@@ -11359,7 +11359,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"mimage") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"mimage","curves");
@@ -11368,7 +11368,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"mimage","polygons");
@@ -11377,7 +11377,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"mimage","fcurves");
@@ -11386,7 +11386,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"mimage","fpolygons");
@@ -11395,7 +11395,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"mimage","dcurves");
@@ -11404,7 +11404,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"mimage","curve");
@@ -11413,7 +11413,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"mimage","polygon");
@@ -11422,7 +11422,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"mimage","fcurve");
@@ -11431,7 +11431,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"mimage","fpolygon");
@@ -11440,7 +11440,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"mimage","dcurve");
@@ -11449,7 +11449,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"mimage","morpho_line");
@@ -11458,7 +11458,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"mimage","fmorpho_line");
@@ -11467,7 +11467,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"mimage","morpho_set");
@@ -11476,7 +11476,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"mimage","morpho_sets");
@@ -11485,7 +11485,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"mimage","cmorpho_line");
@@ -11494,7 +11494,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"mimage","cfmorpho_line");
@@ -11503,7 +11503,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"mimage","cmimage");
@@ -11512,7 +11512,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"mimage","cmorpho_sets");
@@ -11521,7 +11521,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"mimage","cmorpho_set");
@@ -11530,7 +11530,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"mimage","flists");
@@ -11539,7 +11539,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"mimage","flist");
@@ -11548,7 +11548,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"mimage","dlists");
@@ -11557,7 +11557,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"mimage","dlist");
@@ -11570,7 +11570,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"morpho_set") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"morpho_set","curves");
@@ -11579,7 +11579,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"morpho_set","polygons");
@@ -11588,7 +11588,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"morpho_set","fcurves");
@@ -11597,7 +11597,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"morpho_set","fpolygons");
@@ -11606,7 +11606,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"morpho_set","dcurves");
@@ -11615,7 +11615,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"morpho_set","curve");
@@ -11624,7 +11624,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"morpho_set","polygon");
@@ -11633,7 +11633,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"morpho_set","fcurve");
@@ -11642,7 +11642,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"morpho_set","fpolygon");
@@ -11651,7 +11651,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"morpho_set","dcurve");
@@ -11660,7 +11660,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"morpho_set","morpho_line");
@@ -11669,7 +11669,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"morpho_set","fmorpho_line");
@@ -11678,7 +11678,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"morpho_set","mimage");
@@ -11687,7 +11687,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"morpho_set","morpho_sets");
@@ -11696,7 +11696,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"morpho_set","cmorpho_line");
@@ -11705,7 +11705,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"morpho_set","cfmorpho_line");
@@ -11714,7 +11714,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"morpho_set","cmimage");
@@ -11723,7 +11723,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"morpho_set","cmorpho_sets");
@@ -11732,7 +11732,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"morpho_set","cmorpho_set");
@@ -11741,7 +11741,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"morpho_set","flists");
@@ -11750,7 +11750,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"morpho_set","flist");
@@ -11759,7 +11759,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"morpho_set","dlists");
@@ -11768,7 +11768,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"morpho_set","dlist");
@@ -11781,7 +11781,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"morpho_sets") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"morpho_sets","curves");
@@ -11790,7 +11790,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"morpho_sets","polygons");
@@ -11799,7 +11799,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"morpho_sets","fcurves");
@@ -11808,7 +11808,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"morpho_sets","fpolygons");
@@ -11817,7 +11817,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"morpho_sets","dcurves");
@@ -11826,7 +11826,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"morpho_sets","curve");
@@ -11835,7 +11835,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"morpho_sets","polygon");
@@ -11844,7 +11844,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"morpho_sets","fcurve");
@@ -11853,7 +11853,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"morpho_sets","fpolygon");
@@ -11862,7 +11862,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"morpho_sets","dcurve");
@@ -11871,7 +11871,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"morpho_sets","morpho_line");
@@ -11880,7 +11880,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"morpho_sets","fmorpho_line");
@@ -11889,7 +11889,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"morpho_sets","mimage");
@@ -11898,7 +11898,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"morpho_sets","morpho_set");
@@ -11907,7 +11907,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"morpho_sets","cmorpho_line");
@@ -11916,7 +11916,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"morpho_sets","cfmorpho_line");
@@ -11925,7 +11925,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"morpho_sets","cmimage");
@@ -11934,7 +11934,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"morpho_sets","cmorpho_sets");
@@ -11943,7 +11943,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"morpho_sets","cmorpho_set");
@@ -11952,7 +11952,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"morpho_sets","flists");
@@ -11961,7 +11961,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"morpho_sets","flist");
@@ -11970,7 +11970,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"morpho_sets","dlists");
@@ -11979,7 +11979,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"morpho_sets","dlist");
@@ -11992,7 +11992,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"cmorpho_line") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"cmorpho_line","curves");
@@ -12001,7 +12001,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"cmorpho_line","polygons");
@@ -12010,7 +12010,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"cmorpho_line","fcurves");
@@ -12019,7 +12019,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"cmorpho_line","fpolygons");
@@ -12028,7 +12028,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"cmorpho_line","dcurves");
@@ -12037,7 +12037,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"cmorpho_line","curve");
@@ -12046,7 +12046,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"cmorpho_line","polygon");
@@ -12055,7 +12055,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"cmorpho_line","fcurve");
@@ -12064,7 +12064,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"cmorpho_line","fpolygon");
@@ -12073,7 +12073,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"cmorpho_line","dcurve");
@@ -12082,7 +12082,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"cmorpho_line","morpho_line");
@@ -12091,7 +12091,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"cmorpho_line","fmorpho_line");
@@ -12100,7 +12100,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"cmorpho_line","mimage");
@@ -12109,7 +12109,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"cmorpho_line","morpho_set");
@@ -12118,7 +12118,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"cmorpho_line","morpho_sets");
@@ -12127,7 +12127,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"cmorpho_line","cfmorpho_line");
@@ -12136,7 +12136,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"cmorpho_line","cmimage");
@@ -12145,7 +12145,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"cmorpho_line","cmorpho_sets");
@@ -12154,7 +12154,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"cmorpho_line","cmorpho_set");
@@ -12163,7 +12163,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"cmorpho_line","flists");
@@ -12172,7 +12172,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"cmorpho_line","flist");
@@ -12181,7 +12181,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"cmorpho_line","dlists");
@@ -12190,7 +12190,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"cmorpho_line","dlist");
@@ -12203,7 +12203,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"cfmorpho_line") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"cfmorpho_line","curves");
@@ -12212,7 +12212,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"cfmorpho_line","polygons");
@@ -12221,7 +12221,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"cfmorpho_line","fcurves");
@@ -12230,7 +12230,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"cfmorpho_line","fpolygons");
@@ -12239,7 +12239,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"cfmorpho_line","dcurves");
@@ -12248,7 +12248,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"cfmorpho_line","curve");
@@ -12257,7 +12257,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"cfmorpho_line","polygon");
@@ -12266,7 +12266,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"cfmorpho_line","fcurve");
@@ -12275,7 +12275,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"cfmorpho_line","fpolygon");
@@ -12284,7 +12284,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"cfmorpho_line","dcurve");
@@ -12293,7 +12293,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"cfmorpho_line","morpho_line");
@@ -12302,7 +12302,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"cfmorpho_line","fmorpho_line");
@@ -12311,7 +12311,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"cfmorpho_line","mimage");
@@ -12320,7 +12320,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"cfmorpho_line","morpho_set");
@@ -12329,7 +12329,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"cfmorpho_line","morpho_sets");
@@ -12338,7 +12338,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"cfmorpho_line","cmorpho_line");
@@ -12347,7 +12347,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"cfmorpho_line","cmimage");
@@ -12356,7 +12356,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"cfmorpho_line","cmorpho_sets");
@@ -12365,7 +12365,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"cfmorpho_line","cmorpho_set");
@@ -12374,7 +12374,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"cfmorpho_line","flists");
@@ -12383,7 +12383,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"cfmorpho_line","flist");
@@ -12392,7 +12392,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"cfmorpho_line","dlists");
@@ -12401,7 +12401,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"cfmorpho_line","dlist");
@@ -12414,7 +12414,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"cmimage") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"cmimage","curves");
@@ -12423,7 +12423,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"cmimage","polygons");
@@ -12432,7 +12432,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"cmimage","fcurves");
@@ -12441,7 +12441,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"cmimage","fpolygons");
@@ -12450,7 +12450,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"cmimage","dcurves");
@@ -12459,7 +12459,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"cmimage","curve");
@@ -12468,7 +12468,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"cmimage","polygon");
@@ -12477,7 +12477,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"cmimage","fcurve");
@@ -12486,7 +12486,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"cmimage","fpolygon");
@@ -12495,7 +12495,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"cmimage","dcurve");
@@ -12504,7 +12504,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"cmimage","morpho_line");
@@ -12513,7 +12513,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"cmimage","fmorpho_line");
@@ -12522,7 +12522,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"cmimage","mimage");
@@ -12531,7 +12531,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"cmimage","morpho_set");
@@ -12540,7 +12540,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"cmimage","morpho_sets");
@@ -12549,7 +12549,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"cmimage","cmorpho_line");
@@ -12558,7 +12558,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"cmimage","cfmorpho_line");
@@ -12567,7 +12567,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"cmimage","cmorpho_sets");
@@ -12576,7 +12576,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"cmimage","cmorpho_set");
@@ -12585,7 +12585,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"cmimage","flists");
@@ -12594,7 +12594,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"cmimage","flist");
@@ -12603,7 +12603,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"cmimage","dlists");
@@ -12612,7 +12612,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"cmimage","dlist");
@@ -12625,7 +12625,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"cmorpho_sets") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"cmorpho_sets","curves");
@@ -12634,7 +12634,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"cmorpho_sets","polygons");
@@ -12643,7 +12643,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"cmorpho_sets","fcurves");
@@ -12652,7 +12652,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"cmorpho_sets","fpolygons");
@@ -12661,7 +12661,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"cmorpho_sets","dcurves");
@@ -12670,7 +12670,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"cmorpho_sets","curve");
@@ -12679,7 +12679,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"cmorpho_sets","polygon");
@@ -12688,7 +12688,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"cmorpho_sets","fcurve");
@@ -12697,7 +12697,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"cmorpho_sets","fpolygon");
@@ -12706,7 +12706,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"cmorpho_sets","dcurve");
@@ -12715,7 +12715,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"cmorpho_sets","morpho_line");
@@ -12724,7 +12724,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"cmorpho_sets","fmorpho_line");
@@ -12733,7 +12733,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"cmorpho_sets","mimage");
@@ -12742,7 +12742,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"cmorpho_sets","morpho_set");
@@ -12751,7 +12751,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"cmorpho_sets","morpho_sets");
@@ -12760,7 +12760,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"cmorpho_sets","cmorpho_line");
@@ -12769,7 +12769,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"cmorpho_sets","cfmorpho_line");
@@ -12778,7 +12778,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"cmorpho_sets","cmimage");
@@ -12787,7 +12787,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"cmorpho_sets","cmorpho_set");
@@ -12796,7 +12796,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"cmorpho_sets","flists");
@@ -12805,7 +12805,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"cmorpho_sets","flist");
@@ -12814,7 +12814,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"cmorpho_sets","dlists");
@@ -12823,7 +12823,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"cmorpho_sets","dlist");
@@ -12836,7 +12836,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"cmorpho_set") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"cmorpho_set","curves");
@@ -12845,7 +12845,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"cmorpho_set","polygons");
@@ -12854,7 +12854,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"cmorpho_set","fcurves");
@@ -12863,7 +12863,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"cmorpho_set","fpolygons");
@@ -12872,7 +12872,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"cmorpho_set","dcurves");
@@ -12881,7 +12881,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"cmorpho_set","curve");
@@ -12890,7 +12890,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"cmorpho_set","polygon");
@@ -12899,7 +12899,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"cmorpho_set","fcurve");
@@ -12908,7 +12908,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"cmorpho_set","fpolygon");
@@ -12917,7 +12917,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"cmorpho_set","dcurve");
@@ -12926,7 +12926,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"cmorpho_set","morpho_line");
@@ -12935,7 +12935,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"cmorpho_set","fmorpho_line");
@@ -12944,7 +12944,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"cmorpho_set","mimage");
@@ -12953,7 +12953,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"cmorpho_set","morpho_set");
@@ -12962,7 +12962,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"cmorpho_set","morpho_sets");
@@ -12971,7 +12971,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"cmorpho_set","cmorpho_line");
@@ -12980,7 +12980,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"cmorpho_set","cfmorpho_line");
@@ -12989,7 +12989,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"cmorpho_set","cmimage");
@@ -12998,7 +12998,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"cmorpho_set","cmorpho_sets");
@@ -13007,7 +13007,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"cmorpho_set","flists");
@@ -13016,7 +13016,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"cmorpho_set","flist");
@@ -13025,7 +13025,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"cmorpho_set","dlists");
@@ -13034,7 +13034,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"cmorpho_set","dlist");
@@ -13047,7 +13047,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"flists") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"flists","curves");
@@ -13056,7 +13056,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"flists","polygons");
@@ -13065,7 +13065,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"flists","fcurves");
@@ -13074,7 +13074,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"flists","fpolygons");
@@ -13083,7 +13083,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"flists","dcurves");
@@ -13092,7 +13092,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"flists","curve");
@@ -13101,7 +13101,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"flists","polygon");
@@ -13110,7 +13110,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"flists","fcurve");
@@ -13119,7 +13119,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"flists","fpolygon");
@@ -13128,7 +13128,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"flists","dcurve");
@@ -13137,7 +13137,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"flists","morpho_line");
@@ -13146,7 +13146,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"flists","fmorpho_line");
@@ -13155,7 +13155,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"flists","mimage");
@@ -13164,7 +13164,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"flists","morpho_set");
@@ -13173,7 +13173,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"flists","morpho_sets");
@@ -13182,7 +13182,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"flists","cmorpho_line");
@@ -13191,7 +13191,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"flists","cfmorpho_line");
@@ -13200,7 +13200,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"flists","cmimage");
@@ -13209,7 +13209,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"flists","cmorpho_sets");
@@ -13218,7 +13218,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"flists","cmorpho_set");
@@ -13227,7 +13227,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"flists","flist");
@@ -13236,7 +13236,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"flists","dlists");
@@ -13245,7 +13245,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"flists","dlist");
@@ -13258,7 +13258,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"flist") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"flist","curves");
@@ -13267,7 +13267,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"flist","polygons");
@@ -13276,7 +13276,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"flist","fcurves");
@@ -13285,7 +13285,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"flist","fpolygons");
@@ -13294,7 +13294,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"flist","dcurves");
@@ -13303,7 +13303,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"flist","curve");
@@ -13312,7 +13312,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"flist","polygon");
@@ -13321,7 +13321,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"flist","fcurve");
@@ -13330,7 +13330,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"flist","fpolygon");
@@ -13339,7 +13339,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"flist","dcurve");
@@ -13348,7 +13348,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"flist","morpho_line");
@@ -13357,7 +13357,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"flist","fmorpho_line");
@@ -13366,7 +13366,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"flist","mimage");
@@ -13375,7 +13375,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"flist","morpho_set");
@@ -13384,7 +13384,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"flist","morpho_sets");
@@ -13393,7 +13393,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"flist","cmorpho_line");
@@ -13402,7 +13402,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"flist","cfmorpho_line");
@@ -13411,7 +13411,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"flist","cmimage");
@@ -13420,7 +13420,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"flist","cmorpho_sets");
@@ -13429,7 +13429,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"flist","cmorpho_set");
@@ -13438,7 +13438,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"flist","flists");
@@ -13447,7 +13447,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"flist","dlists");
@@ -13456,7 +13456,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dlists(dlists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"flist","dlist");
@@ -13469,7 +13469,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"dlists") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"dlists","curves");
@@ -13478,7 +13478,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"dlists","polygons");
@@ -13487,7 +13487,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"dlists","fcurves");
@@ -13496,7 +13496,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"dlists","fpolygons");
@@ -13505,7 +13505,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"dlists","dcurves");
@@ -13514,7 +13514,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"dlists","curve");
@@ -13523,7 +13523,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"dlists","polygon");
@@ -13532,7 +13532,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"dlists","fcurve");
@@ -13541,7 +13541,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"dlists","fpolygon");
@@ -13550,7 +13550,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"dlists","dcurve");
@@ -13559,7 +13559,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"dlists","morpho_line");
@@ -13568,7 +13568,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"dlists","fmorpho_line");
@@ -13577,7 +13577,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"dlists","mimage");
@@ -13586,7 +13586,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"dlists","morpho_set");
@@ -13595,7 +13595,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"dlists","morpho_sets");
@@ -13604,7 +13604,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"dlists","cmorpho_line");
@@ -13613,7 +13613,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"dlists","cfmorpho_line");
@@ -13622,7 +13622,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"dlists","cmimage");
@@ -13631,7 +13631,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"dlists","cmorpho_sets");
@@ -13640,7 +13640,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"dlists","cmorpho_set");
@@ -13649,7 +13649,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"dlists","flists");
@@ -13658,7 +13658,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"dlists","flist");
@@ -13667,7 +13667,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLIST")))
       /* Conversion to dlist */
       {
         dlist = (Dlist) mw_conv_internal_type(mwstruct,"dlists","dlist");
@@ -13680,7 +13680,7 @@ char *ftype;    /* External type to be used to save the structure */
     }
   if (strcmp(typein,"dlist") == 0)
     {
-      if ((strcmp(ftype,"MW2_CURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVES")))
       /* Conversion to curves */
       {
         curves = (Curves) mw_conv_internal_type(mwstruct,"dlist","curves");
@@ -13689,7 +13689,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curves(curves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygons */
       {
         polygons = (Polygons) mw_conv_internal_type(mwstruct,"dlist","polygons");
@@ -13698,7 +13698,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygons(polygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVES")))
       /* Conversion to fcurves */
       {
         fcurves = (Fcurves) mw_conv_internal_type(mwstruct,"dlist","fcurves");
@@ -13707,7 +13707,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurves(fcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygons */
       {
         fpolygons = (Fpolygons) mw_conv_internal_type(mwstruct,"dlist","fpolygons");
@@ -13716,7 +13716,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygons(fpolygons);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVES")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVES")))
       /* Conversion to dcurves */
       {
         dcurves = (Dcurves) mw_conv_internal_type(mwstruct,"dlist","dcurves");
@@ -13725,7 +13725,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurves(dcurves);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CURVE")))
       /* Conversion to curve */
       {
         curve = (Curve) mw_conv_internal_type(mwstruct,"dlist","curve");
@@ -13734,7 +13734,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_curve(curve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_POLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_POLY")))
       /* Conversion to polygon */
       {
         polygon = (Polygon) mw_conv_internal_type(mwstruct,"dlist","polygon");
@@ -13743,7 +13743,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_polygon(polygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FCURVE")))
       /* Conversion to fcurve */
       {
         fcurve = (Fcurve) mw_conv_internal_type(mwstruct,"dlist","fcurve");
@@ -13752,7 +13752,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fcurve(fcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"A_FPOLY")==0))
+      if ((_mw_is_of_ftype(ftype,"A_FPOLY")))
       /* Conversion to fpolygon */
       {
         fpolygon = (Fpolygon) mw_conv_internal_type(mwstruct,"dlist","fpolygon");
@@ -13761,7 +13761,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fpolygon(fpolygon);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DCURVE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DCURVE")))
       /* Conversion to dcurve */
       {
         dcurve = (Dcurve) mw_conv_internal_type(mwstruct,"dlist","dcurve");
@@ -13770,7 +13770,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_dcurve(dcurve);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_LINE")))
       /* Conversion to morpho_line */
       {
         morpho_line = (Morpho_line) mw_conv_internal_type(mwstruct,"dlist","morpho_line");
@@ -13779,7 +13779,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_line(morpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FMORPHO_LINE")))
       /* Conversion to fmorpho_line */
       {
         fmorpho_line = (Fmorpho_line) mw_conv_internal_type(mwstruct,"dlist","fmorpho_line");
@@ -13788,7 +13788,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_fmorpho_line(fmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MIMAGE")))
       /* Conversion to mimage */
       {
         mimage = (Mimage) mw_conv_internal_type(mwstruct,"dlist","mimage");
@@ -13797,7 +13797,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_mimage(mimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SET")))
       /* Conversion to morpho_set */
       {
         morpho_set = (Morpho_set) mw_conv_internal_type(mwstruct,"dlist","morpho_set");
@@ -13806,7 +13806,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_set(morpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_MORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_MORPHO_SETS")))
       /* Conversion to morpho_sets */
       {
         morpho_sets = (Morpho_sets) mw_conv_internal_type(mwstruct,"dlist","morpho_sets");
@@ -13815,7 +13815,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_morpho_sets(morpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_LINE")))
       /* Conversion to cmorpho_line */
       {
         cmorpho_line = (Cmorpho_line) mw_conv_internal_type(mwstruct,"dlist","cmorpho_line");
@@ -13824,7 +13824,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_line(cmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CFMORPHO_LINE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CFMORPHO_LINE")))
       /* Conversion to cfmorpho_line */
       {
         cfmorpho_line = (Cfmorpho_line) mw_conv_internal_type(mwstruct,"dlist","cfmorpho_line");
@@ -13833,7 +13833,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cfmorpho_line(cfmorpho_line);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMIMAGE")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMIMAGE")))
       /* Conversion to cmimage */
       {
         cmimage = (Cmimage) mw_conv_internal_type(mwstruct,"dlist","cmimage");
@@ -13842,7 +13842,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmimage(cmimage);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SETS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SETS")))
       /* Conversion to cmorpho_sets */
       {
         cmorpho_sets = (Cmorpho_sets) mw_conv_internal_type(mwstruct,"dlist","cmorpho_sets");
@@ -13851,7 +13851,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_sets(cmorpho_sets);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_CMORPHO_SET")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_CMORPHO_SET")))
       /* Conversion to cmorpho_set */
       {
         cmorpho_set = (Cmorpho_set) mw_conv_internal_type(mwstruct,"dlist","cmorpho_set");
@@ -13860,7 +13860,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_cmorpho_set(cmorpho_set);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLISTS")))
       /* Conversion to flists */
       {
         flists = (Flists) mw_conv_internal_type(mwstruct,"dlist","flists");
@@ -13869,7 +13869,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flists(flists);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_FLIST")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_FLIST")))
       /* Conversion to flist */
       {
         flist = (Flist) mw_conv_internal_type(mwstruct,"dlist","flist");
@@ -13878,7 +13878,7 @@ char *ftype;    /* External type to be used to save the structure */
         mw_delete_flist(flist);
         return(ret);
        }
-      if ((strcmp(ftype,"MW2_DLISTS")==0))
+      if ((_mw_is_of_ftype(ftype,"MW2_DLISTS")))
       /* Conversion to dlists */
       {
         dlists = (Dlists) mw_conv_internal_type(mwstruct,"dlist","dlists");

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    make_type_conv.c
    
-   Vers. 1.3
-   (C) 2000-2001 Jacques Froment
+   Vers. 1.4
+   (C) 2000-2002 Jacques Froment
    Command to generate extended type conversion functions :
 
    - Create OCNAME source file : read INAME to figure out what are the basic
@@ -718,7 +718,7 @@ FILE *fp;
 		    if (i==1) fprintf(fp,"      if (");
 		    else fprintf(fp,"||");
 		    put_range_array(B->type,ftype,i,mw_native_ftypes);
-		    fprintf(fp,"(strcmp(ftype,\"%s\")==0)",ftype);
+		    fprintf(fp,"(_mw_is_of_ftype(ftype,\"%s\"))",ftype);
 		    if (i==r) fprintf(fp,")\n      /* Conversion to %s */\n      {\n",B->type);		
 		  }
 		fprintf(fp,"        %s = (%s) mw_conv_internal_type(mwstruct,\"%s\",\"%s\");\n",B->type,TypeB,A->type,B->type);

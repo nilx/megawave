@@ -6,6 +6,10 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+/* Last changes :
+   V 1.01 : (JF 15/07/2002) more explicit error message when name is missing
+*/
+
 /*----- Fill the internal MegaWave2 data ------*/
 
 
@@ -361,7 +365,7 @@ Mwarg *e;
   else {
     e->type = NULL;
     e->access = NULL;
-    fatal_error("'%s' : is not declared\n", e->name);
+    fatal_error("[set_option] '%s' is not declared or main function not found\n", e->name);
   }
   /* Option character */
   e->d.o.o = *(arg->left->val.character);
@@ -435,7 +439,8 @@ Mwarg *e;
   else {
     e->type = NULL;
     e->access = NULL;
-    fatal_error("'%s' : is not declared\n", e->name);
+    fatal_error("[set_flag] '%s' is not declared or main function not found\n", 
+		e->name);
   }
 
   /* Option character */
@@ -538,7 +543,8 @@ Mwarg *e;
     {
       e->type = NULL;
       e->access = NULL; 
-      fatal_error("'%s' : is not declared [L532]\n", e->name);
+      fatal_error("[set_neededarg] '%s' is not declared or main function not found\n",
+		  e->name);
     }
 
   if (arg->left->name == NAME)
@@ -638,7 +644,8 @@ Mwarg *e;
   else {
     e->type = NULL;
     e->access = NULL; 
-    fatal_error("'%s' : is not declared\n", e->name);
+    fatal_error("'[set_optarg] %s' is not declared or main function not found\n",
+		e->name);
   }
 
   if (arg->left->name == NAME)
@@ -718,7 +725,8 @@ Mwarg *e;
   else {
     e->type = NULL;
     e->access = NULL;
-    fatal_error("'%s' : is not declared\n", e->name);
+    fatal_error("[set_vararg] '%s' is not declared or main function not found\n", 
+		e->name);
   }
   /* TeX name */
   e->texname = "...";
@@ -804,7 +812,8 @@ Mwarg *e;
   else {
     e->type = NULL;
     e->access = NULL;
-    fatal_error("'%s' : is not declared\n", e->name);
+    fatal_error("[set_notusedarg] '%s' is not declared or main function not found\n",
+		e->name);
   }
   /* TeX name */
   e->texname = e->name;

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    W_X11R4.c    Window Device for X11 Release 4,5,6
    
-   Vers. 2.7
-   (C) 1991-2001 Jacques Froment, 
+   Vers. 2.8
+   (C) 1991-2002 Jacques Froment, 
                  Simon Masnou     (16 bits plane added)
    Parts of this code inspired from XV: Copyright 1989, 1994 by John Bradley.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -16,7 +16,9 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 
 /*----------------------------------------------------------------------
  v2.7: corrections WFlushAreaWindow and WRestoreImageWindow (L.Moisan)
+ v2.8: mouse button 4 and 5 added (JF)
 ----------------------------------------------------------------------*/
+
 
 #include <stdio.h>
 #include <math.h>
@@ -812,10 +814,13 @@ Wframe *window;
 	case Button1: return(W_MS_LEFT); break;
 	case Button2: return(W_MS_MIDDLE); break;
 	case Button3: return(W_MS_RIGHT); break;
+	case Button4: return(W_MS_UP); break;
+	case Button5: return(W_MS_DOWN); break;
 	default:
 	  WLIB_ERROR;
 	  fprintf(stderr,
-		  "[WUserEvent] This mouse button is not recognized !\n");
+		  "[WUserEvent] This mouse button (#%d) is not recognized !\n",
+		  event.xbutton.button);
 	  return(-1); 
 	  break;
 	}

@@ -1,0 +1,35 @@
+This module computes a list of affine invariant codes that represent locally a curve.
+
+To begin with, the inflexion, flat, and bitangent points (resp. IP, FP and BP) of the curve are computed, each one is associated with a direction $L_1$. This direction is either the tangent to IP and FP, or the bitangent to BP.
+
+The affine invariant frame is defined in the following way. For each IP, FP and BP, the next tangent to the curve ($L_2$) is drawn. Let us consider the straight lines ($L_3$ and $L_4$) parallel to $L_1$, between $L_1$ and $L_2$, and at a distance $1/3$ and $2/3$ from $L_1$. Let $P_1$ and $P_2$ be the intersection points between $L_3$ and $L_4$ and the portion of the curve limited by the point of contact of $L_1$ and $L_2$ with the curve. If $L_5$ is the line passing through $P_1$ and $P_2$, consider the next tangent ($L_6$) to the curve parallel to $L_5$. Finally, denote $R_1$, $R_2$ and $R_3$ the intersection points between respectively $L_1$ and $L_6$, $L_1$ and $L_5$, and $L_2$ and $L_5$.
+
+The affine normalization is defined by mapping these three points to the triangle $(0,0)-(1,0)-(1,1)$ of the plane.
+
+To end with, a piece of the curve is encoded in this frame. Let us consider the arc of length $\| R_1R_2 \| \times \mbox{FNorm}$ whose center point is the intersection of the curve and the median of the segment $[R_1,R_2]$. The coordinates of $\mbox{NNorm}$ equidistant points lying on this arc are computed in the affine invariant frame. These $\mbox{NNorm}$ points are a local code of the curve.
+
+\medskip
+
+Each code is stored in an Flist structure, whose data field contains the following informations: number of the curve, indices of both limits of the encoded arc in the initial curve, coordinates of the central point of the arc, indices of both points of the curve surrounding the central point, coordinates of $R_1$, $R_2$ and $R_3$, and step between encoded points. The data field is useful for postprocessing.
+
+The result is the collection of these codes stored in an Flists structure.
+
+\medskip
+
+For more details, see J.-L. Lisani's PhD dissertation \cite{joseluis} 
+or \cite{LMMM}.
+
+\medskip
+
+\begin{thebibliography}{9}
+
+\bibitem{joseluis} J.-L. {\sc Lisani}, {\it Comparaison automatique
+d'images par leurs formes}, th\`ese de doctorat, Universit\'e Paris IX
+Dauphine, France, 2001.
+
+\bibitem{LMMM} J.-L. Lisani, P. Monasse, L. Moisan, J.-M. Morel, 
+``On the Theory of Planar Shape'', 
+{\it SIAM Journal on Multiscale Modeling and Simulation}, 
+vol. 1:1, pp. 1-24, 2003. 
+
+\end{thebibliography}

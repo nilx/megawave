@@ -1,0 +1,62 @@
+
+
+This module implements the classical snakes model using a
+level set formulation. 
+It moves a snake image (image of contours) according to the content of a natural image \verb+ref+, in
+order to fit the contours of the object enclosed in each initial contour.
+
+The initial snake Fimage is \verb+in+ ($ u = u_0 $): the inside of each
+snake is represented by values smaller than the threshold \verb+thre+ 
+(\verb+-t+ option).
+Such an image can be generated from a polys structure using the module 
+\verb+fillpoly+.% (see fig 1).
+The polys structure may itself be interactively created using the \verb+readpoly+ module. % (see fig 1).
+
+The module \verb+lsnakes+ evolves $ u_0 $ with an evolution PDE,
+and generates a new snake image \verb+out+.
+This output can be used as a new input of \verb+lsnakes+, together with
+\verb+ref+, to continue the motion.
+When the last snake image is obtained, a final image containing the natural
+image with the contours found can be generated using the modules
+\verb+emptypoly+ and \verb+fmask+.
+
+\vspace{1cm}
+
+{\em Geometric Active Contours Equation :} 
+  
+  $$
+    \left\{
+    \begin{array}{ll}
+\displaystyle
+    \frac {\partial u}{\partial t} = g(x) \, |\nabla u|\,
+\left(\mathrm{div}\frac{\nabla u}{|\nabla u|} + \nu\right) \qquad  
+    (t,x) \in {[0,\infty[ \times R^2} \\
+\\
+    u(0,x) = u_0(x) \qquad 
+    x\in{R^2}
+    \end{array}     
+    \right.
+  $$
+
+$$ \mathrm{with}\quad
+g(x) = \frac{1}{1+|\nabla G_\sigma \ast u_0|^2}.$$
+     
+\begin{itemize}
+\item $ \nu = $ positive real constant which represents a force.
+\item $ g_0 = $ image where we are looking for the contour of the object. 
+\item $ G_\sigma(x) = C\sigma^\frac{1}{2}\exp(-\frac{|x|^2}{4\sigma}) $ a Gaussian. 
+\end{itemize}
+   
+%\begin{figure}%[htbp]
+%\epsfxsize=10cm
+
+%\input{dessin.eps}
+
+%\caption{Dessin}
+%\label{fig:dessin}
+%\end{figure}  
+
+\begin{thebibliography}{1}
+\bibitem{CCCD} V. Caselles, F. Catt\'e, B. Coll and F. Dibos, \em{A geometric model for active contours in image processing}, Numerische Mathematik, vol. 66, 1993, pp. 1-31.
+\end{thebibliography}
+

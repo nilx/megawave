@@ -3,8 +3,8 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Prog="mwrnwordmod"
 _Func="Rename words (e.g. system functions or structure fields) inside modules for which name has changed"
-_Vers="1.0"
-_Date="2002"
+_Vers="1.01"
+_Date="2002-03"
 _Auth="Jacques Froment";
 _Usage="[-adm] [-all] [-check] [-d dir] [-f file_of_names]"
 # -adm : administrator : scan $MEGAWAVE2/src directory instead of $MY_MEGAWAVE2/src
@@ -21,6 +21,21 @@ _Usage="[-adm] [-all] [-check] [-d dir] [-f file_of_names]"
 # CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 #-----------------------------------------------------------------------------
+
+ChooseTMP()
+
+{
+if  [ "$TMP" = ""  ] || [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+ TMP=/usr/tmp
+ if  [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+  TMP=/tmp
+  if  [ ! -d $TMP ] ||  [ ! -w $TMP ]; then
+   echo "$_Prog : Fatal Error : cannot choose TMP !"
+   exit 1
+  fi
+ fi
+fi
+}
 
 #------------------
 Answer()
@@ -187,10 +202,7 @@ if [ ! -f $fname ]; then
   exit 1
 fi
 
-TMP=/usr/tmp
-if  [ ! -w $TMP ]; then
-  TMP=/tmp
-fi
+ChooseTMP
 
 # new trap
 trap "echo 'interrupt !'; rm -f $TMP/mwrnwordmod_$$_*; exit 1" 2

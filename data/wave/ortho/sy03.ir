@@ -1,0 +1,21 @@
+%
+MegaWave2 - DATA ASCII file -
+%
+def Fsignal
+%
+comments: low-pass filter associated to Symlet wavelet of order 3
+%
+size: 6
+scale: 0.000000e+00
+shift: -2.0
+gain: 1.000000e+00
+sgrate: 1.000000e+00
+firstp: 0
+lastp: 0
+param: 0.000000e+00
+0.33267055295096
+0.80689150931334   
+0.45987750211933
+-0.13501102001039 
+-0.08544127388224 
+0.03522629188210 

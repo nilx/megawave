@@ -1,7 +1,7 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cimage_io.c
   
-   Vers. 1.11
+   Vers. 1.12
    (C) 1993-2002 Jacques Froment
    Input/Output private functions for the Cimage structure
 
@@ -19,7 +19,10 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #include <sys/stat.h>
 #include <string.h>
 #include <math.h>
-
+#ifdef Linux
+#include <sys/types.h>
+#include <unistd.h>
+#endif
 #include "mw.h"
 
 
@@ -416,6 +419,10 @@ char  *Type;                          /* Type de format du fichier */
     /* GIF87 format with a conversion of colors to grey scales */
     return((Cimage) _mw_cimage_load_gif(NomFic));
 
+  if (strcmp(Type,"BMP") == 0)
+    /* BMP format with 8 bpp */
+    return((Cimage) _mw_cimage_load_bmp(NomFic));
+
   if (strcmp(Type,"PS") == 0)
     /* Read PostScript file */
     return((Cimage) _mw_cimage_load_ps(NomFic));
@@ -432,6 +439,10 @@ char  *Type;                          /* Type de format du fichier */
     /* Read PGM Raw bits file */
     return((Cimage) _mw_cimage_load_pgmr(NomFic));
 
+  if (strcmp(Type,"JFIF") == 0)
+    /* JPEG/JFIF format with 8-bit gray level plane */
+    return((Cimage) _mw_cimage_load_jpeg(NomFic));
+
   return(NULL);
 }
 
@@ -445,8 +456,8 @@ short _mw_cimage_create_native(NomFic,image,Type)
      char  *Type;                          /* Type de format du fichier */
 
 {
-  if ((strcmp(Type,"IMG") == 0) || (strcmp(Type,"INR") == 0) || 
-      (strcmp(Type,"MTI") == 0) || (strcmp(Type,"BIN") == 0))
+  if ((_mw_is_of_ftype(Type,"IMG")) || (_mw_is_of_ftype(Type,"INR")) || 
+      (_mw_is_of_ftype(Type,"MTI")) || (_mw_is_of_ftype(Type,"BIN")))
     {
       if ((image->ncol>=65536)||(image->nrow>=65536))
 	{
@@ -456,7 +467,7 @@ short _mw_cimage_create_native(NomFic,image,Type)
       else return(_mw_cimage_create_megawave1(NomFic,image,Type));
     }
 
-  if (strcmp(Type,"GIF") == 0)
+  if (_mw_is_of_ftype(Type,"GIF"))
     /* Write GIF87 file with a grey scales colormap */
     {
       if ((image->ncol>=65536)||(image->nrow>=65536))
@@ -468,30 +479,38 @@ short _mw_cimage_create_native(NomFic,image,Type)
     }
 
 
-  if (strcmp(Type,"TIFF") == 0)
+  if (_mw_is_of_ftype(Type,"TIFF"))
      /* TIFF format with 1 gray-level plane */
     return(_mw_cimage_create_tiff(NomFic,image));
 
-  if (strcmp(Type,"PM_C") == 0)
+  if (_mw_is_of_ftype(Type,"BMP"))
+     /* BMP format with 8 bpp */
+    return(_mw_cimage_create_bmp(NomFic,image));
+
+  if (_mw_is_of_ftype(Type,"PM_C"))
     /* PM format with pm_form=PM_C and pm_np = pm_nband = 1 */
     return(_mw_cimage_create_pm(NomFic,image));
 
-  if (strcmp(Type,"PS") == 0)
+  if (_mw_is_of_ftype(Type,"PS"))
     /* Write PostScript file */
     return(_mw_cimage_create_ps(NomFic,image));
 
-  if (strcmp(Type,"EPSF") == 0)
+  if (_mw_is_of_ftype(Type,"EPSF"))
     /* Write Encapsulated PostScript file */
     return(_mw_cimage_create_epsf(NomFic,image));
 
-  if (strcmp(Type,"PGMA") == 0)
+  if (_mw_is_of_ftype(Type,"PGMA"))
     /* Write PGM Ascii file */
     return(_mw_cimage_create_pgma(NomFic,image));
 
-  if (strcmp(Type,"PGMR") == 0)
+  if (_mw_is_of_ftype(Type,"PGMR"))
     /* Write PGM Raw bits file */
     return(_mw_cimage_create_pgmr(NomFic,image));
 
+  if (_mw_is_of_ftype(Type,"JFIF"))
+     /* JPEG/JFIF format with 1 gray-level plane */
+    return(_mw_cimage_create_jpeg(NomFic,image,_mw_get_ftype_opt(Type)));
+  
   return(-1);
 }
 

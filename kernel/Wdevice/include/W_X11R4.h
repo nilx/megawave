@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    W_X11R4.h    Window Device for X11 Release 4,5,6 - Include file -
    
-   Vers. 3.3
-   (C) 1991-2001 Jacques Froment
+   Vers. 3.4
+   (C) 1991-2002 Jacques Froment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~  This file is part of the MegaWave2 Wdevice library ~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -14,6 +14,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 
 /*----------------------------------------------------------------------
  v3.3: increased  PLOT/IMAGE_MAX_WIDTH/HEIGHT (L.Moisan)
+ v3.4: mouse button 4 and 5 added (JF)
 ----------------------------------------------------------------------*/
 
 /* X11 Include Files */
@@ -122,6 +123,8 @@ typedef struct {
 #define W_MS_LEFT    10 /* Mouse buttons (not a mask) */
 #define W_MS_RIGHT   11 
 #define W_MS_MIDDLE  12
+#define W_MS_UP  13
+#define W_MS_DOWN  14
 #define W_MS_BUTTON  ButtonPressMask /* Mask for button scanning */
 
 /* For keyboard, non-printable characters: see X11 include file keysymdef.h */

@@ -1,0 +1,19 @@
+%
+MegaWave2 - DATA ASCII file -
+%
+def Fsignal
+%
+comments: Haar filter
+%
+size: 2
+scale: 0.000000e+00
+shift: 0.0
+gain: 1.000000e+00
+sgrate: 1.000000e+00
+firstp: 0
+lastp: 0
+param: 0.000000e+00
+
+0.70710678118655
+0.70710678118655
+

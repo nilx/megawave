@@ -1,7 +1,7 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mimage_io.c
    
-   Vers. 1.15
+   Vers. 1.16
    (C) 1996-2002 Jacques Froment
    Input/output functions for the 
      morpho_line
@@ -22,7 +22,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #include <stdio.h>
 #include <sys/file.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 
 #include "mw.h"
 

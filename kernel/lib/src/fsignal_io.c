@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fsignal_io.c
    
-   Vers. 1.3
-   (C) 1993-2001 Jacques Froment
+   Vers. 1.5
+   (C) 1993-2002 Jacques Froment
    Input/Output functions for the fsignal structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -28,9 +28,11 @@ Fsignal signal;  /* pre-defined signal (may be NULL) */
      
 { FILE    *fp;
   int N;
+  long pos0,pos1;
   register int i;
   float v;
   register float *ptr;
+  int BitsPerSample;
 
   fp = _mw_open_data_ascii_file(fname);
   if (fp == NULL) return(NULL);
@@ -45,6 +47,9 @@ Fsignal signal;  /* pre-defined signal (may be NULL) */
 
   if (signal == NULL) signal = mw_new_fsignal();
   if (signal == NULL) { fclose(fp); return(signal); }
+
+  /* Remember the position at the beginning of header */
+  pos0=ftell(fp);
 
   if ((_mw_fascii_get_field(fp,fname,"comments:","%[^\n]",signal->cmt) != 1)
       ||
@@ -70,8 +75,23 @@ Fsignal signal;  /* pre-defined signal (may be NULL) */
       return(NULL);
     }
 
+  /* Remember the position at the end of header */
+  pos1=ftell(fp);
+
+  /* Read extended fields */
+  if (fseek(fp,pos0,SEEK_SET)!=0) 
+    { mw_delete_fsignal(signal); fclose(fp); return(NULL); }
+
+  if (_mw_fascii_get_optional_field(fp,fname,"bpsample:","%d\n",&BitsPerSample) == 1)
+    signal->bpsample=BitsPerSample;
+
+  /* Now read the data */
+  if (fseek(fp,pos1,SEEK_SET)!=0) 
+    { mw_delete_fsignal(signal); fclose(fp); return(NULL); }
+
   N = signal->size;
-  if (mw_change_fsignal(signal,N) == NULL)  { fclose(fp); return(NULL); }
+  if (mw_change_fsignal(signal,N) == NULL) 
+    { mw_delete_fsignal(signal); fclose(fp); return(NULL); }
 
   i=0;
   while (i < N)
@@ -122,6 +142,7 @@ Fsignal signal;
   fprintf(fp,"#shift: %e\n",signal->shift);
   fprintf(fp,"#gain: %e\n",signal->gain);
   fprintf(fp,"#sgrate: %e\n",signal->sgrate);
+  fprintf(fp,"#bpsample: %d\n",signal->bpsample);
   fprintf(fp,"#firstp: %d\n",signal->firstp);
   fprintf(fp,"#lastp: %d\n",signal->lastp);
   fprintf(fp,"#param: %e\n\n",signal->param);
@@ -146,12 +167,18 @@ Fsignal signal;  /* pre-defined signal (may be NULL) */
   char mtype[mw_mtype_size];
   int hsize;  /* Size of the header, in bytes */
   float version;/* Version number of the file format */
-
-  _mw_get_file_type(fname,type,mtype,&hsize,&version);
+  int need_flipping;     
  
-  if (strcmp(type,"A_FSIGNAL") == 0)
-    return(_mw_load_fsignal_ascii(fname,signal));
-
+  need_flipping=_mw_get_file_type(fname,type,mtype,&hsize,&version)-1;
+  if (need_flipping >=0)
+    {
+      if (strcmp(type,"A_FSIGNAL") == 0)
+	return(_mw_load_fsignal_ascii(fname,signal));
+      
+      if (strcmp(type,"WAVE_PCM") == 0)
+	return((Fsignal)_mw_fsignal_load_wave_pcm(fname,signal,need_flipping));
+    }
+  
   mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",type,fname);
 }
 
@@ -165,6 +192,9 @@ char *type;    /* type of the file */
 {
     if (strcmp(type,"A_FSIGNAL") == 0)
       return(_mw_create_fsignal_ascii(fname,signal));
+
+    if (strcmp(type,"WAVE_PCM") == 0)
+      return(_mw_fsignal_create_wave_pcm(fname,signal));
 
     mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",type,fname);
 }

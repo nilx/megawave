@@ -1,9 +1,9 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {sderiv};
-  version = {"0.0"};
+  version = {"0.1"};
   author = {"Jacques Froment"};
-  function = {"Compute the discrete derivative of a fsignal"};
+  function = {"Compute the discrete derivative of a fsignal (basic example)"};
   usage = {
   fsignal_in->A "input fsignal",
   fsignal_out<-B "output fsignal"
@@ -27,9 +27,9 @@ Fsignal A,B;
   size = A->size;
   B = mw_change_fsignal(B, size);
   if (B == NULL) mwerror(FATAL,1,"Not enough memory.");
-
-  strcpy(A->cmt,"Derivative");
-
+  
+  mw_copy_fsignal_header(A,B);
+  
   for(i = 1; i<size; i++)
     B->values[i] = (float) (A->values[i] - A->values[i-1]);
   B->values[0] = 0.0;

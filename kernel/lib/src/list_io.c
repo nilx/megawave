@@ -1,7 +1,7 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    list.c
    
-   Vers. 1.2
+   Vers. 1.3
    (C) 2002 Jacques Froment
    Input/Output functions for the flist, flists, dlist and dlists structures
 
@@ -17,7 +17,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #include <stdio.h>
 #include <sys/file.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 
 #include "mw.h"
 

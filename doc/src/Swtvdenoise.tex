@@ -1,0 +1,47 @@
+This user's macro allows to easily run a wavelet-denoising algorithm combining a total 
+variation (TV) minimization approach. The first presentation of these method has been
+made in~\cite{DF:ArtifactFree}, while in~\cite{DF:ReconsWaveletUsingTV} one
+will find the detail of the algorithm together with the proof of the convergence.
+
+In short, the approach is motivated by wavelet signal denoising methods, where 
+thresholding small wavelet coefficients leads to pseudo-Gibbs artifacts. By replacing
+these thresholded coefficients by values minimizing the total variation of the
+reconstructed signal, the method performs a nearly artifact free signal denoising.
+
+The meaning of options given in the usage are the following :
+
+\begin{tabular}{lcl}
+-P &:& give the percent of wavelet coefficients to remove.\\
+-T &:& give the threshold.\\
+-D &:& compute the threshold from the noise standard deviation (Donoho's threshold).\\
+-O &:& give the wavelet filter.\\
+-E &:& special edge processing (default is periodized).\\
+-s &:& soft thresholding (default is hard thresholding).\\
+-J &:& number of levels in the wavelet transform.\\
+-N &:& number of iterations of the TV minimization algorithm.\\
+-a &:& without -a compute exact TV, with -a a smooth version.\\
+-I &:& allows to resume the TV minimization with previously denoised signal.\\
+-S &:& output the reconstructed signal after wavelet thresholding.\\
+-V &:& allows to output the signal having the minimal TV.\\
+-r &:& relax constraint on approximation space V\_J.
+\end{tabular}
+
+From this list, the options you may want to set to get results close to the ones
+reported in~\cite{DF:ArtifactFree} and~\cite{DF:ReconsWaveletUsingTV} are
+{\tt -r}, {\tt -P} and {\tt -N}.
+
+\begin{thebibliography}{Dau1}
+
+\bibitem{DF:ArtifactFree}
+S.~Durand and J.~Froment.
+\newblock Artifact free signal denoising with wavelets.
+\newblock In {\em Proc. of ICASSP'01}, volume~6, 2001.
+
+\bibitem{DF:ReconsWaveletUsingTV}
+Sylvain Durand and Jacques Froment.
+\newblock Reconstruction of wavelet coefficients using total variation minimization.
+\newblock {\em SIAM J. Sci. Comput.}, to appear. You can get the preprint number 2001-18
+in the CMLA report pages {\tt www.cmla.ens-cachan.fr/Cmla/Publications/2001}.
+
+
+\end{thebibliography}

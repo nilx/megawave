@@ -1,0 +1,103 @@
+The first task perfomed by this module is to determine which pairs of
+normalized codes from \verb+dict1+ and \verb+dict2+ are good
+candidates to match. This is done by calling the
+\verb?km_prematchings? module: for every affine-invariant 
+code in \verb+dict1+, this module gets its pre-matching codes in
+\verb+dict2+. The maximum Hausdorff distance between normalized codes
+allowed here is \verb+maxError1+. Notice that the purpose of the
+pre-matching step is to discard matchings that are clearly bad, in
+order to reduce computational burden (since the extension step is much
+more heavy). That's why the \verb+maxError1+ threshold should not be
+too much restrictive; \verb+maxError1+ = 0.2 or 0.3 is a reasonable
+choice.
+
+Then matching extension is performed for all pre-matchings. For every
+pair $({\mathcal S}_1,{\mathcal S}_2)$ of ``pre-matched'' pieces of
+curve (sub-curves of ${\mathcal C}_1$ and ${\mathcal C}_2$, resp.),
+the affine transformation that maps ${\mathcal S}_1$'s local frame to
+${\mathcal S}_2$'s local frame is computed. Then, this transformation
+is used to put ${\mathcal C}_1$ and ${\mathcal C}_2$ in the frame of
+image 2. In this frame, lengths and distances between curves are
+measured in pixels. The matching extension step is based on the
+following parameters: \verb+maxError2+, \verb+minLength+ and
+\verb+minComplex+.
+
+\begin{itemize}
+  
+\item \verb+maxError2+ controls the euclidean pixel distance between
+  corresponding points of both curves (extracted by regular sampling
+  in their normalized frames). 
+  
+\item \verb+minLength+ controls the minimum arc length required to
+  both matched pieces of curve (in their original image frames) to be
+  considered as a valid matching pair. In other words, initial pieces of
+  curve are extended until their distance exceed \verb+maxError2+; if
+  their arc length is less than \verb+minLength+, the matching pair is not
+  considered as a valid one.
+  
+\item Matching pieces of curve whose arc length is greater than
+  \verb+minLength+ are considered to be valid if their total angle
+  variation is greater than \verb+minComplex+.
+
+\end{itemize}
+
+For every piece of curve in image 1 we keep, among all possible valid
+matching pieces, the one which maximizes the following criterion:
+
+$$\mbox{Performance} = \frac{l_1 \times l_2}{L_1 \times L_2},$$
+
+where $l_1=arclength(S_1)$, $l_2=arclength(S_2)$, $L_1=arclength(C_1)$
+and $L_2=arclength(C_2)$.
+
+Finally, the result is written in two different formats in Flists
+\verb+matching+ and \verb+matching_pieces+. 
+
+\begin{itemize}
+
+\item \verb+matching+ is a 2 dimensional Flist that contains all pairs
+$(i_1,i_2)$, where $i_1$ is the index of the original normalized code
+in dictionary \verb+dict1+ and $i_2$ is the index of the original
+normalized code in dictionary \verb+dict2+.
+
+\item \verb+matching_pieces+ is a 7 dimensional Flist containing the following information:
+
+  \begin{itemize}
+
+  \item {\em First and second elements}: indices $NCurve1$ and
+    $NCurve2$, which identify curves ${\mathcal C}_1$ and ${\mathcal C}_2$
+    in Flists \verb+levlines1+ and \verb+levlines2+, resp.
+  
+  \item {\em Thirth and fourth elements}: first and last indices of the
+    matching piece, in curve $NCurve1$.
+
+  \item {\em Fifth and sixth elements}: first and last indices of the
+    matching piece, in curve $NCurve2$.
+
+  \item {\em Seventh element}: performance.
+    
+  \end{itemize}
+
+\end{itemize}
+
+This last output is to be used with the MegaWave2
+module \verb+km_savematchings+. The
+outputs of \verb+km_savematchings+ are two Flists that contain all pieces of
+curve in image 1 and image 2 that match; they can be displayed using
+\verb+fkview+.
+
+\bigskip
+See \cite{joseluis} or \cite{LMMM} for further details.
+
+
+\begin{thebibliography}{9}
+
+\bibitem{joseluis} J.-L. {\sc Lisani}, {\it Comparaison automatique
+d'images par leurs formes}, th\`ese de doctorat, Universit\'e Paris IX
+Dauphine, France, 2001.
+
+\bibitem{LMMM} J.-L. Lisani, P. Monasse, L. Moisan, J.-M. Morel, 
+``On the Theory of Planar Shape'', 
+{\it SIAM Journal on Multiscale Modeling and Simulation}, 
+vol. 1:1, pp. 1-24, 2003. 
+
+\end{thebibliography}

@@ -2,7 +2,7 @@
 /* mwcommand
  name = {fft1d};
  author = {"Chiaa Babya, Jacques Froment, Lionel Moisan"};
- version = {"1.1"};
+ version = {"1.2"};
  function = {"Compute the Fast Fourier Transform of a complex signal"};
  usage = {     
  'i'->inverse  "Compute the Inverse Transform",
@@ -14,6 +14,7 @@
 */
 /*----------------------------------------------------------------------
  v1.1: power_of_two test (fixed bug) + optional input/outputs (L.Moisan)
+ v1.2: preserve header info for e.g. sound processing (JF) 
 ----------------------------------------------------------------------*/
 
 #include <stdio.h> 
@@ -99,6 +100,7 @@ char *inverse;
   if (Yr) {
     Yr=mw_change_fsignal(Yr,size);
     if (!Yr) mwerror(FATAL,1,"Not enough memory !\n");
+    mw_copy_fsignal_header(Xr,Yr);
     if (inverse) 
       for (i=0;i<size;i++)
 	Yr->values[i]=data->values[2*i]/(float)size;
@@ -109,6 +111,8 @@ char *inverse;
   if (Yi) {
     Yi=mw_change_fsignal(Yi,size);
     if (!Yi) mwerror(FATAL,1,"Not enough memory !\n");
+    if (Xi) mw_copy_fsignal_header(Xi,Yi);
+    else mw_copy_fsignal_header(Xr,Yi);
     if (inverse) 
       for (i=0;i<size;i++)
 	Yi->values[i]=data->values[2*i+1]/(float)size;

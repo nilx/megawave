@@ -80,21 +80,33 @@ for the very common systems and machine architectures only.
 
   MegaWave2 needs a Unix system with the following standard tools :
 
-  C compiler K&R or ANSI-compliant;
-  C language preprocessor cpp;
-  Lexical analyzer generator lex or flex;
-  Parser generator yacc or bison;
-  Bourne shell script /bin/sh;
-  X11 libraries and include files;
-  LaTeX (to compile the guide #3; since MegaWave2 Vers 2.10 LaTeX2e is assumed).
+  [in brackets one gives the group name where the corresponding
+   package is usually located on standard Linux distributions. 
+   Beware, some of these packages are not selected by default
+   during Linux installation stage !]
+
+  C compiler K&R or ANSI-compliant                     [Development/C]
+  C language preprocessor cpp;                         [Development/C]
+  Lexical analyzer generator lex or flex;              [Development/Other]
+  Parser generator yacc or bison;                      [Development/Other]
+  Bourne shell script /bin/sh (bash on Linux);         [Shells]
+  X11 libraries and include files;                     [System/XFree86]
+  bc/dc                                                [Sciences/Mathematics]
+  LaTeX (since MegaWave2 Vers 2.10 LaTeX2e is assumed) [Publishing]
 
   The installation procedure has been successfully checked on the following Unix
 systems :
 
+  MegaWave2 Vers 2.20 :
+    - Linux :
+      + Mandrake 9.0 kernel 2.4.19-16mdk (gcc 3.2, glibc 2.2.5)
+      + Mandrake 8.1 kernel 2.4.8-26mdk (gcc 2.96, glibc 2.2.4)
+    - SunOS 5.7 (with optional SPROcc package)
+
   MegaWave2 Vers 2.10 :
  
     - Linux :
-      + Mandrake 8.1 kernel 2.96-0.62mdk (gcc 2.96, glibc 2.2.4)
+      + Mandrake 8.1 kernel 2.4.8-26mdk (gcc 2.96, glibc 2.2.4)
       + RedHat 6.2 kernel 2.2.19ext3 (gcc 2.91, glibc 2.1.3)
       + RedHat 5.2 kernel 2.0.36  (gcc 2.7.2.3, glibc 2.0.7) 
     - HP-UX B.10.20 (with optional HP-UX C compiler)
@@ -106,10 +118,10 @@ systems :
     - HP-UX B.10.20 (with optional HP-UX C compiler)
     - SunOS 5.6, SunOS 5.7 (with optional Solaris C compiler)
 
-  We guess that MegaWave2 V.2.10 may be installed without to much work on the
+  We guess that MegaWave2 V.2.20 may be installed without to much work on the
 following Unix systems :
 
-  Linux kernel 2.x with gcc 2.x and glibc 2.0.x, 2.1.x, 2.2.x
+  Linux kernel 2.x with gcc 2.x or gcc 3.y (with y>=2) and glibc 2.0.x, 2.1.x, 2.2.x
   HP-UX A.09.x
   SGI IRIX 5.x
   SunOS 4.1.x, SunOS 5.x

@@ -1,20 +1,21 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {kplot};
-  version = {"1.5"};
+  version = {"1.6"};
   author = {"Jacques Froment"};
   function = {"Bitmap the geometry of Curves onto a cimage"};
   usage = {
-  'i':cimage_in->A   "optional background Cimage (input)",
-  'l'->line          "draw a line between successive points of a curve",
-  curves_in->curves  "set of Curves (input)",
-  cimage_out<-B      "bitmapped Cimage (output)"
+  'i':cimage_in->A  "optional background Cimage (input)",
+  'l'->line         "draw a line between successive points of a curve",
+  'd':[d=1]->d      "d=0: draw black lines, d=1: add white surround (default)",
+  curves_in->curves "set of Curves (input)",
+  cimage_out<-B     "bitmapped Cimage (output)"
   };
 */
 /*----------------------------------------------------------------------
  v1.5: no more translation in case of negative points (L.Moisan) 
+ v1.6: added -d option (L.Moisan) 
  ----------------------------------------------------------------------*/
-
 
 
 #include <stdio.h>
@@ -47,11 +48,11 @@ int *xmin,*ymin,*xmax,*ymax;
 }
 
 
-void bitmap_curve_with_lines(curve,A,B,xmin,ymin)
+void bitmap_curve_with_lines(curve,A,B,xmin,ymin,mode)
 
 Curve curve;
 Cimage A,B;
-int xmin,ymin;
+int xmin,ymin,mode;
 
 { 
   register Point_curve p;
@@ -70,7 +71,7 @@ int xmin,ymin;
   if (p->next == NULL)  /* Only one point in the curve */
     {
       mw_plot_cimage(B, x0-xmin, y0-ymin, 0);
-      if (A)
+      if (A && mode==1)
 	{
 	  if (y0-ymin < B->nrow/2) 
 	    mw_plot_cimage(B, x0-xmin, y0-ymin+1, 255);
@@ -86,7 +87,7 @@ int xmin,ymin;
       {
 	mwdebug("Line (%d,%d)-(%d,%d)\n",x0,y0,p->x,p->y);
 	mw_draw_cimage(B, x0-xmin, y0-ymin, p->x-xmin, p->y-ymin, 0);
-	if (A)
+	if (A && mode==1)
 	  {
 	    if (abs(x0-p->x-xmin) >= abs(y0-p->y-ymin)) 
 	      mw_draw_cimage(B, x0-xmin,y0+1-ymin,p->x-xmin,p->y-ymin+1,255);
@@ -118,11 +119,12 @@ int xmin,ymin;
 }
 
 
-void kplot(A,line,curves,B)
+void kplot(A,line,curves,B,d)
 
 Cimage A,B;
 char *line;
 Curves curves;
+int *d;
 
 { Curve curve;
   int i,nx,ny;
@@ -156,7 +158,7 @@ Curves curves;
       {
 	mwdebug("Curve #%d\n",i);
 	if (curve->first != NULL)  
-	  bitmap_curve_with_lines(curve,A,B,xmin,ymin);
+	  bitmap_curve_with_lines(curve,A,B,xmin,ymin,*d);
 	else mwdebug("Empty curve found !\n");
       }
   else

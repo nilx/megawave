@@ -2,8 +2,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cmovie_io.c
    
-   Vers. 1.4
-   (C) 1993-2000 Jacques Froment
+   Vers. 1.5
+   (C) 1993-2002 Jacques Froment
    Input/Output private functions for the Cmovie structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -121,7 +121,7 @@ char  *Type;                          /* Type de format du fichier */
   int ret,i;
       
   movie = NULL;
-  strcpy(Type,"?");  /* Type a priori inconnu */
+  strcpy(Type,"?");  /* Unknown type */
   _mw_convert_struct_warning = 0;  /* Set to 0 previous warning account */
 
   fp = fopen(fname, "r");

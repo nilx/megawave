@@ -3,8 +3,8 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Install a new MegaWave2 version";
 _Prog="`basename $0`"
-_Vers="1.7"
-_Date="1999-2002"
+_Vers="1.8"
+_Date="1999-2003"
 _Auth="Jacques Froment";
 _Usage=""
 #-----------------------------------------------------------------------------
@@ -181,8 +181,9 @@ $MWSHELL/mwinstall $insopt $MWSRC
 if [ $? -ne 0 ]; then
   Echo "+++++ Installation NOT COMPLETE using"
   Echo "+++++      $MWSHELL/mwinstall $insopt $MWSRC"
-  Echo "+++++ Try to fix the problem and rerun mwinstall. If this command has failed at a level l greater"
-  Echo "+++++ than 1, you may save time by adding the parameter '-level l'. In that case, make sure "
+  Echo "+++++ Try to fix the problem (look at '$MWSRC/Install.log') and rerun mwinstall."
+  Echo "+++++ If mwinstall has failed at a level greater than 1, you may save time"
+  Echo "+++++ by adding the parameter '-level l'. In that case, make sure "
   Echo "+++++ your environment variables are correctly set."
 else
   Echo "+++++ Installation DONE using"

@@ -1,9 +1,20 @@
----------------------------------------------------------------------
-Impulse Response files to use for biorhonormal wavelet decompositions
----------------------------------------------------------------------
+---------------------------------------------------------------------------
+Impulse Response filters to be used for biorhonormal wavelet decompositions
+---------------------------------------------------------------------------
 
-h file	     htilde file
+Less dissimilar lengths :
+-----------------------
+
+h filters    htilde filters
+
+sd07.ir      sd09.ir
+
+Splines :
+-------
+
+h filters    htilde filters (several filters may be used)
 
 sp02.ir		sl??.ir
 sp03.ir		sq??.ir
 sp04.ir		sc??.ir
+

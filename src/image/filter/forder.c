@@ -1,7 +1,7 @@
 /*----------------------Megawave2 Module-----------------------------------*/
 /*mwcommand
   name = {forder};
-  version = {"1.1"};
+  version = {"2.1"};
   author = {"Jacques Froment, Yann Guyonvarc'h"};
   function = {"Order filtering : do Erosion/Dilation/Median in a 3x3 window"};
   usage = { 
@@ -12,7 +12,8 @@
           };
 */
 /*----------------------------------------------------------------------
- v2.0: corrected free() bug  (L.Moisan)
+ v2.0: fixed free() bug  (L.Moisan)
+ v2.1: fixed nrow/ncol inversion bug  (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -46,7 +47,7 @@ int *e,*N;
  if (!a) mwerror(FATAL,1,"not enough memory\n");
  (*e)--;
 
- out=mw_change_fimage(out,in->ncol,in->nrow);
+ out=mw_change_fimage(out,in->nrow,in->ncol);
  if (!out) mwerror(FATAL,1,"not enough memory\n"); 
  ncIN = in->ncol;
 

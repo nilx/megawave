@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    file_type.c
   
-   Vers. 2.17
-   (C) 1993-2001 Jacques Froment
+   Vers. 2.22
+   (C) 1993-2002 Jacques Froment
    Give the type of MegaWave2 external (file) structures and (addition of
    the 2.0 version) the associated type in MegaWave2 internal (C) structures.
 
@@ -22,6 +22,11 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifdef sun4_5
 /* Needed for atof() on Sun 5.7 */
 #include <stdlib.h>
+#endif
+
+#ifdef JPEG
+#include <setjmp.h>
+#include <jpeglib.h>
 #endif
 
 #include "ascii_file.h"
@@ -119,6 +124,8 @@ char *A[];
 
 /*  Say if the string <b> in the line beginnning by the string <a> exists or 
     not in the array A[]. Return 1 if it exists, 0 if not.
+    Added in July 2002 (V 2.19) : since b may be a type with an argument (as JFIFC:50),
+    check before the keyword ':' only.
 */
 
 int _mw_exist_array(a,b,A)
@@ -128,7 +135,16 @@ char *b;
 char *A[];
 
 {
-  int i,j;
+  int i,j,n;
+
+  /* Check if ':' is found in b. If yes, record the position in n.*/
+  n=BUFSIZ;
+  for (i=0; i<strlen(b); i++)
+    if (b[i]==':') 
+      {
+	n=i;
+	i=BUFSIZ;
+      }
 
   for (i=0; 
        (((A[i]!=NULL)||(A[i+1]!=NULL)) &&
@@ -138,7 +154,7 @@ char *A[];
 
   /* i = index of a in the array A */
 
-  for (j=i+1; (A[j]!=NULL)&&(strcmp(b,A[j])!=0) ; j++);
+  for (j=i+1; (A[j]!=NULL)&&(strncmp(b,A[j],n)!=0) ; j++);
   if (A[j]!=NULL) return(1); else return(0);
 
 }
@@ -333,6 +349,89 @@ char *mtype; /* internal (memory) type (input) */
     }
 }
 
+
+/* Return the ftype option associated to the full ftype text <ftype>.
+   Indeed since V 2.19, one may add to the ftype one (or several) options
+   using the syntax type:opt_1:opt_2:...:opt_n.
+   Example : JFIFC:50 means JPEG/JFIF 24 bits color with compression quality 50.
+             For this input, the function will return 50.
+   Return NULL if the option is not found.
+*/
+
+char *_mw_get_ftype_opt(ftype)
+
+char *ftype;
+
+{
+  char *b; 
+  int i;
+
+  b=ftype;
+  for (i=0; i<strlen(ftype); i++,b++)
+    if ((*b==':')&&(*(b+1)!='\0')) return(++b);
+  return(NULL);
+}
+
+
+/* Return the ftype part only associated to the full ftype text <ftype>.
+   Indeed since V 2.19, one may add to the ftype one (or several) options
+   using the syntax type:opt_1:opt_2:...:opt_n.
+   Example : JFIFC:50 means JPEG/JFIF 24 bits color with compression quality 50.
+             For this input, the function will return JFIFC.
+*/
+
+char *_mw_get_ftype_only(ftype)
+
+char *ftype;
+
+{
+  int i,l;
+  char *out;
+
+  l=strlen(ftype);
+  out=(char *) malloc(l*sizeof(char));
+  if (!out) mwerror(FATAL,1,"[_mw_get_ftype_only] Not enough memory !\n");
+
+  for (i=1; i<strlen(ftype); i++)
+    if (ftype[i]==':') 
+      {
+	strncpy(out,ftype,i);
+	return(out);
+      }
+  strcpy(out,ftype);
+  return(out);
+}
+
+
+/* Check if ftype <in> is of type <type>, that is
+   <in>:opt_1:opt_2...:opt_n = <type>.
+   Return 1 if true, 0 elsewhere.
+ */
+
+int _mw_is_of_ftype(in,type)
+
+char *in;
+char *type;
+
+{
+  int i,l;
+  char *a,*b;
+
+  l=strlen(in); 
+  if (strlen(type)>l) return(0);
+  for (i=0,a=in,b=type; i<l; i++,a++,b++)
+    {
+      if (*a==':') 
+	{
+	  if (*b=='\0') return(1); /* match in case of option */
+	  else return(0); /* does not match */
+	}
+      else 
+	if (*a!=*b) return(0); /* does not match */
+    }
+  return(1); /* match without option */
+}
+
 /*    Make a new comment */
 
 void  _mw_make_comment(comment,comment_in)
@@ -360,8 +459,132 @@ char comment[],comment_in[];
 
 /*----- Additional functions to check the type of a file -----*/
 
+/* Find the sub-type of a RIFF file.
+   Return 0 if not a loadable RIFF file, 1 if doesn't need flipping, 2 if it does.
+
+   At this time, only the following sub-types are recognized :
+     WAVE_PCM : Microsoft's WAVE sound format, PCM encoding.
+
+   mtype is the associated MegaWave2 memory format 
+*/
+
+static int what_kind_of_RIFF(file,subtype,mtype)
+
+char *file;
+char *subtype;
+char *mtype;
+
+{
+ int need_flipping;
+ FILE *fp;
+ unsigned int dwFmtSize; /* length of format chunk minus 8 byte header (dw = 4 bytes) */
+ unsigned short wFormatTag; /* Format Tag (w = 2 bytes) */
+ unsigned short bytes1_2;    /* The first 2 bytes (magic number) */
+ unsigned short bytes3_4;    /* bytes 3 and 4 */
+ char rifftype[5]; /* RIFF type in the header, as WAVE */
+ char buf[BUFSIZ];
+
+ strcpy(subtype,"?");
+ strcpy(mtype,"?");
+ 
+ if (!(fp = fopen(file, "r"))) return(0);
+ /* bytes 0-1 and 2-3 */
+ if (fread(&bytes1_2,2,1,fp)!=1) {fclose(fp); return(0);}
+ if (fread(&bytes3_4,2,1,fp)!=1) {fclose(fp); return(0);}
+ 
+ /* Note on byte ordering with RIFF files : the default byte ordering is little-endian.
+    File written using big-endian byte ordering scheme have the identifier RIFX 
+    instead of RIFF. (At least for WAVE files, has to be checked with other RIFF files).
+ */
+ if (_mw_byte_ordering_is_little_endian()==1)
+   /* Byte ordering is little endian */
+   {
+     if (((bytes1_2==0x5249)||(bytes1_2==0x4952)) &&
+	 (bytes3_4==0x4646)) /* RIFF identifier */
+       need_flipping = 0;
+     else
+       if (((bytes1_2==0x5249)||(bytes1_2==0x4952)) &&
+	   ((bytes3_4==0x4658)||(bytes3_4==0x5846)))  /* RIFX identifier */
+	 need_flipping = 1;
+       else 
+	 mwerror(INTERNAL,1,"[what_kind_of_RIFF] (little endian) '%s' is not a RIFF file !\n",file);
+   }
+ else
+   /* Byte ordering is big endian */
+   {
+     if (((bytes1_2==0x5249)||(bytes1_2==0x4952)) &&
+	 (bytes3_4==0x4646)) /* RIFF identifier */
+       need_flipping = 1;
+     else
+       if (((bytes1_2==0x5249)||(bytes1_2==0x4952)) &&
+	   ((bytes3_4==0x4658)||(bytes3_4==0x5846)))  /* RIFX identifier */
+	 need_flipping = 0;
+       else 
+	 mwerror(INTERNAL,1,"[what_kind_of_RIFF] (big endian) '%s' is not a RIFF file !\n",file);
+   }
+ 
+ /* bytes 4-7 */
+ if (fread(buf,4,1,fp)!=1) 
+   /* Not a RIFF file */
+   {fclose(fp); return(0);}  
+
+ /* bytes 8-11 */
+ if (fread(rifftype,4,1,fp)!=1) 
+   /* Not a RIFF file */
+   {fclose(fp); return(0);}  
+ rifftype[4]='\0';
+
+ if (strcmp(rifftype,"WAVE")==0)
+   /* RIFF WAVE format */
+   {
+     /* Seek beginning of format chunk */
+     if (_mw_find_pattern_in_file(fp,"fmt ")<0) 
+       {
+	 mwerror(WARNING,1,"Corrupted WAVE file '%s' : no format chunk !\n",file);
+	 fclose(fp); return(0);
+       }
+     /* Next is length of format chunk minus 8 byte header */
+     if (fread(&dwFmtSize,4,1,fp)!=1) 
+       {
+	 mwerror(WARNING,1,"Corrupted WAVE file '%s' : unexpected EOF !\n",file);
+	 fclose(fp); return(0);
+       }
+     if (need_flipping==1) _mw_in_flip_b4(dwFmtSize);
+     if (dwFmtSize < 16)
+       {
+	 mwerror(ERROR,1,"Corrupted WAVE file '%s' : format chunk too short !\n",file);
+	 fclose(fp); return(0);
+       }
+     /* Format Tag : indentifies WAVE encoding such as PCM, ADPCM, ULAW, ... */
+     if (fread(&wFormatTag,2,1,fp)!=1)
+       {
+	 mwerror(WARNING,1,"Corrupted WAVE file '%s' : unexpected EOF !\n",file);
+	 fclose(fp); return(0);
+       }
+     if (need_flipping==1) _mw_in_flip_b2(wFormatTag);
+     /* Now we got enough information */
+     fclose(fp);
+
+     switch(wFormatTag) 
+       {
+       case 0x0001 : 
+	 strcpy(subtype,"WAVE_PCM");
+	 strcpy(mtype,"fsignal");
+	 return(need_flipping+1);
+	 break;
+
+       default:
+	 mwerror(WARNING,1,"WAVE file '%s' : unsupported encoding %x, sorry !\n",file,
+		 wFormatTag);
+	 return(0);
+       }
+   }
+ fclose(fp);
+ return(0);
+}
+
 /* Find the sub-type of a PM file */
-/* Return 0 if not a PM file, 1 if doesn't need flipping, 2 if it does */
+/* Return 0 if not a loadable PM file, 1 if doesn't need flipping, 2 if it does */
 
 /* In subtype,  PM_X means Monochrome PM format with pixel values in X */
 /*              PMC_X mean Color PM format with pixel values in X      */
@@ -446,8 +669,60 @@ char *mtype;
  return(need_flipping+1);
 }
 
+/* In bmp_io.c */
+#ifdef __STDC__
+extern FILE * _mw_read_bmp_header(char *,unsigned int*,unsigned int*,unsigned int*,
+			     unsigned int*,unsigned int*,unsigned int*,unsigned int*);
+#else
+extern FILE * _mw_read_bmp_header();
+#endif
+
+/* Find the sub-type of a BMP file */
+/* Return 0 if not a loadable BMP file, 1 if it is */
+
+/* In subtype,  BMP means Monochrome BMP format with char pixel values */
+/*              BMPC means 24-bits Color BMP format with char pixel values */
+/* mtype is the associated MegaWave2 memory format */
+
+static int what_kind_of_BMP(file,subtype,mtype)
+
+char *file;
+char *subtype;
+char *mtype;
+
+{
+ int    allocsize; /* size of scan lines             */
+ unsigned int   nx,ny;     /* image size                     */
+ unsigned int   offset;    /* offset to the begining of data */
+ int    c,c1;      /* character read                 */
+ FILE   *fp;       /* file to read                   */
+ unsigned int size, planes, bitcount, compression;
+ 
+ strcpy(subtype,"?");
+ strcpy(mtype,"?");
+ 
+ fp=_mw_read_bmp_header(file,&nx,&ny,&offset,&size,&planes,&bitcount,&compression);
+ if (!fp) return(0);
+ fclose(fp);
+
+ if (planes!=1) return(0);
+ if (compression!=0) return(0);
+ if (bitcount==8) /* 8 bpp */
+   {
+     strcpy(subtype,"BMP");
+     strcpy(mtype,"cimage");
+     return(1);
+   }
+ if (bitcount==24) /* 24 bpp */
+   {
+     strcpy(subtype,"BMPC");
+     strcpy(mtype,"ccimage");
+   }
+ return(1);
+}
+
 /* Find the sub-type of a TIFF file */
-/* Return 0 if not a TIFF file, 1 if it is */
+/* Return 0 if not a loadable TIFF file, 1 if it is */
 
 /* In subtype,  TIFF means Monochrome TIFF format with char pixel values */
 /*              TIFFC means 24-bits Color TIFF format with char pixel values */
@@ -489,6 +764,148 @@ char *mtype;
 
  return(1);
 }
+
+/*--------------------- Functions to deal with JPEG format --------------------*/
+
+#ifdef JPEG
+
+struct my_error_mgr {
+  struct jpeg_error_mgr pub;
+  jmp_buf               setjmp_buffer;
+};
+
+typedef struct my_error_mgr *my_error_ptr;
+
+#undef PARM
+#ifdef __STDC__
+#  define PARM(a) a
+#else
+#  define PARM(a) ()
+#  define const
+#endif
+
+static void         mw_error_exit      PARM((j_common_ptr));
+static void         mw_error_output    PARM((j_common_ptr));
+static char *lfname;
+
+/* This function is called when a fatal jpeglib error is detected :
+   call mw_error_output and resume execution 
+*/
+static void mw_error_exit(cinfo) 
+     j_common_ptr cinfo;
+{
+  my_error_ptr myerr;
+
+  myerr = (my_error_ptr) cinfo->err;
+  /* Display error message and resume */
+  (*cinfo->err->output_message)(cinfo);   
+}
+
+/* Print jpeglib error message */
+static void mw_error_output(cinfo) 
+     j_common_ptr cinfo;
+{
+  my_error_ptr myerr;
+  char         buffer[JMSG_LENGTH_MAX];
+
+  myerr = (my_error_ptr) cinfo->err;
+  (*cinfo->err->format_message)(cinfo, buffer);
+  mwerror(ERROR,0,"JPEG image file \"%s\" : %s... Denying image loading !\n", 
+	  lfname, buffer); 
+
+  /* Do the longjump for any kind of jpeglib errors (not only the fatal ones) */
+  longjmp(myerr->setjmp_buffer, 1);        
+}
+
+/* Find the sub-type of a JPEG file */
+/* Return 0 if not a loadable JPEG file, 1 if it is */
+
+/* In subtype,  JFIF means Monochrome JPEG-JFIF format with char pixel values */
+/*              JFIFC means 24-bits Color JPEG-JFIF format with char pixel values */
+/* mtype is the associated MegaWave2 memory format */
+
+static int what_kind_of_JPEG(fname,subtype,mtype)
+
+char *fname;
+char *subtype;
+char *mtype;
+
+{
+ FILE *fp;
+ int bperpix;
+ struct jpeg_decompress_struct    cinfo;
+ struct my_error_mgr              jerr;
+ int val;
+
+ lfname=fname;
+
+ strcpy(subtype,"?");
+ strcpy(mtype,"?");
+
+ if ((fp = fopen(fname, "r")) == NULL)
+   return(0);
+
+ /* Initialize the JPEG decompression object with personal error handling. */
+ cinfo.err = jpeg_std_error(&jerr.pub);
+ jerr.pub.error_exit     = mw_error_exit;
+ jerr.pub.output_message = mw_error_output;
+
+ if ((val=setjmp(jerr.setjmp_buffer))==1)
+   /* What to do in case of error detected in jpeg library */
+   {
+     jpeg_destroy_decompress(&cinfo);
+     fclose(fp);
+     return(0);
+   }
+
+ /* Allocate and initialize a JPEG decompression object */
+ jpeg_create_decompress(&cinfo);
+ 
+ /* Specify data source for decompression */
+ jpeg_stdio_src(&cinfo, fp);
+ 
+ /* Read file header, set default decompression parameters */
+ (void) jpeg_read_header(&cinfo, TRUE);
+
+ jpeg_calc_output_dimensions(&cinfo);
+ bperpix = cinfo.output_components;
+ 
+ if ((bperpix==1) && (cinfo.jpeg_color_space == JCS_GRAYSCALE))
+   /* Coded image is in 8-bits gray levels format */
+   {
+     strcpy(subtype,"JFIF");
+     strcpy(mtype,"cimage");
+     jpeg_destroy_decompress(&cinfo);
+     fclose(fp);
+     return(1);     
+   }
+ 
+ if ((bperpix==3)&&((cinfo.jpeg_color_space != JCS_GRAYSCALE)))
+   /* Coded image is in 3x8-bits color levels format (but probably not RGB) */
+   {
+     strcpy(subtype,"JFIFC");
+     strcpy(mtype,"ccimage");
+     jpeg_destroy_decompress(&cinfo);
+     fclose(fp);
+     return(1);     
+   }
+ return(0);
+}
+#else
+static int what_kind_of_JPEG(file,subtype,mtype)
+
+char *file;
+char *subtype;
+char *mtype;
+
+{
+  mwerror(ERROR,0,"Unable to state image file \"%s\" : JPEG library unsupported !\n",
+	  file);
+  return(0);
+}
+#endif
+
+/*---------------------  --------------------*/
 
 /* Header Format for MW2 files : MW2_<X>/<V>/... 
    Where <X> = name of the structure,
@@ -815,8 +1232,9 @@ float *version;/* Return the version number of the file format (0=no number) */
 
 {
   short fd;
-  unsigned short first2bytes;    /* The first 2 bytes */
-  unsigned short bytesread;         /* Nbre de bytes lus */
+  unsigned short bytes1_2;    /* The first 2 bytes (magic number) */
+  unsigned short bytes3_4;    /* bytes 3 and 4 */
+  unsigned short br1_2,br3_4; /* Number of read bytes */
 
   strcpy(ftype,"?");
   strcpy(mtype,"?");
@@ -828,12 +1246,13 @@ float *version;/* Return the version number of the file format (0=no number) */
   *hsize=0;
   *version=0.0;
 
-  bytesread = read(fd,&first2bytes,2);
+  br1_2 = read(fd,&bytes1_2,2);
+  br3_4 = read(fd,&bytes3_4,2);
+
   close(fd);
+  if ((br1_2 != 2)||(br3_4 != 2)) return(0);
 
-  if (bytesread != 2) return(0);
-
-  switch (first2bytes)
+  switch (bytes1_2)
     {
     case 0x494D:
       strcpy(ftype,"IMG");
@@ -845,15 +1264,33 @@ float *version;/* Return the version number of the file format (0=no number) */
       strcpy(mtype,"cimage");
       return(2); /* Do flipping */
       break;      
-    case 0x5249:
-      strcpy(ftype,"RIM");
-      strcpy(mtype,"fimage");
-      return(1); /* No flipping */
+    case 0x5249: 
+      /* RIM or RIFF */
+      if ((bytes3_4 == 0x4646)||
+	  (bytes3_4 == 0x4658))
+	/* RIFF or RIFX */
+	return (what_kind_of_RIFF(fname,ftype,mtype));
+      else
+	/* Assume RIM */
+	{
+	  strcpy(ftype,"RIM");
+	  strcpy(mtype,"fimage");
+	  return(1); /* No flipping */
+	}
       break;
     case 0x4952:
-      strcpy(ftype,"RIM");
-      strcpy(mtype,"fimage");
-      return(2); /* Do flipping */
+      /* RIM or RIFF */
+      if ((bytes3_4 == 0x4646)||
+	  (bytes3_4 == 0x5846))
+	/* RIFF or RIFX */
+	return (what_kind_of_RIFF(fname,ftype,mtype));
+      else
+	/* Assume RIM */
+	{
+	  strcpy(ftype,"RIM");
+	  strcpy(mtype,"fimage");
+	  return(2); /* Do flipping */
+	}
       break;
 
     case 0x4946:
@@ -875,6 +1312,16 @@ float *version;/* Return the version number of the file format (0=no number) */
     case 0x4D4D: /* TIFF files */
     case 0x4949:
       return (what_kind_of_TIFF(fname,ftype,mtype));
+      break;
+
+    case 0x424D: /* BMP files */
+    case 0x4D42:
+      return(what_kind_of_BMP(fname,ftype,mtype));
+      break;
+
+    case 0xFFD8: /* JPEG files */
+    case 0xD8FF:
+      return (what_kind_of_JPEG(fname,ftype,mtype));
       break;
       
     case 0x4749:
@@ -922,6 +1369,18 @@ float *version;/* Return the version number of the file format (0=no number) */
     case 0x3550:
       strcpy(ftype,"PGMR");
       strcpy(mtype,"cimage");
+      return(2); /* Do flipping */
+      break;
+
+    case 0x5036:
+      strcpy(ftype,"PPM");
+      strcpy(mtype,"ccimage");
+      return(1); /* No flipping */
+    break;
+      
+    case 0x3650:
+      strcpy(ftype,"PPM");
+      strcpy(mtype,"ccimage");
       return(2); /* Do flipping */
       break;
       

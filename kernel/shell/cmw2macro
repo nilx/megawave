@@ -2,11 +2,11 @@
 #--------------------------- Shell MegaWave Macro ----------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="cmw2macro"
-_Vers="2.07";
+_Vers="2.08";
 _Date="1996-2002";
 _Func="Compile a user's macro (make it available and create the doc file)";
 _Auth="Jacques Froment";
-_Usage="[-adm] [-ret] [-path path] macro"
+_Usage="[-adm] [-ret] [-path path] [-absolute] macro"
 #----------------------------------------------------------------------------#
 # This file is part of the MegaWave2 system macros. 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -24,6 +24,23 @@ ConvLaTeX()
 	|  sed "s/}/\\\}/g" |  sed "s/&/\\\&/g" | sed "s/#/\\\#/g"
 }
 
+# Get relative path from $1 to $2
+GetRelativePath()
+{
+  pstart=$1
+  pend=$2
+  p=$pstart
+  res=0
+  rpath=""
+  while [ $res -ne 1 ];
+  do
+   rpath="${rpath}../"
+   p=`dirname $p`
+   res=`echo "$pend $p" | awk '{print index($1,$2);}'`
+  done
+  rpath=${rpath}`echo "$pend $p" | awk '{print substr($1,length($2)+2);}'`
+}
+
 # Check input
 if [ $# -lt 1 ] || [ $# -gt 3 ]; then
    . .mw2_help_lg_com
@@ -33,6 +50,7 @@ SRCDIR=$MY_MEGAWAVE2/src
 DOCDIR=$MY_MEGAWAVE2/doc
 SHELLOBJ=$MY_MEGAWAVE2/shell
 retdocname=0
+absolute=0
 # Bourne Shell seems to interpret differently escape characters on different
 # systems if we use "\\\"
 antislash='\'
@@ -48,6 +66,10 @@ do
            ;;
 
     -ret) retdocname=1
+	  shift
+	  ;;
+
+    -absolute) absolute=1
 	  shift
 	  ;;
 
@@ -204,7 +226,13 @@ else
     mkdir -p $SHELLOBJ
   fi
 fi
-ln -s ${src_name} $SHELLOBJ/${name}
+
+if [ $absolute -eq 1 ]; then
+ ln -s ${src_name} $SHELLOBJ/${name}
+else
+  GetRelativePath $SHELLOBJ `dirname ${src_name}`
+  ln -s ${rpath}/${name} $SHELLOBJ/${name}
+fi
 
 if [ $retdocname -eq 1 ]; then
   echo "$doc_name"

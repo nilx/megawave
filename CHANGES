@@ -1,6 +1,120 @@
 			----------------------------
 			MegaWave2 : Revision History
+
 			----------------------------
+
+
+Version 2.20	15/04/2003
+============
+
+- System library update. 
+
+  + The following file (external) types have been added 
+        BMP      Microsoft Windows char image format (BitMaP) [1x8-bits plane]
+        BMPC     Microsoft Windows color image format (BitMaP) [3x8-bits planes]
+        JFIF     JPEG/JFIF char image format from the Independent JPEG Group, 
+                 monochrome version [1x8-bits plane] (needs libjpeg).
+        JFIFC    JPEG/JFIFC color image format from the Independent JPEG Group
+                 [3x8-bits planes] (needs libjpeg).
+        PPM      Portable pixmap color image format, rawbits version [3x8-bits planes]
+        WAVE_PCM Microsoft's RIFF WAVE sound file format with PCM encoding
+    Now, MegaWave2 Ascii files generated under Dos are directly readable.
+
+  + As the new WAVE_PCM file format shows it, support for sound and speech processing
+    has been added. This leads to a new field 'bpsample' in the memory (internal) type
+    Fsignal, where the number of bit per sample is recorded. In order to be able to play
+    a sound after it has been processed by a module, be sure to keep the header unchanged
+    (you may use the new function  mw_copy_fsignal_header()).
+
+  + System's macros 
+    cmw2 : a warning is issued when a new module has the same name than an
+           existing command.
+    cmw2_all : option -v added, to get trace of compilations.
+    cmw2macro : now link to macros are relative, so you don't need to recompile
+                macros when changing name of MegaWave directory.
+    mwdoc : in-line documentation of file formats added (mwdoc f).
+
+  + Data files
+    Coiflet and Symlet wavelet bases added.
+    See also MISCELLANEOUS section below.
+ 
+- Wdevice library update.
+  + Driver for wheel button added.
+
+- Documentation update.
+  + All three guides have been updated.
+
+- Module update.
+
+  + NEW MODULES
+
+    Reminder: you can locate a module with the macro 'mwwhere'
+
+    CURVE MATCHING
+    * curve matching modules (km_* in in src/curve/matching/ directory)
+      and the demo KM_DEMO (J.-L.Lisani, P.Muse, F.Sur)
+
+    CURVE SMOOTHING
+    * gcsf, iter_gcsf : generalized curve shortening flow (F.Cao, L.Moisan)
+
+    SNAKES
+    * lsnakes,lsnakes_demo : Level Set implementation of the Snakes Model 
+                             (F.Dibos, J.Froment, K.Lakhiari)
+    * mac_snakes : Maximizing Average Contrast Snakes Model (L.Moisan)
+
+    RESTORATION (SIGNAL & IMAGE)
+    * stvrestore,Swtvdenoise : Wavelet denoising using TV minimization (J.Froment)
+    * w1threshold : thresholding of a 1D wavelet transform (J.Froment)
+    * cfsharpen : color version of fsharpen (J.Froment)
+
+    CONTRAST CHANGES
+    * fcontrast : apply a contrast change to a Fimage (L.Moisan)
+    * frank : compute generalized rank image (histogram equalization) (L.Moisan)
+    * flgamma : (x,x^g) Flist, useful for gamma correction (L.Moisan)
+    * bicontrast : find optimal contrast change between two images (L.Moisan)
+
+    DETECTION
+    * harris : Harris corner detector (F.Cao)
+
+    FOR DISPLAY
+    * cmcollect,ccmcollect: collect all images of a Cmovie/Ccmovie into 
+      a single image (L.Moisan)
+
+    MISCELLANEOUS
+    * flconcat : concatenation of two Flists  (L.Moisan)
+    * flscale : scaling of a Flists (L.Moisan)
+    * sinfo : informations about a Fsignal (L.Moisan)
+    * sprintasc : displays (part of) a Fsignal (L.Moisan)
+    * saxpb : Apply gain/offset correction to a Fsignal (L.Moisan)
+
+  + NEW CAPABILITIES
+
+    * sop : -D and -N options added
+    * splot : mouse wheel scrolling added
+    * fkview : new 'k' and 'n' interactive keys 
+    * several signal modules: preserve header info for sound processing
+    * flprintasc : added -n and -v options
+    * faxpb : added -M option
+    * kplot : added -d option
+    * ll_boundaries : added weak maximality (-w option)
+
+  + BUGS FIXED
+
+    * forder, fsharpen (fixed minor bugs)
+    * dsplit_convex (fixed cusp case)
+    * funzoom (fixed image border bug)
+    * fzoom (fixed bug in usage description)
+    * cview,fview,ccview (fixed lag)
+    * cview,fview (fixed 'c' bug)
+
+
+  + MISCELLANEOUS
+
+    * some src/curve modules have been put in subdirectories (io,smooth)
+    * the data file $MEGAWAVE2/data/shape_recognition/formes.gif has been added
+    * ccimage2bmp module has been removed (useless with BMPC file type)
+
+
 
 Version 2.10	11/02/2002
 ============

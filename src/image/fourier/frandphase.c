@@ -12,6 +12,7 @@
 */
 /*----------------------------------------------------------------------
  v1.2: fmeanvar() replaced by faxpb() (L.Moisan)
+ v1.3: upgrade faxpb() call (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -84,7 +85,7 @@ char   *i_flag;
   fft2d(re,im,out,NULL,1);
 
   /*** impose mean and variance ***/
-  faxpb(out,out,NULL,&std,NULL,&m,NULL);
+  faxpb(out,out,NULL,&std,NULL,&m,NULL,NULL);
 
   /*** free memory ***/
   mw_delete_fimage(im);

@@ -1,0 +1,14 @@
+This modules allows to put several images $in_1, in_2, ...in_n$
+(belonging to a Cmovie $in$) onto a single frame image $out$. 
+To that aim, $out$ is divided in cells of equal size $x \times y$
+(either specified from \verb+-x+ and \verb+-y+ options or
+equal to $in_1$ dimensions). The number of cells on each line
+can be specified with the \verb+-n+ option, otherwise the aspect
+ratio closest to 4/3 (and not smaller) will be chosen for $out$.
+Between two cells is left a margin of $i$ pixels, and $out$ is
+surrounded by a margin of $o$ pixels. These margins are black 
+by default, but the color (grey level) may be changed with the
+\verb+-c+ option. The images $in_1, in_2, ...in_n$ (which
+may have different sizes) are centered 
+on the successive cells, and cropped if necessary.
+

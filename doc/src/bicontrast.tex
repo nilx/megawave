@@ -1,0 +1,27 @@
+Given two images $u$ and $v$, this module computes the optimal 
+nondecreasing contrast change $g$ that minimizes the $l^2$ norm of $v-g(u)$,
+and returns rhe image $out = g(u)$.
+
+\medskip
+
+This contrast change is found in two steps: first, the mononicity condition
+is relaxed and a raw contrast change $r$ (which may not be nondecreasing) 
+is found; then, $g$ is obtained from $r$ by isotonic regression.
+Please refer to \cite{moisan} for more details.
+
+\medskip
+
+As usual, $g$ is returned (if requested with the \verb+-g+ option)
+as a 2-Flist that may be used with \verb+fcontrast+.
+Note that $r$ (which may be returned using \verb+-r+ option) is not
+a valid contrast change (it is not monotone) 
+and should not be used with \verb+fcontrast+.
+
+\begin{thebibliography}{1}
+
+\bibitem{moisan}
+L. Moisan, {\it Modelling in image processing},
+course notes, DEA Math\'ematiques, Vision, Apprentissage (MVA),
+Ecole Normale Sup\'erieure de Cachan, 2002.
+
+\end{thebibliography}

@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="`basename $0`"
-_Vers="1.11"
-_Date="1999-2001"
+_Vers="1.13"
+_Date="1999-2003"
 _Func="Set up the environment needed by MegaWave2 (adm only)"
 _Auth="Jacques Froment";
 _Usage="[-public=private || -privateonly] mw2_distrib_dir"
@@ -202,7 +202,7 @@ if [ "${MW_MACHINETYPE}" != "" ] && [ "${MW_SYSTEMTYPE}" != "" ] && \
    [ "${MEGAWAVE2}" != "" ] && [ "${MY_MEGAWAVE2}" != "" ] && \
    [ "${PRIVATE_MEGAWAVE2}" = "${MEGAWAVE2}" ] && [ "${PUBLIC_MEGAWAVE2}" != "" ]; then
   err=0
-  Echo "Environment variables are already set :"
+  Echo "Environment variables are already set. Following the most important ones :"
   a=`$MWSHELL/mwarch -s`
   if [ "$MW_MACHINETYPE" != "$a" ]; then
     err=1
@@ -239,9 +239,9 @@ if [ "${MW_MACHINETYPE}" != "" ] && [ "${MW_SYSTEMTYPE}" != "" ] && \
   fi
   Echo "  Location for my modules is $MY_MEGAWAVE2"
   if [ $err -eq 0 ]; then
-    Answer "Do you want to update these variables" "N"
+    Answer "Do you want to update these variables and other optional ones" "N"
   else
-     Echo "Because inconsistency has been found, I reset the environment."
+    Echo "Because inconsistency has been found, I reset the environment."
   fi
 fi
 
@@ -295,7 +295,7 @@ if [ "$ans" = "Y" ]; then
 
   MW_INCLUDEX11=/usr/include
   if [ ! -r $MW_INCLUDEX11/X11/Xlib.h ]; then
-    a=`find /usr/include/ -follow -name Xlib.h -print 2> /dev/null`
+    a=`find /usr/include/ -follow -name Xlib.h -print -xdev 2> /dev/null`
     if [ "$a" != "" ]; then
 # If several directories returned, take the first one.
       a=`echo $a | cut -d " " -f 1`
@@ -314,7 +314,7 @@ if [ "$ans" = "Y" ]; then
     MW_LIBX11=/usr/X/lib
     if [ ! -r $MW_LIBX11/libX11.a ] && [ ! -r $MW_LIBX11/libX11.sl ] && \
        [ ! -r $MW_LIBX11/libX11.so ]; then
-      a=`find /usr -follow -name 'libX11.s?' -print 2> /dev/null`
+      a=`find /usr -follow -name 'libX11.s?' -print -xdev 2> /dev/null`
       if [ "$a" != "" ]; then
 # If several directories returned, take the first one.
         a=`echo $a | cut -d " " -f 1`
@@ -332,7 +332,7 @@ if [ "$ans" = "Y" ]; then
   MW_LIBTIFF=/usr/lib
   if [ ! -r $MW_LIBTIFF/libtiff.a ] && [ ! -r $MW_LIBTIFF/libtiff.sl ] && \
      [ ! -r $MW_LIBTIFF/libtiff.so ]; then
-    a=`find /usr/lib -follow -name 'libtiff.*' -print 2> /dev/null`
+    a=`find /usr/lib -follow -name 'libtiff.*' -print -xdev 2> /dev/null`
     if [ "$a" != "" ]; then
 # If several directories returned, take the first one.
       a=`echo $a | cut -d " " -f 1`
@@ -342,6 +342,22 @@ if [ "$ans" = "Y" ]; then
      [ ! -r $MW_LIBTIFF/libtiff.so ]; then
       GetSystemDir "the TIFF library"  "opt"
       MW_LIBTIFF=$a
+    fi
+  fi
+
+  MW_LIBJPEG=/usr/lib
+  if [ ! -r $MW_LIBJPEG/libjpeg.a ] && [ ! -r $MW_LIBJPEG/libjpeg.sl ] && \
+     [ ! -r $MW_LIBJPEG/libjpeg.so ]; then
+    a=`find /usr/lib -follow -name 'libjpeg.*' -print -xdev 2> /dev/null`
+    if [ "$a" != "" ]; then
+# If several directories returned, take the first one.
+      a=`echo $a | cut -d " " -f 1`
+      MW_LIBJPEG=`dirname $a`
+    fi
+  if [ ! -r $MW_LIBJPEG/libjpeg.a ] && [ ! -r $MW_LIBJPEG/libjpeg.sl ] && \
+     [ ! -r $MW_LIBJPEG/libjpeg.so ]; then
+      GetSystemDir "the JPEG library"  "opt"
+      MW_LIBJPEG=$a
     fi
   fi
 
@@ -399,6 +415,9 @@ if [ "$ans" = "Y" ]; then
   if [ "$MW_LIBTIFF" != "" ]; then
     SetEnv MW_LIBTIFF $MW_LIBTIFF $MWPRIVATEPROFILE $MWPRIVATECSHRC
   fi
+  if [ "$MW_LIBJPEG" != "" ]; then
+    SetEnv MW_LIBJPEG $MW_LIBJPEG $MWPRIVATEPROFILE $MWPRIVATECSHRC
+  fi
   if [ $pub -ne 2 ]; then
     AddEnv $SHLP_NAME $MWPRIVATELIB:$MWPUBLICLIB $MWPRIVATEPROFILE $MWPRIVATECSHRC
   else
@@ -447,6 +466,9 @@ if [ "$ans" = "Y" ]; then
   SetEnv MW_LIBX11 $MW_LIBX11 $MWPUBLICPROFILE $MWPUBLICCSHRC
   if [ "$MW_LIBTIFF" != "" ]; then
     SetEnv MW_LIBTIFF $MW_LIBTIFF $MWPUBLICPROFILE $MWPUBLICCSHRC
+  fi
+  if [ "$MW_LIBJPEG" != "" ]; then
+    SetEnv MW_LIBJPEG $MW_LIBJPEG $MWPUBLICPROFILE $MWPUBLICCSHRC
   fi
   AddEnv $SHLP_NAME $MWPUBLICLIB $MWPUBLICPROFILE $MWPUBLICCSHRC
   AddEnv PATH \$HOME/my_megawave2/shell:\$HOME/my_megawave2/bin/${MW_MACHINETYPE}:${PUBLIC_MEGAWAVE2}/shell:${PUBLIC_MEGAWAVE2}/sys/shell:${PUBLIC_MEGAWAVE2}/sys/bin/${MW_MACHINETYPE}:${PUBLIC_MEGAWAVE2}/bin/${MW_MACHINETYPE} $MWPUBLICPROFILE $MWPUBLICCSHRC

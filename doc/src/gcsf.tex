@@ -1,0 +1,55 @@
+This module is a generalization of the \verb+gass+ module and computes the
+evolution of the curve $in$ between scales $t=f$ and $t=l$ according to
+the geometric equation
+$$\frac{\partial C}{\partial t}=(t\kappa)^g \,{\bf N}.$$
+In this equation, $C$ is the current point of the curve, $\bf N$
+the normal vector to the curve, $\kappa$ its local curvature, and 
+$g$ must satisfy $g > 1/3$. 
+The factor $t$ is a choice of renormalizing the scale,
+making the equation zoom covariant (if you zoom the curve with a factor
+$\lambda$ then the scale should also be zoomed by $\lambda$).
+
+\medskip
+Like the affine erosion, the algorithm is based on area
+computation. Nevertheless, there is no simple relation between the area erosion
+and the erosion scale, since it depends on the curve and of the power of the
+curvature used as parameter. As a consequence, the algorithm becomes slower and
+slower as $g$ increases.  
+
+
+\medskip
+The options \verb+-i+ and \verb+-c+ allow to fix the number of iterations
+(instead of the final scale) and not to convexify the last step. We left them
+as debugging options. 
+
+
+\medskip 
+The area used for curvature approximation is given by the \verb+-a+ and
+\verb+-r+ options. If {\em r} is not precised, the program starts by computing
+a rectangle containing all the curves. The area of the chord-arc sets is
+obtained by multiplying the area of the bounding box by $10^{-a}$. In general,
+$a=4$ is sufficient. For non smooth curves (typically polygons with long edges
+and very sharp angles) and large values of {\em g}, larger values may be
+necessary.  
+
+\medskip 
+The curve sampling is given by using the \verb+-e+ option. Beyond values of
+order 4, the computations become very slow and memory consuming. 
+
+\medskip
+Troubleshooting: a very sensitive part of the algorithm is the convexification
+step (cf [2]). It is {\em a priori} quite stable by now, although some
+optimization compilation options may lead to weird and dramatic results with
+recent compilers (gcc-3.0).  
+
+\bigskip
+{\Large\bf References}
+
+\medskip
+
+[1] F. Cao and L. Moisan, ``Geometric computation of curvature driven plane
+curve evolution'', {\it SIAM J. Numer. Anal.}, vol. 39:2, pp. 624-646, 2001.
+
+\medskip
+[2] L.Moisan, ``Affine Plane Curve Evolution : a Fully Consistent Scheme'',
+{\it IEEE Transactions On Image Processing}, vol. 7:3, pp. 411-420, 1998.

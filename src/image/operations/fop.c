@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {fop};
-   version = {"1.0"};
+   version = {"1.1"};
    author = {"Lionel Moisan"};
    function = {"Perform an elementary operation between 2 Fimages"};
    usage = {
@@ -22,7 +22,9 @@
 	    out<-out       "result Fimage"
    };
    */
-/*-- MegaWave 2- Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
+/*----------------------------------------------------------------------
+ v1.1: fixed check for -l -g -e options (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -40,7 +42,8 @@ char *plus,*minus,*times,*divide,*dist,*norm,*inf,*sup,*less,*greater,*equal;
 
   /* check options */
   if ( (plus?1:0) + (minus?1:0) + (times?1:0) + (divide?1:0) 
-       + (dist?1:0) + (norm?1:0) + (inf?1:0) + (sup?1:0) != 1 )
+       + (dist?1:0) + (norm?1:0) + (inf?1:0) + (sup?1:0) 
+       + (less?1:0) + (greater?1:0) + (equal?1:0) != 1 )
     mwerror(USAGE, 1, "please select exactly one of the operator options");
   if ( (A?1:0) + (a?1:0) != 1 )
      mwerror(USAGE, 1, "please select exactly one left term (-a or -A)");

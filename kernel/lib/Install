@@ -3,8 +3,8 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Install a new version of the MegaWave2 System Library";
 _Prog="`basename $0`"
-_Vers="0.1"
-_Date="1999"
+_Vers="1.1"
+_Date="2002-03"
 _Auth="Jacques Froment";
 _Usage="[-static] [-public] [-clear] [-debug]"
 #-----------------------------------------------------------------------------
@@ -43,6 +43,7 @@ if [ "${PUBLIC_MEGAWAVE2}" = "" ]; then
    exit 1
 fi
 
+CWD=`/bin/pwd`
 lib="shared"
 clear=0
 public=0
@@ -74,6 +75,11 @@ do
 done
 opt="$lib $opt"
 
+# If JPEG library installed, define JPEG compilation flag in Makefile
+if [ "${MW_LIBJPEG}" != "" ]; then
+   opt="jpeg $opt"
+fi
+
 echo " "
 echo "*** Install the MegaWave2 system library (lib Install) ***"
 
@@ -89,7 +95,7 @@ if [ ! -d ${needir} ]; then
   mkdir -p ${needir}
 fi
 
-cd src
+cd $CWD/src
 ../../shell/mwconfig "$opt"
 if [ $? -ne 0 ]; then
   echo "*** Error in mwconfig ! Abort lib Install. ***" 2>&1
@@ -115,7 +121,7 @@ if [ $public -eq 1 ]; then
     exit 1
   fi
 fi
-cd ../include
+cd $CWD/include
 make install
 if [ $? -ne 0 ]; then
   echo "*** Error in 'make install (include files)' ! Abort lib Install. ***" 2>&1
@@ -128,7 +134,7 @@ if [ $public -eq 1 ]; then
     exit 1
   fi
 fi
-cd ..
+cd $CWD
 
 echo " "
 echo "*** Install done for the system library on $PRIVATE_MEGAWAVE2 ***"

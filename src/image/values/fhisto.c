@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {fhisto};
-  version = {"1.2"};
+  version = {"1.3"};
   author = {"Lionel Moisan"};
   function = {"Compute the histogram of a Fimage"};
   usage = {
@@ -16,6 +16,7 @@
 */
 /*----------------------------------------------------------------------
  v1.2: more possible combinations of options, new -t option (L.Moisan)
+ v1.3: default num = (max-min)/size (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -49,7 +50,8 @@ Fsignal fhisto(in,out,l,r,n,s,t)
   if (n) num = *n; else {
     if (s) {
       size = *s;
-      num = 1+(int)floor((double)((max-min)/size));
+      num = (int)(0.5+(max-min)/size);
+      if (num<=0) num=1;
     } else num = DEFAULT_NUMBER_OF_CELLS;
   }
   if (!s) size = (max-min)/(float)num;

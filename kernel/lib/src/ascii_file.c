@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ascii_file.c
    
-   Vers. 1.1
-   (C) 1993-2001 Jacques Froment
+   Vers. 1.2
+   (C) 1993-2002 Jacques Froment
    Basic functions to manage the MW DATA ASCII files
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -45,8 +45,14 @@ char *str;
       nogood=0;
       /* Search the others */
       for (i=1; (str[i] != '\0') && (c != EOF) && (nogood == 0); i++) 
-	if ( ( ((char) (c=getc(fp))) != str[i]) && (str[i] != '?')) nogood=1;
-
+	if ( ((((char) (c=getc(fp))) != str[i]) && (str[i] != '?')) 
+	     /* The following line useful in case of DOS input : CR LF to
+		be interpreted as LF alone :
+	     */
+	     && !((str[i]=='\n')&&(c=='\r')&&((c=getc(fp))=='\n'))
+	     )
+	  nogood=1;
+      
       if (c == EOF) return(EOF);
     }
   while (nogood == 1);  
@@ -78,6 +84,30 @@ void *ptr;
     }
   return(1);
 }
+
+
+/*     Same as _mw_fascii_get_field(), but do not generate error if the
+       field is not found (this allows to read fields added in an extended format). 
+*/
+
+int _mw_fascii_get_optional_field(fp,fname,field_name,str_control,ptr)
+
+FILE *fp;
+char *fname;
+char *field_name;
+char *str_control;
+void *ptr;
+
+{
+  if (_mw_fascii_search_string(fp,field_name) != 1) return(0); /* Not found */
+  if (fscanf(fp,str_control,ptr) != 1)
+    {
+      mwerror(WARNING, 0,"Error at or before the field \"%s\" in the MegaWave2 Data Ascii file \"%s\" (field ignored).\n",field_name,fname);	  
+      return(0);
+    }
+  return(1);
+}
+
 
 FILE *_mw_open_data_ascii_file(fname)
 

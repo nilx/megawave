@@ -2,7 +2,7 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="Checkmodules"
-_Vers="1.04"
+_Vers="1.05"
 _Date="2002"
 _Func="Test system modules"
 _Auth="Lionel Moisan";
@@ -28,14 +28,14 @@ Check_exact()
     if [ "$1" != "$2" ]; then Incerr; fi
 }
 
-# used for float numbers
+# used for float numbers (threshold at 1% error)
 Check_approx()
 {
     r=`echo "a=$1;b=$2;c=(a-b)^2;d=0.0001*(a^2+b^2);if (c<=d) 1" | bc 2> /dev/null`
     if [ "$r" != "1" ]; then Incerr; fi
 }
 
-# used for random variables
+# used for random variables (threshold at 10% error)
 Check_more_approx()
 {
     r=`echo "a=$1;b=$2;c=(a-b)^2;d=0.01*(a^2+b^2);if (c<=d) 1" | bc 2> /dev/null`
@@ -58,6 +58,7 @@ Pass()
 
 NoPass()
 {
+    err=0
     totno=`expr $totno + 1`
 }
 
@@ -207,6 +208,11 @@ v=`fmean $tmp/1 | cut -d"=" -f2`
 Check_approx $v 10
 Pass fmean
 
+dkinfo curve > $tmp/1 || Incerr
+v=`grep "Average step distance" $tmp/1 | cut -d":" -f2`
+Check_approx $v 2.04765
+Pass dkinfo
+
 echo
 
 
@@ -354,22 +360,6 @@ v=`cut -d"=" -f2 $tmp/1`
 Check_exact $v 8422
 Pass perimeter
 
-echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
-| fkreadasc $tmp/1 > /dev/null || Incerr
-v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 2
-v=`perimeter $tmp/1 | cut -d"=" -f2`
-Check_approx $v 93.4166
-Pass fkreadasc
-
-echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
-| flreadasc 2 $tmp/1 > /dev/null || Incerr
-v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 2
-v=`perimeter $tmp/1 | cut -d"=" -f2`
-Check_approx $v 93.4166
-Pass flreadasc
-
 circle -r 10 -n 100 $tmp/1 || Incerr
 v=`area $tmp/1 | cut -d"=" -f2`
 Check_approx $v 313.953
@@ -381,11 +371,6 @@ disc $tmp/1 2.5 || Incerr
 v=`perimeter $tmp/1 | cut -d"=" -f2`
 Check_approx $v 30.5708
 Pass disc
-
-dkinfo curve > $tmp/1 || Incerr
-v=`grep "Average step distance" $tmp/1 | cut -d":" -f2`
-Check_approx $v 2.04765
-Pass dkinfo
 
 dsplit_convex -c . curve $tmp/1 > $tmp/2 || Incerr
 v=`cut -d"=" -f2 $tmp/2`
@@ -439,6 +424,49 @@ v=`fkcenter $tmp/1 | grep xg | cut -d"=" -f2`
 Check_approx $v 324.922
 Pass fkcrop
 
+fkzrt curve  $tmp/1 0.5 30 20 20 || Incerr
+v=`fkcenter $tmp/1 | grep xg | cut -d"=" -f2`
+Check_approx $v 282.455
+Pass fkzrt
+
+echo "40 40 60 30 100 100 200 80 80 240 e 240 20 280 20 260 240 200 150 240 40 q" | fkreadasc $tmp/1 > /dev/null
+ksplines -j 3 $tmp/1 $tmp/2 || Incerr
+v=`dkinfo $tmp/2 | grep "Number of curves" | cut -d":" -f2`
+Check_exact $v 2
+Pass ksplines
+
+echo "40 40 60 30 100 100 200 80 80 240 q" | fkreadasc $tmp/1 > /dev/null
+kspline -j 3 $tmp/1 $tmp/2 || Incerr
+v=`perimeter $tmp/2 | cut -d"=" -f2`
+Check_approx $v 318.806
+Pass kspline
+
+NoPass flconcat
+NoPass flscale
+
+echo
+
+
+# curve/io
+
+mwechon "curve/io: "
+
+echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
+| fkreadasc $tmp/1 > /dev/null || Incerr
+v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
+Check_exact $v 2
+v=`perimeter $tmp/1 | cut -d"=" -f2`
+Check_approx $v 93.4166
+Pass fkreadasc
+
+echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
+| flreadasc 2 $tmp/1 > /dev/null || Incerr
+v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
+Check_exact $v 2
+v=`perimeter $tmp/1 | cut -d"=" -f2`
+Check_approx $v 93.4166
+Pass flreadasc
+
 kplot curve $tmp/1 || Incerr
 v=`fsize $tmp/1`
 Check_exact "$v" "630 790"
@@ -460,7 +488,7 @@ Pass fkprintasc
 
 flprintasc curve > /dev/null || Incerr
 v=`flprintasc curve | wc -l`
-Check_exact $v 4116
+Check_exact $v 4115
 Pass flprintasc
 
 fkprintfig curve > /dev/null || Incerr
@@ -477,6 +505,24 @@ Check_exact $v 2
 v=`area $tmp/2 | cut -d"=" -f2`
 Check_exact $v 3600
 Pass kreadfig
+
+fkview -o $tmp/1 -n curve || Incerr
+v=`fnorm -v $tmp/1 2> /dev/null | cut -d"=" -f2`
+Check_approx $v 2.61157
+Pass fkview
+
+echo "1 1 6 2 3 5 4 3 4 4 4 2 q" | fkreadasc $tmp/1 > /dev/null
+kplotasc $tmp/1 > /dev/null || Incerr
+v=`kplotasc $tmp/1 | wc -c`
+Check_exact $v 84
+Pass kplotasc
+
+echo
+
+
+# curve/smooth
+
+mwechon "curve/smooth: "
 
 fksmooth -n 20 -s 10 curve $tmp/1 || Incerr
 v=`area $tmp/1 | cut -d"=" -f2`
@@ -502,33 +548,37 @@ v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
 Check_exact $v 3
 Pass iter_gass
 
-fkview -o $tmp/1 -n curve || Incerr
-v=`fnorm -v $tmp/1 2> /dev/null | cut -d"=" -f2`
-Check_approx $v 2.61157
-Pass fkview
+gcsf -l 10 curve $tmp/1 || Incerr
+v=`area $tmp/1 | cut -d"=" -f2`
+Check_approx $v 209003
+v=`perimeter $tmp/1 | cut -d"=" -f2`
+Check_approx $v 3929.08
+Pass gcsf
 
-fkzrt curve  $tmp/1 0.5 30 20 20 || Incerr
-v=`fkcenter $tmp/1 | grep xg | cut -d"=" -f2`
-Check_approx $v 282.455
-Pass fkzrt
+iter_gcsf -N 2 -l 20 curve $tmp/1 || Incerr
+v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
+Check_exact $v 3
+Pass iter_gcsf
 
-echo "1 1 6 2 3 5 4 3 4 4 4 2 q" | fkreadasc $tmp/1 > /dev/null
-kplotasc $tmp/1 > /dev/null || Incerr
-v=`kplotasc $tmp/1 | wc -c`
-Check_exact $v 84
-Pass kplotasc
+echo
 
-echo "40 40 60 30 100 100 200 80 80 240 e 240 20 280 20 260 240 200 150 240 40 q" | fkreadasc $tmp/1 > /dev/null
-ksplines -j 3 $tmp/1 $tmp/2 || Incerr
-v=`dkinfo $tmp/2 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 2
-Pass ksplines
 
-echo "40 40 60 30 100 100 200 80 80 240 q" | fkreadasc $tmp/1 > /dev/null
-kspline -j 3 $tmp/1 $tmp/2 || Incerr
-v=`perimeter $tmp/2 | cut -d"=" -f2`
-Check_approx $v 318.806
-Pass kspline
+# curve/matching
+
+mwechon "curve/matching: "
+
+NoPass km_bitangents
+NoPass km_codecurve_ai
+NoPass km_codecurve_si
+NoPass km_createdict_ai
+NoPass km_createdict_si
+NoPass KM_DEMO
+NoPass km_flatpoints
+NoPass km_inflexionpoints
+NoPass km_match_ai
+NoPass km_match_si
+NoPass km_prematchings
+NoPass km_savematchings
 
 echo
 
@@ -626,18 +676,20 @@ Pass canny
 
 align -e 4.3 $tmp/1 $tmp/2 > /dev/null || Incerr
 v=`flprintasc $tmp/2 | wc -l`
-Check_exact $v 15
+Check_exact $v 14
 Pass align
 
 ll_boundaries -e 11 $tmp/1 $tmp/2 > /dev/null || Incerr
 v=`flprintasc $tmp/2 | wc -l`
-Check_exact $v 1142
+Check_exact $v 1139
 Pass ll_boundaries
 
-ll_edges -e 21 $tmp/1 $tmp/2 > /dev/null || Incerr
+ll_edges -e 17 $tmp/1 $tmp/2 > /dev/null || Incerr
 v=`flprintasc $tmp/2 | wc -l`
-Check_exact $v 5878
+Check_exact $v 526
 Pass ll_edges
+
+NoPass harris
 
 echo
 
@@ -794,6 +846,9 @@ v=`fnorm -v $tmp/4 | cut -d"=" -f2`
 Check_approx $v 14.74
 Pass cmparitysep
 
+NoPass cmcollect
+NoPass ccmcollect
+
 echo
 
 
@@ -875,8 +930,10 @@ Pass forder
 
 fsharpen -p 50 $tmp/1 $tmp/2 || Incerr
 v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 25.5378
+Check_approx $v 22.7716
 Pass fsharpen
+
+NoPass cfsharpen 
 
 rotaffin -r 5 -a 3 -t 3 -T 0 -A 5 $tmp/2 || Incerr
 v=`grep nimage $tmp/2 | cut -d":" -f2`
@@ -1037,11 +1094,6 @@ v=`fnorm -p 2 $tmp/4 | cut -d"=" -f2`
 Check_exact $v 0
 Pass cccopy
 
-ccimage2bmp ccimage $tmp/1 || Incerr
-v=`cat $tmp/1 | wc -c`
-Check_exact $v 196662
-Pass ccimage2bmp
-
 NoPass cview
 NoPass fview
 NoPass ccview
@@ -1185,6 +1237,10 @@ Check_exact $v 11
 v=`fnorm -v $tmp/2_11 | cut -d"=" -f2`
 Check_approx $v 32.5981
 Pass skeleton
+
+NoPass lsnakes
+NoPass lsnakes_demo
+NoPass mac_snakes
 
 echo
 
@@ -1372,6 +1428,11 @@ v=`fmean $tmp/2_05 | cut -d"=" -f2`
 Check_more_approx $v 116
 Pass cmnoise
 
+NoPass fcontrast
+NoPass frank
+NoPass flgamma
+NoPass bicontrast
+
 echo
 
 
@@ -1468,6 +1529,13 @@ ssinus -s 100 -a 1 -d 1 $tmp/1  || Incerr
 v=`snorm -v $tmp/1 | cut -d"=" -f2`
 Check_approx $v 0.0785888
 Pass ssinus
+
+NoPass stvrestore
+NoPass Swtvdenoise
+NoPass w1threshold
+NoPass sinfo
+NoPass sprintasc
+NoPass saxpb
 
 echo
 

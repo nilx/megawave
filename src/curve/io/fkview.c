@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {fkview};
-  version = {"2.2"};
+  version = {"2.3"};
   author = {"Lionel Moisan"};
   function = {"Interactive view of curves (Flists)"};
   usage = {
@@ -31,6 +31,7 @@
  v2.0: added grid, bg zoom, motion, full lines, ref, colors, etc (L.Moisan)
  v2.1: fixed color bug (L.Moisan)
  v2.2: added -k option plus miscellaneous corrections (L.Moisan)
+ v2.2: added 'k' and 'n' intercative keys (F.Cao)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -69,6 +70,7 @@ int bg_order;                 /* interpolation order for bg */
 int in_color,ref_color;       /* input/reference color */
 char ref_display,bg_flag;     /* flags */
 char a_flag,s_flag,e_flag;    /* flags */
+char cur_index_display;       /* flag to display index of current curve */
 Curve disc1,disc2,disc5;      /* discs to be displayed */
 Fimage bg_image,tmp_fimage;   /* for bg display */
 int cur_index,cur_display;    /* for curve selection */
@@ -114,7 +116,7 @@ void restore_xyratio()
 double trunc(v,ref)
      double v,ref;
 {
-  ref = v/ref; 
+  ref = v/ref;
   ref = ABS(ref);
   if (ref < 1.0e-8) return(0.); else return(v);
 }
@@ -126,14 +128,14 @@ void draw_framed(xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax,i)
 {
   double txa,tya,txb,tyb,dx,dy;
 
-  if (xa>=xmin && xa<=xmax && ya>=ymin && ya<=ymax && 
+  if (xa>=xmin && xa<=xmax && ya>=ymin && ya<=ymax &&
       xb>=xmin && xb<=xmax && yb>=ymin && yb<=ymax) {
     mw_draw_ccimage(image,xa,ya,xb,yb,r,g,b);
     mw_draw_fimage(which_curve,xa,ya,xb,yb,(float)i);
   }
 
   else {
-    txa = tya = 0.; txb = tyb = 1.; 
+    txa = tya = 0.; txb = tyb = 1.;
     dx = (double)(xb-xa);
     dy = (double)(yb-ya);
     if (dx) {
@@ -151,7 +153,7 @@ void draw_framed(xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax,i)
       yb = ya + (int)rint(txb*dy);
       xa +=     (int)rint(txa*dx);
       ya +=     (int)rint(txa*dy);
-      if (xa>=xmin && xa<=xmax && ya>=ymin && ya<=ymax && 
+      if (xa>=xmin && xa<=xmax && ya>=ymin && ya<=ymax &&
 	  xb>=xmin && xb<=xmax && yb>=ymin && yb<=ymax) {
 	mw_draw_ccimage(image,xa,ya,xb,yb,r,g,b);
 	mw_draw_fimage(which_curve,xa,ya,xb,yb,(float)i);
@@ -168,7 +170,7 @@ Curve c;
 {
   Point_curve p;
   int xx,yy,adr;
-  
+
   for (p=c->first;p;p=p->next) {
     xx = x+p->x;
     yy = y+p->y;
@@ -194,20 +196,20 @@ void put_bg()
   if (bg_flag) {
     sx = (float)(X2-X1+1);
     sy = (float)(Y2-Y1+1);
-    if (s_flag) 
+    if (s_flag)
       fcrop(bg_image,tmp_fimage,&sx,&sy,NULL,&fbg,&bg_order,NULL,
 	    (float)sx1,(float)sy1,(float)sx2,(float)sy2);
     else
        fcrop(bg_image,tmp_fimage,&sx,&sy,NULL,&fbg,&bg_order,NULL,
 	    (float)sx1,(float)sy2,(float)sx2,(float)sy1);
-    for (x=0;x<tmp_fimage->ncol;x++) 
+    for (x=0;x<tmp_fimage->ncol;x++)
       for (y=0;y<tmp_fimage->nrow;y++) {
 	v = tmp_fimage->gray[y*tmp_fimage->ncol+x];
 	c = (v<0.?0:v>=256.?255:(unsigned char)v);
 	adr = (Y1+y)*image->ncol + X1+x;
 	image->red[adr] = image->green[adr] = image->blue[adr] = c;
       }
-  } 
+  }
 }
 
 /* plot one of the curves */
@@ -226,19 +228,19 @@ void plot_one_curve(i,color,pcolor,mode)
     v = (double)c->values[j*c->dim+1];
     if (s_flag) y = Y1+(int)((double)(Y2-Y1)*(v-sy1)/(sy2-sy1));
     else        y = Y2+(int)((double)(Y1-Y2)*(v-sy1)/(sy2-sy1));
-    
+
     if (mode & 2) /* lines */
-      if (line) 
+      if (line)
 	draw_framed(ox,oy,x,y,C_RED(color),C_GREEN(color),C_BLUE(color),
-		    X1+1,X2-1,Y1+1,Y2-1,i); 
-    
+		    X1+1,X2-1,Y1+1,Y2-1,i);
+
     if (e_flag && (j==0 || j==c->size-1)) /* extremal points */
       draw_curve_framed(x,y,disc2,0,0,0,X1+1,X2-1,Y1+1,Y2-1,i);
-    
+
     if (mode & 1) /* points */
       draw_curve_framed(x,y,disc1,C_RED(pcolor),C_GREEN(pcolor),
 			C_BLUE(pcolor),X1+1,X2-1,Y1+1,Y2-1,i);
-    
+
     line = 1; ox = x; oy = y;
   }
 }
@@ -256,20 +258,20 @@ void plot_curves()
   char str[STRSIZE];
 
   if (grid_mode==0) {
-    
-    X1 = 0; X2 = nx-1; 
+
+    X1 = 0; X2 = nx-1;
     Y1 = 0; Y2 = ny-1;
     if (!a_flag) restore_xyratio();
     put_bg();
-   
+
   } else {
-    
+
     X2 = nx-20;
     Y1 = 20;
     Y2 = ny-FONTHEIGHT-15;
     fgcolor=600;
     bgcolor=999;
-    
+
     /*---------- DRAW AXES ----------*/
 
     /* we need to find a common solution to xyratio and strleft */
@@ -280,7 +282,7 @@ void plot_curves()
       size0 = size_strleft;
       X1 = size_strleft*FONTWIDTH+20;
       if (!a_flag) restore_xyratio();
-      
+
       v = 1.; while (sx1==sx2) {sx1-=v; sx2+=v; v*=10.;}
       v = 1.; while (sy1==sy2) {sy1-=v; sy2+=v; v*=10.;}
 
@@ -290,7 +292,7 @@ void plot_curves()
 	xstep = ystep; xsub = ysub;
 	xofs = xsub*xstep*floor(sx1/(xsub*xstep));
       }
-      
+
       /* y axis */
       size_strleft = 0;
       truncref = ABS(sy1)+ABS(sy2);
@@ -302,10 +304,10 @@ void plot_curves()
 	  i = strlen(str);
 	  if (i>size_strleft) size_strleft=i;
 	}
-      }  
+      }
       j++;
     } while (!a_flag && size_strleft!=size0 && j<3);
-     
+
     put_bg();
 
     for (k=0;(v=yofs+(double)k*ystep)<=sy2;k++) {
@@ -331,9 +333,9 @@ void plot_curves()
 		      &fgcolor,&bgcolor,NULL,str);
 	}
       }
-    }  
-    
-    /* x axis */    
+    }
+
+    /* x axis */
     truncref = ABS(sx1)+ABS(sx2);
     for (k=0;(v=xofs+(double)k*xstep)<=sx2;k++) {
       x = X1+(int)((double)(X2-X1)*(v-sx1)/(sx2-sx1));
@@ -358,10 +360,10 @@ void plot_curves()
 	}
       }
     }
-    
+
     mw_draw_ccimage(image,X1-1,Y1-1,X1-1,Y2+1,255,0,0);
     mw_draw_ccimage(image,X1-1,Y2+1,X2+1,Y2+1,255,0,0);
-    
+
     if (grid_mode!=1) {
       mw_draw_ccimage(image,X2+1,Y1,X2+1,Y2+1,255,0,0);
       mw_draw_ccimage(image,X1-1,Y1-1,X2+1,Y1-1,255,0,0);
@@ -370,7 +372,7 @@ void plot_curves()
 
   /*---------- PLOT REF_CURVES (if needed) ----------*/
 
-  if (ref_curves && ref_display) 
+  if (ref_curves && ref_display)
     for (i=0;i<ref_curves->size;i++) {
       line = 0;
       c = ref_curves->list[i];
@@ -380,24 +382,24 @@ void plot_curves()
 	v = (double)c->values[j*c->dim+1];
 	if (s_flag) y = Y1+(int)((double)(Y2-Y1)*(v-sy1)/(sy2-sy1));
 	else        y = Y2+(int)((double)(Y1-Y2)*(v-sy1)/(sy2-sy1));
-	if (line) 
+	if (line)
 	  draw_framed(ox,oy,x,y,C_RED(ref_color),C_GREEN(ref_color),
-		      C_BLUE(ref_color),X1+1,X2-1,Y1+1,Y2-1,-1); 
+		      C_BLUE(ref_color),X1+1,X2-1,Y1+1,Y2-1,-1);
 	line = 1; ox = x; oy = y;
       }
     }
-  
+
   /*---------- PLOT CURVES ----------*/
 
   pcolor = 999-in_color;
-  if (show_all) 
-    for (i=0;i<curves->size;i++) 
+  if (show_all)
+    for (i=0;i<curves->size;i++)
       plot_one_curve(i,in_color,pcolor,(curves->list[i]->size>1?draw_mode:1));
   mode = (curves->list[cur_index]->size>1?draw_mode:1);
-  if (cur_display) 
+  if (cur_display)
     plot_one_curve(cur_index,900,700,mode);
   else if (!show_all) plot_one_curve(cur_index,in_color,pcolor,mode);
-  
+
 }
 
 /* compute initial virtual window */
@@ -426,8 +428,8 @@ void init_sxy()
       }
     }
     if (!init) {sx1=sy1=0.; sx2=sy2=1.;}
-    d = (sx2-sx1)*0.01; sx1 -= d; sx2 += d; 
-    d = (sy2-sy1)*0.01; sy1 -= d; sy2 += d; 
+    d = (sx2-sx1)*0.01; sx1 -= d; sx2 += d;
+    d = (sy2-sy1)*0.01; sy1 -= d; sy2 += d;
   }
 }
 
@@ -436,7 +438,7 @@ void zoom_sxy(x,y)
      int x,y;
 {
   double d;
-  
+
   d = .5*(sx2-sx1);
   sx1 += .5*(double)(x-X1)*(sx2-sx1)/(double)(X2-X1);
   sx2 = sx1 + d;
@@ -450,7 +452,7 @@ void zoom_sxy(x,y)
 void unzoom_sxy()
 {
   double d;
-  
+
   d = .25*(sx2-sx1);
   sx1 -= d;
   sx2 += d;
@@ -466,7 +468,7 @@ void shift_sx(p)
   sx1 += p;
   sx2 += p;
 }
-  
+
 void shift_sy(p)
      double p;
 {
@@ -474,7 +476,7 @@ void shift_sy(p)
   sy1 += p;
   sy2 += p;
 }
-  
+
 /* tell which curve is near the selected location */
 int curve_selected(x,y)
      int x,y;
@@ -483,7 +485,7 @@ int curve_selected(x,y)
   int i,besti,bestr2;
 
   besti = -1; bestr2 = 26;
-  for (p=disc5->first;p;p=p->next) 
+  for (p=disc5->first;p;p=p->next)
     if (x+p->x>=0 && x+p->x<nx && y+p->y>=0 && y+p->y<ny) {
       i = (int)which_curve->gray[(y+p->y)*nx+x+p->x];
       if (i!=-1 && p->x*p->x+p->y*p->y<bestr2) {
@@ -492,6 +494,19 @@ int curve_selected(x,y)
       }
     }
   return(besti);
+}
+
+/* ask the user the index of the curve to be selected */
+void select_curve_index()
+{
+  int index;
+  printf("Enter curve index: ");
+  fflush(stdout);
+  scanf("%d",&index);
+  if(index>=0 && index<curves->size){
+    printf("Curve #%d selected.\n",index);
+    cur_index = index;
+  }
 }
 
 /*** refresh display with current image ***/
@@ -517,7 +532,9 @@ void help()
   printf("\tc:  Toggle current curve display.\n");
   printf("\te:  Toggle extremal points.\n");
   printf("\tg:  Switch grid mode.\n");
+  printf("\tk:  Change current curve index.\n");    
   printf("\tm:  Toggle motion.\n");
+  printf("\tn:  Toggle current curve index display.\n");
   printf("\tp:  Switch point/line representation.\n");
   printf("\ts:  Symmetrize y axis.\n");
   printf("\tu:  Unzoom x2.\n");
@@ -536,15 +553,23 @@ void *param;
 {
   int event,ret,x,y,button_mask,redisplay_flag,i;
   int c; /* Key code must be int and not char to handle non-printable keys */
+  char mess[80]; 
 
-  event = WUserEvent(window); 
+  event = WUserEvent(window);
   if (event<0) ret=1; else ret=event;
   WGetStateMouse(window,&x,&y,&button_mask);
   redisplay_flag = 1;
 
   if (motion_flag) cur_index = (cur_index+1)%curves->size;
 
-  switch (event) 
+  /*----- display current curve index ----*/
+  if(cur_index_display){
+    sprintf(mess," Curve #%d",cur_index);
+    WDrawString(window,0,10,mess);
+    WFlushAreaWindow(window,0,0,image->ncol-1,12);
+  }
+
+  switch (event)
     {
 
     case W_MS_LEFT:
@@ -583,7 +608,7 @@ void *param;
 	case XK_Down: case XK_KP_Down: shift_sy(s_flag?.2:-.2); break;
 
 	  /* decrease current index */
-	case XK_Page_Up: case XK_KP_Page_Up: 
+	case XK_Page_Up: case XK_KP_Page_Up:
 	  cur_index = (cur_index+curves->size-1)%curves->size;
 	  break;
 
@@ -610,10 +635,20 @@ void *param;
 	  /* help */
 	case 'h': case 'H': help(); break;
 
+	  /* change selected curve number */
+	case 'k': case 'K':
+	  select_curve_index();
+	  break;
+
 	  /* toggle motion */
-	case 'm': case 'M': 
-	  motion_flag = 1-motion_flag; 
+	case 'm': case 'M':
+	  motion_flag = 1-motion_flag;
 	  if (show_all) cur_display = 1;
+	  break;
+
+	  /* display current curve index */
+	case 'n': case 'N':
+	  cur_index_display = 1-cur_index_display;
 	  break;
 
 	  /* shift draw mode */
@@ -655,7 +690,7 @@ void fkview(in,out,sx,sy,ref,bg,i,a,s,e,d,g,c,C,n,window,x_0,y_0,curve)
      Fimage bg;
      Flist *curve;
 {
-  if (!in || !in->size || (in->size==1 && !in->list[0]->size)) 
+  if (!in || !in->size || (in->size==1 && !in->list[0]->size))
     mwerror(FATAL,1,"Empty data. ");
 
   /* Initializations */
@@ -663,6 +698,7 @@ void fkview(in,out,sx,sy,ref,bg,i,a,s,e,d,g,c,C,n,window,x_0,y_0,curve)
   cur_index = cur_display = motion_flag = 0; show_all = 1;
   nx = *sx; ny = *sy; bg_order = *i;
   a_flag = (a?1:0); s_flag = (s?1:0); e_flag = (e?1:0);
+  cur_index_display =0;
   size_strleft = 1;
   disc1 = disc(2.5,NULL);
   disc2 = disc(4.5,NULL);
@@ -674,7 +710,7 @@ void fkview(in,out,sx,sy,ref,bg,i,a,s,e,d,g,c,C,n,window,x_0,y_0,curve)
 
   draw_mode = *d;
   grid_mode = (g?*g:bg_image?0:2);
-  
+
   if (c) in_color = *c;
   else in_color = 555;
 
@@ -694,14 +730,14 @@ void fkview(in,out,sx,sy,ref,bg,i,a,s,e,d,g,c,C,n,window,x_0,y_0,curve)
   /*** plot curves ***/
   plot_curves();
 
-  if (!n) { 
+  if (!n) {
     /* interactive mode */
 
     win = (Wframe *)mw_get_window((Wframe *)window,*sx,*sy,*x_0,*y_0,in->name);
     if (!win) mwerror(INTERNAL,1,"NULL window returned by mw_get_window\n");
-    
+
     redisplay();
-    
+
     WSetUserEvent(win,W_MS_BUTTON | W_KEYPRESS);
     mw_window_notify(win,NULL,win_notify);
     mw_window_main_loop();
@@ -714,5 +750,4 @@ void fkview(in,out,sx,sy,ref,bg,i,a,s,e,d,g,c,C,n,window,x_0,y_0,curve)
   /* return selected curve if requested */
   if (curve) *curve = in->list[cur_index];
 }
-
 

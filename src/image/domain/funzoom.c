@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {funzoom};
-   version = {"2.2"};
+   version = {"2.3"};
    author = {"Lionel Moisan"};
    function = {"Image reduction by projection on a B-spline space"};
    usage = {  
@@ -13,6 +13,9 @@ in->in             "input Fimage",
 out<-out           "output Fimage"
 };
 */
+/*----------------------------------------------------------------------
+ v2.3: fixed image border bug (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -322,8 +325,8 @@ Fimage funzoom(in,out,z,o,tx,ty)
       c[n+d]=(float)ppeval(&xi,u+(float)d);
     for (y=0;y<ny;y++) {
       /* this test saves computation time */
-      if (i-n>=0 && i+n<=nx)
-	for (d=-n,res=0.;d<n;d++)
+      if (i-n>=0 && i+n<nx)
+	for (d=-n,res=0.;d<=n;d++)
 	  res += c[n+d]*in0->gray[y*nx+i-d];
       else 
 	for (d=-n,res=0.;d<n;d++)
@@ -344,10 +347,10 @@ Fimage funzoom(in,out,z,o,tx,ty)
     for (x=0;x<nsx;x++) {
       /* this test saves computation time */
       if (i-n>=0 && i+n<ny)
-	for (d=-n,res=0.;d<n;d++)
+	for (d=-n,res=0.;d<=n;d++)
 	  res += c[n+d]*tmp->gray[(i-d)*nsx+x];
       else 
-	for (d=-n,res=0.;d<n;d++)
+	for (d=-n,res=0.;d<=n;d++)
 	  res += c[n+d]*v(tmp,x,i-d);
       out0->gray[y*nsx+x] = res;
     }

@@ -1,7 +1,7 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ccimage_io.c
    
-   Vers. 1.09
+   Vers. 1.12
    (C) 1993-2002 Jacques Froment
    Input/Output private functions for the Ccimage structure
 
@@ -41,6 +41,18 @@ char  *Type;                          /* Type de format du fichier */
     /* TIFF format with 24-bit color plane */
     return((Ccimage) _mw_ccimage_load_tiff(NomFic));
 
+  if (strcmp(Type,"BMPC") == 0)
+    /* BMP format with 24 bpp */
+    return((Ccimage) _mw_ccimage_load_bmp(NomFic));
+
+  if (strcmp(Type,"PPM") == 0)
+    /* PPM raw format with 24 bpp */
+    return((Ccimage) _mw_ccimage_load_ppmr(NomFic));
+  
+  if (strcmp(Type,"JFIFC") == 0)
+    /* JPEG/JFIF format with 24-bit color plane */
+    return((Ccimage) _mw_ccimage_load_jpeg(NomFic));
+
   return(NULL);
 }
 
@@ -58,10 +70,22 @@ short _mw_ccimage_create_native(NomFic,image,Type)
     /* TIFF format with 24-bit color plane */
     return(_mw_ccimage_create_tiff(NomFic,image));
 
+  if (strcmp(Type,"BMPC") == 0)
+    /* BMP format with 24 bpp */
+    return(_mw_ccimage_create_bmp(NomFic,image));
+
   if (strcmp(Type,"PMC_C") == 0)
     /* PM format with pm_form=PM_C and pm_np 3 */
     return(_mw_ccimage_create_pm(NomFic,image));
 
+  if (strcmp(Type,"PPM") == 0)
+    /* PPM (portable pixmap file) format */
+    return(_mw_ccimage_create_ppmr(NomFic,image));
+
+  if (_mw_is_of_ftype(Type,"JFIFC"))
+    /* JPEG/JFIF format with 24-bit color plane */
+    return(_mw_ccimage_create_jpeg(NomFic,image,_mw_get_ftype_opt(Type)));
+  
   return(-1);
 }
 
@@ -91,7 +115,7 @@ char  *Type;                          /* Type de format du fichier */
   if (Type[0]=='?')
     mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",NomFic);
   else
-    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Ccimage !\n",NomFic,Type);
+    mwerror(FATAL, 1,"External type of file \"%s\" is %s. I don't know how to load such external type into a Ccimage !\n",NomFic,Type);
 }
 
 

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mwio.c
    
-   Vers. 2.13
-   (C) 1993-2001 Jacques Froment
+   Vers. 2.16
+   (C) 1993-2003 Jacques Froment
    Input/Output functions as a link between External and Internal Types.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -18,7 +18,14 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #include <ctype.h>
 
 /* for stat */
+#ifdef Linux
+#include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
+#else
+#include <sys/stat.h>
+#endif
+
 /* for opendir(),readdir(),... */
 #include <sys/types.h>
 #include <dirent.h>
@@ -114,6 +121,43 @@ float IDvers; /*   ID file format version number for MW2 binary types.
 
 /*===== Default paths for seeking input files =====*/
 
+
+/* Get the file status of <fname> : return
+   0 if some errors occur (file probably isn't readable),
+   1 if file is a regular file or a link,
+   2 if file is a directory,
+   3 if file is not readable,
+   4 if file is of other type.
+*/
+
+static int _get_file_status(fname)
+
+char *fname;
+
+{
+  struct stat statbuf;
+
+  if (stat(fname,&statbuf) != 0) return(0);
+  if ((statbuf.st_mode & S_IFDIR) == S_IFDIR) 
+    {
+      mwerror(WARNING,1,"'%s' is a directory, trying another match...\n",fname);
+      return(2); /* directory */
+    }
+  if ((statbuf.st_mode & S_IRUSR) != S_IRUSR) 
+    {
+      mwerror(WARNING,1,"no read permission on '%s', trying another match...\n",fname);
+      return(3); /* not readable */
+    }
+
+  if ((statbuf.st_mode & S_IFREG) == S_IFREG) return(1); /* regular */
+  if ((statbuf.st_mode & S_IFLNK) == S_IFLNK) return(1); /* link */
+
+  mwerror(WARNING,1,"'%s' is not a regular nor a link file, trying another match...\n",
+	  fname);
+  return(4);
+}
+
+
 /* Search fname in searchdir, recursively in each subdirectories.
    Return 1 if found and the found directory in founddir, 0 elsewhere.
 */
@@ -133,9 +177,8 @@ char *founddir;
   char newdir[BUFSIZ];
 
   sprintf(dname,"%s/%s",searchdir,fname);
-  if ((fp = fopen(dname, "r")) != NULL)  /* searchdir/fname is found */
+  if (_get_file_status(dname)==1)  /* searchdir/fname is found */
     {
-      fclose(fp);
       strcpy(founddir,searchdir);
       return(TRUE);
     }
@@ -174,15 +217,13 @@ char *fname;
   char *path,*getenv(),searchdir[BUFSIZ],founddir[BUFSIZ],newfname[BUFSIZ];
 
   *founddir = '\0';
-  if ((fp = fopen(fname, "r")) != NULL)  /* fname is found */
-    {
-      fclose(fp);
-      return(TRUE);
-    }
+  if (_get_file_status(fname)==1) /* fname is found */
+    return(TRUE);
+
   /* Not found : see if fname contains absolute pathname. 
      If yes, return not found.
   */
-    if (fname[0]=='/') return(FALSE);
+  if (fname[0]=='/') return(FALSE);
 
   /* Search in subdirs of $MY_MEGAWAVE2/data */
   if ((path = getenv("MY_MEGAWAVE2")) != NULL)
@@ -235,6 +276,57 @@ char *in,*out;
   if (i!=in) i++;
   strncpy(out,i,mw_namesize);
 }
+
+/*
+Search for the first string pattern <label> in the file pointed
+to by <fp>. 
+Return the current value of the file position, located at the next
+byte after the found pattern. If the pattern is not found, return
+a negative value.
+*/
+
+long _mw_find_pattern_in_file(fp,label)
+
+FILE *fp;
+char *label;
+
+{
+  char buf[BUFSIZ];
+  int l;
+  long p;
+
+  l=strlen(label);
+  p=ftell(fp);
+  if (p<0) return(p);
+
+  while (1)
+    {
+      if (fread(buf,l,1,fp)!=1) return(-1);
+      if (strncmp(label,buf,l)==0) break;
+      if (fseek(fp,1-l,SEEK_CUR)!=0) return(-1);
+      p++;
+    }
+  return(p+l);
+}
+
+/* Return 1 if the byte ordering on the architecture this code is running
+   is little endian, or 0 if it is big endian.
+   Example of little endian architecture : ix86
+   Example of big endian architecture : Sun Sparc
+*/
+
+int _mw_byte_ordering_is_little_endian()
+{
+  int b;
+  char *p;
+
+  b = 1;
+  p = (char *) &b;
+  if (*p==1) return(1); else return(0);
+}
+
+
+/*========== I/O functions ==========*/
 
 /*===== Internal type : Cimage =====*/
 
@@ -883,7 +975,7 @@ Fsignal *signal;
   strcpy(fname,name);      /* Do Not Change the value of name */
   search_filename(fname);
   *signal = (Fsignal) _mw_load_fsignal(fname,type_in,NULL);
-  if (*signal == NULL) return(-1);  
+  if (*signal == NULL) return(-1);
 
   format_filename((*signal)->name,fname);
 

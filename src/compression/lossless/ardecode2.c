@@ -402,58 +402,62 @@ Fimage        Output;           /* String of codewords */
 
   sizeo = 0;
   
-  if (nsymbol > 2) {
-    low = 0;
-    high = top_value;
-    value = 0;
-    for (i = 1; i <= code_value_bits; i++) 
-      value = 2 * value + READ_BIT();
-    symb_pred = 0;
-    symb = DECODE_SYMBOL(symb_pred, &low, &high);
-    if (!Histo && (predict == 0)) 
-      UPDATE_MODEL(symb + 1, symb_pred);
-    if (symb != EOF_symb) {
-      *ptro = symb;
-      sizeo++;
-    }
-
-    /*--- Decode input ---*/
-
-    while (symb != EOF_symb) {
-      if (predict == 1)
-	symb_pred = symb;
+  if (nsymbol > 2) 
+    {
+      low = 0;
+      high = top_value;
+      value = 0;
+      for (i = 1; i <= code_value_bits; i++) 
+	value = 2 * value + READ_BIT();
+      symb_pred = 0;
       symb = DECODE_SYMBOL(symb_pred, &low, &high);
-      if (!Histo) 
+      if (!Histo && (predict == 0)) 
 	UPDATE_MODEL(symb + 1, symb_pred);
-
-      if (sizeo >= size)
-	REALLOCATE_OUTPUT(Output);
-      ptro++;
-      *ptro = symb;
-      sizeo++;
-    }
-
-    /*--- Finish decoding ---*/
-
-    sizeo--;
-    nbitread -= code_value_bits - 2;
-    if (garbage_bits == 0)
-      if (bits_to_go >= 2) {
-	ncwread -= 2;
-	bits_to_go -= 2;
-      } else
+      if (symb != EOF_symb) 
 	{
-	  ncwread -= 1;
-	  bits_to_go += 6;
+	  *ptro = symb;
+	  sizeo++;
 	}
-    else
-      if (garbage_bits <= 6) {
-	ncwread -= 1;
-	bits_to_go = 6 - garbage_bits;
-      } else
-	bits_to_go = 14 - garbage_bits;
-
-  } else
+      
+      /*--- Decode input ---*/
+      
+      while (symb != EOF_symb) 
+	{
+	  if (predict == 1)
+	    symb_pred = symb;
+	  symb = DECODE_SYMBOL(symb_pred, &low, &high);
+	  if (!Histo) 
+	    UPDATE_MODEL(symb + 1, symb_pred);
+	  
+	  if (sizeo >= size)
+	    REALLOCATE_OUTPUT(Output);
+	  ptro++;
+	  *ptro = symb;
+	  sizeo++;
+	}
+      
+      /*--- Finish decoding ---*/
+      
+      sizeo--;
+      nbitread -= code_value_bits - 2;
+      if (garbage_bits == 0)
+	if (bits_to_go >= 2) {
+	  ncwread -= 2;
+	  bits_to_go -= 2;
+	} else
+	  {
+	    ncwread -= 1;
+	    bits_to_go += 6;
+	  }
+      else
+	if (garbage_bits <= 6) {
+	  ncwread -= 1;
+	  bits_to_go = 6 - garbage_bits;
+	} else
+	  bits_to_go = 14 - garbage_bits;
+      
+    } /* if (nsymbol > 2) */
+  else
     DECODE_INT(&sizeo, (long) 1 << 30); 
 
   if (!Print) {

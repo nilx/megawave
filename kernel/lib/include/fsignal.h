@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fsignal.h
    
-   Vers. 1.1
-   (C) 1993-2000 Jacques Froment
+   Vers. 1.3
+   (C) 1993-2002 Jacques Froment
    Internal Input/Output fsignal structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -31,6 +31,7 @@ typedef struct fsignal {
   float shift;     /* shifting of the signal with respect to zero */
   float gain;      /* Gain of the signal given by the digitalization process */
   float sgrate;    /* Sampling rate given by the digitalization process */
+  int bpsample;    /* Number of bits per sample for audio drivers */
 
   char cmt[mw_cmtsize]; /* Comments */
   char name[mw_namesize]; /* Name of the image */
@@ -51,8 +52,9 @@ Fsignal mw_alloc_fsignal(Fsignal, int);
 void mw_delete_fsignal(Fsignal);
 Fsignal mw_change_fsignal(Fsignal, int);
 void mw_clear_fsignal(Fsignal, float);
+void mw_copy_fsignal_values(Fsignal,Fsignal);
+void mw_copy_fsignal_header(Fsignal,Fsignal);
 void mw_copy_fsignal(Fsignal,Fsignal);
-
 #else
 
 Fsignal mw_new_fsignal();
@@ -60,6 +62,8 @@ Fsignal mw_alloc_fsignal();
 void mw_delete_fsignal();
 Fsignal mw_change_fsignal();
 void mw_clear_fsignal();
+void mw_copy_fsignal_values();
+void mw_copy_fsignal_header();
 void mw_copy_fsignal();
 
 #endif

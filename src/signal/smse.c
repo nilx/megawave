@@ -3,7 +3,7 @@
 name = {smse};
 author = {"Jean-Pierre D'Ales, Jacques Froment"};
 function = {"Computes the mean square error between two fsignals"};
-version = {"1.01"};
+version = {"1.02"};
 usage = {
 'n'->Norm      "flag to normalize the signals",
 Signal1->Sig1  "original signal", 
@@ -14,6 +14,10 @@ MSE<-MSE      "mean square error between Sig1 and Sig2 (MSE)",
 MRD<-MRD      "maximal relative difference (MRD)"
 };
  */
+
+/*
+ V 1.02  (JF) Bug on min and max initialization corrected.
+*/
 
 /*--- Fichiers inclus UNIX C ---*/
 #include <stdio.h>
@@ -91,9 +95,9 @@ smse(Sig1, Sig2, Norm, SNR, PSNR, MSE, MRD)
 
 	/*--- Computation of minimum and maximum values in `Sig1` ---*/
 
-    min1 = 1e30;
-    max1 = -min1;
-
+    min1 = 1e30; min=min1;
+    max1 = -min1; max=max1;
+    
     for(i = 0; i < Sig1->size; i++)
     {
 	if(Sig1->values[i] < min1)
@@ -148,9 +152,7 @@ smse(Sig1, Sig2, Norm, SNR, PSNR, MSE, MRD)
 
 	/*--- Printing of results ---*/
 
-    if (max1 > min1)
-	mwdebug("-> Maximal relative difference = %3.1lf\n",100.0*DMAX/(max1-min1));
-  
+    mwdebug("-> Maximal relative difference = %3.1lg\n",*MRD);
     mwdebug("-> Peak signal to noise ratio : PSNR = %lg db\n", *PSNR);
     mwdebug("-> Signal to noise ratio : SNR = %lg db\n", *SNR);
     mwdebug("-> Mean square error : MSE = %lg\n",*MSE);          

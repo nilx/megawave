@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {fft2dview};
-   version = {"1.3"};
+   version = {"1.4"};
    author = {"Lionel Moisan"};
    function = {"Compute and Visualize the 2D-FFT of a Fimage"};
    usage = {
@@ -17,6 +17,7 @@
   v1.1: fmeanvar() replaced by faxpb() (L.Moisan)
   v1.2: cview syntax (L.Moisan)
   v1.3: min = 0 when type = 0 (L.Moisan)
+  v1.4: upgrade faxpb() call (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -89,10 +90,10 @@ char    *i_flag;
 
     /*** Normalize mean and variance ***/
     if (*type == 0) {
-      faxpb(tmp,tmp,NULL,sd,NULL,NULL,NULL);
+      faxpb(tmp,tmp,NULL,sd,NULL,NULL,NULL,NULL);
     } else {
       mean = 128.0;
-      faxpb(tmp,tmp,NULL,sd,NULL,&mean,NULL);
+      faxpb(tmp,tmp,NULL,sd,NULL,&mean,NULL,NULL);
     }
 
     /*** Center output and sample to unsigned char values ***/

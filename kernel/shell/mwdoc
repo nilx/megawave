@@ -2,11 +2,11 @@
 #--------------------------- Shell MegaWave Macro ----------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="mwdoc"
-_Vers="1.04";
-_Date="1999-2002";
+_Vers="1.05";
+_Date="1999-2003";
 _Func="Enter the MegaWave2 documentation";
 _Auth="Jacques Froment";
-_Usage="[<name> || M || S || 1 || 2 || 3]"
+_Usage="[<name> || M || S || F || 1 || 2 || 3]"
 #----------------------------------------------------------------------------#
 # This file is part of the MegaWave2 system macros. 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -16,16 +16,17 @@ _Usage="[<name> || M || S || 1 || 2 || 3]"
 #       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 #-----------------------------------------------------------------------------
 
-if [ $# -ne 1 ]; then
+if [ $# -lt 1 ]; then
  echo " "
  echo "> Type the MegaWave2 documentation you want to display <"
  echo " "
- echo "<name> : name of a module or of a user's macro"
- echo "M      : list all Modules and user's Macros"
- echo "S      : list all System's macros"
- echo "1      : Vol.1  User's Guide"
- echo "2      : Vol.2  System Library"
- echo "3      : Vol.3  User's Modules and Macros Library"
+ echo "<name>      : name of a module or of a user's macro"
+ echo "M           : list all Modules and user's Macros"
+ echo "S           : list all System's macros"
+ echo "F           : list and describe available external (File) types"
+ echo "1           : Vol.1  User's Guide"
+ echo "2           : Vol.2  System Library"
+ echo "3           : Vol.3  User's Modules and Macros Library"
  echo " "
  mwechon ">"
  read X
@@ -67,6 +68,36 @@ if [ "$X" = "s" ] || [ "$X" = "S" ]; then
   mwsysmaclist
   exit 0
 fi
+
+if [ "$X" = "f" ] || [ "$X" = "F" ]; then
+# Select one executable module to call it with -ftypelist
+  onemod=`ls -1 ${MEGAWAVE2}/bin/${MW_MACHINETYPE}  2> /dev/null`
+  if [ $? -ne 0 ]; then
+   echo "Error : no modules compiled or bad directory ${MEGAWAVE2}/bin/${MW_MACHINETYPE} !"
+   exit 1
+  fi
+  onemod=`echo $onemod | cut -f 1 -d " "`
+  if [ "$onemod" = "" ]; then
+   echo "Error : cannot found any executable module !"
+   exit 1
+  fi
+  echo "What kind of file type(s) are you looking for ? Please enter a keyword"
+  mwechon "(you may use regular expression, <return> for all file types) : "
+  read A
+  echo ""
+  echo "File type        Description"
+  echo "---------        -----------"
+  echo ""
+  $onemod -ftypelist | grep -i -e "$A" 2> /dev/null
+  if [ $? -eq 1 ]; then
+   echo "No file type found that matches this keyword !"
+  fi
+  echo ""  
+  echo "You may find more information about file types by reading"
+  echo "the guide Vol.2 System Library (type 'mwdoc 2' to get it)."
+  exit 0
+fi
+
 
 tmod=${X}.tex
 # Defaults

@@ -2,7 +2,7 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cmimage_io.c
    
-   Vers. 1.11
+   Vers. 1.12
    (C) 1999-2002 Jacques Froment
    Input/output functions for the 
      Cmorpho_line
@@ -23,7 +23,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #include <stdio.h>
 #include <sys/file.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 
 #include "mw.h"
 

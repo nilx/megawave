@@ -1,0 +1,24 @@
+This module provides a simple interface to the snakes algorithm, by calling
+as many time the module \verb+lsnakes+ as requested.
+It moves the initial snakes (given as polygons) according to the content of an
+image \verb+u+, in order to fit the contours of the object enclosed in each polygon.
+
+The output is the object {\em out}, a movie of char images.
+Each image of this movie represents the original image to which are superimposed
+the snakes stretched at the current master iteration of the algorithm:
+the first image displays the initial snakes, the second image the snakes after
+the first call to \verb+lsnakes+, the third one the snakes after the second call
+to \verb+lsnakes+, and so on up to {\em Nframes}, the number of frames selected by the user.
+In addition to this master iteration, you can set several iterations of
+\verb+lsnakes+ between two adjacent frames ({\em Niter}), using the \verb+-n+ option.
+
+At the beginning of this module, the module \verb+readpoly+ is called and
+displays the image. Please select the initial snakes using the mouse (type 'H'
+in the window to get an one-line help). 
+When you terminate your selection by typing 'Q', the computation begins.
+At the end of the process, you can display the result using the module
+\verb+cmview+.
+
+\begin{thebibliography}{1}
+\bibitem{CCCD} V. Caselles, F. Catt\'e, B. Coll and F. Dibos, \em{A geometric model for active contours in image processing}, Numerische Mathematik, vol. 66, 1993, pp. 1-31.
+\end{thebibliography}

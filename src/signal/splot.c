@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {splot};
-  version = {"2.1"};
+  version = {"2.2"};
   author = {"Lionel Moisan"};
   function = {"Plot a Fsignal"};
   usage = {
@@ -22,6 +22,7 @@
  v1.7: return void (L.Moisan)
  v2.0: complete new version with image output (L.Moisan)
  v2.1: added W_LEAVE test (L.Moisan)
+ v2.2: added up and down scrolling with mouse (JF)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -442,6 +443,12 @@ void *param;
 
     case W_MS_MIDDLE:       
       if (selrect) selrect=0; else init_sxy(); break;
+
+    case W_MS_UP:       
+      shift_sy(0.1);  break;
+   
+    case W_MS_DOWN:       
+      shift_sy(-0.1);  break;
 
     case W_LEAVE:       
       selrect=0;

@@ -1,7 +1,7 @@
 # Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.07 with arch = 'Linux ix86' option = 'shared '
 #-----------------------------------------------------------------------------
 # Makefile.in used to create Makefile using macro mw2config
-# Wdevice library : Copyright (c) Jacques Froment 1991-2001
+# Wdevice library : Copyright (c) Jacques Froment 1991-2003
 #-----------------------------------------------------------------------------
 # This file is part of the Wdevice library.
 # Wdevice is a "soft-publication" for the scientific community. It has
@@ -97,7 +97,8 @@ shared:	$(WDEVICE_X11)
 	ld -shared -o $(LIBPATH)/libW_X11R4.so $(WDEVICE_X11)
 
 install:
-	@echo "===== Install the library on $(LIBDESTDIR)"
+	@echo "===== Install the library on $(LIBDESTDIR)"      
+	cp $(INCLUDEPATH)/Wdevice.h ../lib/include/.
 	mkdir -p $(INCLUDESYSLIB)
 	cp $(INCLUDEPATH)/Wdevice.h $(INCLUDESYSLIB)/.
 	mkdir -p $(LIBDESTDIR)

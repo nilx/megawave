@@ -1,0 +1,15 @@
+This module implements a simple sharpen filter on color float images.
+It works the same way as {\tt fsharpen}, but the filter is applied
+on each component of the color image instead of only the gray level 
+component. 
+
+If option {\tt -l} is set, the colorimetric model of the input image is 
+assumed to be RGB and an internal conversion to the HSV model is performed.
+Then, the sharpen is applied on the luminance component and a conversion
+back to the RGB model is done.
+ 
+See documentation of {\tt fsharpen} to get the filter used on one component.
+
+
+
+

@@ -1,0 +1,38 @@
+This module is mainly an auxiliary module for
+\verb+km_match_si+ and \verb+km_match_ai+. It
+computes all pairs of curves that are good candidates to match
+(pre-matchings). However, it can be used independently from
+these modules.
+
+\verb+dict1+ and \verb+dict2+ contain $N_1$ and $N_2$ normalized codes
+of pieces of curves of images 1 and 2. To be more precise,
+\verb+dict1+ $=\{{\mathcal C}^1_i, 0 \leq i \leq N_1-1 \}$ and
+\verb+dict2+ $=\{{\mathcal C}^2_j, 0 \leq j \leq N_2-1 \}$.  Both
+dictionaries must have been computed using the same MegaWave module
+(\verb+km_createdict_si+ or \verb+km_createdict_ai+).
+
+\verb+km_prematchings+ returns an \verb+Flists+ that containts $N_1$
+\verb+Flist+. The $i$-th \verb+Flist+ contains the indices $j$ of all
+the codes of \verb+dict2+ that satisfy $d_H({\mathcal C}^1_i,{\mathcal
+  C}^2_j) < $ \verb+maxError+, where $d_H$ is the Hausdorff distance. 
+
+It should be noted that \verb+maxError+ is a distance between
+normalized codes and not a distance between curves in the image frame,
+and typically its value is to be chosen in the range $[0.1,0.3]$.
+
+\bigskip
+See \cite{joseluis} or \cite{LMMM} for further details.
+
+
+\begin{thebibliography}{9}
+
+\bibitem{joseluis} J.-L. {\sc Lisani}, {\it Comparaison automatique
+d'images par leurs formes}, th\`ese de doctorat, Universit\'e Paris IX
+Dauphine, France, 2001.
+
+\bibitem{LMMM} J.-L. Lisani, P. Monasse, L. Moisan, J.-M. Morel, 
+``On the Theory of Planar Shape'', 
+{\it SIAM Journal on Multiscale Modeling and Simulation}, 
+vol. 1:1, pp. 1-24, 2003. 
+
+\end{thebibliography}

@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mw.c
 
-  Vers. 1.11
-  (C) 1995-2002 Jacques Froment & Sylvain Parrino
+  Vers. 1.13
+  (C) 1995-2003 Jacques Froment & Sylvain Parrino
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
@@ -15,7 +15,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 
 /* Standart UNIX include files */
 #include <sys/file.h>
-#include <sys/stat.h>
 #include <string.h>
 
 /*  For execle() */
@@ -261,7 +260,7 @@ struct mwargs {
 /* Default option buffer */
 char _mwdefoptbuf[BUFSIZ];
 
-static void call_help(), call_debug(), call_verbose(), call_ftype(), call_vers(), call_fsum(), call_proto();
+static void call_help(), call_debug(), call_verbose(), call_ftype(), call_vers(), call_fsum(), call_proto(), call_ftypelist();
 char type_force[mw_ftype_size+1] = {'?', '\0'};
 
 
@@ -273,7 +272,8 @@ struct mwargs mwargs[] = {
   {"-ftype",   type_force, sizeof(type_force), "<image type>",   call_ftype}, 
   {"-vers",   NULL,        0,                  NULL,             call_vers}, 
   {"-fsum",   NULL,        0,                 NULL,             call_fsum}, 
-  {"-proto",   NULL,        0,                 NULL,             call_proto}, 
+  {"-proto",   NULL,        0,                 NULL,             call_proto},
+  {"-ftypelist",   NULL,        0,                 NULL,             call_ftypelist},  
   {NULL}
 };
 
@@ -480,6 +480,25 @@ static void call_proto()
   mwexit(0);
 }
 
+/* Write function prototype */
+#ifdef __STDC__
+static void call_ftypelist(void)
+#else
+static void call_ftypelist()
+#endif
+{
+  char **A;
+  int i;
+ 
+  A=(char **)mw_ftypes_description;
+
+  for (i=0; (A[i]!=NULL)&&(A[i+1]!=NULL); i+=2)
+    {
+      printf("%s \t\t %s\n",A[i],A[i+1]);
+    }
+  mwexit(0);
+}
+
 
 /* MegaWave2 main function */
 #ifdef __STDC__
@@ -489,7 +508,7 @@ _mw_main(argc, argv, envp)
 int argc;
 char *argv[], *envp[];
 #endif
-{
+{ 
   char *userargv[BUFSIZ], *strrchr();
   int i, userargc, flg;
   struct mwargs *p;
