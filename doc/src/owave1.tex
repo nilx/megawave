@@ -1,10 +1,7 @@
-\parindent 0.6cm 
-\parskip 0.4cm
-
 \def\real{I\!\!R}
 
 
-{\em owave1} computes the J level discrete wavelet transform of the univariate digitized signal whose sample values are in the file {\em Signal}, according to the pyramidal algorithm of S. Mallat \cite{kn:ma1}. The reader is assumed to be familiar with the wavelet theory. 
+{\em owave1} computes the J level discrete wavelet transform\index{wavelet!transform!orthogonal} of the univariate digitized signal whose sample values are in the file {\em Signal}, according to the pyramidal algorithm of S. Mallat~\cite{mallat:theory}. The reader is assumed to be familiar with the wavelet theory (if not, you may read~\cite{mallat:wavelet}). 
 
 Let \( \{V_{j}\}_{j \in Z} \) be a multiresolution analysis of \( L^{2}(\real) \). \( \{V_{j}\} \) is a non-increasing sequence of closed subspaces of \( L^{2}(\real) \), and there exists a function \( \varphi \), called the scaling function, such that \( \{\varphi_{j,k} = 2^{-j/2}\varphi(2^{-j}.-k)\}_{k \in Z} \) is an orthonormal basis of \( V_{j} \). If \( f \) is a continuous-time signal then the orthogonal projection \( P_{V_{j}}f \) of \( f \) on \( V_{j} \) is an approximation of \( f \) at the scale \( 2^{j} \). One has
 \[
@@ -49,9 +46,11 @@ D_{j+1}[n] = \sum_{k} g_{k-2n} A_{j}[k]
 \end{eqnarray*}
 If the filter \( (h_{k}) \) is a low-pas filter, regardless of its definition by the two-scales relationships, then \( A_{j+1}[k] \) is effectively an average of \( A_{j}[k] \). From this point of view {\em owave1} performs a subband coding of the signal. 
 \( (h_{k}) \) is said to have the exact reconstruction property if one can reconstruct exactly \( A_{j}[k] \) from \( A_{j+1}[k] \) and \( D_{j+1}[k] \) by interpolating and filtering this two sub-signals and adding the results. 
-If moreover the same filter bank is used for the reconstruction, then  $(h_{k})$ is called conjugate quadrature filter (CQF) (see \cite{kn:sb}) . Filters associated to orthogonal wavelet bases, i.e. that stems from the two-scales relationships above are always CQF and are indeed low-pass filters (see {\em iowave1 } for the description of the reconstruction algorithm).
+If moreover the same filter bank is used for the reconstruction, then  $(h_{k})$ is called conjugate quadrature filter (CQF) (see \cite{smith.barnwell:exact}). 
+Filters associated to orthogonal wavelet bases, i.e. that stems from the two-scales relationships above are always CQF and are indeed low-pass filters (see {\em iowave1 } for the description of the reconstruction algorithm).
 
-Notice that the filters that are associated to compactly supported wavelets are of finite length : \( h_{k} = 0 \), if \( |k| > K \) where \( K \) is a positive integer. See \cite{kn:dau1} for the construction and properties of these filters. 
+Notice that the filters that are associated to compactly supported wavelets are of finite length : \( h_{k} = 0 \), if \( |k| > K \) where \( K \) is a positive integer. 
+See~\cite{daubechies:orthonormal} for the construction and properties of these filters. 
 
 The fact that the discrete signal is of finite size raises some problems near edges, i.e. when computing the first and last coefficients of the average and detail sub-signals. There are several ways of dealing with these problems. 
 \begin{itemize}
@@ -62,7 +61,8 @@ One can also reflect the signal around each edge.
 \item
 One can periodize the signal.
 \item
-Finally one can use special filters to compute the coefficients near edges. This corresponds to wavelet basis adapted to the interval which have been constructed by A. Cohen, I. Daubechies, and P. Vial \cite{kn:cdv}. They have been derived from the orthonormal bases of compactly supported wavelets on \( \real \) constructed by I. Daubechies \cite{kn:dau1}. 
+Finally one can use special filters to compute the coefficients near edges. This corresponds to wavelet basis adapted to the interval which have been constructed by A. Cohen, I. Daubechies, and P. Vial~\cite{cohen.daubechies.ea:wavelets}. 
+They have been derived from the orthonormal bases of compactly supported wavelets on \( \real \) constructed by I. Daubechies in~\cite{daubechies:orthonormal}. 
 \end{itemize}
 
 Because of the down-sampling, the size of the average and detail signals is divided by two at each step (omitting edge problems). As a consequence the size of the wavelet decomposition (obtained by adding the sizes of each sub-signal in it) is equal to the size of the original signal, and the scale parameter \( J \) is upper bounded since obviously one should have \( n \geq 2^{J} \) where \( n \) is the size of the signal. Moreover, when edge processing is performed via periodization or application of special filters, the size of the signal should be a multiple of $2^J$.
@@ -108,20 +108,3 @@ The -i option enables to have invertible transform. Since the transform is inver
 The -n option specifies the normalisation mode of the filter impulse responses' coefficients. If selected the coefficients $h_{k}$ are multiplied by a constant so that their sum is $1.0$. If -n is not selected the coefficients are normalized so that the decomposition is orthogonal. 
 \end{itemize}
 
-\begin{thebibliography}{Dau1}
-
-\bibitem[CDV]{kn:cdv} A. Cohen, I. Daubechies, P. Vial. 
-{\em Wavelets and Fast Wavelet Transform on an Interval, } 
-preprint AT\&T Bell Laboratories, 1992.
-\bibitem[Dau]{kn:dau1} I. Daubechies. 
-{\em Orthonomal Bases of Compactly Supported Wavelets, } 
-Comm. pure and applied math., 41, pp.909--996, 1988.
-\bibitem[Mal]{kn:ma1} S. Mallat. {\em A theory for multiresolution signal decomposition, the wavelet representation, } IEEE PAMI Vol. 2, n 7, 1989.
-\bibitem[SB]{kn:sb} M.J.T. Smith, T.P. Barnwell. {\em Exact reconstruction techniques for tree structured subband coders, } IEEE ASSP Vol.34, pp.434-441, 1986.
-
-\end{thebibliography}
-
-
-
-\parindent 0.0cm 
-\parskip 0.0cm

@@ -1,7 +1,7 @@
 This module creates a training set of vectors extracted from one or several 
-images, and generates a codebook (or a set of codebooks) 
-for this training set using the LBG algorithm (see \cite{kn:lbg}, 
-\cite{kn:gg}). The input images are read 
+images, and generates a codebook (or a set of codebooks)\index{quantization!vector}
+for this training set using the LBG algorithm (see~\cite{gersho.gray:vector}, 
+\cite{linde.buzo.ea:algorithm}). The input images are read 
 in the files {\em TrainImage}, {\em TrainImage2}, ..., {\em TrainImage8}. 
 The generated codebook is stored in the {\em CodeBook} file. 
 It can be used for example for the vector quantization of images 
@@ -32,14 +32,3 @@ It is useful iff the -i option is selected with {\em InitRandCB} $>$ 2
 (otherwise the same computation is repeated {\em RepeatRand} times!). 
 The purpose of this option is to compare the rates and signal to noise ratios 
 when different initial codebooks are chosen.
-
-
-\begin{thebibliography}{999999}
-
-\bibitem[GG]{kn:gg} A. Gersho, R.M. Gray, {\em ``Vector quantization 
-and signal compression'', } Kluwer Ac. Pub., Boston (1992). 
-
-\bibitem[LBG]{kn:lbg} Y. Linde, A. Buzo, R.M. Gray, {\em ``An algorithm for 
-vector quantizer design", } IEEE-COM 28, pp. 84--95, (1980).
-
-\end{thebibliography}

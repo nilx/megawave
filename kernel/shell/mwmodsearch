@@ -1,0 +1,148 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
+_Func="Search for modules matching words";
+_Prog="`basename $0`"
+_Vers="1.0"
+_Date="2003"
+_Auth="Jacques Froment";
+_Usage="[-l] [-public] [-private] word_1 [word_2 ... word_n]"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+Echo()
+{
+ if [ $silent -eq 0 ]; then
+  echo "$*"
+ fi
+}
+
+# Return 0 if word is found in file
+# Input $1 : word
+#       $2 : file
+#       $3 : type of output (0:none,1:matching line,2:file and matching line)
+# Output $res : matching line
+
+MatchWord()
+{
+ if [ -r $2 ]; then
+  res=`grep -i -n $1 $2`
+  r=$?
+  if [ "$res" != "" ] && [ $3 -gt 0 ]; then
+   if [ $3 -gt 1 ]; then
+     Echo "$2 :"
+   fi
+   Echo "$res"
+  fi
+  return $r
+ else
+  res=""
+  return 1
+ fi
+}
+
+# Return 0 if words are found in file
+# Input $1 : file to search for words
+#       $2 : type of output (0:none,1:matching line,2:file and matching line)
+#       $3,...$n : words
+
+MatchWords()
+{
+ file=$1; shift; out=$1; shift
+ m=0
+ while [ "$1" != "" ] && [ $m -eq 0 ]
+ do
+  MatchWord $1 $file $out
+  m=$?
+  shift
+  if [ $out -eq 2 ]; then
+   out=1
+  fi
+ done
+ return $m
+}
+
+
+ModSearch()
+{
+ bmod=`basename $mod .c`
+ tmod=$MEGAWAVE2/doc/src/${bmod}.tex
+  MatchWords $mod 0 $words
+ resc=$?
+ MatchWords $tmod 0 $words
+ rest=$?
+ if [ $resc -eq 0 ] || [ $rest -eq 0 ]; then
+  Echo "+ $bmod +"
+  matchinglist="$matchinglist $bmod"
+  MatchWords $mod 2 $words
+  MatchWords $tmod 2 $words
+  Echo ""
+ fi
+}
+
+
+# Usage
+if [ $# -lt 1 ]; then
+  . .mw2_help_lg_com
+fi
+
+silent=0
+list=0
+cont=1
+public=1
+private=1
+while [ "$1" != "" ] && [ $cont -eq 1 ]
+do
+  case "$1" in
+
+    -l)	silent=1
+        list=1
+        shift
+	;;
+
+    -public) private=0
+             shift
+             ;;
+
+    -private) public=0
+              shift
+              ;;
+           
+    [-]*)	echo "bad option \"$1\"."
+		. .mw2_help_lg_com
+		;;
+
+    *)		cont=0
+		;;
+  esac
+done
+words=$*
+matchinglist=""
+
+if [ $public -eq 1 ]; then
+ Echo "----- Search for PUBLIC modules and user's macros -----"
+ for mod in `find $MEGAWAVE2/src '(' -name '[ABCDEFGHIJKLMNOPQRSTUVWXYZ]*' -or -name '*.c' ')'  -type f -print` 
+ do
+  ModSearch
+ done
+fi
+
+if [ $private -eq 1 ]; then
+ Echo "----- Search for PRIVATE modules and user's macros -----"
+ for mod in `find $MY_MEGAWAVE2/src '(' -name '[ABCDEFGHIJKLMNOPQRSTUVWXYZ]*' -or -name '*.c' ')'  -type f -print` 
+ do
+  ModSearch
+ done
+fi
+
+if [ $list -eq 1 ]; then
+ echo $matchinglist
+fi
+
+exit 0

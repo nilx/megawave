@@ -29,10 +29,10 @@ SRC =   mw.h cimage.h fimage.h fsignal.h \
 	wpanel.h list.h
 
 LINUXSRC = Linux/README Linux/libio.h Linux/libio_2.1.h Linux/libio_2.2.h \
-	Linux/stdio.h Linux/stdio_2.1.h Linux/stdio_2.2.h \
-	Linux/stdarg.h Linux/stdarg_2.1.h Linux/stdarg_2.4.h 
+	Linux/stdio.h Linux/stdio_2.1.h Linux/stdio_2.2.h Linux/stdio_2.3.h\
+	Linux/stdarg.h Linux/stdarg_2.1.h Linux/stdarg_2.2.h Linux/stdarg_2.3.h
 
-LINUXX11SRC = Linux/X11/Xlib.h Linux/X11/Xlib_2.1.h Linux/X11/Xlib_2.4.h
+LINUXX11SRC = Linux/X11/Xlib.h Linux/X11/Xlib_2.1.h Linux/X11/Xlib_v1.5.h 
 
 SOLARISSRC = Solaris/README Solaris/stdio_impl.h Solaris/stdio_tag.h
 

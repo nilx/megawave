@@ -1,0 +1,48 @@
+\def\R{\hbox{I\kern-.2em\hbox{R}}}
+\def\Leq{\preceq}
+
+This module computes a decomposition of {\em image\_in}
+into {\tt cmorpho\_lines}. 
+It works as the module {\tt ml\_decompose}, but if the later 
+assumes gray level images only, {\tt cml\_decompose} can be
+applied on 3-planes color images.
+
+Please read before the description of {\tt ml\_decompose}, and
+notice that the only binary relation used on image's values to build
+the decomposition is the total order $\leq$ defined on reals (an ordering 
+relation is total if two elements are always comparable) . 
+Thus, the extension of the algorithm to multi-valued images is straightforward
+as soon as one can recover a total order $\Leq$ in $\R^3$ that fits the visual 
+perception of geometrical structures. 
+In~\cite{coll.froment:topographic}, a lexicographic ordering
+relation is proposed in the framework of topographic maps of color images :
+
+Let $L$, $H$ and $S$ be the values of the image in the HSI color model
+(L stands for Luminance or Intensity, H for Hue and S for Saturation). One sets
+\begin{equation}
+\begin{array}{l}
+\label{lexicographic_order}
+U_1 = (L_1,H_1,S_1) \Leq U_2 = (L_2,H_2,S_2) \\
+\hspace{2cm}\Updownarrow \\
+(L_1 < L_2)  \,\mbox{ or } (L_1=L_2 \,\mbox{ and } H_1 < H_2) \\
+\mbox{ or } (L_1=L_2 \,\mbox{ and } H_1=H_2 \,\mbox{ and } S_1 \leq S_2).
+\end{array}
+\end{equation}
+This model tries to fit the visual perception of geometrical structures :
+to detect shapes, human eyes are first sensitive
+to luminance, then to hue and at last to saturation.
+
+The module {\tt cml\_decompose} allows to compute such a topographic map of the
+input color image. Since the algorithm assumes the HSI color model, the planes
+of the input image must be HSI. Use the module {\tt cfchgchannel} to convert
+a RGB image to a HSI one. Before calling {\tt cml\_decompose}, you may also
+want to quantize the HSI channels using {\tt cfquant} so that the amount of
+data would be reduced. 
+
+The option {\tt -l} is very useful to reduce the number of level lines in the
+topographic map without removing too many visual information : it fixes the
+minimal length a level line must have in order to be kept (by default all
+level lines are recorded). This operation, very similar to the grain 
+filter~\index{filter!grain}, may also be done afterward by {\tt cll\_remove}.
+See also the example of processing in the documentation of {\tt cml\_reconstruct}.
+

@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave Macro ----------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="`basename $0`"
-_Vers="1.26";
-_Date="1999-2003";
+_Vers="1.28";
+_Date="1999-2004";
 _Func="Compile all MegaWave2 modules and user's macros, recursively on each subdirectory";
 _Auth="Jacques Froment";
 _Usage="[-gnu] [-clear] [-g] [-X] [-O] [-c compiler_option] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-2p] [-sp] [-dep] [-pubsyslib] [-force] [-v tracefile] [-N processid] group_directory"
@@ -24,7 +24,7 @@ RemoveTMPfiles()
 
 {
  if  [ "$TMP" != ""  ] && [ -d $TMP ] &&  [ -w $TMP ]; then
-  for f in `find ${TMP}/. -name "mw*" -ctime +1 -type f -print`
+  for f in `find ${TMP}/. -name "mw*" -ctime +1 -type f -print 2> /dev/null`
   do
    /bin/rm -f $f > /dev/null 2>&1
   done
@@ -229,7 +229,7 @@ if [ "$NoDisplay" != "yes" ]; then
 
  if [ "$MWDESTDIR" = "$MEGAWAVE2" ] && [ $force -eq 0 ]; then
    echo "Warning: you will modify the system files on $MWDESTDIR"
-   mwechon "         do you wish to continue [y or n] ?"
+   mwecho -n "         do you wish to continue [y or n] ?"
    a="N"
    read a
    if [ "$a" = "n" ] || [ "$a" = "N" ]; then
@@ -275,7 +275,7 @@ if [ "$NoDisplay" != "yes" ]; then
    arep="$arep $rep"
   fi
   if [ "$arep" != "" ] && [ $force -eq 0 ]; then
-   mwechon "         Ok to remove these target directories [y or n] ?"
+   mwecho -n "         Ok to remove these target directories [y or n] ?"
    read a
    if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
      echo "Removing..."
@@ -310,7 +310,7 @@ Echo "               Generic MegaWave2 "
 Echo "          Commands Package Compilation"
 Echo "          ----------------------------"
 Echo ''
-mwechon "------ Beginning at "
+mwecho -n "------ Beginning at "
 date
 echo ''
 
@@ -350,17 +350,17 @@ do
   if [ ! -d ${dir}/${file} ]; then
     if [ "$secondpass" != "-sp" ] || 
 	[ ! -x $MWDESTDIR/bin/$MW_MACHINETYPE/`basename $file .c` ]; then 
-        mwechon "$file "
+        mwecho -n "$file "
         (cd ${dir}; cmw2 -N $cmw_opt $file 1>> $trace 2>&1;)
         retcmw=$?
 	if [ $retcmw -ne 0 ]; then
          echo "${dir}/${file}" >> $errorfile
 # retcmw = 2 : error due to failed link (unknown reference)
          if [ $retcmw -ne 2 ] || [ "$secondpass" = "-sp" ] || [ "$firstpass" = "" ]; then
-	  mwechon "(failed) " 
+	  mwecho -n "(failed) " 
           touch $erroroccured
          else
-          mwechon "(delayed) "
+          mwecho -n "(delayed) "
          fi
 	fi
     fi
@@ -375,7 +375,7 @@ done
 if [ "$NoDisplay" != "yes" ]; then
 
  echo ''
- mwechon "------ End at "
+ mwecho -n "------ End at "
  date
  echo ''
 

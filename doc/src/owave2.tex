@@ -1,11 +1,11 @@
 \def\real{I\!\!R}
 
-{\em owave2} computes the two-dimensional discrete wavelet transform 
+{\em owave2} computes the two-dimensional discrete wavelet transform\index{wavelet!transform!orthogonal}
 of the floating point image stored in the file {\em Image}, 
-according to the pyramidal algorithm of S. Mallat \cite{kn:ma1}. 
+according to the pyramidal algorithm of S. Mallat \cite{mallat:theory}. 
 
 This module is a generalisation to the 2D case of the {\em owave1} module. 
-This generalisation is done in the same way as in \cite{kn:ma1}, i.e. 
+This generalisation is done in the same way as in \cite{mallat:theory}, i.e. 
 {\em owave2}  performs a semi-separable transform. More precisely, 
 it can be decomposed at each level in two one-level and one-dimensional 
 wavelet transforms applied successively on the lines and on the columns 
@@ -137,16 +137,3 @@ The -n option specifies the normalisation mode of the filter impulse responses' 
 \end{itemize}
 
 
-
-\begin{thebibliography}{Dau1}
-\bibitem[CDV]{kn:cdv} A. Cohen, I. Daubechies, P. Vial. 
-{\em Wavelets and Fast Wavelet Transform on an Interval, } 
-preprint AT\&T Bell Laboratories, 1992.
-\bibitem[Dau]{kn:dau1} I. Daubechies. 
-{\em Orthonomal Bases of Compactly Supported Wavelets, } 
-Comm. pure and applied math., 41, pp.909--996, 1988.
-\bibitem[Mal]{kn:ma1} S. Mallat. {\em a theory for multiresolution signal decomposition, the wavelet representation, } IEEE PAMI Vol. 2, n 7, 1989.
-
-
-
-\end{thebibliography}

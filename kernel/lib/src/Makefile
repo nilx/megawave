@@ -1,4 +1,4 @@
-# Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.07 with arch = 'Linux ix86' option = 'jpeg shared '
+# Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.08 with arch = 'Linux ix86' option = 'jpeg shared '
 #-----------------------------------------------------------------------------
 # Makefile.in used to create Makefile using macro mw2config
 # Version 2.1

@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/sh 
 #--------------------------- Shell MegaWave Macro ----------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="mwdoclatex"
-_Vers="2.02";
-_Date="1993-2002";
+_Vers="2.07";
+_Date="1993-2004";
 _Func="Compile the documentation of a single module";
 _Auth="Jacques Froment";
 _Usage="[-adm] module"
@@ -24,8 +24,10 @@ fi
 
 # Defaults
 DOCDIR=$MY_MEGAWAVE2/doc
-opt=""
+# Location of the original bibliographic database for public modules
+pub_bib=${MEGAWAVE2}/doc/public.bib
 
+opt=""
 while [ "$1" != "" ]
 do
     case "$1" in
@@ -50,11 +52,30 @@ if [ $MW_SYSTEMTYPE = Linux ]; then
   Link=-L
 fi
 
+# Local bibliographic database for public modules
+local_pub_bib=${DOCDIR}/public.bib
+
 module=`basename $module .doc`
 tmod=${DOCDIR}/src/${module}.tex
 if [ ! -r ${tmod} ]; then
     echo "$_Prog : no tex file ! Please document the module in the file '${tmod}'" 1>&2
     exit 1
+fi
+
+# Figure out if citation exists so that a Bibliography part should be set.
+citation=0
+grep "\\cite{" $tmod > /dev/null
+if [ $? -eq 0 ]; then
+ citation=1
+# In such a case, check for public.bib.
+# If local bib file for public modules not found, make a link.
+ if [ ! -r  ${pub_bib} ]; then
+  echo "${_Prog} : cannot find bibliographic database for public modules '${pub_bib}'. This one should be given by the MegaWave2 distribution !" 1>&2
+  exit 1
+ fi
+ if [ ! -r  ${local_pub_bib} ]; then
+  ln -s -f ${pub_bib} ${local_pub_bib}
+ fi
 fi
 
 dmod=${DOCDIR}/obj/${module}.doc
@@ -86,12 +107,13 @@ if [ ! -w ${DOCDIR} ]; then
     \rm  $GENDIR/obj
   fi
   ln -s ${DOCDIR}/obj $GENDIR/obj
+  ln -s -f ${pub_bib} $GENDIR/public.bib
 else
   GENDIR=${DOCDIR}
 fi
 
-
-tfile=${GENDIR}/${module}$$.tex
+bfile=${GENDIR}/${module}$$
+tfile=${bfile}.tex
 dvimod=${GENDIR}/${module}$$.dvi
 
 # new trap
@@ -100,13 +122,36 @@ trap "echo Abort !; rm -f ${GENDIR}/${module}$$.*; exit 1" 2 3
 cat ${MEGAWAVE2?'environment not set'}/sys/shell/data/mwdoclatex_header.tex > $tfile
 cat $MEGAWAVE2/sys/shell/data/mwmakedoc_macros.tex >> $tfile
 cat $dmod >> $tfile
+if [ $citation  -eq 1 ]; then
+ cat $MEGAWAVE2/sys/shell/data/mwdoclatex_bib.tex >> $tfile
+fi
 cat $MEGAWAVE2/sys/shell/data/mwdoclatex_foot.tex >> $tfile
-(cd $GENDIR; latex $tfile ; latex $tfile ;)
+
+# Do the compilation
+cd $GENDIR; 
+latex $tfile; 
 if [ $? -ne 0 ]; then
-   echo "$_Prog: Cannot run LaTeX." 2>&1
-   rm -f ${GENDIR}/${module}$$.*
-   exit 1
- fi
+ echo "$_Prog: Cannot run LaTeX (pass 1) ! Exit." 2>&1
+ rm -f ${GENDIR}/${module}$$.*
+ exit 1
+fi
+if [ $citation  -eq 1 ]; then
+ bibtex $bfile;  
+# Do not check error value with bibtex since missing private.bib would
+# generate an error.
+fi
+latex $tfile; 
+if [ $? -ne 0 ]; then
+ echo "$_Prog: Cannot run LaTeX (pass 2) ! Exit." 2>&1
+ rm -f ${GENDIR}/${module}$$.*
+ exit 1
+fi
+latex $tfile;
+if [ $? -ne 0 ]; then
+ echo "$_Prog: Cannot run LaTeX (pass 3) ! Exit." 2>&1
+ rm -f ${GENDIR}/${module}$$.*
+ exit 1
+fi
 
 if [ ! -f $dvimod ]; then
   echo "$_Prog : dvi file '${dvimod}' not found ! Something wrong with LaTeX" 1>&2

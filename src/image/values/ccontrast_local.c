@@ -2,7 +2,7 @@
 /* mwcommand
   name = {ccontrast_local};
   version = {"1.0"};
-  author = {"YAN Jinhai"};
+  author = {"Yan Jinhai"};
   function = {"Local contrast improvment"};
   usage = {
 'd':[d=7]->d[0,7]  "locality parameter (subdivide [0,255] 2^d times, 0<=d<=7)",

@@ -9,7 +9,7 @@ the module \verb+cvscompress+.
 This module first calls \verb+cvsorgcode+ to get the 
 bit rate to code the origin points, and after that
 \verb+cvsfreecode+ to get the bit rate to code the other points
-by the Freeman algorithm.
+by the Freeman's algorithm~\cite{freeman:computer}\index{coding!curve}.
 
 The option \verb+-s+ avoids to code large parts of multiple points,
 by splitting curves into pieces of non-overlapping curves.
@@ -25,3 +25,6 @@ allows to output the curves which were really coded.
 
 The function outputs also the total number of points \verb+N+
 and the number of bits \verb+B+ needed to code the curves.
+
+Such module is useful to encode level lines geometry, such as 
+in~\cite{froment:functional}.

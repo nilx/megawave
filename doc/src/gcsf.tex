@@ -1,6 +1,6 @@
 This module is a generalization of the \verb+gass+ module and computes the
 evolution of the curve $in$ between scales $t=f$ and $t=l$ according to
-the geometric equation
+the geometric equation~\cite{cao.moisan:geometric}
 $$\frac{\partial C}{\partial t}=(t\kappa)^g \,{\bf N}.$$
 In this equation, $C$ is the current point of the curve, $\bf N$
 the normal vector to the curve, $\kappa$ its local curvature, and 
@@ -38,18 +38,7 @@ order 4, the computations become very slow and memory consuming.
 
 \medskip
 Troubleshooting: a very sensitive part of the algorithm is the convexification
-step (cf [2]). It is {\em a priori} quite stable by now, although some
+step (cf~\cite{moisan:affine}). It is {\em a priori} quite stable by now, although some
 optimization compilation options may lead to weird and dramatic results with
 recent compilers (gcc-3.0).  
 
-\bigskip
-{\Large\bf References}
-
-\medskip
-
-[1] F. Cao and L. Moisan, ``Geometric computation of curvature driven plane
-curve evolution'', {\it SIAM J. Numer. Anal.}, vol. 39:2, pp. 624-646, 2001.
-
-\medskip
-[2] L.Moisan, ``Affine Plane Curve Evolution : a Fully Consistent Scheme'',
-{\it IEEE Transactions On Image Processing}, vol. 7:3, pp. 411-420, 1998.

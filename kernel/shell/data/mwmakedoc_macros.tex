@@ -1,6 +1,6 @@
 %
-% LaTeX Macros for the MegaWave2 Software Documentation
-% V 1.1  1994-2002
+% LaTeX Macros (without html package) for the MegaWave2 Software Documentation
+% V 1.4  1994-2003
 %----------------------------------------------------------------------------
 % This file is part of the MegaWave2 system macros. 
 % MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -10,17 +10,10 @@
 %       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 %-----------------------------------------------------------------------------
 
-% ===== insertps =====
+% Avoid error with html package functions that may be included in the text
+% (e.g. in the .bib file)
 
-\def\insertps#1#2#3{\par
- \hbox{%
-    \hskip #3
-    \vbox to #2{
-    \vspace*{\fill}
-     \special{psfile=#1}
-}%
-}
-}
+\newcommand{\hturl}[1]{{\tt #1}}
 
 \def\Next{
 \vspace{10mm}
@@ -31,6 +24,10 @@
 
 \def\Mark{\raisebox{.5ex}{$\bigcirc$}}
 
+% ===== Used in .bbl bibliography file =====
+
+\newcommand{\bblmodules}[1]{{\tt #1}}
+
 % ===== Commands format =====
 
 \newcommand{\List}[3]{
@@ -40,7 +37,6 @@
 }
 
 \newcommand{\Name}[2]{
-\samepage
 \Mark{\Large\bf  Name} \nopagebreak\bigskip
 \nopagebreak
 
@@ -51,7 +47,6 @@
 }
 
 \newcommand{\Macro}[2]{
-\samepage
 \Mark{\Large\bf  Macro} \nopagebreak\bigskip
 \nopagebreak
 
@@ -68,7 +63,6 @@ $\bigtriangleup$ #1
 }
 
 \newcommand{\Synopsis}[2]{
-\samepage
 \Mark{\Large\bf  Command Synopsis} \nopagebreak\bigskip
 \nopagebreak
 
@@ -79,7 +73,6 @@ $\bigtriangleup$ #1
 }
 
 \newcommand{\Usage}[2]{
-\samepage
 \Mark{\Large\bf  Usage} \nopagebreak\bigskip
 \nopagebreak
 
@@ -90,7 +83,6 @@ $\bigtriangleup$ #1
 }
 
 \newcommand{\Example}[2]{
-\samepage
 \Mark{\Large\bf  Example} \nopagebreak\bigskip
 \nopagebreak
 
@@ -102,7 +94,6 @@ $\bigtriangleup$ #1
 }
 
 \newcommand{\Options}[1]{
-\samepage
 \Mark{\Large\bf  Options} \nopagebreak\bigskip
 \nopagebreak
 
@@ -113,7 +104,6 @@ $\bigtriangleup$ #1
 }
 
 \newcommand{\SeeAlso}[1]{
-\samepage
 \Mark{\Large\bf  See Also} \nopagebreak\bigskip
 \nopagebreak
 
@@ -124,7 +114,6 @@ $\bigtriangleup$ #1
 }
 
 \newcommand{\Author}[3]{
-\samepage
 \Mark{\Large\bf  Author} \nopagebreak\bigskip
 
 \nopagebreak
@@ -133,9 +122,9 @@ $\bigtriangleup$ #1
 \medskip
 \nopagebreak
 
-\nopagebreak
-Copyright (C) #2 {\em #3} -
-All rights reserved.
+%\nopagebreak
+%Copyright (C) #2 {\em #3} -
+%All rights reserved.
 
 \Next
 
@@ -143,7 +132,6 @@ All rights reserved.
 
 
 \newcommand{\Bugs}[1]{
-\samepage
 \Mark{\Large\bf  Bugs} \nopagebreak\bigskip
 \nopagebreak
 
@@ -154,7 +142,6 @@ All rights reserved.
 }
 
 \newcommand{\Version}[2]{
-\samepage
 \Mark{\Large\bf  Version #1} \nopagebreak\bigskip
 \nopagebreak
 

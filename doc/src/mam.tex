@@ -1,4 +1,4 @@
-This module implements the fundamental equation of movie analysis [AGLM],
+This module implements the fundamental equation of movie analysis~\cite{alvarez.guichard.ea:axioms},
 \begin{equation}
 \frac{\partial u}{\partial t} = |\nabla u| \,(t curv(u))^{\frac{1}{3}} \left(\left[curv(u) accel(u) |t curv(u)|^{-\frac{1}{3}} \right] ^+ \right)^q.
 \end{equation}
@@ -16,11 +16,3 @@ Note that the first and last images of the input movie $u$ are not processed, be
 The complexity of the algorithm is $O(|u|.n_{iter}.(2*fmxa+1)^2.\Delta ^2)$, where $\Delta =MAXvit-MINvit+1$.
 Processing one iteration on a 256x256x10 movie with default velocity parameters and $fmxa=0$ takes 30 minutes on a Sparc 10. For a description
 of the algorithm used to compute the curvature, see the module \verb+amss+.
- 
-\vskip 0.5cm
-{\large \bf References}
-
-\noindent [AGLM] L.Alvarez, F.Guichard, P.-L.Lions, J.-M.Morel, ``Axioms and Fundamental Equations of Image Processing''. {\it Archive for Rational Mechanics}, vol. 123, 1993, pp 199-304.
-
-
-

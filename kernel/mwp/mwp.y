@@ -2,7 +2,7 @@
  **  Analyse syntaxique du module et creation de l'arbre         
  **  syntaxique. On analyse egalement les erreurs grammaticale de 
  **  l'entete. 
- **  Version 1.1 (c)1993-2000 J.Froment - S.Parrino
+ **  Version 1.2 (c)1993-2003 J.Froment - S.Parrino
  **/
 
 /*~~~~~~~~~~~  This file is part of the MegaWave2 preprocessor ~~~~~~~~~~~~~~~~
@@ -571,7 +571,9 @@ UsageList :
 		  if ($1 == NULL || $3 == NULL) {
 		    if ($1 == NULL)
 		      $$ = $3;
-		    else if ($3 = NULL)
+		    /*		    else if ($3 = NULL) */
+		    /* JF 01/07/03 : bug reported by E. Villeger */
+		    else if ($3 == NULL)
 		      $$ = $1;
 		    else
 		      $$ = NULL;

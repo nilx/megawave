@@ -1,19 +1,12 @@
 This module is an implementation of the classical corner detector proposed by
-Harris and Stephen~[1]. It computes a cornerness function defined by
-$$C=\mbox{det }M-k(\mbox{tr }M)^2,$$
+Harris and Stephen~\cite{harris.stephens:combined}. 
+It computes a cornerness function defined by $$C=\mbox{det }M-k(\mbox{tr }M)^2,$$
 where $M$ is the $2\times 2$ matrix $g_\sigma*(Du\cdot Du ^t)$ computed from
 the image gradient $Du$ and a smoothing with a gaussian kernel with standard
-deviation $\sigma$. The value $k=0.04$ has been proposed by the authors of~[1].
+deviation $\sigma$. 
+The value $k=0.04$ has been proposed by the authors of~\cite{harris.stephens:combined}.
 Corners are local maxima of this cornerness function. The
 size of the neighborhood for maxima computation and a threshold for their value
 have to be fixed.
 The output is a Flist structure containing the coordinates of the detected
 corners.   
-
-\bigskip
-{\Large\bf References}
-
-\medskip
-
-[1] C.G. Harris and M.~Stephens, ``A combined corner and edge detector'',
-{\it 4th Alvey Vision Conference, Manchester}, pp 189-192, 1988.

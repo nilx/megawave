@@ -2,14 +2,12 @@ This module maps in the output cimage $J$ the junctions found in
 the input cimage $U$ : if the point $(x,y)$ is a junction, the
 value of $J(x,y)$ will be $255$ and $0$ elsewhere.
 The module returns the number of junctions found.
-For a description of the Junction Detection Algorithm, please
-see~\cite{KP}.
+For a description of the junction detection 
+algorithm\index{junction detector}, please
+see~\cite{caselles.coll.ea:kanizsa},\cite{caselles.coll.ea:topographic} 
+and~\cite{froment:functional}.
 
 The option \verb+-a+ allows to choose the area threshold associated
 to the detection, while the option \verb+-q+ is related to the quantization 
 threshold. Those thresholds are used to avoid false detections.
 
-\begin{thebibliography}{Dau1}
-\bibitem{KP} V.Caselles, B.Coll, J.M. Morel.
-{\em A Kanizsa Programme}, Preprint CEREMADE.
-\end{thebibliography}

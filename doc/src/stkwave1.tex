@@ -1,0 +1,31 @@
+The module {\tt stkwave1} computes the wavelet transform of a one-dimensional signal according to the work
+of Starck {\em et al.}~\cite{starck.bijaoui.ea:image} who use an overcomplete frequency-domain approach (band-limited wavelet)\index{wavelet!transform!band-limited}.
+
+As seen in {\tt owave1}, multi-resolution analysis corresponds to considering a scale function $\phi$ and a wavelet $\psi$ used to compute details and approximations of a signal.
+$$w_{j+1}(k)=<f(x),2^{-(j+1)}\psi(2^{-(j+1)}x-k)> $$
+$$c_{j+1}(k)=<f(x),2^{-(j+1)}\phi(2^{-(j+1)}x-k)> $$
+In the frequency domain, these equations become:
+$$\hat{c}_{j+1}(\nu)=\hat{c}_{j}(\nu)\hat{h}(2^j\nu) $$
+$$\hat{w}_{j+1}(\nu)=\hat{c_j}(\nu)\hat{g}(2^j\nu) $$
+with $\hat{h}(\nu)=\frac{\hat{\phi}(2\nu)}{\hat{\phi}(\nu)}$\\
+and $\hat{g}(\nu)=\frac{\hat{\psi}(2\nu)}{\hat{\phi}(\nu)}$\\
+The frequency band is reduced by a factor of 2 while the resolution scales up.
+We go from a resolution to the following resolution multiplying the filter H and the frequential signal. \\
+The details are obtained filtering the same signal by G.\\
+J.L. Starck uses a $B_3$ spline for $\phi$ in the Fourier domain:
+$$\hat{\phi}(\nu)=\frac{3}{2}B_3(4\nu)$$
+that is to say $\phi(x)=\frac{3}{8}(\frac{sin(\frac{\pi x}{4})}{\frac{\pi x}{4}})^4$
+The first difference with the Mallat's algorithm~\cite{mallat:theory} stands in the relation between $\phi$ and $\psi$: here, $\psi$ corresponds to the difference between two resolutions:
+$$\hat{\psi}(2\nu)=\hat{\phi}(\nu)-\hat{\phi}(2\nu)$$
+The second difference with the Mallat's algorithm is the non-decimation of the details. Which implies, for a size $N$ of the signal, that the obtained coefficients are ordonned in a $2N$-signal.\\
+The wavelet transformation algorithm for a resolution $np$ is the following:\\
+\begin{enumerate}
+\item Compute $\hat{f}$ by FFT, set $\hat{c}_0(f)=\hat{f}$ and initialize j to 1.
+\item Multiply $\hat{c}_{j-1}(f)$ to $H$ gives the approximation for a resolution j : $\hat{c}_j(f)$
+\item Multiply $\hat{c}_{j-1}(f)$ to $G$ gives the details for a resolution j : $\hat{w}_j(f)$
+\item If $j<np$, the frequency band of $\hat{c}_j(f)$ is reduced by a factor 2 which corresponds to keep one coefficient out of two in the time space, j is then incremented and we go back to point 2.
+\end{enumerate}
+The obtained details are ordonned in function of their arrival in a fsignal which is ended by the approximation $\hat{c}_{np} $.
+
+In this module, the input signal is assumed to be already in the Fourier domain that is,
+${\tt in} = \hat{f}$.

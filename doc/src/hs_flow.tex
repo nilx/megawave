@@ -1,0 +1,60 @@
+
+This module computes the optical flow of a Fmovie of N Fimages 
+using the method proposed by Horn and Schunck \cite{horn.schunck:of}. 
+It generates two movies of N-1 Fimages representing the coordinates
+of the vectors $w$ of the apparent motion.
+
+Let $I(x,y,t)$ be the intensity brightness at point $(x,y)$ 
+of an image $\Omega$ of the sequence. 
+
+With Horn and Schunck the functionnal which has to be minimized 
+is the following:
+$$
+E(u,v) = \int_\Omega( {(I_x.u+I_y.v+I_t)}^2 + \alpha(\|\nabla u\|^2 + (\|\nabla v\|^2 )\, dxdy ,
+$$
+where $u$ and $v$ are the velocity components of the apparent motion $w$. 
+The first term is a term of basic measurement preserving, and the second one is a smoothing term which is controlled by the weight $\alpha$.
+ The Euler-Lagrange equations are a system of two differential equations which can be solved with an iterative scheme:
+
+Start from $u^0$ and $v^0$ ($u^0 = v^0 =0$)
+$$
+\left\{ \begin{array}{ccc}
+u^{n+1} &=& \overline{u}^n - I_x\displaystyle{\frac{I_x\overline{u}^n + I_y\overline{v}^n +I_t}{{\alpha}^2 + I^2_x+ I^2_y}}\\
+v^{n+1} &=& \overline{v}^n - I_y\displaystyle{\frac{I_x\overline{u}^n + I_y\overline{v}^n +I_t}{{\alpha}^2 + I^2_x+ I^2_y}}\\
+\end{array}\right.
+$$
+The estimates of the derivatives $I_x$, $I_y$ and $I_t$ are
+\begin{eqnarray*}
+I_x & = &\frac{1}{4} ( I_{i+1,j+1,t+1} - I_{i,j+1,t+1} +I_{i+1,j,t+1} -I_{i,j,t+1}\\
+& &\ + I_{i+1,j+1,t} -I_{i,j+1,t} +I_{i+1,j,t} - I_{i,j,t})
+\vspace*{0.3cm}\\
+I_y &= &\frac{1}{4}\displaystyle{(} I_{i+1,j+1,t+1} - I_{i+1,j,t+1} +I_{i,j+1,t+1} -I_{i,j,t+1}\\ 
+& &\  + I_{i+1,j+1,t} -I_{i+1,j,t} +I_{i,j+1,t} - I_{i,j,t})
+\vspace*{0.3cm}\\
+I_t &= & \frac{1}{4}\displaystyle{(} I_{i+1,j+1,t+1} - I_{i+1,j,t} +I_{i,j+1,t+1} -I_{i,j+1,t}\\
+& &\ + I_{i+1,j,t+1} -I_{i+1,j,t} +I_{i,j,t+1} - I_{i,j,t})\\
+\end{eqnarray*}
+
+
+$\overline{u}$ and $\overline{v}$ are the local averages
+\begin{eqnarray*}
+\overline{u}_{i,j,t} & = &\frac{1}{6}(u_{i-1,j,t} + u_{i,j+1,t} +u_{i+1,j,t} + u_{i,j-1,t})\\
+&&+ \frac{1}{12}(u_{i-1,j-1,t} + u_{i-1,j+1,t} +u_{i+1,j+1,t} + u_{i+1,j-1,t}  )
+\vspace*{0.3cm}\\
+\overline{v}_{i,j,t} & = &\frac{1}{6}(v_{i-1,j,t} + v_{i,j+1,t} +v_{i+1,j,t} + v_{i,j-1,t})\\
+&&+ \frac{1}{12}(v_{i-1,j-1,t} + v_{i-1,j+1,t} +v_{i+1,j+1,t} + v_{i+1,j-1,t}  )
+\end{eqnarray*}
+The {\bf{-n}} option gives the number of iterations to be done.\\
+The {\bf{-a}} option changes the weight of parameter $\alpha$. 
+
+\medskip
+
+Exemple of use:
+\begin{verbatim}
+hs_flow cmovie /tmp/U /tmp/V
+ofdraw /tmp/U /tmp/V /tmp/disp
+cmview -l /tmp/disp &
+\end{verbatim}
+
+
+

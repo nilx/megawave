@@ -1,6 +1,6 @@
 This macro generates a complete set of codebook sequences for the quantization 
-of image wavelet transforms. It is based on the {\em fwlbg\_adap} module, 
-but is simpler to use. 
+of image wavelet transforms\index{quantization!vector}. 
+It is based on the {\em fwlbg\_adap} module, but is simpler to use. 
 
 One only has to specify the prefix {\em codebook} of all generated 
 codebook sets and at least one (maximum four) input image for the 
@@ -17,7 +17,7 @@ the same prefix name {\em codebook} as argument of
 {\em Fwvq} and {\em Fwivq} (see documentation). 
 
 The default wavelet transform is a biorthogonal one using 
-7/9 Cohen--Daubechies filter pair (see \cite{kn:cdf}). 
+7/9 Cohen--Daubechies filter pair (see \cite{cohen.daubechies.ea:biorthogonal}). 
 The filters are read in the h/sd07.ri and htilde/sd09.ri 
 which must be available either in the MegaWave2 data directory or 
 data/quantization subdirectory. 
@@ -53,10 +53,3 @@ of codebooks directly in the macro file. Typically, one should put
 sizes not greater than 16. However, one won't be able to get 
 very high bit rate compression when using these codebooks.
 
-\begin{thebibliography}{CDF}
-
-\bibitem[CDF]{kn:cdf} A. Cohen, I. Daubechies, J.C. Feauveau. 
-{\em Biorthogonal bases of compactly supported wavelets, } 
-Comm. pure and applied math. 45, pp 485-560, 1992.
-
-\end{thebibliography}

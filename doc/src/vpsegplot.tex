@@ -1,0 +1,20 @@
+This module serves as an utility to graphically display the output of \verb+vpoint+ using \verb+fkview+.
+
+{\large \bf Example}
+
+\medskip
+
+Compute line segments in \verb+building.tif+\\
+\verb+align_mdl -c ksegs building.tif allsegs+\\
+Display these segments\\
+\verb+fkview -s -b building.tif ksegs+\\
+Compute vanishing regions\\
+\verb+vpoint -s csegs building.tif allsegs vpoints+\\
+returns \verb+NVP = 3+ and \verb+NVP_masked = 0+\\
+Display the first vanishing region\\
+\verb+vpsegplot building.tif allsegs vpoints csegs 0 kvp0+\\
+\verb+fkview -s -b building.tif kvp0+\\
+Display segments not contributing to any vanishing region\\
+\verb+vpsegplot building.tif allsegs vpoints csegs -1 kvp-none+\\
+\verb+fkview -s -b building.tif kvp-none+\\
+

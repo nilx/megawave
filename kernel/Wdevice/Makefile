@@ -1,4 +1,4 @@
-# Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.07 with arch = 'Linux ix86' option = 'shared '
+# Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.08 with arch = 'Linux ix86' option = 'shared '
 #-----------------------------------------------------------------------------
 # Makefile.in used to create Makefile using macro mw2config
 # Wdevice library : Copyright (c) Jacques Froment 1991-2003

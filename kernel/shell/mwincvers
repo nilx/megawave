@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="`basename $0`"
-_Vers="1.0"
-_Date="1999"
+_Vers="1.01"
+_Date="1999-2003"
 _Func="Return the incremented last field of the MegaWave2 version number"
 _Auth="Jacques Froment";
 _Usage="mw2dir"
@@ -40,7 +40,7 @@ variant=`cat $V | cut -f 3 -d "."`
 if [ "$variant" = "" ]; then
   variant=0
 fi
-variant=`echo "$variant 1 + p" | dc`
+variant=`expr $variant + 1`
 
 echo "${major}.${minor}.${variant}"
 

@@ -1,7 +1,7 @@
 \def\real{I\!\!R}
 
 
-{\em iowave1} reconstructs a signal from a sequence of sub-signals forming a wavelet decomposition, according to the pyramidal algorithm of S. Mallat \cite{kn:ma1}. 
+{\em iowave1} reconstructs a signal from a sequence of sub-signals forming a wavelet decomposition\index{wavelet!transform!orthogonal}, according to the pyramidal algorithm of S. Mallat~\cite{mallat:theory}. 
 The notations that are used here have been already defined in {\em owave1} module's documentation, and the reader is refered there to see their signification. 
 
 {\em WavTrans} is the prefix name of a sequence of files containing the coefficients of a wavelet decomposition \( A_{J}, D_{J}, D_{J-1}, \ldots, D_{1} \). {\em iowave1} computes \( A_{0} \), i.e. the inverse wavelet transform of {\em WavTrans}. 
@@ -42,19 +42,3 @@ The -i option enables to have invertible transform. Since the transform is inver
 \item
 The -n option specifies the normalisation mode of the filter impulse responses' coefficients. It should be selected according to the mode used for the decomposition in order to get exact reconstruction. 
 \end{itemize}
-
-
-
-\begin{thebibliography}{Dau1}
-
-\bibitem[CDV]{kn:cdv} A. Cohen, I. Daubechies, P. Vial. 
-{\em Wavelets and Fast Wavelet Transform on an Interval, } 
-preprint AT\&T Bell Laboratories, 1992.
-\bibitem[Dau]{kn:dau1} I. Daubechies. 
-{\em Orthonomal Bases of Compactly Supported Wavelets, } 
-Comm. pure and applied math., 41, pp.909--996, 1988.
-\bibitem[Mal]{kn:ma1} S. Mallat. {\em A theory for multiresolution signal decomposition, the wavelet representation, } IEEE PAMI Vol. 2, n 7, 1989.
-\bibitem[SB]{kn:sb} M.J.T. Smith, T.P. Barnwell. {\em Exact reconstruction techniques for tree structured subband coders, } IEEE ASSP Vol.34, pp.434-441, 1986.
-
-\end{thebibliography}
-

@@ -1,0 +1,207 @@
+#!/bin/sh 
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
+_Func="Run BibTeX on the MegaWave2 documentation (guide #3) and add reference to modules"
+_Prog="`basename $0`"
+_Vers="1.09"
+_Date="2003-2004"
+_Auth="Jacques Froment";
+_Usage="megawave2_directory"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+# Convert special letter for LaTeX
+ConvLaTeX()
+
+{
+  echo $1 | sed "s/_/\\\_/g"  |  sed "s/%/\\\%/g" |  sed "s/{/\\\{/g" \
+	|  sed "s/}/\\\}/g" |  sed "s/&/\\\&/g" | sed "s/#/\\\#/g"
+}
+
+# Check if the current line is a bibitem one (new reference)
+# input : $cline
+# output : if it is a bibitem one, $ref contains the reference.
+#          Otherwise, $ref="".
+
+BibitemLine()
+
+{
+ ref=""
+ a=`mwecho -E "$cline" | grep "bibitem" | awk -F{ '{print $2}'`
+ if [ "$a" != "" ]; then
+  b=`mwecho -E "$a" | awk -F} '{print $1}'`
+  ref="{$b}"
+ fi
+}
+
+# Search modules that contains reference $ref
+# input : $ref 
+# output : modules
+
+SearchModules()
+
+{
+ mwecho -n "  $ref: "
+ modules=""
+ for mod in `find src -name '*.tex' -type f -print` 
+ do
+  grep "$ref" $mod > /dev/null
+  if [ $? -eq 0 ]; then
+   mod=`basename $mod .tex`
+   mwecho -n "$mod "
+   mod=`ConvLaTeX "$mod"`
+   mod="\bblmodules{$mod}" 
+   if [ "$modules" = "" ]; then
+    modules="$mod"
+   else
+    modules="${modules}, $mod"
+   fi
+  fi
+ done 
+ echo ""
+}
+
+# Print name of modules
+# input : $modules : list of modules
+
+PrintModules()
+{
+ if [ "$modules" != "" ]; then
+   mwecho -n -E "\newblock" >> $doc_nbbl
+   mwecho -E " Cited by ${modules}." >> $doc_nbbl
+ fi
+}
+
+# Usage
+if [ $# -ne 1 ]; then
+  . .mw2_help_lg_com
+fi
+
+
+mw2_dir=$1;
+if [ "${mw2_dir}" = "" ]; then
+  . .mw2_help_lg_com
+fi
+
+doc_dir=${mw2_dir}/doc
+doc_obj=${doc_dir}/obj
+doc_src=${doc_dir}/src
+
+# Name of the guide #3 (modules library)
+doc_bname=guid3
+doc_modules=${doc_bname}.tex
+# Location of the original bibliographic database for public modules
+pub_bib=${MEGAWAVE2}/doc/public.bib
+# Local bibliographic database for public modules
+local_pub_bib=public.bib
+# Name of the bibliography file
+doc_bbl=${doc_bname}.bbl
+# Name of the temporary bibliography file
+doc_nbbl=${doc_bname}.bbl$$
+
+if [ ! -d ${mw2_dir} ] || [ ! -d ${doc_dir} ]; then
+ echo "${_Prog} : Bad directory name for MegaWave2 : ${mw2_dir}" 1>&2
+ exit 1
+fi
+
+if [ ! -w ${mw2_dir} ] || [ ! -w ${doc_dir} ]; then
+ echo "${_Prog} : Sorry, you're not allowed to generate doc of MegaWave2" 1>&2
+ exit 1
+fi
+
+if [ ! -d ${MEGAWAVE2?'environment not set'}/doc ]; then
+ echo "${_Prog} : original doc directory not found or bad MEGAWAVE2 path" 1>&2
+ exit 1
+fi
+
+if [ ! -r  ${doc_dir}/${doc_modules} ]; then
+ echo "${_Prog} : cannot find doc of modules (guide #3) '${doc_dir}/${doc_modules}'. Run 'mwmakedoc ${mw2_dir}' to generate it !" 1>&2
+ exit 1
+fi
+
+# If bib file for public modules not found in ${doc_dir}, make a link
+if [ ! -r  ${pub_bib} ]; then
+ echo "${_Prog} : cannot find bibliographic database for public modules '${pub_bib}'. This one should be given by the MegaWave2 distribution !" 1>&2
+ exit 1
+fi
+cd ${doc_dir}
+if [ ! -r  ${local_pub_bib} ]; then
+ ln -s -f ${pub_bib} ${local_pub_bib}
+fi
+
+/bin/rm -f $doc_bbl
+mwecho -n "- Calling bibtex..."
+bibtex ${doc_bname} > /dev/null
+if [ ! -f  $doc_bbl ]; then
+ echo "${_Prog} : 'bibtex ${doc_bname}' is unable to create file '$doc_bbl' !" 1>&2
+ exit 1
+fi
+echo "Done"
+
+# new trap
+trap "echo Abort !; /bin/rm -f $doc_nbbl; exit 1" 2 3
+
+# === Scan bbl file line by line ===
+
+nline=`wc -l $doc_bbl | awk '{print $1}'`
+nline=`expr $nline - 2`
+line=1
+nbibitem=0
+nbibmod=0
+
+echo "- Adding references to modules :"
+# Stop at the line before blank line and \end{thebibliography}
+while [ $line -le $nline ]
+do
+  cline=`sed -n "$line p" $doc_bbl`
+  BibitemLine
+  if [ "$ref" != "" ]; then
+   if [ $nbibitem -ne 0 ]; then
+    PrintModules
+   fi
+   SearchModules
+   nbibitem=`expr $nbibitem + 1`
+   if [ "$modules" != "" ]; then
+    nbibmod=`expr $nbibmod + 1`
+   fi
+   echo ""  >> $doc_nbbl
+  fi
+#  mwecho -E "cline=$cline  ref=$ref"
+  line=`expr $line + 1`
+
+# Write current line of bll
+  if [ "$cline" != "" ]; then
+   mwecho -E "$cline" >> $doc_nbbl
+   a=`mwecho -E "$cline" | grep "begin{thebibliography}"`
+   if [ "$a" != "" ]; then
+# Add the label "bibliography"
+    mwecho -E "\label{bibliography}"  >> $doc_nbbl
+   fi
+  fi
+done
+if [ $nbibitem -ne 0 ]; then
+ PrintModules
+fi
+
+echo "" >>  $doc_nbbl
+mwecho -E "\end{thebibliography}" >>  $doc_nbbl
+
+echo ""
+echo "  Number of bibliographical entries : $nbibitem"
+noref=`expr $nbibitem - $nbibmod`
+if [ $noref -gt 0 ]; then
+ echo "  *** Warning *** $noref entries do not contain any modules' reference !"
+fi
+
+/bin/mv -f $doc_nbbl $doc_bbl
+
+exit 0
+
+
+

@@ -1,5 +1,6 @@
 This module allows to extract a part of an image and to resize it to
-the desired dimensions. This operation is realized using an interpolation
+the desired dimensions. This operation is realized using an 
+interpolation~\cite{thevenaz.blu.ea:image}\cite{unser.aldroubi.ea:fast}
 that can be chosen with the \verb+-o+ option. The image is assumed
 to be equal to a constant value $bg$ (set with the \verb+-b+ option)
 outside its boundaries. Moreover, it is assumed that the image
@@ -31,22 +32,22 @@ where $\varphi$ is the interpolation function.
 $\bullet$ 0: nearest-neighbor interpolation, which corresponds to direct 
 interpolation with a B-spline of order 0,
 $$\beta^0(x) = \left\{\begin{array}{lcl}
-1	& & -1/2 \leq |x| < 1/2 \\ 
-0	& & {\mathrm else}.
+1       & & -1/2 \leq |x| < 1/2 \\ 
+0       & & {\mathrm else}.
 \end{array}\right.$$
 
 $\bullet$ 1: bilinear interpolation, which corresponds to direct interpolation
 with a B-spline of order 1,
 $$\beta^1(x) = \left\{\begin{array}{lcl}
-1-|x|	& & 0 \leq |x| \leq 1 \\ 
-0	& & 1 \leq |x|.
+1-|x|   & & 0 \leq |x| \leq 1 \\ 
+0       & & 1 \leq |x|.
 \end{array}\right.$$
 
 $\bullet$ -3: direct interpolation with cubic Keys' function, defined by
 $$\varphi_a(x) = \left\{\begin{array}{lcl}
-(a+2)|x|^3 - (a+3)|x|^2+1	& & 0 \leq |x| \leq 1 \\ 
-a|x|^3 - 5a|x|^2+8a|x|-4	& & 1 \leq |x| \leq 2 \\ 
-0				& & 2 \leq |x|.
+(a+2)|x|^3 - (a+3)|x|^2+1       & & 0 \leq |x| \leq 1 \\ 
+a|x|^3 - 5a|x|^2+8a|x|-4        & & 1 \leq |x| \leq 2 \\ 
+0                               & & 2 \leq |x|.
 \end{array}\right.$$
 This function is $C^1$ and depends on a parameter $a \in [-1,0]$ that 
 can be set with the \verb+-p+ option. Its default value, $-1/2$,
@@ -76,13 +77,3 @@ approximation order of 4) than the Keys cubic (direct) interpolant
 
 NB : calling this module with out=in is possible
 
-\begin{thebibliography}{99}
-\bibitem{unser1}
-M. Unser, A. Aldroubi, M. Eden.
-\newblock Fast B-Spline Transforms for Continuous Image Representation and Interpolation.
-\newblock IEEE Transactions on Pattern Analysis and Machine Intelligence, 13:3, 1991.
-
-\bibitem{unser2}
-P. Th\'evenaz, T. Blu, M. Unser.
-\newblock Image Interpolation and Resampling.
-\end{thebibliography}

@@ -3,8 +3,8 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="List all system's macros";
 _Prog="mwsysmaclist"
-_Vers="0.0"
-_Date="2000"
+_Vers="1.0"
+_Date="2000-2003"
 _Auth="Jacques Froment";
 _Usage=""
 #----------------------------------------------------------------------------#
@@ -28,15 +28,16 @@ if [ ! -d $SRC ]; then
   exit 1
 fi 
 
-for fic in `ls ${SRC}`
+for fic in `find ${SRC} -name '.*' -prune -o -type f -perm +u=x -print`
 do
-  firstline=`head -1 ${SRC}/${fic} | cut -d " " -f 1`
+  firstline=`head -1 ${fic} | cut -d " " -f 1`
+  name=`basename $fic`
   if [ "$firstline" = "#!/bin/sh" ]; then
-   Func=`awk 'BEGIN {FS="\""} /^_Func=/ {print $2;}' ${SRC}/${fic}`
+   Func=`awk 'BEGIN {FS="\""} /^_Func=/ {print $2;}' ${fic}`
    if [ "$Func" = "" ]; then 
-    echo "$fic : !! Warning, bad header !! (no _Func field found)"
+    echo "$name : !! Warning, bad header !! (no _Func field found)"
    else
-    echo "$fic : $Func"
+    echo "$name : $Func"
    fi
   fi
 done

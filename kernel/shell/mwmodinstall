@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _Func="Install a new MegaWave2 public modules environment (adm only)";
 _Prog="`basename $0`"
-_Vers="2.04"
-_Date="1997-2002"
+_Vers="2.06"
+_Date="1997-2004"
 _Auth="Jacques Froment";
 _Usage="[-clear] [-tdir target_directory] [-X file_of_modules_for_xmw2] file_of_modules"
 #----------------------------------------------------------------------------#
@@ -130,7 +130,7 @@ if [ "$clear" = "1" ] && [ $newtarget -eq 0 ]; then
  
  if [ -d $MW_OLD_TARGET ]; then
   a="N"
-  mwechon "Ok to remove old target directory $MW_OLD_TARGET [y or n] ?"
+  mwecho -n "Ok to remove old target directory $MW_OLD_TARGET [y or n] ?"
   read a
   if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
     echo "  Removing..."
@@ -144,7 +144,7 @@ if [ "$clear" = "1" ] && [ $newtarget -eq 0 ]; then
  if [ -d $MW_TARGET ]; then
   echo "Mirror temporary directory already exists !!"
   a="N"
-  mwechon "Should I use it as the good one ?"
+  mwecho -n "Should I use it as the good one ?"
   read a
   if [ "$a" != "y" ] && [ "$a" != "Y" ]; then
     echo "Aborting. You should remove $MW_TARGET and re-run this command."
@@ -152,7 +152,7 @@ if [ "$clear" = "1" ] && [ $newtarget -eq 0 ]; then
   fi
  else
   mkdir $MW_TARGET
-  mwechon "Making mirror copy..."
+  mwecho -n "Making mirror copy..."
   (cd $MW_ORG_TARGET; tar cf $MW_TARGET.tar .)
   (cd $MW_TARGET; tar xfp $MW_TARGET.tar; \rm $MW_TARGET.tar)
   echo "Done"
@@ -163,7 +163,7 @@ if [ "$clear" = "1" ] && [ $newtarget -eq 0 ]; then
  a="N"
  rep=$MW_TARGET/src
  if [ -d $rep ]; then
-  mwechon "Ok to remove directory $rep [y or n] ?"
+  mwecho -n "Ok to remove directory $rep [y or n] ?"
   read a
   if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
     echo "  Removing..."
@@ -174,7 +174,7 @@ if [ "$clear" = "1" ] && [ $newtarget -eq 0 ]; then
  a="N"
  rep=$MW_TARGET/doc
  if [ -d $rep ]; then
-  mwechon "Ok to remove directory $rep [y or n] ?"
+  mwecho -n "Ok to remove directory $rep [y or n] ?"
   read a
   if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
     echo "  Removing..."
@@ -185,7 +185,7 @@ if [ "$clear" = "1" ] && [ $newtarget -eq 0 ]; then
  a="N"
  rep=$MW_TARGET/data
  if [ -d $rep ]; then
-  mwechon "Ok to remove directory $rep [y or n] ?"
+  mwecho -n "Ok to remove directory $rep [y or n] ?"
   read a
   if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
     echo "  Removing..."
@@ -242,7 +242,7 @@ do
 
  module=""
 
- nl=`echo "$nl 1 + p" | dc`
+ nl=`expr $nl + 1`
  line=`sed -n "$nl,$nl p" $file`
 
  void=`echo $line | cut -d% -f1`
@@ -411,7 +411,7 @@ chmod $pmodeRX $MW_TARGET/$BIN/* $MW_TARGET/shell/*
 
 if [ "$clear" = "1" ] && [ $newtarget -eq 0 ]; then
  chmod -R a+rX $MW_TARGET
- mwechon "Moving temporary directory to the target directory ?"
+ mwecho -n "Moving temporary directory to the target directory ?"
  read a
  if [ "$a" = "y" ] || [ "$a" = "Y" ]; then
   \mv -f $MW_ORG_TARGET $MW_OLD_TARGET

@@ -1,7 +1,7 @@
 # %Z%MegaWave %R%, %M% %I%, %G%
 #-------------------------------------------
 # Makefile for the MegaWave2 system macros
-# (c)1995-2002 Jacques Froment
+# (c)1995-2004 Jacques Froment
 #-----------------------------------------------------------------------------
 # This file is part of the MegaWave2 system library 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -22,15 +22,15 @@ SYSDESTDATADIR  = $(PUBLIC_MEGAWAVE2)/sys/shell/data
 
 # Files to install for all users
 
-SYSTARGET =  .mw2_help_lg_com cmw2 cmw2_all mwvers mwdoclatex mwnewuser mwechon \
+SYSTARGET =  .mw2_help_lg_com cmw2 cmw2_all mwvers mwdoclatex mwnewuser mwecho \
 	mwarch cxmw2 mwdep mwmakedoc cmw2macro mwdocxdvi mwdoc mwwhere mwisupper \
-	mwmodlist mwsysmaclist mwrm mwrnwordmod
+	mwmodlist mwsysmaclist mwrm mwrnwordmod mwmodsearch mwmodbibtex
 
 SYSDATATARGET = data/mwmakedoc_foot.tex data/mwmakedoc_foot_index.tex data/mwmakedoc_macros.tex \
-		data/mwmakedoc_body.tex data/mwmakedoc_body_html.tex\
-		data/mwmakedoc_header_latex2.09.tex data/mwmakedoc_header_latex2e.tex \
-		data/mwmakedoc_list.tex data/mwmakedoc_reference.tex \
-		data/mwdoclatex_header.tex data/mwdoclatex_foot.tex \
+		data/mwmakedoc_macros_html.tex data/mwmakedoc_body.tex data/mwmakedoc_body_html.tex\
+		data/mwmakedoc_header_latex2.09.tex data/mwmakedoc_header_latex2e.tex data/mwmakedoc_list_html.tex\
+		data/mwmakedoc_list.tex data/mwmakedoc_reference.tex data/mwmakedoc_reference_html.tex\
+		data/mwmakedoc_bib.tex	data/mwdoclatex_header.tex data/mwdoclatex_bib.tex data/mwdoclatex_foot.tex \
 		data/mwrnwordmod.data data/cxmw2_header.c data/cxmw2_foot.c
 
 # Files to install for MegaWave2 Administrator only 

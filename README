@@ -97,6 +97,12 @@ for the very common systems and machine architectures only.
   The installation procedure has been successfully checked on the following Unix
 systems :
 
+  MegaWave2 Vers 2.30 :
+    - Linux :
+      + Mandrake 9.2 kernel 2.4.22-10mdk (gcc 3.3.1, glibc 2.3.2)
+      + Mandrake 9.0 kernel 2.4.19-16mdk (gcc 3.2, glibc 2.2.5)
+    - SunOS 5.7 (with optional SPROcc package)
+
   MegaWave2 Vers 2.20 :
     - Linux :
       + Mandrake 9.0 kernel 2.4.19-16mdk (gcc 3.2, glibc 2.2.5)
@@ -118,10 +124,10 @@ systems :
     - HP-UX B.10.20 (with optional HP-UX C compiler)
     - SunOS 5.6, SunOS 5.7 (with optional Solaris C compiler)
 
-  We guess that MegaWave2 V.2.20 may be installed without to much work on the
+  We guess that MegaWave2 V.2.30 may be installed without to much work on the
 following Unix systems :
 
-  Linux kernel 2.x with gcc 2.x or gcc 3.y (with y>=2) and glibc 2.0.x, 2.1.x, 2.2.x
+  Linux kernel 2.x with gcc 2.x or gcc 3.y (with y>=2) and glibc 2.x
   HP-UX A.09.x
   SGI IRIX 5.x
   SunOS 4.1.x, SunOS 5.x

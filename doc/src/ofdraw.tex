@@ -1,0 +1,8 @@
+This module takes optical flow data as input (that is, a 2D-vector 
+movie represented by 2 Fmovies $U$ and $V$) and draw the 2D-vectors defined
+on a discrete grid with step $p$. The output is a
+Cmovie with a white background and vectors drawn in black as arrows.
+Only lines may be drawn by specifying option \verb+-a+. 
+A zoom factor may be used with \verb+-z+ option.
+Vectors whose norm is below $m$ are not drawn.
+The output Cmovie may then be displayed with \verb+cmview+.

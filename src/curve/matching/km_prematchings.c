@@ -2,7 +2,7 @@
 /* mwcommand
 name = {km_prematchings};
 version = {"1.0"};
-author = {"Jose Luis Lisani, Pablo Muse, Frederic Sur"};
+author = {"Jose-Luis Lisani, Pablo Muse, Frederic Sur"};
 function = {"Get pre-matching codes of two dictionaries"};
 usage = {
    maxError->maxError     "maximum allowed Hausdorff distance between two codes to be considered as pre-matching",

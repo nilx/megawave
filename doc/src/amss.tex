@@ -1,9 +1,5 @@
 \def\vfp{\vspace{5mm}}
 \def\la{_\lambda }
-\def\ut& {\frac{\partial u}{\partial t}}
-\def\equi& {\Leftrightarrow}
-\def\fb& {\begin{equation}}
-\def\fe& {\end{equation}}
 \def\med{\hbox{med}}
 \def\real{I\!\!R}
 \def\entier{I\!\!N}
@@ -20,22 +16,22 @@
 {\center {\bf \underbar{ Multiscale Analysis of image.}}}
 
 The fundamental equation of image processing
-\fb&
+\begin{equation}
 \hbox{AMSS} \qquad \frac{\partial u}{\partial t} = \vert Du \vert (curv(u))^{\frac{1}{3}} 
-\fe&
+\end{equation}
 $$ u(0,.) = u_0(.)$$
 has been discovered recently with existence proofs in the sense of viscosity
-solutions [AGLM-1-2-3]. 
+solutions~\cite{alvarez.guichard.ea:axioms}. 
 This is the unique model of multiscale analysis of image, affine invariant and morphological
 invariant.
 
 Another useful, less invariant (not affine invariant), but more easy for a numerical viewpoint,
 is the same equation without the power $1/3$ : ``the mean curvature motion".
 
-\fb&
+\begin{equation}
 \hbox{MCM} \qquad
 \frac{\partial u}{\partial t} = \vert Du \vert (curv(u)) 
-\fe&
+\end{equation}
 
 
 The function {\bf amss} will process the model AMSS or the mean curvature motion, from $t = t_{begin}$ to $t = t_{end}$.
@@ -150,14 +146,14 @@ The scheme is based on a diffusive interpretation of the equations.
 Indeed, if $\xi$ is a unit vector, such that $\nabla u . \xi = 0$,
 and $u_{\xi\xi}$ the second derivative of u in the direction $\xi$,
 we have :
-$$ (2) \equi& \ut& = u_{\xi\xi} $$
+$$ (2) \Leftrightarrow \frac{\partial u}{\partial t} = u_{\xi\xi} $$
 This formulation yields an anisotropic diffusion equation. Anisotropic,
 because we diffuse only in one direction $\xi$, depending on the gradient.
-(compare with the isotropic diffusion ($\ut& = \Delta u$) i.e. the
+(compare with the isotropic diffusion ($\frac{\partial u}{\partial t} = \Delta u$) i.e. the
 heat equation).
 
 Equation (1) can be rewritten as
-$ \ut& = ( \nabla u )^{\frac{2}{3}} (u_{\xi\xi})^{\frac{1}{3}} $,
+$ \frac{\partial u}{\partial t} = ( \nabla u )^{\frac{2}{3}} (u_{\xi\xi})^{\frac{1}{3}} $,
 where $( \nabla u )^{\frac{2}{3}}$ is understood as the speed of the diffusion.
 
 
@@ -166,10 +162,10 @@ The schemes which we wish to discuss compute $u_{\xi\xi}$ by a quasilinear formu
 \skipaline
 In order to have consistency, we must find $\lambda_0 , \lambda_1 , \lambda_2 ,
 \lambda_3, \lambda_4$, such that :
-\fb& \label{KKK}
+\begin{equation} \label{KKK}
 u_{\xi\xi} = \frac{1}{\Delta x^2} ( -4 \lambda_0 u_{i,j} + \lambda_1 (u_{i+1,j}
 +u_{i-1,j}) + \lambda_2 (u_{i,j+1} +u_{i,j-1})
-\fe&
+\end{equation}
 $$
     \qquad + \lambda_3 (u_{i-1,j-1} +u_{i+1,j+1}) +\lambda_4 (u_{i-1,j+1} +u_{i+
 1,j-1}))

@@ -1,0 +1,34 @@
+This modules is similar to {\tt ml\_draw}, but acts on a {\tt Cmimage} instead
+on a {\tt Mimage} : it is intended to visualize the color topographic 
+map\index{topographic map!color} the {\em cmimage} 
+contains~\cite{coll.froment:topographic}.
+
+It draws all the {\tt Cmorpho\_lines} of {\em cmimage} in
+black (0) on a white background (255) into  the
+{\tt Ccimage} {\em image\_out}.
+
+If the option \verb+-o movie+ is selected, the {\tt Cmorpho\_lines}
+are drawn is the {\tt Cmovie} \verb+movie+ so that an image number
+$n$ contains the {\tt Cmorpho\_lines} associated to the $n$-th 
+color level (according to the total order used in {\tt cml\_decompose}). 
+Warning : this option may cause huge data output.
+
+If the option \verb+-a bimage+ is selected, the background of the
+image output is made by the zoomed image \verb+bimage+, this last
+one being the original bitmap image used to compute the {\tt Cmorpho\_lines}
+(in that case, it should be a Ccimage).
+
+If the option \verb+-b+ is selected, the image output has two columns
+and to rows more than the size indicated below. This is useful to
+draw the border image. 
+
+\smallskip
+
+If {\em cmimage} is of size $NC\times NL$, 
+the output {\em image\_out} will be of size $(2NC-1)(2NL-1)$.\\
+Indeed the boundary between regions is drawn ``between'' the pixels,
+thus we have to add $NC-1$ columns and $NL-1$ lines to be able
+to draw the boundaries. \\
+The ``corners'' obtained in this way are the correct locations
+of the vertices of a {\tt Cmorpho\_line} (see the figure in
+{\tt ml\_extract}).

@@ -1,0 +1,49 @@
+\def\R{\hbox{I\kern-.2em\hbox{R}}}
+\def\Leq{\preceq}
+
+This module reconstructs a {\tt cfimage} {\em image\_out}
+using the  {\tt cmorpho\_lines} contain in the input {\em m\_image}.
+It works as the module {\tt ml\_reconstruct}, but if the later 
+assumes gray level images only, {\tt cml\_reconstruct} can be
+applied on 3-planes color images.
+
+Please read before the description of {\tt ml\_reconstruct} to get
+the reconstruction process for gray level images, as well as the 
+description of {\tt cml\_decompose} to get the total order $\Leq$ in $\R^3$ 
+used in the case of 3-planes color images.
+This extension to multi-valued images is exposed in~\cite{coll.froment:topographic}.
+
+The module {\tt cml\_reconstruct} allows to reconstruct an image in the HSI color model
+from the color topographic map\index{topographic map!color} given by the {\tt cmorpho\_lines}.
+Use the module {\tt cfchgchannel} to convert this HSI image to a RGB one.
+
+\medskip
+The following example computes in a bitmap image {\tt mapbaboon} the color topographic 
+map of the {\em baboon} image shown at the bottom of the color plate 
+in~\cite{coll.froment:topographic} :
+
+\begin{verbatim}
+# Get the baboon image in the HSI model
+cfchgchannels -c 1 ccimage baboon.hsi
+
+# Quantify the HSI plane to reduce data
+# without affecting too much visual quality
+cfquant baboon.hsi qbaboon.hsi 17 4 8
+
+# Compute the color topographic map by means
+# of the cmorpho_lines. Does not retain small 
+# level lines (length lower than 20 points),
+# which are negligible.
+cml_decompose -l 20 qbaboon.hsi baboon.cml
+
+# Reconstruct a HSI image from the remaining
+# level lines. Very similar to a grain filter.
+cml_reconstruct baboon.cml rbaboon.hsi
+
+# Get the image in RGB color model
+cfchgchannels -c 1 -i rbaboon.hsi rbaboon.rgb
+
+# Get the color topographic map geometry with
+# the reconstructed image in background
+cml_draw -a rbaboon.rgb baboon.cml mapbaboon
+\end{verbatim}

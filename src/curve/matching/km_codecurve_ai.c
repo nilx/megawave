@@ -1,7 +1,7 @@
 /*----------------------------MegaWave2 module----------------------------*/
 /* mwcommand
 name = {km_codecurve_ai};
-version = {"1.0"};
+version = {"1.1"};
 author = {"Jose-Luis Lisani, Pablo Muse, Frederic Sur"};
 function = {"Compute affine-invariant codes for a single curve"};
 usage = {
@@ -15,6 +15,10 @@ usage = {
    dictionary<-dict      "output dictionnary (Flists)"
         };
 */
+
+/*----------------------------------------------------------------------
+ v1.1: corrected minor FABS bug (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include<math.h>
 #include "mw.h" 

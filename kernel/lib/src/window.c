@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    window.c
    
-   Vers. 1.3
-   (C) 1993-99 Jacques Froment
+   Vers. 1.4
+   (C) 1993-2003 Jacques Froment
    Interconnexion between the Wdevice Library and MegaWave2
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -15,7 +15,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
 #include <string.h>
-#include <varargs.h>
 
 #include "mw.h"
 #include "window.h"

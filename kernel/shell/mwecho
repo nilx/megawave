@@ -1,0 +1,142 @@
+#!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="`basename $0`"
+_Vers="0.0"
+_Date="2004"
+_Func="Portable echo with -n and -E options";
+_Auth="Jacques Froment";
+_Usage="[-n] [-E] [arg]"
+#----------------------------------------------------------------------------#
+# This file is part of the MegaWave2 system macros. 
+# MegaWave2 is a "soft-publication" for the scientific community. It has
+# been developed for research purposes and it comes without any warranty.
+# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
+# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
+#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
+#-----------------------------------------------------------------------------
+
+# Warning 1 : the $MACHINETYPE variable must be set
+# Warning 2 : has been tested only on
+#  Linux 2.4.22-10mdk
+#  SunOS 5.7
+
+com=/bin/echo
+if [ ! -x $com ]; then
+ com=/usr/bin/echo
+ if [ ! -x $com ]; then
+  echo "${_Prog} : cannot find directory of echo command !"
+  exit 1  
+ fi
+fi
+
+# Print without newline
+print_n()
+{
+ if [ $MW_SYSTEMTYPE = SunOS ]; then
+  if [ $MW_MACHINETYPE = sun4_5 ]; then
+    printf "$1"
+  else
+    if [ -x /usr/ucb/echo ]; then
+      /usr/ucb/echo -n "$1"
+    else
+     $com -n "$1"
+    fi
+  fi
+ else
+  if [ $MW_SYSTEMTYPE = Linux ]; then
+    $com -n -e "$1"
+  else
+    $com -e $1"\c"
+  fi
+ fi
+}
+
+# Print without newline and without interpreting backslash sequences
+print_nb()
+{
+ if [ $MW_SYSTEMTYPE = SunOS ]; then
+  if [ -x /usr/ucb/echo ]; then
+   /usr/ucb/echo -n "$1"
+  else
+   $com -n -E "$1"
+  fi
+ else
+  $com -n "$1"
+ fi
+}
+
+# Print without interpreting backslash sequences
+print_b()
+{
+ if [ $MW_SYSTEMTYPE = SunOS ]; then
+  if [ -x /usr/ucb/echo ]; then
+   /usr/ucb/echo "$1"
+  else
+   $com -E "$1"
+  fi
+ else
+   $com "$1"
+ fi
+}
+
+# Default print
+print()
+{
+ if [ $MW_SYSTEMTYPE = SunOS ]; then
+  $com "$1"
+ else
+   $com -e "$1"
+ fi
+}
+
+
+if [ "${MW_SYSTEMTYPE}" = "" ]; then
+   echo "Please set the \$MW_SYSTEMTYPE environment variable"
+   exit 1
+fi
+
+nonewline=0
+backslash=0
+changed=1
+while [ $changed -eq 1 ];
+do
+  changed=0
+  case "$1" in
+    -n)	nonewline=1
+        changed=1
+        shift
+	;;
+    -E)	backslash=1;
+        changed=1
+        shift
+	;;
+  esac
+done
+
+if [ $nonewline -eq 1 ] && [ $backslash -eq 1 ]; then 
+ print_nb "$*";
+else
+ if [ $nonewline -eq 1 ]; then 
+  print_n "$*";
+ else 
+  if [ $backslash -eq 1 ]; then 
+   print_b "$*";
+  else
+   print "$*";
+  fi
+ fi
+fi
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+

@@ -1,29 +1,35 @@
-
-/**************************** Copyright MegaWave ***************************/
+/*--------------------------- MegaWave2 Command -----------------------------*/
 /* mwcommand
 name = {disocclusion};
-version = {"1.1"};
+version = {"2.0"};
 author = {"Simon Masnou"};
 function = {"Disocclusion using global minimisation of cost by dynamic recursive programing"};
 usage = {
-  'm'->morpho   "If used then a morphological disocclusion is processed",
-  'd'->dist "If used then the distance is taken into account for cost computing",
-  'a'->angle "If used then the orientation of each entering level line is more precisely computed on a ball of radius 4",
-  input->Input  "Occluded image",
-  holes->Holes  "Image containing the only occlusions",
-  output<-Output "Disoccluded image"
+  'e':[energy_type=1]->energy_type    
+       "Energy of a level line : 0 = only length, 1 = only angle (default), otherwise = angle+length",
+  'a'->angle        "If used then the orientation of each entering level line is computed more accurately on a ball of radius 4",
+  input->Input      "Input occluded Cimage",
+  holes->Holes      "Input Fimage containing the only occlusions",
+  output<-Output    "Output disoccluded Cimage"
   };
 */
-/****************************************************************************/
+/*----------------------------------------------------------------------
+ v2.0: revised version, added -e option, no more -m option (S.Masnou)
+----------------------------------------------------------------------*/
+
 
 #include <math.h>
-
-#ifndef HUGE
-#define HUGE HUGE_VAL
-#endif
-
 #include <stdio.h>
 #include "mw.h"
+
+
+
+/***************************************************************************/
+/** This program performs disocclusion of simply connected sets. Any set with
+    a hole will be automatically filled before the disocclusion process
+
+    Crucial convention : x denotes VERTICAL axis and y HORIZONTAL axis !! **/
+/***************************************************************************/
 
 /**********************************************************************/
 /* IMPORTANT NOTE : at the end of the labeling process, labels of each 
@@ -226,6 +232,11 @@ char *not_writing_on,*complement,*connectivity;
     free(Output);
   }  
 
+
+
+
+/****************************************************************************/
+
 #define Square(u) (u)*(u)
 #define Norm(u,v) sqrt(Square(u)+Square(v))
 #define Min(u,v) (((u)<(v))?(u):(v))
@@ -270,7 +281,8 @@ double **energy;
 int **correspond;
 jordan **element;
 
-char *morphological,*distance,*anglep;
+char *anglep;
+int energy_criterion;
 int globx,globy;
 
 static double CCost();
@@ -298,8 +310,6 @@ char *pivots; /* A geodesic path can be made of different segments;
 		 at each segment apex (pivot) one needs the local conformation 
 		 of the level line */
 int *fpivots;
-
-
 
 typedef struct Pxy_t {
     double x, y;
@@ -688,9 +698,7 @@ Ppoly_t *polyp;
     tril = 0;
 	
     /* make sure polygon is counterclockwise and load pnls array */
-    minx = HUGE_VAL; /* OJO!! ATTENTION!!  A. Almansa
-		      old code valid in sun: minx = HUGE; */
-    for (minpi = -1, pi = 0; (pi < (polyp->pn)) ; pi++) {
+    for (pi = 0, minx = 1e+200, minpi = -1; pi < polyp->pn; pi++) {
         if (minx > polyp->ps[pi].x)
             minx = polyp->ps[pi].x, minpi = pi;
     }
@@ -886,6 +894,7 @@ double *TVangle;
 	pnlp=pnlp->link;
 	gdx2=pnlp->pp->x;gdy2=pnlp->pp->y;
 	vx=gdx2-gdx1;vy=gdy2-gdy1;
+	gdistance+=Norm(vx,vy);
 	(*TVangle)+=fabs(atan2(vxref*vy-vyref*vx,vxref*vx+vyref*vy));
 	vxref=vx;vyref=vy;
 	if (!(pnlp->link)){
@@ -893,7 +902,6 @@ double *TVangle;
 	    (*TVangle)+=fabs(atan2(vxref*vy-vyref*vx,vxref*vx+vyref*vy));
 	    if ((eps1.x!=gdx2)||(eps1.y!=gdy2))
 	      mwerror(FATAL,1,"Erreur dans GeodesicPath\n");}
-	gdistance+=Norm(vx,vy);
 	gdx1=gdx2;gdy1=gdy2;
 	mwdebug("Path : %f %f\n",gdx1,gdy1);
       }
@@ -1177,7 +1185,7 @@ frontier *jbi;
 /* Copies the frontier into a polygonal line whose structure is compatible 
    with Mitchell's shortest path algorithm. The frontier structure was built
    in such a way that it contains only those points of bifurcation of 
-   the polygonal line enclosng the occlusion */
+   the polygonal line enclosing the occlusion */
 
 void copy_frontier(x)
 int x;
@@ -1473,7 +1481,9 @@ int x;
        starting at the associated T-junction (ie the first line reached when 
        curve is described counterclockwise). */
     while ((jc->x==jc->previous->x) && (jc->y==jc->previous->y)) jc=jc->next;
-    jci=jc;n=0;
+    
+    /* To avoid a double examination of the same level line */
+     jci=jc;n=0;
     do{
       if (jci->junction){
 	endTjunctions[n].x=jci->x+x;endTjunctions[n++].y=jci->y;
@@ -1481,7 +1491,7 @@ int x;
 	jci->junction->junction=NULL;}
       jci=jci->next;}
     while (jci!=jc);
-    jci=jc;
+    
     pivots=NULL;npivots=0;
     for (n=0;n<IONumber;n+=2)
       {
@@ -1582,7 +1592,7 @@ int x;
 		  if (npi3!=npi4)
 		    if (*(ptrfpiv+npi3)!=*(ptrfpiv+npi4))
 		      {
-			npi5=(2*npi+1)%8; 
+			npi5=(2*npi+1)%8;
 			/* The previous setting allows to switch from "fpivots" neighborhood to 
 			   "pivots" neighborhood */
 			while ((npi5!=npi1)&&(npi5)!=npi2) npi5=(npi5+1)%8;
@@ -1702,8 +1712,9 @@ unsigned char *ExternVal;
 	while (jlook1!=jlook2);}
       else jlook1=jlook1->next;
 
-    /*  Third step : Merge lines which have the same endpoints */
-
+    /*  Third step : Merge lines which have the same endpoints 
+	(but possibly with different directions at endpoints !!) */
+    
     /* jlook1 equals jc */
     go_on=1;
     do{
@@ -1937,26 +1948,6 @@ float value;
 	if (*ptr_label==value) {encore=1;occlusionArea++;}
       if (!encore) break;}
 
-    /*******************************/
-    /* A SUPPRIMER */
-
-    /* We assume that occlusion is not connected to image boundaries */
-    Line=i+2;
-    fconnected(label_start-col_number,Line,col_number,value,&Number,(char*)1,(char*)1,(char*)1);
-
-    /*printf("\n\t\tNumber of Jordan curves = %d\n\n",Number);*/
-    if (Number>1){
-      mwerror(WARNING,1,"\nOcclusion is not simply connected : disocclusion cannot be performed\n");
-      for (i=0,ptr_label=label_start,ptrin=instart;i<line_number-globx;i++){
-	encore=0;
-	for (j=0;j<col_number;j++,ptrin++,ptr_label++)
-	  if (*ptr_label==value){
-	    encore=1;
-	    *ptr_label=(-2);  /*  Avoids a future reexamination of this occlusion */}
-	if (!encore) break;}
-      return;}
-    /*******************************/
-
     /*
       We are going to compute the set of T-junctions, starting from the first pixel encountered 
       when the image is scanned from top to bottom and left to right. This point is used to 
@@ -2037,6 +2028,7 @@ float value;
     i=0;j=globy;
     previous_direction=2;neighbors=1;
     central_label=ptr_label;
+    /* We first seek for the predecessor */
     do{
       ptr_label=central_label;
       previous_direction=(previous_direction+1)%8;
@@ -2172,7 +2164,7 @@ float value;
     /* We shall now update the jordan curve representing T-junctions : after 
        the previous construction of the jordan curve, two neighbors with 
        different brightnesses (b1 and b2) may be separated by a single level line. 
-       But there is another T-junction associated with a gray level b3 such that b1<b3<b2 
+       But if there is another T-junction associated with a gray level b3 such that b1<b3<b2 
        then we have to split the level line (b1,b2) into two level lines (b1,b3) and (b3,b2) 
        and thus we obtain "two" T-junctions. This creation of a new T-junction is performed 
        through the function "insert_jordan" */
@@ -2262,13 +2254,14 @@ float value;
     poly.pn = numfrontier;
 
     Triangulation(&poly); /* Triangulation of the occlusion boundary */
-
+    
     if (IONumber>2) ComputeOptimalSet(jc); /* Computation of the optimal set of T-junctions */
     else {
-      printf("energy=%.2f  \n",CCost(jc,jc->next));
+      printf("energy=%.2f  ",CCost(jc,jc->next));fflush(stdout);
       jc->junction=jc->next;jc->junction->junction=jc;}
 
     jc=update_jordan_curve(jc,&ExternVal);
+    
     if (!jc){ /* After reduction the set of T-junctions is empty thus disocclusion is trivial */
       FreeTPath();
       if (polypoints) 
@@ -2285,17 +2278,6 @@ float value;
 	    *ptrout=ExternVal;}
 	if (!encore) break;}
       return;}
-
-    /*if ((globx==132)&&(globy==147))
-      {
-	jci=jc;
-	printf("\nEnd\n\n");
-	do{
-	  printf("%d %d %.1f %.1f --> %d %d %.1f %.1f \tCC=%f\n",jci->gray1,jci->gray2,jci->x+globx,jci->y,jci->junction->gray1,jci->junction->gray2,jci->junction->x+globx,jci->junction->y,,CCost(jci,jci->junction)*180.0/M_PI,jci->vx,jci->vy,jci->junction->vx,jci->junction->vy);
-	  jci=jci->next;}
-	while (jci!=jc);
-	printf("\n");
-	}*/
 
     numcolored=0;
     occlusion=(occlusionPoint*)malloc((size_t)occlusionArea*sizeof(occlusionPoint));
@@ -2325,15 +2307,6 @@ float value;
     if (!encore) break;}
     return;
   }
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-/** This program perform disocclusion of the only simply connected sets ****/
-
-/** Crucial convention : x denotes vertical axis and y horizontal axis !! **/
-/***************************************************************************/
 
 /***************************************************************************/
 
@@ -2373,22 +2346,37 @@ jordan *jc1,*jc2;
 	 v1    v      v2   */
     if (Norm(v1x,v1y)<1e-7 || Norm(v2x,v2y)<1e-7) mwerror(FATAL,1,"Angle problem !\n");
 
-    if (morphological) weight=1;
-    else weight=abs((int)(jc1->gray2)-(int)(jc1->gray1));
+    weight=abs((int)(jc1->gray2)-(int)(jc1->gray1));
 
     norm_v=Norm(vx,vy);
     if (norm_v>1e-7) 
       {
 	norm_v=GeodesicDistance(jc1,jc2,&TVangle);
-	if (distance)
-	  return (weight*TVangle+CPL*norm_v);
-	else
-	  return (weight*TVangle);
+	switch (energy_criterion)
+	  {
+	  case 0 : 
+	    return (weight*norm_v);
+	    break;
+	  case 1 : 
+	    return (weight*TVangle);
+	    break;
+	  default : 
+	    return (weight*(TVangle+CPL*norm_v));
+	    break;
+	  }
       }
     else
       {
-	if (anglep) return (weight*fabs(atan2(v1y*v2x-v1x*v2y,-v1x*v2x-v1y*v2y)));
-	else return (weight*M_PI_2);
+	switch (energy_criterion)
+	  {
+	  case 0: 
+	    return (0.0);
+	    break;
+	  default: 
+	    if (anglep) return (weight*fabs(atan2(v1y*v2x-v1x*v2y,-v1x*v2x-v1y*v2y)));
+	    else return (weight*M_PI_2);
+	    break;
+	  }
       }
   }
 
@@ -2499,7 +2487,7 @@ IONumber-1---|----------------------
     energy=(double**)malloc(IONumber*sizeof(double*));
     correspond=(int**)malloc(IONumber*sizeof(int*));
     element=(jordan**)malloc(IONumber*sizeof(jordan*));
-    printf("%4d T-junctions  \n",IONumber);
+    printf("%4d T-junctions  ",IONumber);fflush(stdout);
     if (!energy || !correspond || !element) mwerror(FATAL,1,"Not enough memory (7)!\n");
     jci=jc;i=0;
     do{
@@ -2537,8 +2525,8 @@ IONumber-1---|----------------------
 	    else Emin=Etool1+Etool2;}
       if (Eminold!=Emin) *corresp=k;}
 	
-    if (Emin==(-1)) printf("\n\n ERREUR\n\n");
-    printf("energy=%5.2f\n",Emin);
+    if (Emin==(-1)) mwerror(FATAL,1,"Code error (please contact administrator)\n");
+    printf("energy=%5.2f",Emin);fflush(stdout);
     joinback(0,IONumber-1);
     
     for (i=0;i<IONumber;i++){
@@ -2550,10 +2538,11 @@ IONumber-1---|----------------------
 
 /****************************************************************************/
 
-void disocclusion(Input,Output,Holes,morpho,dist,angle)
+void disocclusion(Input,Output,Holes,energy_type,angle)
 Cimage Input,Output;
 Fimage Holes;
-char *morpho,*dist,*angle;
+char *angle;
+int *energy_type;
 
   {
     unsigned char *BInput,*BOutput; /* Correspond to an extension of one pixel in every direction 
@@ -2569,8 +2558,7 @@ char *morpho,*dist,*angle;
     int *Border,*ptrBord,*ptrBord1,*ptrBord2;
     int value1,value2,attrib;
     
-    morphological=morpho;
-    distance=dist;
+    energy_criterion=*energy_type;
     anglep=angle;
 
     line_number=Input->nrow;col_number=Input->ncol;
@@ -2765,12 +2753,11 @@ char *morpho,*dist,*angle;
 
     IImage=BInput;OImage=BOutput;LImage=BHoles;
 
-	
     for (x=0,ptr_label=LImage,ptrin=IImage,ptrout=OImage;x<line_number;x++)
       for (y=0;y<col_number;y++,ptrin++,ptr_label++,ptrout++)
 	if ((*ptr_label)>0)
 	  {
-	    printf("\rline=%3d  column=%3d  label=%4d  \n",x,y,(int)(*ptr_label));
+	    printf("\rline=%3d  column=%3d  label=%4d  ",x-1,y-1,(int)(*ptr_label));fflush(stdout);
 	    globx=x;globy=y;
 	    /* We start from the beginning of the line */
 	    perform_disocclusion(ptrin-y,*(ptrin-1),ptr_label-y,*ptr_label,ptrout-y);

@@ -1,6 +1,6 @@
-This module implements the classical Wiener filter (in its simplest version),
-that aims to restore an image $in$ by an image $out$ that minimizes
-the energy
+This module implements the classical Wiener filter\index{filter!Wiener} 
+(in its simplest version),
+that aims to restore an image $in$ by an image $out$ that minimizes the energy
 $$E(out) = \int |\nabla(out)|^2 +  w \int (K \star out -in)^2.$$
 The solution is obtained in Fourier domain with
 $$\widehat{out}(\xi) = \widehat{in}(\xi) \cdot

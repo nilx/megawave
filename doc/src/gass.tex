@@ -4,8 +4,8 @@ of time $t$ according to the
 equation
 $$\frac{\partial {\mathbf C}}{\partial t}(s,t) 
 = \kappa^{1/3}(s,t) \; {\mathbf N}(s,t),$$
-where $\kappa$ represents the local curvature of $\mathbf C$ and
-$\mathbf N$ the normal vector to $\mathbf C$. This equation is
+where $\kappa$ represents the local curvature of ${\mathbf C}$ and
+${\mathbf N}$ the normal vector to ${\mathbf C}$. This equation is
 the geometric equivalent of the scalar Affine Morphological Scale
 Space (see module \verb+amss+).
 The Affine Scale Space is the only regular semigroup that preserves 
@@ -15,7 +15,7 @@ inclusion and that commutes with special affine transforms of the plane.
 
 The numerical scheme used in this module is based on the iteration
 of a geometric semi-local operator called {\em affine erosion}.
-This operator, described in [1], is ``fully consistent'' in the
+This operator, described in~\cite{moisan:affine}, is ``fully consistent'' in the
 sense that it satisfies all the axioms that define the Affine Scale
 Space (except the semigroup property of course, otherwise it would be
 the Affine Scale Space itself). Indeed, it preserves inclusion
@@ -59,11 +59,3 @@ the number of convex components found at the begining of the iteration,
 the effective scale of erosion applied, and the total evolution scale
 achieved so far.
 
-\bigskip
-
-{\Large \bf References}
-
-\medskip
-
-[1] L.Moisan, ``Affine Plane Curve Evolution : a Fully Consistent Scheme'', 
-{\it IEEE Transactions On Image Processing}, vol. 7:3, pp. 411-420, 1998.

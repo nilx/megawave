@@ -1,6 +1,6 @@
 This module compresses the wavelet transform of an image using 
-Shapiro's EZW algorithm \cite{kn:shp}. It can produce both 
-the compressed file and the quantized wavelet transform 
+Shapiro's EZW algorithm~\cite{shapiro:embedded}\index{wavelet!compression}. 
+It can produce both the compressed file and the quantized wavelet transform 
 (which can be reconstructed from the compressed file). 
 \newline 
 
@@ -8,7 +8,7 @@ the compressed file and the quantized wavelet transform
 \newline
 
 This is a brief description of EZW algorithm. We refer the reader 
-to \cite{kn:shp} for a full explanation. 
+to~\cite{shapiro:embedded} for a full explanation. 
 
 The EZW algorithm is a two steps iterative algorithm. The first step 
 is called the {\em dominant pass,} and it alternates with the second step, 
@@ -26,7 +26,8 @@ significant for the first time (which means that it was found non-significant
 at the preceding dominant pass), then it is quantized to $-3T/2$ or $3T/2$, 
 according to its sign. If it was already found significant at the preceding 
 dominant pass, then it is put on a list, called the {\em subordinate list}; 
-its quantization shall be refined during the next subordinate pass. 
+its quantization\index{quantization!wavelet} 
+shall be refined during the next subordinate pass. 
 
 During the dominant pass, one constructs a {\em significance map} 
 by associating to each coefficient in the wavelet tree a symbol, 
@@ -46,9 +47,10 @@ beginning with the root and following an order such that a parent
 is scanned before its children. 
 For each coefficient, one encodes 0 if it is a zero tree root, 1 if it is 
 an isolated zero, 2 if it is newly significant positive, 3 if it is newly 
-significant negative, and nothing otherwise. This list of symbols (with 
-a four-letters alphabet) is arithmetically encoded 
-(using a customized version of the algorithm presented in \cite{kn:wnc}). 
+significant negative, and nothing otherwise. 
+This list of symbols (with a four-letters alphabet) is arithmetically 
+encoded~\cite{witten.neal.ea:arithmetic} using a customized version of the algorithm 
+presented in~\cite{shapiro:embedded}). 
 
 \item
 During the {\em subordinate pass} one refines the quantization 
@@ -153,16 +155,3 @@ It is the result of the quantization of $WavTrans$. It can be reconstructed
 from $Compress$. 
 
 
-
-
-
-\begin{thebibliography}{999999}
-
-\bibitem[Shp]{kn:shp} J. Shapiro, {\em ``Embedded image coding using zerotrees 
-of wavelet coefficients'', } IEEE-SP~41 (12), pp. 3445--3462, (1993).  
-
-\bibitem[WNC]{kn:wnc} I.H. Witten, R.M. Neal, J.G. Cleary, {\em ``Arithmetic 
-coding for data compression'', } Comm. of the ACM, Vol.~30, no~6, pp.520--540, 
-(1987). 
-
-\end{thebibliography}

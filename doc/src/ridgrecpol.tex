@@ -1,0 +1,7 @@
+Recall that ridgelet transform is obtained as a wavelet transform in the Radon domain.
+To get the Radon transform, a 2D FFT is computed and the rectangular 2D-Fourier plane 
+is interpolated on a polar grid that is, along lines going through the origin in the
+frequency plane.
+
+The module {\tt ridgrectpol} precisely performs this interpolation, using a
+nearest-neighbor algorithm described in~\cite{starck.candes.ea:curvelet}.

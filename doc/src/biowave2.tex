@@ -1,13 +1,10 @@
-\parindent 0.6cm 
-\parskip 0.4cm
-
 \def\real{I\!\!R}
 
 {\em biowave2} computes the two-dimensional discrete wavelet transform 
-of the floating point image stored in the file {\em Image}, 
+\index{wavelet!transform!biorthogonal} of the floating point image stored in the file {\em Image}, 
 using filter banks associated to biorthogonal bases of wavelets. 
 See {\em owave1} and {\em biowave1} modules' documentation for definitions 
-and notations.
+and notations and refer to~\cite{cohen.daubechies.ea:biorthogonal} for the theory.
 
 As in {\em owave2} module, this transform is semi-separable, i.e. it can be 
 decomposed at each level in two one-level and one-dimensional wavelet 
@@ -59,17 +56,3 @@ $2$ \ $ \sum_{k} \tilde{h}_{k}^2 =  \sum_{k} {h}_{k}^2, \;\;  \sum_{k} \tilde{h}
 
 \end{itemize}
 
-
-\begin{thebibliography}{CDF}
-
-\bibitem[CDF]{kn:cdv} A. Cohen, I. Daubechies, J.C. Feauveau. 
-{\em Biorthogonal bases of compactly supported wavelets, } 
-Comm. pure and applied math. 45, pp 485-560, 1992.
-
-\end{thebibliography}
-
-
-
-
-\parindent 0.0cm 
-\parskip 0.0cm

@@ -1,0 +1,5 @@
+The module {\tt istkwave1} reconstructs a one-dimensional signal of size $N$ from its one dimensional wavelet decomposition\index{wavelet!transform!band-limited} according to the J.L. Starck's algorithm~\cite{starck.bijaoui.ea:image} for a resolution $np$.\\
+As long as the filters G and H verify $G=1-H$, we just need to add details and approximation for a resolution $np$ in the frequency domain to get the signal back:\\
+$$ \hat{c}_0(\nu)=\hat{c}_{np}(\nu)+\sum_{j=1}^{np}\hat{w}_j(\nu).$$
+
+See documentation of module {\tt stkwave1} for more details.

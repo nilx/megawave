@@ -1,6 +1,6 @@
 This module gets back a list of symbols which have been arithmetically encoded 
 with the {\em arithm\_encode2} module according to the algorithm 
-described in \cite{kn:wnc}. 
+described in \cite{witten.neal.ea:arithmetic}. 
 
 The -r option enables to specify the number of rows in the Output fimage. 
 If it is not selected, then it is computed in order that the 
@@ -10,7 +10,7 @@ The -n option enables to specify the size of the output symbol alphabet.
 This option should be selected if the -H option was not activated 
 at the encoding phase. Otherwise this information is included in the header. 
 
-The -c option has the same meaning as for {\em arithm\_encode2}. 
+The -c option has the same meaning as for {\tt arithm\_encode2}. 
 It should be tuned in the same way as in the encoding phase. 
 
 The -p option tells wether predictive encoding has been used or not 
@@ -23,12 +23,3 @@ If the -h option is activated, this means that the histogram contained
 in the fsignal Histo has been used as the fixed source distribution histogram 
 during the encoding phase. Thus it should be used again for decoding.  
 This option should be tuned in the same way as in the encoding phase. 
-
-
-\begin{thebibliography}{999999}
-
-\bibitem[WNC]{kn:wnc} I.H. Witten, R.M. Neal, J.G. Cleary, {\em ``Arithmetic 
-coding for data compression'', } Comm. of the ACM, Vol.~30, no~6, pp.520--540, 
-(1987). 
-
-\end{thebibliography}

@@ -1,6 +1,6 @@
 This module generates a codebook (or a set of codebooks) adapted to a given 
-training set of vectors using the LBG algorithm. The training set is read 
-in the {\em TrainSet} file which must have been created with 
+training set of vectors using the LBG algorithm\index{quantization!vector}. 
+The training set is read in the {\em TrainSet} file which must have been created with 
 the {\em mk\_trainset} module (see {\em mk\_trainset} documentation for 
 further details). The generated codebook is stored in the {\em CodeBook} 
 file. It can be used for example for the vector quantization of images 
@@ -8,8 +8,8 @@ with the {\em fvq} module.
 
 The LBG or generalized Lloyd's algorithm is a two step iterative algorithm 
 which is meant to adapt an initial codebook to a given probability 
-density function or a training set of vectors (see \cite{kn:lbg}, 
-\cite{kn:gg}). We are only considering here the training set version 
+density function or a training set of vectors (see~\cite{gersho.gray:vector}, 
+\cite{linde.buzo.ea:algorithm}). We are only considering here the training set version 
 of this algorithm.
 
 If ${\cal Y} = \{Y_i\}_{1\leq i\leq I}$, is the training set of 
@@ -49,7 +49,7 @@ To do this, the {\em flbg\_train} module offers two possiblities :
 The initial codebook can be specified by the user with the -i option. 
 \item
 The initial codebook can be computed using the ``splitting trick'' 
-(see \cite{kn:lbg}).
+(see \cite{linde.buzo.ea:algorithm}).
 \end{itemize}
 Basically, the splitting trick consists in starting with a size $M/2$ 
 codebook, optimizing it with the LBG algorithm, and then ``splitting'' 
@@ -81,7 +81,7 @@ If the -M option is not selected, then only the final size {\em CodeBookSize}
 codebook is stored in {\em CodeBook} file. 
 
 It is possible to generate codebooks which are specially adapted to residual 
-vector quantization (see {\em fvq} documentation and \cite{kn:gg}) 
+vector quantization (see {\em fvq} documentation and \cite{gersho.gray:vector}) 
 with the help of -a, -b, -f and -g options. If the -a option is selected, 
 then the training set is first quantized using the codebook read in 
 {\em ResCodeBook} file, and each vector in the training set is 
@@ -108,17 +108,6 @@ generating process. If selected, it gives the constant rate
 ($= \frac{1}{K} \log_2 M$), the entropic rate, and the signal to noise ratio 
 for each generated codebook. If not selected, it only gives the number 
 of iteration in the LBG algorithm for each outer (splitting) loop. 
-
-
-\begin{thebibliography}{999999}
-
-\bibitem[GG]{kn:gg} A. Gersho, R.M. Gray, {\em ``Vector quantization 
-and signal compression'', } Kluwer Ac. Pub., Boston (1992). 
-
-\bibitem[LBG]{kn:lbg} Y. Linde, A. Buzo, R.M. Gray, {\em ``An algorithm for 
-vector quantizer design", } IEEE-COM 28, pp. 84--95, (1980).
-
-\end{thebibliography}
 
 \vspace{0.5cm}
 
@@ -151,7 +140,4 @@ codebook with index 9 in {\em CodeBook} file (i.e. the codebook with size
 \vspace{0.3cm}
 {\bf flb\_train} -s 347 -M -a {\em CodeBook} -f 9 {\em TrainSet} 
 -b {\em ResCodeBook} -g 7 {\em TrainSet} {\em ResResCodeBook}
-
 }
-
-

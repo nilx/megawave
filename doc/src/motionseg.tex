@@ -1,0 +1,26 @@
+This module implements an original approach to the problem of motion segmentation.
+This approach  allows to deal simultaneously with the problem of restoration, allowing
+the motion segmentation to influence the restoration part and vice-versa.
+
+This algorithm implements the minimization problem presented in \cite{aubert.deriche.ea:seq}:
+
+$$
+\inf_{B,C} \int ( \int_t \int_\Omega C^2(B-N)^2 \, dx dt + \alpha_c \int_t \int_\Omega
+(C-1)^2 \, dx dt +
+$$
+$$\alpha_b^r \int_\Omega \phi_1 (|\nabla B|) \, dx + \alpha_c^r \int_t \int_\Omega
+\phi_2 (|\nabla C|) \, dx dt )
+$$
+where $N(x,y,t)$ is the original noisy sequence for which the background is assumed to be static, $\phi_1$ and $\phi_2$  are convex functions which smooth the image and preserve the discontinuities in intensity and $a$, $b$ and $c$ are positive constants.
+Ideally we would like $B(x,y)$ to be the restored background and $C(x,y,t)$ the sequence with indicates the moving regions. We would like $C(x,y,t)=0$ if $(x,y)$ belongs to a moving object and 1 otherwise.
+See \cite{aubert.deriche.ea:seq} for the details on the motivation of the functional and the existence of solution to the problem. The mathematical algorithm for the minimization in an appropriated space is also found in the article.
+
+\medskip
+
+Exemple of use:
+\begin{verbatim}
+motionseg cmovie /tmp/m /tmp/bg
+fview /tmp/bg &
+cmview -l /tmp/m &
+\end{verbatim}
+

@@ -1,14 +1,9 @@
 This module normalizes a shape using an affine-invariant process described
-in [1]. Roughly speaking, this process applies an affine transformation on the
+in~\cite{cohignac:reconnaissance}. 
+Roughly speaking, this process applies an affine transformation on the
 original shape $S$ in order the moments 
 $$\mu_{pq}(S)=\int_{-\infty}^{\infty}\int_{-\infty}^{\infty}x^py^q \chi_S(x,y)dxdy$$
 to satisfy some properties which cause this transformation to be unique. 
 This way, we obtain an affine-invariant 
 shape normalization which allows to compare and recognize shapes up to 
 any linear transformation.
-
-\vskip 0.6cm
-
-{\bf Reference}
-
-[1] T.Cohignac, PhD Thesis, Ceremade 1993.

@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="Checkmodules"
-_Vers="1.05"
-_Date="2002"
+_Vers="1.06"
+_Date="2002-2004"
 _Func="Test system modules"
 _Auth="Lionel Moisan";
 _Usage="[-help]"
@@ -50,7 +50,7 @@ Pass()
 	toterr=`expr $toterr + 1`
 	echo $1 >> $tmp/failed
     else
-	mwechon "."
+	mwecho -n "."
     fi
     err=0
     totmod=`expr $totmod + 1`
@@ -120,7 +120,7 @@ echo "---------- Checking system modules ----------"
 
 # common modules (needed for test)
 
-mwechon 'common modules (needed for test): '
+mwecho -n 'common modules (needed for test): '
 
 fmean cimage > $tmp/1 || Incerr
 v=`cut -d"=" -f2 $tmp/1`
@@ -218,7 +218,7 @@ echo
 
 # compression/ezwave
 
-mwechon "compression/ezwave: "
+mwecho -n "compression/ezwave: "
 
 cfunzoom -z 4 -o 0 ccimage $tmp/1
 cfezw -d -b wave/biortho/htilde/sd09.ir $tmp/1 wave/biortho/h/sd07.ir > /dev/null || Incerr
@@ -247,7 +247,7 @@ echo
 
 # compression/lossless
 
-mwechon "compression/lossless: "
+mwecho -n "compression/lossless: "
 
 funzoom -ftype IMG -z 4 -o 0 cimage $tmp/1 2> /dev/null
 arencode2 $tmp/1 $tmp/2 > $tmp/3 || Incerr
@@ -291,7 +291,7 @@ echo
 
 # compression/scalar
 
-mwechon "compression/scalar: "
+mwecho -n "compression/scalar: "
 
 fscalq -p -n 10 cimage $tmp/1 > $tmp/2 || Incerr
 v=`cat $tmp/2`
@@ -312,7 +312,7 @@ echo
 
 # compression/vector
 
-mwechon "compression/vector: "
+mwecho -n "compression/vector: "
 
 mk_codebook $tmp/1 || Incerr
 v=`fsize $tmp/1`
@@ -331,7 +331,7 @@ echo
 
 # compression/vqwave
 
-mwechon "compression/vqwave: "
+mwecho -n "compression/vqwave: "
 
 NoPass Cfwivq
 NoPass Cfwvq
@@ -348,7 +348,7 @@ echo
 
 # curve
 
-mwechon "curve: "
+mwecho -n "curve: "
 
 area curve > $tmp/1 || Incerr
 v=`cut -d"=" -f2 $tmp/1`
@@ -449,7 +449,7 @@ echo
 
 # curve/io
 
-mwechon "curve/io: "
+mwecho -n "curve/io: "
 
 echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
 | fkreadasc $tmp/1 > /dev/null || Incerr
@@ -522,7 +522,7 @@ echo
 
 # curve/smooth
 
-mwechon "curve/smooth: "
+mwecho -n "curve/smooth: "
 
 fksmooth -n 20 -s 10 curve $tmp/1 || Incerr
 v=`area $tmp/1 | cut -d"=" -f2`
@@ -565,7 +565,7 @@ echo
 
 # curve/matching
 
-mwechon "curve/matching: "
+mwecho -n "curve/matching: "
 
 NoPass km_bitangents
 NoPass km_codecurve_ai
@@ -585,7 +585,7 @@ echo
 
 # examples
 
-mwechon "examples: "
+mwecho -n "examples: "
 
 demohead1 cimage $tmp/1 > /dev/null || Incerr
 v=`fsize $tmp/1`
@@ -665,7 +665,7 @@ echo
 
 # image/detection
 
-mwechon "image/detection: "
+mwecho -n "image/detection: "
 
 funzoom -o 0 -z 4 cimage $tmp/1
 
@@ -696,7 +696,7 @@ echo
 
 # image/domain
 
-mwechon "image/domain: "
+mwecho -n "image/domain: "
 
 fcrop -x 20 -y 20 -o 3 cimage $tmp/1 40 100 50 110 || Incerr
 v=`fnorm -v $tmp/1 | cut -d"=" -f2`
@@ -854,7 +854,7 @@ echo
 
 # image/filter
 
-mwechon "image/filter: "
+mwecho -n "image/filter: "
 
 cfunzoom -z 4 -o 0 ccimage $tmp/1
 cfdiffuse $tmp/1 $tmp/2 || Incerr
@@ -985,7 +985,7 @@ echo
 
 # image/fourier
 
-mwechon "image/fourier: "
+mwecho -n "image/fourier: "
 
 fft2d -A $tmp/1 -B $tmp/2 cimage  || Incerr
 fextract $tmp/1 $tmp/1 20 20 230 230
@@ -1069,7 +1069,7 @@ echo
 
 # image/io
 
-mwechon "image/io: "
+mwecho -n "image/io: "
 
 ccopy cimage $tmp/1 || Incerr
 fdiff cimage $tmp/1 $tmp/1
@@ -1156,7 +1156,7 @@ echo
 
 # image/level_lines
 
-mwechon "image/level_lines: "
+mwecho -n "image/level_lines: "
 
 Pass flst
 Pass flst_pixels
@@ -1194,7 +1194,7 @@ echo
 
 # image/misc
 
-mwechon "image/misc: "
+mwecho -n "image/misc: "
 
 cdisc $tmp/1 100 100 || Incerr
 v=`fmean $tmp/1 | cut -d"=" -f2`
@@ -1247,7 +1247,7 @@ echo
 
 # image/operations
 
-mwechon "image/operations: "
+mwecho -n "image/operations: "
 
 faxpb -a 2 -b 10 cimage $tmp/1 || Incerr
 faxpb -a 0.5 -b -5 $tmp/1 $tmp/2 || Incerr
@@ -1321,7 +1321,7 @@ echo
 
 # image/seg
 
-mwechon "image/seg: "
+mwecho -n "image/seg: "
 
 Pass one_levelset
 Pass segct
@@ -1334,7 +1334,7 @@ echo
 
 # image/shape_recognition
 
-mwechon "image/shape_recognition: "
+mwecho -n "image/shape_recognition: "
 
 Pass CLEAR_BASE
 Pass PUT_TO_BASE
@@ -1351,7 +1351,7 @@ echo
 
 # image/values
 
-mwechon "image/values: "
+mwecho -n "image/values: "
 
 binarize -t 150 cimage $tmp/1 || Incerr
 v=`fmean $tmp/1 | cut -d"=" -f2`
@@ -1438,7 +1438,7 @@ echo
 
 # signal
 
-mwechon "signal: "
+mwecho -n "signal: "
 
 entropy fsignal > $tmp/1 || Incerr
 v=`cut -d"=" -f2 $tmp/1`
@@ -1542,7 +1542,7 @@ echo
 
 # wave
 
-mwechon "wave: "
+mwecho -n "wave: "
 
 owave1 -e 0 fsignal $tmp/1 wave/ortho/da02.ir || Incerr
 v=`grep size $tmp/1_01_A.wtrans1d | cut -d":" -f2`

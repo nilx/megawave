@@ -1,19 +1,21 @@
-/**************************** Copyright MegaWave ***************************/
+/*--------------------------- MegaWave2 Command -----------------------------*/
 /* mwcommand
 name = {drawocclusion};
-version = {"1.1"};
+version = {"1.21"};
 author = {"Simon Masnou"};
 function = {"Interactive creation of occlusions on an image"};
 usage = {
-   'g':[gray=255]->gray  "Occlusions gray level in the occluded image (default: 255)",
-   'h':hole_image<-hole_image "Occluded image",
-   'z':zoom->zoom "Zoom factor for image appearance on screen (must be an even integer)",
-   cimage->image "Input image",
-   label<-labelimage "\tOutput image of labelled occlusions",
-   notused->window "Window for image viewing (internal use)"
+   'g':[gray=255]->gray         "Occlusions gray level in the occluded image (default: 255)",
+   'h':hole_image<-hole_image   "Occluded image",
+   'z':zoom->zoom     "zoom factor for image display (even integer)",
+   cimage->image      "Input image",
+   label<-labelimage  "Output image of labelled occlusions",
+   notused->window    "Window for image viewing (internal use)"
  };
 */
-/****************************************************************************/
+/*----------------------------------------------------------------------
+ v1.21: revision, fixed mw_delete_point_curve and czoom bugs (S.Masnou)
+----------------------------------------------------------------------*/
 
 
 #include <stdio.h>
@@ -222,9 +224,6 @@ char *not_writing_on,*complement,*connectivity;
       }
     free(Output);
   }  
-
-
-
 
 /* Number of channels for the polygon: 1 (gray-level) */
 #define NB_OF_CHANNELS 1
@@ -536,21 +535,9 @@ Wframe *ImageWindow;
 
   if (ret == -1)
     {
-      while (pc)
-	if (pc->previous)
-	  {
-	    pc=pc->previous;
-	    mw_delete_point_curve(pc->next);
-	    pc->next=NULL;
-	  }
-	else
-	  {
-	    mw_delete_point_curve(pc);
-	    pc=NULL;
-	  }
       if (pl->previous) (pl->previous)->next = NULL;
       if (poly->first == pl) poly->first = NULL;
-      /* mw_delete_polygon(pl); OJO!! ATTENTION!! Commented to avoid segm fault, A. Almansa */
+      mw_delete_polygon(pl);
       pl = NULL;
       if (print_mode)
 	{
@@ -581,7 +568,8 @@ int *gray;
   float fzoom;
   register float *ptrlabel,*ptrinterlabel;
   register unsigned char *ptrhole;
-  int Number=0,order=0;
+  int interp=0;
+  int Number=0;
   float foreground;
 
   labelimage=mw_change_fimage(labelimage,image->nrow,image->ncol);
@@ -604,8 +592,7 @@ int *gray;
       if ((image_zoom=mw_new_cimage())==NULL)
 	mwerror(FATAL,0,"Not enough memory\n");
       fzoom=(float)*zoom;
-      order = 0;
-      czoom(image,image_zoom,(char*)NULL,(char*)NULL,&fzoom,&order,NULL);
+      czoom(image,image_zoom,(char*)NULL,(char*)NULL,&fzoom,&interp,(char *)NULL);
     }
 
   poly = mw_new_polygons();
@@ -694,7 +681,7 @@ int *gray;
   /* Remark that now only the background has value 1. The polygon borders have value 0 
      while the regions they enclose have value > 1. Thus it remains to compute the connected
      components of the complement of the background. */
-
+  
   /* Step 3 : computation of connected components of occlusions */
   foreground=1.0;
   fconnected(interlabelimage->gray,interlabelimage->nrow,interlabelimage->ncol,
@@ -708,7 +695,7 @@ int *gray;
 
   mw_delete_fimage(interlabelimage);
   interlabelimage=NULL;
-
+  
   /* Hole_image is now updated */
   if (hole_image)
     {
@@ -718,39 +705,7 @@ int *gray;
     }
 
   /* Removes polygons */
-  p=poly->first;
-  while (p->next) p=p->next;
-  while (p)
-    {
-      c=p->first;
-      while (c->next) c=c->next;
-      while (c)
-	{
-	  if (c->previous)
-	    {
-	      c=c->previous;
-	      mw_delete_point_curve(c->next);
-	      c->next=NULL;
-	    }
-	  else
-	    {
-	      mw_delete_point_curve(c);
-	      c=NULL;
-	    }
-	}
-      if (p->previous)
-	{
-	  p=p->previous;
-	  /* mw_delete_polygon(p->next);  OJO!! ATTENTION!! Commented to avoid segmentation fault, A. Almansa */
-	  p->next=NULL;
-	}
-      else
-	{
-	  /* mw_delete_polygon(p); OJO!! ATTENTION!! Commented to avoid segmentation fault, A. Almansa */
-	  p=NULL;
-	}
-    }
-  /* mw_delete_polygons(poly); OJO!! ATTENTION!! Commented to avoid segmentation fault, A. Almansa */
+  mw_delete_polygons(poly);
   poly=NULL;
 }
 

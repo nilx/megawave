@@ -1,34 +1,14 @@
-This module applies to a plane curve $C$ the non-linear heat equation [3,4]
+This module applies to a plane curve $C$ the non-linear heat 
+equation~\cite{gage.hamilton:heat}~\cite{grayson:heat}
 $$\frac{\partial C}{\partial t}(s,t) 
 = \frac{\partial^2 C}{\partial s^2}(s,t),$$
 ($s$ being the arlength parameterization of the curve)
 by alternatively convolving the function $s\mapsto C(s)$ with a
 Gaussian kernel (see \verb+sgauss+ module) and reparameterizing it.
-This algorithm is described in [2]. With
-the \verb+-N+ option [1], no reparameterization is applied and the scheme
+This algorithm is described in~\cite{mackworth.mokhtarian:theory}. 
+With the \verb+-N+ option~\cite{mackworth.mokhtarian:scale-based}, 
+no reparameterization is applied and the scheme
 is not consistant any more with the mean curvature motion
 $$\frac{\partial C}{\partial t}(s,t) = \kappa(s,t) \; N(s,t),$$
 where $\kappa$ and $N$ are the local curvature and normal to the curve
 $s\mapsto C(s,t)$.
-
-\bigskip
-
-{\large \bf References}
-
-\bigskip
-
-[1] A. Mackworth and F. Mokhtarian, ``Scale-Based description 
-and recognition of planar curves and two-dimensional shapes'', PAMI 8:1,
-1986.
-
-[2] A. Mackworth and F. Mokhtarian, 
-"{A theory of multiscale, curvature-based shape representation 
-for planar curves}", PAMI 14, pp. 789--805, 1992.
-
-[3] M. Gage, R. S. Hamilton, ``The heat equation shrinking convex 
-plane curves'', {\it Journal of Differential Geometry}, vol. 23, pp. 69-96,
-1986.
-
-[4] M. A. Grayson, ``The heat equation shrinks embedded plane curves to
-round points'', {\it Journal of Differential Geometry}, vol. 26, pp. 285-314,
-1987.

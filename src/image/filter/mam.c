@@ -1,7 +1,7 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
   name = {mam};
-  version = {"2.23"};
+  version = {"2.24"};
   author = {"Frederic Guichard, Lionel Moisan"};
   function = {"Multiscale Analysis of Movies (restoration by using selective directional diffusion and motion)"};
   usage = {
@@ -15,7 +15,9 @@
      output<-out             "output movie"
           };
 */
-
+/*
+  V 2.24 (JF) : bug corrected in CALCULB (i,j indexes)
+*/
 #include <stdio.h>
 #include <math.h>
 
@@ -264,8 +266,8 @@ void CALCULB()
     register short i,j;
     short vit;
     
-    for(i=0;i<= MAXvitesse;i++)
-      for(j=0;j<= MAXvitesse;j++) {
+    for(i=0;i< MAXvitesse;i++)
+      for(j=0;j< MAXvitesse;j++) {
 	  vit=calcul(i,j);
 	  if (vit>=MINvit && vit<=MAXvit) B[i][j]=1;
 	  else B[i][j]=0;

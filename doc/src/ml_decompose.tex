@@ -1,4 +1,4 @@
-This function computes a decomposition of {\em image\_in}
+This module computes a decomposition of {\em image\_in}
 into {\tt morpho\_lines}. The algorithm is based on the
 MW2 modules {\bf fvalues} and {\bf ml\_extract}, it is recommended
 to read first the description of these modules.
@@ -63,3 +63,13 @@ from $v_0$ up to $v_N$.
 In case 0 and 1 the order in which the {\tt morpho\_lines} are listed
 is essential to obtain a correct reconstruction by {\bf ml\_reconstruct}.
 For isosets the order doesn't matter in the reconstruction.
+
+\bigskip 
+
+This module is useful to compute a topographic map~\index{topographic map}
+of a gray levels 
+image~\cite{caselles.coll.ea:kanizsa}\cite{caselles.coll.ea:topographic}.
+However, since the Fast Level Sets Transform~\cite{monasse.guichard:fast} 
+has been implemented, you would get faster computation by using flst-based modules 
+such as {\tt flst}.
+

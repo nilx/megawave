@@ -1,7 +1,7 @@
 /**
- ** gentex
- ** (c)1993-2002 J.Froment - S.Parrino
- ** Version 1.6
+ ** gentex : generation of documentation file (.doc) in LaTeX format
+ ** (c)1993-2003 J.Froment - S.Parrino
+ ** Version 1.8
  **/
 
 /*~~~~~~~~~~~  This file is part of the MegaWave2 preprocessor ~~~~~~~~~~~~~~~~
@@ -91,7 +91,7 @@ char *lastmodif_date;
 
   /* === Index entry  === */
   remove_dquote(function_descript,mwfunction->val.text);
-  fprinttex(fd, "\\index{%T}\n\n", mwname->val.text);  
+  fprinttex(fd, "\\index{%T@{\\tt %T}}\n\n",mwname->val.text,mwname->val.text);  
 
   /* === Name === */
   remove_dquote(function_descript,mwfunction->val.text);
@@ -162,7 +162,7 @@ char *lastmodif_date;
   */
 
   fprinttex(fd, "\n% --- ARGUMENTS : BEGIN --- \n");
-  fprinttex(fd, "\\samepage\n");
+  /*fprinttex(fd, "\\samepage\n");*/
   fprinttex(fd, "\\nopagebreak\n");
   fprinttex(fd, "\\vspace{-5mm}\n");  
   fprinttex(fd, "\\nopagebreak\n");
@@ -246,7 +246,7 @@ char *lastmodif_date;
       mwfuncdecl->right->right->name == COMPOUND) 
     {
       fprinttex(fd, "\n% --- SUMMARY : BEGIN --- \n");
-      fprinttex(fd, "\\samepage\n");
+      /*fprinttex(fd, "\\samepage\n");*/
       fprinttex(fd, "\\Mark{\\Large\\bf  Function Summary} \\nopagebreak\\bigskip\n");
       fprinttex(fd, "\\nopagebreak\n\n");
 
@@ -268,7 +268,7 @@ char *lastmodif_date;
 
   /* Description */
   fprinttex(fd, "\n% --- DESCRIPTION : BEGIN --- \n");
-  fprinttex(fd, "\\samepage\n");
+  /*fprinttex(fd, "\\samepage\n");*/
   fprinttex(fd, "\\Mark{\\Large\\bf  Description} \\nopagebreak\\bigskip\n");
   fprinttex(fd, "\\nopagebreak\n\n");
   fprinttex(fd, "\\nopagebreak\n");

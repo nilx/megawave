@@ -5,7 +5,7 @@ The detection is made using a thresholding function balancing between
 the minimum contrast (gradient norm) along each part and the
 corresponding length of the curve. This function ensures
 that at most $10^{-eps}$ false detections could occur by chance
-with independent random gradient values (see [1]).
+with independent random gradient values (see~\cite{desolneux.moisan.ea:edge}).
 
 \medskip
 
@@ -16,13 +16,3 @@ level line is considered.
 \medskip
 
 The result is a collection of curves stored in a Flists structure.
-
-\bigskip
-
-{\large \bf References}
-
-\medskip
-
-[1] A. Desolneux, L. Moisan, J.-M. Morel, ``Edge Detection by Helmholtz 
-Principle'', {\it Journal of Mathematical Imaging and Vision}, 
-vol 14:3, pp 271-284, 2001

@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="`basename $0`"
-_Vers="1.49"
-_Date="2003"
+_Vers="1.51"
+_Date="2004"
 _Func="Compile a MegaWave2 Module or Macro";
 _Auth="Jacques Froment, Sylvain Parrino";
 _Usage=" [-gnu] [-g] [-X] [-O] [-v] [-c compiler_option] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-dep] [-pubsyslib] [-N] module"
@@ -42,7 +42,7 @@ remove()
   for f in $1 
   do
   if [ -f $f ]; then
-   mwechon "<File $f> "
+   mwecho -n "<File $f> "
    case "$f" in
     $TEXFILE) : 
     echo "tex file."
@@ -213,7 +213,8 @@ if [ $MW_SYSTEMTYPE = Linux ]; then
 # Assume the first two numbers (e.g. 2.0) are enough to caracterise the include files.
   KERNEL_MAJOR=`uname -r | cut -d "." -f 1`
   KERNEL_MINOR=`uname -r | cut -d "." -f 2`
-  MWOPTS="$MWOPTS -D_KERNEL_MAJOR_=$KERNEL_MAJOR -D_KERNEL_MINOR_=$KERNEL_MINOR -I$MWDIR/sys/include/Linux"
+  KERNEL_PATCH=`uname -r | cut -d "." -f 3 | cut -d "-" -f 1`
+  MWOPTS="$MWOPTS -D_KERNEL_MAJOR_=$KERNEL_MAJOR -D_KERNEL_MINOR_=$KERNEL_MINOR -D_KERNEL_PATCH_=$KERNEL_PATCH -I$MWDIR/sys/include/Linux"
 else
 
 # -- SunOS 5.x (Solaris) case. Problem appears on SunOS 5.7
@@ -409,7 +410,7 @@ sh -c "$MWCMD $MWARG"
 CMW2_RET=$?
 if [ $CMW2_RET -ne 0 ]; then
   if [ $NOLINT -eq 0 -a $CMW2_RET -eq 2 ]; then
-    mwechon "Errors are detected. Type <l>+<return> to execute lint on ${MWFILE}..."
+    mwecho -n "Errors are detected. Type <l>+<return> to execute lint on ${MWFILE}..."
     a="N"
     read a
     if [ "$a" = "l" ] || [ "$a" = "L" ]; then
@@ -427,7 +428,7 @@ else
 #-------------------------------------------------------
   echo "          production of document squeleton (doc/obj/$MODULE.doc)"
   if [ ! -d $MWDESTDIR/doc/obj ]; then
-    mwechon "  Creating '$MWDESTDIR/doc/obj' : "
+    mwecho -n "  Creating '$MWDESTDIR/doc/obj' : "
     mkdir -p $MWDESTDIR/doc/obj
     echo "done."
   fi
@@ -436,7 +437,7 @@ else
   echo "          production of arguments analyser object"
 #-------------------------------------------------------
   if [ ! -d $MWDESTDIR/obj/$MW_MACHINETYPE ]; then
-    mwechon "  Creating '$MWDESTDIR/obj/$MW_MACHINETYPE' : "
+    mwecho -n "  Creating '$MWDESTDIR/obj/$MW_MACHINETYPE' : "
     mkdir -p $MWDESTDIR/obj/$MW_MACHINETYPE
     echo "done."
   fi
@@ -474,7 +475,7 @@ else
   echo "          add objects to MegaWave2 user library"
 #-------------------------------------------------------
   if [ ! -d $MWDESTDIR/lib/$MW_MACHINETYPE ]; then
-    mwechon "  Creating '$MWDESTDIR/lib/$MW_MACHINETYPE' : "
+    mwecho -n "  Creating '$MWDESTDIR/lib/$MW_MACHINETYPE' : "
     mkdir -p $MWDESTDIR/lib/$MW_MACHINETYPE
     echo "done."
   fi
@@ -496,7 +497,7 @@ else
   echo "          production of interface with MegaWave2 interpretor source"
 #-------------------------------------------------------
   if [ ! -d $MWDESTDIR/mwi ]; then
-    mwechon "  Creating '$MWDESTDIR/mwi' : "
+    mwecho -n "  Creating '$MWDESTDIR/mwi' : "
     mkdir -p $MWDESTDIR/mwi
     echo "done."
   fi
@@ -577,7 +578,7 @@ else
 #-------------------------------------------------------
   # Teste acces de la directory des executables
   if [ ! -d $MWDESTDIR/bin/$MW_MACHINETYPE ]; then
-    mwechon "  Creating '$MWDESTDIR/bin/$MW_MACHINETYPE' : "
+    mwecho -n "  Creating '$MWDESTDIR/bin/$MW_MACHINETYPE' : "
     mkdir -p $MWDESTDIR/bin/$MW_MACHINETYPE
     echo "done."
   fi

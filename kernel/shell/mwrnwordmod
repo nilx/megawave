@@ -3,8 +3,8 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Prog="mwrnwordmod"
 _Func="Rename words (e.g. system functions or structure fields) inside modules for which name has changed"
-_Vers="1.01"
-_Date="2002-03"
+_Vers="1.03"
+_Date="2002-04"
 _Auth="Jacques Froment";
 _Usage="[-adm] [-all] [-check] [-d dir] [-f file_of_names]"
 # -adm : administrator : scan $MEGAWAVE2/src directory instead of $MY_MEGAWAVE2/src
@@ -45,9 +45,9 @@ Answer()
 ok=0
 while [ $ok -ne 1 ]; do
  if  [ "$2" != "" ]; then
-   mwechon "$1 [Y/N] ? [default $2] "
+   mwecho -n "$1 [Y/N] ? [default $2] "
  else
-   mwechon "$1 [Y/N] ? "
+   mwecho -n "$1 [Y/N] ? "
  fi
  read ans
  if [ "$ans" = "" ] && [ "$2" != "" ]; then
@@ -87,7 +87,7 @@ echo "  Scanning file $fic"
 nl=0
 while [ $nl -ne $nlines ]
 do
-  nl=`echo "$nl 1 + p" | dc`
+  nl=`expr $nl + 1`
   line=`sed -n "$nl,$nl p" $fname`
   oldname=`echo $line | cut -d " " -f1`
   newname=`echo $line | cut -d " " -f2`

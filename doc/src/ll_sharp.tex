@@ -1,6 +1,6 @@
-This module is a kind of shock filter based on the FLST (see modules
+This module is a kind of shock filter\index{filter!shock} based on the FLST (see modules
 \verb+flst+ and \verb+flst_reconstruct+). It is a non-uniform quantization
-of an image based on shapes.
+of an image based on shapes\index{quantization!based on shapes}.
 One shape $S$ and its child $C$ are in the same gradation iff:
 \begin{enumerate}
 \item $C$ is the only child of $S$;
@@ -26,7 +26,7 @@ each shape as one gradation and when it is
 large, it gathers the maximum of shapes
 inside each gradation.
 
-This shock filter gives better effects when the grain filter is 
+This shock filter gives better effects when the grain filter\index{filter!grain} is 
 applied to the image before
 (see module \verb+fgrain+). In this case, the number
 or remaining level lines can be dramatically smaller than in the original

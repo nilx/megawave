@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------
-  genxmain Version 1.7
+  genxmain Version 1.8
   (c) Copyright J.Froment and S.Parrino
       Generate module's interface to XMegaWave software.
  -------------------------------------------------------------------------*/
@@ -1173,7 +1173,9 @@ char *nb_sys_opt_name;
     c = GET_FIRST(vararglist);
     opt = (Mwarg *)GET_ELT(c);
     fprintf(fd, "    %svar_flg = FALSE;\n", MW_PFX2);
-    if (opt->d.a.rw = WRITE) {
+    /*    if (opt->d.a.rw = WRITE) {*/
+    /* JF 01/07/03 : bug reported by E. Villeger */
+    if (opt->d.a.rw == WRITE) {
       fprintf(fd, "    /* Output for variable argument */\n");
       print_out_arg(fd, opt->d.a.t, opt->d.a.v.p.t, opt->name,
                             opt->texname, opt->desc, opt->type, "    ", FALSE);

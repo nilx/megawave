@@ -1,0 +1,11 @@
+This module copies the color level lines recorded in the 
+{\em input} {\tt Cmimage} to the {\em output} {\tt Cmimage}, 
+but the ones with length (number of pixels) less than a given threshold. 
+The length threshold ($10$ by default) can be changed using the option
+\verb+-l+.
+
+As this module is very similar to {\tt ll\_remove}, but acts on a 
+color topographic map\index{topographic map!color} instead of a 
+gray levels one, please read the documentation of {\tt ll\_remove}
+to get the filter this function performs, and refer to {\tt cml\_decompose} 
+and~\cite{coll.froment:topographic} to learn more about color level lines.

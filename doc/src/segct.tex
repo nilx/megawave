@@ -7,14 +7,16 @@
 
 
 The command {\bf segct} generates, starting from {\em fimage}, 
-a 2-normal segmentation of this picture as will be described below.\\
+a 2-normal segmentation\index{segmentation!Mumford and Shah}
+of this picture as will be described below.\\
 The initial picture is broken in a grid of elementary cells, composed of
 $D\times D$-pixel squares ($D$={\em size\_of\_grid}). 
 We use a classical region-growing algorithm to achieve the partition of the 
 image in homogeneous regions.
 
 The criterion which measures the resemblance of regions is given by the 
-Mumford and Shah model. Call $g$ the picture defined on an open rectangle $R$,
+Mumford and Shah model~\cite{morel.solimini:variational}. 
+Call $g$ the picture defined on an open rectangle $R$,
 $u$ a piecewise constant function, which aim is to approximate $g$, and
 let $B$ be the boundaries between the regions, i.e. the set of jump points of
 $u$. With Mumford and Shah we introduce the following functional which has

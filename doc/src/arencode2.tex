@@ -1,5 +1,5 @@
 This module performs arithmetic encoding of symbols contained in the Input 
-fimage according to the algorithm described in \cite{kn:wnc}. 
+fimage according to the algorithm described in \cite{witten.neal.ea:arithmetic}. 
 
 The -s option enables to specify that only the first Size symbols should 
 be encoded. 
@@ -10,7 +10,8 @@ If it is not activated, then a first pass is made on Input to search
 for the minimal alphabet. 
 
 The -c option enables to specify the capacity of the empirical source 
-distribution histogram used for arithmetic encoding (see \cite{kn:wnc}). 
+distribution histogram used for arithmetic encoding (see 
+\cite{witten.neal.ea:arithmetic}). 
 The default value is 100 times the size of alphabet. This only makes sense 
 when adaptive encoding is performed (i.e. the -h option is not selected). 
 
@@ -29,11 +30,3 @@ of input with information on size of Input alphabet and predictive encoding.
 Notice that the 2D structure of the input fimage is not used in this module. 
 The symbols are read in the natural order in the ``gray'' field of the fimage. 
 
-
-\begin{thebibliography}{999999}
-
-\bibitem[WNC]{kn:wnc} I.H. Witten, R.M. Neal, J.G. Cleary, {\em ``Arithmetic 
-coding for data compression'', } Comm. of the ACM, Vol.~30, no~6, pp.520--540, 
-(1987). 
-
-\end{thebibliography}

@@ -1,0 +1,7 @@
+This module implements a convolution in Fourier domain by
+a real kernel. The Fourier Transform of $in$ is computed,
+multiplied by $kernel$, and then the inverse Fourier Transform
+of the result yields the Fimage $out$. In other words,
+$$\widehat{out}(p,q) = \widehat{in}(p,q) \cdot filter(p,q).$$
+The dimensions of $in$ and $filter$ must be equal, and powers
+of two.

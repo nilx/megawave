@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ccmovie_io.c
    
-   Vers. 1.3
-   (C) 1995-2000 Jacques Froment
+   Vers. 1.4
+   (C) 1995-2004 Jacques Froment
    Input/Output private functions for the Ccmovie structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -117,7 +117,7 @@ char  *Type;                          /* Type de format du fichier */
   short f;
   int num,nimage;
   int ret,i;
-      
+
   movie = NULL;
   strcpy(Type,"?");  /* Type a priori inconnu */
   _mw_convert_struct_warning = 0;  /* Set to 0 previous warning account */
@@ -159,7 +159,10 @@ char  *Type;                          /* Type de format du fichier */
     ret = fscanf(fp,"%s",Fic);
     if ((ret == 1)&&(Fic[0] != '%')&&(Fic[0] != '#'))
       {
-	sprintf(FicImage,"%s%s",PathName,Fic);
+	if (Fic[0]=='/') /* Absolute pathname */
+	  strcpy(FicImage,Fic);
+	else /* Relative pathname : add pathname of fname */
+	  sprintf(FicImage,"%s%s",PathName,Fic);
 	f = open(FicImage,O_RDONLY);
 	if (f != -1) 
 	  {

@@ -1,8 +1,8 @@
 #!/bin/sh 
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _Prog="`basename $0`"
-_Vers="1.07"
-_Date="1999"
+_Vers="1.08"
+_Date="1999-2003"
 _Func="Configure a Makefile from Makefile.in for the current architecture"
 _Auth="Jacques Froment";
 _Usage="'optional keywords for #= encapsulated lines'"
@@ -126,7 +126,7 @@ do
     *)  echo "$cline" >> $makeout
         ;;
   esac
-  line=`echo "$line 1 + p" | dc`
+  line=`expr $line + 1`
 done
 echo " "
 

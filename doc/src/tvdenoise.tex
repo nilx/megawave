@@ -1,9 +1,10 @@
 This module looks for the image $out$ that minimizes the energy
-functional proposed by Rudin and Osher,
+functional proposed by Rudin, Osher and 
+Fatemi~\cite{rudin.osher.ea:nonlinear}\cite{rudin.osher:total},
 $$E(out) = \int |\nabla_{eps}(out)| +  w \int (out -in)^2.$$
 This energy is the combination of a regularity term (the total variation)
-and a fidelity term ($L^2$ square error). The regularity term is 
-obtained from the local estimate of the gradient norm
+and a fidelity term ($L^2$ square error)\index{denoising!total variation}. 
+The regularity term is obtained from the local estimate of the gradient norm
 $$|\nabla_{eps}(u)| = \frac{\displaystyle
 \sqrt{eps + (a-b)^2+(c-d)^2+(a-c)^2+(b-d)^2 
 + \frac 12 (a-d+b-c)^2 

@@ -3,8 +3,8 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Check the consistency of a modules file regarding the content of a source directory (\$MEGAWAVE2/src)";
 _Prog="`basename $0`"
-_Vers="1.3"
-_Date="1998-2001"
+_Vers="1.4"
+_Date="1998-2003"
 _Auth="Jacques Froment";
 _Usage="[-X file_of_modules_for_xmw2] file_of_modules"
 #----------------------------------------------------------------------------#
@@ -84,7 +84,7 @@ do
 
  module=""
 
- nl=`echo "$nl 1 + p" | dc`
+ nl=`expr $nl + 1`
  line=`sed -n "$nl,$nl p" $file`
 
  void=`echo $line | cut -d% -f1`
@@ -171,7 +171,7 @@ nl=0
 while [ $nl -ne $nlines ]
 do
  module=""
- nl=`echo "$nl 1 + p" | dc`
+ nl=`expr $nl + 1`
  line=`sed -n "$nl,$nl p" $modlistsrc`
  found=`grep $line $modlistfile`
  if [ "$found" = "" ]; then

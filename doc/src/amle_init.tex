@@ -1,6 +1,9 @@
 This module prepares an uniformly quantized image to be the input of the 
 module \verb+amle+ which reconstructs
-an image by interpolating the missing level lines from the ones kept.
+an image by interpolating the missing level lines from the ones kept
+(see the main reference~\cite{caselles.morel.ea:axiomatic} 
+and~\cite{aronsson:extension}\cite{cao:absolutely}\cite{froment:functional} for
+related works).
 
 The preparation consists of building an image with $0$ everywhere but
 at pixel locations $(x,y)$ adjoining the remaining level lines (which are borders of level sets).

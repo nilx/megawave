@@ -1,7 +1,7 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
   name = {fhisto};
-  version = {"1.3"};
+  version = {"1.4"};
   author = {"Lionel Moisan"};
   function = {"Compute the histogram of a Fimage"};
   usage = {
@@ -9,7 +9,7 @@
     'r':r->r    "right bound of sampling interval",
     'n':n->n    "number of cells (if no option specified: 100)",
     's':s->s    "size of each cell (alternate option)",
-    't':t->t    "truncate values outside interval",
+    't'->t      "truncate values outside interval",
     input->in   "input Fimage",
     output<-out "output Fsignal"
           };
@@ -17,6 +17,7 @@
 /*----------------------------------------------------------------------
  v1.2: more possible combinations of options, new -t option (L.Moisan)
  v1.3: default num = (max-min)/size (L.Moisan)
+ v1.4: fixed -t option (P.Monasse)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

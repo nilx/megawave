@@ -1,5 +1,6 @@
 This method is an approach of edge extraction preceded by an optimisation of criteria keeping in mind a pre-defined model of the edge to detect. 
-The approach introduced by Deriche consists in a research of the optimal operator of the Canny's filter under a infinite impusionnal response filter (RII).
+The approach introduced by Deriche consists in a research of the optimal operator of the Canny's 
+filter~\cite{canny:computational}\index{filter!Canny} under a infinite impusionnal response filter (RII)~\cite{deriche:using}.
 
 \medskip
 {\large \bf Canny's filter :}
@@ -81,7 +82,3 @@ A(m,n)=(r(m,n)^{2}+s(m,n)^{2})^{\frac{1}{2}}
 The suppression of the non local maxima of $A(m,n)$ in the exact direction of gradient $\alpha (m,n)$ is then realized. So an linear interpolation is made on the gradient. 
 The extaction of local maxima is done in a neighbourhood of 3*3 of the gradient's norm image. The aim is to extract all the pixels coming in the form of a local maxima in the gradient's direction. We use the images coming from the precedent steps in order to obtain an approxiamtion of the gradient's direction.
 
-\medskip
-
-{\Large \bf References }  
-Rachid Deriche, {\em Using Canny's Criteria to Derive a Recursively Implemented Optimal Edge Detector}, International Journal of Computer Vision, 167-187, 1987.

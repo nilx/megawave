@@ -1,7 +1,8 @@
 The Fast Level Sets Transform is a decomposition of an image
 (an \texttt{Fimage} or a \texttt{Cimage}) into ``shapes'', based on connected
-components of level sets and on level lines. As the name
-indicates, it is a fast algorithm, of complexity $O(N\log N)$
+components of level sets and on level lines 
+(see~\cite{monasse.guichard:fast}\cite{monasse.guichard:scale-space}\cite{ballester.caselles.ea:tree}). 
+As the name indicates, it is a fast algorithm, of complexity $O(N\log N)$
 where $N$ is the number of pixels, but the complexity depends
 also on the content of the image: a highly textured image would
 take more time to decompose than an image with many flat zones.
@@ -132,7 +133,7 @@ The arguments of the function are:
 \begin{itemize}
 \item \texttt{pImageInput}: the image to decompose
 \item \texttt{pTree}: the tree of shapes, filled as output.
-\item \texttt{pMinArea}: arguments to a possible grain filter.
+\item \texttt{pMinArea}: arguments to a possible grain filter\index{filter!grain}.
 \end{itemize}
 
 Before decomposing the image, it is possible to apply an extrema killer to the
@@ -154,25 +155,3 @@ it, use the module \texttt{flst\_pixels}.
 A similar algorithm, interpreting the image as a bilinear interpolation of
 data points, is the module \texttt{flst\_bilinear}.
 
-\begin{thebibliography}{10}
-\bibitem{flst} Monasse, P., Guichard, F.:~
-Fast Computation of a Contrast-Invariant Image Representation,
-to appear in IEEE Trans. on Image Processing,
-Preprint CMLA 9815, available from {\texttt
-http://www.cmla.ens-cachan.fr/index.html} (1998)
-
-\bibitem{ss99} Monasse, P., Guichard, F.:~
-Scale-Space from a Level Lines Tree,
-Proc. of 2nd Int. Conf. on Scale-Space Theories in Computer
-Vision, Corfu, Greece, LNCS 1682, pp. 175--186.
-
-\bibitem{flst_theory} Ballester, C., Caselles, V., Monasse, P.:~
-The Tree of Shapes of an Image,
-preprint CMLA, available at
-\texttt{http://www.cmla.ens-cachan.fr/Cmla/Publications/2001/index.html},
-2001.
-
-\bibitem{grain} Caselles, V., Monasse, P.:~
-Grain filters,
-preprint CMLA, 2001.
-\end{thebibliography}

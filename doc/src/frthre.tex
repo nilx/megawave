@@ -4,13 +4,14 @@ of the pixel's values according the rule:
 B(x,y) = \left\{
 \begin{array}{ll}
  0 & \mbox{ if } |A(x,y)| \leq \mbox{\tt noise}; \\
- A(x,y) - \mbox{sgn}(A(x,y)) \times mbox{\tt noise} & \mbox{elsewhere.} 
+ A(x,y) - \mbox{sgn}(A(x,y)) \times \mbox{\tt noise} & \mbox{elsewhere.} 
 \end{array}
 \right.
 \]
 Where \verb+noise+ is the absolute maximal value of the noise (noise level).
 
-It is proved that this simple thresold rule is one of the best estimator
-for recovering a noisy image (additive noise) using the MiniMax error, 
-when the coefficients in $A$ and $B$ are coordinates in an orthonormal basis.
+In~\cite{donoho.johnstone:ideal}, it is proved that this simple thresold rule is one 
+of the best estimator for recovering a noisy image (additive noise) using the MiniMax 
+error, when the coefficients in $A$ and $B$ are coordinates in an orthonormal basis
+(such as wavelet basis).
 

@@ -1,6 +1,6 @@
 This module compresses a floating point image contained in file Image using 
-Shapiro's EZW algorithm applied to its orthogonal/biorthogonal wavelet 
-transform. 
+Shapiro's EZW algorithm~\cite{shapiro:embedded} applied to its orthogonal/biorthogonal 
+wavelet transform\index{wavelet!compression}. 
 
 A wavelet transform is first applied to the image. If the -b option is 
 selected, then a biorthogonal transform is applied using the filter pair 
@@ -21,7 +21,8 @@ The -r option specifies the number of level of wavelet transform (NLevel
 must be a positive integer). 
 
 After the wavelet transform has been computed, it is compressed 
-with the EZW algorithm. It generates both a compressed representation, 
+with the EZW algorithm~\cite{shapiro:embedded}. 
+It generates both a compressed representation, 
 which is stored in {\em Compress} (if the -o option is selected) and 
 a quantized wavelet transform, which can be reconstructed with 
 the data contained in {\em Compress}. A inverse wavelet transform is then 

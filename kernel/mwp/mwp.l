@@ -8,6 +8,7 @@ static char *sccsid = "%Z%MegaWave2 %R%, %M% %I%, %G%";
 
 /* Fichiers d'include */
 #include <stdio.h>
+#include <string.h>
 #ifdef __STDC__
 #include <stdlib.h>
 #else
@@ -215,11 +216,14 @@ nl			[\n]
 			  REJECT;
 #			endif
 			}
-"while"			{ RET(WHILE) ;}				/*  C  */
+"while"			{ RET(WHILE) ;}				/*  C
+			  */
 
 ^"#"			{					/*  C  */
 			  static char prev_filenam[BUFSIZ] = "";
-			  /* Intercept the CPP line "# {integer} [{qstring}]"
+			  unsigned int size_string;
+                          int linenotest;
+			  /* Intercept the CPP line "#{ws}line {integer} [{qstring}]"
 			     and set 'lineno' and 'filein' variables with
 			     corresponding fields if they exist; if {qstring}
 			     does not exist, filename is assumed to be in
@@ -229,50 +233,67 @@ nl			[\n]
 			  lexerr();
 
 			  /* Line is supposed to be correct ie : */
-			  /*   # {integer} [{qstring}]             */
+			  /*   #{ws}line {integer} [{qstring}]             */
 			  while ((c=input()) == '\t' || c == ' ');
 			  /* Line number field */
 			  buf[0] = c;
-			  for (pbuf = buf+1; (c=input())!='\t' && c!=' ' &&
-			                      c!='\n';
-			       pbuf++)
+			  for (pbuf = buf+1, size_string = 1;
+			       (c=input())!='\t' && c!=' ' && c!='\n' &&
+			       size_string < BUFSIZ-1;
+			       pbuf++, size_string++)
 			    *pbuf = c;
 			  *pbuf= '\0';
-			  if (c == '\n') 
-			    unput(c);
-			  lineno = (int)(*toktoid(buf)) - 1;
-
-			  while ((c=input()) == '\t' || c == ' ');
-			  if (c == '\n') {
-			    unput('\n');
-			    if (strlen(prev_filenam) == 0) {
-#			ifdef DEBUG
-			      PRDBG("No available filename\n");
-#			endif
-			      INT_ERROR("yylex");
+                          if (strncmp(buf,"line",5) == 0) {
+			    while ((c=input()) == '\t' || c == ' ');
+			    /* Line number field */
+			    buf[0] = c;
+			    for (pbuf = buf+1, size_string = 1;
+			         (c=input())!='\t' && c!=' ' && c!='\n' &&
+				 size_string < BUFSIZ-1;		 
+			         pbuf++, size_string++)
+			      *pbuf = c;
+			    *pbuf= '\0';
+			    if (c == '\n')
+			      unput(c);
+			    linenotest = (int)(*toktoid(buf));
+                          }
+                          else
+                            linenotest = (int)(*toktoid(buf));
+                          if (linenotest != 0) {
+                            lineno = linenotest - 1;
+			    while ((c=input()) == '\t' || c == ' ');
+			    if (c == '\n') {
+			      unput('\n');
+			      if (strlen(prev_filenam) == 0) {
+#			        ifdef DEBUG
+                                PRDBG("No available filename\n");
+#			        endif
+			        INT_ERROR("yylex");
+			      }
+			      else {
+			        strcpy(filein, prev_filenam);
+#			        ifdef DEBUG
+			        PRDBG("Prev filename : \"%s\"\n", prev_filenam);
+#			        endif
+			      }
 			    }
 			    else {
-			      strcpy(filein, prev_filenam);
-#			ifdef DEBUG
-			      PRDBG("Prev filename : \"%s\"\n", prev_filenam);
-#			endif
-			    }
+			      /* Source file name field */
+			      for (pbuf = filein, size_string = 0;
+			           (c=input())!='"' &&
+				   size_string < BUFSIZ-1;
+				   pbuf++, size_string++)
+			        *pbuf = c;
+			      *pbuf = '\0';
+			      strncpy(prev_filenam, filein, BUFSIZ-1);
+                            }
+#			    ifdef DEBUG
+			      PRDBG("File \"%s\", line %d\n", filein, lineno+1);
+#			    endif
 			  }
-			  else {
-			    /* Source file name field */
-			    for (pbuf = filein; (c=input())!='"'; pbuf++)
-			      *pbuf = c;
-			    *pbuf = '\0';
-			    strcpy(prev_filenam, filein);
-			  }
-
-#			ifdef DEBUG
-			  PRDBG("File \"%s\", line %d\n", filein, lineno+1);
-#			endif
-
 			  /* Destroy line up to just before {nl} */
 			  EAT_LINE;
-			}
+			  }
 
 "="			{ RET('='); }				/*  C  */
 "{"			{ RET('{'); }				/*  C  */

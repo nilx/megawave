@@ -26,7 +26,7 @@ which thus have \underline{closed} Jordan curves as boundaries.
 Let us give some more details about the {\bf -p} option. The file {\em polygons}
 will be in the {\tt MW2}-format {\tt fpolygons}. The coordinates of the
 boundary are {\tt floats} as they always have a decimal part of 0.5\ .
-In figure \ref{fig_point_coord} we represent a image where
+In figure \ref{fig_point_coord_one} we represent a image where
 the pixels are represented by squares (white or gray). The level set 
 (gray squares) is bounded by its border, the black dots ($\bullet$) which are
 drawn are the points  you will find in the {\tt fpolygons} structure,
@@ -49,23 +49,23 @@ the coordinates can be read on the axes drawn above and besides the ``pixels''.
   \thinlines
      \multiput(0,0)(30,0){2}{
         \multiput(22,22)(0,30){3}{
-         	\put(0,0){\line(1,1){16}}
-		\multiput(0,4)(4,-4){2}{\line(1,1){12}}
-         	\put(0,16){\line(1,-1){16}}
-		\multiput(0,12)(4,4){2}{\line(1,-1){12}}
-	        }
+                \put(0,0){\line(1,1){16}}
+                \multiput(0,4)(4,-4){2}{\line(1,1){12}}
+                \put(0,16){\line(1,-1){16}}
+                \multiput(0,12)(4,4){2}{\line(1,-1){12}}
+                }
      }
      \multiput(112,22)(0,30){3}{
-       	\put(0,0){\line(1,1){16}}
-	\multiput(0,4)(4,-4){2}{\line(1,1){12}}
-       	\put(0,16){\line(1,-1){16}}
-	\multiput(0,12)(4,4){2}{\line(1,-1){12}}
+        \put(0,0){\line(1,1){16}}
+        \multiput(0,4)(4,-4){2}{\line(1,1){12}}
+        \put(0,16){\line(1,-1){16}}
+        \multiput(0,12)(4,4){2}{\line(1,-1){12}}
      }
      \multiput(82,22)(0,60){2}{
-       	\put(0,0){\line(1,1){16}}
-	\multiput(0,4)(4,-4){2}{\line(1,1){12}}
-       	\put(0,16){\line(1,-1){16}}
-	\multiput(0,12)(4,4){2}{\line(1,-1){12}}
+        \put(0,0){\line(1,1){16}}
+        \multiput(0,4)(4,-4){2}{\line(1,1){12}}
+        \put(0,16){\line(1,-1){16}}
+        \multiput(0,12)(4,4){2}{\line(1,-1){12}}
      }
      \multiput(25,15)(0,90){2}{\multiput(0,0)(30,0){4}{\line(1,0){10}}}
      \multiput(15,25)(120,0){2}{\multiput(0,0)(0,30){3}{\line(0,1){10}}}
@@ -80,7 +80,7 @@ the coordinates can be read on the axes drawn above and besides the ``pixels''.
   \end{picture}
   \end{center}
   \caption{$6\times 5$ pixels image.}
-  \label{fig_point_coord}
+  \label{fig_point_coord_one}
 \end{figure}
 %----------------
 
@@ -91,7 +91,7 @@ This label ({\tt int}) shows which contours belong to the same set, if the
 label is positive the current contour is the `outer' boundary of the set
 (thus it is unique),
 if the label is negative the current contour is `inside' the set (it is
-a hole). For example the image of figure \ref{fig_point_coord} will 
+a hole). For example the image of figure \ref{fig_point_coord_one} will 
 yield one {\tt fpolygon} labeled 1 with 14 points and one {\tt fpolygon},
  labeled -1, made out of 4 points only.
 

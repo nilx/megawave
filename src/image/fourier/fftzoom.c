@@ -1,7 +1,7 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Command ----------------------------*/
 /* mwcommand
    name = {fftzoom};
-   version = {"1.1"};
+   version = {"1.2"};
    author = {"Lionel Moisan"};
    function = {"Zoom an image using Fourier interpolation (zero-padding)"};
    usage = {
@@ -12,6 +12,9 @@
    out<-out         "output Fimage"
    };
 */
+/*----------------------------------------------------------------------
+ v1.2: changed processing of non-Shannon (N/2) frequencies (L.Moisan)
+----------------------------------------------------------------------*/
 
 #include "mw.h"
 
@@ -57,17 +60,30 @@ char   *i_flag;
   mw_clear_fimage(out_im,0.0);
   
   /* DISPATCH FOURIER COEFFICIENTS */
-  for (x=-hx;x<=hx;x++)
-    for (y=-hy;y<=hy;y++) {
-      adr  = (x+nx )%nx +((y+ny )%ny )*nx ;
-      adrz = (x+nxz)%nxz+((y+nyz)%nyz)*nxz;
-      factor = z2 * ((x==hx || x==-hx)?0.5:1.0)*((y==hy || y==-hy)?0.5:1.0);
-      out_re->gray[adrz] = in_re->gray[adr] * factor;
-      out_im->gray[adrz] = in_im->gray[adr] * factor;
-    }
-
+  if (i_flag) {
+    /* UNZOOM */
+    mw_clear_fimage(out_re,0.);
+    mw_clear_fimage(out_im,0.);
+    for (x=-hx;x<=hx;x++)
+      for (y=-hy;y<=hy;y++) {
+        adr  = (x+nx )%nx +((y+ny )%ny )*nx ;
+        adrz = (x+nxz)%nxz+((y+nyz)%nyz)*nxz;
+        out_re->gray[adrz] += in_re->gray[adr] * z2;
+        out_im->gray[adrz] += in_im->gray[adr] * z2;
+      }
+  } else {
+    /* ZOOM */
+    for (x=-hx;x<=hx;x++)
+      for (y=-hy;y<=hy;y++) {
+        adr  = (x+nx )%nx +((y+ny )%ny )*nx ;
+        adrz = (x+nxz)%nxz+((y+nyz)%nyz)*nxz;
+        factor = z2 * ((x==hx || x==-hx)?0.5:1.0)*((y==hy || y==-hy)?0.5:1.0);
+        out_re->gray[adrz] = in_re->gray[adr] * factor;
+        out_im->gray[adrz] = in_im->gray[adr] * factor;
+      }
+  }
+  
   /* INVERSE FFT */
   fft2d(out_re,out_im,out,NULL,!NULL);
 }
-
 

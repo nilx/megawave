@@ -1,5 +1,5 @@
 This module implements the Kimmel and Bruckstein snake model
-\cite{KB2} for contour detection 
+\cite{kimmel.bruckstein:on} for contour detection 
 (or optimization). Its goal is to maximize with respect with 
 $\gamma$ (an arclength parameterized curve) the average contrast
 $$E(\gamma) =\frac 1 {L(\gamma)}\int_{0}^{L(\gamma)} g\left(\frac{}{}\!\!
@@ -7,23 +7,23 @@ Du(\gamma(s))\cdot n(s)\right)ds,$$
 where $g$ is an increasing scalar function, $L(\gamma)$ the length of
 the curve $\gamma$ and $n(s)$ its normal vector (that is, orthogonal
 to $\gamma'(s)$). Such a model has several advantages compared to
-the classical Kass-Witjin-Terzopoulos model \cite{KWT} and
+the classical Kass-Witjin-Terzopoulos model \cite{kass.witkin.ea:snakes} and
 the more elaborate model of geodesic active contours from 
-Caselles, Kimmel and Sapiro \cite{CKS}. 
+Caselles, Kimmel and Sapiro~\cite{caselles.kimmel.ea:geodesic}. 
 The use of a normal contrast (instead
 of a gradient norm) is an improvement to the model of Fua
-and Leclerc \cite{FL}.
+and Leclerc~\cite{fua.leclerc:model}.
 
 This module only implements the case
 $g(s)=|s|^{power}$, but it could be easily adapted to more general 
 functions $g$. The influence of the
-choice of $g$ is discussed in \cite{DMM}.
+choice of $g$ is discussed in \cite{desolneux.moisan.ea:variational}.
 The default is $g(s)=|s|$, but powers smaller than 1 could be preferred
 in order to reduce even more the sensitivity to the image contrast.
 
 The numerical scheme is based on a gradient descent (with step {\it step})
 associated to a discrete version of $E(\gamma)$ (see the description 
-below, and \cite{DMM} for a complete discussion and full details).
+below, and \cite{desolneux.moisan.ea:variational} for a complete discussion and full details).
 An input Fimage ($u$) and an initial set {\it in}
 of curves (Dlists) should be provided
 to the module, which outputs a new (final) set of curves {\it out}
@@ -143,36 +143,4 @@ If $(M_i^n)_i$ represents the (polygonal) snake at iteration $n$ and
 $(\tilde M_i^n)_i$ its renormalized version after step 1, then we set
 $$M_i^{n+1} = \tilde M_i^n + step \cdot  \nabla_{\tilde M_i^n} F.$$
 \end{enumerate}
-
-\begin{thebibliography}{1}
-
-\bibitem{CKS}
-V. Caselles, R. Kimmel and G. Sapiro,
-``Geodesic active contours'',
-{\it International Journal of Computer Vision} 1:22, pp. 61-79, 1997.
-
-\bibitem{DMM}
-A. Desolneux, L. Moisan, J.-M. Morel,
-``Variational Snakes Theory'',
-in {\it Geometric Level Set Methods in Imaging, Vision and Graphics}, 
-S. Osher and N. Paragios edts, Springer Verlag, march 2003.
-
-\bibitem{FL}
-P. Fua, Y.G. Leclerc,
-``Model driven edge detection'',
-{\it Machine Vision and Applications} 3, pp. 45-56, 1990.
-
-\bibitem{KWT}
-M. Kass, A. Witkin, D. Terzopoulos,
-``Snakes: active contour models'',
-{\it IEEE Int. Comp. Vis. Conf.}, vol. 777, 1987.
-
-\bibitem{KB2}
-R. Kimmel, A. Bruckstein,
-``On edge detection, edge integration and geometric active contours'',
-{\it Proceedings of Int. Symposium on Mathematical Morphology} (ISMM 2002), 
-Sydney, april 2002.
-
-\end{thebibliography}
-
 

@@ -2,7 +2,7 @@
 /* mwcommand
   name = {freadasc};
   version = {"2.0"};
-  author = {"Jacques Froment, Saïd Ladjal"};
+  author = {"Jacques Froment, Said Ladjal"};
   function = {"Read an image in ascii format (float values)"};
   usage = {    
       output<-u  "output fimage",

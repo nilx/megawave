@@ -3,8 +3,8 @@ projected orthogonally onto the space of B-splines of order $n$ (see
 the \verb+fcrop+ module). The order $n$ can be specified 
 by the \verb+-o+ option. Then, an appropriate subsampling is performed.
 Hence, the $L^2$ norm of the error caused by image reduction is minimized.
-This method, described in [1], allows to avoid undesirable artifacts like 
-aliasing. 
+This method, described in~\cite{unser.aldroubi.ea:enlargement}, allows to 
+avoid undesirable artifacts like aliasing. 
 
 \medskip
 
@@ -28,11 +28,3 @@ B-spline of order 1 and $\beta^1_z(x)=\beta^1(x/z)$.
 2. an inverse spline transform of order 3, performed by the
 \verb+finvspline+ module.
 
-
-\begin{thebibliography}{99}
-\bibitem{unser3}
-M. Unser, A. Aldroubi, M. Eden
-\newblock Enlargement or Reduction of Digital Images 
-with Minimum Loss of Information.
-\newblock {\it IEEE Transactions on Image Processing} 4:3, 1995.
-\end{thebibliography}

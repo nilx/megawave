@@ -2,7 +2,7 @@
 /* mwcommand
 name = {dybiowave2};
 version = {"1.1"};
-author = {"J.P. d'Ales"};
+author = {"Jean-Pierre D'Ales"};
 function = {"Computes the biorthogonal wavelet coefficients of an image without decimation"};
 usage = {
 'r':[NLevel=1]->NumRec [1,20]

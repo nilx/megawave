@@ -1,7 +1,7 @@
 /*----------------------------- MegaWave Module -----------------------------*/
 /* mwcommand 
   name = {flstb_dual};
-  version = {"1.0"}; 
+  version = {"1.1"}; 
   author = {"Pascal Monasse"}; 
   function = {"Level lines passing through centers of dual pixels in bilinear image"};
   usage = { 
@@ -9,6 +9,9 @@
     dual_tree <- pDualTree "The new tree"
     }; 
 */ 
+/*----------------------------------------------------------------------
+ v1.1: minor bug correction (P.Monasse)
+----------------------------------------------------------------------*/
 
 #include "mw.h"
 
@@ -127,14 +130,13 @@ int i, j;
   shapeInf = NULL;
   for(k = 0; k < 4; k++) { /* Examine the edgels */
     n = (k+1) % 4;
-    if(tabShapes[k] == NULL || tabShapes[n] == NULL)
-      continue;
-    if((tabShapes[k]->value < v && tabShapes[n]->value < v) ||
+    if(tabShapes[k] == NULL || tabShapes[n] == NULL ||
+       (tabShapes[k]->value < v && tabShapes[n]->value < v) ||
        (tabShapes[k]->value > v && tabShapes[n]->value > v))
       continue;
-    if(is_included(tabShapes[k], tabShapes[n]))
+    if(tabShapes[k]->value == v || is_included(tabShapes[k], tabShapes[n]))
       shapeTemp = tabShapes[k];
-    else if(is_included(tabShapes[n], tabShapes[k]))
+    else if(tabShapes[n]->value == v || is_included(tabShapes[n], tabShapes[k]))
       shapeTemp = tabShapes[n];
     else {
       shapeSaddle = common_ancestor(tabShapes[n], tabShapes[k]);
@@ -152,13 +154,16 @@ int i, j;
       if(shapeSaddle->value == v)
 	shapeInf = shapeSaddle;
       else {
-	x = (shapeSaddle->value-tabShapes[k]->value) /
-	  (tabShapes[n]->value-tabShapes[k]->value);
-	if((shapeTemp == tabShapes[k] && x > (float)0.5) ||
-	   (shapeTemp == tabShapes[n] && x < (float)0.5))
+        x = shapeSaddle->value-shapeTemp->value;
+        if(shapeTemp == tabShapes[k])
+          x /= tabShapes[k-1]->value - shapeTemp->value;
+        else
+          x /= tabShapes[(n+1)%4]->value - shapeTemp->value;
+	if(x > 0.5f)
 	  shapeInf = shapeTemp;
-      }      
+      }
     }
+    ++ k; /* Go to opposite edgel */
   }
   if(shapeInf == NULL) /* One of the 4 corners of image */
     for(i = 0; i < 4; i++)
@@ -176,7 +181,7 @@ Shapes pTree, pDualTree;
   int i, j;
   if(pTree->interpolation != 1)
     mwerror(USAGE, 1, "Please apply this module to a *bilinear* tree");
-  
+
   pDualTree->nrow = pTree->nrow; pDualTree->ncol = pTree->ncol;
   pDualTree->interpolation = 1;
   pDualTree->nb_shapes = 1;

@@ -1,0 +1,38 @@
+This demo shows how to use \verb+vpoint+ in combination with \verb+vpsegplot+, \verb+align_mdl+ and \verb+fkview+, in order to detect and visualize alignments and vanishing points.
+
+The input \verb+image+ is optional, if not given the default image \verb+building.tif+ will be used.
+
+The first three options control how alignment detection is performed. The \verb+-no_align+ option skips alignment detection altogether. Instead it uses precomputed alignments that were previously stored in \verb+image.segs+ and \verb+image.ksegs+. The \verb+-fftdequant+ option turns on orientation dequantization (before alignment detection) by half-pixel shift with a 7th order spline approximation to sinc interpolation. The \verb+-quant+ option passes the corresponding option to \verb+align_mdl+ so that it ignores gradients whose magnitude is too small with respect to the given quantization noise level $q$.
+
+The remaining two options control the kind of vanishing regions that will be computed and displayed. With \verb+-all_vps+ all maximal meaningful regions are computed (otherwise only their minimal description is computed). With \verb+-masked_vps+ we also search for masked vanishing regions that become meaningful only when segments corresponding to previous vanishing regions have been removed (otherwise masked vanishing regions are not computed).
+
+{\bf Example:}
+The general procedure is as follows.
+First we compute and display the minimal description of the set \verb+segs+ of alignments in the \verb+input_image+, as well as their graphical representation \verb+ksegs+ as a set of curves:
+\begin{verbatim}
+align_mdl -c ksegs input_image segs
+fkview -s -b input_image ksegs
+\end{verbatim}
+Then we find the minimal description of maximal meaningful vanishing regions
+\begin{verbatim}
+vpoint -m -s csegs input_image segs vpoints
+NVP = 3
+NVP_masked = 2
+\end{verbatim}
+The stdout message indicates that the program found 3 maximal meaningful vanishing regions and 2 \emph{masked} maximal meaningful vanishing regions. So \verb+vpoints+ is a list of 5 records, and \verb+csegs+ contains 5 lists, each list containing the indexes (in the \verb+segs+ list) of the alignments contributing to the corresponding vanishing region.
+Finally, to display the second masked vanishing region (indexed 1 in the vpoints and csegs lists) and the corresponding segments we use \verb+vpsegplot+ and \verb+fkview+ as follows:
+\begin{verbatim}
+vpsegplot input_image segs vpoints csegs 1 kvp1
+fkview -s -b input_image kvp1
+\end{verbatim}
+to display the first masked region (indexed 3 + 0 in the \verb+vpoints+ and \verb+csegs+ lists)
+\begin{verbatim}
+vpsegplot input_image segs vpoints csegs 3 kvp3
+fkview -s -b input_image kvp3
+\end{verbatim}
+
+The same result (except that all regions are displayed) can be obtained by calling
+\begin{verbatim}
+VP_DEMO -masked_vps input_image.
+\end{verbatim}
+

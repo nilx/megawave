@@ -2,8 +2,9 @@ This module returns the type of junction of the given point $(x_0,y_0)$
 of the input cimage $U$. 
 It returns $0$ if this point is not a junction, $1$ if it is a T-junction
 and $2$ if it is a X-junction.
-For a description of the Junction Detection Algorithm, please
-see~\cite{KP}.
+For a description of the junction detection algorithm\index{junction detector}, 
+please see~\cite{caselles.coll.ea:kanizsa},\cite{caselles.coll.ea:topographic} 
+and~\cite{froment:functional}.
 
 The option \verb+-a+ allows to choose the area threshold associated
 to the detection, while the option \verb+-q+ is related to the quantization 
@@ -22,8 +23,3 @@ and $(x_{\mu_1}, y_{\mu_1})$ of the
 four neighbour points of the junction, so that 
 $(x_{\lambda_1}, y_{\lambda_1})$ belongs to the border of 
 $L_{\lambda_1}$ and  $(x_{\mu_1}, y_{\mu_1})$ to $M_{\mu_1}$.
-
-\begin{thebibliography}{Dau1}
-\bibitem{KP} V.Caselles, B.Coll, J.M. Morel.
-{\em A Kanizsa Programme}, Preprint CEREMADE.
-\end{thebibliography}

@@ -13,26 +13,15 @@ dictionaries must have been computed using the same MegaWave module
 
 \verb+km_prematchings+ returns an \verb+Flists+ that containts $N_1$
 \verb+Flist+. The $i$-th \verb+Flist+ contains the indices $j$ of all
-the codes of \verb+dict2+ that satisfy $d_H({\mathcal C}^1_i,{\mathcal
-  C}^2_j) < $ \verb+maxError+, where $d_H$ is the Hausdorff distance. 
+the codes of \verb+dict2+ that satisfy 
+$d_H({\mathcal C}^1_i,{\mathcal C}^2_j) < $ \verb+maxError+, 
+where $d_H$ is the Hausdorff distance. 
 
 It should be noted that \verb+maxError+ is a distance between
 normalized codes and not a distance between curves in the image frame,
 and typically its value is to be chosen in the range $[0.1,0.3]$.
 
-\bigskip
-See \cite{joseluis} or \cite{LMMM} for further details.
+\medskip
 
-
-\begin{thebibliography}{9}
-
-\bibitem{joseluis} J.-L. {\sc Lisani}, {\it Comparaison automatique
-d'images par leurs formes}, th\`ese de doctorat, Universit\'e Paris IX
-Dauphine, France, 2001.
-
-\bibitem{LMMM} J.-L. Lisani, P. Monasse, L. Moisan, J.-M. Morel, 
-``On the Theory of Planar Shape'', 
-{\it SIAM Journal on Multiscale Modeling and Simulation}, 
-vol. 1:1, pp. 1-24, 2003. 
-
-\end{thebibliography}
+For more details, see J.-L. Lisani's PhD dissertation~\cite{lisani:comparaison} 
+or~\cite{lisani.monasse.ea:on}.

@@ -5,6 +5,11 @@ The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
 CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/* Check and print arguments.
+   V 1.0   
+   Original version : Sylvain Parrino
+   Several modifications done by Jacques Froment (JF)
+*/
 
 #include <stdio.h>
 #include "bintree.h"
@@ -459,10 +464,13 @@ char *s;
       fprintf(fd, "        }\n");
       break;
     case USHORT_T :
-      /* Changed JF 03/10/2000 : added cast to corresponding type */
-      fprintf(fd, "        if (0x%hX %s %s(%s) %s (unsigned short) 0x%hX || (unsigned short) 0x%hX %s %s(%s)) {\n",
+      /* Changed JF 03/10/2000 : added cast to corresponding type 
+         Modified JF 01/07/03 : bug reported by E. Villeger corrected.
+       */
+      fprintf(fd, "        if (%s(%s) %s (unsigned short) 0x%hX || (unsigned short) 0x%hX %s %s(%s)) {\n",
                           io->function, s, t_m, p->i->min.us,
                           p->i->max.us, t_M, io->function, s);
+
       switch(rw) {
         case READ :
       fprintf(fd, "          char buffer[BUFSIZ] ;\n");

@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave Macro ----------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="cmw2macro"
-_Vers="2.08";
-_Date="1996-2002";
+_Vers="2.11";
+_Date="1996-2004";
 _Func="Compile a user's macro (make it available and create the doc file)";
 _Auth="Jacques Froment";
 _Usage="[-adm] [-ret] [-path path] [-absolute] macro"
@@ -51,9 +51,6 @@ DOCDIR=$MY_MEGAWAVE2/doc
 SHELLOBJ=$MY_MEGAWAVE2/shell
 retdocname=0
 absolute=0
-# Bourne Shell seems to interpret differently escape characters on different
-# systems if we use "\\\"
-antislash='\'
 
 while [ "$1" != "" ]
 do
@@ -139,54 +136,41 @@ fi
 echo "%*** Group=$group" > $doc_name
 echo "%*** Name=$name" >> $doc_name
 echo " " >> $doc_name
-echo "\markboth{" >> $doc_name
+mwecho -E "\markboth{" >> $doc_name
 if [ "$group" != "" ]; then
   Cgroup=`ConvLaTeX "$group"`
-  echo "{\em $Cgroup}" >> $doc_name
+  mwecho -E "{\em $Cgroup}" >> $doc_name
 fi
 
-if [ "$MW_SYSTEMTYPE" = "Linux" ]; then
-  echo "\hfill MegaWave2 User's Modules Library \hfill {${antislash}bf " >> $doc_name
-else
-  echo "\hfill MegaWave2 User's Modules Library \hfill {\\\bf " >> $doc_name
-fi
+mwecho -E "\hfill MegaWave2 User's Modules Library \hfill {\bf " >> $doc_name
+
 Cname=`ConvLaTeX "$name"`
-echo "$Cname } \hspace{1cm}}{"  >> $doc_name
+mwecho -E "$Cname } \hspace{1cm}}{"  >> $doc_name
 if [ "$group" != "" ]; then
-  echo "{\em $Cgroup}"  >> $doc_name
+  mwecho -E "{\em $Cgroup}"  >> $doc_name
 fi
-if [ "$MW_SYSTEMTYPE" = "Linux" ]; then
-  echo "\hfill MegaWave2 User's Modules Library \hfill {${antislash}bf " >> $doc_name
-else
-  echo "\hfill MegaWave2 User's Modules Library \hfill {\\\bf " >> $doc_name
-fi
+
+mwecho -E "\hfill MegaWave2 User's Modules Library \hfill {\bf " >> $doc_name
+
 echo "$Cname} \hspace{1cm}}" >> $doc_name
 echo " " >> $doc_name
 
-echo "\label{$name}" >> $doc_name
+mwecho -E "\label{$name}" >> $doc_name
 echo " " >> $doc_name
-echo "\index{$Cname}" >> $doc_name
+mwecho -E "\index{${Cname}@{\tt ${Cname}}}" >> $doc_name
 echo " " >> $doc_name
 CFunc=`ConvLaTeX "$Func"`
-echo "\Macro{$Cname}{$CFunc}" >> $doc_name
+mwecho -E "\Macro{$Cname}{$CFunc}" >> $doc_name
 CUsage=`ConvLaTeX "$Usage"`
-echo "\Usage{$Cname}{{\em $CUsage}}" >> $doc_name
+mwecho -E "\Usage{$Cname}{{\em $CUsage}}" >> $doc_name
 
 # Description field 
-echo "\samepage" >> $doc_name
-if [ "$MW_SYSTEMTYPE" = "Linux" ]; then
-  echo "\Mark{\Large ${antislash}bf Description} ${antislash}nopagebreak ${antislash}bigskip" >> $doc_name
-  echo "${antislash}nopagebreak" >> $doc_name
-  echo " " >> $doc_name
-  echo "${antislash}nopagebreak" >> $doc_name
-else
-  echo "\Mark{\Large\\\bf Description} \\\nopagebreak\\\bigskip" >> $doc_name
-  echo "\\\nopagebreak" >> $doc_name
-  echo " " >> $doc_name
-  echo "\\\nopagebreak" >> $doc_name
-fi
-echo "\input{src/$name.tex}" >> $doc_name
-echo "\Next" >> $doc_name
+mwecho -E "\Mark{\Large\bf Description} \nopagebreak\bigskip" >> $doc_name
+mwecho -E "\nopagebreak" >> $doc_name
+echo " " >> $doc_name
+mwecho -E "\nopagebreak" >> $doc_name
+mwecho -E "\input{src/$name.tex}" >> $doc_name
+mwecho -E "\Next" >> $doc_name
 echo " " >> $doc_name
 
 # Compute date of last modification for src_name
@@ -204,7 +188,7 @@ fi
 d=`ls -l ${src_name} | awk '{i=NF-2; print $i}'`
 m=`ls -l ${src_name} | awk '{i=NF-3; print $i}'`
 
-echo "\Version{$Vers}{$m $d $y}" >> $doc_name
+mwecho -E "\Version{$Vers}{$m $d $y}" >> $doc_name
 
 if [ "$Labo" = "" ]; then
   Labo="CMLA, ENS Cachan, France."
@@ -216,7 +200,7 @@ fi
 
 CAuth=`ConvLaTeX "$Auth"`
 CLabo=`ConvLaTeX "$Labo"`
-echo "\Author{$CAuth}{$y}{$CLabo}" >> $doc_name
+mwecho -E "\Author{$CAuth}{$y}{$CLabo}" >> $doc_name
 
 # Make the link 
 if [ -r $SHELLOBJ/${name} ] || [ -h $SHELLOBJ/${name} ]; then

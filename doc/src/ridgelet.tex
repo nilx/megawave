@@ -1,0 +1,43 @@
+\def\R{\mbox{I\hspace{-0.15em}R}}
+
+The module {\tt ridgelet} computes the np level discrete ridgelet transform of a Fimage according to the algorithm of J.L. Starck, E. Cand\`es et D.Donoho~\cite{starck.candes.ea:curvelet}.
+It transforms a $N \times N$ image into a $2N\times2N$ image where, from left to right, we have from thinner details to approximation.\\
+
+In continuous, the 2D-ridgelet transform in $\R^{2} $ can be defined as follows:
+
+Let's consider $\psi$ : $\R \rightarrow \R$ a smooth univariate function with sufficient decay and satisfying the condition:
+$$\int _{\scriptsize \R}{|\hat{\psi}(\xi)|^{2}/ |\xi| ^{2}}dx < \infty $$
+which holds if, for instance, if $\int\psi(t)dt=0$.
+
+Let's suppose that $\psi$ is normalized so that 
+  $$\int _{\scriptsize \R}{|\hat{\psi}(\xi)|^{2} |\xi| ^{-2}}dx = 1  $$
+$\forall a >0$, $b\in \R$, $\forall \theta \in [0,2\pi]$, we define the bivariate ridgelet $$\psi_{a,b,\theta}(x_{1},x_{2})=\frac{1}{\sqrt{a}} \psi(\frac{x_{1}cos \theta + x_{2}sin \theta-b}{a})$$.
+
+This function is constant along lines $ x_{1}cos\theta + x_{2}sin\theta = k$, for k constant in  $\R$. Tranverse to these ridges, it is a wavelet.\\
+Given an integrable bivariate function $f(x)$, we define its ridgelet coefficients by
+$$ R_f(a,b,\theta)=\int\overline{\psi}_{a,b,\theta}(x)f(x)dx$$
+We can reconstruct exactly $f$ from its coefficients thanks to the formula
+\begin{equation}
+f(x)=\int_0^{2\pi}\int_{\scriptsize \R}\int_0^{\infty}R_f(a,b,\theta)\psi_{a,b,\theta}(x) \frac{da}{a^3}db \frac{d\theta}{4\pi}
+\end{equation}
+valid a.e. for functions wich are both integrable and square integrable. Furthermore, this formula is stable and satisfies a Parseval relation
+$$\int|{f(x)}|^2dx=\int_0^{2\pi}\int_{\scriptsize \R}\int_0^{\infty}|{R_f(a,b,\theta)}|^2 \frac{da}{a^3}db \frac{d\theta}{4\pi} $$ 
+Hence, as for wavelet or Fourier transforms, the identity (1) expresses the fact that one can represent any arbitrary function as a continuous superposition of ridgelets.
+
+Let's go back to the coefficients $R_f(a,b,\theta)$ calculus. We can view ridgelet analysis as a form of wavelet analysis in the Radon domain. We recall that the Radon transform of an object $f$ is the collection of line integrals indexed by $(\theta,t) \in [0,2\pi]\times {\scriptsize \R} $ given by
+$$Rf(\theta,t)=\int_{\scriptsize \R} {f(x_{1},x_{2}) \delta(x_{1}cos\theta + x_{2} sin \theta -t) dx_{1}  dx_{2}}$$
+where $\delta$ is the Dirac distribution. The ridgelet coefficients $ R_f(a,b,\theta)$ of $f$ are given by analysis of the Radon transform via
+$$R_{f}(a,b,\theta)=\int_{\scriptsize \R} Rf(t,\theta)a^{-\frac{1}{2}}\psi (\frac{t-b}{a}) dt$$
+Hence the ridgelet transform is precisely the application of a one-dimensional wavelet transform to the slices of the Radon transfom where the angular variable $\theta$ is constant and $t$ is varying.
+
+Our algorithm starts calculating the Radon transform $Rf(t,\theta)$, and then applies the one-dimensional wavelet transform to the slices $Rf(.,\theta)$. 
+In order to calculate the Radon transform, we use the projection-slice formula:
+$$ \hat f (\lambda\cos\theta, \lambda\sin\theta) =\int Rf(t,\theta) \exp{(-it\lambda)} dt $$
+This means that the Radon transform can be obtained by applying the one-dimensional inverse Fourier transform to the two-dimensional Fourier transform restricted to radial lines going through the origin.
+Given a square image, the algorithm follows successively these steps:
+\begin{enumerate}
+\item Compute the 2D-FFT of $f$, giving an image $\hat f$
+\item Conversion of the cartesian grid into a polar grid: interpolating, we substitute the sampled values of the Fourier transform obtained on the square lattice with sampled values of $\hat f$ on a polar lattice (ie where the points fall on lines going through the origin)
+\item Apply the 1D-wavelet transform on the radial lines in the Fourier domain.
+\end{enumerate}
+

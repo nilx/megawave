@@ -3,8 +3,8 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Prog="mwrm"
 _Func="Remove a module or a user's macro"
-_Vers="1.0"
-_Date="2000-02"
+_Vers="1.01"
+_Date="2000-04"
 _Auth="Jacques Froment";
 _Usage="[-macro] module"
 #----------------------------------------------------------------------------#
@@ -24,9 +24,9 @@ Answer()
 ok=0
 while [ $ok -ne 1 ]; do
  if  [ "$2" != "" ]; then
-   mwechon "$1 [Y/N] ? [default $2] "
+   mwecho -n "$1 [Y/N] ? [default $2] "
  else
-   mwechon "$1 [Y/N] ? "
+   mwecho -n "$1 [Y/N] ? "
  fi
  read ans
  if [ "$ans" = "" ] && [ "$2" != "" ]; then
@@ -68,18 +68,18 @@ rmmodule()
   echo "------------------------------ WARNING ------------------------------"
   echo "This module is called by the following module(s) : "
   if [ -f $calling_public ]; then
-   mwechon "[public] "
+   mwecho -n "[public] "
    for f in `cat $calling_public`
    do
-    mwechon "$f "
+    mwecho -n "$f "
    done
    echo " "
   fi
   if [ -f $calling_private ]; then
-   mwechon "[private] "
+   mwecho -n "[private] "
    for f in `cat $calling_private`
    do
-    mwechon "$f "
+    mwecho -n "$f "
    done
    echo " "
   fi

@@ -1,2 +1,2 @@
 This module allows to interactively define closed polygonal regions in an
-image. It can be used to test the \verb+disocclusion+ module.
+image. The input image appears in a window and the regions can be ``drawn'' with the mouse (type $h$ in the window for more help). The {\bf -z} option changes the image appearance on screen but does not modify the dimensions of the final image. The output $label$ image contains only these regions, each of them uniquely associated with a positive value. The option {\bf -h hole\_image} creates an additional image $hole\_image$ which coincides with the input image except that all polygonal regions appear with the level $gray$ (default~: 255). This module can be used to test the \verb+disocclusion+ module.

@@ -1,4 +1,5 @@
-{\em ibiowave1} reconstructs a signal from a sequence of sub-signals forming a wavelet decomposition, using filter banks associated to biorthogonal wavelet bases. The notations and definitions have been defined in {\em owave1} and {\em biowave1}. The coefficients of the wavelet decomposition \( A_{J}, D_{J}, D_{J-1}, \ldots, D_{1} \) are stored in a sequence of files whose names obey the syntaxic rules described in {\em biowave1} module's documentation, and whose prefix is {\em WavTrans}. The reconstructed signal's coefficients $A_{0}[k]$ are stored in the file {\em RecompSignal}.
+{\em ibiowave1} reconstructs a signal from a sequence of sub-signals forming a wavelet decomposition\index{wavelet!transform!biorthogonal}, using filter banks associated to biorthogonal wavelet bases (see~\cite{cohen.daubechies.ea:biorthogonal}). 
+The notations and definitions have been defined in {\em owave1} and {\em biowave1}. The coefficients of the wavelet decomposition \( A_{J}, D_{J}, D_{J-1}, \ldots, D_{1} \) are stored in a sequence of files whose names obey the syntaxic rules described in {\em biowave1} module's documentation, and whose prefix is {\em WavTrans}. The reconstructed signal's coefficients $A_{0}[k]$ are stored in the file {\em RecompSignal}.
 
 As for the orthogonal case the inverse wavelet transform is a recursive algorithm.  \( A_{j-1} \) is computed from \( A_{j} \) and \( D_{j} \) using the relation :
 \[
@@ -21,13 +22,3 @@ The -e option specifies the edge processing mode (see {\em biowave1}).
 \item
 The -n option specifies the normalisation mode of the filter impulse responses' coefficients. It should be selected according to the mode used for the decomposition in order to get exact reconstruction. 
 \end{itemize}
-
-
-\begin{thebibliography}{CDF}
-
-\bibitem[CDF]{kn:cdv} A. Cohen, I. Daubechies, J.C. Feauveau. 
-{\em Biorthogonal bases of compactly supported wavelets, } 
-Comm. pure and applied math. 45, pp 485-560, 1992.
-
-\end{thebibliography}
-

@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave Macro ----------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="mwdoc"
-_Vers="1.05";
-_Date="1999-2003";
+_Vers="1.07";
+_Date="1999-2004";
 _Func="Enter the MegaWave2 documentation";
 _Auth="Jacques Froment";
 _Usage="[<name> || M || S || F || 1 || 2 || 3]"
@@ -28,7 +28,7 @@ if [ $# -lt 1 ]; then
  echo "2           : Vol.2  System Library"
  echo "3           : Vol.3  User's Modules and Macros Library"
  echo " "
- mwechon ">"
+ mwecho -n ">"
  read X
 else
  X=$1 
@@ -82,7 +82,7 @@ if [ "$X" = "f" ] || [ "$X" = "F" ]; then
    exit 1
   fi
   echo "What kind of file type(s) are you looking for ? Please enter a keyword"
-  mwechon "(you may use regular expression, <return> for all file types) : "
+  mwecho -n "(you may use regular expression, <return> for all file types) : "
   read A
   echo ""
   echo "File type        Description"
@@ -98,7 +98,7 @@ if [ "$X" = "f" ] || [ "$X" = "F" ]; then
   exit 0
 fi
 
-
+X=`basename "$X" .c`
 tmod=${X}.tex
 # Defaults
 SRCDIR=$MY_MEGAWAVE2/doc/src

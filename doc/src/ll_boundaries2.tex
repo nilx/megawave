@@ -1,0 +1,37 @@
+
+This modules selects contrasted level lines from a Fimage.
+It brings new features to the former \verb+ll_boundaries+ module.
+(these two modules will probably be merged in the next release).
+
+\medskip
+
+Because of gradient quantization effect, it may be very useful to slightly 
+smooth the image before applying the method. A gaussian with standard deviation
+0.5 is the default kernel. 
+
+\medskip
+In the original algorithm, the gradient distribution is computed on the whole 
+image (see \cite{desolneux.moisan.ea:edge}), sometimes yielding what is called the ``blue sky effect'':
+there are too many detections in some regions because the image contains a very
+flat part. This can be counter-balanced by using the following method (detailed
+in \cite{cao.muse.sur:shape}): since meaningful boundaries are closed curves, they sever the plan
+into two connected components. It is then possible to re-estimate the gradient
+distribution in each connected component and apply the same method as
+above. Use the \verb+-L+ flag for this local research. 
+
+
+\medskip
+Notice that contrary to the \verb+ll_edges+ detection, this 
+module is constrained to keep full (ie closed) level lines and 
+cannot break them into parts. As a consequence, the detected boundaries still
+enjoy the original tree structure and are the level lines of a function. 
+Meaningful boundaries thus allow to define a ``connected operator'' (following
+the mathematical morphologists terminology). The reconstructed image can be
+obtained with the \verb+-o+ option, while the corresponding tree can be
+saved with the \verb+-k+ option. 
+
+
+\medskip
+
+The result is a collection of curves stored in a Flists structure.
+

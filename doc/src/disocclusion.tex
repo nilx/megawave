@@ -1,12 +1,23 @@
-This modules performs a singular (level-lines based) interpolation of
-an image. The $input$ image is interpolated in the regions specified
-in the $holes$ mask image. The \verb+drawocclusion+ module can
-be used to create such a mask image of the holes. See [1] for 
-a detailed description of the algorithm.
+This modules performs a singular (level-lines based) interpolation of missing parts in the $Input$ image. There is no detection of missing parts, which are assumed to be completely specified by the $Holes$ image, each of them being uniquely associated with a positive value (the \verb+drawocclusion+ module can
+be used to create such a mask image of the holes). Missing parts must be {\bf simply connected} domains (i.e, without hole). In case they are not, the algorithm will automatically change them into simply connected sets by simply adding the holes.
 
 \medskip
+The interpolation is carried out in the following way~: for each missing part, the algorithm finds an optimal set of interpolating level lines $\{L_{i,t},\,i\in I_t,\,t\in {{\mathrm I}\!{\mathrm R}}\}$ according to the energy
+$$\int_{-\infty}^{+\infty}(\sum_{i\in I_t}\int_{L_{i,t}}(\alpha+\beta|\kappa| )d{\cal H}^1)dt$$
+where $\alpha,\beta\geq 0$, $\kappa$ denotes the curvature and ${\cal H}^1$ is the one-dimensional Hausdorff measure. The term $\int_{L_{i,t}}|\kappa|d{\cal H}^1$ actually represents the angle total variation along $L_{i,t}$, taking into account the angles at both endpoints. 
 
-[1] S. Masnou, {\it Filtrage et désocclusion d'images par méthodes d'ensembles
-de niveau}, PhD dissertation, Ceremade, Université Paris-Dauphine, 1998.
+The option {\bf -a} allows to compute more accurately the directions of the outer level lines at the boundary of each missing part. 
 
+The values of $\alpha$ and $\beta$ depends on the parameter {\bf energy\_type}. More precisely
+$${\mathbf energy\_type}=\left\{\begin{array}{lll}
+0\\
+1\mbox{ (default)}\\
+\mbox{otherwise}\end{array}\right.\Rightarrow\left\{\begin{array}{lll}
+\alpha=1,\;\beta=0\\
+\alpha=0,\;\beta=1\mbox{ (default)}\\
+\alpha=0.2,\;\beta=1\end{array}\right.$$
+
+The minimization is performed by a dynamic programming approach and a 
+global minimal solution is computed. See \cite{masnou:disocclusion} for 
+a detailed description of the algorithm.
 

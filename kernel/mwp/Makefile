@@ -1,4 +1,4 @@
-# Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.07 with arch = 'Linux ix86' option = ''
+# Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.08 with arch = 'Linux ix86' option = ''
 #-----------------------------------------------------------------------------
 # Makefile.in used to create Makefile using macro mw2config
 # MegaWave2 preprocessor : Copyright (c) J.Froment and S.Parrino 1995-2001

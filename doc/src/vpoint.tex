@@ -1,0 +1,10 @@
+Given a set of $n$ line segments (\emph{allsegs}) that have been detected in the input image (usually by the \verb+align_mdl+ module), this module searches for convex regions $V$ in the image plane, which are met by the supporting lines of at least $k$ among the total of $n$ segments. The threshold $k$ depends on the shape and location of $V$ with respect to the image domain an is chosen in such a way that the expected number of occurrences (NFA) of the event ``at least $k$ among $n$ lines meet $V$'' is upper-bounded by $10^{-eps}$, if we assume the a-contrario model that lines are independent and randomly distributed in the image plane, and such that $n$ of them meet the image domain (see \cite{almansa.desolneux.vamech:vanish}, \cite{almansa:phd}).
+
+The regions $V$ are chosen from a set of tilings of the image plane at a range of dyadic angular precisions (16,32,...,512). The module only detects maximal regions, \emph{i.e.} regions $V$, such that for any other region $V'$ in the set of tilings, if $V'\cap V \neq \phi$ then we have $NFA(V)\leq NFA(V')$.
+
+In order to avoid spurious vanishing regions that result from the accidental concurrence in the image plane of several sets of parallel lines in 3D, the exclusion principle (MDL) is applied (unless the -a option is specified), by constraining each line to count for a single region, namely the most meaningful region it meets.
+
+Once all maximal meaningful regions were detected, if we remove the corresponding segments (thus decreasing $n$), then further regions may become meaningful. Option -m allows to compute such vanishing regions that were ``masked'' by the overwhelming amount of lines belonging to other vanishing regions.
+
+The output of this module is best visualized one vanishing region at a time by \verb+vpsegplot+ and \verb+fkview+.
+

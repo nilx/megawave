@@ -1,12 +1,17 @@
-This user's macro allows to easily run a wavelet-denoising algorithm combining a total 
-variation (TV) minimization approach. The first presentation of these method has been
-made in~\cite{DF:ArtifactFree}, while in~\cite{DF:ReconsWaveletUsingTV} one
-will find the detail of the algorithm together with the proof of the convergence.
+This user's macro allows to easily run a wavelet-denoising algorithm\index{denoising!wavelet}
+combining a total variation (TV)\index{denoising!total variation} minimization approach, 
+by calling the module {\tt stvrestore}. 
+The first presentation of these method has been made in~\cite{durand.froment:artifact}, 
+while in~\cite{durand.froment:reconstruction} one will find the detail of the algorithm 
+together with the proof of the convergence.
 
 In short, the approach is motivated by wavelet signal denoising methods, where 
 thresholding small wavelet coefficients leads to pseudo-Gibbs artifacts. By replacing
 these thresholded coefficients by values minimizing the total variation of the
 reconstructed signal, the method performs a nearly artifact free signal denoising.
+Minimizing total variation has first been proposed by Rudin, Osher and Fatemi
+in the context of image denoising~\cite{rudin.osher.ea:nonlinear}\cite{rudin.osher:total},
+see module {\tt tvdenoise}.
 
 The meaning of options given in the usage are the following :
 
@@ -27,21 +32,7 @@ The meaning of options given in the usage are the following :
 \end{tabular}
 
 From this list, the options you may want to set to get results close to the ones
-reported in~\cite{DF:ArtifactFree} and~\cite{DF:ReconsWaveletUsingTV} are
-{\tt -r}, {\tt -P} and {\tt -N}.
+reported in~\cite{durand.froment:artifact} and~\cite{durand.froment:reconstruction} are
+{\tt -r}, {\tt -P} and {\tt -N} (for these last two options, set the parameters' value as
+indicated in the article).
 
-\begin{thebibliography}{Dau1}
-
-\bibitem{DF:ArtifactFree}
-S.~Durand and J.~Froment.
-\newblock Artifact free signal denoising with wavelets.
-\newblock In {\em Proc. of ICASSP'01}, volume~6, 2001.
-
-\bibitem{DF:ReconsWaveletUsingTV}
-Sylvain Durand and Jacques Froment.
-\newblock Reconstruction of wavelet coefficients using total variation minimization.
-\newblock {\em SIAM J. Sci. Comput.}, to appear. You can get the preprint number 2001-18
-in the CMLA report pages {\tt www.cmla.ens-cachan.fr/Cmla/Publications/2001}.
-
-
-\end{thebibliography}

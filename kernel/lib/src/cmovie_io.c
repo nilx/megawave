@@ -2,8 +2,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cmovie_io.c
    
-   Vers. 1.5
-   (C) 1993-2002 Jacques Froment
+   Vers. 1.6
+   (C) 1993-2004 Jacques Froment
    Input/Output private functions for the Cmovie structure
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -162,7 +162,10 @@ char  *Type;                          /* Type de format du fichier */
     ret = fscanf(fp,"%s",Fic);
     if ((ret == 1)&&(Fic[0] != '%')&&(Fic[0] != '#'))
       {
-	sprintf(FicImage,"%s%s",PathName,Fic);
+	if (Fic[0]=='/') /* Absolute pathname */
+	  strcpy(FicImage,Fic);
+	else /* Relative pathname : add pathname of fname */
+	  sprintf(FicImage,"%s%s",PathName,Fic);
 	f = open(FicImage,O_RDONLY);
 	if (f != -1) 
 	  {

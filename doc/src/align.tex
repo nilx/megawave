@@ -7,19 +7,10 @@ of the segment modulo a given precision $p$. The detection is made
 using a thresholding function balancing between the density of
 aligned points and the length of the segment. This function ensures
 that at most $10^{-eps}$ false detections could occur by chance
-with random gradient directions (see [1]).
+with random gradient directions (see~\cite{desolneux.moisan.ea:meaningful}).
 
 \medskip
 
 The result is a 5-Flist, that has 0 element if no alignment was detected.
 The \verb+-c+ option store the detected segments as a collection of curves
 (Flists), allowing direct visualization with the \verb+fkview+ module.
-
-\bigskip
-
-{\large \bf References}
-
-\medskip
-
-[1] A. Desolneux, L. Moisan, J.-M. Morel, ``Meaningful Alignments'', 
-{\it International Journal of Computer Vision}, vol. 40:1, pp. 7-23, 2000.

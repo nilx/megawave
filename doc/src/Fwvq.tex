@@ -1,5 +1,6 @@
 This macro compresses a 8 bits graylevel image using a vector quantization 
-algorithm applied to the orthogonal/biorthogonal wavelet coefficients. 
+\index{quantization!vector} algorithm applied to the orthogonal/biorthogonal 
+wavelet coefficients\index{wavelet!compression}. 
 It is based on the {\em fwvq} module, but is simpler to use. 
 
 One only has to specify the prefix {\em codebook} of all codebook sets 
@@ -35,7 +36,7 @@ number of factor 2.
 
 The -r, -s, -u and -R options work as for {\em fwvq} module. If the -R 
 option is not selected, then the rate distortion curve is computed 
-(as if the -d option was selected in {\em fwvq}). 
+(as if the -d option was selected in {\em fwvq}), see~\cite{gersho.gray:vector}. 
 
 The -m option works slightly differently. If not selected, then it 
 performs an approximative memory allocation (equivalent to -m 1 
@@ -44,11 +45,4 @@ in {\em fwvq}). If selected, then it performs an exact memory allocation
 
 No scaling of wavelet coefficients is made. In other words, 
 the -w option is not activated when {\em fwvq} is called. 
-
-\begin{thebibliography}{999999}
-
-\bibitem[GG]{kn:gg} A. Gersho, R.M. Gray, {\em ``Vector quantization 
-and signal compression'', } Kluwer Ac. Pub., Boston (1992). 
-
-\end{thebibliography}
 

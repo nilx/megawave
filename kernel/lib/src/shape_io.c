@@ -1,12 +1,14 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    shape_io.c
    
-   Vers. 1.4
-   (C) 1999-2001 Pascal Monasse, Frederic Guichard, Jacques Froment.
+   Vers. 1.5
+   (C) 1999-2004 Pascal Monasse, Frederic Guichard, Jacques Froment.
    Input/output functions for the 
      Shape
      Shapes
    structures
+
+V 1.5 : Bug corrected on _mw_load_mw2_shapes() (Luis Garrido, Coloma Ballester)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
@@ -688,8 +690,19 @@ char  *fname;  /* Name of the file */
     }
 
   shapes->the_shapes[0].parent = NULL;
+ 
   /* Correct the fields child and next_sibling of each shape */
-  sh = &shapes->the_shapes[shapes->nb_shapes-1];
+
+  
+  for(i = shapes->nb_shapes - 1; i >= 0; i--)  
+    /* Thanks to Luis Garrido and Coloma Ballester for this addition */
+    {
+      shapes->the_shapes[i].child = NULL;
+      shapes->the_shapes[i].next_sibling = NULL;
+      shapes->the_shapes[i].pixels = NULL;
+    }
+
+ sh = &shapes->the_shapes[shapes->nb_shapes-1];
   for(i = shapes->nb_shapes-1; i > 0; i--, sh--) 
     {
       sh->next_sibling = sh->parent->child;

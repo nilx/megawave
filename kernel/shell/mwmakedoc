@@ -3,10 +3,10 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Make a new MegaWave2 documentation (guide #3) consistent with the existing modules and macros"
 _Prog="`basename $0`"
-_Vers="2.05"
-_Date="1996-2002"
+_Vers="2.17"
+_Date="1996-2004"
 _Auth="Jacques Froment";
-_Usage="[-N] [-g group_directory] [-nobin] [+/-index] [+/-html] megawave2_directory"
+_Usage="[-N] [-g group_directory] [-nobin] [+/-index] [+/-html] [-c] [-h] megawave2_directory"
 #----------------------------------------------------------------------------#
 # This file is part of the MegaWave2 system macros. 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -32,7 +32,7 @@ CheckLaTeXPackage()
 }
 
 # Usage
-if [ $# -lt 1 ] || [ $# -gt 5 ]; then
+if [ $# -lt 1 ] || [ $# -gt 9 ]; then
   . .mw2_help_lg_com
 fi
 
@@ -52,13 +52,21 @@ if [ $html -eq 1 ]; then
   html=$?
 fi
 
-# Bourne Shell seems to intrepret differently escape characters on different systems
-# if we use "\\\"
-antislash='\'
-
+compile=no
+latex2html=no
+opt=""
 while [ "$1" != "" ]
 do
     case "$1" in
+
+    -c)   compile=yes;
+          shift;
+          ;;
+
+    -h)   latex2html=yes;
+          compile=yes;
+          shift;
+          ;;
 
     -N)   Main=no;
           shift;
@@ -75,20 +83,24 @@ do
             ;;
 
     +index) index=1
+            opt="$opt $1"
             shift
             ;;
 
 
     -index) index=0
+            opt="$opt $1"
             shift
             ;;
 
 
     +html) html=1
+           opt="$opt $1"
            shift
             ;;
 
     -html) html=0
+           opt="$opt $1"
            shift
             ;;
 
@@ -111,11 +123,12 @@ doc_obj=${doc_dir}/obj
 doc_src=${doc_dir}/src
 
 # Name of the guide #3 (modules library)
-doc_modules=guid3.tex
+doc_bname=guid3
+doc_modules=${doc_bname}.tex
 # Name of the list TeX file for the guide #3 (formerly named index)
-doc_modules_list=guid3.list
+doc_modules_list=${doc_bname}.list
 # Name of the index TeX file
-doc_modules_index=guid3.idx
+doc_modules_index=${doc_bname}.idx
 
 bin=bin/${MW_MACHINETYPE?'environment not set'}
 
@@ -151,35 +164,30 @@ fi
 if [ $Main = "yes" ]; then
   cat ${MEGAWAVE2?'environment not set'}/sys/shell/data/mwmakedoc_header_latex2e.tex >> ${doc_dir}/${doc_modules}
   if [ $index -eq 1 ]; then
-    if [ "$MW_SYSTEMTYPE" = "Linux" ]; then
-      echo "${antislash}usepackage{makeidx}" >> ${doc_dir}/${doc_modules}
-    else
-      echo "\\\usepackage{makeidx}" >> ${doc_dir}/${doc_modules}
-    fi
+    mwecho -E "\usepackage{makeidx}" >> ${doc_dir}/${doc_modules}
   fi
   if [ $html -eq 1 ]; then
-    if [ "$MW_SYSTEMTYPE" = "Linux" ]; then
-      echo "${antislash}usepackage{html,hthtml}" >> ${doc_dir}/${doc_modules}
-    else
-      echo "\\\usepackage{html,hthtml}" >> ${doc_dir}/${doc_modules}
-    fi
+    mwecho -E "\usepackage{html,hthtml}" >> ${doc_dir}/${doc_modules}
   fi
   if [ $html -eq 1 ]; then
     cat ${MEGAWAVE2}/sys/shell/data/mwmakedoc_body_html.tex >> ${doc_dir}/${doc_modules}
+    cat $MEGAWAVE2/sys/shell/data/mwmakedoc_macros_html.tex >> ${doc_dir}/${doc_modules}
+    cat $MEGAWAVE2/sys/shell/data/mwmakedoc_list_html.tex >> ${doc_dir}/${doc_modules}
   else
     cat ${MEGAWAVE2}/sys/shell/data/mwmakedoc_body.tex >> ${doc_dir}/${doc_modules}
+    cat $MEGAWAVE2/sys/shell/data/mwmakedoc_macros.tex >> ${doc_dir}/${doc_modules}
+    cat $MEGAWAVE2/sys/shell/data/mwmakedoc_list.tex >> ${doc_dir}/${doc_modules}
   fi
-  cat $MEGAWAVE2/sys/shell/data/mwmakedoc_macros.tex >> ${doc_dir}/${doc_modules}
-  cat $MEGAWAVE2/sys/shell/data/mwmakedoc_list.tex >> ${doc_dir}/${doc_modules}
-  if [ "$MW_SYSTEMTYPE" = "Linux" ]; then
-    echo "${antislash}input{${doc_modules_list}}" >> ${doc_dir}/${doc_modules}
-    echo "${antislash}newpage" >> ${doc_dir}/${doc_modules}
+
+  mwecho -E "\input{${doc_modules_list}}" >> ${doc_dir}/${doc_modules}
+  mwecho -E "\newpage" >> ${doc_dir}/${doc_modules}
+#    mwecho -E "\addcontentsline{toc}{section}{Reference}" >> ${doc_dir}/${doc_modules}
+
+  if [ $html -eq 1 ]; then
+   cat $MEGAWAVE2/sys/shell/data/mwmakedoc_reference_html.tex >> ${doc_dir}/${doc_modules}
   else
-    echo "\\\input{${doc_modules_list}}" >> ${doc_dir}/${doc_modules}
-    echo "\\\newpage" >> ${doc_dir}/${doc_modules}
-    echo "\\\addcontentsline{toc}{section}{Reference}" >> ${doc_dir}/${doc_modules}
+   cat $MEGAWAVE2/sys/shell/data/mwmakedoc_reference.tex >> ${doc_dir}/${doc_modules}
   fi
-  cat $MEGAWAVE2/sys/shell/data/mwmakedoc_reference.tex >> ${doc_dir}/${doc_modules}
 fi
 
 for file in `ls ${mw2_dir}/src/${mw_group}`
@@ -224,7 +232,7 @@ do
 # end of if [ "$bfile" != "$file" ]; then
     fi
     if [ "$ftype" != "" ]; then
-      mwechon "${bfile} "
+      mwecho -n "${bfile} "
       if [ ! -f ${doc_src}/${bfile}.tex ]; then
         echo "${_Prog}: Warning: module or macro ${bfile} is not documented (no ${bfile}.tex file)" 1>&2
         echo "Creating an empty file to avoid error during LaTeX compilation" 1>&2
@@ -240,41 +248,36 @@ do
 	     sed "s/%\*\*\* Name=//"`
 
       if [ "$old_group" != "$group" ]; then
-        if [ "$MW_SYSTEMTYPE" = "Linux" ]; then
-          atgroup=`echo $group | sed "s/_/${antislash}\_/g"`
-          echo "${antislash}addcontentsline{toc}{subsection}{Group ${atgroup}}" >> ${doc_dir}/${doc_modules}
-          echo "${antislash}vspace{10mm}" >> ${doc_dir}/${doc_modules_list}
-          echo "{${antislash}large Group ${antislash}verb+${group}+:}" >> ${doc_dir}/${doc_modules_list}
-          echo " " >> ${doc_dir}/${doc_modules_list}
-          echo "${antislash}vspace{5mm}" >> ${doc_dir}/${doc_modules_list}
-        else
 # Yes, as many \\... as these are needed on Solaris !
-          atgroup=`echo $group | sed "s/_/\\\\\\_/g"`
-          echo "\\\addcontentsline{toc}{subsection}{Group ${atgroup}}" >> ${doc_dir}/${doc_modules}
-          echo "\\\vspace{10mm}" >> ${doc_dir}/${doc_modules_list}
-          echo "{\\\large Group \\\verb+${group}+:}" >> ${doc_dir}/${doc_modules_list}
-          echo " " >> ${doc_dir}/${doc_modules_list}
-          echo "\\\vspace{5mm}" >> ${doc_dir}/${doc_modules_list}
-        fi
+        atgroup=`echo $group | sed "s/_/\\\\\\_/g"`
+        mwecho -E "\addcontentsline{toc}{subsection}{Group ${atgroup}}" >> ${doc_dir}/${doc_modules}
+        mwecho -E "\vspace{10mm}" >> ${doc_dir}/${doc_modules_list}
+        mwecho -E "{\large Group \verb+${group}+:}" >> ${doc_dir}/${doc_modules_list}
+        echo " " >> ${doc_dir}/${doc_modules_list}
+        mwecho -E "\vspace{5mm}" >> ${doc_dir}/${doc_modules_list}
       fi
 
       if [ $ftype = "m" ]; then
-        grep "\\Name" ${doc_obj}/${docfile} | sed "s/\\Name/\\List/g" >> ${doc_dir}/${doc_modules_list}   
+        grep "\\Name{" ${doc_obj}/${docfile} | sed "s/Name{/List{/g" >> ${doc_dir}/${doc_modules_list}   
       else
-        grep "\\Macro" ${doc_obj}/${docfile} | sed "s/\\Macro/\\List/g" >> ${doc_dir}/${doc_modules_list}   
+        grep "\\Macro{" ${doc_obj}/${docfile} | sed "s/Macro{/List{/g" >> ${doc_dir}/${doc_modules_list}   
       fi
       echo "{${name}}" >>  ${doc_dir}/${doc_modules_list}
       echo " " >>  ${doc_dir}/${doc_modules_list}
 
 # Put the doc file
 
-      if [ "$MW_SYSTEMTYPE" = "Linux" ]; then
-        echo "${antislash}input{obj/${docfile}}" >> ${doc_dir}/${doc_modules}
-        echo "${antislash}newpage" >> ${doc_dir}/${doc_modules}   
-      else
-        echo "\\\input{obj/${docfile}}" >> ${doc_dir}/${doc_modules}
-        echo "\\\newpage" >> ${doc_dir}/${doc_modules}   
+      if [ $html -eq 1 ]; then
+       mwecho -E "\begin{htmlonly}" >> ${doc_dir}/${doc_modules}
+       mwecho -E "\paragraph{${name}}" >> ${doc_dir}/${doc_modules}
+       mwecho -E "\end{htmlonly}" >> ${doc_dir}/${doc_modules}
+#         mwecho -E "\begin{rawhtml}" >> ${doc_dir}/${doc_modules}
+#         echo "<HR>" >> ${doc_dir}/${doc_modules}
+#         mwecho -E "\end{rawhtml}" >> ${doc_dir}/${doc_modules}
       fi
+
+      mwecho -E "\input{obj/${docfile}}" >> ${doc_dir}/${doc_modules}
+      mwecho -E "\newpage" >> ${doc_dir}/${doc_modules}   
 
 # End of if [ "$ftype" != "" ]; then
     fi
@@ -290,23 +293,64 @@ do
 # This file is a directory
    echo ""
    echo "---> Make doc for group ${mw_group}/${file} <---"
-   mwmakedoc -N $NoBin -g ${mw_group}/${file} ${mw2_dir}
+   mwmakedoc -N $NoBin -g ${mw_group}/${file} $opt ${mw2_dir}
    echo ""
   fi
 done
 
 if [ $Main = "yes" ]; then
+  cat $MEGAWAVE2/sys/shell/data/mwmakedoc_bib.tex >> ${doc_dir}/${doc_modules}
   if [ $index -eq 1 ]; then
     cat $MEGAWAVE2/sys/shell/data/mwmakedoc_foot_index.tex >> ${doc_dir}/${doc_modules}
   else
     cat $MEGAWAVE2/sys/shell/data/mwmakedoc_foot.tex >> ${doc_dir}/${doc_modules}
   fi
-  echo " "
-  echo "Compile the guide #3 with the following command"
-  if [ $index -eq 1 ]; then    
-    echo "cd ${doc_dir}; latex ${doc_modules}; makeindex ${doc_modules_index}; latex ${doc_modules}; latex ${doc_modules};"
+
+  if [ "$compile" = "no" ]; then
+# Print what to do in order to compile guid3.tex
+   echo " "
+   echo "Compile the guide #3 with the following command"
+   if [ $index -eq 1 ]; then    
+     echo "cd ${doc_dir}; latex ${doc_modules}; mwmodbibtex ..; makeindex ${doc_modules_index}; latex ${doc_modules}; latex ${doc_modules};"
+   else
+     echo "cd ${doc_dir}; latex ${doc_modules}; mwmodbibtex ..; latex ${doc_modules}; latex ${doc_modules};"
+   fi
   else
-    echo "cd ${doc_dir}; latex ${doc_modules}; latex ${doc_modules}; latex ${doc_modules};"
+# Compile guid3.tex
+   echo "${_Prog} : Compiling ${doc_bname} using LaTeX..."
+   cd ${doc_dir}
+   latex ${doc_modules}
+   if [ $? -ne 0 ]; then
+    echo "${_Prog} : Cannot successfully run 'latex ${doc_modules}' (pass 1) ! Exit." 1>&2
+    exit 1
+   fi
+   mwmodbibtex ..
+   if [ $? -ne 0 ]; then
+    echo "${_Prog} : Cannot successfully run 'mwmodbibtex' ! Exit." 1>&2
+    exit 1
+   fi
+   if [ $index -eq 1 ]; then    
+    makeindex ${doc_modules_index}
+    if [ $? -ne 0 ]; then
+     echo "${_Prog} : Cannot successfully run 'makeindex ${doc_modules_index}' ! Exit." 1>&2
+     exit 1
+    fi
+   fi
+   latex ${doc_modules}
+   if [ $? -ne 0 ]; then
+    echo "${_Prog} : Cannot successfully run 'latex ${doc_modules}' (pass 2) ! Exit." 1>&2
+    exit 1
+   fi
+   latex ${doc_modules}
+   if [ $? -ne 0 ]; then
+    echo "${_Prog} : Cannot successfully run 'latex ${doc_modules}' (pass 3) ! Exit." 1>&2
+    exit 1
+   fi
+   if [ "$latex2html" = "yes" ]; then
+# Run latex2html
+    echo "${_Prog} : Calling latex2html (this may take a while !)..."    
+    latex2html -no_math -html_version 3.2,math ${doc_bname}
+   fi
   fi
 fi
 

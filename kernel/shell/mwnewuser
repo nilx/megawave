@@ -17,7 +17,7 @@ _Usage=""
 #-----------------------------------------------------------------------------
 
 if [ ! -d ${MY_MEGAWAVE2?"Please set the MegaWave2 variables up before running ${_Prog}."} ]; then
-    mwechon "Creating directory $MY_MEGAWAVE2 and sub-dir..."
+    mwecho -n "Creating directory $MY_MEGAWAVE2 and sub-dir..."
     mkdir -p $MY_MEGAWAVE2/src
     mkdir $MY_MEGAWAVE2/obj
     mkdir $MY_MEGAWAVE2/doc

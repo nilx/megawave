@@ -6,8 +6,9 @@ the total number of points contained in all curves.
 The curves are supposed to be made by connected points 
 (for the 4-connectivity).
 
-This module implements the Freeman algorithm : the data structure
-is made by the change of direction from one point to the next.
+This module implements the Freeman's 
+algorithm~\cite{freeman:computer}\index{coding!curve} : 
+the data structure is made by the change of direction from one point to the next.
 After that, the data is coded using one of the following schemes
 (only the best bit rate is returned) :
 entropy coding, arithmetic coding, predictive arithmetic coding.
@@ -20,3 +21,5 @@ a set of curves.
 See the module \verb+arencode2+ for more information on the arithmetic
 coding algorithms.
 
+Such module is useful to encode level lines geometry, such as 
+in~\cite{froment:functional}.

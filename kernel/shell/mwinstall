@@ -3,7 +3,7 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Install a new MegaWave2 full version (adm only)";
 _Prog="`basename $0`"
-_Vers="1.19"
+_Vers="1.23"
 _Date="1999-2003"
 _Auth="Jacques Froment";
 _Usage="[-static] [-public || -public=private] [-clear] [-debug] [-level l] mw2distribution"
@@ -206,7 +206,7 @@ Echo "***** Begin the MegaWave2 Installation Process (cross the fingers) *****"
 Echo "************************************************************************"
 Echo "***** `date`"
 
-level=`echo "$level 1 + p" | dc`
+level=`expr $level + 1`
 NewTrap
 if [ $l -le $level ]; then 
  Echo "*****************************************"
@@ -340,7 +340,7 @@ if [ $pubinstall -eq 1 ]; then
   touch $PUBLIC_MEGAWAVE2/INSTALL_NOT_COMPLETE
 fi
 
-level=`echo "$level 1 + p" | dc`
+level=`expr $level + 1`
 NewTrap
 if [ $l -le $level ]; then 
  Echo "****************************************"
@@ -356,7 +356,7 @@ if [ $l -le $level ]; then
 # end of level
 fi
 
-level=`echo "$level 1 + p" | dc`
+level=`expr $level + 1`
 NewTrap
 if [ $l -le $level ]; then 
  Echo "*****************************************"
@@ -399,7 +399,7 @@ if [ $l -le $level ]; then
 # end of level
 fi
 
-level=`echo "$level 1 + p" | dc`
+level=`expr $level + 1`
 NewTrap
 if [ $l -le $level ]; then 
  Echo "*******************************************************"
@@ -411,23 +411,11 @@ if [ $l -le $level ]; then
    Echo "***** Error while making dependencies list ! I continue but" 
    Echo "***** you will not get modules dependencies in the documentation."
  fi
- mwmakedoc $MWSRC
+ mwmakedoc -c $MWSRC
  if [ $? -ne 0 ]; then
    Echo "***** Error while making documentation !" 
    Abort
  fi
- cd $MWSRC/doc
- latex guid3.tex
-# Check whether or not makeindex has to be called
- package=`grep "\\usepackage{makeidx}" guid3.tex`
- if [ "$package" = "\\usepackage{makeidx}" ] && [ -r guid3.idx ]; then
-    makeindex=`which makeindex`
-    if [ "$makeindex" != "" ] && [ -x $makeindex ]; then
-      makeindex guid3.idx
-  fi
- fi
- latex guid3.tex
- latex guid3.tex
 # end of level
 fi
 
@@ -439,7 +427,7 @@ else
   chmod g-rx $PRIVATE_MEGAWAVE2
 fi
 
-level=`echo "$level 1 + p" | dc`
+level=`expr $level + 1`
 NewTrap
 if [ $l -le $level ] && [ $pubinstall -eq 1 ]; then
   Echo "*********************************************"
@@ -467,7 +455,7 @@ if [ $l -le $level ] && [ $pubinstall -eq 1 ]; then
 # end of level
 fi
 
-level=`echo "$level 1 + p" | dc`
+level=`expr $level + 1`
 NewTrap
 if [ $l -le $level ] && [ $pubinstall -eq 1 ]; then
   Echo "**************************************************"
@@ -568,12 +556,17 @@ if [ $l -le $level ] && [ $pubinstall -eq 1 ]; then
     cp $MWSRC/doc/guid2.dvi $PUBLIC_MEGAWAVE2/doc/.
     chmod 644 $PUBLIC_MEGAWAVE2/doc/guid2.dvi
   fi
-  
+
+# Bibliographic database for public MegaWave2 modules 
+  if [ -r $MWSRC/doc/public.bib ]; then
+    cp $MWSRC/doc/public.bib $PUBLIC_MEGAWAVE2/doc/.
+    chmod 644 $PUBLIC_MEGAWAVE2/doc/public.bib
+  fi
 # end of level
 fi
 
 
-level=`echo "$level 1 + p" | dc`
+level=`expr $level + 1`
 NewTrap
 if [ -d $MWNEWPUB ]; then
   Echo "*****************************************************************"

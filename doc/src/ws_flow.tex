@@ -1,0 +1,29 @@
+\verb+ws_flow+ is an implementation of the Weickert and Schn\"orr optical flow computation by a semi-implicit scheme (in comparison of other schemes, it is quasi-explicit). In \cite{weickert.schnorr:of}, they consider a functional where the gradients of the two components of the flow are 3D-gradients, \emph{i.e.} $\nabla^{3} f=(\frac{\partial f}{\partial x},\frac{\partial f}{\partial y},\frac{\partial f}{\partial t})^{T}$ and they do not separate the 3D-gradients of the two components $(\sigma_{1},\sigma_{2})$ of the velocity
+$$E(\sigma)=\int_{\Omega\times[0,T]}|\nabla u\cdot \sigma+u_{t}|^2\,dx\,dy\,dt+\alpha \int_{\Omega\times[0,T]} \Psi(|\nabla^{3}\sigma_{1}|^2+|\nabla^{3}\sigma_{2}|^2)\,dx\,dy\,dt$$
+where $u$ is the gray level at pixel $(x,y)$ and time $t$, $\lambda>0$ and $\Psi(s^2)=\epsilon s^2+(1-\epsilon)\lambda^2\sqrt{1+\frac{s^2}{\lambda^2}}$. ($\epsilon$ is required only for proving well-posedness and can be chosen as weak as possible, e.g. $\epsilon=10^{-6}$). 
+The steepest descent equations are
+$$\begin{array}{rcl}
+\frac{\partial \sigma_{1}}{\partial t} & = & \mathrm{div}^{3}(\Psi^{\prime}(|\nabla^{3}\sigma_{1}|^2+|\nabla^{3}\sigma_{2}|^2)\nabla^{3}\sigma_{1})-\frac{1}{\alpha}\,u_{x}(\nabla u\cdot \sigma+u_{t})\\
+& &\\
+\frac{\partial \sigma_{2}}{\partial t} & = & \mathrm{div}^{3}(\Psi^{\prime}(|\nabla^{3}\sigma_{1}|^2+|\nabla^{3}\sigma_{2}|^2)\nabla^{3}\sigma_{2})-\frac{1}{\alpha}\,u_{y}(\nabla u\cdot \sigma+u_{t})
+\end{array}
+$$ 
+The semi-implicit scheme consists in approximating $\frac{\partial \sigma_{1}}{\partial t}$ by an Euler-forward scheme $\frac{\sigma_{1}^{n+1}-\sigma_{1}^{n}}{\delta t}$, $\mathrm{div}^{3}(\Psi^{\prime}(|\nabla^{3}\sigma_{1}|^2+|\nabla^{3}\sigma_{2}|^2)\nabla^{3}\sigma_{1})$ at time $n$ by
+$$\sum_{(i,j)\in \mathcal{N}_{6}(x,y)} w(\sigma_{1}^{n}(i,j))\sigma_{1}^{n}(i,j)$$ 
+($\mathcal{N}_{6}(x,y)$ is the 6-neighbourhood of pixel $(x,y)$:~4 neighbours in space+2 neighbours in time); $\frac{1}{\alpha}u_{x}(\nabla u\cdot \sigma+u_{t})$ by 
+$$\frac{1}{\alpha}\,u_{x}(u_{x}\sigma_{1}^{n+1}+u_{y}\sigma_{2}^{n}+u_{t})$$ 
+and the same way for the second equation.\\
+The values $w(\sigma_{1}^{n}(i,j))$ come from the Malik and Perona discretization of the divergence (approximation of the derivatives by a centered scheme at semi-nodes)
+$$w(\sigma_{1}^{n}(i,j))\sigma_{1}^{n}(i,j)=\frac{\Psi^{\prime}(i,j,n)+\Psi^{\prime}(x,y,n)}{2}(\sigma_{1}^{n}(i,j)-\sigma_{1}^{n}(x,y))$$
+where $\Psi^{\prime}(i,j,n)$ approximates $\Psi^{\prime}(|\nabla^{3}\sigma_{1}^{n}|^2+|\nabla^{3}\sigma_{2}^{n}|^2)(i,j)$.\\
+This semi-implicit scheme is a median way between a completely explicit scheme and AOS schemes (see \cite{weickert.romeny.ea:diffusion}). \\
+The iterations are performed until \texttt{n}~is reached, unless the precision \texttt{percent}~is attained. There is no default value for this last parameter, in order to do all the iterations until \texttt{n} in case the user does not want to use the option \texttt{-p}, in the opposite case a value must be chosen.
+
+\medskip
+
+Exemple of use:
+\begin{verbatim}
+ws_flow cmovie /tmp/U /tmp/V
+ofdraw /tmp/U /tmp/V /tmp/disp
+cmview -l /tmp/disp &
+\end{verbatim}

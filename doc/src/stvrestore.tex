@@ -1,39 +1,28 @@
-This module implements the main step of a wavelet-denoising algorithm combining a total 
-variation (TV) minimization approach. The first presentation of these method has been
-made in~\cite{DF:ArtifactFree}, while in~\cite{DF:ReconsWaveletUsingTV} one
+This module implements the main step of a wavelet-denoising algorithm\index{denoising!wavelet} 
+combining a total variation (TV)\index{denoising!total variation}
+minimization approach. The first presentation of these method has been
+made in~\cite{durand.froment:artifact}, while in~\cite{durand.froment:reconstruction} one
 will find the detail of the algorithm together with the proof of the convergence.
 
 In short, the approach is motivated by wavelet signal denoising methods, where 
 thresholding small wavelet coefficients leads to pseudo-Gibbs artifacts. By replacing
 these thresholded coefficients by values minimizing the total variation of the
 reconstructed signal, the method performs a nearly artifact free signal denoising.
+Minimizing total variation has first been proposed by Rudin, Osher and Fatemi
+in the context of image denoising~\cite{rudin.osher.ea:nonlinear}\cite{rudin.osher:total},
+see module {\tt tvdenoise}.
 
-The inputs of this module are the thresholded signal $u$ within the given orthonormal
+The inputs of {\tt stvrestore} are the thresholded signal $u$ within the given orthonormal
 basis, and a mask $M$ which gives the location of the non-thresholded coefficients.
 The output is the restored signal with minimal TV subject to the constraint that
 the coefficients are kept unchanged in the location given by the mask.
 Although the theory allows to apply this thresholding-restoration process on all
 orthonormal bases, at this time only orthonormal wavelets are working : you should
 therefore call the module with {\tt -O}.
-The mask $M$ has to be computed by the module that apply the threshold; in case of
+The mask $M$ has to be computed by the module that applies the threshold; in case of
 wavelets this is done by {\tt w1threshold}.
 
 To see how to use {\tt stvrestore} and how to run the whole denoising process, 
 you may look at the user's macro {\tt Swtvdenoise}, which preset for
 {\tt stvrestore} most of useful parameters.
 
-\begin{thebibliography}{Dau1}
-
-\bibitem{DF:ArtifactFree}
-S.~Durand and J.~Froment.
-\newblock Artifact free signal denoising with wavelets.
-\newblock In {\em Proc. of ICASSP'01}, volume~6, 2001.
-
-\bibitem{DF:ReconsWaveletUsingTV}
-Sylvain Durand and Jacques Froment.
-\newblock Reconstruction of wavelet coefficients using total variation minimization.
-\newblock {\em SIAM J. Sci. Comput.}, to appear. You can get the preprint number 2001-18
-in the CMLA report pages {\tt www.cmla.ens-cachan.fr/Cmla/Publications/2001}.
-
-
-\end{thebibliography}
