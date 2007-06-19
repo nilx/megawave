@@ -1,19 +1,21 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
   name = {ll_sharp}; 
-  version = {"1.4"}; 
+  version = {"1.5"}; 
   author = {"Pascal Monasse, Frederic Guichard"}; 
   function = {"Sharpen an image (select some of the parallel level lines)"}; 
   usage = { 
-    'p': [percent_area=20]-> pPercentIncreaseArea [1,1000] "% area change to glue parent and child (default: 20)", 
-    image_in -> pFloatImageInput  "Input fimage", 
-    image_out <- pFloatImageOutput "Output fimage" 
+    'p': [percent_area=20]-> pPercentIncreaseArea [1,1000] 
+                                    "% area change to glue parent and child",
+    image_in -> pFloatImageInput    "Input fimage", 
+    image_out <- pFloatImageOutput  "Output fimage" 
     }; 
 */ 
 /*----------------------------------------------------------------------
  v1.2: Flist adaptation in remove_gradation (L.Moisan)
  v1.3: upgrade for new kernel (L.Moisan)
  v1.4: fixed size problem (L.Moisan)
+ v1.5 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include "mw.h" 
@@ -27,7 +29,7 @@ extern void flst_reconstruct();
    function detects if pShape is an elementary shape, and if the answer is positive, mark 
    the shape to be its own gradation. */ 
 void keep_elementary_shape(pShape) 
-Shape pShape; 
+     Shape pShape; 
 { 
   Shape pChild; 
    
@@ -53,8 +55,8 @@ Shape pShape;
    The representative shape of the gradation is the shape of the gradation with smallest L²/A, 
    where A is the area and L is the length of its boundary */ 
 void remove_gradation(pShape, fFactorIncreaseArea) 
-Shape pShape; 
-float fFactorIncreaseArea; 
+     Shape pShape; 
+     float fFactorIncreaseArea; 
 { 
   Shape pCurrentShape, pParent, pChild, pSibling, pRepresentativeShape; 
   float fCriterium, fOptimalCriterium, fMeanGrayLevel; 
@@ -117,8 +119,8 @@ float fFactorIncreaseArea;
    image, the field data of each shape is used to mark the shapes whose gradation was 
    already found */ 
 void ll_sharp(pPercentIncreaseArea, pFloatImageInput, pFloatImageOutput) 
-float *pPercentIncreaseArea; 
-Fimage pFloatImageInput, pFloatImageOutput; 
+     float *pPercentIncreaseArea; 
+     Fimage pFloatImageInput, pFloatImageOutput; 
 { 
   int i; 
   Shapes pTree; 

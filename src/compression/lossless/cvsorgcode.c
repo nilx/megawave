@@ -1,18 +1,18 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {cvsorgcode};
-version={"1.1"};
+version = {"1.2"};
 author = {"Jacques Froment"};
 function = {"Encode the origins of curves : return bit rate for lossless compression"};
 usage = {
-C->C "input curves",
-N<-N "output number of points",
-B<-B "output number of bits to code the origin of the curves",
-brate<-cvsorgcode "compression rate (bit per point = B/N)"
+ C->C  "input curves",
+ N<-N  "output number of points",
+ B<-B  "output number of bits to code the origin of the curves",
+ brate<-cvsorgcode "compression rate (bit per point = B/N)"
         };
 */
 /*----------------------------------------------------------------------
- v1.1: upgrade for new kernel (L.Moisan)
+ v1.2: upgrade for new kernel (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -29,10 +29,10 @@ extern float fentropy();
 
 void Get_Size_Org(C,ncol,nrow,mincol,minrow)
 
-Curves C;
-int *ncol, *nrow;
-int *mincol, *minrow;
-
+     Curves C;
+     int *ncol, *nrow;
+     int *mincol, *minrow;
+     
 {
   Curve cv;
   int maxcol,maxrow,x,y;
@@ -60,11 +60,10 @@ int *mincol, *minrow;
 */
 
 int Fill_Bitmap_With_Origins(bitmap,C,mincol,minrow)
-
-
-Fimage bitmap;
-Curves C;
-int mincol, minrow;
+     
+     Fimage bitmap;
+     Curves C;
+     int mincol, minrow;
 
 {
   int ncol,nsymb;
@@ -89,10 +88,10 @@ int mincol, minrow;
 
 void Fill_Distance(distance,bitmap,npxs)
 
-Fimage distance;
-Fimage bitmap;
-int npxs;         /* Number of pixels = size of bitmap */
-
+     Fimage distance;
+     Fimage bitmap;
+     int npxs;         /* Number of pixels = size of bitmap */
+     
 {
   float *ptr;
   int n,l,l0,l1;
@@ -111,10 +110,10 @@ int npxs;         /* Number of pixels = size of bitmap */
 
 double cvsorgcode(C,N,B)
 
-Curves C;
-unsigned int *N;
-double *B;
-
+     Curves C;
+     unsigned int *N;
+     double *B;
+     
 {
   Fimage bitmap=NULL;  /* Bitmap to map the origin points of C */
   Fimage distance=NULL;/* Distance of two successive origin points */

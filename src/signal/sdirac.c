@@ -1,29 +1,29 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {sdirac};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Jacques Froment"};
   function = {"Create a Dirac fsignal"};
   usage = {
-  's':[size=512]->size "number of samples in the signal (default:512)",
-  'a':[amplitude=1.0]->A "amplitude (default:1)",
-  dirac<-signal "output fsignal"
+    's':[size=512]->size    "number of samples in the signal",
+    'a':[amplitude=1.0]->A  "amplitude",
+    dirac<-signal           "output fsignal"
   };
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
-
-/* Include always the MegaWave2 include file */
 #include "mw.h"
 
 void sdirac(size,A,signal)
 
-int *size;
-float *A;
-Fsignal signal;
-
+     int *size;
+     float *A;
+     Fsignal signal;
+     
 {
   int i,med;
 

@@ -1,16 +1,16 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
-  name = {ridgthres};
-  version = {"1.0"};
-  author = {"Claire Jonchery, Amandine Robin"};
-  function ={"Image denoising by means of ridgelet thresholding"};
-  usage = {
-  'I':in_im->in_im        "imaginary input (Fimage N*N)",
-  'C':output_im<-out_im   "imaginary output (Fimage N*N)",
-  in_re->in_re            "real input (Fimage N*N)",
-  np->np                  "resolution np",
-  pourcent->pourcent "percent of conserved coeff",
-  out_re<-out_re          "result (Fimage N*N)"
+ name = {ridgthres};
+ version = {"1.0"};
+ author = {"Claire Jonchery, Amandine Robin"};
+ function ={"Image denoising by means of ridgelet thresholding"};
+ usage = {
+   'I':in_im->in_im        "imaginary input (Fimage N*N)",
+   'C':output_im<-out_im   "imaginary output (Fimage N*N)",
+   in_re->in_re            "real input (Fimage N*N)",
+   np->np                  "resolution np",
+   pourcent->pourcent      "percent of conserved coeff",
+   out_re<-out_re          "result (Fimage N*N)"
 };
 */
 /*----------------------------------------------------------------------

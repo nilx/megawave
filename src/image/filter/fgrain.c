@@ -1,15 +1,18 @@
-/*----------------------------- MegaWave Module ----------------------------*/ 
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
   name = {fgrain}; 
-  version = {"1.1"}; 
+  version = {"1.2"}; 
   author = {"Pascal Monasse, Frederic Guichard"}; 
   function = {"Grain filter of an image"}; 
   usage = { 
-    'a': [min_area=20]-> pMinArea "Min area of grains we keep (default:20)", 
-    image_in -> pFloatImageInput  "Input fimage", 
-    image_out <- pFloatImageOutput "Output fimage" 
+    'a': [min_area=20]-> pMinArea   "Min area of grains we keep", 
+    image_in -> pFloatImageInput    "Input fimage", 
+    image_out <- pFloatImageOutput  "Output fimage" 
     }; 
 */ 
+/*----------------------------------------------------------------------
+ v1.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include "mw.h" 
 
@@ -21,8 +24,8 @@ that are too small (threshold *pMinArea). As a consequence all the remaining
 shapes of pFloatImageOutput are of area larger or equal than *pMinArea */ 
 
 void fgrain(pMinArea, pFloatImageInput, pFloatImageOutput) 
-int *pMinArea; 
-Fimage pFloatImageInput, pFloatImageOutput; 
+     int *pMinArea; 
+     Fimage pFloatImageInput, pFloatImageOutput; 
 { 
   int i; 
   Shapes pTree; 

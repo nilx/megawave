@@ -1,13 +1,13 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {fshrink2};
-   version = {"1.0"};
-   author = {"Lionel Moisan"};
-   function = {"Shrink a Fimage to dimensions power of two"};
-   usage = {
-           in->in       "input Fimage",
-           out<-out     "shrinked Fimage"
-   };
+ name = {fshrink2};
+ version = {"1.0"};
+ author = {"Lionel Moisan"};
+ function = {"Shrink a Fimage to dimensions power of two"};
+ usage = {
+     in->in       "input Fimage",
+     out<-out     "shrinked Fimage"
+};
 */
 
 #include <stdio.h>
@@ -17,7 +17,7 @@
 /* NB : calling this module with out=in is nonsense */
 
 void fshrink2(in,out)
-Fimage in,out;
+     Fimage in,out;
 {
     int n,p,nn,pp,tmp,i,j,iofs,jofs;
 

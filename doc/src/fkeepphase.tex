@@ -1,0 +1,10 @@
+This modules takes two input images $in$ and $mod$, and builds the
+output image $out$ such that
+$$\forall \xi, \quad
+\widehat{out}(\xi) = |\widehat{mod}(\xi)|\cdot 
+\frac{\widehat{in}(\xi)}{|\widehat{in}(\xi)|}$$
+(with the obvious convention $0/0=0$).
+Thus, $out$ is an image that keeps the phase information of the Fourier
+transform of $in$, but inherits the modulus information from $mod$.
+\index{Fourier Transform}
+\index{texture}

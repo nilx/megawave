@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   mw.c
 
-  Vers. 1.13
-  (C) 1995-2003 Jacques Froment & Sylvain Parrino
+  Vers. 1.14
+  (C) 1995-2005 Jacques Froment & Sylvain Parrino
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
@@ -369,37 +369,43 @@ char *fdecl,*var,*type;
   char vtype[BUFSIZ]; /* current variable type */
   char v[BUFSIZ];     /* current variable name */
   char pvar[BUFSIZ];  /* *<var> */
+  char pvars[BUFSIZ];  /* * <var> */
   int i,j;
 
+  if (var[0]=='\0') mwerror(INTERNAL,1,"[find_type] no variable specified !\n");  
+  
+  /*printf("\n[find_type var=<%s>]\n",var);*/
+
   sprintf(pvar,"*%s",var);
+  sprintf(pvars,"* %s",var);
   i=0;
   while (1)
     {
       j=i;
       for (; (fdecl[i]!='\0')&&(fdecl[i]!=' '); i++) vtype[i-j]=fdecl[i];
       if (fdecl[i]=='\0')
-	mwerror(INTERNAL,1,"[find_type] cannot find <space> !\n");  
+	mwerror(INTERNAL,1,"[find_type] cannot find <space> ! (1)\n");  
       vtype[i-j]='\0';
-      /*printf("vtype=<%s>\n",vtype);*/
+      /*printf("\n>> vtype=<%s>\n",vtype);*/
 
       do
 	{
 	  i++;
 	  j=i;
-	  for (; (fdecl[i]!='\0')&&(fdecl[i]!=' ')&&(fdecl[i]!=';'); i++) 
+	  for (; (fdecl[i]!='\0')&&((fdecl[i]!=' ')||(fdecl[i-1]=='*'))&&(fdecl[i]!=';'); i++) 
 	    v[i-j]=fdecl[i];
 	  if (fdecl[i]=='\0')
-	    mwerror(INTERNAL,1,"[find_type] cannot find <space> !\n");  
+	    mwerror(INTERNAL,1,"[find_type] cannot find <space> ! (2)\n");  
 	  v[i-j]='\0';
 	  if ((i>j)&&(v[0]!=',')) 
 	    {
-	      /*printf("v=<%s>\n",v);*/
+	      /*printf("\n>> v=<%s> pvar=<%s> pvars=<%s>\n",v,pvar,pvars);*/
 	      if (strcmp(var,v)==0) 
 		{
 		  strcpy(type,vtype);
 		  return;
 		}
-	      if (strcmp(pvar,v)==0) 
+	      if ((strcmp(pvar,v)==0)||(strcmp(pvars,v)==0))
 		{
 		  sprintf(type,"%s *",vtype);
 		  return;
@@ -452,13 +458,15 @@ static void call_proto()
   for (j=i+1; mwicmd[mwind].fsummary[j]!='\0'; j++)
     fdecl[j-i-1]= mwicmd[mwind].fsummary[j];
   fdecl[j-i-3]='\0';
-  /*printf("fdecl=<%s>\n",fdecl);*/
+
+  /*printf("\n>> fdecl=<%s>\n",fdecl);*/
 
   printf("#ifdef __STDC__\n");
   printf("%s %s(",type,name);
   for (i=2; var[i]!='\0'; )
     {
       for (j=0;(var[i+j]!='\0')&&(var[i+j]!=' '); j++) v[j]=var[i+j];
+      if (j==0) goto cont;
       if (var[i+j]=='\0')
 	mwerror(INTERNAL,1,"[call_proto] cannot find <space> !\n");    	
       v[j]='\0';
@@ -469,6 +477,7 @@ static void call_proto()
 	}
       else
 	printf(",");
+    cont:
       i+=j+1;
     }
   printf(");\n");

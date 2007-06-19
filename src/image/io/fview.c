@@ -1,27 +1,22 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {fview};
-  version = {"1.6"};
+  version = {"1.8"};
   author = {"Jacques Froment"};
   function = {"View a floating point image on a window"};
   usage = {
-  'x':[pos_x=50]->x0
-      "X coordinate for the upper-left corner of the Window (default 50)",
-  'y':[pos_y=50]->y0
-      "Y coordinate for the upper-left corner of the Window (default 50)",
-  'z':[zoom=1.0]->zoom
-      "Zoom factor (float, default 1.0)",
-  'o':[order=0]->order      
-      "Zoom order: 0,1=linear,-3=cubic,3,5..11=spline, default 0",
-  'l'->linear
-      "allow linear rescaling only (preserve 0)",
-  'N'->no_refresh
-      "Do not refresh the window (library call)",
-  fimage->input
-        "Input image (should be a fimage)",
-  notused->window 
-        "Window to view the image (internal use)"
-  };
+  'x':[pos_x=50]->x0    "upper-left corner of the Window (X coordinate)",
+  'y':[pos_y=50]->y0    "upper-left corner of the Window (Y coordinate)",
+  'z':[zoom=1.0]->zoom  "Zoom factor",
+  'o':[order=0]->order  "Zoom order: 0,1=linear,-3=cubic,3,5..11=spline",
+  'l'->linear           "allow linear rescaling only (preserve 0)",
+  'm':m->m              "specify minimum displayed value (black)",
+  'M':M->M              "specify maximum displayed value (white)",
+  'd':d->d              "...or discard d percent of the extremal values",
+  'N'->no_refresh       "Do not refresh the window (library call)",
+  fimage->input         "Input image (should be a fimage)",
+  notused->window       "Window to view the image (internal use)"
+};
 */
 /*----------------------------------------------------------------------
  v1.2: added -o option + several minor modifications (L.Moisan)
@@ -29,9 +24,12 @@
  v1.4: fixed bug with non char input keys (L.Moisan)
  v1.5: fixed lag due to usleep() (L.Moisan)
  v1.6: fixed 'c' bug (nrow->ncol) (L.Moisan)
+ v1.7: added -m -M -d options, removed s key (L.Moisan)
+ v1.8 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <string.h>
 #include "mw.h"
 
 /* Include the window since we use windows facility */
@@ -53,13 +51,9 @@ typedef struct fview_SParam {
   Cimage image_work;  
   unsigned char *image_save;
   float *fimage_save;
-  unsigned char *image_cscale;    
-  float *fimage_cscale;    
   char has_to_delete_image;
   Fsignal section;
 } *fview_Param;
-
-#define H_CSCALE 20 /* Height of the color_scale box */
 
 int GLprint;  /* Toggle to print the Gray Level values */
 int oldx1,oldy1,oldevent,zfactor,cscale_shown;
@@ -78,7 +72,6 @@ void fview_notify_help()
   printf("\nKeyboard:\n");
   printf("\tQ: Quit.\n");
   printf("\tH: Help.\n");
-  printf("\tS: Show the color scale box.\n");
   printf("\tL: Plot the current Line section.\n");
   printf("\tC: Plot the current Column section.\n");
 }
@@ -101,8 +94,8 @@ void *param;          /* Users's parameters: don't forget the cast ! */
   fview_Param images;
   Cimage image;
   Fimage fimage;
-  unsigned char *gray_save,*color_scale;
-  float *fgray_save,*fcolor_scale;
+  unsigned char *gray_save;
+  float *fgray_save;
   char delete_image;
 
   /* For section */
@@ -119,8 +112,6 @@ void *param;          /* Users's parameters: don't forget the cast ! */
   fimage = images->image_float;
   gray_save = images->image_save;
   fgray_save = images->fimage_save;
-  color_scale = images->image_cscale;
-  fcolor_scale = images->fimage_cscale;
   delete_image = images->has_to_delete_image;
   section = images->section;
 
@@ -135,9 +126,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	{
 	  if ((x1>=0)&&(x1<image->ncol)&&(y1>=0)&&(y1<image->nrow))
 	    {
-	      if ((cscale_shown == 1) && (y1 < H_CSCALE))
-		ng = fcolor_scale[ x1 + (image->ncol)* y1 ];
-	      else ng = fimage->gray[ x1 + (image->ncol)* y1 ];
+	      ng = fimage->gray[ x1 + (image->ncol)* y1 ];
 	      sprintf(mess," (%3d,%3d): %f ",x1,y1,ng);
 	    }
 	  else sprintf(mess," (%3d,%3d): ----------",x1,y1);
@@ -237,16 +226,6 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	case 'h': case 'H': fview_notify_help();
 	  break;
 
-	case 's': case 'S': 
-	  if ((color_scale != NULL)&&(fcolor_scale != NULL))
-	    {
-	      WLoadBitMapImage(ImageWindow,color_scale,image->ncol,H_CSCALE);
-	      WRestoreImageWindow(ImageWindow,0,0,image->ncol,image->nrow); 
-	      WFlushWindow(ImageWindow);	  
-	      cscale_shown = 1;
-	    }
-	  break;
-
 	case 'l' :
 	  if ((y1>=0)&&(y1<fimage->nrow))
 	    {
@@ -336,67 +315,45 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 }
 
 
-Cimage normalize(im,s,fs,linear)
-
-Fimage im;
-unsigned char *s;
-float *fs;
-char *linear;
+Cimage fimage_to_cimage(in,out)
+     Fimage in;
+     Cimage out;
 {
-  Cimage cim;
-  unsigned char *C;
-  float *F;
-  int i;
-  float min,max,a,b,bsura;
+  int n;
+  float v;
 
-  cim = mw_change_cimage(NULL,im->nrow,im->ncol);
-  if (cim == NULL) mwerror(FATAL,1,"Not enough memory\n");
-  
-  min=1e30; max=-min;
-  for (i=0,F=im->gray; i<im->ncol*im->nrow; i++,F++)
-    {
-      if (*F < min) min=*F;
-      if (*F > max) max=*F;
-    }
-  if (max==min) max = min+1.;
-  if (linear) min=0.;
-  a=255.0/(max-min);
-  b=-a*min;
+  out = mw_change_cimage(out,in->nrow,in->ncol);
+  for (n=in->nrow*in->ncol;n--;) {
+    v = in->gray[n];
+    if (v<0.) v=0.;
+    if (v>255.) v=255.;
+    out->gray[n] = (unsigned char)v;
+  }
 
-  for (i=0,F=im->gray,C=cim->gray; i<im->ncol*im->nrow; i++,F++,C++)
-    *C = (int) (a * *F + b + 0.5);
-
-  if ((s!=NULL)&&(fs!=NULL))
-      {
-	bsura= b / a;
-	for (i=0,F=fs,C=s; i< im->ncol*H_CSCALE; i++,F++,C++)
-	  *F = *C / a - bsura;
-      }
-
-  return(cim);
+  return(out);
 }
 
 
-void fview(input,x0,y0,zoom,order,no_refresh,window,linear)
+/*------------------------------ MAIN MODULE ------------------------------*/
 
-int *x0,*y0,*no_refresh,*order;
-float *zoom;
-Fimage input;
-char *window,*linear;
-
+void fview(input,x0,y0,zoom,order,no_refresh,window,linear,m,M,d)
+     int    *x0,*y0,*no_refresh,*order;
+     float  *zoom,*m,*M,*d;
+     Fimage input;
+     char   *window,*linear;
 {
   Wframe *ImageWindow;
-  Fimage fimage=NULL;
-  Cimage cimage=NULL;
-  float *fgray_save,*fcolor_scale,inverse_zoom;
-  unsigned char *gray_save,*color_scale;
+  Fimage fimage,tmp;
+  Cimage cimage;
   Fsignal section;
+  float  *fgray_save,inverse_zoom;
+  unsigned char *gray_save;
   fview_Param param;
   int i,j,smax;
 
   if (*zoom != 1.0) 
     {
-      fimage = mw_change_fimage(fimage,0,0);
+      fimage = mw_change_fimage(NULL,0,0);
       if (fimage == NULL) mwerror(FATAL,1,"Not enough memory\n");
       if (*zoom>1.0) 
 	fzoom(input,fimage,NULL,NULL,zoom,order,NULL,NULL);
@@ -415,21 +372,11 @@ char *window,*linear;
   if (ImageWindow == NULL)
     mwerror(INTERNAL,1,"NULL window returned by mw_get_window\n");
 
-  if ((fimage->ncol >= 128) && (fimage->nrow > H_CSCALE))
-    {
-      color_scale = (unsigned char *) malloc(fimage->ncol*H_CSCALE);
-      if (color_scale == NULL) mwerror(FATAL,1,"Not enough memory\n");
-      fcolor_scale = (float *) malloc(fimage->ncol*H_CSCALE*sizeof(float));
-      if (fcolor_scale == NULL) mwerror(FATAL,1,"Not enough memory\n");
-      for (i=0;i<fimage->ncol;i++) 
-	for (j=0;j<H_CSCALE*fimage->ncol;j+=fimage->ncol)
-	  color_scale[i+j] = i*255/(fimage->ncol-1);
-    }
-  else { color_scale = NULL; fcolor_scale = NULL; }
-  
-  
-  cimage=normalize(fimage,color_scale,fcolor_scale,linear);
-
+  tmp = mw_new_fimage();
+  fthre(fimage,tmp,NULL,(char *)1,m,M,NULL,NULL,d,linear,linear);
+  cimage = fimage_to_cimage(tmp,NULL);
+  mw_delete_fimage(tmp);
+    
   WLoadBitMapImage(ImageWindow,cimage->gray,cimage->ncol,cimage->nrow); 
   WRestoreImageWindow(ImageWindow,0,0,cimage->ncol,cimage->nrow); 
   WFlushWindow(ImageWindow);
@@ -460,8 +407,6 @@ char *window,*linear;
   param->image_work = cimage;
   param->image_save = gray_save;
   param->fimage_save = fgray_save;
-  param->image_cscale = color_scale;
-  param->fimage_cscale = fcolor_scale;
   param->section = section;
 
   if (fimage == input) param->has_to_delete_image=0;

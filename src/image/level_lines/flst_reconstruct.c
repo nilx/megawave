@@ -1,21 +1,21 @@
-/*---------------------------- MegaWave Module ----------------------------*/ 
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-  name = {flst_reconstruct}; 
-  version = {"1.0"}; 
-  author = {"Pascal Monasse, Frederic Guichard"}; 
-  function = {"Reconstruct an image from its Fast Level Sets Transform"}; 
-  usage = { 
-    tree -> pTree "Input tree of shapes", 
-    image <- pFloatImageOutput  "Output fimage" 
-    }; 
+ name = {flst_reconstruct}; 
+ version = {"1.0"}; 
+ author = {"Pascal Monasse, Frederic Guichard"}; 
+ function = {"Reconstruct an image from its Fast Level Sets Transform"}; 
+ usage = { 
+    tree->pTree               "Input tree of shapes", 
+    image<-pFloatImageOutput  "Output fimage" 
+}; 
 */ 
 
 #include "mw.h" 
 
  
 void flst_reconstruct(pTree, pFloatImageOutput) 
-Shapes pTree; 
-Fimage pFloatImageOutput; 
+     Shapes pTree; 
+     Fimage pFloatImageOutput; 
 { 
   int i; 
   float* pOutputPixel; 

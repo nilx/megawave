@@ -1,13 +1,13 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {fcontrast};
-version = {"1.0"};
-author = {"Lionel Moisan"};
-function = {"Apply a contrast change to a Fimage"};
-usage = { 
- in->in           "input Fimage",
- g->g             "contrast change (2-Flist)",
- out<-fcontrast   "result Fimage (modified input)"
+ name = {fcontrast};
+ version = {"1.0"};
+ author = {"Lionel Moisan"};
+ function = {"Apply a contrast change to a Fimage"};
+ usage = { 
+   in->in           "input Fimage",
+   g->g             "contrast change (2-Flist)",
+   out<-fcontrast   "result Fimage (modified input)"
 };
 */
 

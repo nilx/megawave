@@ -1,34 +1,28 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {sconvolve};
-version = {"1.3"};
+version = {"1.4"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Convolves a signal with a filter"};
 usage = {
-'d':[Decimation=1]->DownRate [1,10]
-	"Downsampling rate (default 1)", 
-'i':[Interpolation=1]->UpRate [1,10]
-	"Upsampling rate (default 1)", 
-'r'->ReflIR
-	"Convolution with symetric filter", 
-'e':[Edgemode=0]->Edge [0,3]
-	"Edge processing mode (0/1/2/3, default 0)", 
-'b'->Band
-	"Convolution with high pass filter", 
-'p':[EdgeProl=0]->Prolong [0,2]
-	"Extension of output on edges (0/1/2, default 0)", 
-Signal->Signal
-	"Input signal (fsignal)", 
-FicConvol<-Output
-	"Result of convolution (fsignal)", 
-ImpulseResponse->Ri
-	"Impulse response of inner filter (fsignal)", 
+ 'd':[Decimation=1]->DownRate [1,10]   "Downsampling rate", 
+ 'i':[Interpolation=1]->UpRate [1,10]  "Upsampling rate",
+ 'r'->ReflIR                           "Convolution with symetric filter", 
+ 'e':[Edgemode=0]->Edge [0,3]          "Edge processing mode",
+ 'b'->Band                             "Convolution with high pass filter", 
+ 'p':[EdgeProl=0]->Prolong [0,2]       "Extension of output on edges",
+ Signal->Signal          "Input signal (fsignal)", 
+ FicConvol<-Output       "Result of convolution (fsignal)", 
+ ImpulseResponse->Ri     "Impulse response of inner filter (fsignal)", 
 	{
 	EdgeIR->Edge_Ri
-		"Impulse reponses of edge and preconditionning filters (fimage)"
+	     "Impulse reponses of edge and preconditionning filters (fimage)"
 	}
 	};
 */
+/*----------------------------------------------------------------------
+ v1.4 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
 

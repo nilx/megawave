@@ -1,29 +1,24 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {cline_extract};
-author = {"Jacques Froment"};
-function = {"Extract a line or a column of a cimage and store it as an 1D fsignal"};
-version = {"1.1"};
-
-usage = {
-  'c'->cflag "Flag for column number",
-  Image->Image "Input image (should be a cimage)", 
-  ExtractedSig<-Signal "Output fsignal",
-  Number->Index "Line (default) or column number",
-  {
-   OutImage<-OutImage "Output image (with selected line/column marked)"
-  }
+ name = {cline_extract};
+ author = {"Jacques Froment"};
+ function = {"Extract a line or a column of a cimage and store it as an 1D fsignal"};
+ version = {"1.1"};
+ usage = {
+   'c'->cflag            "Flag for column number",
+   Image->Image          "Input image (should be a cimage)", 
+   ExtractedSig<-Signal  "Output fsignal",
+   Number->Index         "Line (default) or column number",
+   {
+     OutImage<-OutImage "Output image (with selected line/column marked)"
+   }
 };
-
- */
+*/
 /*----------------------------------------------------------------------
   v1.1: added "Output image" option (Jacques Froment)
 ----------------------------------------------------------------------*/
 
-/*--- Fichiers inclus UNIX C ---*/
 #include <stdio.h>
-
-/*--- Bibliotheque megawave2 ---*/
 #include  "mw.h"
 
 

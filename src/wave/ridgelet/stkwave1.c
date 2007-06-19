@@ -1,12 +1,12 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
-  name = {stkwave1};
-  version = {"1.0"};
-  author = {"Claire Jonchery, Amandine Robin"};
-  function ={"One-dimensional wavelet transform using Starck's algorithm (band-limited scaling function)"};
-  usage = {
-  np->np "resolution np",
-  in->in "input in Fourier domain (the size of signal must be a power of 2)",
+ name = {stkwave1};
+ version = {"1.0"};
+ author = {"Claire Jonchery, Amandine Robin"};
+ function ={"One-dimensional wavelet transform using Starck's algorithm (band-limited scaling function)"};
+ usage = {
+  np->np   "resolution np",
+  in->in   "input in Fourier domain (the size of signal must be a power of 2)",
   out<-out "result in Fourier domain, from left to right : details and approximation"
 };
 */

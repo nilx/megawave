@@ -1,9 +1,13 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    wpanel.c
    
-   Vers. 1.1
-   (C) 2001 Lionel Moisan
+   Vers. 1.2
+   Author : Lionel Moisan
    Panel display facilities and buttons
+
+   Main changes :
+   v1.1 (JF): "mw.h" and "window.h" added (J. Froment)
+   v1.2 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
@@ -14,9 +18,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-/*----------------------------------------------------------------------
- v1.1: "mw.h" and "window.h" added (J. Froment)
-----------------------------------------------------------------------*/
+#include <string.h>
 
 #include "mw.h"
 #include "window.h"

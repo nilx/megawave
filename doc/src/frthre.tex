@@ -1,5 +1,6 @@
 {\em frthre} copies the input image $A$ in the output $B$ and makes a thresold 
 of the pixel's values according the rule:
+\index{denoising!thresholding}
 \[
 B(x,y) = \left\{
 \begin{array}{ll}
@@ -10,7 +11,7 @@ B(x,y) = \left\{
 \]
 Where \verb+noise+ is the absolute maximal value of the noise (noise level).
 
-In~\cite{donoho.johnstone:ideal}, it is proved that this simple thresold rule is one 
+In~\cite{donoho.johnstone:ideal}, it is proved that this simple threshold rule is one 
 of the best estimator for recovering a noisy image (additive noise) using the MiniMax 
 error, when the coefficients in $A$ and $B$ are coordinates in an orthonormal basis
 (such as wavelet basis).

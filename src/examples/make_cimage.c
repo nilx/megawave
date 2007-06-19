@@ -1,4 +1,4 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {make_cimage};
   version = {"1.0"};
@@ -6,11 +6,8 @@
   function = {"Make a very simple image (as a demo of image use for output)"};
   usage = {cimage_out<-Output "output image"};
 */
-/*--- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. ---*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
 
 void make_cimage(Output)

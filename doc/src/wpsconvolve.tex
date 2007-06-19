@@ -1,0 +1,21 @@
+This module computes the convolution of a \verb+Fsignal+ with a filter;
+it is designed for the computation of wavelet packet
+transforms. 
+\index{convolution}
+Therefore, the impulse response of the filter is modified according to the chosen 
+options. 
+
+All details concerning these modifications can be
+found in \cite{mallat:wavelet} and references therein. 
+The names of the functions and the identifiers in the source code of \verb+wpsconvolve+
+correspond to those of \cite{mallat:wavelet}. 
+
+The signal is periodized out of its original support, before the
+convolution is computed.
+
+The input signal can be of arbitrary size (up to available memory and as long as it 
+contains enough samples to compute the convolution).
+
+
+
+

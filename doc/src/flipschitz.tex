@@ -1,0 +1,32 @@
+This modules iterates on an image $in$ the operator
+$$Tu(x) = \sup_{\delta \in F} \left( \frac{}{}
+u(x+\delta)-C\|\delta\| \right),$$ 
+(or the opposite process
+$$Tu(x) = \inf_{\delta \in F} \left( \frac{}{}
+u(x+\delta)+C\|\delta\| \right)$$
+if the \verb+-i+ option is set), with $C=lip$.
+The set $F$ is a ``structured element''. In general, it is a disc
+(whose radius $r$ can be specified with the \verb+-r+ option), but
+a general set (shape $s$) can be used.
+
+\medskip
+
+If $F$ is the whole plane, then the operator $T$ is idempotent 
+($T^2=T$) and computes the $C$-lipschitz 
+\index{lipschitz}
+sup-enveloppe of $in$
+(or inf-enveloppe with the \verb+-i+ option), that is the smallest
+image $v$ such that $u\leq v$ and $v$ is $C$-lipschitz. In the
+continuous domain, since one has $T_r T_r = T_{2r}$ (here
+``$T_r$'' means that a disc with radius $r$ is used for $F$),
+then it is equivalent to use a finite $r$ and iterate the process.
+In the discrete domain it is not exactly true, but since the complexity
+is $O(n\cdot r^2)$ it is often more efficient (though less precise)
+to iterate the process with a small $r$.
+
+\medskip
+
+Note that when $C=0$, this modules computes the dilation (or erosion
+with the \verb+-i+ option) of $u$.
+
+

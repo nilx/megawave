@@ -1,21 +1,22 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {ccmzoom};
-  version = {"1.1"};
+  version = {"1.2"};
   author = {"Jacques Froment, Lionel Moisan"};
   function = {"Zoom of a color char movie"};
   usage = {
   'x'->x_flg        "Zoom only in the X direction", 
   'y'->y_flg        "Zoom only in the Y direction",      
-  'X':[factor=2.0]->factor    [0.01,100.0]  "Zoom factor (float value)",
-  'o':[o=0]->o      "order: 0,1=linear,-3=cubic,3,5..11=spline, default 0",
+  'X':[factor=2.0]->factor    [0.01,100.0]  "Zoom factor",
+  'o':[o=0]->o      "order: 0,1=linear,-3=cubic,3,5..11=spline",
   'i'->i_flg        "apply inverse zooming",
-  A->Input   "Input (could be a ccmovie)",
-  B<-Output  "Output (zoomed movie)"
+  A->Input          "Input (could be a ccmovie)",
+  B<-Output         "Output (zoomed movie)"
 };
 */
 /*----------------------------------------------------------------------
  v1.1: added -o and -i options (L.Moisan)
+ v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -25,13 +26,13 @@ extern Ccimage cczoom();
 
 
 void ccmzoom(Input, Output, x_flg, y_flg, factor, o, i_flg)
-
-char *x_flg, *y_flg, *i_flg;
-float *factor;
-int *o;
-Ccmovie Input;
-Ccmovie Output;
-
+     
+     char *x_flg, *y_flg, *i_flg;
+     float *factor;
+     int *o;
+     Ccmovie Input;
+     Ccmovie Output;
+     
 {
   Ccimage src,dst,prev;
   

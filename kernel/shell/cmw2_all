@@ -2,11 +2,11 @@
 #--------------------------- Shell MegaWave Macro ----------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="`basename $0`"
-_Vers="1.28";
-_Date="1999-2004";
+_Vers="1.31";
+_Date="2007";
 _Func="Compile all MegaWave2 modules and user's macros, recursively on each subdirectory";
 _Auth="Jacques Froment";
-_Usage="[-gnu] [-clear] [-g] [-X] [-O] [-c compiler_option] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-2p] [-sp] [-dep] [-pubsyslib] [-force] [-v tracefile] [-N processid] group_directory"
+_Usage="[-traditional] [-gnu] [-clear] [-g] [-X] [-O]  [-c comp&link option] [-cc compiler option] [-cl linker option] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-2p] [-sp] [-dep] [-pubsyslib] [-force] [-v tracefile] [-N processid] group_directory"
 
 #----------------------------------------------------------------------------#
 # This file is part of the MegaWave2 system macros. 
@@ -133,6 +133,18 @@ do
 		shift
 		;;
 
+     -cc)	shift
+		cmw_all_opt="$cmw_all_opt -cc $1"
+		cmw_opt="$cmw_opt -cc $1"
+		shift
+		;;
+
+     -cl)	shift
+		cmw_all_opt="$cmw_all_opt -cl $1"
+		cmw_opt="$cmw_opt -cl $1"
+		shift
+		;;
+
     -N)   NoDisplay=yes;
           shift;
           processid=$1;
@@ -144,6 +156,16 @@ do
 	  cmw_opt="$cmw_opt -g";
           shift;
           ;;
+
+    -light)	cmw_all_opt="$cmw_all_opt -light"
+		cmw_opt="$cmw_opt -light"
+    		shift
+		;;
+
+    -traditional)	cmw_all_opt="$cmw_all_opt -traditional"
+		cmw_opt="$cmw_opt -traditional"
+    		shift
+		;;
 
     -gnu)	cmw_all_opt="$cmw_all_opt -gnu"
 		cmw_opt="$cmw_opt -gnu"

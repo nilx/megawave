@@ -1,4 +1,4 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {fkzrt};
    version = {"1.0"};
@@ -21,9 +21,9 @@
 
 
 Fcurves fkzrt(cs,zoom,angle,x,y,sym)
-Fcurves cs;
-float   zoom,angle,x,y;
-char    *sym;
+     Fcurves cs;
+     float   zoom,angle,x,y;
+     char    *sym;
 {
   Fcurve        c;
   Point_fcurve  p;
@@ -32,7 +32,7 @@ char    *sym;
   theta = (double)(angle*M_PI/180.0);
   ct = (double)zoom * cos(theta);
   st = (double)zoom * sin(theta);
-
+  
   for (c=cs->first; c; c=c->next) 
     for (p=c->first; p; p=p->next) {
       

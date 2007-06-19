@@ -1,21 +1,25 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {fnorm};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Lionel Moisan"};
   function = {"Compute the norm of a Fimage"};
   usage = {
     'p':p->p      "compute average L^p norm",
     's'->s        "compute L^infinity norm (sup of absolute values)",
     'v'->v        "compute average total variation",
-    'b':[b=0]->b  "number of lines to crop on the borders (default: 0)",
+    'b':[b=0]->b  "number of lines to crop on the borders",
     'c':ref->ref  "compare with Fimage ref (ie compute ||in - ref||)",
     'n'->n        "normalized comparison (with -c), ie ||in - ref||/ ||ref||)",
     't':t->t      "force result to 0 if less or equal than threshold t",
     in->in        "input Fimage",
     out<-fnorm    "computed norm"
-    };
+};
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
+
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
@@ -25,12 +29,12 @@ extern void fderiv();
 
 
 float fnorm(in,ref,p,s,v,b,n,t)
-Fimage in,ref;
-float *p;
-char *s,*v;
-int *b;
-char *n;
-float *t;
+     Fimage in,ref;
+     float *p;
+     char *s,*v;
+     int *b;
+     char *n;
+     float *t;
 {
   Fimage diff, gradn;
   int x,y,num,four;

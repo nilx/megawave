@@ -1,32 +1,34 @@
-/*--------------------------- MegaWave2 Command ----------------------------*/
+/*--------------------------- MegaWave2 module ----------------------------*/
 /* mwcommand
-   name = {fftzoom};
-   version = {"1.2"};
-   author = {"Lionel Moisan"};
-   function = {"Zoom an image using Fourier interpolation (zero-padding)"};
-   usage = {
-
-   'z':[z=2]->z     "zoom factor (must be a power of 2), default 2",
-   'i'->i_flag      "performs inverse zooming",
+ name = {fftzoom};
+ version = {"1.3"};
+ author = {"Lionel Moisan"};
+ function = {"Zoom an image using Fourier interpolation (zero-padding)"};
+ usage = {
+   'z':[z=2.]->z    "zoom factor",
+   'i'->i_flag      "performs inverse zooming (same as z->1/z)",
    in->in           "input Fimage",
    out<-out         "output Fimage"
-   };
+};
 */
 /*----------------------------------------------------------------------
  v1.2: changed processing of non-Shannon (N/2) frequencies (L.Moisan)
+ v1.3: allow any image size and zoom factors (LM)
+ v1.4 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
+#include <math.h>
 #include "mw.h"
 
 
 void fftzoom(in,out,z,i_flag)
 Fimage in, out;
-int    *z;
+float  *z;
 char   *i_flag;
 {
   Fimage in_re,in_im,out_re,out_im;
-  int nx,ny,nxz,nyz,x,y,hx,hy,adr,adrz;
-  float z2,factor;
+  int nx,ny,nxz,nyz,x,y,adr,adrz;
+  float z2,factor,zoom;
 
   /* DIRECT FFT */
   in_re = mw_new_fimage();
@@ -36,21 +38,11 @@ char   *i_flag;
   /* COMPUTE DIMENSIONS */
   nx = in_re->ncol;
   ny = in_re->nrow;
-  if (i_flag) {
-    /* UNZOOM */
-    nxz = nx/(*z);
-    nyz = ny/(*z);
-    z2 = 1.0/(float)((*z)*(*z));
-    hx = nxz/2;
-    hy = nyz/2;
-  } else {
-    /* ZOOM */
-    nxz = nx*(*z);
-    nyz = ny*(*z);
-    z2 = (float)((*z)*(*z));
-    hx = nx/2;
-    hy = ny/2;
-  }
+  zoom = (i_flag?1./(*z):*z);
+  if (zoom<=0.) mwerror(FATAL,1,"Zoom factor must be positive.\n");
+  nxz = (int)rint((double)nx*(double)zoom);
+  nyz = (int)rint((double)ny*(double)zoom);
+  z2 = zoom*zoom;
   
   /* ALLOCATE AND INITIALIZE IMAGES */
   out_re = mw_change_fimage(NULL,nyz,nxz);
@@ -60,12 +52,12 @@ char   *i_flag;
   mw_clear_fimage(out_im,0.0);
   
   /* DISPATCH FOURIER COEFFICIENTS */
-  if (i_flag) {
+  if (zoom<1.) {
     /* UNZOOM */
     mw_clear_fimage(out_re,0.);
     mw_clear_fimage(out_im,0.);
-    for (x=-hx;x<=hx;x++)
-      for (y=-hy;y<=hy;y++) {
+    for (x=-nxz/2;x<=nxz/2;x++)
+      for (y=-nyz/2;y<=nyz/2;y++) {
         adr  = (x+nx )%nx +((y+ny )%ny )*nx ;
         adrz = (x+nxz)%nxz+((y+nyz)%nyz)*nxz;
         out_re->gray[adrz] += in_re->gray[adr] * z2;
@@ -73,11 +65,13 @@ char   *i_flag;
       }
   } else {
     /* ZOOM */
-    for (x=-hx;x<=hx;x++)
-      for (y=-hy;y<=hy;y++) {
+    for (x=-nx/2;x<=nx/2;x++)
+      for (y=-ny/2;y<=ny/2;y++) {
         adr  = (x+nx )%nx +((y+ny )%ny )*nx ;
         adrz = (x+nxz)%nxz+((y+nyz)%nyz)*nxz;
-        factor = z2 * ((x==hx || x==-hx)?0.5:1.0)*((y==hy || y==-hy)?0.5:1.0);
+        factor = z2 
+	  * ((2*x==nx || 2*x==-nx)?0.5:1.0) 
+	  * ((2*y==ny || 2*y==-ny)?0.5:1.0);
         out_re->gray[adrz] = in_re->gray[adr] * factor;
         out_im->gray[adrz] = in_im->gray[adr] * factor;
       }

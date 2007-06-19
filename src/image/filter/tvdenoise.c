@@ -1,15 +1,16 @@
-/*----------------------------MegaWave2 module----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {tvdenoise};
-version = {"1.0"};
+version = {"2.1"};
 author = {"Lionel Moisan"};
 function = {"Image denoising by TV minimization (Rudin-Osher)"};
 usage = {
- 'w':[w=0.1]->w    "weight on fidelity term (default 0.1)",
- 's':[s=1.]->s     "initial (and maximal) time step, default 1.",
- 'E':[eps=1.]->eps "epsilon in sqrt(epsilon+|Du|^2), default 1.",
- 'e':[e=0.1]->e    "stop when |u(n)-u(n-1)|<e (L2 error, default 0.1)",
- 'n':n->n          "or perform a fixed number of iterations (default: 5)",
+ 'W':[W=10.]->W    "weight on regularization term",
+ 's':[s=1.]->s     "initial (and maximal) time step",
+ 'E':[eps=1.]->eps "epsilon in sqrt(epsilon+|Du|^2)",
+ 'p':[p=0.5]->p    "positive coefficient for the gradient scheme",
+ 'e':[e=0.02]->e   "stop when |u(n)-u(n-1)|<e (L2 error)",
+ 'n':n->n          "or perform a fixed number n of iterations",
  'r':ref->ref      "to specify a reference image different from in",
  'v'->v            "verbose : print energy and L2 errors at each iteration",
  'c'->c            "cancel auto step reduction",
@@ -17,6 +18,12 @@ usage = {
  out<-out          "output Fimage"
         };
 */
+/*----------------------------------------------------------------------
+ v1.1: fixed consistency bug in mytvgrad() and step reduction loop (LM)
+ v1.2: added -p option to allow more general gradient schemes (LM)
+ v2.0: changed -w option to -W, ie weight on REGULARIZATION term (LM)
+ v2.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,23 +32,22 @@ usage = {
 
 extern float fnorm();
 
-#define COEFF .70710678118654752440
-#define COEFF2P2 3.41421356237309504880
+#define STEP_FACTOR 0.8
+#define STEP_LIMIT 1e-20
 
-double mytvgrad(u,grad,eps)
-Fimage u,grad;
-double eps;
+
+/* compute weight * total variation and add its gradient to grad */
+double mytvgrad(u,grad,eps,p,weight)
+     Fimage u,grad;
+     double eps,p,weight;
 {
   int x,y,nx,ny,adr;
-  double E,a,b,c,d,e,f,z,norm;
+  double E,a,b,c,d,e,f,z,norm,q;
 
+  q = (1.-p)/2.; p = p/2;
   nx = u->ncol; 
   ny = u->nrow;
   E = 0.;
-  if (grad) {
-    mw_change_fimage(grad,ny,nx);
-    mw_clear_fimage(grad,0.);
-  }
 
   for (x=0;x<nx-1;x++)
     for(y=0;y<ny-1;y++) {
@@ -50,42 +56,33 @@ double eps;
       b = (double)u->gray[adr   +1];
       c = (double)u->gray[adr+nx+1];
       d = (double)u->gray[adr+nx  ];
-      z=d; d-=c; c-=b; b-=a; a-=z; e=COEFF*(b-d); f=COEFF*(c-a);
-      norm = sqrt( eps + (a*a+b*b+c*c+d*d + e*e+f*f)/COEFF2P2 );
-      E += norm;
-      norm *= COEFF2P2;
-      if (grad) {
-	if (norm==0.) norm=1.;
-	grad->gray[adr     ] += (a-b+COEFF*(-e-f))/norm;
-	grad->gray[adr   +1] += (b-c+COEFF*( e-f))/norm;
-	grad->gray[adr+nx+1] += (c-d+COEFF*( e+f))/norm;
-	grad->gray[adr+nx  ] += (d-a+COEFF*(-e+f))/norm;
+      e=b-d; f=c-a; z=d; d-=c; c-=b; b-=a; a-=z; 
+      norm = sqrt( eps + p*(a*a+b*b+c*c+d*d) + q*(e*e+f*f) );
+      if (norm!=0.) {
+	E += weight * norm;
+	norm /= weight;
+	grad->gray[adr     ] += (float)((p*(a-b)-q*f)/norm);
+	grad->gray[adr   +1] += (float)((p*(b-c)+q*e)/norm);
+	grad->gray[adr+nx+1] += (float)((p*(c-d)+q*f)/norm);
+	grad->gray[adr+nx  ] += (float)((p*(d-a)-q*e)/norm);
       }
     }
 
   return(E);
 }
 
-
-/* Compute energy F(u) = weight * int |u-u_0|^2 and its gradient */
-double fidelity_term_grad(u,u0,grad,weight)
+/* Compute energy F(u) = int |u-u_0|^2 and its gradient */
+double fidelity_term_grad(u,u0,grad)
      Fimage u,u0,grad;
-     double weight;
 {
-  int x,y,nx,ny,adr;
+  int adr;
   double e,d;
 
-  nx = u->ncol; 
-  ny = u->nrow;
-  e = 0.;
-
-  for (x=0;x<nx;x++)
-    for(y=0;y<ny;y++) {
-      adr = y*nx+x;
-      d = (double)u->gray[adr] - (double)u0->gray[adr];
-      if (grad) grad->gray[adr] += (float)(weight*2.*d);
-      e += weight*d*d;
-    }
+  for (e=0.,adr=u0->ncol*u0->nrow;adr--;) {
+    d = (double)u->gray[adr] - (double)u0->gray[adr];
+    grad->gray[adr] = 2.*(float)d;
+    e += d*d;
+  }
 
   return(e);
 }
@@ -93,11 +90,11 @@ double fidelity_term_grad(u,u0,grad,weight)
 
 /*----------------------- MAIN MODULE ---------------*/
 
-Fimage tvdenoise(in,out,s,c,v,e,n,w,ref,eps)
-Fimage in,out,ref;
-int *n;
-double *s,*e,*w,*eps;
-char *v,*c;
+Fimage tvdenoise(in,out,s,c,v,e,n,W,ref,eps,p)
+     Fimage in,out,ref;
+     int *n;
+     double *s,*e,*W,*eps,*p;
+     char *v,*c;
 {
   Fimage dE,aux,tmp,cur,prev;
   double energy,old_energy,step;
@@ -123,12 +120,12 @@ char *v,*c;
   i = prevok = 0; step = *s;
 
   /* compute initial error and its gradient */
-  energy = mytvgrad(cur,dE,*eps);
-  if (*w!=0.) energy += fidelity_term_grad(cur,ref,dE,*w);
+  energy = fidelity_term_grad(cur,ref,dE);
+  if (*W!=0.) energy += mytvgrad(cur,dE,*eps,*p,*W);
   energy /= (double)(nx*ny);
   if (v) printf("init:  E = %f\n",energy);
 
-  /***** MAIN LOOP *****/ 
+  /***** MAIN LOOP *****/
   do {
 
     /* update image */
@@ -141,24 +138,27 @@ char *v,*c;
     
     /* compute error and its gradient for the next iteration */
     old_energy = energy;
-    energy = mytvgrad(cur,dE,*eps);
-    if (*w!=0.) energy += fidelity_term_grad(cur,ref,dE,*w);
+    energy = fidelity_term_grad(cur,ref,dE);
+    if (*W!=0.) energy += mytvgrad(cur,dE,*eps,*p,*W);
     energy /= (double)(nx*ny);
     
     if (energy>old_energy) {
       tmp=prev; prev=cur; cur=tmp;
-      energy = mytvgrad(cur,dE,*eps);
-      if (*w!=0.) energy += fidelity_term_grad(cur,ref,dE,*w);
+      energy = fidelity_term_grad(cur,ref,dE);
+      if (*W!=0.) energy += mytvgrad(cur,dE,*eps,*p,*W);
       energy /= (double)(nx*ny);
       if (c) {
-	printf("Stop after %d iterations (energy increases)\n",i);
+	printf("Stop after %d iterations (energy increases).\n",i);
 	cont = 0;
       } else {
-	step *= 0.8;
-	if (v) printf("reduction to step=%f\n",step);
+	step *= STEP_FACTOR;
 	prevok = 0;
 	i--;
-	cont = 1;
+	cont = (step>*s*STEP_LIMIT);
+	if (v) {
+	  if (cont) printf("reduction to step=%f\n",step);
+	  else printf("Step reduction limit reached, stop.\n");
+	}
       }
     } else {
       if (prevok && (v || !n)) 

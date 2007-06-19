@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave Macro ----------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="cmw2macro"
-_Vers="2.11";
-_Date="1996-2004";
+_Vers="2.12";
+_Date="1996-2007";
 _Func="Compile a user's macro (make it available and create the doc file)";
 _Auth="Jacques Froment";
 _Usage="[-adm] [-ret] [-path path] [-absolute] macro"
@@ -175,18 +175,26 @@ echo " " >> $doc_name
 
 # Compute date of last modification for src_name
 
-y=`ls -l ${src_name} | awk '{i=NF-1; print $i}'`
+y=`env LANG=C ls -l ${src_name} | awk '{i=NF-1; print $i}'`
+d=`env LANG=C ls -l ${src_name} | awk '{i=NF-2; print $i}'`
+m=`env LANG=C ls -l ${src_name} | awk '{i=NF-3; print $i}'`
+
 h=`echo $y | grep ":"`
+# Year is not given : should be current year or last year
 if [ "$h" = "$y" ]; then
   cm=`date +%m`
   if [ $cm -ge 6 ]; then
     y=`date | awk '{print $NF}'`
   else
-    y=""
-  fi
+    if [ $MW_SYSTEMTYPE = Linux ]; then
+# On Linux, assume <stat> command available and use it to get the year
+      y=`stat -c %y  ${src_name} | cut -d - -f 1`
+    else
+# Don't know how to get the year !
+      y=""
+    fi
+ fi
 fi
-d=`ls -l ${src_name} | awk '{i=NF-2; print $i}'`
-m=`ls -l ${src_name} | awk '{i=NF-3; print $i}'`
 
 mwecho -E "\Version{$Vers}{$m $d $y}" >> $doc_name
 

@@ -1,38 +1,30 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {ml_draw};
-  version = {"8.1"};
-  author = {"Jacques Froment, Georges Koepfler"};
-  function = {"Draw morpho_lines of mimage"};
-  usage = {
-  'b'->border
-         "draw border",
-  'a':bimage->bimage
-          "add the original bitmap image to the background",
-  'o':movie<-movie
-         "movie made with one b/w image per level",
-  mimage->m_image
-         "input m_image",
-  image_out<-ml_draw
-        "b/w image of morpho_lines, size (2L-1)x(2C-1)"
-  };
+ name = {ml_draw};
+ version = {"8.1"};
+ author = {"Jacques Froment, Georges Koepfler"};
+ function = {"Draw morpho_lines of mimage"};
+ usage = {
+   'b'->border         "draw border",
+  'a':bimage->bimage   "add the original bitmap image to the background",
+  'o':movie<-movie     "movie made with one b/w image per level",
+  mimage->m_image      "input m_image",
+  image_out<-ml_draw   "b/w image of morpho_lines, size (2L-1)x(2C-1)"
+};
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
 
 #include <stdio.h>
 #include <assert.h>
-
 #include "mw.h"
 
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))
 
 void draw_mlines(mline,im,NL,NC,border)
-Morpho_line mline;
-unsigned char **im;
-int NL,NC;
-unsigned char *border;
-
+     Morpho_line mline;
+     unsigned char **im;
+     int NL,NC;
+     unsigned char *border;
 {
   Point_curve point_ptr;
   int BNL,BNC,l,c,dl,dc;
@@ -87,10 +79,8 @@ unsigned char *border;
 */
 
 void  setimage(border,bimage,mlimage)
-
-char *border;
-Cimage bimage,mlimage;
-
+     char *border;
+     Cimage bimage,mlimage;
 {
   int NCb,NLb,NCml,NLml;
   int xb,yb,xml,yml,x0,x1,y0,y1;
@@ -128,12 +118,10 @@ Cimage bimage,mlimage;
 }
 
 Cimage ml_draw(m_image,bimage,border,movie)
-
-Mimage m_image;
-Cimage bimage;
-char *border;
-Cmovie movie;
-
+     Mimage m_image;
+     Cimage bimage;
+     char *border;
+     Cmovie movie;
 { 
   Cimage cb=NULL,newcb,oldcb;
   Morpho_line mline_list,mline;

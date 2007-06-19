@@ -2,8 +2,8 @@
 #--------------------------- Shell MegaWave Macro ----------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="mwcmwcheck"
-_Vers="1.0";
-_Date="2001";
+_Vers="1.2";
+_Date="2001-2006";
 _Func="Check the MegaWave2 compiler";
 _Auth="Jacques Froment";
 _Usage=""
@@ -17,6 +17,17 @@ _Usage=""
 #       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 #-----------------------------------------------------------------------------
 
+# Error code returned :
+# 0 : MegaWave2 compiler successively checked for all given modules and
+#     using both the 'traditional' preprocessor and the 'light' one.
+# 1 : None modules could be checked.
+# 2 : The compilation using the 'traditional' preprocessor failed for
+#     at least one module, and so one using the 'light' one.
+# 3 : The compilation using the 'traditional' preprocessor failed for
+#     at least one module, but all computations worked for the 'light' one.
+# 4 : The compilation using the 'light' preprocessor failed for
+#     at least one module, but all worked for the 'traditional' one.
+
 # Check input
 if [ $# -ne 0 ]; then
    . .mw2_help_lg_com
@@ -27,6 +38,10 @@ fi
 # that is that does not depend to another module.
 
 modlist="ccopy"
+
+# Check result with mwp ('traditional' preprocessor) and mwplight (the 'light' one)
+mwp=1
+mwplight=1
 
 oneok=0
 for mod in $modlist
@@ -39,14 +54,25 @@ do
   if [ ! -w $loc ]; then
    echo "Warning: compiler cannot be checked on module \"$mod\" ! (no write permission on \"$loc\")"  1>&2
   else
-   (cd $loc; cmw2 -N $mod >> /dev/null 2>> /dev/null;)
+   (cd $loc; cmw2 -N -traditional $mod >> /dev/null 2>> /dev/null;)
    if [ $? -ne 0 ]; then
-    echo "Module \"$mod\" cannot be compiled !" 1>&2
+    mwp=0
+    echo "Module \"$mod\" cannot be compiled using the 'traditional' preprocessor !" 1>&2
     echo "Following the corresponding output. Please send these lines when reporting bugs:" 1>&2
     echo "--------------------------------------------------------------------------------" 1>&2 
-    (cd $loc; cmw2 -N $mod)
+    (cd $loc; cmw2 -N -traditional $mod)
     echo "--------------------------------------------------------------------------------" 1>&2 
-    exit 1
+   else
+    oneok=1
+   fi
+   (cd $loc; cmw2 -N -light $mod >> /dev/null 2>> /dev/null;)
+   if [ $? -ne 0 ]; then
+    mwplight=0
+    echo "Module \"$mod\" cannot be compiled using the 'light' preprocessor !" 1>&2
+    echo "Following the corresponding output. Please send these lines when reporting bugs:" 1>&2
+    echo "--------------------------------------------------------------------------------" 1>&2 
+    (cd $loc; cmw2 -N -light $mod)
+    echo "--------------------------------------------------------------------------------" 1>&2 
    else
     oneok=1
    fi
@@ -55,8 +81,20 @@ do
 done
 
 if [ $oneok -eq 0 ]; then
- echo "Error: zero module compiled !"  1>&2
+ echo "Error: zero module successfully compiled !"  1>&2
  exit 1
+fi
+
+if [ $mwp -eq 0 ] && [ $mwplight -eq 0 ]; then
+ exit 2
+fi
+
+if [ $mwp -eq 0 ]; then
+ exit 3
+fi
+
+if [ $mwplight -eq 0 ]; then
+ exit 4
 fi
 
 exit 0

@@ -1,18 +1,24 @@
-/*----------------------------MegaWave2 module----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {wiener};
-version = {"1.1"};
-author = {"Lionel Moisan"};
-function = {"Wiener Filter (least squares with H1 regularization)"};
-usage = {
- 'w':[lambda=1.]->lambda "weight on fidelity term (default: 1.0)",
- 'K':kernel->kernel      "specify blur kernel in Fourier domain",
- 'R':rad->rad            "... or radial kernel in Fourier domain",
- 'g':g->g                "... or gaussian standart deviation",
- in->in                  "input Fimage",
- out<-out                "output Fimage"
-        };
+ name = {wiener};
+ version = {"2.2"};
+ author = {"Lionel Moisan"};
+ function = {"Wiener Filter (least squares with H1 regularization)"};
+ usage = {
+   'W':[lambda=1.]->lambda "weight on regularization term",
+   'K':kernel->kernel      "specify blur kernel in Fourier domain",
+   'R':rad->rad            "... or radial kernel in Fourier domain",
+   'g':g->g                "... or gaussian standart deviation",
+   in->in                  "input Fimage",
+   out<-out                "output Fimage"
+};
 */
+/*----------------------------------------------------------------------
+ v1.2: minor bug fixed (missing 2 mw_delete_fimage) (G.Blanchet)
+ v2.0: changed -w option to -W, ie weight on REGULARIZATION term (LM)
+ v2.1: allow any image size (not only powers of two !) (LM)
+ v2.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -32,8 +38,8 @@ void gausskernel(kernel,g)
   ny = kernel->nrow;
   cx = (double)(g*g)*2.*M_PI*M_PI/(double)(nx*nx);
   cy = (double)(g*g)*2.*M_PI*M_PI/(double)(ny*ny);
-  for (x=-nx/2;x<nx/2;x++)
-    for (y=-ny/2;y<ny/2;y++) {
+  for (x=-nx/2;x<(nx+1)/2;x++)
+    for (y=-ny/2;y<(ny+1)/2;y++) {
       adr = (y<0?ny+y:y)*nx+(x<0?nx+x:x);
       kernel->gray[adr] = (float)exp(-cx*(double)(x*x)-cy*(double)(y*y));
     }
@@ -51,8 +57,8 @@ void radialkernel(kernel,rad)
   ny = kernel->nrow;
   cx = 1./(double)(nx*nx);
   cy = 1./(double)(ny*ny);
-  for (x=-nx/2;x<nx/2;x++)
-    for (y=-ny/2;y<ny/2;y++) {
+  for (x=-nx/2;x<(nx+1)/2;x++)
+    for (y=-ny/2;y<(ny+1)/2;y++) {
       adr = (y<0?ny+y:y)*nx+(x<0?nx+x:x);
       dist = (int)rint(rad->scale*sqrt(cx*(double)(x*x)+cy*(double)(y*y)));
       if (dist>=rad->size) kernel->gray[adr] = 0.;
@@ -77,13 +83,13 @@ Fimage wiener(in,out,kernel,rad,g,lambda)
 
   deblur = (kernel?1:0)+(g?1:0)+(rad?1:0);
   if (deblur>1)
-    mwerror(FATAL,1,"Please specify no more than one blur kernel. ");;
+    mwerror(FATAL,1,"Please specify no more than one blur kernel.\n");
 
   nx = re->ncol; ny = re->nrow;
   kernel_delete = 0;
   if (kernel) {
     if (nx!=kernel->ncol || ny!=kernel->nrow) 
-      mwerror(FATAL,1,"Incompatible Kernel and Input dimensions.\n");;
+      mwerror(FATAL,1,"Incompatible kernel and input dimensions.\n");;
   } else if (deblur) {
     kernel = mw_change_fimage(NULL,ny,nx); 
     kernel_delete = 1;
@@ -97,27 +103,31 @@ Fimage wiener(in,out,kernel,rad,g,lambda)
   cy = M_PI*M_PI/(float)(ny*ny);
 
   if (deblur) 
-    for (x=-nx/2;x<nx/2;x++)
-      for (y=-ny/2;y<ny/2;y++) {
+    for (x=-nx/2;x<(nx+1)/2;x++)
+      for (y=-ny/2;y<(ny+1)/2;y++) {
 	adr = (y<0?ny+y:y)*nx+(x<0?nx+x:x);
 	rho2 = cx*(double)(x*x)+cy*(double)(y*y);
 	k = kernel->gray[adr];
-	c = *lambda*k/(*lambda*k*k+rho2);
-      re->gray[adr] *= c;
-      im->gray[adr] *= c;
+	c = (k!=0.?k/(k*k+(*lambda)*rho2):0.);
+	re->gray[adr] *= c;
+	im->gray[adr] *= c;
       }
   else 
-    for (x=-nx/2;x<nx/2;x++)
-      for (y=-ny/2;y<ny/2;y++) {
+    for (x=-nx/2;x<(nx+1)/2;x++)
+      for (y=-ny/2;y<(ny+1)/2;y++) {
 	adr = (y<0?ny+y:y)*nx+(x<0?nx+x:x);
 	rho2 = cx*(double)(x*x)+cy*(double)(y*y);
-	c = *lambda/(*lambda+rho2);
+	c = 1./(1.+(*lambda)*rho2);
 	re->gray[adr] *= c;
 	im->gray[adr] *= c;
       }
   
   fft2d(re,im,out,NULL,(char *)1);
+
   if (kernel_delete) mw_delete_fimage(kernel);
+  mw_delete_fimage(im);
+  mw_delete_fimage(re);
+
   return(out);
 }
 

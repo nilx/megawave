@@ -1,46 +1,30 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {cfezw};
 version = {"1.21"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Compress a color fimage with EZW algorithm"};
 usage = {
-'r':NLevel->NumRec [1,20]
-	"Number of level for wavelet tranform", 
-'e':EdgeIR->Edge_Ri
-      	"Impulse reponses of edge and preconditionning filters (orthogonal transform)",
-'b':ImpulseResponse2->Ri2
-	"Impulse response of filter 2 (biorthogonal transform)",
-'n':FilterNorm->FilterNorm [0,2]
-	"Normalization mode for filter bank", 
-'w':WeightFac->WeightFac
-        "Scaling factor for wavelet coefficients", 
-'d'->DistRate
-        "Computes distorsion-rate function", 
-'R':TargetRate->Rate 
-        "Target total rate", 
-'G':Greenrate->GRate
-        "Portion of target Rate for green channel (percentile)",
-'B':Bluerate->BRate
-        "Portion of target Rate for blue channel (percentile)",
-'P':TargetPSNR->PSNR
-	"Target PSNR",
-'c':Conv->Conv [0,2]
-	"0 : convert from RGB to YUV", 
-'s':SelectArea->SelectedArea
-        "Polygonal regions to be encoded with a different rate or PSNR",
-'o':Cimage<-Output
-	"Output compressed Image", 
-Image->Image
-	"Input image", 
-ImpulseResponse->Ri
-	"Impulse response of inner filters", 
-	{
-	  Cfimage<-QImage
-	          "Output quantized image"
-	}
-	};
- */
+ 'r':NLevel->NumRec [1,20]         "Number of level for wavelet tranform", 
+ 'e':EdgeIR->Edge_Ri               "Impulse reponses of edge and preconditionning filters (orthogonal transform)",
+ 'b':ImpulseResponse2->Ri2         "Impulse response of filter 2 (biorthogonal transform)",
+ 'n':FilterNorm->FilterNorm [0,2]  "Normalization mode for filter bank", 
+ 'w':WeightFac->WeightFac          "Scaling factor for wavelet coefficients", 
+ 'd'->DistRate                     "Computes distorsion-rate function", 
+ 'R':TargetRate->Rate              "Target total rate", 
+ 'G':Greenrate->GRate  "Portion of target Rate for green channel (percentile)",
+ 'B':Bluerate->BRate   "Portion of target Rate for blue channel (percentile)",
+ 'P':TargetPSNR->PSNR  "Target PSNR",
+ 'c':Conv->Conv [0,2]  "0 : convert from RGB to YUV", 
+ 's':SelectArea->SelectedArea      "Polygonal regions to be encoded with a different rate or PSNR",
+ 'o':Cimage<-Output    "Output compressed Image", 
+ Image->Image          "Input image", 
+ ImpulseResponse->Ri   "Impulse response of inner filters", 
+   {
+     Cfimage<-QImage   "Output quantized image"
+   }
+};
+*/
 
 
 /*--- Include files UNIX C ---*/

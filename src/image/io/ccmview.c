@@ -1,32 +1,25 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {ccmview};
-  version = {"1.2"};
-  author = {"Jacques Froment"};
-  function = {"View a ccmovie on a window"};
-  usage = {
-  'x':[pos_x=50]->x0
-     "X coordinate for the upper-left corner of the Window",
-  'y':[pos_y=50]->y0
-     "Y coordinate for the upper-left corner of the Window",
-  'z':[zoom=1.0]->zoom
-      "Zoom factor (float value)",
-  'o':[order=0]->order      
-      "Zoom order: 0,1=linear,-3=cubic,3,5..11=spline, default 0",
-  'l'->loop
-      "Flag to loop on the sequence",
-  'p'->pause
-      "pause the movie on start",
-  ccmovie->input 
-     "Input movie (should be a ccmovie)",
-  notused->window 
-      "Window to display the movie (internal use)"
-  };
+ name = {ccmview};
+ version = {"1.3"};
+ author = {"Jacques Froment"};
+ function = {"View a ccmovie on a window"};
+ usage = {
+  'x':[pos_x=50]->x0    "upper-left corner of the Window (X coordinate)",
+  'y':[pos_y=50]->y0    "upper-left corner of the Window (Y coordinate)",
+  'z':[zoom=1.0]->zoom  "Zoom factor (float value)",
+  'o':[order=0]->order  "Zoom order: 0,1=linear,-3=cubic,3,5..11=spline",
+  'l'->loop             "Flag to loop on the sequence",
+  'p'->pause            "pause the movie on start",
+  ccmovie->input        "Input movie (should be a ccmovie)",
+  notused->window       "Window to display the movie (internal use)"
+};
 */
 /*----------------------------------------------------------------------
  v1.06: added -p (pause) option and return void (L.Moisan)
  v1.1: added -o option + several minor modifications (L.Moisan)
  v1.2: fixed bug with non char input keys (L.Moisan)
+ v1.3 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

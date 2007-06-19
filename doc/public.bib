@@ -14,12 +14,13 @@
 % CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 %       94235 Cachan cedex, France. 
 %-----------------------------------------------------------------------------
-% Version 1.2
+% Version 1.3
 % V 1.0 : initial release (JF)
 % V 1.1 (15/04/2004) : added references (LM)
 % V 1.2 (08/10/2004) changed _ to \_ in 
 %                    \hturl{http://www.iua.upf.es/~vcaselles/papers_v/ShapeLHisto.pdf}
 %                    to avoid errors on Mandrake 10.0
+% V 1.3 (2/03/2007) : added references (LM)
 
 % --- A
 @Article{	  almansa.desolneux.vamech:vanish,
@@ -81,6 +82,16 @@
   note		= "Preprint CMLA 2001-02, available at
 		  \hturl{http://www.cmla.ens-cachan.fr/Cmla/Publications/2001/CMLA2001-02.ps.gz}"
 		  
+}
+
+@Article{	  buades.coll.morel:nlmeans,
+  author	= "A. Buades and B. Coll and J.M Morel",
+  title		= "A review of image denoising algorithms, with a new one",
+  journal	= "Multiscale Modeling and Simulation",
+  volume	= "4",
+  number        = "2",
+  pages		= "490-530",
+  year		= "2005"
 }
 
 % --- C
@@ -227,6 +238,16 @@
   year		= "1997"
 }
 
+@Article{	  chambolle:algotvdual,
+  author	= "A. Chambolle",
+  title		= "An Algorithm for Total Variation Minimization 
+                  and Applications",
+  journal	= "Journal of Mathematical Imaging and Vision",
+  year		= "2004",
+  volume	= "20",
+  pages		= "89-97"
+}
+
 @Article{	  cohen.daubechies.ea:biorthogonal,
   author	= "A. Cohen and I. Daubechies and J-C. Feauveau",
   title		= "Biorthogonal bases of compactly supported wavelets",
@@ -260,6 +281,16 @@
   volume	= "3",
   pages		= "613-616",
   year		= "2000"
+}
+
+@Article{	  cooley.tukey:fft,
+  author	= "J. Cooley and J. Tukey",
+  title		= "An algorithm for the machine calculation of 
+                   complex Fourier series",
+  journal	= "Math. Comput.",
+  volume	= "19",
+  pages		= "297-301",
+  year		= "1965"
 }
 
 % --- D
@@ -467,10 +498,32 @@
 }
 
 % --- I
+@InProceedings{	  ishwar.moulin:multiple-domain,
+  author	= {P. Ishwar and P. Moulin},
+  title		= {Multiple-Domain Image Modeling and Restoration},
+  booktitle	= {Proc. IEEE Intl. Conf. Image Processing},
+  pages		= {362-366},
+  year		= {1999},
+  publisher	= {IEEE},
+  volume	= {1},
+  address	= {Kobe, Japan},
+  month		= {Oct.}
+}
 
 % --- J
 
 % --- K
+@InProceedings{	  kalifa.mallat.ea:image,
+  author	= {J. Kalifa and S. Mallat and B. Roug\'e},
+  title		= {Image Deconvolution in Mirror Wavelet Bases},
+  booktitle	= {Int. Conf. on Image Processing (ICIP'98)},
+  year		= {1998},
+  publisher	= {IEEE},
+  address	= {Chicago},
+  month		= {Oct.},
+  pages		= {565-569}
+}
+
 @InProceedings{	  kass.witkin.ea:snakes,
   author	= "M. Kass and A. Witkin and D. Terzopoulos",
   title		= "Snakes: active contour models",
@@ -558,6 +611,44 @@
   year		= "1992"
 }
 
+@InProceedings{	  malgouyres:noise,
+  author	= {F. Malgouyres},
+  title		= {A Noise Selection Approach of Image Restoration},
+  booktitle	= {SPIE, International Conference on Wavelets IX},
+  pages		= {34-41},
+  year		= {2001},
+  editor	= {Laine, Unser and Aldroubi},
+  volume	= {4478},
+  address	= {San Diego},
+  month		= {August},
+  note		= {A preliminary version is available at
+		  http://www.zeus.math.univ-paris13.fr/$\sim$malgouy}
+}
+
+@TechReport{	  malgouyres:noise*1,
+  author	= {F. Malgouyres},
+  title		= {A Noise Selection Approach of Denoising},
+  institution	= {UCLA, CAM},
+  year		= {2001},
+  number	= {01-04},
+  month		= {February},
+  note		= {A preliminary version is available at
+		  http://www.zeus.math.univ-paris13.fr/$\sim$malgouy}
+}
+
+@Article{	  malgouyres:framework,
+  author	= {F. Malgouyres},
+  title		= {A Framework for Image Deblurring Using Wavelet Packet
+		  Bases},
+  journal	= {Applied and Computational Harmonic Analysis},
+  year		= {2002},
+  volume	= {12},
+  number	= {3},
+  pages		= {309-331},
+  note		= {A preliminary version is available at
+		  http://www.zeus.math.univ-paris13.fr/$\sim$malgouy}
+}
+
 @Article{	  mallat:theory,
   author	= "S. Mallat",
   title		= "A theory for multiresolution signal decomposition, the
@@ -621,11 +712,13 @@
 }
 
 @Unpublished{	  moisan:modelling,
-  author	= "Lionel Moisan",
+  author	= "L. Moisan",
   title		= "Modelling in image processing",
-  note		= "DEA Math\'ematiques, Vision, Apprentissage (MVA), Ecole
-		  Normale Sup\'erieure de Cachan",
-  year		= "2002"
+  year		= "2002",
+  note		= "Course notes 
+                   master Math\'ematiques, Vision, Apprentissage (MVA), 
+                   \'Ecole Normale Sup\'erieure de Cachan, 
+	           \hturl{http://www.cmla.ens-cachan.fr/$\sim$moisan}"
 }
 
 @Article{	  monasse.guichard:fast,
@@ -693,6 +786,13 @@
 % --- Q
 
 % --- R
+@InProceedings{	  rouge:fixed,
+  author	= {B. Roug\'e},
+  title		= {Fixed Chosen Noise Restauration (FCNR)},
+  booktitle	= {IEEE 95 Philadelphia},
+  year		= {1995}
+}
+
 @Article{	  rudin.osher.ea:nonlinear,
   author	= "L.I. Rudin and S. Osher and E. Fatemi",
   title		= "Nonlinear total variation based noise removal algorithms",
@@ -826,6 +926,14 @@
   number	= "6",
   pages		= "520-540",
   year		= "1987"
+}
+
+@PhDThesis{	  woog:adapted,
+  author	= {L. Woog},
+  title		= {Adapted Waveform Algorithms for Denoising},
+  school	= {Yale University},
+  year		= {1996},
+  month		= {April}
 }
 % --- X
 % --- Y

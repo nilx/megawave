@@ -1,41 +1,32 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {owave2};
-version = {"1.3"};
+version = {"1.4"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Computes the orthogonal wavelet transform of an image"};
 usage = {
-'r':[NLevel=1]->NumRec [1,20]
-	"Number of levels (default 1)", 
-'h':HaarNLevel->Haar
-	"Continue decomposition with Haar filter until level HaarNLevel",
-'e':[EdgeMode=3]->Edge [0,3]
-	"Edge processing mode (0/1/2/3, default 3)", 
-'p':[PrecondMode=0]->Precond [0,2]
-	"Edge preconditionning mode (0/1/2, default 0)", 
-'i'->Inverse
-	"Invertible transform", 
-'n':[FilterNorm=2]->FilterNorm [0,2]
-	"Filter taps normalization. 0: no normalization, 1: sum equal to 1.0, 2: squares sum equal to 1.0 (default)", 
-Image->Image
-	"Input image (fimage)", 
-WavTrans<-Output
-	"Output wavelet transform of Image (wtrans2d)", 
-ImpulseResponse->Ri
-	"Impulse response of inner filters (fsignal)", 
+ 'r':[NLevel=1]->NumRec [1,20]         "Number of levels", 
+ 'h':HaarNLevel->Haar "Continue decomposition with Haar filter until level HaarNLevel",
+ 'e':[EdgeMode=3]->Edge [0,3]          "Edge processing mode",
+ 'p':[PrecondMode=0]->Precond [0,2]    "Edge preconditionning mode",
+ 'i'->Inverse                          "Invertible transform", 
+ 'n':[FilterNorm=2]->FilterNorm [0,2]  "Filter taps normalization. 0: no normalization, 1: sum equal to 1.0, 2: squares sum equal to 1.0", 
+ Image->Image         "Input image (fimage)", 
+ WavTrans<-Output     "Output wavelet transform of Image (wtrans2d)", 
+ ImpulseResponse->Ri  "Impulse response of inner filters (fsignal)", 
 	{
 	EdgeIR->Edge_Ri
-		"Impulse reponses of edge and preconditionning filters (fimage)"
+	     "Impulse reponses of edge and preconditionning filters (fimage)"
 	}
 	};
  */
+/*----------------------------------------------------------------------
+ v1.4 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

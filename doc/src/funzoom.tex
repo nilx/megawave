@@ -1,10 +1,13 @@
 This module unzooms an image by a factor $z$. The input image is first
-projected orthogonally onto the space of B-splines of order $n$ (see
+projected orthogonally onto the space of B-splines \index{B-spline}
+of order $n$ (see
 the \verb+fcrop+ module). The order $n$ can be specified 
 by the \verb+-o+ option. Then, an appropriate subsampling is performed.
 Hence, the $L^2$ norm of the error caused by image reduction is minimized.
 This method, described in~\cite{unser.aldroubi.ea:enlargement}, allows to 
 avoid undesirable artifacts like aliasing. 
+\index{reduction!of an image}
+\index{zoom out!of an image}
 
 \medskip
 
@@ -19,7 +22,7 @@ $z\times z$ square. In particular, this yields the classical simple
 \medskip
 
 $\bullet$ 
-For $n\geq 1$, the algorithm consists in two steps~:
+For $n= 1$, the algorithm consists in two steps~:
 
 1. a zoom by a certain cubic (non-regular) spline, 
 $\frac 1z \beta^1_z * \beta^1$, where $\beta^1$ is the 
@@ -28,3 +31,8 @@ B-spline of order 1 and $\beta^1_z(x)=\beta^1(x/z)$.
 2. an inverse spline transform of order 3, performed by the
 \verb+finvspline+ module.
 
+\medskip
+
+$\bullet$ 
+For $n> 1$, the reduction is realized on a similar basis but with higher 
+order splines.

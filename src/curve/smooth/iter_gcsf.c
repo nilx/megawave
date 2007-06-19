@@ -1,23 +1,26 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {iter_gcsf};
    author = {"Frederic Cao, Lionel Moisan"};
-   version = {"1.2"};
+   version = {"1.3"};
    function = {"Iterated gcsf"};
    usage = {    
 
-'g':[g=1.]-> gam          "power of curvature (default 1)",        
-'l':[l=1.]->last          "last scale (default 1)",
-'e':[e=3.]->eps[2.,13.]   "(for gcsf) sampling precision (default 3.)",
-'a':[a=4.]->area[2.,13.]  "(for gcsf) erosion area (default 4.)",
-'n':[n=1]->n              "(for gcsf) or minimal # of iterations (default 1)",
-'N':[N=5]->N              "number of output curves (default 5)",
-'v'->v                    "verbose mode",
-in->in                    "input curve (Dlist)",
-out<-out                  "output curves (Dlists)"
+ 'g':[g=1.]-> gam          "power of curvature",        
+ 'l':[l=1.]->last          "last scale",
+ 'e':[e=3.]->eps[2.,13.]   "(for gcsf) sampling precision",
+ 'a':[a=4.]->area[2.,13.]  "(for gcsf) erosion area ",
+ 'n':[n=1]->n              "(for gcsf) or minimal # of iterations",
+ 'N':[N=5]->N              "number of output curves",
+ 'v'->v                    "verbose mode",
+ in->in                    "input curve (Dlist)",
+ out<-out                  "output curves (Dlists)"
 
 	    };
 */
+/*----------------------------------------------------------------------
+ v1.3 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

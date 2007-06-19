@@ -1,0 +1,37 @@
+With this module, two images $in1$ and $in2$ can be interactively compared.
+The image $in1$ is displayed on a window, and each time the ``space'' key
+is pressed the window flips between $in1$ and $in2$. Thus, even if the
+two images differ only slightly, an apparent motion will be perceived when 
+the ``space'' key is pressed, so that the two images can be accurately 
+compared. Several features come in addition to this basic alternate
+display:
+\index{comparison!of two images}
+\index{visualization!of two images}
+
+\medskip
+
+- Images can be zoomed with the right mouse button, and unzoomed with the
+``u'' key. The initial zoom (and thus the window size) is specified 
+with the \verb+-z+ option. The zoom method (interpolation order) is
+specified with the \verb+-o+ option (default is 0, nearest neighbor 
+interpolation), and can be interactively changed with the ``o'' key.
+The cursor keys can be used to move the displayed window.
+
+\medskip
+
+- Contrast can be changed with the ``c'' key, causing renormalization
+of the grey level scale for the current displayed (sub-)image. This
+grey level scale is then kept when further zooming, unzooming, flipping,
+etc. until the ``c'' key is pressed again (causing a new renormalization).
+
+\medskip
+
+As the left mouse button is pressed, the name of the current displayed 
+image is shown. Each time it is pressed again, other informations 
+are shown (interpolation method and currently displayed window).  
+
+\medskip
+
+If the middle mouse button, then initial settings (zoom, contrast) are 
+restored. As usual, pressing the ``h'' key causes a list of all available
+interactive commands to be displayed.

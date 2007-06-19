@@ -1,15 +1,15 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {ridgrecpol};
-   version = {"1.0"};
-   author = {"Guillaume Charpiat, Vincent Feuvrier"};
-   function = {"Get the polar frequency grid used to perform ridgelet decomposition"};
-   usage = {
-       'I':input_im->in_im          "imaginary input of the 2D-FFT image",
-       'R':output_re<-out_re      "real output (2D-FFT image in polar grid)",
-       'C':output_im<-out_im  "imaginary output (2D-FFT image in polar grid)",
-       input_re->in_re              "real input of the 2D-FFT image"
-   };
+ name = {ridgrecpol};
+ version = {"1.0"};
+ author = {"Guillaume Charpiat, Vincent Feuvrier"};
+ function = {"Get the polar frequency grid used to perform ridgelet decomposition"};
+ usage = {
+     'I':input_im->in_im    "imaginary input of the 2D-FFT image",
+     'R':output_re<-out_re  "real output (2D-FFT image in polar grid)",
+     'C':output_im<-out_im  "imaginary output (2D-FFT image in polar grid)",
+     input_re->in_re        "real input of the 2D-FFT image"
+};
 */
 /*----------------------------------------------------------------------
  v1.0: initial revision before publication (J.Froment)

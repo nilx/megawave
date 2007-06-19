@@ -1,12 +1,14 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    wave_io.c
    
-   Vers. 0.2 
-   (C) 2002 Jacques Froment
+   Vers. 1.0
+   Author : Jacques Froment
    Input/Output functions for the Microsoft's RIFF WAVE sound file format
    Partly inspired by file 'wav.c' included in the SoX distribution :
    (C) 1992 Rick Richardson, (C) 1991 Lance Norskog And Sundry Contributors.
 
+   Main changes :
+   v1.0 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -17,6 +19,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/file.h>
 #include "mw.h"
 

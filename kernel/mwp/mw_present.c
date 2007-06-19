@@ -6,7 +6,16 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+/* Module's presentation
+   V 1.1
+
+   Main changes
+   V 1.1 (JF, 23/02/2006) added include <string.h>
+*/
+
 #include <stdio.h>
+#include <string.h>
+
 #include <sys/types.h>
 #include <sys/time.h>
 #include <time.h>

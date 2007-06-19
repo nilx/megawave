@@ -1,33 +1,31 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
 name = {fiscalq};
 author = {"Jean-Pierre D'Ales"};
-version = {"2.01"};
+version = {"2.02"};
 function = {"reconstruction of a scalar quantized image"};
 usage = {
-'p'->Print 
-        "Do not print info on reconstruction process",
-'r':NRow->NRow
-        "Number of rows in reconstructed image",
-'h':NCol->NCol
-        "Number of columns in reconstructed image",
-Compress->Compress
-        "Compressed image (cimage)",
-Result<-Result
-	"Reconstructed image (fimage)",
-  { 
-    Rate<-Rate
-        "Compression rate"
-  }
-	};
- */
+ 'p'->Print          "Do not print info on reconstruction process",
+ 'r':NRow->NRow      "Number of rows in reconstructed image",
+ 'h':NCol->NCol      "Number of columns in reconstructed image",
+ Compress->Compress  "Compressed image (cimage)",
+ Result<-Result      "Reconstructed image (fimage)",
+   { 
+     Rate<-Rate      "Compression rate"
+   }
+};
+*/
+/*----------------------------------------------------------------------
+ v2.02 (JF) revision according to the light preprocessor :
+        allocation of <Rate> added to avoid core dump
+        with the right process of optional arguments (light preprocessor),
+	when no optional arguments are given. This is a temporary 
+        solution : the module's header needs to be rewritten !
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/
@@ -369,6 +367,7 @@ double     *Rate;               /* Bit rate for Compress */
 
 {
 
+  if (!Rate) Rate=(double *) malloc(sizeof(double));
   SCALAR_RECONSTRUCT(Print, NRow, NCol, Compress, Result, Rate);
 
 }

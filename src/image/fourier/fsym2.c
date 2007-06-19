@@ -1,14 +1,14 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {fsym2};
-  version = {"1.0"};
-  author = {"Lionel Moisan"};
-  function = {"Symmetrize a Fimage in both directions"};
-  usage = {
-              'i'->i    "inverse (extract upleft corner)",
-              in->in    "input Fimage",
-	      out<-out  "output Fimage"
-          };
+ name = {fsym2};
+ version = {"1.0"};
+ author = {"Lionel Moisan"};
+ function = {"Symmetrize a Fimage in both directions"};
+ usage = {
+      'i'->i    "inverse (extract upleft corner)",
+      in->in    "input Fimage",
+      out<-out  "output Fimage"
+};
 */
 
 #include "mw.h"
@@ -16,8 +16,8 @@
 extern void fextract();
 
 void fsym2(in,out,i)
-Fimage in,out;
-char *i;
+     Fimage in,out;
+     char *i;
 {
   int x,y,nx,ny,z;
   float b;
@@ -37,6 +37,7 @@ char *i;
 
     /* symmetrization */
     mw_change_fimage(out,2*ny,2*nx);
+    if (!out) mwerror(FATAL,1,"Not enough memory\n");
     for (x=nx;x--;)
       for (y=ny;y--;) 
 	out->gray[y*nx*2+x]

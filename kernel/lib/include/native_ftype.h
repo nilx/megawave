@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    native_ftype.h
    
-   Vers. 1.06
-   (C) 2000-2003 Jacques Froment
+   Vers. 1.07
+   Author : Jacques Froment
 
    List the external (file) types sorted in decreasing priority order,
    associated to a memory format. 
@@ -15,6 +15,10 @@
 
    Those lists should be updated each time a new file format is added.
 
+   Versions history
+   1.07 (JF, march 2006) : - wpack2d added; 
+                           - description of implemented file types corrected
+                          
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -74,6 +78,7 @@ NULL,
   "flists","MW2_FLISTS",NULL,
   "dlist","MW2_DLIST",NULL,
   "dlists","MW2_DLISTS",NULL,
+  "wpack2d","A_WPACK2D",NULL,
   NULL,
 };
 
@@ -113,30 +118,31 @@ static char *mw_ftypes_description[] =
   "PMC_F", "PM color float image format [3x32-bits planes]",
   "A_FSIGNAL", "MegaWave2 Data Ascii format for Fsignal internal type",
   "WAVE_PCM", "Microsoft's RIFF WAVE sound file format with PCM encoding",
-  "MW2_CURVE", "MegaWave2 Data Ascii format for Curve internal type",
-  "MW2_CURVES","MegaWave2 Data Ascii format for Curves internal type",
-  "MW2_FCURVE", "MegaWave2 Data Ascii format for Fcurve internal type",
-  "MW2_FCURVES", "MegaWave2 Data Ascii format for Fcurves internal type",
-  "MW2_DCURVE", "MegaWave2 Data Ascii format for Dcurve internal type",
-  "MW2_DCURVES","MegaWave2 Data Ascii format for Dcurves internal type",
+  "MW2_CURVE", "MegaWave2 binary format for Curve internal type",
+  "MW2_CURVES","MegaWave2 binary format for Curves internal type",
+  "MW2_FCURVE", "MegaWave2 binary format for Fcurve internal type",
+  "MW2_FCURVES", "MegaWave2 binary format for Fcurves internal type",
+  "MW2_DCURVE", "MegaWave2 binary format for Dcurve internal type",
+  "MW2_DCURVES","MegaWave2 binary format for Dcurves internal type",
   "A_POLY","MegaWave2 Data Ascii format for Polygon and Polygons internal types",
   "A_FPOLY","MegaWave2 Data Ascii format for Fpolygon and Fpolygons internal types",
-  "MW2_MORPHO_LINE","MegaWave2 Data Ascii format for Morpho_line internal type",
-  "MW2_FMORPHO_LINE","MegaWave2 Data Ascii format for Fmorpho_line internal type",
-  "MW2_MORPHO_SET","MegaWave2 Data Ascii format for Morpho_set internal type",
-  "MW2_MORPHO_SETS","MegaWave2 Data Ascii format for Morpho_sets internal type",
-  "MW2_MIMAGE","MegaWave2 Data Ascii format for Mimage internal type",
-  "MW2_CMORPHO_LINE","MegaWave2 Data Ascii format for Cmorpho_line internal type",
-  "MW2_CFMORPHO_LINE","MegaWave2 Data Ascii format for Cfmorpho_line internal type",
-  "MW2_CMORPHO_SET","MegaWave2 Data Ascii format for Cmorpho_set internal type",
-  "MW2_CMORPHO_SETS","MegaWave2 Data Ascii format for Cmorpho_sets internal type",
-  "MW2_CMIMAGE","MegaWave2 Data Ascii format for Cmimage internal type",
-  "MW2_SHAPE","MegaWave2 Data Ascii format for Shape internal type",
-  "MW2_SHAPES","MegaWave2 Data Ascii format for Shapes internal type",
-  "MW2_FLIST","MegaWave2 Data Ascii format for Flist internal type",
-  "MW2_FLISTS","MegaWave2 Data Ascii format for Flists internal type",
-  "MW2_DLIST","MegaWave2 Data Ascii format for Dlist internal type",
-  "MW2_DLISTS","MegaWave2 Data Ascii format for Dlists internal type",
+  "MW2_MORPHO_LINE","MegaWave2 binary format for Morpho_line internal type",
+  "MW2_FMORPHO_LINE","MegaWave2 binary format for Fmorpho_line internal type",
+  "MW2_MORPHO_SET","MegaWave2 binary format for Morpho_set internal type",
+  "MW2_MORPHO_SETS","MegaWave2 binary Ascii format for Morpho_sets internal type",
+  "MW2_MIMAGE","MegaWave2 Data binary format for Mimage internal type",
+  "MW2_CMORPHO_LINE","MegaWave2 binary format for Cmorpho_line internal type",
+  "MW2_CFMORPHO_LINE","MegaWave2 binary format for Cfmorpho_line internal type",
+  "MW2_CMORPHO_SET","MegaWave2 binay format for Cmorpho_set internal type",
+  "MW2_CMORPHO_SETS","MegaWave2 binary format for Cmorpho_sets internal type",
+  "MW2_CMIMAGE","MegaWave2 binary format for Cmimage internal type",
+  "MW2_SHAPE","MegaWave2 binary format for Shape internal type",
+  "MW2_SHAPES","MegaWave2 binary format for Shapes internal type",
+  "MW2_FLIST","MegaWave2 binary format for Flist internal type",
+  "MW2_FLISTS","MegaWave2 binary format for Flists internal type",
+  "MW2_DLIST","MegaWave2 binary format for Dlist internal type",
+  "MW2_DLISTS","MegaWave2 binary format for Dlists internal type",
+  "A_WPACK2D", "MegaWave2 Data Ascii format for Wpack2d internal type (with pointers to signal and image files)",
   NULL,
 };
 

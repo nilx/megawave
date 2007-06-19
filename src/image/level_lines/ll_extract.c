@@ -1,26 +1,25 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-name = {ll_extract}; 
-version = {"1.2"}; 
-author = {"Lionel Moisan"}; 
-function = {"Compute the level lines of a Fimage"};
-usage = { 
-
-'l':levels->levels  "levels of quantization (Fsignal) (bilinear)",
-'o':offset->offset  "quantization offset (bilinear, default 0.5)",
-'s':step->step      "quantization step (bilinear, default 1.0)",
-'p':[prec=5]->prec  "precision (# pts per unit length), default 5 (bilinear)",
-'a':area->area      "minimum area (parameter for the grain filter)",
-'t':tree->tree      "to use a previoulsy computed tree",
-'z'->z              "use zero order instead of bilinear interpolation",
-in->in              "input Fimage",
-out<-ll_extract     "computed level lines (output Flists)"
-
+ name = {ll_extract}; 
+ version = {"1.3"}; 
+ author = {"Lionel Moisan"}; 
+ function = {"Compute the level lines of a Fimage"};
+ usage = { 
+   'l':levels->levels  "levels of quantization (Fsignal) (bilinear)",
+   'o':offset->offset  "quantization offset (bilinear, default 0.5)",
+   's':step->step      "quantization step (bilinear, default 1.0)",
+   'p':[prec=5]->prec  "precision (# pts per unit length, bilinear case only)",
+   'a':area->area      "minimum area (parameter for the grain filter)",
+   't':tree->tree      "to use a previoulsy computed tree",
+   'z'->z              "use zero order instead of bilinear interpolation",
+   in->in              "input Fimage",
+   out<-ll_extract     "computed level lines (output Flists)"
 }; 
 */ 
 /*----------------------------------------------------------------------
  v1.1: added missing area parameter (P.Monasse)
  v1.2: fixed max_size bug due to change in list.h (L.Moisan)
+ v1.3 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include "mw.h"

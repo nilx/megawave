@@ -1,17 +1,17 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-name = {flstb_boundary}; 
-version = {"1.0"}; 
-author = {"Pascal Monasse"}; 
-function = {"Discretized level line in bilinear interpolated image"}; 
-usage = { 
+ name = {flstb_boundary}; 
+ version = {"1.0"}; 
+ author = {"Pascal Monasse"}; 
+ function = {"Discretized level line in bilinear interpolated image"}; 
+ usage = { 
   'p': [precision=5] -> pPrecision [1,10000] "Approximate max number of points per dual pixel",
-  image -> pImage "The original image",
-  tree -> pTree "A tree of shapes of the image",
-  shape -> pShape "The shape whose boundary is to be computed",
-  dualchain -> pDualchain "List of dual-pixels (dualchain)",
-  boundary <- pBoundary "boundary computed (output Flist)",
-  notused -> ctabtabSaddleValues "Saddle values"
+  image->pImage                "The original image",
+  tree->pTree                  "A tree of shapes of the image",
+  shape->pShape                "The shape whose boundary is to be computed",
+  dualchain->pDualchain        "List of dual-pixels (dualchain)",
+  boundary<-pBoundary          "boundary computed (output Flist)",
+  notused->ctabtabSaddleValues "Saddle values"
 }; 
 */ 
 

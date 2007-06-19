@@ -1,12 +1,12 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {segct};
-   version = {"1.21"};
-   author = {"Georges Koepfler"};
-   function = {"Region-Growing method using the energy model of Mumford and Shah with piecewise constant approximation function"};
-   usage = {
+ name = {segct};
+ version = {"1.4"};
+ author = {"Georges Koepfler"};
+ function = {"Region-Growing method using the energy model of Mumford and Shah with piecewise constant approximation function"};
+ usage = {
    'S':[size_of_grid=1]->sgrid
-       "size of initilization grid (int), default 1 ",
+       "size of initilization grid (int)",
    'N':nb_of_regions->nb_of_regions
        "number of desired regions (int) ",
    'L':lambda->lambda
@@ -15,20 +15,18 @@
        "output boundary set in curves format",
    'r':reconstruction<-u
        "output piecewise constant reconstruction",
-   f_nb_of_regions<-f_nb_of_regions
-       "final number of regions",
-   f_lambda<-f_lambda
-       "final lambda value",
-   fimage->image_org
-       "original image",
-   boundary<-segct
-       "b/w image of boundary set "
+   f_nb_of_regions<-f_nb_of_regions    "final number of regions",
+   f_lambda<-f_lambda                  "final lambda value",
+   fimage->image_org                   "original image",
+   boundary<-segct                     "b/w image of boundary set "
           };
 */
-/*--- MegaWave2 - Copyright (C) 1994 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v1.3: fixed ambiguous static/non static definitions (LM)
+ v1.4 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
+
 #include <stdio.h>
- 
-/* Include always the MegaWave2 Library */
 #include "mw.h"
 
 
@@ -123,7 +121,22 @@
 MODELE image;           /* Image sous la forme du modele            */
 
 
+/* declare functions */
+
+static float SomGris(),eval_lambda();
+static void LiBordsUnion(),ElimBordeSom(),DegreSommet();
+static void ElimLiReg(),UnionBordCnxe();
+static void Union1Bord(),Union2Bords();
+static void InitPixel(),RegCanalInit(),BorCanalInit();
+static void Repointer(),ElimBordeReg(),RegMerge();
+static LI_PIXELSPTR LiPixelsUnion();
+static REGIONPTR RegAdjD(),RegAdjB();
+static short TraitHVmono();
+
+
+
 /* Channel initilization functions */
+
 
 
 void RegCanalInit(image_org,i,j,canal)
@@ -132,8 +145,6 @@ Fimage image_org;
 unsigned short i,j;
 float *canal;
  {
-  static float SomGris();
-
   canal[0]= (float) image.PAS*image.PAS;
   canal[1]= SomGris(image_org,i,j);
  }
@@ -194,7 +205,6 @@ u_long n;
 {
   u_long m;
   float lam;
-  static float eval_lambda();
   
   lam=eval_lambda(bord);
   while(n>0 && (lam<h_lambda(m=h_up(n)))) {
@@ -215,7 +225,6 @@ BORDPTR bord;
 {
   u_long n,m0,m1;
   float lam;
-  static float eval_lambda();
 
   n=bord_heap(bord);
   lam=eval_lambda(bord);
@@ -320,8 +329,6 @@ Fimage  image_org;     /* On cree huit blocs pour reserver de la memoire      */
   LI_PIXELSPTR    block_lipix;              /* Espace pour liste de pixels    */
   HEAPTR          block_heap;               /* Espace pour heapstack          */
   float *         block_data;               /* Espace pour les canaux         */
-
-  static void InitPixel(),RegCanalInit(),BorCanalInit();
 
 
   printf("\nInitialization\n");
@@ -528,7 +535,6 @@ BORDPTR bordcom;                  /* memoire de reg                          */
 {
   unsigned short i;
   BORDCONNEXEPTR cnxeptr;
-  static void LiBordsUnion(),ElimBordeSom(),DegreSommet(),ElimLiReg(),UnionBordCnxe();
 
 
   for (i=0;i<image.NC_REG;i++)      reg->canal[i] += regvois->canal[i];
@@ -740,7 +746,6 @@ SOMMETPTR som;                   /* Suivant les cas on procede a la suite    */
 {
   unsigned short degre;
   LI_BORDSPTR li;
-  static void Union1Bord(),Union2Bords();
 
   degre=0;
   for(li=som->Lbords;li!=NULL;li=li->suiv) degre++;
@@ -755,7 +760,6 @@ SOMMETPTR som;                     /*  cnxes. d'un meme bord on reunit ces   */
 {                                  /*  parties connexes                      */
   BORDPTR bord;
   BORDCONNEXEPTR bcnxe,bcnxe1,bcnxe2;
-  static LI_PIXELSPTR LiPixelsUnion();
   unsigned short compteur;
 
   bord=som->Lbords->bord;
@@ -800,12 +804,10 @@ SOMMETPTR som;                     /*  on reunit ces bords en un bord unique */
 {
   char i;
   short dir_bcnxe1,dir_bcnxe2;
-  static void Repointer(),ElimBordeReg();
   SOMMETPTR sa_old;
   BORDPTR bord1,bord2,bord;
   BORDCONNEXEPTR bcnxe1,bcnxe2,bcnxe;
   LI_BORDSPTR li;
-  static LI_PIXELSPTR LiPixelsUnion();
   LI_PIXELSPTR lab_old;
 
   bord1=som->Lbords->bord;
@@ -903,7 +905,6 @@ void UnionBordCnxe(reg)  /* Reunit les bords de reg,qui font frontiere a une */
 REGIONPTR reg;           /*  meme region voisine,                            */
 {                        /*  on obtient le comp. connexes d'un bord          */
   short i,dir_bord2;
-  static void Repointer();
   SOMMETPTR som;
   LI_PIXELSPTR lpix;
   LI_BORDSPTR lbor1,lbor2,lbor3,lbor;
@@ -1057,7 +1058,6 @@ segment()
 {
   float lam;
   BORDPTR bord;
-  static void RegMerge();
 
   lam=h_lambda(h_root);   /* get the lowest lambda value */
   image.lambda=lam;
@@ -1159,7 +1159,7 @@ Cimage boundary;          /* Balayage de l'image gauche/droite et haut/bas   */
 Fimage u;                 /* Determine s'il ya un bord ou non                */
 {                         /* Si oui on change de region, dans les deux cas   */
   REGIONPTR regact,regtop;/*on dessine en utilisant la fonction correspondant*/
-  static REGIONPTR RegAdjD(),RegAdjB();           /* a la region actuelle.   */
+                          /* a la region actuelle.   */
   short i,j,nrows=boundary->nrow,ncols=boundary->ncol;
 
   regtop=image.regpixel0_0;
@@ -1254,7 +1254,6 @@ short i,j;
 void BlackBound(whitesheet)
 Cimage whitesheet;
 {
-  static short TraitHVmono();
   short a0,b0,a1,b1,dx,dy;
   REGIONPTR regptr;
   LI_BORDSPTR libptr;

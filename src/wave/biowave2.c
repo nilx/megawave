@@ -1,39 +1,27 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {biowave2};
-version = {"1.4"};
+version = {"1.5"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Computes the biorthogonal wavelet transform of an image"};
 usage = {
-'r':[NLevel=1]->NumRec [1,20]
-	"Number of levels (default 1)", 
-'h':HaarNLevel->Haar
-	"Continue decomposition with Haar filter until level HaarNLevel",
-'e':[EdgeMode=2]->Edge [0,2]
-	"Edge processing mode (0/1/2, default 2)", 
-'n':[FilterNorm=0]->FilterNorm [0,2]
-	"Normalization mode for filter bank (0/1/2, default 0)", 
-Image->Image
-	"Input image (fimage)", 
-WavTrans<-Output
-	"Output wavelet transform of Image (wtrans2d)", 
-ImpulseResponse1->Ri1
-	"Impulse response of filter 1 (fsignal)", 
-ImpulseResponse2->Ri2
-	"Impulse response of filter 2 (fsignal)"
+ 'r':[NLevel=1]->NumRec [1,20]	"Number of levels", 
+ 'h':HaarNLevel->Haar            "Continue decomposition with Haar filter until level HaarNLevel",
+ 'e':[EdgeMode=2]->Edge [0,2]	"Edge processing mode", 
+ 'n':[FilterNorm=0]->FilterNorm [0,2]  "Normalization mode for filter bank", 
+ Image->Image          "Input image (fimage)", 
+ WavTrans<-Output      "Output wavelet transform of Image (wtrans2d)", 
+ ImpulseResponse1->Ri1 "Impulse response of filter 1 (fsignal)", 
+ ImpulseResponse2->Ri2 "Impulse response of filter 2 (fsignal)"
 	};
- */
+*/
 /*-------------------------------------------------------------------------
  v1.4: fixed bug with default number of levels (L.Moisan)
+ v1.5 (04/2007): simplified header (LM)
 -------------------------------------------------------------------------*/
-
-/*--- Include files UNIX C ---*/
 
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
-
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

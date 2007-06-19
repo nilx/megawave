@@ -1,11 +1,11 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {drawocclusion};
-version = {"1.21"};
+version = {"1.22"};
 author = {"Simon Masnou"};
 function = {"Interactive creation of occlusions on an image"};
 usage = {
-   'g':[gray=255]->gray         "Occlusions gray level in the occluded image (default: 255)",
+   'g':[gray=255]->gray         "Occlusions gray level in the occluded image",
    'h':hole_image<-hole_image   "Occluded image",
    'z':zoom->zoom     "zoom factor for image display (even integer)",
    cimage->image      "Input image",
@@ -15,6 +15,7 @@ usage = {
 */
 /*----------------------------------------------------------------------
  v1.21: revision, fixed mw_delete_point_curve and czoom bugs (S.Masnou)
+ v1.22 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 

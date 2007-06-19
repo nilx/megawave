@@ -2,16 +2,20 @@
 /* mwcommand
  name = {prolate};
  author = {"Lionel Moisan"};
- version = {"1.1"};
+ version = {"1.3"};
  function = {"Create a prolate kernel"};
  usage = {
-   'n':[n=256]->m  "image size (power of 2, default 256)",
+   'n':[n=256]->m  "image size",
    s->s            "size of kernel in spatial domain (odd, e.g. 3)",
    d->d            "relative diameter of kernel in Fourier domain (0<d<=1)",
-   out<-out        "resulting kernel (sxs Fimage)"
+   ker<-ker        "output resulting kernel (sxs Fimage)",
+   e<-prolate      "fraction of L^2 energy kept in Fourier domain (output)"
 };
 */
-/*--------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------
+ v1.2 : added energy output (L.Moisan)
+ v1.3 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -19,10 +23,10 @@
 
 extern void fft2d();
 
-Fimage prolate(s,d,m,out)
+float prolate(s,d,m,ker)
      int s;
      float d;
-     Fimage out;
+     Fimage ker;
      int *m;
 {
   Fimage re,im,tmp;
@@ -36,8 +40,8 @@ Fimage prolate(s,d,m,out)
   tmp = mw_change_fimage(NULL,n,n);
   re = mw_new_fimage();
   im = mw_new_fimage();
-  out = mw_change_fimage(out,s,s);
-  mw_clear_fimage(out,1./(float)s);
+  ker = mw_change_fimage(ker,s,s);
+  mw_clear_fimage(ker,1./(float)s);
 
   /* MAIN LOOP */
   i = 0;
@@ -46,7 +50,7 @@ Fimage prolate(s,d,m,out)
     /* copy kernel */
     mw_clear_fimage(tmp,0.);
     for (x=s;x--;) for (y=s;y--;)
-      tmp->gray[((y-s/2+n)%n)*n+(x-s/2+n)%n] = out->gray[y*s+x];
+      tmp->gray[((y-s/2+n)%n)*n+(x-s/2+n)%n] = ker->gray[y*s+x];
     
     /* take Fourier Transform */
     fft2d(tmp,NULL,re,im,0);
@@ -69,30 +73,30 @@ Fimage prolate(s,d,m,out)
     norm = 0.;
     for (x=s;x--;) for (y=s;y--;) {
       v = tmp->gray[((y-s/2+n)%n)*n+(x-s/2+n)%n];
-      out->gray[y*s+x] = v;
+      ker->gray[y*s+x] = v;
       norm += (double)v*(double)v;
     }
     norm = sqrt(norm);
-    for (x=s*s;x--;) out->gray[x] /= (float)norm;
+    for (x=s*s;x--;) ker->gray[x] /= (float)norm;
 
     cont = (i==0 || (i<=100 && energy>last_energy*1.00001));
     last_energy = energy;
     i++;
   } while (cont);
 
-  printf("%d iterations, energy = %f\n",i,(float)energy);
+  mwdebug("%d iterations, energy = %f\n",i,(float)energy);
 
   /* normalize total weight */
   norm = 0.;
   for (x=s*s;x--;) {
-    v = out->gray[x];
+    v = ker->gray[x];
     if (v>0) norm += (double)v; else  norm -= (double)v;
   }
-  for (x=s*s;x--;) out->gray[x] /= (float)norm;
+  for (x=s*s;x--;) ker->gray[x] /= (float)norm;
 
   mw_delete_fimage(im);
   mw_delete_fimage(re);
   mw_delete_fimage(tmp);
 
-  return(out);
+  return((float)energy);
 }

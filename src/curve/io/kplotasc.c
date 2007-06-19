@@ -1,11 +1,11 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {kplotasc};
    version = {"1.0"};
    author = {"Jacques Froment"};
    function = {"Print the geometry of a curve"};
    usage = {            
-    in->cv    "input Curve"
+      in->cv    "input Curve"
    };
 */
 
@@ -18,7 +18,7 @@
 
 void kplotasc(cv)
 
-Curve cv;
+     Curve cv;
 
 {
   Point_curve point;
@@ -36,20 +36,20 @@ Curve cv;
       if (point->x > maxx) maxx = point->x;
       if (point->y > maxy) maxy = point->y;
     }
-
+  
   bx = maxx-minx+1;
   if (bx > MAXX) 
     mwerror(FATAL,1,"This curve cannot be printed : too many points (%d) in X direction\n",bx);
-
+  
   by = maxy-miny+1;
   if (by > MAXY) 
     mwerror(FATAL,1,"This curve cannot be printed : too many points (%d) in Y direction\n",by);
-
+  
   for (x=0;x<bx;x++) for (y=0;y<by;y++) Tab[x][y] = ' ';
   for(point = cv->first, n=0; point;  point = point->next, n++)
     {
       if (n == 10) n=0;
-
+      
       if (point == cv->first)
 	{
 	  printf("First point * in (%d,%d)\n",point->x,point->y);
@@ -70,15 +70,15 @@ Curve cv;
 	  else
 	    Tab[point->x - minx][point->y - miny] = '0'+n;
     }
-
+  
   if (intersect>0)
     printf("This curve intersects itself %d times (point(s) marked by 'x')\n",
 	   intersect);
   for (y=0;y<by;y++)
-      {
-	for (x=0;x<bx;x++) printf("%c",Tab[x][y]);
-	printf("\n");
-      }
+    {
+      for (x=0;x<bx;x++) printf("%c",Tab[x][y]);
+      printf("\n");
+    }
 }
 
 

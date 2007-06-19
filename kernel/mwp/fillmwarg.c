@@ -6,11 +6,17 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-/* Last changes :
-   V 1.01 : (JF 15/07/2002) more explicit error message when name is missing
+/* Fill the internal MegaWave2 data 
+   V 1.02
+
+   Main changes :
+   V 1.01 (JF 15/07/2002) : more explicit error message when name is missing
+   V 1.02 (JF 23/02/2006) : 
+     - change in mw_bzero() and memset() calls to conform to Linux 2.6.12 gcc version 4.0.2 
+     - Forward declaration of function iotype() removed from local functions.
 */
 
-/*----- Fill the internal MegaWave2 data ------*/
+
 
 
 /* Fichiers d'include */
@@ -18,6 +24,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #include <limits.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
 #ifdef __STDC__
 
@@ -75,13 +82,7 @@ static                set_file_default();
 static                set_interval();
 #endif
 
-/* bzero is a BSD function; use memset on System V */
-
-#if defined(HPUX) || defined(SunOS)
 #define mw_bzero(s,n)  memset((s),0,(n))
-#else
-#define mw_bzero(s,n)  bzero((s),(n))
-#endif
 
 #ifdef __STDC__
 static void set_desc(char *s, struct Ioinfo info, Desc *d, Node *n)
@@ -181,9 +182,7 @@ Node          * n;
         PRDBG("set_desc : FLAGARG, set default\n");
 #endif
         d->v.p.d = MALLOC_PARAMVALUE;
-/* Ajout JF 21/11/94 */
-        mw_bzero((char *) d->v.p.d, sizeof(Paramvalue));
-/*------------------*/
+        mw_bzero((void *) d->v.p.d, sizeof(Paramvalue));
         switch (d->v.p.t) {
           case QSTRING_T :
             d->v.p.d->q = NULL;
@@ -316,6 +315,12 @@ Node          * n;
 
 
 #ifdef __STDC__
+static struct Ioinfo *iotype(char *, Node *, Node *, short);
+#else
+static struct Ioinfo *iotype();
+#endif
+
+#ifdef __STDC__
 static void set_option(Node *arg, Mwarg *e)
 #else
 static      set_option(arg, e)
@@ -325,11 +330,6 @@ Mwarg *e;
 {
   Symbol *s;
   struct Ioinfo *info;
-#ifdef __STDC__
-  static struct Ioinfo *iotype(char *, Node *, Node *, short);
-#else
-  static struct Ioinfo *iotype();
-#endif
 
 #ifdef DEBUG
    PRDBG("set_option(0x%X, 0x%X)\n", arg, e);
@@ -413,11 +413,6 @@ Mwarg *e;
 {
   Symbol *s;
   struct Ioinfo *info;
-#ifdef __STDC__
-  static struct Ioinfo *iotype(char *, Node *, Node *, short);
-#else
-  static struct Ioinfo *iotype();
-#endif
 
 #ifdef DEBUG
    PRDBG("set_flag(0x%X, 0x%X)\n", arg, e);
@@ -475,11 +470,6 @@ Mwarg *e;
 {
   Symbol *s;
   struct Ioinfo *info;
-#ifdef __STDC__
-  static struct Ioinfo *iotype(char *, Node *, Node *, short);
-#else
-  static struct Ioinfo *iotype();
-#endif
 #ifdef DEBUG
    PRDBG("set_neededarg(0x%x, 0x%x)\n", arg, e);
 #endif
@@ -593,11 +583,6 @@ Mwarg *e;
 {
   Symbol *s;
   struct Ioinfo *info;
-#ifdef __STDC__
-  static struct Ioinfo *iotype(char *, Node *, Node *, short);
-#else
-  static struct Ioinfo *iotype();
-#endif
 #ifdef DEBUG
    PRDBG("set_optarg(0x%X, 0x%X)\n", arg, e);
 #endif
@@ -693,11 +678,7 @@ Mwarg *e;
 {
   Symbol *s;
   struct Ioinfo *info;
-#ifdef __STDC__
-  static struct Ioinfo *iotype(char *, Node *, Node *, short);
-#else
-  static struct Ioinfo *iotype();
-#endif
+
   /* Argtype = VARARG */
   e->t = VARARG;
   /* Name and description of argument */
@@ -792,11 +773,7 @@ Mwarg *e;
 {
   Symbol *s;
   struct Ioinfo *info;
-#ifdef __STDC__
-  static struct Ioinfo *iotype(char *, Node *, Node *, short);
-#else
-  static struct Ioinfo *iotype();
-#endif
+
   /* Argtype = NOTUSEDARG */
   e->t = NOTUSEDARG;
   /* Name and description of argument */
@@ -882,9 +859,7 @@ Header *poptarglist;
   Node *name;
 
   e = (Mwarg *)malloc(sizeof(Mwarg));
-/* Ajout JF 21/11/94 */
-  mw_bzero((char*)e, sizeof(Mwarg));
-/*------------------*/
+  mw_bzero((void *)e, sizeof(Mwarg));
   switch(n->name) {
     case RARROW :
     case LARROW :
@@ -1047,7 +1022,7 @@ Header *poptionlist, *pneededarglist, *pvararglist, *poptarglist, *pnotusedargli
 #ifdef DEBUG
       PRDBG("trarg : case %M\n", arg->name);
 #endif
-      e = (Mwarg *)malloc(sizeof(Mwarg)); mw_bzero((char*)e, sizeof(Mwarg));
+      e = (Mwarg *)malloc(sizeof(Mwarg)); mw_bzero((void *)e, sizeof(Mwarg));
       e->lineno = 0;
       e->filein = "";
       e->iodesc = NULL;
@@ -1068,9 +1043,7 @@ Header *poptionlist, *pneededarglist, *pvararglist, *poptarglist, *pnotusedargli
       PRDBG("trarg : case %M\n", arg->name);
 #endif
       e = (Mwarg *)malloc(sizeof(Mwarg));
-/* Ajout JF 21/11/94 */
-  mw_bzero((char*)e, sizeof(Mwarg));
-/*------------------*/
+      mw_bzero((void*)e, sizeof(Mwarg));
       e->lineno = 0;
       e->filein = "";
       e->iodesc = NULL;
@@ -1121,9 +1094,7 @@ Header *poptionlist, *pneededarglist, *pvararglist, *poptarglist, *pnotusedargli
       PRDBG("trarg : case %M\n", arg->name);
 #endif
       e = (Mwarg *)malloc(sizeof(Mwarg));
-/* Ajout JF 21/11/94 */
-  mw_bzero((char*)e, sizeof(Mwarg));
-/*------------------*/
+      mw_bzero((void*)e, sizeof(Mwarg));
       e->lineno = 0;
       e->filein = "";
       e->iodesc = NULL;
@@ -1321,9 +1292,7 @@ short state;
     ret = NULL;
   else {
     if ((ret = MALLOC_IOINFO) != NULL) {
-/* Ajout JF 21/11/94 */
-        mw_bzero((char *) ret, sizeof(struct Ioinfo));
-/*------------------*/
+      mw_bzero((void *) ret, sizeof(struct Ioinfo));
       switch (state) {
         case  1 :
 #ifdef DEBUG
@@ -2213,9 +2182,7 @@ Paramtype *p;
                                                                (unsigned long)p);
 #endif
   if ((p->d = MALLOC_PARAMVALUE) != NULL) {
-/* Ajout JF 21/11/94 */
-        mw_bzero((char *) p->d, sizeof(Paramvalue));
-/*------------------*/
+        mw_bzero((void *) p->d, sizeof(Paramvalue));
     if (in_range(p->t, n, FALSE, NULL) != NULL)
       set_scalar_value(s, p->t, n, p->d);
     else {
@@ -2247,9 +2214,7 @@ Paramtype *p;
 {
   if ((p->i = MALLOC_INTERVAL) != NULL) 
     {
-/* Ajout JF 21/11/94 */
-        mw_bzero((char *) p->i, sizeof(struct Interval));
-/*------------------*/
+      mw_bzero((void *) p->i, sizeof(struct Interval));
     switch (n->name) {
       case CLOSED_INTERVAL :
         p->i->t = CLOSED;

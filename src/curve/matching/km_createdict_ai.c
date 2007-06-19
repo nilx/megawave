@@ -1,16 +1,19 @@
-/*----------------------------MegaWave2 module----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {km_createdict_ai};
-version = {"1.0"};
+version = {"1.1"};
 author = {"Jose-Luis Lisani, Pablo Muse, Frederic Sur"};
 function = {"Encode a list of curves into an affine-invariant dictionnary"};
 usage = {
-   'F':[FNorm=2.0]->FNorm    "length factor - default 2.0",
-   'N':[NNorm=9]->NNorm      "number of points per code - default 9",
+   'F':[FNorm=2.0]->FNorm    "length factor",
+   'N':[NNorm=9]->NNorm      "number of points per code",
    list_curves->list_curves  "input list of curves (Flists)",
    dict<-dict                "output dictionary (Flists)"
         };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
 #include<math.h>

@@ -1,14 +1,14 @@
-/*------------------------- MegaWave2 Module -------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {ll_remove};
-version = {"1.1"};
-author = {"Jacques Froment"};
-function = {"Remove small level lines in a mimage"};
-usage = {
-  'l':[L=10]->L "Minimal level lines length",
-  input->mimage  "Original mimage",
-  output<-ll_remove "Output mimage with missing level lines"
-  };
+ name = {ll_remove};
+ version = {"1.1"};
+ author = {"Jacques Froment"};
+ function = {"Remove small level lines in a mimage"};
+ usage = {
+   'l':[L=10]->L      "Minimal level lines length",
+   input->mimage      "Original mimage",
+   output<-ll_remove  "Output mimage with missing level lines"
+};
 */
 /*----------------------------------------------------------------------
  v1.1: upgrade for new kernel (L.Moisan)
@@ -18,10 +18,8 @@ usage = {
 #include "mw.h"
 
 void remove_ll(mimage,ll)
-
-Mimage mimage;
-Morpho_line ll;
-
+     Mimage mimage;
+     Morpho_line ll;
 {
   Morpho_line ll0,ll1;
 
@@ -40,9 +38,8 @@ Morpho_line ll;
 }
 
 Mimage ll_remove(mimage,L)
-Mimage mimage;
-int *L;
-
+     Mimage mimage;
+     int *L;
 {
   Morpho_line ll,ll_next;
   unsigned long N,Nrm;

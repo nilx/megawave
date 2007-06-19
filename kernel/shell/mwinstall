@@ -3,10 +3,10 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Install a new MegaWave2 full version (adm only)";
 _Prog="`basename $0`"
-_Vers="1.23"
-_Date="1999-2003"
+_Vers="1.27"
+_Date="1999-2006"
 _Auth="Jacques Froment";
-_Usage="[-static] [-public || -public=private] [-clear] [-debug] [-level l] mw2distribution"
+_Usage="[-static] [-public || -public=private] [-clear] [-debug] [-level l] [-traditional] mw2distribution"
 #-----------------------------------------------------------------------------
 # This file is part of the MegaWave2 kernel.
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -29,6 +29,8 @@ _Usage="[-static] [-public || -public=private] [-clear] [-debug] [-level l] mw2d
 #          option may be required to perform the action you expect.
 # -debug : Produce debugging information (default : optimize the code).
 # -level l : Install levels greater or equal than l only.
+# -traditional : Compile modules using the 'traditional' preprocessor mwp (by default, 
+#          it uses the new 'light' preprocessor if possible).
 #-----------------------------------------------------------------------------
 
 ChooseTMP()
@@ -125,6 +127,7 @@ kernelopt=""
 ChooseTMP
 cmw2trace=${TMP}/cmw2_all$$.trace
 cmw2opt="-2p -dep -force -v $cmw2trace"
+preferredmwp="mwplight"
 
 setenvopt="-privateonly"
 l=1
@@ -163,6 +166,11 @@ do
 	  "-level") l=$2
 		    shift; shift
 		    ;;
+
+	  "-traditional") preferredmwp="mwp"
+		    shift
+		    ;;
+
 	  
            -*)      . .mw2_help_lg_com
                 ;;
@@ -363,14 +371,31 @@ if [ $l -le $level ]; then
  Echo "***** Level $level : Compile the modules *****"
  Echo "*****************************************"
 
-# Check if cmw2 works well. If not, output error message from cmw2
+# Check if cmw2 works well and using which preprocessor. If not, output error message from cmw2
 # so the user can guess what is happening.
  
  mwcmwcheck
- if [ $? -ne 0 ]; then
+ res=$?
+ if [ $res -eq 1 ] ||  [ $res -eq 2 ]; then
    Echo "***** Modules cannot be compiled ! It means something went wrong during the kernel installation stage..." 
    Abort
  fi
+ if [ $res -eq 3 ]; then
+  if [ "$preferredmwp" != "mwplight" ]; then
+   Echo "***** Modules cannot be compiled using the 'traditional' preprocessor ! Switching to the 'light' one..." 
+   preferredmwp="mwplight"
+  fi
+ fi
+ if [ $res -eq 4 ]; then
+  if [ "$preferredmwp" != "mwp" ]; then
+   Echo "***** Modules cannot be compiled using the 'light' preprocessor ! Switching to the 'traditional' one..." 
+   preferredmwp="mwp"
+  fi
+ fi 
+ if [ "$preferredmwp" = "mwp" ]; then
+  cmw2opt="${cmw2opt} -traditional"
+ fi
+
 
 # Now, compile all modules.
 
@@ -605,7 +630,7 @@ Echo " "
 trap "Echo '***** Checking of modules aborted'; exit 1" 2 3
 chk=`mwwhere -bin Checkmodules`
 if [ "$chk" != "" ]; then
-  Answer "***** Do you want to check the module library" "N"
+  Answer "***** Do you want to check the module library" "Y"
   if [ "$ans" = "Y" ]; then
     MW_CHECK_HIDDEN=1
     export MW_CHECK_HIDDEN

@@ -1,27 +1,23 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {fmse};
-author = {"Jean-Pierre D'Ales, Jacques Froment"};
-function = {"Computes the mean square difference between two fimages"};
-version = {"1.03"};
-usage = {
-'n'->Norm     "flag to normalize the images",
-'p'->PsnrFlg  "flag to compute PSNR with max_Image1 - min_Image1 = 255",
-Image1->Img1  "input image #1", 
-Image2->Img2  "input image #2",
-SNR<-SNR      "signal to noise ratio / `Image1` (SNR)",
-PSNR<-PSNR    "peak signal to noise ratio / `Image1` (PSNR)",
-MSE<-MSE      "mean square error between Image1 and Image2 (MSE)",
-MRD<-MRD      "maximal relative difference (MRD)"
-
+ name = {fmse};
+ author = {"Jean-Pierre D'Ales, Jacques Froment"};
+ function = {"Computes the mean square difference between two fimages"};
+ version = {"1.03"};
+ usage = {
+   'n'->Norm     "flag to normalize the images",
+   'p'->PsnrFlg  "flag to compute PSNR with max_Image1 - min_Image1 = 255",
+   Image1->Img1  "input image #1", 
+   Image2->Img2  "input image #2",
+   SNR<-SNR      "signal to noise ratio / `Image1` (SNR)",
+   PSNR<-PSNR    "peak signal to noise ratio / `Image1` (PSNR)",
+   MSE<-MSE      "mean square error between Image1 and Image2 (MSE)",
+   MRD<-MRD      "maximal relative difference (MRD)"
 };
- */
+*/
 
-/*--- Fichiers inclus UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Bibliotheque megawave2 ---*/
 #include  "mw.h"
 
 void

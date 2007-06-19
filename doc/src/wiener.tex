@@ -1,17 +1,34 @@
 This module implements the classical Wiener filter\index{filter!Wiener} 
 (in its simplest version),
 that aims to restore an image $in$ by an image $out$ that minimizes the energy
-$$E(out) = \int |\nabla(out)|^2 +  w \int (K \star out -in)^2.$$
+$$E(out) = \int (K \star out -in)^2 + lambda \int |\nabla(out)|^2.$$
+\index{denoising!wiener}
+\index{deblurring!wiener}
 The solution is obtained in Fourier domain with
 $$\widehat{out}(\xi) = \widehat{in}(\xi) \cdot
-\frac{w K(\xi)}{w K^2(\xi) + \pi^2|\xi^2|},$$
-where $\xi$ is normalized into $[-\frac 12,\frac 12]^2$.
+\frac{\hat K^*(\xi)}{|\hat K|^2(\xi) + lambda\cdot \pi^2|\xi^2|},$$
+where $\xi$ is normalized into $[-\frac 12,\frac 12]^2$ and
+$\hat K$ is the Fourier transform of $K$.
+\index{Fourier Transform}
+If $lambda=0$, then the convention $\widehat{out}(\xi)=0$ is chosen
+when $\hat K(\xi)=0$ (weak inverse).
+
+\medskip
+
 The blur kernel $K$ can be 
 \begin{itemize}
-\item specified directly in Fourier domain as a Fimage (\verb+-K+ option), 
+\item specified directly in Fourier domain as a Fimage
+($\hat K = kernel$ with the \verb+-K+ option), 
 \item specified radially in Fourier domain as a Fsignal (\verb+-R+ option), yielding
-$$K(\xi) = R(|\xi|),$$
+$$\hat K(\xi) = rad(|\xi|),$$
 \item chosen Gaussian (\verb+-g+ option), yielding
-$$K(\xi) = e^{-2g^2\pi^2|\xi|^2},$$ 
+$$\hat K(\xi) = e^{-2g^2\pi^2|\xi|^2},$$ 
 \item or left to identity (default).
 \end{itemize}
+
+\medskip
+
+The \verb+-w+ option is no longer valid, due to the convention change on
+$lambda$ (the weight now applies to the regularization term and not any more
+to the fidelity term). Compatibility with this previous option is ensured
+by replacing \verb+-w+ $w$ by \verb+-W+ $lambda$ with $lambda=1/w$.

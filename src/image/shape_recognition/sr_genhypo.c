@@ -1,15 +1,15 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {sr_genhypo};
-   version = {"1.2"};
-   author = {"Thierry Cohignac, Lionel Moisan"};
-   function = {"Produce hypotheses for shape recognition"};
-   usage = {
-	'o':hypo_list<-hypo_list   "hypotheses (Fimage nx1)",
-        sg -> sg                   "input signature (Fimage)",
-	img -> img                 "input image of the shape to recognize",
-	out <- sr_genhypo	   "normalized Shape"
-   };
+ name = {sr_genhypo};
+ version = {"1.2"};
+ author = {"Thierry Cohignac, Lionel Moisan"};
+ function = {"Produce hypotheses for shape recognition"};
+ usage = {
+    'o':hypo_list<-hypo_list   "hypotheses (Fimage nx1)",
+    sg -> sg                   "input signature (Fimage)",
+    img -> img                 "input image of the shape to recognize",
+    out <- sr_genhypo	       "normalized Shape"
+};
 */
 
 #include <stdio.h>

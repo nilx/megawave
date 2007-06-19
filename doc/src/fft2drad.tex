@@ -1,7 +1,12 @@
-This module computes $f(r)$, the average value of $|\hat u(\xi)|$ when
-$|\xi|=r$. The discretization of the Fsignal $f$ can be set manually
+This module computes $f(r)$, the modulus of the Fast Fourier Transform $v$
+\index{Fourier Transform}
+of a complex image $u$, averaged over the frequency direction $\theta$, that 
+is
+$$f(r) = \frac 1{2\pi}\int_0^{2\pi} |v(r e^{i\theta})|\,d\theta.$$
+The discretization of the Fsignal $f$ can be set manually
 with the \verb+-s+ option.
-Note that $\xi$ is normalized in cycles per pixel, so that
+Note that the frequency $\xi=r e^{i\theta}$ 
+is normalized in cycles per pixel, so that
 $\hat u$ is defined on $[-1/2,1/2]^2$ even for non-square images.
 Since $f$ decreases very quickly, it is often better to take
 its logarithm (base 10) with the \verb+-l+ option.

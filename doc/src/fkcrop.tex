@@ -1,8 +1,9 @@
-This modules crops a set of Fcurves with a rectangular box. All connected
+This modules crops\index{crop!a curve} 
+a set of Fcurves with a rectangular box. All connected
 components of the intersection of the box with the input curves are
 stored in a Fcurves structure (which may be NULL). 
 The intersection points at the border
 of the box are not computed: only the points of the
 input curves lying inside the box are kept.
-The \verb+-b+ option produces an additional Fcurve that represents 
+The \verb+-b+ option produces an additional Fcurve ($box$) that represents 
 the croping box given as an input to the module.

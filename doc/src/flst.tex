@@ -1,6 +1,8 @@
-The Fast Level Sets Transform is a decomposition of an image
+The Fast Level Sets Transform \index{Fast Level Set Transform} 
+\index{FLST|see{Fast Level Set Transform}} is a decomposition of an image
 (an \texttt{Fimage} or a \texttt{Cimage}) into ``shapes'', based on connected
 components of level sets and on level lines 
+\index{interpolation!nearest neighbor}
 (see~\cite{monasse.guichard:fast}\cite{monasse.guichard:scale-space}\cite{ballester.caselles.ea:tree}). 
 As the name indicates, it is a fast algorithm, of complexity $O(N\log N)$
 where $N$ is the number of pixels, but the complexity depends
@@ -142,6 +144,7 @@ output structure is also reduced, so as computation time. An extrema killer is
 applied only in the case where \texttt{pMinArea} is a non \texttt{NULL}
 pointer and the pointed value is strictly greater than 1. In this case, only
 shapes of area at least \texttt{*pMinArea} are put in the tree.
+\index{filter!grain}
 
 Some very simple manipulations of the tree structure are made in the modules
 \texttt{fgrain} and \texttt{ll\_sharp}.

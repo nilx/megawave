@@ -1,26 +1,25 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {llview};
-  version = {"2.2"};
-  author = {"Lionel Moisan"};
-  function = {"Interactive visualization of level lines"};
-  usage = {
-
-  'z':[z=2.0]->z   "zoom factor for display (default : 2.0)",
-  'l':[l=100]->l   "current level (default 100)",
-  's':[s=25]->s    "level step (default 25)",
-  'd':[d=2]->d     "display mode (default 2)",
-  'i':[i=1]->i     "interpolation mode (default 1)",
-  'b':[b=0]->b     "background mode (default 0)",
-  'o':out<-out     "to save the last view as a Ccimage",
-  'n'->n           "no display (useful with -o option)",
-  in->in           "input (Fimage)"
-
-          };
+ name = {llview};
+ version = {"2.3"};
+ author = {"Lionel Moisan"};
+ function = {"Interactive visualization of level lines"};
+ usage = {
+   'z':[z=2.]->z    "zoom factor for display",
+   'l':[l=100]->l   "current level",
+   's':[s=25]->s    "level step",
+   'd':[d=2]->d     "display mode",
+   'i':[i=1]->i     "interpolation mode",
+   'b':[b=0]->b     "background mode",
+   'o':out<-out     "to save the last view as a Ccimage",
+   'n'->n           "no display (useful with -o option)",
+   in->in           "input (Fimage)"
+};
 */
 /*----------------------------------------------------------------------
  v2.1: new interactive version (L.Moisan)
  v2.2: minor modifications (L.Moisan)
+ v2.3 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <math.h>
@@ -52,9 +51,9 @@ float X1,Y1,X2,Y2;  /* location of displayed subimage */
 
 
 void faded_fimage_to_ccimage(in,out,lambda)
-Fimage in;     
-Ccimage out;
-float lambda;
+     Fimage in;     
+     Ccimage out;
+     float lambda;
 {
   int adr;
   float c;
@@ -68,9 +67,9 @@ float lambda;
 }
 		  
 void my_llmap(in,out,ofs,step)
-Fimage in;
-Ccimage out;
-float ofs,step;
+     Fimage in;
+     Ccimage out;
+     float ofs,step;
 {
   float bg,v,w,a,NX,NY;
   int x,y,adr,ok,order;
@@ -143,8 +142,8 @@ float ofs,step;
 
 
 int redisplay(wt,n)
-Wp_toggle wt;
-short n;
+     Wp_toggle wt;
+     short n;
 {
   my_llmap(ref,image,(float)b4.value,(float)b5.value);
   WLoadBitMapColorImage(win2,image->red,image->green,image->blue,nx,ny);
@@ -154,8 +153,8 @@ short n;
 }
 
 int grey_level(wi,n)
-Wp_int wi;
-short n;
+     Wp_int wi;
+     short n;
 {
   wi->value = (wi->value+256)%256;
   redisplay(NULL,0);
@@ -163,8 +162,8 @@ short n;
 }
 
 int step(wi,n)
-Wp_int wi;
-short n;
+     Wp_int wi;
+     short n;
 {
   if (wi->value<1) wi->value = 1;
   if (wi->value>255) wi->value = 255;
@@ -173,8 +172,8 @@ short n;
 }
 
 int quit(wt,n)
-Wp_toggle wt;
-short n;
+     Wp_toggle wt;
+     short n;
 {
   wp->state = -1;
   return(wp->state);
@@ -199,8 +198,8 @@ void help()
 
 /* handle display events */
 int win2_notify(window,param)
-Wframe *window;
-void *param;
+     Wframe *window;
+     void *param;
 {
   int event,ret,x,y,button_mask;
   float nc,nd;
@@ -373,11 +372,11 @@ void init_buttons()
 /*------------------------------ MAIN MODULE ------------------------------*/
 
 void llview(in,z,s,l,d,i,b,out,n)
-Fimage in;
-float *z;
-int *s,*l,*d,*i,*b;
-Ccimage *out;
-char *n;
+     Fimage in;
+     float *z;
+     int *s,*l,*d,*i,*b;
+     Ccimage *out;
+     char *n;
 {
   /* Initialization */
   nx = (int)(*z*(float)in->ncol);
@@ -386,6 +385,7 @@ char *n;
   zoom = 0; ref = in;
   image = mw_change_ccimage(NULL,ny,nx);
   interpolate = mw_change_fimage(NULL,ny,nx);
+  if (!image || !interpolate) mwerror(FATAL,1,"Not enough memory\n");
   b1.button = *d; b2.button = *b; b3.button = *i;
   b4.value = *l; b5.value = *s;
 

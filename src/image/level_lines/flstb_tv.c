@@ -1,26 +1,20 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-  name = {flstb_tv}; 
-  version = {"1.0"}; 
-  author = {"Pascal Monasse"}; 
-  function = {"TV minimization based on bilinear FLST"};
-  usage = { 
-    't': [scale=5] -> pScale 
-               "Scale (default 5)",
-
-    'q': [quantization=1.0] -> pQuantizationLevel 
-               "gray level quantization (default 1)",
-
-    'p': [precision=4] -> pQuantizationCurve 
-               "Curve quantization precision",
-
-    bilinear_tree -> pTree 
-               "The tree of the interpolated image",
-
-    image <- pImage 
-               "The output image"
-    }; 
+ name = {flstb_tv}; 
+ version = {"1.1"}; 
+ author = {"Pascal Monasse"}; 
+ function = {"TV minimization based on bilinear FLST"};
+ usage = { 
+   't':[scale=5]->pScale                     "Scale",
+   'q':[quantization=1.]->pQuantizationLevel "gray level quantization",
+   'p': [precision=4]->pQuantizationCurve    "Curve quantization precision",
+   bilinear_tree -> pTree       "The tree of the interpolated image",
+   image <- pImage              "The output image"
+}; 
 */ 
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <math.h>
 #include <assert.h>
@@ -44,8 +38,8 @@ typedef struct {
 #endif
 
 float perimeter(pCurve, iHeight, iWidth)
-Flist pCurve;
-int iHeight, iWidth;
+     Flist pCurve;
+     int iHeight, iWidth;
 {
   point_t *pPoint, point, pointNext;
   int i;
@@ -90,8 +84,8 @@ int iHeight, iWidth;
 }
 
 float area(pCurve, iHeight, iWidth)
-Flist pCurve;
-int iHeight, iWidth;
+     Flist pCurve;
+     int iHeight, iWidth;
 {
   point_t *pPoint, point, pointNext;
   int i;
@@ -132,11 +126,11 @@ int iHeight, iWidth;
 
 void decrease_tv(tabScales, fQuantizationLevel, iQuantizationCurve, pImage,
 		 pTree, tabtabSaddleValues)
-float *tabScales, fQuantizationLevel;
-int iQuantizationCurve;
-Fimage pImage;
-Shapes pTree;
-float **tabtabSaddleValues;
+     float *tabScales, fQuantizationLevel;
+     int iQuantizationCurve;
+     Fimage pImage;
+     Shapes pTree;
+     float **tabtabSaddleValues;
 {
   Shape pShape;
   Flists pListBoundaries;
@@ -207,10 +201,10 @@ float **tabtabSaddleValues;
 }
 
 void flstb_tv(pScale, pQuantizationLevel, pQuantizationCurve, pTree, pImage)
-float *pScale, *pQuantizationLevel;
-int* pQuantizationCurve;
-Shapes pTree;
-Fimage pImage;
+     float *pScale, *pQuantizationLevel;
+     int* pQuantizationCurve;
+     Shapes pTree;
+     Fimage pImage;
 {
   float* tabScales;
   struct fimage originalImage, imageSaddles;

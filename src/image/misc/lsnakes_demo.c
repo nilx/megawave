@@ -1,18 +1,21 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {lsnakes_demo};
-  version = {"1.0"};
-  author = {"Francoise Dibos, Jacques Froment, Kamal Lakhiari"};
-  function = {"Interactive demo for the Level Set Snakes Model (lsnakes)"};
-  usage = {
-  'n':[Niter=1]->Niter        "number of iterations between frames, default 1",
-  'N':[Nframes=10]->Nframes   "number of output frames, default 10",
-  't':[thre=1.0]->thre        "threshold to binarize mask images, default 1.0",
-  'f':[force=0.000001]->force "force term, default 0.000001",
-  u->u                        "input Cimage",
-  out<-out                    "output Cmovie (optimized contours)"
-  };
+ name = {lsnakes_demo};
+ version = {"1.1"};
+ author = {"Francoise Dibos, Jacques Froment, Kamal Lakhiari"};
+ function = {"Interactive demo for the Level Set Snakes Model (lsnakes)"};
+ usage = {
+   'n':[Niter=1]->Niter         "number of iterations between frames",
+   'N':[Nframes=10]->Nframes    "number of output frames",
+   't':[thre=1.0]->thre         "threshold to binarize mask images",
+   'f':[force=0.000001]->force  "force term",
+   u->u                         "input Cimage",
+   out<-out                     "output Cmovie (optimized contours)"
+};
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"

@@ -1,32 +1,30 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {amle3d_init};
-  version = {"1.0"};
-  author = {"Frederic Cao"};
-  function = {"Compute initial data for the level line image interpolation scheme in the 3d case(AMLE)"};
-  usage = {
-  in->in
+ name = {amle3d_init};
+ version = {"1.0"};
+ author = {"Frederic Cao"};
+ function = {"Compute initial data for the level line image interpolation scheme in the 3d case(AMLE)"};
+ usage = {
+   in->in
          "Input uniformly quantized fmovie",
-  delta->delta
+   delta->delta
          "Width step of the uniform quantization used for the input movie",
-  out<-out
+   out<-out
          "Output fimage as initial data (input) for the AMLE3d model"
-  };
+};
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
 
 #include <stdio.h>
 #include "mw.h"
+
 
 /* Compute the 4 neighbour pixels of the current pixel p              */
 /* When p touches the border of the image, a mirror effect is applied */
 
 void neighbor_4(x,y,xmax,ymax,p,left,right,up,down)
-
-
-register int x,y,xmax,ymax;
-register float *p;
-float **left,**right,**up,**down;
+     register int x,y,xmax,ymax;
+     register float *p;
+     float **left,**right,**up,**down;
 {
   if (x>0)
     {
@@ -90,10 +88,8 @@ float **left,**right,**up,**down;
 }
 
 void amle3d_init(in,delta,out)
-
-Fmovie in,out;
-float delta;
-
+     Fmovie in,out;
+     float delta;
 { 
   Fimage im,ima,imout;
   int NC,NL,x,y;

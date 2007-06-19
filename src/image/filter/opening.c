@@ -1,18 +1,21 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {opening};
-  version = {"2.1"};
+  version = {"2.2"};
   author = {"Lionel Moisan"};
   function = {"opening/closing of a cimage"};
   usage = {
      'i'->i          "if set, a closing is applied instead of an opening",
      's':s->s        "if set, the shape s is taken as structuring element",
-     'r':[r=1.0]->r  "otherwise, a disc of radius r (default 1.0) is used",
-     'n':[n=1]->n    "number of iterations (default: 1)",
+     'r':[r=1.0]->r  "otherwise, a disc of radius r is used",
+     'n':[n=1]->n    "number of iterations",
      in->u           "input image",
      out<-v          "output image"
           };
 */
+/*----------------------------------------------------------------------
+ v2.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"

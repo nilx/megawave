@@ -1,8 +1,8 @@
-/**
- ** genifile
- ** (c)1993-2000 J.Froment - S.Parrino
- ** Version 1.1
- **/
+/* Generate i file
+   Version 1.2
+   Main changes :
+   V1.2 (JF, 23/02/2006) added include <string.h>
+*/
 
 /*~~~~~~~~~~~  This file is part of the MegaWave2 preprocessor ~~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -13,6 +13,8 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include <stdio.h>
+#include <string.h>
+
 #include "bintree.h"
 #include "symbol.h"
 #include "token.h"

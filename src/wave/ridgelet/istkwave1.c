@@ -1,13 +1,13 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
-  name = {istkwave1};
-  version = {"1.0"};
-  author = {"Claire Jonchery, Amandine Robin"};
-  function ={"Reconstruction of a signal from its wavelet coefficients using Starck's algorithm"};
-  usage = {
-np->np "resolution np",
-in->in "decomposition of a signal in wavelets (2N coefficients)",
-out<-out "signal (N elements)"
+ name = {istkwave1};
+ version = {"1.0"};
+ author = {"Claire Jonchery, Amandine Robin"};
+ function ={"Reconstruction of a signal from its wavelet coefficients using Starck's algorithm"};
+ usage = {
+   np->np     "resolution np",
+   in->in     "decomposition of a signal in wavelets (2N coefficients)",
+   out<-out   "signal (N elements)"
 };
 */
 /*----------------------------------------------------------------------

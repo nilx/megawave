@@ -1,17 +1,20 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {frank};
-version = {"1.0"};
-author = {"Lionel Moisan"};
-function = {"Generalized rank of a Fimage"};
-usage = { 
- 'c'->c            "normalize as a Cimage (into [0..256[)",
- 'w':[w=0.5]->w    "weight: g = w*H + (1-w)*H-, default 0.5",
- 'g':g<-g          "output contrast change",
- 'r':rank<-rank    "output rank Fimage = g(u)",
- u->u              "input Fimage"
+ name = {frank};
+ version = {"1.1"};
+ author = {"Lionel Moisan"};
+ function = {"Generalized rank of a Fimage"};
+ usage = { 
+   'c'->c            "normalize as a Cimage (into [0..256[)",
+   'w':[w=0.5]->w    "weight: g = w*H + (1-w)*H-",
+   'g':g<-g          "output contrast change",
+   'r':rank<-rank    "output rank Fimage = g(u)",
+   u->u              "input Fimage"
 };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"

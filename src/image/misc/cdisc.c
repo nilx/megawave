@@ -1,18 +1,21 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {cdisc};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Lionel Moisan"};
   function = {"Draw a disc"};
   usage = {
-  'x':x->x          "disc center (x coordinate)",
-  'y':y->y          "disc center (y coordinate)",
-  'r':r->r          "disc radius",
-  out<-out          "output Cimage",
-  nx->nx            "image size (x coordinate)",
-  ny->ny            "image size (y coordinate)"
-  };
+    'x':x->x          "disc center (x coordinate)",
+    'y':y->y          "disc center (y coordinate)",
+    'r':r->r          "disc radius",
+    out<-out          "output Cimage",
+    nx->nx            "image size (x coordinate)",
+    ny->ny            "image size (y coordinate)"
+};
 */
+/*----------------------------------------------------------------------
+ v1.1: fixed cy bug (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
@@ -31,7 +34,7 @@ Cimage cdisc(out,nx,ny,x,y,r)
   
   mw_clear_cimage(out,255);
   cx = (x?*x:0.5*(float)(nx-1));
-  cy = (x?*x:0.5*(float)(ny-1));
+  cy = (y?*y:0.5*(float)(ny-1));
   rad2 = (r?*r:.4*(float)(nx<ny?nx:ny));
   rad2 *= rad2;
 

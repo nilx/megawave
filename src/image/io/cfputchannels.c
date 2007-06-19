@@ -1,34 +1,23 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {cfputchannels};
-version = {"1.00"};
-author = {"Jean-Pierre D'Ales"};
-function = {"Make a color float image from three float channel images"};
-usage = {
-Red_image->RImage
-         "Input red channel image",
-Green_image->GImage
-         "Input green channel image",
-Blue_image->BImage
-         "Input blue channel image",
-Cfimage<-Image
-	"Output cfimage"
-	};
- */
-
-
-/*--- Include files UNIX C ---*/
+ name = {cfputchannels};
+ version = {"1.0"};
+ author = {"Jean-Pierre D'Ales"};
+ function = {"Make a color float image from three float channel images"};
+ usage = {
+   Red_image->RImage    "Input red channel image",
+   Green_image->GImage  "Input green channel image",
+   Blue_image->BImage   "Input blue channel image",
+   Cfimage<-Image       "Output cfimage"
+};
+*/
 
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
-
 #include  "mw.h"
 
 
-void
-cfputchannels(RImage, GImage, BImage, Image)
+void cfputchannels(RImage, GImage, BImage, Image)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 

@@ -1,14 +1,14 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-  name = {fsaddles}; 
-  version = {"1.0"}; 
-  author = {"Pascal Monasse"}; 
-  function = {"Position and value of saddle points in bilinear interpolation"};
-  usage = { 
-    image-> pImage  "Input fimage",
-    saddles <- pSaddlesImage "Output fimage of saddle points",
-    nb <- fsaddles "Number of saddle points"
-    }; 
+ name = {fsaddles}; 
+ version = {"1.0"}; 
+ author = {"Pascal Monasse"}; 
+ function = {"Position and value of saddle points in bilinear interpolation"};
+ usage = { 
+    image->pImage           "Input fimage",
+    saddles<-pSaddlesImage  "Output fimage of saddle points",
+    nb<-fsaddles            "Number of saddle points"
+}; 
 */ 
 
 #include <float.h>

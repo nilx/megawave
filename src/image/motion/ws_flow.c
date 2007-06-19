@@ -1,22 +1,25 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-  name = {ws_flow}; 
-  version = {"1.0"};
-  author = {"Florent Ranchin"}; 
-  function = {"Weickert and Schnoerr optical flow computation "};
-  usage = {
- 'p':percent->percent     "if set, stop when |E(n)-E(n-1)|<E(1)*percent/100",
- 'n':[n=100]->n           "maximum number of iterations, default 100",
- 't':[tau=0.166666]->tau  "time-step, default 0.166666",
- 'l':[lambda=1]->lambda   "contrast parameter, default 1",
- 'E':[eps=0.000001]->eps  "epsilon (may be arbitrary small), default 0.000001",
- 'A':[alpha=500.]->alpha  "weight of divergence term in pde, default 500.",
- 'R':norm_movie<-norm     "optional output: optical flow norm",
- movie->movie             "Input Fmovie",
- wsU<-wsU                 "Fmovie of OF_{1}(x,y)",
- wsV<-wsV                 "Fmovie of OF_{2}(x,y)"
-  };
+ name = {ws_flow}; 
+ version = {"1.1"};
+ author = {"Florent Ranchin"}; 
+ function = {"Weickert and Schnoerr optical flow computation "};
+ usage = {
+  'p':percent->percent     "if set, stop when |E(n)-E(n-1)|<E(1)*percent/100",
+  'n':[n=100]->n           "maximum number of iterations",
+  't':[tau=0.166666]->tau  "time-step",
+  'l':[lambda=1.]->lambda  "contrast parameter",
+  'E':[eps=0.000001]->eps  "epsilon (may be arbitrary small)",
+  'A':[alpha=500.]->alpha  "weight of divergence term in pde",
+  'R':norm_movie<-norm     "optional output: optical flow norm",
+  movie->movie             "Input Fmovie",
+  wsU<-wsU                 "Fmovie of OF_{1}(x,y)",
+  wsV<-wsV                 "Fmovie of OF_{2}(x,y)"
+};
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <stdlib.h>

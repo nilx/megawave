@@ -1,23 +1,23 @@
-/*----------------------Megawave2 Module-----------------------------------*/
-/*mwcommand
-  name = {mschannel};
-  version = {"1.3"};
-  author = {"Yann Guyonvarc'h"}; 
-  function = {"Build a multi-scales multi-channels decomposition of an image"};
-  usage = {
-
-'N':[N=1]->N      "# images per channel, default 1 (for local scale value)",
-'S':[S=1]->S      "standard deviation of the smoothing filter, default 1",
-'W':[W=1]->W      "pixel weight for the smoothing filter, default 1",
-'p':[p=2]->p[1,2] "scalar distance: ABS (p=1) or Quadratic (p=2,default)",
-in->in            "input Fimage",
-mov<-mov          "output Fmovie"
-
+/*--------------------------- MegaWave2 Module -----------------------------*/
+/* mwcommand
+ name = {mschannel};
+ version = {"1.5"};
+ author = {"Yann Guyonvarc'h"}; 
+ function = {"Build a multi-scales multi-channels decomposition of an image"};
+ usage = {
+   'N':[N=1]->N      "# images per channel(for local scale value)",
+   'S':[S=1]->S      "standard deviation of the smoothing filter",
+   'W':[W=1]->W      "pixel weight for the smoothing filter",
+   'p':[p=2]->p[1,2] "scalar distance: ABS (p=1) or Quadratic (p=2)",
+   in->in            "input Fimage",
+   mov<-mov          "output Fmovie"
 };
 */
 /*----------------------------------------------------------------------
  v1.2: call to fblur() -> fsepconvol() (L.Moisan)
  v1.3: main loop rewritten, bugs fixed, acceleration (L.Moisan)
+ v1.4: mwcommand syntax fixed (JF)
+ v1.5 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h> 

@@ -1,31 +1,32 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {cmextract};
 author = {"Lionel Moisan"};
 function = {"Extract a subpart of a Cmovie"};
-version = {"1.7"};
+version = {"1.8"};
 usage = {
-'b':[b=0]->b    "background grey level (default 0)",
-'r'->r         "if set, X2,Y2 and T2 must be the SIZE of the extracted region",
-in->in         "input Cmovie",
-out<-cmextract "output Cmovie",
-X1->X1         "upleft corner of the region to extract from input (x)",
-Y1->Y1         "upleft corner of the region to extract from input (y)",
-T1->T1         "index of first extracted image (1 is first index)",
-X2->X2         "downright corner of the region to extract from input (x)",
-Y2->Y2         "downright corner of the region to extract from input (y)",
-T2->T2         "index of last extracted image (1 is first index)",
+ 'b':[b=0]->b    "background grey level",
+ 'r'->r          "if set, X2,Y2,T2 must be the SIZE of the extracted region",
+ in->in          "input Cmovie",
+ out<-cmextract  "output Cmovie",
+ X1->X1          "upleft corner of the region to extract from input (x)",
+ Y1->Y1          "upleft corner of the region to extract from input (y)",
+ T1->T1          "index of first extracted image (1 is first index)",
+ X2->X2          "downright corner of the region to extract from input (x)",
+ Y2->Y2          "downright corner of the region to extract from input (y)",
+ T2->T2          "index of last extracted image (1 is first index)",
   {
     bg->bg       "background Cmovie",
-    [Xc=0]->Xc   "new location of X1 on the background, default 0",
-    [Yc=0]->Yc   "new location of Y1 on the background, default 0",
-    [Tc=1]->Tc   "new location of T1 on the background, default 1"
+    [Xc=0]->Xc   "new location of X1 on the background",
+    [Yc=0]->Yc   "new location of Y1 on the background",
+    [Tc=1]->Tc   "new location of T1 on the background"
   }
 };
 */
 /*-------------------------------------------------------------------------
  v1.6: module rewritten, extended parameter values, -r,-b options (L.Moisan)
  v1.7: new possibilities added (L.Moisan)
+ v1.8 (04/2007): simplified header (LM)
 -------------------------------------------------------------------------*/
 
 #include  "mw.h"

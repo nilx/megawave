@@ -1,8 +1,9 @@
 One major default of movie images issued by a video system is the frame 
 effect~: because each image is
-divided into two mixed frames (even and odd lines) taken at different times, 
+divided into two mixed fields (even and odd lines) taken at different times, 
 any motion on the movie produces an undesired effect of alernated lines.
-This module allows to separate even and odd frames on a cmovie. From each image
+This module allows to separate even and odd fields on a cmovie. From each image
 of the movie, two images are extracted and the missing lines
 are interpolated by duplication (default) or linear interpolation (-l flag).
-Unless \verb+-e+ flag is specified, the even frame is taken before the odd one.
+Unless \verb+-e+ flag is specified, the even field is taken before the odd one.
+\index{field}

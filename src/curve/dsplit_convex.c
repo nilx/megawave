@@ -1,4 +1,4 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {dsplit_convex};
    author = {"Lionel Moisan"};

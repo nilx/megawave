@@ -1,4 +1,4 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {fkcrop};
    version = {"1.1"};
@@ -20,8 +20,8 @@
 
 
 Point_fcurve new_point(p,x,y)
-Point_fcurve p;
-float x,y;
+     Point_fcurve p;
+     float x,y;
 {
   Point_fcurve q;
   
@@ -30,15 +30,15 @@ float x,y;
   q->y = y;
   q->previous = p;
   if (p) p->next = q;
-
+  
   return q;
 }
 
 
 Fcurves fkcrop(X1,Y1,X2,Y2,cs,box)
-float X1,Y1,X2,Y2;
-Fcurves cs;
-Fcurve box;
+     float X1,Y1,X2,Y2;
+     Fcurves cs;
+     Fcurve box;
 {
   Fcurves out;
   Fcurve c,newc,cprev,*cnext;
@@ -60,7 +60,7 @@ Fcurve box;
       = new_point(box->first->next->next->next,X1,Y1);
     box->first->next->next->next->next->next = NULL;
   }
-    
+  
   /*** prepare structures ***/
   out = mw_new_fcurves();
   cnext = &(out->first);
@@ -68,7 +68,7 @@ Fcurve box;
   newc_flag = TRUE;
   close_flag = FALSE;
   count_c = count_p = 0;
-
+  
   /*** main loop ***/
   for (c=cs->first;c;c=c->next) {
     for (p=c->first;p;p=p->next) {
@@ -99,6 +99,6 @@ Fcurve box;
   *cnext = NULL;
   
   mwdebug("%d components, %d points\n",count_c,count_p);
-
+  
   return out;
 }

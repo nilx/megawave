@@ -1,27 +1,20 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {iezw};
 author = {"Jean-Pierre D'Ales"};
 function = {"Wavelet transform compression via EZW algorithm"};
 version = {"1.30"};
 usage = {
-'p'->PrintFull
-	"Print full set of information", 
-'w':WeightFac->WeightFac
-        "Scaling factor for wavelet coefficients", 
-Compress->Compress
-          "Input string of codewords (cimage)",
-QWavTrans<-Output
-	"Output reconstructed wavelet transform (wtrans2d)"
-	};
- */
+ 'p'->PrintFull            "Print full set of information", 
+ 'w':WeightFac->WeightFac  "Scaling factor for wavelet coefficients", 
+ Compress->Compress        "Input string of codewords (cimage)",
+ QWavTrans<-Output         "Output reconstructed wavelet transform (wtrans2d)"
+};
+*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

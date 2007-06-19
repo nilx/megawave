@@ -1,19 +1,22 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {cczoom};
-  version = {"2.0"};
+  version = {"2.1"};
   author = {"Lionel Moisan"};
   function = {"Zoom of a color char image"};
   usage = {
-'x'->x_flg          "to zoom only in the x direction", 
-'y'->y_flg          "to zoom only in the y direction",      
-'X':[zoom=2.]->zoom "zoom factor (default 2.0)",
-'o':[o=0]->o        "order: 0,1=linear,-3=cubic,3,5..11=spline, default 0",
-'i'->i_flg          "apply inverse zooming",
-in->in              "input Ccimage",
-out<-out            "output Ccimage"
+    'x'->x_flg          "to zoom only in the x direction", 
+    'y'->y_flg          "to zoom only in the y direction",      
+    'X':[zoom=2.]->zoom "zoom factor",
+    'o':[o=0]->o        "order: 0,1=linear,-3=cubic,3,5..11=spline",
+    'i'->i_flg          "apply inverse zooming",
+    in->in              "input Ccimage",
+    out<-out            "output Ccimage"
 };
 */
+/*----------------------------------------------------------------------
+ v2.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

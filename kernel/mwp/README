@@ -1,6 +1,6 @@
-------------------------------------------------------------------------------
-This directory holds the MegaWave2 preprocessor source files.
-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+This directory holds the 'traditional' MegaWave2 preprocessor of modules source
+-------------------------------------------------------------------------------
 
 Warning : any modification of one of these files may lead your version to
 -------   become incompatible with the official version. However, contributions

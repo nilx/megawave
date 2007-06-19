@@ -1,4 +1,5 @@
-The input is decomposed into square blocks of size $reduction\times
-reduction$.
-From each block, we extract the upper left pixel, to
-synthetize the sampled image.
+The image $in$ is sampled into an image $out$ defined by
+$$out(x,y) = c\cdot u([delta +x\cdot step],[delta +y\cdot step]),$$
+where $[\cdot]$ means the (lower) integer part, and $c=1$ (default) or
+$c=step^2$ (if the \verb+-n+ option is selected).
+\index{sampling}

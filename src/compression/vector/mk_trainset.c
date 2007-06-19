@@ -1,61 +1,40 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {mk_trainset};
-version = {"1.00"};
+version = {"1.1"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Generates a training set of rectangular blocks from images"};
 usage = {
-'w':[VectorWidth=2]->Width
-	"Width of blocks (default : 2)", 
-'h':[VectorHeight=2]->Height
-	"Height of blocks (default : 2)", 
-'l'->Lap
-	"Take overlapping blocks in training images", 
-'d':[Decim=1]->Decim
-	"Decimation factor in training images (for wavelet transforms, default : 1)",
-'e':[Edge=0]->Edge
-        "Do not take overlapping vectors if the distance to an edge is smaller than Edge (default : 0)",
-'t':ThresVal1->ThresVal1
-	"First threshold value for classified VQ",
-'u':ThresVal2->ThresVal2
-	"Second threshold value for classified VQ",
-'v':ThresVal3->ThresVal3
-	"Third threshold value for classified VQ",
-'f':SizeCB->SizeCB
-        "Size of Codebook",
-'a':Image2->Image2
-	"Training image (fimage)",
-'b':Image3->Image3
-	"Training image (fimage)",
-'c':Image4->Image4
-	"Training image (fimage)",
-'A':Image5->Image5
-	"Training image (fimage)",
-'B':Image6->Image6
-	"Training image (fimage)",
-'C':Image7->Image7
-	"Training image (fimage)",
-'D':Image8->Image8
-	"Training image (fimage)",
-'m':TrainingSet2<-Result2
-	"Resulting training set for second class (fimage)",
-'n':TrainingSet3<-Result3
-	"Resulting training set for third class (fimage)",
-'o':TrainingSet4<-Result4
-	"Resulting training set for fourth class (fimage)",
-Image->Image
-	"Training image (fimage)", 
-TrainingSet<-Result
-	"Resulting training set for first class (fimage)"
+ 'w':[VectorWidth=2]->Width    "Width of blocks", 
+ 'h':[VectorHeight=2]->Height  "Height of blocks", 
+ 'l'->Lap                      "Take overlapping blocks in training images", 
+ 'd':[Decim=1]->Decim          "Decimation factor in training images (for wavelet transforms)",
+ 'e':[Edge=0]->Edge         "Do not take overlapping vectors if the distance to an edge is smaller than Edge",
+ 't':ThresVal1->ThresVal1   "First threshold value for classified VQ",
+ 'u':ThresVal2->ThresVal2   "Second threshold value for classified VQ",
+ 'v':ThresVal3->ThresVal3   "Third threshold value for classified VQ",
+ 'f':SizeCB->SizeCB         "Size of Codebook",
+ 'a':Image2->Image2         "Training image (fimage)",
+ 'b':Image3->Image3         "Training image (fimage)",
+ 'c':Image4->Image4         "Training image (fimage)",
+ 'A':Image5->Image5         "Training image (fimage)",
+ 'B':Image6->Image6         "Training image (fimage)",
+ 'C':Image7->Image7         "Training image (fimage)",
+ 'D':Image8->Image8         "Training image (fimage)",
+ 'm':TrainingSet2<-Result2  "Resulting training set for second class (fimage)",
+ 'n':TrainingSet3<-Result3  "Resulting training set for third class (fimage)",
+ 'o':TrainingSet4<-Result4  "Resulting training set for fourth class (fimage)",
+ Image->Image               "Training image (fimage)", 
+ TrainingSet<-Result        "Resulting training set for first class (fimage)"
 	};
- */
+*/
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Constants ---*/

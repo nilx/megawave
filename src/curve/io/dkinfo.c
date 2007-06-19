@@ -1,4 +1,4 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {dkinfo};
    author = {"Lionel Moisan"};
@@ -26,7 +26,7 @@ int is_closed(c)
 }
 
 void dkinfo(in)
-Dlists in;
+     Dlists in;
 {
   Dlists res;
   Dlist c;

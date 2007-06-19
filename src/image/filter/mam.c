@@ -1,27 +1,27 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
   name = {mam};
-  version = {"2.24"};
+  version = {"2.25"};
   author = {"Frederic Guichard, Lionel Moisan"};
   function = {"Multiscale Analysis of Movies (restoration by using selective directional diffusion and motion)"};
   usage = {
-     't':[time=0.4]->ptime        "time step (default: 0.4)",
-     'n':[niter=1]->n_iter        "number of iterations (default: 1)",
-     'r':[power=0.5]->ppower      "accel power (default: 0.5)",
-     'q':[MAXvit=10]->pMAXvit     "maximal velocity (default: 10)",
-     'w':[MINvit=0]->pMINvit      "minimal velocity (default: 0)",
-     'a':[fmxa=1]->pfmxa          "maximal acceleration (default: 1)",
-     input->in               "input movie",
-     output<-out             "output movie"
+     't':[time=0.4]->ptime        "time step",
+     'n':[niter=1]->n_iter        "number of iterations",
+     'r':[power=0.5]->ppower      "accel power",
+     'q':[MAXvit=10]->pMAXvit     "maximal velocity",
+     'w':[MINvit=0]->pMINvit      "minimal velocity",
+     'a':[fmxa=1]->pfmxa          "maximal acceleration",
+     input->in                    "input movie",
+     output<-out                  "output movie"
           };
 */
-/*
-  V 2.24 (JF) : bug corrected in CALCULB (i,j indexes)
-*/
+/*----------------------------------------------------------------------
+ v2.24: bug corrected in CALCULB (i,j indexes) (JF)
+ v2.25 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
+
 #include <stdio.h>
 #include <math.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
 
 #define MinAccel 1.0
@@ -77,10 +77,10 @@ static void RESOLUTION2(),EVOL(),CALCULB(),CALC_CURV(),CALC_ACCEL();
 
 void mam(in,out,ptime,ppower,n_iter,pMAXvit,pMINvit,pfmxa)
 
-Cmovie in,out;
-float  *ptime,*ppower;
-int    *n_iter;
-short  *pMAXvit,*pMINvit,*pfmxa;
+     Cmovie in,out;
+     float  *ptime,*ppower;
+     int    *n_iter;
+     short  *pMAXvit,*pMINvit,*pfmxa;
 
 {
   Cimage u,ud;
@@ -239,59 +239,58 @@ void EVOL()
 /*-------------------------------------------------------------------------*/
 
 short calcul(x,y)
-short x,y;
+     short x,y;
 {
-int t;
-
-t= ((int)x*x)+  ((int)y*y);
-if (t<1) return(0);
-else if (t<4) return(1);
-else if (t<8) return(2);
-else if (t<14) return(3);
-else if (t<21) return(4);
-else if (t<30) return(5);
-else if (t<42) return(6);
-else if (t<54) return(7);
-else if (t<70) return(8);
-else if (t<90) return(9);
-else if (t<110) return(10);
-else if (t<132) return(11);
-else if (t<156) return(12);
-else return(13);
+  int t;
+  
+  t= ((int)x*x)+  ((int)y*y);
+  if (t<1) return(0);
+  else if (t<4) return(1);
+  else if (t<8) return(2);
+  else if (t<14) return(3);
+  else if (t<21) return(4);
+  else if (t<30) return(5);
+  else if (t<42) return(6);
+  else if (t<54) return(7);
+  else if (t<70) return(8);
+  else if (t<90) return(9);
+  else if (t<110) return(10);
+  else if (t<132) return(11);
+  else if (t<156) return(12);
+  else return(13);
 }
 
 
 void CALCULB()
 {
-    register short i,j;
-    short vit;
-    
-    for(i=0;i< MAXvitesse;i++)
-      for(j=0;j< MAXvitesse;j++) {
-	  vit=calcul(i,j);
-	  if (vit>=MINvit && vit<=MAXvit) B[i][j]=1;
-	  else B[i][j]=0;
-      }
-    
-    mwdebug("\n ----- Allowed velocities ----- \n\n");
-    mwdebug("    ");
-    for(i=0;i< MAXvitesse;i++) mwdebug("%i ",i);
-    mwdebug("\n \n");
-    
-    for(i=0;i< MAXvitesse;i++) {
-	mwdebug("%i - ",i);
-	for(j=0;j<(int) MAXvitesse;j++)
-	  mwdebug("%i ",B[i][j]);
-	mwdebug("\n");
+  register short i,j;
+  short vit;
+  
+  for(i=0;i< MAXvitesse;i++)
+    for(j=0;j< MAXvitesse;j++) {
+      vit=calcul(i,j);
+      if (vit>=MINvit && vit<=MAXvit) B[i][j]=1;
+      else B[i][j]=0;
     }
-    
-    for(i=0;i< MAXvitesse2;i++)
-      for(j=0;j< MAXvitesse2;j++) {
-	  vit=calcul(i,j);
-	  if (vit>=MINvit2 && vit<=MAXvit2) BB[i][j]=1;
-	  else BB[i][j]=0;
-      }
-    
+  
+  mwdebug("\n ----- Allowed velocities ----- \n\n");
+  mwdebug("    ");
+  for(i=0;i< MAXvitesse;i++) mwdebug("%i ",i);
+  mwdebug("\n \n");
+  
+  for(i=0;i< MAXvitesse;i++) {
+    mwdebug("%i - ",i);
+    for(j=0;j<(int) MAXvitesse;j++)
+      mwdebug("%i ",B[i][j]);
+    mwdebug("\n");
+  }
+  
+  for(i=0;i< MAXvitesse2;i++)
+    for(j=0;j< MAXvitesse2;j++) {
+      vit=calcul(i,j);
+      if (vit>=MINvit2 && vit<=MAXvit2) BB[i][j]=1;
+      else BB[i][j]=0;
+    }
 }
 
 
@@ -303,52 +302,52 @@ void CALCULB()
 
 void CALC_CURV()
 {
-    
-    int i,j,l;
-    float c1,d1,l0,l1,l2,l3,l4,li,ax,ax2,ay,ay2,az;
-    register float a11,amm,am1,a1m,a00,a01,a10,a0m,am0;
-    long adr;
-    
-    for(l=0;l<nz;l++)
-      for(i=1;i<nx-1;i++)
-	for(j=1;j<ny-1;j++){
-	    
-	    adr = i+nx*(j+ny*l);
-	    
-	    a11 = a[adr+1+nx];
-	    a10 = a[adr+1   ];
-	    a1m = a[adr+1-nx];
-	    a01 = a[adr  +nx];
-	    a00 = a[adr     ];
-	    a0m = a[adr  -nx];
-	    am1 = a[adr-1+nx];
-	    am0 = a[adr-1   ];
-	    amm = a[adr-1-nx];
-	    
-	    c1 = a11-amm; 
-	    d1 = am1-a1m;
-	    ax = CONS*(a10-am0+RAC2*(c1-d1));  
-	    ay = CONS*(a01-a0m+RAC2*(c1+d1));
-	    grad[adr] = (float)sqrt((double)(ax*ax+ay*ay));
-	    if (grad[adr]<SEUIL2) {
-		/* isotropic diffusion */
-		ani[adr]  = 0;
-		curv[adr] = ((amm+a1m+am1+a11)+2.*(a01+a0m+am0+a10)-12.*a00)/12.;
-		grad[adr] = curv[adr];
-	    } else {
-		/* anisotropic diffusion */
-		ani[adr] = 1;
-		az = ax*ay;
-		ax2 = ax*ax;
-		ay2 = ay*ay;
-		li=1./(ax2+ay2);
-		az*=li; ax2*=li; ay2*=li;  
-		li=az*az; l0=-2.+4.*li; l1=ay2*(ay2-ax2); 
-		l2=ax2*(ax2-ay2); l3=li-.5*az; l4=l3+az;
-		curv[adr] = l0*a00+l1*(am0+a10)+l2*(a0m+a01)
-		  +l3*(a11+amm)+l4*(am1+a1m);
-	    }
+  
+  int i,j,l;
+  float c1,d1,l0,l1,l2,l3,l4,li,ax,ax2,ay,ay2,az;
+  register float a11,amm,am1,a1m,a00,a01,a10,a0m,am0;
+  long adr;
+  
+  for(l=0;l<nz;l++)
+    for(i=1;i<nx-1;i++)
+      for(j=1;j<ny-1;j++){
+	
+	adr = i+nx*(j+ny*l);
+	
+	a11 = a[adr+1+nx];
+	a10 = a[adr+1   ];
+	a1m = a[adr+1-nx];
+	a01 = a[adr  +nx];
+	a00 = a[adr     ];
+	a0m = a[adr  -nx];
+	am1 = a[adr-1+nx];
+	am0 = a[adr-1   ];
+	amm = a[adr-1-nx];
+	
+	c1 = a11-amm; 
+	d1 = am1-a1m;
+	ax = CONS*(a10-am0+RAC2*(c1-d1));  
+	ay = CONS*(a01-a0m+RAC2*(c1+d1));
+	grad[adr] = (float)sqrt((double)(ax*ax+ay*ay));
+	if (grad[adr]<SEUIL2) {
+	  /* isotropic diffusion */
+	  ani[adr]  = 0;
+	  curv[adr] = ((amm+a1m+am1+a11)+2.*(a01+a0m+am0+a10)-12.*a00)/12.;
+	  grad[adr] = curv[adr];
+	} else {
+	  /* anisotropic diffusion */
+	  ani[adr] = 1;
+	  az = ax*ay;
+	  ax2 = ax*ax;
+	  ay2 = ay*ay;
+	  li=1./(ax2+ay2);
+	  az*=li; ax2*=li; ay2*=li;  
+	  li=az*az; l0=-2.+4.*li; l1=ay2*(ay2-ax2); 
+	  l2=ax2*(ax2-ay2); l3=li-.5*az; l4=l3+az;
+	  curv[adr] = l0*a00+l1*(am0+a10)+l2*(a0m+a01)
+	    +l3*(a11+amm)+l4*(am1+a1m);
 	}
+      }
 }
 
 

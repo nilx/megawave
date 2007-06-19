@@ -1,19 +1,19 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {tjmap};
-version={"1.2"};
-author = {"Vicent Caselles, Bartomeu Coll, Jacques Froment, JL Lisani"};
-labo = {"Universitat de les Illes Balears and CEREMADE"};
-function = {"map the T and X junctions of a cimage"};
-usage = {
-'c'->connex8 "8-connexity (default : 4)",
-'v'->values  "plot in J the pixels values of the junctions",
-'a':[tarea=40]->tarea[0,5000] "area threshold",
-'q':[tquant=2]->tquant[0,255] "quantization threshold",
-U->U "input cimage U",
-J<-J "output cimage J : location of the junctions (map)",
-ntj<-tjmap "number of junctions found"
-        };
+ name = {tjmap};
+ version = {"1.3"};
+ author = {"Vicent Caselles, Bartomeu Coll, Jacques Froment, Jose-Luis Lisani"};
+ labo = {"Universitat de les Illes Balears and CEREMADE"};
+ function = {"Map the T and X junctions of a cimage"};
+ usage = {
+   'c'->connex8    "8-connexity (default : 4)",
+   'v'->values     "plot in J the pixels values of the junctions",
+   'a':[tarea=40]->tarea[0,5000] "area threshold",
+   'q':[tquant=2]->tquant[0,255] "quantization threshold",
+   U->U            "input cimage U",
+   J<-J            "output cimage J : location of the junctions (map)",
+   ntj<-tjmap      "number of junctions found"
+};
 */
 
 #include <stdio.h>
@@ -25,11 +25,9 @@ extern int tjpoint();
 /* Record the junction location */
 
 void record_junction(U,J,values,x,y)
-
-Cimage U,J;
-char *values;
-int x,y;
-
+     Cimage U,J;
+     char *values;
+     int x,y;
 {
   int l;
 
@@ -45,13 +43,11 @@ int x,y;
 }
 
 int tjmap(connex8,values,tarea,tquant,U,J)
-
-char *connex8;
-char *values;
-int *tarea;
-int *tquant;
-Cimage U,J;
-
+     char *connex8;
+     char *values;
+     int *tarea;
+     int *tquant;
+     Cimage U,J;
 {
   int x,y;  /* current position (x,y) */
   int tj,ntj,l;

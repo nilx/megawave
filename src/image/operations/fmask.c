@@ -1,28 +1,31 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {fmask};
-   version = {"2.0"};
-   author = {"Lionel Moisan"};
-   function = {"Choose between two Fimages according to a mask value"};
-   usage = {
-   'v':[v=0]->v "mask transparency value (default 0)",
-   'i'->i_flag  "invert: the test mask==v selects A (instead of B)",
-   'c':c->c     "take float constant c as value of B",
-   out<-out     "output Fimage (at each point, equals A if mask!=v, B else)",
-   mask->mask   "mask Cimage",
-   A->A         "first Fimage",
- { B->B         "second Fimage, not needed if -c option is selected" }
-   };
+ name = {fmask};
+ version = {"2.1"};
+ author = {"Lionel Moisan"};
+ function = {"Choose between two Fimages according to a mask value"};
+ usage = {
+   'v':[v=0]->v  "mask transparency value",
+   'i'->i_flag   "invert: the test mask==v selects A (instead of B)",
+   'c':c->c      "take float constant c as value of B",
+   out<-out      "output Fimage (at each point, equals A if mask!=v, B else)",
+   mask->mask    "mask Cimage",
+   A->A          "first Fimage",
+ { B->B          "second Fimage, not needed if -c option is selected" }
+};
 */
+/*----------------------------------------------------------------------
+ v2.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
 
 void fmask(mask,A,B,out,i_flag,v,c)
-Fimage mask,A,B,out;
-char *i_flag;
-int *v;
-float *c;
+     Fimage mask,A,B,out;
+     char *i_flag;
+     int *v;
+     float *c;
 {
   int i;
   float a,b;

@@ -1,12 +1,12 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {kspline};
-  version = {"1.3"};
+  version = {"1.4"};
   author = {"Jacques Froment"};
   function = {"Generate one spline-curve from one control points curve"};
   usage = {
-  'j':[order=3]->C     "order of the spline (default: 3 - cubic spline-)",
-  's':[step=0.1]->Step "step between two parameter values t (default: 0.1)",
+  'j':[order=3]->C     "order of the spline (default: 3 = cubic spline)",
+  's':[step=0.1]->Step "step between two parameter values t",
   cv_control_pts->P    "set of control points (curve input)",
   kspline<-spline      "B-spline curve (curve output)"
   };
@@ -14,6 +14,7 @@
 /*----------------------------------------------------------------------
  v1.2: corrected allocation bug + minor modifications (L.Moisan)
  v1.3: upgrade for new kernel (L.Moisan)
+ v1.4 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -24,7 +25,7 @@ extern int mwdbg;
 
 void init_nodes(X,j,n)   /* Init the node vector */
 
-int *X,j,n;
+     int *X,j,n;
 
 {
   int i;
@@ -43,15 +44,15 @@ int *X,j,n;
 /* Compute the spline */
 
 void compute_spline(S,P,X,N,C,M,NPC,Step)
-
-Curve S;    /* Spline to compute */
-Curve P;    /* Control points */
-int *X;     /* Node vector */
-Fimage N;   /* Spline function */
-int C;      /* Order j of the spline */
-int M,NPC;  /* M = NPC+1 = number of control pts */
-float Step; /* Step in the discretization of the spline */
-
+     
+     Curve S;    /* Spline to compute */
+     Curve P;    /* Control points */
+     int *X;     /* Node vector */
+     Fimage N;   /* Spline function */
+     int C;      /* Order j of the spline */
+     int M,NPC;  /* M = NPC+1 = number of control pts */
+     float Step; /* Step in the discretization of the spline */
+     
 {
   int k;     /* number of the point in the spline */
   int a,i,j;
@@ -164,11 +165,11 @@ float Step; /* Step in the discretization of the spline */
 /*------------------------------ Main function ------------------------------*/
 
 void kspline(C,Step,P,spline)
-
-int *C;      /* Order j of the spline */
-float *Step; /* Step in the discretization of the spline */
-Curve P,spline;
-
+     
+     int *C;      /* Order j of the spline */
+     float *Step; /* Step in the discretization of the spline */
+     Curve P,spline;
+     
 { 
   int *X;            /* Node vector */
   int M,NPC;         /* M = NPC+1 = number of control pts */

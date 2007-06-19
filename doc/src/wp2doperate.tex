@@ -1,0 +1,159 @@
+This module performs some manipulations on the 2D-wavelet packet
+representation of a \verb+Fimage+. For details on the wavelet packet transform,
+see documentation of \verb+wp2ddecomp+ and of \verb+wp2dmktree+.
+See also \cite{mallat:wavelet} and the references therein.
+
+The modifications implemented in this module can be used to 
+denoise\index{denoising!wavelet packets} and deblur\index{deblurring!wavelet packets}
+images. 
+The following gives details and examples on such processes.
+You may also consult the macro \verb+Wp2dcheck+ where a simple denoising
+is proposed.
+
+\medskip
+
+{\bf {\large To remove noise from an image:}} 
+
+Four options are implemented:
+\begin{itemize}
+  \item the classical soft thresholding operation (use option -s);
+  \item the classical hard thresholding operation (use option -h);
+  \item the soft noise tracking (use option -S and -L);
+  \item the hard noise tracking (use option -H and -L).
+  \end{itemize}
+
+Thresholding is very common on the wavelet transform to remove
+noise\index{wavelet!thresholding}. 
+It is impossible to mention all references on the subject
+and again, we refer to \cite{mallat:wavelet} and the references therein.
+
+The thresholding of wavelet packet coefficients mostly make sense for
+the purpose of deconvolution and it is described in the next chapter.
+
+The noise tracking process\index{denoising!tracking process}, as implemented 
+in MegaWave2, is described in \cite{malgouyres:noise} and in
+\cite{malgouyres:noise*1}. 
+It had, in fact, already been independently discovered at least twice, in
+\cite{woog:adapted} and  \cite{ishwar.moulin:multiple-domain}. 
+Roughly speaking it is a way to combine thresholding operations in different bases. 
+In \verb+wp2doperate+, bases are defined by the same wavelet but the
+tree changes. More precisely, all the trees in between the input tree
+and the tree of full depth $l$, where $l$ is the input of option \verb+-L+. 
+For more details, see the references below. 
+{\em We have never found a situation where noise tracking does not perform a better 
+denoising task than a simple thresholding.} 
+Notice also that noise tracking can be applied on the residual of any denoising 
+algorithm. Then its result should be added to the initial result. It should be improved.
+
+\medskip
+{\bf Example of wavelet soft-thresholding:}
+\begin{verbatim}
+      fnoise -g 10 fimage noisy
+      wp2dmktree -w 4 tree4
+      wp2doperate -t 2 -s 15 tree da04.ir  noisy denoised
+      cview noisy &
+      cview denoised &
+\end{verbatim}
+
+\medskip
+{\bf  Example of soft noise tracking :}
+(all trees of full depth between 1 and 4 are considered)
+ \begin{verbatim}
+       fnoise -g 20 fimage noisy
+       wp2dmktree -w 1 tree1
+       wp2doperate -t 2 -S 65 -L 4 tree1 da04.ir  noisy denoised1
+       cview noisy &
+       cview denoised1 &
+ \end{verbatim}
+
+\medskip
+{\bf {\large  To deconvolve an image :}} 
+  
+You should use the options \verb+-c+ (and eventually \verb+-C+).
+A convolution operator is approximated by an operator diagonal in a 
+wavelet packet basis. Typically for deconvolution purposes, the convolution is 
+the inverse of a blurring filter. The wavelet packet basis should be
+chosen so-that the approximation of the convolution is good enough.
+
+The eigenvalues of the operator (diagonal in the  wavelet packet
+basis) are computed with the module \verb+wp2deigenval+. 
+ 
+To check how good is the approximation of the convolution by the
+operator, diagonal in the wavelet packet basis, you can follow this
+example (see \cite{malgouyres:framework} for the explanation).
+
+\medskip
+{\bf Example : Check if a wavelet packet basis is appropriate for a
+  convolution operator}
+
+Assume you have created the Fourier transform of a convolution
+filter, contained in a \verb+ Fimage+ called \verb+ fftFilter+,
+and a Dirac delta function centered in  a \verb+ Fimage+ of the size
+of \verb+fftfilter+. This \verb+Fimage+ is called \verb+dirac+.
+
+For instance, to test the wavelet packet basis defined by the mirror tree,
+of depth $3$ and the Daubechies' wavelet \verb+da04.ir+, run :
+\begin{verbatim}
+      wp2dmktree -m 3 tree
+      wp2deigenval  fftfilter tree pfilter
+      wp2doperate -t 8 -c pfilter tree da04.ir  dirac result
+      fft2dview result &
+      cview fftfilter &
+\end{verbatim}
+The closer the Fourier transform of  \verb+result+ and \verb+fftfilter+,
+the better.
+
+\vspace*{0.5cm}
+
+Notice that :
+\begin{itemize}
+\item if option \verb+-c+ is used alone, the eigenvalues should be
+  built according to the input tree. 
+\item  if option \verb+-c+ and \verb+-C+ are used simultaneously, the
+  eigenvalues should be built according to the tree corresponding to
+  the maximum decomposition between the input tree and the fully
+  decomposed tree of the depth provided by option \verb+-C+. All 
+  bases between this basis and the input tree are then
+  considered. The whole process is described in \cite{malgouyres:framework}.
+  {\em As far as we know option \verb+-C+} always improves the result of the
+  deconvolution.
+\end{itemize}
+
+ Notice also that for deconvolution, since the operator defined in the
+ wavelet packet is ill-conditioned,  it should be used with one of
+ the options for denoising. You can use all possibilities
+ described in the preceding part to smooth the result of the
+ deconvolution. 
+
+One can refer to \cite{rouge:fixed}, \cite{kalifa.mallat.ea:image},
+\cite{mallat:wavelet} and \cite{malgouyres:framework} where such processes are
+described. 
+    
+\medskip
+{\bf Example of deconvolution without option \verb+-C+:}
+Assume \verb+filter+ being the Fourier transform of a convolution filter, 
+with a size equal to the size of the image \verb+fimage+.
+  \begin{verbatim}
+          fftconvol filter fimage convolution
+          fnoise -g 2 convolution blur
+          cview blur &
+          wp2dmktree -m 4 tree ;
+          wp2deigenval -i 0.05 filter tree pfilter
+          wp2doperate -t 2 -H 7 -L 4  -c pfilter tree da04.ir  blur NTdeblur
+          cview NTdeblur &
+  \end{verbatim}
+
+\medskip
+{\bf Example of deconvolution with option \verb+-C+:}
+  \begin{verbatim}
+          fftconvol filter fimage convolution
+          fnoise -g 2 convolution blur
+          cview blur &
+          wp2dmktree -m 4 mirror ;
+          wp2dmktree -f 4 full ;
+          changeTree -M full mirror tree
+          wp2deigenval -i 0.05 filter tree pfilter
+          wp2doperate -t 2 -s 0.8  -c pfilter -C 4 mirror da04.ir  blur deblur
+          cview deblur &
+   \end{verbatim}
+

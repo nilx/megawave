@@ -1,8 +1,8 @@
 # Warning : this file has been automatically generated from ./Makefile.in using macro mwconfig V.1.08 with arch = 'Linux ix86' option = 'jpeg shared '
 #-----------------------------------------------------------------------------
-# Makefile.in used to create Makefile using macro mw2config
-# Version 2.1
-# MegaWave2 system library : Copyright (c) Jacques Froment 1996-2002
+# Makefile.in used to create Makefile using macro mwconfig
+# Version 2.3
+# MegaWave2 system library : author Jacques Froment 1996-2007
 #-----------------------------------------------------------------------------
 # This file is part of the MegaWave2 system library 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -14,7 +14,6 @@
 
 #--- Optimized or debug mode 
 CCMODE	= -O
-
 
 MWINCDIR = ../include
 DESTDIR  = $(PRIVATE_MEGAWAVE2)/sys
@@ -69,7 +68,7 @@ ARFLAGS  = rcv
 AR       = ar $(ARFLAGS)
 
 # Library object
-SRC = mw.c mwio.c cimage.c \
+SRC = mw.c mwio.c cimage.c wpack2d.c wpack2d_io.c \
       fimage.c cimage_io.c fimage_io.c window.c wpanel.c \
       cmovie.c cmovie_io.c polygon.c wave_io.c \
       polygon_io.c fsignal.c fsignal_io.c ascii_file.c file_type.c \
@@ -107,6 +106,8 @@ OBJ = 	$(OBJPATH)/mw.o \
 	$(OBJPATH)/file_type.o \
 	$(OBJPATH)/wtrans2d.o \
 	$(OBJPATH)/wtrans2d_io.o \
+	$(OBJPATH)/wpack2d.o \
+	$(OBJPATH)/wpack2d_io.o \
 	$(OBJPATH)/basic_conv.o \
 	$(OBJPATH)/type_conv.o \
 	$(OBJPATH)/wmax2d.o \
@@ -218,7 +219,7 @@ $(OBJPATH)/mw.o : $(MWINCDIR)/mw.h mw.c
 $(OBJPATH)/mw_main.o : $(MWINCDIR)/mw.h mw_main.c
 	$(CC) $(CFLAGSLIB) -o $@ mw_main.c
 
-$(OBJPATH)/mwio.o : $(MWINCDIR)/mw.h $(MWINCDIR)/file_type.h $(MWINCDIR)/cimage.h mwio.c cimage_io.c cmovie_io.c fmovie_io.c fimage_io.c polygon_io.c fsignal_io.c wtrans2d_io.c wtrans1d_io.c wmax2d_io.c
+$(OBJPATH)/mwio.o : $(MWINCDIR)/mw.h $(MWINCDIR)/file_type.h $(MWINCDIR)/cimage.h mwio.c cimage_io.c cmovie_io.c fmovie_io.c fimage_io.c polygon_io.c fsignal_io.c wtrans2d_io.c wtrans1d_io.c wmax2d_io.c wpack2d_io.c
 	$(CC) $(CFLAGSLIB) -o $@ mwio.c
 
 $(OBJPATH)/window.o : $(MWINCDIR)/window.h $(MWINCDIR)/Wdevice.h $(MWINCDIR)/cimage.h window.c
@@ -390,6 +391,12 @@ $(OBJPATH)/wtrans1d.o : $(MWINCDIR)/wtrans1d.h wtrans1d.c
 
 $(OBJPATH)/wtrans1d_io.o : $(MWINCDIR)/wtrans1d.h ascii_file.c wtrans1d_io.c
 	$(CC) $(CFLAGSLIB) -o $@  wtrans1d_io.c
+
+$(OBJPATH)/wpack2d.o : $(MWINCDIR)/wpack2d.h wpack2d.c
+	$(CC) $(CFLAGSLIB) -o $@  wpack2d.c
+
+$(OBJPATH)/wpack2d_io.o : $(MWINCDIR)/wpack2d.h ascii_file.c wpack2d_io.c
+	$(CC) $(CFLAGSLIB) -o $@  wpack2d_io.c
 
 $(OBJPATH)/basic_conv.o : basic_conv.c
 	$(CC) $(CFLAGSLIB) -o $@ basic_conv.c

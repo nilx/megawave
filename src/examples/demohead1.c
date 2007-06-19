@@ -1,28 +1,33 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {demohead1};
   version = {"1.0"};
   author = {"Jacques Froment"};
   function = {"Demo of MegaWave2 header - #1 : options -"};
   usage = {
-  'a'->flg                   
-     "Flag -option-",
-  'B':cimage_input_opt -> B
-     "Input MegaWave2 type (cimage) -option-", 
-  'c':[c_opt=1.0] -> c
-     "Input scalar (float) with default value -option-",
-  'd':d_opt -> d          [-10,10] 
-     "Input scalar (integer) with boundary -option-",
-  'e':[e_opt=0.0] -> e    [0.0,1e20] 
-     "Input scalar (double) with default value and boundary -option-",
-  'F':f_opt <- F
-     "Output MegaWave2 type (cimage) -option-",
+  'a'->flg                  
+             "Flag -option-",
+
+  'B':cimage_input_opt -> B 
+             "Input MegaWave2 type (cimage) -option-", 
+
+  'c':[c_opt=1.0] -> c      
+             "Input scalar (float) with default value -option-",
+
+  'd':d_opt -> d  [-10,10]  
+             "Input scalar (integer) with boundary -option-",
+
+  'e':[e_opt=0.0]->e[0.0,1e20] 
+             "Input scalar (double) with default value and boundary -option-",
+
+  'F':f_opt <- F            
+             "Output MegaWave2 type (cimage) -option-",
 
   float_input -> input    [-1.0,1.0]
-     "Input scalar (float) with boundary -needed argument-",
+             "Input scalar (float) with boundary -needed argument-",
 
   cimage_output<-demohead1      
-     "Output MegaWave2 type (cimage) -needed argument-"
+             "Output MegaWave2 type (cimage) -needed argument-"
            };
 */
 /*--- MegaWave2 - Copyright (C)1994 Jacques Froment. All Rights Reserved. ---*/

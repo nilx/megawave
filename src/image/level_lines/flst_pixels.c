@@ -1,13 +1,12 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-  name = {flst_pixels}; 
-  version = {"1.0"}; 
-  author = {"Pascal Monasse"}; 
-  function = {"Fill the field PIXELS of a tree of shapes.\
- Module meant to be called from another one, not from the command line"};
-  usage = { 
-    tree -> pTree "The tree of the interpolated image"
-    }; 
+ name = {flst_pixels}; 
+ version = {"1.0"}; 
+ author = {"Pascal Monasse"}; 
+ function = {"Fill the field PIXELS of a tree of shapes. Module meant to be called from another one, not from the command line"};
+ usage = { 
+    tree->pTree  "The tree of the interpolated image"
+}; 
 */ 
 
 #include "mw.h"
@@ -15,8 +14,8 @@
 
 /* For each shape, find its number of proper pixels */
 void compute_proper_pixels(pTree, tabNbOfProperPixels)
-Shapes pTree;
-int* tabNbOfProperPixels;
+     Shapes pTree;
+     int* tabNbOfProperPixels;
 {
   Shape pShape;
   int* pNbOfProperPixels;
@@ -37,8 +36,8 @@ int* tabNbOfProperPixels;
 we allocate only memory for the pixels of the root, and other arrays are
 just pointers */
 void allocate_pixels(pTree, tabNbOfProperPixels)
-Shapes pTree;
-int* tabNbOfProperPixels;
+     Shapes pTree;
+     int* tabNbOfProperPixels;
 {
   Point_plane tabPixelsOfRoot;
   Shape pShape, *tabpShapesOfStack;
@@ -77,7 +76,7 @@ the tree structure. From the command line, this function has no interest,
 since that field is not saved to the file. It is meant to be called from
 another module, when this field is needed */
 void flst_pixels(pTree)
-Shapes pTree;
+     Shapes pTree;
 {
   Shape* ppShape;
   int* tabNbOfProperPixels; /* For each shape, its number of proper pixels */

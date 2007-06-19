@@ -1,15 +1,15 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {ccontrast_local};
-  version = {"1.0"};
-  author = {"Yan Jinhai"};
-  function = {"Local contrast improvment"};
-  usage = {
+ name = {ccontrast_local};
+ version = {"1.0"};
+ author = {"Yan Jinhai"};
+ function = {"Local contrast improvment"};
+ usage = {
 'd':[d=7]->d[0,7]  "locality parameter (subdivide [0,255] 2^d times, 0<=d<=7)",
 'n'->n_flag        "to neutralize the anti-bright-spot device",
 input->in          "input Cimage",
 output<-out        "output Cimage"
-          };
+};
 */
 
 #include <stdio.h>

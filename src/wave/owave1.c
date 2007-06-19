@@ -1,41 +1,32 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {owave1};
-version = {"1.2"};
+version = {"1.3"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Computes the orthogonal wavelet transform of an 1D signal"};
 usage = {
-'r':[RecursNum=1]->NumRec [1,20]
-	"Number of levels (default 1)", 
-'h':HaarLevel->Haar
-	"Continue decomposition with Haar until HaarLevel",
-'e':[EdgeMode=3]->Edge [0,3]
-	"Edge processing mode (0/1/2/3, default 3)", 
-'p':[PrecondMode=0]->Precond [0,2]
-	"Edge preconditionning mode (0/1/2, default 0)", 
-'i'->Inverse
-	"Invertible transform", 
-'n':[FilterNorm=2]->FilterNorm [0,2]
-	"Filter taps normalization. 0: no normalization, 1: sum equal to 1.0, 2: squares sum equal to 1.0 (default)", 
-Signal->Signal
-	"Input signal", 
-WavTrans<-Output
-	"Wavelet transform of Signal", 
-ImpulseResponse->Ri
-	"Impulse response of inner filters", 
+ 'r':[RecursNum=1]->NumRec [1,20]     "Number of levels", 
+ 'h':HaarLevel->Haar  	 "Continue decomposition with Haar until HaarLevel",
+ 'e':[EdgeMode=3]->Edge [0,3]         "Edge processing mode", 
+ 'p':[PrecondMode=0]->Precond [0,2]   "Edge preconditionning mode",
+ 'i'->Inverse                         "Invertible transform", 
+ 'n':[FilterNorm=2]->FilterNorm [0,2] "Filter taps normalization. 0: no normalization, 1: sum equal to 1.0, 2: squares sum equal to 1.0", 
+ Signal->Signal       "Input signal", 
+ WavTrans<-Output     "Wavelet transform of Signal", 
+ ImpulseResponse->Ri  "Impulse response of inner filters", 
 	{
 	EdgeIR->Edge_Ri
-		"Impulse reponses of edge and preconditionning filters"
+	     "Impulse reponses of edge and preconditionning filters"
 	}
 	};
 */
+/*----------------------------------------------------------------------
+ v1.3 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules ---*/

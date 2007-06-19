@@ -1,24 +1,31 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {fnoise};
-  version = {"1.0"};
-  author = {"Lionel Moisan"};
-  function = {"Put noise on a Fimage"};
-  usage = {
-  'g':std->std  
-    "additive Gaussian noise with standard deviation std",
-  'i':p->p[0.0,100.0]      
-    "impulse noise (image range), applied to p percent of the pixels",
-  'n'->n_flag         
-    "in order NOT to reinitialize the random seed",
-   in->u       "input Fimage",
-   out<-v      "output Fimage"
-  };
+ name = {fnoise};
+ version = {"1.2"};
+ author = {"Lionel Moisan"};
+ function = {"Put noise on a Fimage"};
+ usage = {
+   'g':std->std  
+     "additive Gaussian noise with standard deviation std",
+   'i':p->p[0.0,100.0]      
+     "impulse noise (image range), applied to p percent of the pixels",
+   'q':q->q
+     "additive uniform noise in [-q/2,q/2]",
+   'n'->n_flag         
+     "in order NOT to reinitialize the random seed",
+    in->u       "input Fimage",
+    out<-v      "output Fimage"
+};
 */
+/*----------------------------------------------------------------------
+ v1.1: added -q option (LM)
+ v1.2: added processus number term in the random seed initialization (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+#include <unistd.h>
 #include "mw.h"
 
 /* for drand48() */
@@ -32,20 +39,20 @@ extern double drand48();
 /*** NB: Calling this module with in=out is possible ***/
 
 
-void fnoise(u,v,std,p,n_flag)
+void fnoise(u,v,std,p,q,n_flag)
 Fimage	u,v;
-float	*std,*p;
+float	*std,*p,*q;
 char    *n_flag;
 {
   int i;
   double a,b,z;
   float min,max,c;
 
-  if ((std?1:0) + (p?1:0) != 1) 
-    mwerror(FATAL,1,"Please select exactly one of the -g and -i options.");
+  if ((std?1:0) + (p?1:0) + (q?1:0)!= 1) 
+    mwerror(FATAL,1,"Please select exactly one of the -g, -i and -q options.");
 
   /*** Initialize random seed if necessary ***/
-  if (!n_flag) srand48( (long int) time (NULL) );
+  if (!n_flag) srand48( (long int) time (NULL) + (long int) getpid() );
   
   /* Allocate memory */
   v = mw_change_fimage(v,u->nrow,u->ncol);
@@ -61,7 +68,7 @@ char    *n_flag;
       v->gray[i] = u->gray[i] + (float)z;
     }
 
-  else {
+  else if (p) {
 
     /* impulse noise */
     min = max = u->gray[0];
@@ -74,6 +81,12 @@ char    *n_flag;
       if (drand48()*100.0<*p) v->gray[i] = (float)(min+(max-min)*drand48());
     else v->gray[i] = u->gray[i];
     
+  } else {
+
+    /* uniform (quantization) noise */
+   for (i=u->ncol*u->nrow;i--;)
+     v->gray[i] =  u->gray[i] + *q*(float)(drand48()-0.5);
+
   }
 }
 

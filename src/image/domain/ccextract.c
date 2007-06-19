@@ -1,25 +1,28 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {ccextract};
 author = {"Lionel Moisan"};
 function = {"Extract a subpart of a Ccimage"};
-version = {"1.7"};
+version = {"1.8"};
 usage = {
-'b':[b=0]->b  "background grey level (default 0)",
-'r'->r        "if set, X2 and Y2 must be the SIZE of the extracted region",
-in->in        "input Ccimage",
-out<-out      "output Ccimage",
-X1->X1        "upleft corner of the region to extract from input (x)",
-Y1->Y1        "upleft corner of the region to extract from input (y)",
-X2->X2        "downright corner of the region to extract from input (x)",
-Y2->Y2        "downright corner of the region to extract from input (y)",
+ 'b':[b=0]->b  "background grey level",
+ 'r'->r        "if set, X2 and Y2 must be the SIZE of the extracted region",
+ in->in        "input Ccimage",
+ out<-out      "output Ccimage",
+ X1->X1        "upleft corner of the region to extract from input (x)",
+ Y1->Y1        "upleft corner of the region to extract from input (y)",
+ X2->X2        "downright corner of the region to extract from input (x)",
+ Y2->Y2        "downright corner of the region to extract from input (y)",
   {
     bg->bg       "background Ccimage",
-    [Xc=0]->Xc   "new location of X1 on the background, default 0",
-    [Yc=0]->Yc   "new location of Y1 on the background, default 0"
+    [Xc=0]->Xc   "new location of X1 on the background",
+    [Yc=0]->Yc   "new location of Y1 on the background"
   }
 };
 */
+/*----------------------------------------------------------------------
+ v1.8 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include  "mw.h"
 
@@ -27,12 +30,12 @@ Y2->Y2        "downright corner of the region to extract from input (y)",
 
 
 Ccimage ccextract(b,in,bg,out,X1,Y1,X2,Y2,Xc,Yc,r)
-Ccimage in,out;
-int X1,Y1,X2,Y2;
-int *b;
-Ccimage bg;
-int *Xc,*Yc;
-char *r;
+     Ccimage in,out;
+     int X1,Y1,X2,Y2;
+     int *b;
+     Ccimage bg;
+     int *Xc,*Yc;
+     char *r;
 {
   int x,y,pos1,pos2;
 

@@ -1,7 +1,17 @@
-{\em fvar} returns the variance of the gray level of an image, estimated by
-$$var = \frac 1{m \cdot n-1} 
-\sum_{1\leq x \leq m, \,1 \leq y \leq n} \big(A(x,y)-M\big)^2$$
-and
+The \verb+fvar+ module returns the variance 
+\index{variance!of an image}
+\index{standart deviation!of an image}
+of the $m\times n$ gray level the image $A$, estimated by
+$$var = \frac 1N
+\sum_{1\leq x \leq m, \,1 \leq y \leq n} \big(A(x,y)-M\big)^2,$$
+where
 $$M = \frac 1{m \cdot n} 
 \sum_{1\leq x \leq m, \,1 \leq y \leq n} A(x,y).$$
-The result is zero if the domain of $A$ contains less than 2 pixels.
+The normalization factor $N$ has the default value $N=m \cdot n-1$
+(which yields an unbiased estimate), but the true empirical variance
+(obtained with $N=m \cdot n$) can be computed instead by setting the 
+\verb+-e+ option.
+If the option \verb+-s+ is specified, then the square root function
+is applied to the result, so that a standart deviation is estimated.
+Note that the result is zero if the domain of $A$ does not contain at least
+2 pixels.

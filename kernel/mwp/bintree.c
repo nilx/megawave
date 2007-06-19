@@ -6,8 +6,21 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+/* I/O functions
+   V 1.1
+   Original version : Sylvain Parrino
+   Several modifications done by Jacques Froment (JF)
+
+   Last changes :
+   V 1.1 (JF, 23/02/2006)
+    - added include <stdlib.h> for malloc()
+*/
+
+
 /* Fichiers d'include */
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "bintree.h"
 #include "symbol.h"
 #include "token.h"

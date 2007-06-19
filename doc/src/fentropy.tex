@@ -1,7 +1,6 @@
 This module computes the entropy of an image of floating point values,
-using the classical formula:
-\[
- H = - \frac{\sum_{c} h(c) \log_2 \frac{h(c)}{N}}{N},
-\]
+using the classical formula
+$$H = - \sum_{c} \frac{h(c)}N \log_2 \frac{h(c)}N,$$
 where $h$ is the histogram computed using the module {\em fvalues};
-$N$ is the number of pixels in the image.
+$N$ is the number of pixels in the image. 
+\index{entropy}

@@ -1,7 +1,11 @@
 This module reduces the total variation
+\index{total variation}
+\index{Fast Level Set Transform} 
 of an image by modifying the local
-contrast of shapes in a bilinear interpolated image (see
-\texttt{flst\_bilinear}). More precisely, it is a scale-space depending on a
+contrast of shapes in a bilinear interpolated image 
+\index{interpolation!bilinear}
+(see \texttt{flst\_bilinear}). 
+More precisely, it is a scale-space depending on a
 scale parameter $t$. The contrast of a shape relatively to its background is
 reduced at a speed proportional to the global curvature of its boundary,
 defined as the ratio $C=\frac{L}{A}$, $L$ being the length and $A$ the

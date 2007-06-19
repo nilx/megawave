@@ -1,17 +1,20 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {flgamma};
-version = {"1.1"};
-author = {"Lionel Moisan"};
-function = {"Create a x^gamma signal, 0 <= x/s < n (2-Flist)"};
-usage = {   
- 'g':[g=2.]->g      "gamma power (default 2.)",
- 'n':[n=256]->n     "number of samples (default 256)",
- 's':[s=1.]->s      "step on x (default 1.)",
- 'f':f->f           "apply scale factor to ensure fixed point : out(f)=f",
- out<-out           "output Flist"
+ name = {flgamma};
+ version = {"1.2"};
+ author = {"Lionel Moisan"};
+ function = {"Create a x^gamma signal, 0 <= x/s < n (2-Flist)"};
+ usage = {   
+   'g':[g=2.]->g      "gamma power",
+   'n':[n=256]->n     "number of samples",
+   's':[s=1.]->s      "step on x",
+   'f':f->f           "apply scale factor to ensure fixed point : out(f)=f",
+   out<-out           "output Flist"
 };
 */
+/*----------------------------------------------------------------------
+ v1.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

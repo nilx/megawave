@@ -1,23 +1,25 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
   name = {ll_boundaries}; 
-  version = {"1.1"}; 
+  version = {"1.3"}; 
   author = {"Lionel Moisan"}; 
   function = {"Extract meaningful boundaries (contrasted level lines) from a Fimage"}; 
   usage = { 
-'e':[eps=0]->eps      "-log10(max. number of false alarms), default 0",
-'a'->all              "get all contrasted level lines (not only maximal ones)",
-'w'->weak             "select weak maximality",
-'s':step->step        "quantization step (bilinear), default 1.",
-'p':p->precision      "sampling precision (bilinear), default 2",
-'t':tree->tree        "use a precomputed FLST tree",
-'z'->z                "use zero order instead of bilinear interpolation",
-in->in                "input Fimage",
-out<-ll_boundaries    "output boundaries (Flists)"
+ 'e':[eps=0]->eps     "-log10(max. number of false alarms)",
+ 'a'->all             "get all contrasted level lines (not only maximal ones)",
+ 'w'->weak            "select weak maximality",
+ 's':step->step       "quantization step (bilinear)",
+ 'p':p->precision     "sampling precision (bilinear)",
+ 't':tree->tree       "use a precomputed FLST tree",
+ 'z'->z               "use zero order instead of bilinear interpolation",
+ in->in               "input Fimage",
+ out<-ll_boundaries   "output boundaries (Flists)"
     }; 
 */ 
 /*----------------------------------------------------------------------
  v1.1: added weak maximality, fixed Sonylogo 'type' bug (L.Moisan)
+ v1.2: upgraded fhisto() call (L.Moisan)
+ v1.3 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -365,7 +367,7 @@ char *all,*z,*weak;
 
   /* compute logProbaOfDu */
   histo_step = HISTO_STEP;
-  logProbaOfDu = fhisto(NormOfDu,NULL,&fzero,NULL,NULL,&histo_step,NULL);
+  logProbaOfDu = fhisto(NormOfDu,NULL,&fzero,NULL,NULL,&histo_step,NULL,NULL);
   logProbaOfDu->values[0]=0.; /* because Du!=0 on level lines */
   sintegral(logProbaOfDu,1,1);
   for (i=0;i<logProbaOfDu->size;i++)

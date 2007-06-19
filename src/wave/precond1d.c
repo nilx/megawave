@@ -1,27 +1,20 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {precond1d};
 version = {"1.01"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Preconditionning of an image"};
 usage = {
-'i'->Inverse
-	"Inverse preconditionning", 
-Signal->Signal
-	"Input signal", 
-PrecSignal<-Output
-	"Preconditionned signal", 
-FicEdgeRi->Edge_Ri
-	"Preconditionning matrices"
+ 'i'->Inverse         "Inverse preconditionning", 
+ Signal->Signal       "Input signal", 
+ PrecSignal<-Output   "Preconditionned signal", 
+ FicEdgeRi->Edge_Ri   "Preconditionning matrices"
 	};
  */
 
 
-/*--- Fichiers inclus UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Bibliotheque megawave2 ---*/
 #include  "mw.h"
 
 /* Floating point filter bank */

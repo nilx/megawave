@@ -1,19 +1,20 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {fft2drad};
-   version = {"1.1"};
-   author = {"Lionel Moisan"};
-   function = {"compute average spectrum as a radial function"};
-   usage = {
-
-'l'->l_flag          "take log10",
-'s':size->size       "output size (number of cells), default min(nx,ny)",
-'I':input_im->in_im  "imaginary input (Fimage)",
-input_re->in_re      "real input (Fimage)",
-out<-out             "output |FFT|=f(r) (Fsignal)"
-
-   };
+ name = {fft2drad};
+ version = {"1.2"};
+ author = {"Lionel Moisan"};
+ function = {"compute average spectrum as a radial function"};
+ usage = {
+   'l'->l_flag          "take log10",
+   's':size->size       "output size (number of cells), default min(nx,ny)",
+   'I':input_im->in_im  "imaginary input (Fimage)",
+   input_re->in_re      "real input (Fimage)",
+   out<-out             "output |FFT|=f(r) (Fsignal)"
+};
 */
+/*----------------------------------------------------------------------
+ v1.2: minor changes (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -45,7 +46,9 @@ Fsignal fft2drad(in_re,in_im,out,l_flag,size)
   if (size) n=*size; 
   else n=(int)ceil((double)(nx<ny?nx:ny)*sqrt(0.5));
   out = mw_change_fsignal(out,n+1);
-  /* l'échelle est en lignes par pixel */
+  if (!out) mwerror(FATAL,1,"Not enough memory\n");
+
+  /* scale is in lines per pixel */
   out->scale = (float)sqrt(0.5)/(float)n;
   mw_clear_fsignal(out,0.);
   count = (int *)calloc(n+1,sizeof(int));
@@ -69,5 +72,6 @@ Fsignal fft2drad(in_re,in_im,out,l_flag,size)
 
   free(count);
   mw_delete_fimage(rho);
+
   return(out);
 }

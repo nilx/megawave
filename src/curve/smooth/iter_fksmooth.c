@@ -1,21 +1,24 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {iter_fksmooth};
    author = {"Lionel Moisan"};
-   version = {"1.0"};
+   version = {"1.1"};
    function = {"Iterated Euclidean heat equation (fksmooth)"};
    usage = {    
         
-'N':[niter=10]->niter  "number of iterations (default 10)",
-'n':[n=10]->n          "(for fksmooth) number of iterations (default: 10)",
-'s':[std=2.]->std      "(for fksmooth) standart deviation for Gaussian kernel (default: 2.)",
-'t':[t=1.]->t          "(for fksmooth)space quantization step (default: 1.)",
-'P'->P                 "(for fksmooth) to prevent Euclidean normalization",
-in->in                 "input curve (Dlist)",
-out<-out               "output curves (Dlists)"
+ 'N':[niter=10]->niter "number of iterations",
+ 'n':[n=10]->n         "(for fksmooth) number of iterations",
+ 's':[std=2.]->std     "(for fksmooth) standart deviation for Gaussian kernel",
+ 't':[t=1.]->t         "(for fksmooth)space quantization step",
+ 'P'->P                "(for fksmooth) to prevent Euclidean normalization",
+ in->in                "input curve (Dlist)",
+ out<-out              "output curves (Dlists)"
 
 	    };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"

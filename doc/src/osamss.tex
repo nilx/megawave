@@ -1,7 +1,12 @@
-This module implements the AMSS model as a stack filter (osher-Sethian 
+This module implements the AMSS 
+\index{affine!scale space}
+model as a stack filter (osher-Sethian 
 scheme)\index{filter!stack}. It decomposes all level sets of the input image,
 applies the module \verb+amss+ to the characteristic functions of
-these level sets, binarizes the result to obtain a new set, an then
+these level sets\index{level set},
+binarizes the result to obtain a new set, an then
 reconstructs the output image from these new level sets. 
-The algorithm obtained this way commutes with any contrast change
+The (algorithm obtained this way commutes with any contrast change
 $u\mapsto g(u)$, where $g$ is an increasing scalar function.
+\index{contrast!invariance}
+

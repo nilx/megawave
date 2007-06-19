@@ -1,5 +1,6 @@
 This module applies to a plane curve $C$ the non-linear heat 
 equation~\cite{gage.hamilton:heat}~\cite{grayson:heat}
+\index{heat equation}
 $$\frac{\partial C}{\partial t}(s,t) 
 = \frac{\partial^2 C}{\partial s^2}(s,t),$$
 ($s$ being the arlength parameterization of the curve)
@@ -9,6 +10,7 @@ This algorithm is described in~\cite{mackworth.mokhtarian:theory}.
 With the \verb+-N+ option~\cite{mackworth.mokhtarian:scale-based}, 
 no reparameterization is applied and the scheme
 is not consistant any more with the mean curvature motion
+\index{mean curvature motion}
 $$\frac{\partial C}{\partial t}(s,t) = \kappa(s,t) \; N(s,t),$$
 where $\kappa$ and $N$ are the local curvature and normal to the curve
 $s\mapsto C(s,t)$.

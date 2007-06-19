@@ -1,16 +1,16 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {cfquant};
-author = {"Jacques Froment"};
-version = {"1.1"};
-function = {"Uniform quantization of a color float image"};
-usage = {
-'l'->left "Set left value of the interval instead of middle value",
-A->A "Input cfimage",
-Q<-Q "Output quantized cfimage",
-Mr->Mr "Number of quantized levels for the red channel",
-Mg->Mg "Number of quantized levels for the green channel",
-Mb->Mb "Number of quantized levels for the blue channel"
+ name = {cfquant};
+ author = {"Jacques Froment"};
+ version = {"1.1"};
+ function = {"Uniform quantization of a color float image"};
+ usage = {
+   'l'->left  "Set left value of the interval instead of middle value",
+   A->A       "Input cfimage",
+   Q<-Q       "Output quantized cfimage",
+   Mr->Mr     "Number of quantized levels for the red channel",
+   Mg->Mg     "Number of quantized levels for the green channel",
+   Mb->Mb     "Number of quantized levels for the blue channel"
 };
 */
 /*----------------------------------------------------------------------
@@ -19,17 +19,14 @@ Mb->Mb "Number of quantized levels for the blue channel"
 
 #include <stdio.h>
 #include <math.h>
-
 #include  "mw.h"
 
 extern float fquant();
 
 void cfquant(A,Q,Mr,Mg,Mb,left)
-
-Cfimage A,Q;
-int Mr,Mg,Mb;
-char *left;
-
+     Cfimage A,Q;
+     int Mr,Mg,Mb;
+     char *left;
 {
   Fimage channel=NULL,Qr,Qg,Qb;
   float *ptrA,*ptr;

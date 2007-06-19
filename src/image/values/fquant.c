@@ -1,17 +1,17 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {fquant};
-author = {"Jacques Froment"};
-version = {"1.2"};
-function = {"Uniform quantization of a fimage"};
-usage = {
-'l'->left "Set left value of the interval instead of middle value",
-'m':minimum -> min "force the minimum (don't compute it)",
-'M':maximum -> max "force the maximum (don't compute it)",
-A->A "Input fimage",
-Q<-Q "Output quantized fimage",
-M->M "Number of quantized levels",
-delta<-fquant "Width step of the uniform quantization used"
+ name = {fquant};
+ author = {"Jacques Froment"};
+ version = {"1.2"};
+ function = {"Uniform quantization of a fimage"};
+ usage = {
+   'l'->left          "Set left value of the interval instead of middle value",
+   'm':minimum->min  "force the minimum (don't compute it)",
+   'M':maximum->max  "force the maximum (don't compute it)",
+   A->A              "Input fimage",
+   Q<-Q              "Output quantized fimage",
+   M->M              "Number of quantized levels",
+   delta<-fquant     "Width step of the uniform quantization used"
 };
 */
 /*----------------------------------------------------------------------
@@ -20,16 +20,13 @@ delta<-fquant "Width step of the uniform quantization used"
 
 #include <stdio.h>
 #include <math.h>
-
 #include  "mw.h"
 
 float fquant(A,Q,M,left,min,max)
-
-Fimage A,Q;
-int M;
-char *left;
-float *min,*max;
-
+     Fimage A,Q;
+     int M;
+     char *left;
+     float *min,*max;
 {
   register float *ptrA,*ptrQ;
   register int i,r;

@@ -1,11 +1,13 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    file_type.c
   
-   Vers. 2.22
-   (C) 1993-2002 Jacques Froment
+   Vers. 2.23
+   Author : Jacques Froment
    Give the type of MegaWave2 external (file) structures and (addition of
    the 2.0 version) the associated type in MegaWave2 internal (C) structures.
 
+   Versions history :
+   2.23 (JF, March, 2006) : add wpack2d
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -1495,6 +1497,13 @@ float *version;/* Return the version number of the file format (0=no number) */
 	  fclose(fd);
 	  return(1);
 	}
+      if (strncmp(line,"def Wpack2d",11) == 0) 
+	{
+	  strcpy(ftype,"A_WPACK2D");
+	  strcpy(mtype,"wpack2d");
+	  fclose(fd);
+	  return(1);
+	}
       if (strncmp(line,"def Vchains_wmax",16) == 0) 
 	{
 	  strcpy(ftype,"A_VCHAINS_WMAX");
@@ -1523,7 +1532,7 @@ float *version;/* Return the version number of the file format (0=no number) */
 
 {
   int ret;
-
+  
   if ((ret=_mw_get_binary_file_type(fname,ftype,mtype,hsize,version)) == 0)
     ret=_mw_get_ascii_file_type(fname,ftype,mtype,hsize,version);
   return(ret);

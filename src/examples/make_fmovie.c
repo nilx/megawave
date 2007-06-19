@@ -1,25 +1,22 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {make_fmovie};
   version = {"1.0"};
   author = {"Jacques Froment"};
   function = {"Make a very simple fmovie (as a demo of fmovie use)"};
   usage = {
-  's':[size=256]->size "size of each square image",
-  fmovie_out<-Output   "output movie"
+      's':[size=256]->size    "size of each square image",
+      fmovie_out<-Output      "output movie"
   };
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
 
 Fmovie make_fmovie(size,Output)
-
-int *size;
-Fmovie Output;
+     
+     int *size;
+     Fmovie Output;
 
 {
   short dx,dy,l,x,y;

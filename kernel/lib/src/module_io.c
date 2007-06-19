@@ -1,10 +1,12 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    module_io.c
    
-   Vers. 1.2
-   (C) 1994-97 Jacques Froment
+   Vers. 1.3
+   Author : Jacques Froment
    Input/Output functions for the module & modules structures
 
+   Main changes :
+   v1.3 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -15,6 +17,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
 #include <sys/file.h>
+#include <string.h>
 
 #include "ascii_file.h"
 #include "mw.h"

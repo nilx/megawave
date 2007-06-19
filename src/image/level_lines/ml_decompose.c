@@ -1,24 +1,20 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {ml_decompose};
-   version = {"6.9"};
-   author = {"Georges Koepfler"};
-   function = {"Compute all morpho_lines of an image"};
-   usage = {
-   'c':m_image_in->m_image_in
-       "original image in Mimage structure",
-   'o':[ml_opt=0]->ml_opt [0,2]
-       "type of level lines: 0=upper (default), 1=lower, 2=iso",
-   'm'->m_flag
-       "optimize memory occupation (allows no free(points))",
-   image_in->image_in
-       "original image",
-   m_image<-ml_decompose
-       "mimage with all morpho_lines"
-       };
+ name = {ml_decompose};
+ version = {"6.10"};
+ author = {"Georges Koepfler"};
+ function = {"Compute all morpho_lines of an image"};
+ usage = {
+  'c':m_image_in->m_image_in   "original image in Mimage structure",
+  'o':[ml_opt=0]->ml_opt [0,2] "type of level lines: 0=upper, 1=lower, 2=iso",
+  'm'->m_flag            "optimize memory occupation (allows no free(points))",
+   image_in->image_in    "original image",
+   m_image<-ml_decompose "mimage with all morpho_lines"
+};
 */
 /*----------------------------------------------------------------------
  v6.9: upgrade for new kernel and new fvalues() call (L.Moisan)
+ v6.10 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -37,9 +33,7 @@ extern Fsignal fvalues();
 extern int mwdbg;
 
 void llcheck(mimage)
-
-Mimage mimage;
-
+     Mimage mimage;
 {  Point_curve point;
    Morpho_line ll;
    int NC,NL;
@@ -61,12 +55,11 @@ Mimage mimage;
      }
 }
 
-Mimage
-ml_decompose(m_image_in,ml_opt,m_flag,image_in)
-Mimage m_image_in;
-int* ml_opt;
-char* m_flag;
-Fimage image_in;
+Mimage ml_decompose(m_image_in,ml_opt,m_flag,image_in)
+     Mimage m_image_in;
+     int* ml_opt;
+     char* m_flag;
+     Fimage image_in;
 {
   Mimage m_image=NULL;
   Fsignal levels,tmp_levels;

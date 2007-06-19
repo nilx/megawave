@@ -1,0 +1,54 @@
+A 2D-wavelet packet basis is described by a quad-tree (sometimes just called
+a tree) and a signal for the impulse response (or a pair of signals in case
+of biothogonal bases). For a general presentation see\cite{mallat:wavelet}. 
+In MegaWave2, a quad-tree is described by a \verb+Cimage+. 
+This module permits to create standard trees. 
+
+A \verb+Cimage+ describing a tree always has the same number of columns
+and raws. This number generally equals $2^l$, where $l$ is the largest
+decomposition level, but it can be larger.
+
+Each pixel of the \verb+Cimage+ contains the decomposition level of the
+corresponding leaf. When the decomposition level of a leaf is strictly
+smaller than $l$, several pixels of the \verb+Cimage+ correspond to that
+leaf. They all contain the same value. For simplicity, we display on the
+figure below a binary tree, therefore coded by a signal rather than by an
+image. The coding of quad-trees is analogous. 
+
+\begin{verbatim}
+
+ level 0                                          /\
+                                                /    \
+                                              /        \
+ level 1                                    /\
+                                          /    \
+                                        /        \
+ level 2                              /\
+                                    /    \                                        
+                                  /        \
+ level 3                        /            \
+ is  coded by                 { 3,           3,  2,2,   1, 1, 1, 1}
+                       
+\end{verbatim}
+
+The ordering of the pixels in the \verb+Cimage+ corresponds to the
+natural ordering of sub-bands in the wavelet packet decomposition.
+One therefore has to take care of the correspondence between sub-band
+of the wavelet packet and sub-band of the frequency domain, when
+creating a tree (see \verb+wp2dmktree+ for examples).
+
+\begin{itemize}
+\item The quincunx tree can be used for demosaicking.
+\item The sinc tree can be used for deconvolution when the Fourier transform
+of the convolution kernel vanishes at the frequencies $\pm
+\frac{N}{4}$ and $\pm \frac{N}{2}$, where $N$ is the size of the
+image. See \cite{malgouyres:framework} for details.
+\item The wavelet tree permits to perform a wavelet decomposition.
+\item With the fully decomposed tree, all the leaves of the tree
+  correspond to the same level of decomposition
+\item The mirror tree can be used for deconvolution, when the Fourier
+  transform the convolution kernel vanishes at the frequencies  $\pm
+  \frac{N}{2}$, where $N$ is the size of the image. See
+  \cite{kalifa.mallat.ea:image}, \cite{mallat:wavelet} (and references therein) and
+  \cite{malgouyres:framework} for details.
+\end{itemize}

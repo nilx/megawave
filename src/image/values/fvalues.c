@@ -1,10 +1,10 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {fvalues};
-   version = {"4.2"};
-   author = {"Georges Koepfler"};
-   function = {"Get and sort all the pixel values of a fimage"};
-   usage = {
+ name = {fvalues};
+ version = {"4.2"};
+ author = {"Georges Koepfler"};
+ function = {"Get and sort all the pixel values of a fimage"};
+ usage = {
    'i'->i_flag 
         "decreasing values (default is increasing)",
    'm':multiplicity<-multiplicity
@@ -19,13 +19,13 @@
 */
 /*----------------------------------------------------------------------
  v4.1: new -r option (G.Koepfler)
- v4.2 (JF) : bug corrected in case of -m and input image of size (1,1).
+ v4.2: bug corrected in case of -m and input image of size (1,1) (JF)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
 
-#define NDEBUG    /*           comment this line out/in to en/disable assert() */
+#define NDEBUG    /* comment this line out/in to en/disable assert() */
 #include <assert.h>
 #include  "mw.h"
 
@@ -37,12 +37,11 @@
 #define h_left(A)       ((u_long)((u_long)(A)<<1)+1)
 #define h_right(A)      ((u_long)((u_long)(A)+1)<<1)
 
-Fsignal
-fvalues(i_flag,multiplicity,image_rank,image_in)
-char *i_flag;
-Fsignal multiplicity;
-Fimage image_rank;  
-Fimage image_in;
+Fsignal fvalues(i_flag,multiplicity,image_rank,image_in)
+     char *i_flag;
+     Fsignal multiplicity;
+     Fimage image_rank;  
+     Fimage image_in;
 {
   Fsignal values;
   float *val;

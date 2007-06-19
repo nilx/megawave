@@ -1,0 +1,13 @@
+A 2D-wavelet packet basis is described by a quad-tree and a signal (or a pair
+of signals in case of a biorthogonal basis). 
+For more details see \cite{mallat:wavelet}. In MegaWave2, a
+quad-tree is described by a \verb+Cimage+. 
+This function checks if the input \verb+Cimage+ represents a quad-tree.
+If it does and if the \verb+-d+ option has been set, the maximum level of 
+decomposition is printed.
+If it doesn't, a fatal error is generated with an explicit message.
+When using inside a module, you may prefer to choose the function of the library
+\verb+mw_checktree_wpack2d()+.
+
+A precise description of the tree representation can be
+found in the documentation of the module \verb+wp2dmktree+.

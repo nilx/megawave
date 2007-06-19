@@ -1,4 +1,5 @@
-This module computes the convolution of the Fimage $in$ with the Fimage
+This module computes the convolution 
+\index{convolution} of the Fimage $in$ with the Fimage
 $filter$. The result $out$ is defined by
 $$out(i,j) = \sum_{k,l} in(i-k,j-l) \cdot filter(k,l).$$
 In this sum, it is assumed that functions are zero outside their
@@ -6,7 +7,6 @@ domain.
 You can use predefined filters put in the \verb+$MEGAWAVE2/data/image+ 
 directory (with \verb+.ir+ extension for Impulse Response), 
 or you can type your own filter using the module \verb+freadasc+.
-\index{filter!convolution}
 
 \smallskip
 

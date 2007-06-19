@@ -1,40 +1,34 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {mk_codebook};
 author = {"Jean-Pierre D'Ales"};
 function = {"Generate a random codebook"};
-version = {"2.01"};
+version = {"2.2"};
 usage = {
-'n'->Normal
-  "Gaussian distribution instead of uniform",
-'m':[Mean=0.0]->Mean
-  "Mean of coeff.",
-'v':[Var=1.0]->Variance
-  "Variance of coeff.",
-'s':[Size=2]->Size
-  "size of codebook", 
-'b':[BlockSize=4]->BlockSize
-  "Size of vector",
-CodeBook<-CodeBook
-  "Generated CodeBook (fimage)"
+ 'n'->Normal                    "Gaussian distribution instead of uniform",
+ 'm':[Mean=0.0]->Mean           "Mean of coeff.",
+ 'v':[Var=1.0]->Variance        "Variance of coeff.",
+ 's':[Size=2]->Size             "size of codebook", 
+ 'b':[BlockSize=4]->BlockSize   "Size of vector",
+ CodeBook<-CodeBook             "Generated CodeBook (fimage)"
 };
  */
+/*----------------------------------------------------------------------
+ v2.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
-/*--- Fichiers inclus UNIX C ---*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <math.h>
 #include <time.h>
-
-/*--- Bibliotheque megawave2 ---*/
 #include  "mw.h"
 
 
 static double ran0(initseed)
 
-long *initseed;
+     long *initseed;
 
 {
   static double y, v[97];
@@ -64,7 +58,7 @@ long *initseed;
 
 static double normaldev(graine)
 
-long *graine;
+     long *graine;
 
 {
   static int iset = 0;
@@ -90,18 +84,17 @@ long *graine;
 }
 
 
-void
-mk_codebook(Normal, Mean, Variance, Size, BlockSize, CodeBook)
+void mk_codebook(Normal, Mean, Variance, Size, BlockSize, CodeBook)
 
 	/*--- Create a gaussian or uniform white noise image ---*/
 
-int        *Normal;     /* Normal distribution */
-double     *Mean;       /* Mean of coefficients */
-double     *Variance;   /* Variance of coefficients */
-int	   *Size;	/* Size of codebook */
-int        *BlockSize;  /* Size of vectors */
-Fimage      CodeBook;	/* Generated codebook (output) */
-
+     int        *Normal;     /* Normal distribution */
+     double     *Mean;       /* Mean of coefficients */
+     double     *Variance;   /* Variance of coefficients */
+     int	*Size;       /* Size of codebook */
+     int        *BlockSize;  /* Size of vectors */
+     Fimage      CodeBook;   /* Generated codebook (output) */
+     
 {
   register float *ptrc;
   long i;
@@ -134,9 +127,9 @@ Fimage      CodeBook;	/* Generated codebook (output) */
 	*ptrc = ra;
       }
     }
-
-    for(i = 0; i < 3 * *BlockSize; i++, ptrc++) 
-      *ptrc = 0.0;
-    for(i = 0; i < *BlockSize; i++, ptrc++) 
-      *ptrc = 1.0;
+  
+  for(i = 0; i < 3 * *BlockSize; i++, ptrc++) 
+    *ptrc = 0.0;
+  for(i = 0; i < *BlockSize; i++, ptrc++) 
+    *ptrc = 1.0;
 }

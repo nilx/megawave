@@ -1,11 +1,14 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    list.c
    
-   Vers. 1.4
-   (C) 2001 Lionel Moisan
+   Vers. 1.5
+   Author : Lionel Moisan
    Basic routines for the Flist(s) / Dlist(s) internal types
-   Modified by JF : not enough memory errors handling and alloc_size->max_size.
-   Modified by LM : data fields are not ignored any more in copy,...
+
+   Main changes :
+   v??? (JF): not enough memory errors handling and alloc_size->max_size.
+   v??? (LM): data fields are not ignored any more in copy,...
+   v1.5 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -15,6 +18,8 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
+#include <string.h>
+
 #include "mw.h"
 
 

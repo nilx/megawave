@@ -1,11 +1,13 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    pm_io.c
    
-   Vers. 1.07
-   (C) 1989, 1990 by the University of Pennsylvania
-   (C) 1993-2000 Jacques Froment 
+   Vers. 1.08
+   Author : Jacques Froment
+   Part of code (C) 1989, 1990 by the University of Pennsylvania
    Input/Output functions for the PM file compatibility with MegaWave2
 
+   Main changes :
+   v1.08 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -14,7 +16,9 @@ The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
 CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 #include <stdio.h>
+#include <string.h>
 
 #include "mw.h"
 #include "pm.h"

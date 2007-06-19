@@ -1,21 +1,20 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {sr_normalize};
-   version = {"1.2"};
-   author = {"Thierry Cohignac, Lionel Moisan"};
-   function = {"Normalize a shape using the moments"};
-   usage = {             
-            in->in                  "input shape (Fcurves)",
-            out<-sr_normalize       "output shape (Fcurves)"
-   };
+ name = {sr_normalize};
+ version = {"1.3"};
+ author = {"Thierry Cohignac, Lionel Moisan"};
+ function = {"Normalize a shape using the moments"};
+ usage = {             
+     in->in               "input shape (Fcurves)",
+     out<-sr_normalize    "output shape (Fcurves)"
+};
 */
 /*----------------------------------------------------------------------
- v1.3: fkzrt, fkcenter, fkplot (L.Moisan)
+ v1.3: uses fkzrt, fkcenter, fkplot (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
-
 #include "mw.h"
 
 extern Cimage fkplot();
@@ -237,25 +236,25 @@ Fcurves cs;
 /*------------------------------ MAIN MODULE ------------------------------*/
 
 Fcurves sr_normalize(in)
-Fcurves in;
+     Fcurves in;
 {
-    float    close;
-    float    xg=0.0,yg=0.0,xmin,ymin,xmax,ymax;
-    float    determinant;
-
-    fkcenter(in,&xg,&yg);
-    fkzrt(in,1.0,0.0,-xg,-yg);
-
-    if (Normalize_affine_step1(in,&determinant)==0){
-	/* shape impossible to normalize */
-	mwerror(WARNING,0,"Impossible to normalize this shape\n");
-	return in;
-    }
-
-   Normalize_affine_step2(in);
-    /* close according to the determinant of the affine transformation */
-    if (determinant > 1.0) close=2.0; else close=1.0;
-    return Sample(in,close);
+  float    close;
+  float    xg=0.0,yg=0.0,xmin,ymin,xmax,ymax;
+  float    determinant;
+  
+  fkcenter(in,&xg,&yg);
+  fkzrt(in,1.0,0.0,-xg,-yg);
+  
+  if (Normalize_affine_step1(in,&determinant)==0){
+    /* shape impossible to normalize */
+    mwerror(WARNING,0,"Impossible to normalize this shape\n");
+    return in;
+  }
+  
+  Normalize_affine_step2(in);
+  /* close according to the determinant of the affine transformation */
+  if (determinant > 1.0) close=2.0; else close=1.0;
+  return Sample(in,close);
 }
 
 

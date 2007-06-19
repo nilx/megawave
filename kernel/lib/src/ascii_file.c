@@ -1,9 +1,15 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ascii_file.c
    
-   Vers. 1.2
-   (C) 1993-2002 Jacques Froment
+   Vers. 1.4
+   Author : Jacques Froment
    Basic functions to manage the MW DATA ASCII files
+   
+   Versions history :
+   V 1.4 (JF, April 2007) : added function _mw_dirbasename()
+   V 1.3 (JF, March 2006) : 
+     - added functions _mw_remove_first_spaces() and _mw_basename()
+     - bug in _mw_open_data_ascii_file() corrected
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
@@ -13,7 +19,9 @@ The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
 CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 #include <stdio.h>
+#include <string.h>
 #include <sys/file.h>
 
 #include "ascii_file.h"
@@ -57,6 +65,64 @@ char *str;
     }
   while (nogood == 1);  
   return(1);
+}
+
+/*    Remove first blanck spaces in string s, if any */
+
+void _mw_remove_first_spaces(s)
+
+char *s;
+
+{
+  int i,l;
+
+  l=strlen(s);
+  while (s[0]==' ')
+    {
+      for (i=0;i<l;i++)
+	s[i]=s[i+1];
+      l--;
+    }
+}
+
+/*    Put in <bname> the basename of <s> (i.e. <s> without the dirname).
+      Example : s="/tmp/titi/toto.c" -> bname="toto.c"
+      <bname> should be allocated by at least the size of <s>.
+*/
+void _mw_basename(s,bname)
+
+char *s;
+char *bname;
+
+{
+  int i,l;
+
+  l=strlen(s);
+  for (i=l-1; (i>0)&&(s[i]!='/'); i--);
+  if (s[i]=='/') i++;
+  strcpy(bname,&s[i]);
+}
+
+/*    Put in <dname> the dirname of <s> and in <bname> the basename of <s> 
+      (i.e. <s> without the dirname).
+      Example : s="/tmp/titi/toto.c" -> dname="/tmp/titi/" bname="toto.c"
+      <dname> and <bname> should be allocated by at least the size of <s>.
+*/
+void _mw_dirbasename(s,dname,bname)
+
+char *s;
+char *dname;
+char *bname;
+
+{
+  int i,l;
+
+  l=strlen(s);
+  for (i=l-1; (i>0)&&(s[i]!='/'); i--);
+  if (s[i]=='/') i++;
+  strcpy(bname,&s[i]);
+  if (i>0) strncpy(dname,s,i); 
+  dname[i]='\0';
 }
 
 /*     Put in *ptr the value of a field named field_name. str_control gives */
@@ -119,7 +185,6 @@ char *fname;
   if (!(fp = fopen(fname, "r")))
     {
       mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
-      fclose(fp);
       return(NULL);
     }
 

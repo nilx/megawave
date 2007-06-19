@@ -1,4 +1,4 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {ezw};
 author = {"Jean-Pierre D'Ales"};
@@ -35,14 +35,8 @@ notused->PtrDRC
  */
 
 
-/*--- Include files UNIX C ---*/
-
 #include <stdio.h>
 #include <math.h>
- 
-
-/*--- Megawave2 library ---*/
-
 #include  "mw.h"
 
 #define mw_drcurvesize 256

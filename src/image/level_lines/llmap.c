@@ -1,17 +1,20 @@
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {llmap};
-version={"1.6"};
-author={"Jacques Froment, Frederic Guichard"};
-function={"Map the level lines of an image"};
-usage = {
-'s':[level_step=20]->ls [1,255] "gray level step (default:20)",
-'t'->tmap "code the type of border",
-image -> input "image input",
-level_lines <- output "level lines of input"
+ name = {llmap};
+ version = {"1.8"};
+ author = {"Jacques Froment, Frederic Guichard"};
+ function = {"Map the level lines of an image"};
+ usage = {
+   's':[level_step=20]->ls [1,255]  "gray level step",
+   't'->tmap                        "code the type of border",
+   image->input                     "input Cimage",
+   level_lines<-output              "output Cimage (level lines of input)"
 };
 */
 /*----------------------------------------------------------------------
- v1.6: return result (L.Moisan)
+ v1.6: return result (LM)
+ v1.7: minor fix of mwcommand syntax (JF)
+ v1.8 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -25,12 +28,10 @@ level_lines <- output "level lines of input"
 #define BOTH 0
 
 Cimage llmap(ls,tmap,input, output)
-     
-short *ls;
-char *tmap;
-Cimage input;
-Cimage output;
-
+     short *ls;
+     char *tmap;
+     Cimage input;
+     Cimage output;
 {
   register int l;
   register unsigned char *in,*out;

@@ -1,5 +1,8 @@
-This module extracts a polygonal approximation of a level line in a bilinear
-interpolated image (see module \texttt{flst\_bilinear}). A parameter indicates
+This module extracts a polygonal approximation of a level line 
+\index{level line} in a bilinear
+interpolated image (see module \texttt{flst\_bilinear}). 
+\index{interpolation!bilinear}
+A parameter indicates
 the approximate maximum number of points of discretization in each dual
 pixel. The sampling is done in the manner described below. The result is in
 the field \texttt{boundary} of the shape, as a list of 2-D points. If the
@@ -32,6 +35,8 @@ as returned by \texttt{flst\_bilinear} or \texttt{flstb\_quantize}.
 really associated to the bilinear interpolation of \texttt{image}, and in the
 negative case, the module will fail with an error message, or worse, with a
 memory error. For example, if the \texttt{tree} is extracted with the module
-\texttt{flst} (which does not interpret the image as a bilinear
+\texttt{flst}
+\index{Fast Level Set Transform} 
+(which does not interpret the image as a bilinear
 interpolation), this will fail (unless there is no saddle point in the
 image, i.e., no $T$-junction).

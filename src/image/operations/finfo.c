@@ -1,8 +1,8 @@
 /*------------------------- MegaWave2 module ------------------------------*/
-/*mwcommand
+/* mwcommand
  name = {finfo};
  author = {"Lionel Moisan"};
- version ={"1.1"};
+ version = {"1.2"};
  function = {"Compute and display several measures on a Fimage."};
  usage = { 
       u->u    "input image"
@@ -10,6 +10,7 @@
 */
 /*----------------------------------------------------------------------
  v1.1: upgrade for new fvalues() call (L.Moisan)
+ v1.2: mwcommand and version syntax fixed (JF)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -19,7 +20,7 @@ extern Fsignal fvalues();
 extern float fentropy(),fmean(),fnorm();
 
 int test_chars(s)
-Fsignal s;
+     Fsignal s;
 {
   int ok,i,c;
 
@@ -33,7 +34,7 @@ Fsignal s;
 /*------------------------------ MAIN MODULE ------------------------------*/
 
 void finfo(u)
-Fimage u;
+     Fimage u;
 {  
   Fsignal v;
   int b;

@@ -1,17 +1,31 @@
-This module computes the Fast Fourier Transform of a 2D input, given
-by two Fimages (real and imaginary parts). It returns two other Fimages,
-real and imaginary parts of the Fourier Transform. 
+This module computes the Fast Fourier Transform 
+\index{FFT|see{Fourier Transform}}
+\index{Fourier Transform}
+of a complex $M\times N$ image $u$, defined by
+$$v(p,q) = \sum_{k,l} u(k,l)\; 
+\exp\left(2i\pi \left(\frac{kp}M+\frac{lq}N\right)\right).$$
+The input image $u$ is given
+by two Fimages $input\_re$ and $input\_im$ (real and imaginary parts),
+and the result $v$ is returned through through two Fimages
+$output\_re$ and $output\_im$. If the \verb+-i+ option is selected,
+then the inverse Fourier Transform is computed, that is
+$$v(k,l) = \frac 1{MN} \sum_{p,q} u(p,q)\;
+\exp\left(-2i\pi \left(\frac{kp}M+\frac{lq}N\right)\right).$$
+Note that the opposite sign convention ($-1$ for the direct transform, $+1$ for
+the inverse transform) is also frequently found in the literature.
 
 \vskip 0.3cm
 
-Since FFT only applies
-to images which dimensions are power of $2$, the input will be shrinked 
-to proper dimensions if necessary using the {\sf fshrink2} module. In this
-case a warning message will be produced.
+Since the efficiency of the FFT depends on the image dimensions in
+a complex way (involving the prime factor decomposition of the dimensions),
+a preliminary crop may be applied to the input image to speed-up the 
+computation. The modules {\sf fft2dshrink} and {\sf fshrink2} are
+devoted to this task.
 
 \vskip 0.3cm
 
-The two-dimensional FFT is performed by applying a 1D-FFT on each row
+Since it is a separable transform, 
+the two-dimensional FFT is performed by applying a 1D-FFT on each row
 of the 2D input, and then on each column.
 
 \vskip 0.3cm

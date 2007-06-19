@@ -1,71 +1,44 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {wlbg_adap};
-version = {"2.00"};
+version = {"2.1"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Generates training set(s) (starting from wavelet transform(s)) and constructs a codebook sequence for wavelet transform vector quantization using LBG algorithm"};
 usage = {
-'r':[MaxLevel=1]->NumRecMax [1,16]
-	"Quantization is performed on MaxLevel scales", 
-'q':Level->Level [1,16]
-	"Create codebook(s) at scale Level", 
-'o':Orient->Orient [0,3]
-	"Create codebook(s) for orientation Orient",
-'d':[Dyad=16]->Dyadic [1,16]
-	"Training wav. trans. are dyadic from scale Dyad",
-'l'->Lap
-	"Take overlapping vectors in training images", 
-'e':[Edge=0]->Edge
-        "Do not take overlapping vectors if the distance to an edge is smaller than Edge (default : 0)",
-'w':[VectorWidth=2]->Width
-	"Width of vectors (default : 2)", 
-'h':[VectorHeight=2]->Height
-	"Height of vectors (default : 2)", 
-'M'->MultiCB
-        "Generate codebooks of size equal to a power of two",
-'s':Sizec1->Sizec1
-	"Size of output codebook for first class", 
-'t':Size2->Sizec2
-	"Size of output codebook for second class", 
-'u':Size3->Sizec3
-	"Size of output codebook for third class", 
-'S':ThresVal1->ThresVal1
-	"First threshold value for classified VQ",
-'T':ThresVal2->ThresVal2
-	"Second threshold value for classified VQ",
-'U':ThresVal3->ThresVal3
-	"Third threshold value for classified VQ",
-'O':OldCodeBook->OldCodeBook
-	"Modify the first class codebook sequence (wtrans2d)",
-'X':OldAdapCodeBook1->OldAdapCodeBook2
-	"Modify the second class codebook sequence (wtrans2d)",
-'Y':OldAdapCodeBook2->OldAdapCodeBook3
-	"Modify the third class codebook sequence (wtrans2d)",
-'x':AdapCodeBook2<-Output2
-	"Sequence of second class codebooks (wtrans2d)",
-'y':AdapCodeBook3<-Output3
-	"Sequence of third class codebooks (wtrans2d)",
-'A':TrainWavTrans2->TrainWtrans2
-	"Training wavelet transform (wtrans2d)", 
-'B':TrainWavTrans3->TrainWtrans3
-	"Training wavelet transform (wtrans2d)", 
-'C':TrainWavTrans4->TrainWtrans4
-	"Training wavelet transform (wtrans2d)", 
-'Q':ResCodeBook->ResCodeBook
-	"Generate codebook(s) for residu of quantization with ResCodeBook (wtrans2d)",
-'R':ResResCodeBook->ResResCodeBook
-	"Generate codebook(s) for residu of quantization with ResCodeBook and ResResCodeBook (wtrans2d)",
-TrainWavTrans1->TrainWtrans1
-	"Training wavelet transform (wtrans2d)", 
-CodeBook1<-Output1
-	"Sequence of first class codebooks (wtrans2d)"
-	};
+ 'r':[MaxLevel=1]->NumRecMax [1,16]  "Quantization is performed on MaxLevel scales", 
+ 'q':Level->Level [1,16]      "Create codebook(s) at scale Level", 
+ 'o':Orient->Orient [0,3]     "Create codebook(s) for orientation Orient",
+ 'd':[Dyad=16]->Dyadic [1,16] "Training wav. trans. are dyadic from scale Dyad",
+ 'l'->Lap                     "Take overlapping vectors in training images", 
+ 'e':[Edge=0]->Edge           "Do not take overlapping vectors if the distance to an edge is smaller than Edge",
+ 'w':[VectorWidth=2]->Width   "Width of vectors", 
+ 'h':[VectorHeight=2]->Height "Height of vectors", 
+ 'M'->MultiCB                    "Generate codebooks of size equal to a power of two",
+ 's':Sizec1->Sizec1               "Size of output codebook for first class", 
+ 't':Size2->Sizec2                "Size of output codebook for second class", 
+ 'u':Size3->Sizec3                "Size of output codebook for third class", 
+ 'S':ThresVal1->ThresVal1         "First threshold value for classified VQ",
+ 'T':ThresVal2->ThresVal2         "Second threshold value for classified VQ",
+ 'U':ThresVal3->ThresVal3         "Third threshold value for classified VQ",
+ 'O':OldCodeBook->OldCodeBook            "Modify the first class codebook sequence (wtrans2d)",
+ 'X':OldAdapCodeBook1->OldAdapCodeBook2  "Modify the second class codebook sequence (wtrans2d)",
+ 'Y':OldAdapCodeBook2->OldAdapCodeBook3  "Modify the third class codebook sequence (wtrans2d)",
+ 'x':AdapCodeBook2<-Output2  "Sequence of second class codebooks (wtrans2d)",
+ 'y':AdapCodeBook3<-Output3  "Sequence of third class codebooks (wtrans2d)",
+ 'A':TrainWavTrans2->TrainWtrans2 "Training wavelet transform (wtrans2d)", 
+ 'B':TrainWavTrans3->TrainWtrans3 "Training wavelet transform (wtrans2d)", 
+ 'C':TrainWavTrans4->TrainWtrans4 "Training wavelet transform (wtrans2d)", 
+ 'Q':ResCodeBook->ResCodeBook     "Generate codebook(s) for residu of quantization with ResCodeBook (wtrans2d)",
+ 'R':ResResCodeBook->ResResCodeBook "Generate codebook(s) for residu of quantization with ResCodeBook and ResResCodeBook (wtrans2d)",
+ TrainWavTrans1->TrainWtrans1     "Training wavelet transform (wtrans2d)", 
+ CodeBook1<-Output1               "Sequence of 1st class codebooks (wtrans2d)"
+};
 */
+/*----------------------------------------------------------------------
+ v2.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

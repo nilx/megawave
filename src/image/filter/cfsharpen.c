@@ -2,10 +2,10 @@
 /* mwcommand
 name = {cfsharpen};
 author = {"Jacques Froment"};
-version = {"1.1"};
+version = {"1.2"};
 function = {"Sharpening of a color image using linear filtering"};
 usage = {
-   'p':[p=75]->p [0,99]  "percent of sharpening, default is 75%",
+   'p':[p=75]->p [0,99]  "percent of sharpening",
    'l'->LumOnly          "perform sharpening on the luminance component only",
    A->A                  "Input Cfimage",
    B<-B                  "Output sharpened Cfimage"
@@ -13,6 +13,7 @@ usage = {
 */
 /*----------------------------------------------------------------------
  v1.1: added -l option (JF)
+ v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

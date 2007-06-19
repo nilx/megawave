@@ -31,11 +31,12 @@ if [ "$d" = "$MEGAWAVE2/sys/shell" ]; then
 else
  mwecho -n "   User's"
 fi
-echo " MegaWave2 Macro : (C) ${_Date=(unknown)} ${_Auth=(unknown)} " 1>&2
-echo "   ${_Labo=CMLA, ENS Cachan, 94235 Cachan cedex, France.}" 1>&2
-
+echo " MegaWave2 Macro" 1>&2
+echo "   Author(s) : ${_Auth=(unknown)}. " 1>&2
 year=`date '+%Y'`
-echo "   MegaWave2 (C) 1988-$year J.Froment. All Rights Reserved." 1>&2
+echo "   MegaWave2 : (C) 1988-$year CMLA, ENS Cachan, 94235 Cachan cedex." 1>&2
+echo "   Last version at http://www.cmla.ens-cachan.fr/Cmla/Megawave" 1>&2
+
 echo '' 1>&2
 echo "Usage : ${_Prog=(unknown)} ${_Usage=(unknown)}" 1>&2
 echo '' 1>&2

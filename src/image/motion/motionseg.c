@@ -1,22 +1,25 @@
-/*--------------------------- MegaWave Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {motionseg};
-version = {"1.0"};
-author = {"Toni Buades"};
-function = {"Motion Segmentation (Aubert-Deriche-Kornprobst method)"};
-usage = {
- 'n':[n=100]->n             "Maximum number of iterations, default 100",
- 'p':[prec=0.001]->prec     "Numerical precision, default 0.001",
- 'e':[e=0.0005]-> e         "Parameter of relaxation, default 0.0005" ,
- 'a':[alphac=1000]->alphac  "Parameter alphac of the functional, default 1000",
- 'b':[alphabr=100]->alphabr "Parameter alphabr of the fuctional, default 10",
- 'c':[alphacr=10]->alphacr  "Parameter alphacr of the functional, default 10",
- 's':[s=0.25]->seu          "threshold, default 0.25",
- fmov1->N                   "Original Fmovie (input)",
- fmov2 <- C                 "Motion segmentation (output Fmovie)" ,
- fim <-B                    "Background estimation (output Fimage)"
-        };
+ name = {motionseg};
+ version = {"1.1"};
+ author = {"Toni Buades"};
+ function = {"Motion Segmentation (Aubert-Deriche-Kornprobst method)"};
+ usage = {
+   'n':[n=100]->n             "Maximum number of iterations",
+   'p':[prec=0.001]->prec     "Numerical precision",
+   'e':[e=0.0005]-> e         "Parameter of relaxation" ,
+   'a':[alphac=1000]->alphac  "Parameter alphac of the functional",
+   'b':[alphabr=100]->alphabr "Parameter alphabr of the fuctional",
+   'c':[alphacr=10]->alphacr  "Parameter alphacr of the functional",
+   's':[s=0.25]->seu          "threshold",
+   fmov1->N                   "Original Fmovie (input)",
+   fmov2<-C                   "Motion segmentation (output Fmovie)" ,
+   fim<-B                     "Background estimation (output Fimage)"
+};
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

@@ -1,12 +1,15 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    tiff_io.c
    
-   Vers. 1.3
-   (C) 1995-2001 Jacques Froment
+   Vers. 1.4
+   Author : Jacques Froment
    Parts of this code inspired from XV: Copyright 1989, 1994 by John Bradley.
 
    Input/Output functions for the TIFF file compatibility with MegaWave2
    Need the 'libtiff' portions of Sam's TIFF distribution (ftp sgi.com).
+
+   Main changes :
+   v1.4 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
@@ -16,7 +19,9 @@ The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
 CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 #include <stdio.h>
+#include <string.h>
 
 #include "mw.h"
 #include "tiffio.h"

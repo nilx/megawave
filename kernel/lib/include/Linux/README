@@ -10,6 +10,11 @@
 2 - The include files listed in this directory have been
     slightly modified from their original distribution :
     they must not been confused with the original ones !
+
+3 - They are useful for the 'traditional' preprocessor only.
+    The new 'light' preprocessor does not read system include
+    files and is therefore immune from problems explained above.
+
 -------------------------- WARNING --------------------------
 
 Why this directory ?

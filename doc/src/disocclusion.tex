@@ -1,5 +1,6 @@
 This modules performs a singular (level-lines based) interpolation of missing parts in the $Input$ image. There is no detection of missing parts, which are assumed to be completely specified by the $Holes$ image, each of them being uniquely associated with a positive value (the \verb+drawocclusion+ module can
 be used to create such a mask image of the holes). Missing parts must be {\bf simply connected} domains (i.e, without hole). In case they are not, the algorithm will automatically change them into simply connected sets by simply adding the holes.
+\index{disocclusion}
 
 \medskip
 The interpolation is carried out in the following way~: for each missing part, the algorithm finds an optimal set of interpolating level lines $\{L_{i,t},\,i\in I_t,\,t\in {{\mathrm I}\!{\mathrm R}}\}$ according to the energy

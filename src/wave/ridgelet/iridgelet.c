@@ -5,11 +5,11 @@
   author = {"Claire Jonchery, Amandine Robin"};
   function ={"inverse ridgelet transform : reconstruct an image from its ridgelets coefficients"};
  usage = {
- 'I':in_im->in_im        "imaginary input (imaginary ridgelets coefficients 2N*2N)",
- 'C':output_im<-out_im   "imaginary output (Fimage N*N)",
- np->np                  "resolution np",
- in_re->in_re            "real input (real ridgelets coefficients 2N*2N)",
- out_re<-out_re          "real output (Fimage N*N)"
+ 'I':in_im->in_im   "imaginary input (imaginary ridgelets coefficients 2N*2N)",
+ 'C':out_im<-out_im "imaginary output (Fimage N*N)",
+ np->np             "resolution np",
+ in_re->in_re       "real input (real ridgelets coefficients 2N*2N)",
+ out_re<-out_re     "real output (Fimage N*N)"
 
 };
 */

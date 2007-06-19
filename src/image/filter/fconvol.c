@@ -1,23 +1,23 @@
-/*----------------------Megawave2 Module-----------------------------------*/
-/*mwcommand
-  name = {fconvol};
-  version = {"1.1"};
-  author = {"Jacques Froment"};
-  function = {"2D-direct convolution of a fimage"};
-  usage = {
-            in->in "Input fimage",
-            filter->filtre "convolution filter (fimage)",
-            out<-out "Output fimage"
-          };
+/*--------------------------- MegaWave2 Module -----------------------------*/
+/* mwcommand
+   name = {fconvol};
+   version = {"1.2"};
+   author = {"Jacques Froment"};
+   function = {"2D-direct convolution of a fimage"};
+   usage = {
+    in->in           "Input fimage",
+    filter->filtre   "convolution filter (fimage)",
+    out<-out         "Output fimage"
+   };
 */
 /*----------------------------------------------------------------------
  v1.1: fixed kmin/lmin/dyS bugs (L.Moisan)
+ v1.2: fixed mwcommand syntax (JF)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
- 
-#include "mw.h"
+ #include "mw.h"
 
 #define min(a,b)        (((a)>(b)) ? (b) : (a))
 #define max(a,b)        (((a)>(b)) ? (a) : (b))

@@ -1,0 +1,70 @@
+Notice: if you need a non-Euclidean gradient scheme,
+you may want to consider the more general \verb+tvdenoise+ module
+for TV denoising.
+
+\medskip
+
+This module computes the image $out$ that minimizes the energy
+functional proposed by Rudin, Osher and 
+Fatemi~\cite{rudin.osher.ea:nonlinear}\cite{rudin.osher:total},
+$$E(out) = \int (out -ref)^2 + W \cdot \int |\nabla(out)|.$$
+This energy is the combination of a fidelity term ($L^2$ square error)
+and regularity term (the total variation).
+\index{denoising!total variation}
+\index{total variation!denoising}
+The regularity term is obtained from the local estimate of the gradient norm
+$$|\nabla(u)|(x,y) = \sqrt{(u(x+1,y)-u(x,y)^2+(u(x,y+1)-u(x,y))^2}.$$
+
+\medskip
+
+To estimate the minimizer of $E$, this module iterates 
+the dual gradient descent algorithm (with step $s$) proposed by
+Chambolle in \cite{chambolle:algotvdual}.
+
+\begin{itemize}
+
+\item Initialization: $p_x^0 = p_y^0 = 0$.
+
+\item Iterate for $k=0..n$:
+
+$$u^k(x,y)= ref(x,y)-p_x^k(x,y)+p_x^k(x-1,y)-p_y^k(x,y)+p_y^k(x,y-1)$$
+\begin{eqnarray*}
+p_x^{k+1}(x,y) &=& \alpha 
+\left(p_x^k(x,y)-s\cdot (u^k(x+1,y)-u^k(x,y))\right)\\
+p_y^{k+1}(x,y) &=& \alpha 
+\left(p_y^k(x,y)-s\cdot (u^k(x,y+1)-u^k(x,y))\right)
+\end{eqnarray*}
+where 
+$$\alpha = \left(1+\frac{2s}W 
+\sqrt{(u^k(x+1,y)-u^k(x,y))^2+(u^k(x,y+1)-u^k(x,y))^2}\right)^{-1}$$
+(note that the terms and difference terms
+involving coordinates outside the image domain 
+must be replaced by 0 in these equations). The estimated solution is then 
+$out=u^n$.
+
+\end{itemize}
+
+The default value of the time step ($s=0.25$) has been reported to
+be the most efficient (see \cite{chambolle:algotvdual}), so it is 
+probably not useful to try other values. The default 
+stopping criterion is $E(u^{n+1})>(1-r)E(u^n)$ with $r=10^{-5}$,
+but a fixed number of iterations can also be specified through the
+\verb+-n+ option.
+
+\medskip
+
+An interactive visualization mode is available with
+the \verb+-V+ option. it allows to pause the algorithm (``space'' key),
+to terminate it (``q'' key) or to restart it (``r'' key).
+A verbose mode (\verb+-v+ option) is also available.
+
+\medskip
+
+Example of use (press 'q' when the computation is finished):
+\begin{verbatim}
+fnoise -g 10 fimage noisy
+cview noisy &
+tvdenoise2 -V -W 20 noisy denoised
+cview denoised &
+\end{verbatim}
+

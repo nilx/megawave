@@ -1,21 +1,18 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {cmparitysep};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Lionel Moisan"};
-  function = {"Separate even and odd frames of a cmovie"};
+  function = {"Separate even and odd fields of a cmovie"};
   usage = {
-            'e'->e            "flag to extract odd frame first",
-	    'l'->l            "flag for linear interpolation",
-            input->u          "input movie",
-            output<-cmparitysep  "output movie"
+            'e'->e                "flag to extract odd field first",
+	    'l'->l                "flag for linear interpolation",
+            input->u              "input movie",
+            output<-cmparitysep   "output movie"
           };
 */
-/*-- MegaWave2 - Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
  
 
@@ -35,11 +32,11 @@ int n;
 
           SOURCE     ->   DESTINATION        line #
 
-	 (if linear)  \                       2y+frame -2
-                      /-->  if frame=1        2y+frame -1
-         xxxxxxxxxxx    ->  xxxxxxxxxx        2y+frame
-	              \-->  if frame=0        2y+frame +1
-	 (if linear)  /                       2y+frame +2
+	 (if linear)  \                       2y+field -2
+                      /-->  if field=1        2y+field -1
+         xxxxxxxxxxx    ->  xxxxxxxxxx        2y+field
+	              \-->  if field=0        2y+field +1
+	 (if linear)  /                       2y+field +2
 -----------------------------------------------------------*/
 
 Cmovie cmparitysep(u,e,l)
@@ -48,40 +45,40 @@ char *e,*l;
 {
     Cmovie v;
     Cimage src,dst,prev,*next;
-    int nx,ny,frame,frame0,y,adr;
+    int nx,ny,field,field0,y,adr;
 
     /* Allocate memory */
     v = mw_new_cmovie();
     if (!v) mwerror(FATAL,1,"Not enough memory.\n");
     
-    frame0 = e?1:0;
+    field0 = e?1:0;
     src = u->first;
     next = &(v->first);
     prev = NULL;
     nx = src->ncol;
     ny = src->nrow/2;
-    frame = frame0;
+    field = field0;
     /*----- MAIN LOOP */
     while (src) {
 	dst = mw_change_cimage(NULL,ny*2,nx);
 	if (!dst) mwerror(FATAL,1,"Not enough memory.");
 	for (y=0;y<ny;y++) {
 	    adr = y*nx*2;
-	    /* duplicatation of the original frame */
-	    memcpy(dst->gray+adr+nx*frame,src->gray+adr+nx*frame,nx);
-	    /* duplication or interpolation for the other frame */
-	    if (l && (y!=0 || frame!=1) && (y!=ny-1 || frame!=0)) 
-	      linear(dst->gray+adr+nx*(1-frame),
-		     src->gray+adr+nx*(2-3*frame),src->gray+adr+nx*frame,nx);
-	    else memcpy(dst->gray+adr+nx*(1-frame),src->gray+adr+nx*frame,nx);
+	    /* duplicatation of the original field */
+	    memcpy(dst->gray+adr+nx*field,src->gray+adr+nx*field,nx);
+	    /* duplication or interpolation for the other field */
+	    if (l && (y!=0 || field!=1) && (y!=ny-1 || field!=0)) 
+	      linear(dst->gray+adr+nx*(1-field),
+		     src->gray+adr+nx*(2-3*field),src->gray+adr+nx*field,nx);
+	    else memcpy(dst->gray+adr+nx*(1-field),src->gray+adr+nx*field,nx);
 	}
-	/* link frames */
+	/* link fields */
 	*next = dst;
 	dst->previous = prev;	
 	next = &(dst->next);
 	prev = dst;
-	frame = 1-frame;
-	if (frame==frame0) src = src->next;
+	field = 1-field;
+	if (field==field0) src = src->next;
     }
     /*---------------*/
     *next = NULL;

@@ -1,26 +1,29 @@
 /*----------------------------- MegaWave Module -----------------------------*/
 /* mwcommand
    name = {ll_boundaries2};
-   version = {"1.0"};
+   version = {"1.1"};
    author = {"Lionel Moisan, Frederic Cao"};
    function = {"Extract (local or not) meaningful boundaries from a Fimage"};
    usage = {
-'e':[eps=0.]->eps   "-log10(max number of false alarms), default 0.",
-'s':[step=1.]->step "quantization step, default 1.",
-'p':[prec=2]->prec  "sampling precision for flst_bilinear, default 2",
-'G':[G=0.5]->std    "standard dev. for preliminary convolution, default 0.5",
-'a'->all            "keep all meaningful level lines (not only maximal ones)",
-'H':[hstep=0.01]->hstep "step for contrast histogram, default 0.01",
-'t':tree->tree          "use a precomputed bilinear tree, default NULL", 
-'v':[visit=100]->visit  "maximal number of visits for a boundary, default 100",
-'L'->loc                  "force local research",
-'k':keep_tree<-keep_tree  "keep meaningful tree",
-'o':image_out<-image_out  "image reconstructed by meaningful tree",
-in->in                    "input (Fimage)",
-out<-ll_boundaries2       "output boundaries (Flists)"
+ 'e':[eps=0.]->eps   "-log10(max number of false alarms)",
+ 's':[step=1.]->step "quantization step",
+ 'p':[prec=2]->prec  "sampling precision for flst_bilinear",
+ 'G':[G=0.5]->std    "standard dev. for preliminary convolution",
+ 'a'->all            "keep all meaningful level lines (not only maximal ones)",
+ 'H':[hstep=0.01]->hstep   "step for contrast histogram",
+ 't':tree->tree            "use a precomputed bilinear tree, default NULL", 
+ 'v':[visit=100]->visit    "maximal number of visits for a boundary",
+ 'L'->loc                  "force local research",
+ 'k':keep_tree<-keep_tree  "keep meaningful tree",
+ 'o':image_out<-image_out  "image reconstructed by meaningful tree",
+ in->in                    "input (Fimage)",
+ out<-ll_boundaries2       "output boundaries (Flists)"
 }
 ;
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <float.h>

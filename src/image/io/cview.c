@@ -1,31 +1,25 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {cview};
-  version = {"1.11"};
-  author = {"Jacques Froment"};
-  function = {"View an image on a window"};
-  usage = {
-  'x':[pos_x=50]->x0
-      "X coordinate for the upper-left corner of the Window",
-  'y':[pos_y=50]->y0
-      "Y coordinate for the upper-left corner of the Window",
-  'z':[zoom=1.0]->zoom
-      "Zoom factor (float value)",
-  'o':[order=0]->order      
-      "Zoom order: 0,1=linear,-3=cubic,3,5..11=spline, default 0",
-  'N'->no_refresh
-      "Do not refresh the window (library call)",
-   cimage->input
-        "Input image (should be a cimage)",
-   notused->window 
-      "Window to view the image (internal use)"
-  };
+ name = {cview};
+ version = {"1.12"};
+ author = {"Jacques Froment"};
+ function = {"View an image on a window"};
+ usage = {
+  'x':[pos_x=50]->x0    "upper-left corner of the Window (X coordinate)",
+  'y':[pos_y=50]->y0    "upper-left corner of the Window (Y coordinate)",
+  'z':[zoom=1.0]->zoom  "Zoom factor (float value)",
+  'o':[order=0]->order  "Zoom order: 0,1=linear,-3=cubic,3,5..11=spline",
+  'N'->no_refresh       "Do not refresh the window (library call)",
+   cimage->input        "Input image (should be a cimage)",
+   notused->window      "Window to view the image (internal use)"
+};
 */
 /*----------------------------------------------------------------------
  v1.8: added -o option + several minor modifications (L.Moisan)
  v1.9: fixed bug with non char input keys (L.Moisan)
  v1.10: fixed lag due to usleep() (L.Moisan)
  v1.11: fixed 'c' bug (nrow->ncol) (L.Moisan)
+ v1.12 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

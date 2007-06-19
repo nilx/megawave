@@ -1,14 +1,9 @@
 Like the {\sf fft2d} module, this one computes the Fast Fourier Transform 
-of a 2D input, given by two Fimages (real and imaginary parts). However,
-it returns the Fourier Transform in polar coordinates, meaning the modulus
-and the phase (in $[-\pi,\pi]$) as Fimages. 
-
-\vskip 0.3cm
-
-Since FFT only applies
-to images which dimensions are power of $2$, the input will be shrinked 
-to proper dimensions if necessary using the {\sf fshrink2} module. In this
-case a warning message will be produced.
+\index{Fourier Transform} $v$
+of a complex image $u$, specified by two Fimages (real and imaginary parts). 
+However, it returns the result $v$ in polar coordinates, 
+using two Fimages (the modulus $\rho$ and the phase $\varphi \in [-\pi,\pi]$)
+such that $v=\rho e^{i\varphi}$.
 
 \vskip 0.3cm
 

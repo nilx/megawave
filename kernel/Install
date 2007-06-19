@@ -3,8 +3,8 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Install a new version of the MegaWave2 kernel";
 _Prog="`basename $0`"
-_Vers="1.0"
-_Date="1999-2003"
+_Vers="1.3"
+_Date="1999-2007"
 _Auth="Jacques Froment";
 _Usage="[-static] [-public] [-clear] [-debug]"
 #-----------------------------------------------------------------------------
@@ -25,6 +25,22 @@ _Usage="[-static] [-public] [-clear] [-debug]"
 #           addition to the PRIVATE version of MegaWave2.
 # -clear : clear previous objects and libraries.
 # -debug : produce debugging information to debug the libraries.
+# Get gcc version and set GCCVERS* variables
+
+Set_GCCVERS()
+{
+ GCCVERS=`env LANG=C $CC -v 2>&1  | grep "gcc version" | cut -f 3 -d " "`
+ if [ "$GCCVERS" = "" ]; then
+  GCCVERS_MAJOR=0
+  GCCVERS_MINOR=0
+  GCCVERS_UPDATE=0
+ else
+  GCCVERS_MAJOR=`echo $GCCVERS | cut -f 1 -d "."`
+  GCCVERS_MINOR=`echo $GCCVERS | cut -f 2 -d "."`
+  GCCVERS_UPDATE=`echo $GCCVERS | cut -f 3 -d "."`
+ fi
+}
+
 
 if [ "${MW_MACHINETYPE}" = "" ]; then
    echo "Please set the \$MW_MACHINETYPE environment variable"
@@ -86,6 +102,21 @@ done
 echo "=== `date`"
 echo "=== Install the MegaWave2 kernel ==="
 
+
+CC=cc; Set_GCCVERS
+#echo "GCCVERS major=$GCCVERS_MAJOR minor=$GCCVERS_MINOR update=$GCCVERS_UPDATE"
+# Shortcoming to fix bug number 84115 in gcc-4.1 (Ubuntu).
+# See in the future if gcc 4.2 does not need this workaround.
+if [ $GCCVERS_MAJOR -eq 4 ]; then
+ if [ $GCCVERS_MINOR -ge 1 ]; then
+  if [ $debug -eq 1 ]; then
+   echo "=== Warning : with gcc ${GCCVERS_MAJOR}.${GCCVERS_MINOR} libraries cannot be compiled with debug option !" 2>&1
+  fi
+  libopt="$libopt -nofstackprotector"
+  echo "=== Warning : with gcc ${GCCVERS_MAJOR}.${GCCVERS_MINOR}, I set flag -fno-stack-protector !" 2>&1
+ fi
+fi
+
 cd $CWD/Wdevice
 ./Install $libopt
 if [ $? -ne 0 ]; then
@@ -101,8 +132,19 @@ fi
 cd  $CWD/mwp
 ./Install $mwpopt
 if [ $? -ne 0 ]; then
-  echo "=== Error in mwp Install ! Abort kernel Install. ===" 2>&1
-  exit 1
+  echo "=== Error in mwp Install ! Second chance with mwplight... ===" 2>&1
+  mwpok=0
+else
+  mwpok=1
+fi
+cd  $CWD/mwplight
+./Install $mwpopt
+if [ $? -ne 0 ]; then
+  if [ $mwpok -eq 0 ]; then
+   echo "=== Error in mwplight Install ! No preprocessor available : abort kernel Install. ===" 2>&1
+   exit 1
+  fi
+  echo "=== Error in mwplight Install ! You will have to use traditional mwp only ===" 2>&1
 fi
 
 cd $CWD/shell

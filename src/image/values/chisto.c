@@ -1,13 +1,13 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {chisto};
-version = {"1.2"};
-author = {"Jacques Froment, Lionel Moisan"};
-function = {"Compute the histogram signal of a Cimage"};
-usage = {
-  'i'->i_flag  "to compute the integral of the histogram",
-  A->A         "input cimage",
-  S<-S         "output histogram fsignal"
+ name = {chisto};
+ version = {"1.2"};
+ author = {"Jacques Froment, Lionel Moisan"};
+ function = {"Compute the histogram signal of a Cimage"};
+ usage = {
+    'i'->i_flag  "to compute the integral of the histogram",
+    A->A         "input cimage",
+    S<-S         "output histogram fsignal"
 };
 */
 /*----------------------------------------------------------------------
@@ -19,11 +19,9 @@ usage = {
 #include  "mw.h"
 
 Fsignal chisto(A,S,i_flag)
-
-Cimage A;
-Fsignal S;
-char *i_flag;
-
+     Cimage A;
+     Fsignal S;
+     char *i_flag;
 {
   int n;
   register float *ptrS;

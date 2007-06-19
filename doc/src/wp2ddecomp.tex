@@ -1,0 +1,40 @@
+A 2D-wavelet packet basis is described by a quad-tree and a signal (or a pair
+of signals in case of a biorthogonal basis). 
+\index{wavelet!packet}
+For more details see \cite{mallat:wavelet} and the references
+therein. 
+This module computes the 2D-wavelet packet transform of an image.
+
+The quad-tree defining the wavelet packet basis is coded by a \verb+Cimage+. 
+See the documentation of the module \verb+wp2dmktree+ for
+details. To compute trees, MegaWave2 provides the modules 
+\verb+wp2dmktree+ and \verb+wp2dchangetree+.
+One can also check if a \verb+Cimage+ actually
+describes a quad-tree with the module \verb+wp2dchecktree+.
+
+The impulse response of the filter associated to the wavelet packet
+basis is the \verb+Fsignal+ called $h$. For biorthogonal wavelet
+packet bases, one also needs to provide the \verb+Fsignal+ called 
+$\tilde{h}$ or \verb+h_tilde+. These notations correspond to the ones in
+\cite{mallat:wavelet}.  Also these filters need to be normalized before
+they are used by \verb+wp2ddecomp+. The sum of the coefficients must equal
+$\sqrt{2}$. You can find such filters in \verb+$MEGAWAVE2/data/wave/packets+,
+in the \verb+ortho+ subdirectory for orthogonal bases and in the
+\verb+biortho+ subdirectory for biorthogonal bases.
+ 
+There is no restriction with regard to the size of the input
+image (up to available memory).
+
+Also, the input image is implicitly periodized out of its original
+support. Therefore, up to the remark below, an orthogonal wavelet
+packet basis actually is an orthogonal basis. 
+
+BEWARE : With this algorithm, the wavelet packet transform corresponds
+to the coordinates of the input image in the wavelet packet basis if
+and only if the number of rows and columns of the image divided by
+$2^l$, where $l$ is largest decomposition level of the tree, are
+integers.
+
+If this condition is not satisfied, the wavelet packet transform
+contains redundancy to avoid too severe edge effects.
+

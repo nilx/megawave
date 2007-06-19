@@ -1,30 +1,33 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {fproj};
-   version = {"2.0"};
+   version = {"2.1"};
    author = {"Lionel Moisan"};
    function = {"affine or projective mapping using interpolation"};
    usage = {  
-'x':[sx=512]->sx   "x-size of output image, default 512",
-'y':[sy=512]->sy   "y-size of output image, default 512",
-'b':[bg=0.0]->bg   "background grey value, default: 0.0",
-'o':[o=3]->o       "order: 0,1=linear,-3=cubic,3,5..11=spline, default 3",
-'p':[p=-.5]->p     "Keys' parameter (when o=-3), in [-1,0], default -0.5",
-'i'->i             "compute inverse transform",
-in->in             "input Fimage",
-out<-out           "output Fimage",
-X1->X1             "upleft corner",
-Y1->Y1             "upleft corner",
-X2->X2             "upright corner",
-Y2->Y2             "upright corner",
-X3->X3             "downleft corner",
-Y3->Y3             "downleft corner",
-{
-  x4->x4           "downright corner (for projective transform)",
-  y4->y4           "downright corner (for projective transform)"
-}
-   };
-   */
+     'x':[sx=512]->sx   "x-size of output image",
+     'y':[sy=512]->sy   "y-size of output image",
+     'b':[bg=0.0]->bg   "background grey value",
+     'o':[o=3]->o       "order: 0,1=linear,-3=cubic,3,5..11=spline",
+     'p':[p=-.5]->p     "Keys' parameter (when o=-3), in [-1,0]",
+     'i'->i             "compute inverse transform",
+     in->in             "input Fimage",
+     out<-out           "output Fimage",
+     X1->X1             "upleft corner",
+     Y1->Y1             "upleft corner",
+     X2->X2             "upright corner",
+     Y2->Y2             "upright corner",
+     X3->X3             "downleft corner",
+     Y3->Y3             "downleft corner",
+  {
+     x4->x4             "downright corner (for projective transform)",
+     y4->y4             "downright corner (for projective transform)"
+  }
+};
+*/
+/*----------------------------------------------------------------------
+ v2.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -37,9 +40,9 @@ extern void finvspline();
 
 /* extract image value (even outside image domain) */
 float v(in,x,y,bg)
-Fimage in;
-int x,y;
-float bg;
+     Fimage in;
+     int x,y;
+     float bg;
 {
   if (x<0 || x>=in->ncol || y<0 || y>=in->nrow)
     return(bg); else return(in->gray[y*in->ncol+x]);
@@ -50,7 +53,7 @@ float bg;
 
 /* coefficients for cubic interpolant (Keys' function) */
 void keys(c,t,a)
-float *c,t,a;
+     float *c,t,a;
 {
   float t2,at;
 
@@ -64,7 +67,7 @@ float *c,t,a;
 
 /* coefficients for cubic spline */
 void spline3(c,t)
-float *c,t;
+     float *c,t;
 {
   float tmp;
 
@@ -77,8 +80,8 @@ float *c,t;
 
 /* pre-computation for spline of order >3 */
 void init_splinen(a,n)
-float *a;
-int n;
+     float *a;
+     int n;
 {
   int k;
 
@@ -104,8 +107,8 @@ float ipow(x,n)
 
 /* coefficients for spline of order >3 */
 void splinen(c,t,a,n)
-float *c,t,*a;
-int n;
+     float *c,t,*a;
+     int n;
 {
   int i,k;
   float xn;
@@ -122,10 +125,10 @@ int n;
 /*------------------------ MAIN MODULE ---------------------------------*/
 
 void fproj(in,out,sx,sy,bg,o,p,i,X1,Y1,X2,Y2,X3,Y3,x4,y4)
-Fimage in,out;
-int    *sx,*sy,*o;
-char   *i;
-float  *bg,*p,X1,Y1,X2,Y2,X3,Y3,*x4,*y4;
+     Fimage in,out;
+     int    *sx,*sy,*o;
+     char   *i;
+     float  *bg,*p,X1,Y1,X2,Y2,X3,Y3,*x4,*y4;
 {
   int    n1,n2,nx,ny,x,y,xi,yi,adr,dx,dy;
   float  res,xx,yy,xp,yp,ux,uy,a,b,d,fx,fy,x12,x13,y12,y13;

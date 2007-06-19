@@ -1,33 +1,29 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {cfiezw};
 version = {"1.11"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Decompress a color image compressed by EZW algorithm"};
 usage = {
-'e':EdgeIR->Edge_Ri
+ 'e':EdgeIR->Edge_Ri
       	"Impulse reponses of edge and preconditionning filters (orthogonal transform)",
-'b':ImpulseResponse2->Ri2
+ 'b':ImpulseResponse2->Ri2
 	"Impulse response of filter 2 (biorthogonal transform)",
-'w':WeightFac->WeightFac
+ 'w':WeightFac->WeightFac
         "Scaling factor for wavelet coefficients", 
-'c':Conv->Conv [0,2]
+ 'c':Conv->Conv [0,2]
 	"0 : convert from RGB to YUV", 
-Cimage->Compress
-          "Input string of codewords",
-ImpulseResponse->Ri
-	"Impulse response of inner filters", 
-QImage<-Output
-	"Output reconstructed image"
-	};
- */
+
+ Cimage->Compress     "Input string of codewords",
+ ImpulseResponse->Ri  "Impulse response of inner filters", 
+ QImage<-Output       "Output reconstructed image"
+
+};
+*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

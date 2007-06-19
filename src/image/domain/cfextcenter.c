@@ -1,33 +1,29 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {cfextcenter};
-author = {"Jean-Pierre D'Ales"};
-function = {"Copy the center part of a cfimage into another image"};
-usage = {
-'f':[Fact=16]->Fact
-  "Factor (default:16)", 
-OriginalImage->Image 
-  "Input Cfimage", 
-CopyImage<-cfextcenter
-  "Output center part of the input"
+ name = {cfextcenter};
+ version = {"1.1"};
+ author = {"Jean-Pierre D'Ales"};
+ function = {"Copy the center part of a cfimage into another image"};
+ usage = {
+   'f':[Fact=16]->Fact     "Factor", 
+   OriginalImage->Image    "Input Cfimage", 
+   CopyImage<-cfextcenter  "Output center part of the input"
 };
-version = {"1.00"};
  */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
-
-/*--- Library megawave2 ---*/
 #include  "mw.h"
 
 
-Cfimage
-cfextcenter(Fact, Image)
-
-int            *Fact;   /* Output size must be a multiple of Fact */
-Cfimage         Image;	/* Original image */
-
+Cfimage cfextcenter(Fact, Image)
+     
+     int            *Fact;   /* Output size must be a multiple of Fact */
+     Cfimage         Image;	/* Original image */
+     
 {
   Cfimage         Result;	    /* Resulting image */
   int             dx, dy;           /* Size of the input image */

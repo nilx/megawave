@@ -1,13 +1,13 @@
 /*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {ccputstring};
-author = {"Lionel Moisan"};
-version = {"1.0"};
-function = {"Put in PLACE a string (read from standart input) on a Ccimage"};
-usage = {
+ name = {ccputstring};
+ author = {"Lionel Moisan"};
+ version = {"1.1"};
+ function = {"Put in PLACE a string (read from standart input) on a Ccimage"};
+ usage = {
    'r':r->r[0,100]  "select dilatation radius for background",
-   'c':[c=999]->c   "fg color (RGB, 1 decimal digit per channel, default 999)",
-   'C':[C=0]->C     "bg color (RGB, 1 decimal digit per channel, default 0)",
+   'c':[c=999]->c   "fg color (RGB, 1 decimal digit per channel",
+   'C':[C=0]->C     "bg color (RGB, 1 decimal digit per channel",
    in->in           "input Ccimage",
    x->x             "string x position (topleft)",
    y->y             "string y position (topleft)",
@@ -15,6 +15,9 @@ usage = {
    notused->str     "string (internal call only)"
 };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <strings.h>

@@ -1,20 +1,19 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {fillpoly};
-  version = {"1.1"};
+  version = {"1.2"};
   author = {"Jean-Pierre D'Ales"};
   function = {"Fill a Polygon given by its vertices and generate a Cimage"};
   usage = {
-  'x':[size_x=256]->dx 
-         "size in x (nb of columns) of the output Cimage (default:256)",
-  'y':[size_y=256]->dy 
-         "size in y (nb of rows) of the output Cimage (default:256)",
-  Polygon->poly    "Input Polygon",
-  Cimage<-bitmap   "bitmapped Cimage of the filled polygon"
+  'x':[size_x=256]->dx  "size in x (nb of columns) of the output Cimage",
+  'y':[size_y=256]->dy  "size in y (nb of rows) of the output Cimage",
+  Polygon->poly         "Input Polygon",
+  Cimage<-bitmap        "bitmapped Cimage of the filled polygon"
   };
 */
 /*----------------------------------------------------------------------
  v1.1: ending delete_polygon() call removed until bug is fixed (L.Moisan)
+ v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

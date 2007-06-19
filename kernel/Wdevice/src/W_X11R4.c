@@ -1,9 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    W_X11R4.c    Window Device for X11 Release 4,5,6
    
-   Vers. 2.8
-   (C) 1991-2002 Jacques Froment, 
-                 Simon Masnou     (16 bits plane added)
+   Vers. 2.9
+   Initial release from Jacques Froment
    Parts of this code inspired from XV: Copyright 1989, 1994 by John Bradley.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~  This file is part of the MegaWave2 Wdevice library ~~~~~~~~~~~~~~
@@ -15,13 +14,17 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /*----------------------------------------------------------------------
+ History
+ v???: 16 bits plane added (Simon Masnou)
  v2.7: corrections WFlushAreaWindow and WRestoreImageWindow (L.Moisan)
  v2.8: mouse button 4 and 5 added (JF)
+ v2.9: added include <string.h> (for Linux 2.6.12 & gcc 4.0.2) (JF)
 ----------------------------------------------------------------------*/
 
 
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 
 /* W_X11R4 Include File */
 #include "W_X11R4.h"

@@ -1,21 +1,20 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-  name = {flstb_quantize}; 
-  version = {"1.2"}; 
-  author = {"Pascal Monasse"}; 
-  function = {"Quantize the Fast Level Sets Transform of a bilinear \
-interpolated image"};
-  usage = { 
-    'l': levels -> pLevels "Levels of quantization (Fsignal)",
-    'o': offset -> pOffset "Offset of the quantization (default 0.5)",
-    's': step -> pStep "Step of the quantization (default 1.0)",
-    bilinear_tree -> pTree "The tree of the interpolated image",
-    quantized_tree <- pQuantizedTree "The tree of the quantized image"
-    }; 
+ name = {flstb_quantize}; 
+ version = {"1.2"}; 
+ author = {"Pascal Monasse"}; 
+ function = {"Quantize the Fast Level Sets Transform of a bilinear interpolated image"};
+ usage = { 
+   'l':levels->pLevels             "Levels of quantization (Fsignal)",
+   'o':offset->pOffset             "Offset of the quantization (default 0.5)",
+   's':step->pStep                 "Step of the quantization (default 1.0)",
+   bilinear_tree->pTree            "The tree of the interpolated image",
+   quantized_tree<-pQuantizedTree  "The tree of the quantized image"
+}; 
 */ 
 /*-------------------------------------------------------------------------
  v1.1: fixed pBound memory allocation bug (P.Monasse)
- v1.1: changed default offset to 0.5 (L.Moisan)
+ v1.2: changed default offset to 0.5 (L.Moisan)
 -------------------------------------------------------------------------*/
 
 #include <math.h>
@@ -25,7 +24,7 @@ extern void flst_pixels();
 
 
 int compare_floats(p1, p2)
-void *p1, *p2;
+     void *p1, *p2;
 {
   float f1= *(float*)p1, f2 = *(float*)p2;
   if(f1 == f2) return 0;
@@ -35,8 +34,8 @@ void *p1, *p2;
 
 /* Return min and max values of image represented by pTree */
 void find_bounds(pTree, pMin, pMax)
-Shapes pTree;
-float *pMin, *pMax;
+     Shapes pTree;
+     float *pMin, *pMax;
 {
   int i;
   *pMin = *pMax = pTree->the_shapes[0].value;
@@ -49,8 +48,8 @@ float *pMin, *pMax;
 
 /* Return the family of levels associated to the offset and the step */
 Fsignal build_signal(pTree, pOffset, pStep)
-Shapes pTree;
-float *pOffset, *pStep;
+     Shapes pTree;
+     float *pOffset, *pStep;
 {
   Fsignal pLevels;
   float fMin, fMax, fOffset, fStep, *pValue;
@@ -75,9 +74,9 @@ float *pOffset, *pStep;
 /* Return min{i: pLevels->values[i] >= fValue} if inf==1 or
           max{i: pLevels->values[i] <= fValue} otherwise */
 int lookup_index(pLevels, fValue, inf)
-Fsignal pLevels;
-float fValue;
-char inf;
+     Fsignal pLevels;
+     float fValue;
+     char inf;
 {
   int iMin = 0, iMax = pLevels->size-1, iMed;
   if(inf) {
@@ -104,9 +103,9 @@ char inf;
 
 /* Count the number of quantized shapes in the tree */
 int count_shapes(pTree, tabIndices, pLevels)
-Shapes pTree;
-int* tabIndices;
-Fsignal pLevels;
+     Shapes pTree;
+     int* tabIndices;
+     Fsignal pLevels;
 {
   int i, iDiff, iNbShapes = 1; /* For the root */
   Shape pRoot = pTree->the_shapes;
@@ -143,9 +142,9 @@ float fValue;
 for each shape, construct the shapes of the quantized tree comprised between
 it and the parent */
 void fill_quantized_tree(pTree, pQuantizedTree, pLevels, tabIndices)
-Shapes pTree, pQuantizedTree;
-Fsignal pLevels;
-int* tabIndices;
+     Shapes pTree, pQuantizedTree;
+     Fsignal pLevels;
+     int* tabIndices;
 {
   Shape *pStack, pShape; /* In the original tree */
   Shape *pStackNewShapes, pNewShape, pParent; /* In quantized tree */
@@ -209,8 +208,8 @@ int* tabIndices;
 }
 
 void quantize_tree(pLevels, pTree, pQuantizedTree)
-Fsignal pLevels;
-Shapes pTree, pQuantizedTree;
+     Fsignal pLevels;
+     Shapes pTree, pQuantizedTree;
 {
   int i;
   int *tabIndices; /* Position of gray level of each shape in pLevels */
@@ -251,9 +250,9 @@ Shapes pTree, pQuantizedTree;
 }
 
 void flstb_quantize(pLevels, pOffset, pStep, pTree, pQuantizedTree)
-Fsignal pLevels;
-float *pOffset, *pStep;
-Shapes pTree, pQuantizedTree;
+     Fsignal pLevels;
+     float *pOffset, *pStep;
+     Shapes pTree, pQuantizedTree;
 {
   char bNewLevels = (pLevels == NULL);
 

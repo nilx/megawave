@@ -1,18 +1,21 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {cfunzoom};
-   version = {"1.0"};
+   version = {"1.1"};
    author = {"Lionel Moisan"};
    function = {"Color Image reduction"};
    usage = {  
-'z':[z=2.0]->z     "unzoom factor (default 2.0)",
-'x':tx->tx         "to first translate (x) the original image",
-'y':ty->ty         "to first transalte (y) the original image",
-'o':[o=0]->o       "spline space order, 0..5, default 0",
-in->in             "input Cfimage",
-out<-out           "output Cfimage"
+     'z':[z=2.0]->z     "unzoom factor",
+     'x':tx->tx         "to first translate (x) the original image",
+     'y':ty->ty         "to first transalte (y) the original image",
+     'o':[o=0]->o       "spline space order, 0..5",
+     in->in             "input Cfimage",
+     out<-out           "output Cfimage"
 };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"

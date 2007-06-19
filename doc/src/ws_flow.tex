@@ -1,4 +1,6 @@
-\verb+ws_flow+ is an implementation of the Weickert and Schn\"orr optical flow computation by a semi-implicit scheme (in comparison of other schemes, it is quasi-explicit). In \cite{weickert.schnorr:of}, they consider a functional where the gradients of the two components of the flow are 3D-gradients, \emph{i.e.} $\nabla^{3} f=(\frac{\partial f}{\partial x},\frac{\partial f}{\partial y},\frac{\partial f}{\partial t})^{T}$ and they do not separate the 3D-gradients of the two components $(\sigma_{1},\sigma_{2})$ of the velocity
+\verb+ws_flow+ is an implementation of the Weickert and Schn\"orr optical flow computation by a semi-implicit scheme (in comparison of other schemes, it is quasi-explicit). 
+\index{optical flow}
+In \cite{weickert.schnorr:of}, they consider a functional where the gradients of the two components of the flow are 3D-gradients, \emph{i.e.} $\nabla^{3} f=(\frac{\partial f}{\partial x},\frac{\partial f}{\partial y},\frac{\partial f}{\partial t})^{T}$ and they do not separate the 3D-gradients of the two components $(\sigma_{1},\sigma_{2})$ of the velocity
 $$E(\sigma)=\int_{\Omega\times[0,T]}|\nabla u\cdot \sigma+u_{t}|^2\,dx\,dy\,dt+\alpha \int_{\Omega\times[0,T]} \Psi(|\nabla^{3}\sigma_{1}|^2+|\nabla^{3}\sigma_{2}|^2)\,dx\,dy\,dt$$
 where $u$ is the gray level at pixel $(x,y)$ and time $t$, $\lambda>0$ and $\Psi(s^2)=\epsilon s^2+(1-\epsilon)\lambda^2\sqrt{1+\frac{s^2}{\lambda^2}}$. ($\epsilon$ is required only for proving well-posedness and can be chosen as weak as possible, e.g. $\epsilon=10^{-6}$). 
 The steepest descent equations are

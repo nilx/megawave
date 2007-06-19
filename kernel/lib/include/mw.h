@@ -1,9 +1,13 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mw.h
    
-   Vers. 1.16
-   (C) 1993-2001 Jacques Froment & Sylvain Parrino
+   Vers. 1.17
+   Date : 1993-2006
+   Authors : Jacques Froment & Sylvain Parrino
    Main include file for the MegaWave2 System Library.
+
+   Versions history :
+   1.17 (JF) : inclusion of wpack2d internal type
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
@@ -244,6 +248,7 @@ extern char *_mwoptarg;
 #include "wtrans2d.h"
 #include "wtrans1d.h"
 #include "wmax2d.h"
+#include "wpack2d.h"
 #include "cfimage.h"
 #include "ccimage.h"
 #include "ccmovie.h"

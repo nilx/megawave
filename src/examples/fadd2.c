@@ -5,15 +5,11 @@
  version = {"1.0"};
  function = {"Adds the pixel's gray-levels of two fimages (for demo #2)"};
  usage = {
-   fimage1->A 
-      "Input fimage #1", 
-   fimage2->B
-      "Input fimage #2", 
-   result<-C
-      "Output image"
+   fimage1->A   "Input fimage #1", 
+   fimage2->B   "Input fimage #2", 
+   result<-C    "Output image"
 };
 */
-/*--------------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include  "mw.h"

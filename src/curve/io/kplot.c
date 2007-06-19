@@ -1,4 +1,4 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {kplot};
   version = {"1.6"};
@@ -7,7 +7,7 @@
   usage = {
   'i':cimage_in->A  "optional background Cimage (input)",
   'l'->line         "draw a line between successive points of a curve",
-  'd':[d=1]->d      "d=0: draw black lines, d=1: add white surround (default)",
+  'd':[d=1]->d      "d=0: draw black lines, d=1: add white surround",
   curves_in->curves "set of Curves (input)",
   cimage_out<-B     "bitmapped Cimage (output)"
   };
@@ -15,7 +15,8 @@
 /*----------------------------------------------------------------------
  v1.5: no more translation in case of negative points (L.Moisan) 
  v1.6: added -d option (L.Moisan) 
- ----------------------------------------------------------------------*/
+ v1.7 (04/2007): simplified header (LM)
+-----------------------------------------------------------------------*/
 
 
 #include <stdio.h>
@@ -24,8 +25,8 @@
 /* Compute the bounding box of a Curves */
 
 void bound_curves(cs,xmin,ymin,xmax,ymax)
-Curves cs;
-int *xmin,*ymin,*xmax,*ymax;
+     Curves cs;
+     int *xmin,*ymin,*xmax,*ymax;
 {
   Curve        c;
   Point_curve  p;
@@ -49,11 +50,11 @@ int *xmin,*ymin,*xmax,*ymax;
 
 
 void bitmap_curve_with_lines(curve,A,B,xmin,ymin,mode)
-
-Curve curve;
-Cimage A,B;
-int xmin,ymin,mode;
-
+     
+     Curve curve;
+     Cimage A,B;
+     int xmin,ymin,mode;
+     
 { 
   register Point_curve p;
   register int x0,y0;
@@ -100,11 +101,11 @@ int xmin,ymin,mode;
 }
 
 void bitmap_curve(curve,A,B,xmin,ymin)
-
-Curve curve;
-Cimage A,B;
-int xmin,ymin;
-
+     
+     Curve curve;
+     Cimage A,B;
+     int xmin,ymin;
+     
 { 
   register Point_curve p;
 
@@ -120,12 +121,12 @@ int xmin,ymin;
 
 
 void kplot(A,line,curves,B,d)
-
-Cimage A,B;
-char *line;
-Curves curves;
-int *d;
-
+     
+     Cimage A,B;
+     char *line;
+     Curves curves;
+     int *d;
+     
 { Curve curve;
   int i,nx,ny;
   int xmax,ymax,xmin,ymin;

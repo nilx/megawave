@@ -1,72 +1,45 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {flbg_adap};
-version = {"2.00"};
-author = {"Jean-Pierre D'Ales"};
-function = {"Generates a (sequence of) codebook(s) adapted for classified V.Q. from a training set of images using LBG algorithm"};
-usage = {
-'s':[CBSize1=1]->Size
-	"Size of output codebook for first class", 
-'w':[VectorWidth=2]->Width
-	"Width of vectors (default : 2)", 
-'h':[VectorHeight=2]->Height
-	"Height of vectors (default : 2)", 
-'l'->Lap
-	"Take overlapping vectors in training images", 
-'d':[Decim=1]->Decim
-	"Decimation factor in training images (for wavelet transform)",
-'e':[Edge=0]->Edge
-        "Do not take overlapping vectors if the distance to an edge is smaller than Edge (default : 0)",
-'S':ThresVal1->ThresVal1
-	"First threshold value for classified VQ",
-'T':ThresVal2->ThresVal2
-	"Second threshold value for classified VQ",
-'U':ThresVal3->ThresVal3
-	"Third threshold value for classified VQ",
-'W':Weight->Weight
-        "Weighting factors for the components of vector (fsignal)",
-'M'->MultiCB
-        "Generate codebooks of size equal to a power of two and smaller than Size",
-'p'->PrintSNR
-        "Do not print information",
-'t':CBSize2->Size2
-	"Size of output codebook for second class", 
-'u':CBSize3->Size3
-	"Size of output codebook for third class", 
-'v':CBSize4->Size4
-	"Size of output codebook for fourth class", 
-'A':TrainImage2->Image2
-	"Training image (fimage)",
-'B':TrainImage3->Image3
-	"Training image (fimage)",
-'C':TrainImage4->Image4
-	"Training image (fimage)",
-'D':TrainImage5->Image5
-	"Training image (fimage)",
-'E':TrainImage6->Image6
-	"Training image (fimage)",
-'F':TrainImage7->Image7
-	"Training image (fimage)",
-'G':TrainImage8->Image8
-	"Training image (fimage)",
-'x':Output2<-Output2
-        "Resulting codebook set for second class (fimage)",
-'y':Output3<-Output3
-        "Resulting codebook set for third class (fimage)",
-'z':Output4<-Output4
-        "Resulting codebook set for fourth class (fimage)",
-TrainImage1->Image1
-	"Training image (fimage)", 
-Output1<-Output
-	"Resulting codebook set for first class (fimage)"
+ name = {flbg_adap};
+ version = {"2.1"};
+ author = {"Jean-Pierre D'Ales"};
+ function = {"Generates a (sequence of) codebook(s) adapted for classified V.Q. from a training set of images using LBG algorithm"};
+ usage = {
+   's':[CBSize1=1]->Size         "Size of output codebook for first class", 
+   'w':[VectorWidth=2]->Width    "Width of vectors", 
+   'h':[VectorHeight=2]->Height  "Height of vectors", 
+   'l'->Lap                      "Take overlapping vectors in training images",
+   'd':[Decim=1]->Decim          "Decimation factor in training images (for wavelet transform)",
+   'e':[Edge=0]->Edge            "Do not take overlapping vectors if the distance to an edge is smaller than Edge",
+   'S':ThresVal1->ThresVal1      "First threshold value for classified VQ",
+   'T':ThresVal2->ThresVal2      "Second threshold value for classified VQ",
+   'U':ThresVal3->ThresVal3      "Third threshold value for classified VQ",
+   'W':Weight->Weight       "Weighting factors for the components of vector (fsignal)",
+   'M'->MultiCB             "Generate codebooks of size equal to a power of two and smaller than Size",
+   'p'->PrintSNR            "Do not print information",
+   't':CBSize2->Size2       "Size of output codebook for second class", 
+   'u':CBSize3->Size3       "Size of output codebook for third class", 
+   'v':CBSize4->Size4       "Size of output codebook for fourth class", 
+   'A':TrainImage2->Image2  "Training image (fimage)",
+   'B':TrainImage3->Image3  "Training image (fimage)",
+   'C':TrainImage4->Image4  "Training image (fimage)",
+   'D':TrainImage5->Image5  "Training image (fimage)",
+   'E':TrainImage6->Image6  "Training image (fimage)",
+   'F':TrainImage7->Image7  "Training image (fimage)",
+   'G':TrainImage8->Image8  "Training image (fimage)",
+   'x':Output2<-Output2     "Resulting codebook set for second class (fimage)",
+   'y':Output3<-Output3     "Resulting codebook set for third class (fimage)",
+   'z':Output4<-Output4     "Resulting codebook set for fourth class (fimage)",
+   TrainImage1->Image1      "Training image (fimage)", 
+   Output1<-Output          "Resulting codebook set for first class (fimage)"
 	};
- */
+*/
+/*----------------------------------------------------------------------
+ v2.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

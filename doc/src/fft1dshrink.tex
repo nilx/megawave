@@ -1,0 +1,16 @@
+
+This modules shrinks a Fsignal $in$ of size $n$ into a Fsignal $out$ of size
+$n'$, with 
+$$1-\frac p{100}\leq \frac{n'}n \leq 1,
+\eqno(1)$$ 
+in order the complexity per sample
+of the Fast Fourier Transform (FFT)\index{Fourierr ansform} of $out$
+to be as small as possible. This amounts to minimize
+$$C(n') = \sum_i (p_i-1),$$
+where $n'=\prod_i p_i$ is the prime factor decomposition of $n'$, 
+with the constraint (1). The new signal $out$ starts at index
+$(n-n')/2$.
+If the \verb+-v+ option is selected, the module writes on standart output
+the initial and final complexity, and the speed-up ratio
+$C(n)/C(n')$. 
+\index{crop!a signal}

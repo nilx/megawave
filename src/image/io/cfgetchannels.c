@@ -1,39 +1,25 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {cfgetchannels};
-version = {"1.00"};
-author = {"Jean-Pierre D'Ales"};
-function = {"Extract the three float channel images from a color float image"};
-usage = {
-Cfimage->Image
-	"Input image", 
-Red_image<-RImage
-         "Output red channel image",
-Green_image<-GImage
-         "Output green channel image",
-Blue_image<-BImage
-         "Output blue channel image"
-	};
- */
-
-
-/*--- Include files UNIX C ---*/
+ name = {cfgetchannels};
+ version = {"1.0"};
+ author = {"Jean-Pierre D'Ales"};
+ function = {"Extract the three float channel images from a color float image"};
+ usage = {
+   Cfimage->Image      "Input image", 
+   Red_image<-RImage   "Output red channel image",
+   Green_image<-GImage "Output green channel image",
+   Blue_image<-BImage  "Output blue channel image"
+};
+*/
 
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
-
 #include  "mw.h"
 
-
-
-void
-cfgetchannels(Image, RImage, GImage, BImage)
-
-Cfimage     Image;		       /* Input color image */
-Fimage      RImage, GImage, BImage;    /* Output channel images */
-
+void cfgetchannels(Image, RImage, GImage, BImage)
+     Cfimage     Image;		            /* Input color image */
+     Fimage      RImage, GImage, BImage;    /* Output channel images */
+     
 {
   register float      *ptri, *ptrc;         /* Pointers to red, green and blue 
 				    * channels in color and channel image */

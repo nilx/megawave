@@ -1,0 +1,23 @@
+This module introduces a few modifications to \verb+falign+
+with the aim of producing meaningful alignments which are best suited for
+vanishing point detection with the \verb+vpoint+ module. 
+(See \cite{almansa.desolneux.vamech:vanish}, \cite{almansa:phd}).
+
+The main limitation of \verb+falign+ that we try to overcome here,
+is that a single edge often produces several meaningful alignments
+because of either \emph{(i)} sets of parallel lines that are aligned with a diagonal segment up to a coarse orientation precision $p$; or \emph{(ii)} a blurred image.
+Such multiple responses may increase the localization error of vanishing points, decrease their detectability or even lead to accidental vanishing points.
+Therefore we avoid them by directly applying the exclusion principle or MDL 
+\index{Minimum Description Length}
+\index{MDL|see{Minimum Description Length}}
+(-m 1 option): each pixel $x$ in the image is constrained to count as aligned to at most a single segment, namely the most meaningful segment $A$ such that $x$ belongs to the 1-dilate of $A$.
+
+Furthermore the orientation precision $p$ is substituted by a range of dyadic precisions $2^{-d},\dots,2^{-d-nd+1}$ as specified by the -d $d$ and -l $nd$ options. By default $1/p$ takes the values 8, 16, 32.
+
+Finally points where the gradient is too small are considered as not aligned to any segment, in order to avoid problems associated with orientation quantization as described in \cite{desolneux.ladjal.ea:dequant}. The actual threshold on gradient magnitude depends on orientation precision according to
+%\begin{equation*}
+$        |Du| \geq \frac{g}{p\pi} $
+%\end{equation*}
+where $g$ is the (quantization) noise level of the input image.
+
+

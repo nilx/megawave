@@ -1,27 +1,24 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
  name = {fdiff};
  author = {"Jacques Froment"};
  function = {"Computes the difference between pixel's gray-levels of two fimages"};
- version = {"1.00"};
+ version = {"1.0"};
  usage = {
- 'a'->absd  "flag to compute the absolute difference",
- A->A       "input fimage A", 
- B->B       "input fimage B", 
- O<-O       "output O=A-B"
+   'a'->absd  "flag to compute the absolute difference",
+   A->A       "input fimage A", 
+   B->B       "input fimage B", 
+   O<-O       "output O=A-B"
 };
 */
-/* ------------------------------------------------------------------------- */
 
 #include <stdio.h>
 #include <math.h>
 #include  "mw.h"
 
 void fdiff(absd,A,B,O)
-
-char *absd;
-Fimage	A,B,O;
-
+     char *absd;
+     Fimage	A,B,O;
 {
   long l;
   long	dx, dy;		/* Size of image */

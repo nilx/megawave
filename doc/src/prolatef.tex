@@ -1,0 +1,28 @@
+This module produces a prolate convolution kernel for optimal
+image reduction~\cite{landau.pollak:prolate}. 
+It is similar to the \verb+prolate+ module, but here
+the support constraint is enforced in
+the Fourier domain, so that a bandlimited kernel is obtained 
+(which allows aliasing-free image reduction).
+Among all $n\times n$ images $u$ such that 
+$\hat u(\xi)=0$ for any $\xi$ outside a disc or square 
+domain $F$ in Fourier space, the energy 
+$$E(u) = \frac{\displaystyle \sum_{\-s/2\leq x,y \leq s/2} u(x,y)^2}
+{\displaystyle \sum_{x,y} u(x,y)^2}$$
+is maximized. The result is then normalized to produce a (bandlimited)
+unit mass kernel whose Fourier Transform is $out$.
+The domain $F$ is specified with the options \verb+-d+ (size) and 
+\verb+-c+ (shape). The constraint $\hat u \geq 0$ can be enforced 
+with the \verb+-p+ option.
+
+\medskip
+
+Example of use (reduction of an image by a factor 2):
+
+\begin{verbatim}
+prolatef -n 256 3 0.5 kernel
+fview kernel &
+fftconvol fimage kernel out
+fsample out out 2
+fview out &
+\end{verbatim}

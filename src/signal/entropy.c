@@ -1,34 +1,23 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {entropy};
-version = {"1.0"};
+version = {"1.1"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Compute the entropy given by an histogram"};
 usage = {
-Histo->Histo
-	"Input histogram (fsignal)",
-Entropy<-Entropy
-	""
-	};
+  Histo->Histo      "Input histogram (fsignal)",
+  Entropy<-Entropy  "histogram's entropy"
+};
  */
 
-
-/*--- Include files UNIX C ---*/
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
-/*--- Constants ---*/
 
-
-
-
-void
-entropy(Histo, Entropy)
-
-    Fsignal     Histo;		/* Input histogram */
-    double     *Entropy;	/* Output, entropy of Histo */
+void entropy(Histo, Entropy)
+     
+     Fsignal     Histo;		/* Input histogram */
+     double     *Entropy;	/* Output, entropy of Histo */
 {
   int i;
   double sum;				/* Sum of histogram values */

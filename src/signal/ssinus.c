@@ -1,37 +1,37 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {ssinus};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Jacques Froment"};
-  function = {"Create a Sinus fsignal"};
+  function = {"Create a sine fsignal"};
   usage = {
-  's':[size=512]->size   "number of samples in the signal (default:512)",
-  'a':[amplitude=1.0]->A  "amplitude (default:1)",
-  'd':[dilatation=1.0]->D "dilatation (default:1)",
-  sinus<-signal           "output fsignal"
+  's':[size=512]->size     "number of samples in the signal",
+  'a':[amplitude=1.0]->A   "amplitude",
+  'd':[dilatation=1.0]->D  "dilatation",
+  sine<-signal             "output fsignal"
   };
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
-
-/* Include always the MegaWave2 include file */
 #include "mw.h"
 
 void ssinus(size,A,D,signal)
-
-int *size;
-float *A,*D;
-Fsignal signal;
-
+     
+     int *size;
+     float *A,*D;
+     Fsignal signal;
+     
 {
   int i;
 
   signal = mw_change_fsignal(signal, *size);
   if (signal == NULL) mwerror(FATAL,1,"Not enough memory.");
 
-  strcpy(signal->cmt,"Sinus");
+  strcpy(signal->cmt,"Sine");
 
   for(i = 0; i< *size; i++)
     signal->values[i] = (float)

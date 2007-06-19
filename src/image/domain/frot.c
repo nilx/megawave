@@ -1,17 +1,20 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {frot};
-   version = {"1.0"};
-   author = {"Lionel Moisan"};
-   function = {"Rotate a Fimage using bilinear interpolation"};
-   usage = {            
- 'a':[a=0.0]->a  "rotation angle (in degrees, counterclockwise, default 0.0)",
- 'b':[b=0.0]->b  "background grey value (default: 0.0)",
- 'k'->k_flag     "to keep original input image size (keep center position)",
- in->in          "input Fimage",
- out<-out        "output Fimage"
-   };
+ name = {frot};
+ version = {"1.1"};
+ author = {"Lionel Moisan"};
+ function = {"Rotate a Fimage using bilinear interpolation"};
+ usage = {            
+   'a':[a=0.0]->a  "rotation angle (in degrees, counterclockwise)",
+   'b':[b=0.0]->b  "background grey value",
+   'k'->k_flag     "to keep original input image size (keep center position)",
+   in->in          "input Fimage",
+   out<-out        "output Fimage"
+};
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -19,9 +22,9 @@
 
 
 void bound(x,y,ca,sa,xmin,xmax,ymin,ymax)
-int x,y;
-float ca,sa;
-int *xmin,*xmax,*ymin,*ymax;
+     int x,y;
+     float ca,sa;
+     int *xmin,*xmax,*ymin,*ymax;
 {   
     int rx,ry;
 
@@ -35,9 +38,9 @@ int *xmin,*xmax,*ymin,*ymax;
 /* NB : calling this module with out=in is nonsense */
 
 void frot(in,out,a,b,k_flag)
-Fimage in,out;
-float  *a,*b;
-char *k_flag;
+     Fimage in,out;
+     float  *a,*b;
+     char *k_flag;
 {
     int    nx,ny,x,y,x1,y1,adr;
     float  ca,sa,xp,yp,a11,a12,a21,a22,ux,uy,xtrans,ytrans;
@@ -72,23 +75,23 @@ char *k_flag;
     /********** Rotate image **********/
     for (x=xmin;x<=xmax;x++) 
       for (y=ymin;y<=ymax;y++) {
-	  xp = ca*(float)x-sa*(float)y + xtrans;
-	  yp = sa*(float)x+ca*(float)y + ytrans;
-	  x1 = (int)floor(xp); 
-	  y1 = (int)floor(yp); 
-	  ux = xp-(float)x1;
-	  uy = yp-(float)y1;
-	  adr = y1*nx+x1;
-	  tx1 = (x1>=0 && x1<nx);
-	  tx2 = (x1+1>=0 && x1+1<nx);
-	  ty1 = (y1>=0 && y1<ny);
-	  ty2 = (y1+1>=0 && y1+1<ny);
-	  a11 = (tx1 && ty1? in->gray[adr]:*b);
-	  a12 = (tx1 && ty2? in->gray[adr+nx]:*b);
-	  a21 = (tx2 && ty1? in->gray[adr+1]:*b);
-	  a22 = (tx2 && ty2? in->gray[adr+nx+1]:*b);
-	  out->gray[(y-ymin)*sx+x-xmin] = 
-	    (1.0-uy)*((1.0-ux)*a11+ux*a21)+uy*((1.0-ux)*a12+ux*a22);
+	xp = ca*(float)x-sa*(float)y + xtrans;
+	yp = sa*(float)x+ca*(float)y + ytrans;
+	x1 = (int)floor(xp); 
+	y1 = (int)floor(yp); 
+	ux = xp-(float)x1;
+	uy = yp-(float)y1;
+	adr = y1*nx+x1;
+	tx1 = (x1>=0 && x1<nx);
+	tx2 = (x1+1>=0 && x1+1<nx);
+	ty1 = (y1>=0 && y1<ny);
+	ty2 = (y1+1>=0 && y1+1<ny);
+	a11 = (tx1 && ty1? in->gray[adr]:*b);
+	a12 = (tx1 && ty2? in->gray[adr+nx]:*b);
+	a21 = (tx2 && ty1? in->gray[adr+1]:*b);
+	a22 = (tx2 && ty2? in->gray[adr+nx+1]:*b);
+	out->gray[(y-ymin)*sx+x-xmin] = 
+	  (1.0-uy)*((1.0-ux)*a11+ux*a21)+uy*((1.0-ux)*a12+ux*a22);
       }
 }
 

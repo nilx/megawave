@@ -1,18 +1,21 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {fksmooth};
    author = {"Lionel Moisan"};
-   version = {"1.1"};
+   version = {"1.2"};
    function = {"Apply Euclidean heat equation to a curve"};
    usage = {    
-  'n':[n=10]->n       "number of iterations (default: 10)",
-  's':[std=2.]->std   "standart deviation for Gaussian kernel (default: 2.)",
-  't':[t=1.]->t       "space quantization step (default: 1.)",
+  'n':[n=10]->n       "number of iterations",
+  's':[std=2.]->std   "standart deviation for Gaussian kernel",
+  't':[t=1.]->t       "space quantization step",
   'P'->P              "to prevent Euclidean normalization",
   in->in              "input curve (Flist)",
   out<-fksmooth       "output smoothed curve (Flist, modified input)"
    };
 */
+/*----------------------------------------------------------------------
+ v1.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <math.h>
 #include "mw.h"
@@ -24,8 +27,8 @@ extern Fsignal sgauss();
 
 
 void fksample(in,out,t)
-Flist in,out;
-float t;
+     Flist in,out;
+     float t;
 {
   float *ptr;
   double per,cur,step,d,l;
@@ -68,8 +71,8 @@ float t;
 }
 
 void convol(in,out,s)
-Flist in,out;
-Fsignal s;
+     Flist in,out;
+     Fsignal s;
 {
   int i,j,n;
   float v,*ptr;
@@ -87,7 +90,9 @@ Fsignal s;
   }
 }
 
+
 /*------------------------------ MAIN MODULE ------------------------------*/
+
 Flist fksmooth(in,n,std,t,P)
      Flist in;
      int *n;

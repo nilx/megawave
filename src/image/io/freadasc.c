@@ -1,15 +1,15 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {freadasc};
-  version = {"2.0"};
-  author = {"Jacques Froment, Said Ladjal"};
-  function = {"Read an image in ascii format (float values)"};
-  usage = {    
+ name = {freadasc};
+ version = {"2.0"};
+ author = {"Jacques Froment, Said Ladjal"};
+ function = {"Read an image in ascii format (float values)"};
+ usage = {    
       output<-u  "output fimage",
     { dx->Dx     "number of columns",
       dy->Dy     "number of rows" }
 
-    };
+};
 */
 /*----------------------------------------------------------------------
  v2.0: optional dimensions can be read from standart input (S.Ladjal)
@@ -19,8 +19,8 @@
 #include "mw.h"
  
 void freadasc(u,Dx,Dy)
-Fimage u;
-int *Dx,*Dy;
+     Fimage u;
+     int *Dx,*Dy;
 {
   register float *ptr;
   int i;

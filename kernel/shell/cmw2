@@ -2,11 +2,11 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="`basename $0`"
-_Vers="1.51"
-_Date="2004"
+_Vers="2.08"
+_Date="2007"
 _Func="Compile a MegaWave2 Module or Macro";
 _Auth="Jacques Froment, Sylvain Parrino";
-_Usage=" [-gnu] [-g] [-X] [-O] [-v] [-c compiler_option] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-dep] [-pubsyslib] [-N] module"
+_Usage=" [-traditional] [-gnu] [-g] [-X] [-O] [-v] [-c comp&link option] [-cc compiler option] [-cl linker option] [[-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory] [-llibrary] [-dep] [-pubsyslib] [-N] module"
 #----------------------------------------------------------------------------
 # This file is part of the MegaWave2 system macros. 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -15,6 +15,26 @@ _Usage=" [-gnu] [-g] [-X] [-O] [-v] [-c compiler_option] [-Dname[=def]] [-Uname]
 # CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 #-----------------------------------------------------------------------------
+
+
+# Get gcc version and set GCCVERS* variables
+
+Set_GCCVERS()
+{
+ GCCVERS=`env LANG=C $CC -v 2>&1  | grep "gcc version" | cut -f 3 -d " "`
+ if [ "$GCCVERS" = "" ]; then
+  GCCVERS_MAJOR=0
+  GCCVERS_MINOR=0
+  GCCVERS_UPDATE=0
+ else
+  GCCVERS_MAJOR=`echo $GCCVERS | cut -f 1 -d "."`
+  GCCVERS_MINOR=`echo $GCCVERS | cut -f 2 -d "."`
+  GCCVERS_UPDATE=`echo $GCCVERS | cut -f 3 -d "."`
+ fi
+}
+
+
+# Choose which directory will be the TMP dir
 
 ChooseTMP()
 
@@ -94,8 +114,9 @@ ChooseTMP
 CC=cc
 
 EXT=c
-NOLINT=0
 XMW=0
+# Set 0 if lint reappears as a standard tool
+NOLINT=1 
 
 # User shell variables
 if [ "$MEGAWAVE2" != "" ]; then
@@ -151,21 +172,21 @@ if [ "$dir" = "" ]; then
  else
 # adm mode
   MWDESTDIR=$MEGAWAVE2
-  MWCMD="$MWDIR/sys/bin/$MW_MACHINETYPE/mwp"
   LULIB="-l$ADM_LIBMW"
   ULIB=$ADM_LIBMW
   XULIB=$XADM_LIBMW
   macropt="-adm"
+  adm_mode=1
   echo "Beware, the target user is the system on $MWDESTDIR"
  fi
 else
 # user mode
  MWDESTDIR=$MY_MEGAWAVE2
- MWCMD="$MWDIR/sys/bin/$MW_MACHINETYPE/umwp"
  LULIB="-l$USER_LIBMW"
  ULIB=$USER_LIBMW
  XULIB=$XUSER_LIBMW
  macropt=""
+ adm_mode=0
 fi
 
 if [ ! -w $MWDESTDIR ]; then
@@ -203,35 +224,6 @@ fi
 # Scan options
 STOP="FALSE"
 MWOPTS="-I$MWDIR/sys/include -I$MWDESTDIR/include -D$MW_SYSTEMTYPE -D$MW_MACHINETYPE"
-
-# -- System include files need special statement under some systems since they are not full K&R
-# -- nor ANSI C compliant !!
-
-# -- Linux case
-if [ $MW_SYSTEMTYPE = Linux ]; then
-# In addition, system include files differ from one kernel to another !
-# Assume the first two numbers (e.g. 2.0) are enough to caracterise the include files.
-  KERNEL_MAJOR=`uname -r | cut -d "." -f 1`
-  KERNEL_MINOR=`uname -r | cut -d "." -f 2`
-  KERNEL_PATCH=`uname -r | cut -d "." -f 3 | cut -d "-" -f 1`
-  MWOPTS="$MWOPTS -D_KERNEL_MAJOR_=$KERNEL_MAJOR -D_KERNEL_MINOR_=$KERNEL_MINOR -D_KERNEL_PATCH_=$KERNEL_PATCH -I$MWDIR/sys/include/Linux"
-else
-
-# -- SunOS 5.x (Solaris) case. Problem appears on SunOS 5.7
-
-  if [ $MW_SYSTEMTYPE = SunOS ]; then
-    KERNEL_MAJOR=`uname -r | cut -d "." -f 1`
-    KERNEL_MINOR=`uname -r | cut -d "." -f 2`
-    if [ $KERNEL_MAJOR -ge 5 ] && [ $KERNEL_MINOR -ge 7 ]; then
-      MWOPTS="$MWOPTS -I$MWDIR/sys/include/Solaris"
-    fi
-# -- SunOS 
-  fi
-
-# -- Linux
-fi
-
-
 COPTS="-I$MWDIR/sys/include -I$MWDIR/include"
 MAINOBJ="$MWDIR/sys/lib/$MW_MACHINETYPE/mw_main.o"
 LOPTS="$MAINOBJ $LOPTS -L$MWDIR/sys/lib/$MW_MACHINETYPE -L$MWDIR/lib/$MW_MACHINETYPE"
@@ -239,12 +231,24 @@ debug=0
 dep=0
 verbose=0
 
+# Default preprocessor is the 'light' one. Set -traditional to change it.
+MWCMD="$MWDIR/sys/bin/$MW_MACHINETYPE/mwplight"
+light=1
+
 while [ "$1" != "" -a "$STOP" = "FALSE" ]
 do
   case "$1" in
     # MegaWave 2 options
     -c)		shift
 		COPTS="$COPTS $1"
+		LOPTS="$LOPTS $1"
+		;;
+
+    -cc)	shift
+		COPTS="$COPTS $1"
+		;;
+
+    -cl)	shift
 		LOPTS="$LOPTS $1"
 		;;
 
@@ -258,7 +262,22 @@ do
     -D*|-I*|-U*) MWOPTS="$MWOPTS $1"
 		;;
     -w)         MWOPTS="$MWOPTS $1"
+	        ;;
+
+    # Call light mwp (preprocessor)
+    -light)	MWCMD="$MWDIR/sys/bin/$MW_MACHINETYPE/mwplight"
+	        light=1
 		;;
+
+    # Call traditional mwp (preprocessor)
+    -traditional) light=0
+	  if [ $adm_mode -eq 1 ]; then
+	   MWCMD="$MWDIR/sys/bin/$MW_MACHINETYPE/mwp"
+	  else
+	   MWCMD="$MWDIR/sys/bin/$MW_MACHINETYPE/umwp"
+	  fi
+	  ;;
+
     # Linker options
     -L*)	LOPTS="$LOPTS $1"
 		;;
@@ -357,6 +376,43 @@ if [ ! -f $MWFILE ]; then
   exit 0
 fi
 
+# With the 'traditional' preprocessor, system include files need special statement under 
+# some systems since they are not full K&R nor ANSI C compliant.
+
+if [ $light -eq 0 ]; then
+# -- Linux case
+ if [ $MW_SYSTEMTYPE = Linux ]; then
+# In addition, system include files differ from one kernel to another !
+# Assume the first two numbers (e.g. 2.0) are enough to caracterise the include files.
+  KERNEL_MAJOR=`uname -r | cut -d "." -f 1`
+  KERNEL_MINOR=`uname -r | cut -d "." -f 2`
+  KERNEL_PATCH=`uname -r | cut -d "." -f 3 | cut -d "-" -f 1`
+  MWOPTS="$MWOPTS -D_KERNEL_MAJOR_=$KERNEL_MAJOR -D_KERNEL_MINOR_=$KERNEL_MINOR -D_KERNEL_PATCH_=$KERNEL_PATCH -I$MWDIR/sys/include/Linux"
+ else
+# -- SunOS 5.x (Solaris) case. Problem appears on SunOS 5.7
+  if [ $MW_SYSTEMTYPE = SunOS ]; then
+    KERNEL_MAJOR=`uname -r | cut -d "." -f 1`
+    KERNEL_MINOR=`uname -r | cut -d "." -f 2`
+    if [ $KERNEL_MAJOR -ge 5 ] && [ $KERNEL_MINOR -ge 7 ]; then
+      MWOPTS="$MWOPTS -I$MWDIR/sys/include/Solaris"
+    fi
+  fi
+ fi
+fi
+
+# Get gcc version
+Set_GCCVERS
+#echo "GCCVERS major=$GCCVERS_MAJOR minor=$GCCVERS_MINOR update=$GCCVERS_UPDATE"
+# Shortcoming to fix bug number 84115 in gcc-4.1 (Ubuntu).
+# See in the future if gcc 4.2 does not need this workaround.
+# Note : workaround also added in kernel/lib/Install and Makefile
+if [ $GCCVERS_MAJOR -eq 4 ]; then
+ if [ $GCCVERS_MINOR -ge 1 ]; then
+  COPTS="$COPTS -fno-stack-protector"
+  LOPTS="$LOPTS -fno-stack-protector"  
+ fi
+fi
+
 # Additional system libraries
 if [ "${MW_LIBTIFF}" != "" ]; then
  ASLIBS="-lm -ltiff"
@@ -377,8 +433,12 @@ ICFILE=$TMP/mw$$C.c
 # Define _module() and usage_module() : call in the Unix command mode.
 AAFILE=$TMP/mw$$A.c
 
-# Preprocessed module
-MFILE=$TMP/mw$$M.i
+# M-file : preprocessed (mwp) or modified source (mwplight) module 
+if [ $light -eq 0 ]; then
+ MFILE=$TMP/mw$$M.i
+else 
+ MFILE=$TMP/mw$$M.c
+fi
 
 NMFILE=$TMP/mw$$N
 
@@ -393,14 +453,29 @@ trap "echo interrupt; remove $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE $XM
 trap "echo quit; remove $TEXFILE $IIFILE $ICFILE $AAFILE $MFILE $NMFILE $XMWFILE $LINKFILE; exit 1" 3
 
 MWCMD="$MWCMD"
-MWARG="$IX11 $MWOPTS -_T$TEXFILE -_I$IIFILE -_A$AAFILE -_M$MFILE -_N$NMFILE $MWFILE"
-
-if [ $XMW = 1 ]; then
-  MWARG="-X -_X$XMWFILE $MWARG"
+if [ $light -eq 0 ]; then
+# Traditional mwp
+ MWARG="$IX11 $MWOPTS -_T$TEXFILE -_I$IIFILE -_A$AAFILE -_M$MFILE -_N$NMFILE $MWFILE"
+ if [ $XMW = 1 ]; then
+   MWARG="-X -_X$XMWFILE $MWARG"
+ fi
+else
+# Light mwp
+# echo "Beware, using experimental MegaWave2 Light Preprocessor !"
+ if [ $adm_mode -eq 1 ]; then
+   MWARG="-a -_T$TEXFILE -_I$IIFILE -_A$AAFILE -_M$MFILE -_N$NMFILE $MWFILE"    
+ else
+   MWARG="-_T$TEXFILE -_I$IIFILE -_A$AAFILE  -_M$MFILE -_N$NMFILE $MWFILE"    
+ fi
 fi
 
+
 echo " "
-echo "  Phase 1 : MegaWave2 preprocessor"
+if [ $light -eq 0 ]; then
+ echo "  Phase 1 : MegaWave2 preprocessor"
+else
+ echo "  Phase 1 : MegaWave2 Light preprocessor"
+fi
 #-------------------------------------------------------
 if [ $verbose -eq 1 ]; then
  echo "<Run> $MWCMD $MWARG"
@@ -506,7 +581,7 @@ else
    echo "<Run> $CCCMD"
   fi
   sh -c "$CCCMD"
-  
+
   if [ $XMW = 1 ]; then
     echo "          production of interface with XMegaWave2"
 #-------------------------------------------------------
@@ -517,7 +592,7 @@ else
     sh -c "$CCCMD"
     remove $XMWFILE
   fi
-  
+
   echo "          production of interface with MegaWave2 library object"
 #-------------------------------------------------------
   echo '#define MWI_DEC'                       >$ICFILE
@@ -574,7 +649,7 @@ else
    fi
   fi
 
-  echo "  Phase 3 : production of MegaWave command"
+  echo "  Phase 3 : production of MegaWave2 command"
 #-------------------------------------------------------
   # Teste acces de la directory des executables
   if [ ! -d $MWDESTDIR/bin/$MW_MACHINETYPE ]; then
@@ -650,7 +725,7 @@ else
     echo "          making dependencies primary list"
     DEPEXTOBJ="$EXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/m_$MODULE.o"
     DEPEXTOBJ="$DEPEXTOBJ $MWDESTDIR/obj/$MW_MACHINETYPE/$MODULE.o"
-    DEPLINKCMD="$CC $LOPTS -o $LINKFILE $DEPEXTOBJ $OBJ $SYS_LIBMW $HPLIBS $ALIBS $ASLIBS 2> $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.mis"
+    DEPLINKCMD="env LANG=C $CC $LOPTS -o $LINKFILE $DEPEXTOBJ $OBJ $SYS_LIBMW $HPLIBS $ALIBS $ASLIBS 2> $MWDESTDIR/doc/obj/DEPENDENCIES/$MODULE.mis"
     if [ $verbose -eq 1 ]; then
      echo "<Run> $DEPLINKCMD"
     fi

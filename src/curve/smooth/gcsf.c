@@ -1,41 +1,29 @@
 /*--------------------------- Commande MegaWave -----------------------------*/
 /* mwcommand
    name = {gcsf};
-   version = {"1.2"};
+   version = {"1.3"};
    author = {"Frederic Cao, Lionel Moisan"};
    function = {"Generalized Curve Shortening Flow of a curve"};
    usage = {
 
-'g':[g=1.0]->gam    "power of the curvature (double > 1/3.) (default 1)",
+ 'g':[g=1.0]->gam           "power of the curvature (double > 1/3.)",
+ 'f':[f=0.]->first          "first scale",
+ 'l':[l=1.]->last           "last scale",
+ 'e':[eps=3.]->eps[2.,13.]  "relative sampling precision (-log10 scale)",
+ 'n':[n=1]->n               "minimal number of iterations",
+ 'r':r->r                   "bounding box radius (default: minimal)",
+ 'i':i->iter                "number of iterations",
+ 'c'->conv                  "do not convexify last iteration",
+ 'a':[a=4.]->area[2.,13.]   "relative eroded area (-log10 area)",
+ 'v'->v                     "verbose mode",
+ in->in                     "input (Dlists)",
+ out<-out                   "output (Dlists)"
 
-'f':[f=0.]->first    "first scale (default 0.)",
-
-'l':[l=1.]->last     "last scale (default: 1.0)",
-
-'e':[eps=3.]->eps[2.,13.]
-    "relative sampling precision (-log10 scale), in [2,13] (default 3.)",
-
-'n':[n=1]->n
-    "minimal number of iterations (default: 1)",
-
-'r':r->r
-    "bounding box radius (default: minimal)",
-
-'i':i->iter
-    "number of iterations",
-
-'c'->conv
-    "do not convexify last iteration",
-
-'a':[a=4.]->area[2.,13.]
-    "relative eroded area (-log10 area), in [2,13] (default 4.)",
-'v'->v            "verbose mode",
-
-    in->in               "input (Dlists)",
-
-    out<-out            "output (Dlists)"
-	    };
-   */
+};
+*/
+/*----------------------------------------------------------------------
+ v1.3 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -55,27 +43,27 @@ double tmp;
 #define EPSILON  1e-15  /*** relative precision for a double ***/
 
 double DET3(a,b,c)
-double *a,*b,*c;
+     double *a,*b,*c;
 {
   return((*b-*a)*(*(c+1)-*(a+1)) - (*(b+1)-*(a+1))*(*c-*a));
 }
 
 /*** distance between two points ***/
 double norm(u,v)
-double *u,*v;
+     double *u,*v;
 {
   return (sqrt((*u-*v)*(*u-*v)+(*(u+1)-*(v+1))*(*(u+1)-*(v+1))));
 }
 /*** squared distance between two points ***/
 double norm2(u,v)
-double *u,*v;
+     double *u,*v;
 {
   return ((*u-*v)*(*u-*v)+(*(u+1)-*(v+1))*(*(u+1)-*(v+1)));
 }
 
 /*** dot product of two affine vectors ***/
 double dot3(u,v,w)
-double *u,*v,*w;
+     double *u,*v,*w;
 {
   return((*v-*u)*(*w-*u)+(*(v+1)-*(u+1))*(*(w+1)-*(u+1)));
 }
@@ -85,7 +73,7 @@ double *u,*v,*w;
 
 /*** signed area of a polygonal sector p-q1-q2-p ***/
 double area_pol(p,q1,q2)
-double *p,*q1,*q2;
+     double *p,*q1,*q2;
 {
   double area,*q;
 
@@ -98,7 +86,7 @@ double *p,*q1,*q2;
 
 /*** return +1, 0 or -1, the sign of det(b-a,c-b) modulo double precision ***/
 int dir(ax,ay,bx,by,cx,cy)
-double ax,ay,bx,by,cx,cy;
+     double ax,ay,bx,by,cx,cy;
 {
   double det,prec;
 
@@ -113,7 +101,7 @@ double ax,ay,bx,by,cx,cy;
 
 /*** return +1, 0 or -1, the sign of <a,b> modulo double precision ***/
 int sgdot(ux,uy,vx,vy)
-double ux,uy,vx,vy;
+     double ux,uy,vx,vy;
 {
   double dot,prec;
 
@@ -126,9 +114,9 @@ double ux,uy,vx,vy;
 /*----------------- Split a curve into convex components -----------------*/
 
 int my_split_convex(in,out,ncc)
-Dlist  in;
-double **out;
-int    *ncc;
+     Dlist  in;
+     double **out;
+     int    *ncc;
 {
   int     il,i,d1,d2,ni,n,is_closed,ok;
   double  *p,*q,*pmax,mx,my,px1,py1,px2,py2,px3,py3,px4,py4,*first;
@@ -252,9 +240,9 @@ int    *ncc;
 
 /*** sample a curve : return next available address for out ***/
 double *sample(in,size,out,eps2)
-double  *in,*out;
-int     size;
-double  eps2;
+     double  *in,*out;
+     int     size;
+     double  eps2;
 {
   double  x,y,ox,oy,d2,dx,dy,threshold,*p,*q,*pmax;
   int     i,j,k,n,osize;
@@ -317,9 +305,9 @@ double  eps2;
 /*** sample a curve and create the corresponding chord direction ***/
 /*** return the number of points of the new curve ***/
 int sample_chord(in,ch_in,size,out,ch_out,eps2)
-double  *in,*out,*ch_in,*ch_out;
-int     size;
-double  eps2;
+     double  *in,*out,*ch_in,*ch_out;
+     int     size;
+     double  eps2;
 {
   double  x,y,ox,oy,d2,dx,dy,threshold,*p,*q,*pmax,*c,*d,*cmax;
   int     i,j,k,n,osize;
@@ -374,8 +362,8 @@ double  eps2;
 
 /*** search furthest point on the arc  ***/
 double searchfar(in,pmax,is_closed,first,last,fixed,pt,far,prevfar,firstfar)
-double    *in,*pmax,*first,*last,*fixed,*pt,**far,**prevfar;
-int       *firstfar,is_closed;
+     double    *in,*pmax,*first,*last,*fixed,*pt,**far,**prevfar;
+     int       *firstfar,is_closed;
 {
   double length,h,height;
   double *p,*q;
@@ -428,8 +416,8 @@ int       *firstfar,is_closed;
 
 /*** compute the coordinates of a new point of curve ***/
 void gamma_point(ext1,ext2,far,height,gp,gam,a,alpha)
-double *ext1,*ext2,*far,*gp;
-double a,alpha,height,gam;
+     double *ext1,*ext2,*far,*gp;
+     double a,alpha,height,gam;
 {
   double abscissa,h,d,length,sn,cn,dx,dy,u;
 
@@ -471,9 +459,9 @@ double a,alpha,height,gam;
 /*-------------------- Gamma CONVEX erosion --------------------*/
 /* return the number of created points */
 int gaceros(in,ch,size,out,gam,area,a,alpha,eps2,sign)
-double   *in,*ch,*out;
-double   gam,area,a,alpha,eps2,*sign;
-int      size;
+     double   *in,*ch,*out;
+     double   gam,area,a,alpha,eps2,*sign;
+     int      size;
 {
   double     *p,*p0,*p1,*p2,*pmax,*q0,*q1,*v,*w,*pt,*far,*prevfar,*cv,*gp;
   double     abs_area,tot_area,cur_area,inc_area,height,h,d,l,lambda,eps;
@@ -638,11 +626,11 @@ int      size;
 
 
 /* Compute the chord arc-distance of a curve. The "fixed" point is not a
- point of the curve since it is interpolated to fit the area erosion.
-The furthest point is reused to decrease research time.*/
+   point of the curve since it is interpolated to fit the area erosion.
+   The furthest point is reused to decrease research time.*/
 double height(in,pmax,is_closed,first,last,fixed,pt,far,firstfar)
-double  *in,*pmax,*first,*last,*pt,**far,*fixed;
-int *firstfar,is_closed;
+     double  *in,*pmax,*first,*last,*pt,**far,*fixed;
+     int *firstfar,is_closed;
 {
   double *p,*f;
   double a,h,l;
@@ -681,9 +669,9 @@ int *firstfar,is_closed;
 
 /*** compute tha max chord arc distance when the area is known***/
 double saturation(in,size,area)
-double *in;
-int size;
-double area;
+     double *in;
+     int size;
+     double area;
 {
   double *p0,*p1,*q0,*q1,*p,*p2,*pt,*pmax,*far;
   int okp,okq,stop,is_closed;
@@ -785,9 +773,9 @@ double area;
 
 
 int convexify(in,ch,remove,size,sign)
-double *in,*ch,*remove;
-double sign;
-int size;
+     double *in,*ch,*remove;
+     double sign;
+     int size;
 {
   double *p0,*p1,*q0,*q1,*p2,*pmax,*p;
   int j,pushp,is_closed,ok,stop,go_ahead,forward,removed=0;
@@ -932,13 +920,13 @@ int size;
 /* global variables explicitly appear */
 
 void g_eros(li,gam,scale,area,eps2,ncc,conv)
-Dlist    li;     /* input/output Dlist */
-double   eps2;   /* relative precision squared */
-double   gam;   /* power of the curvature*/
-double   *scale; /* final scale (return real one)*/
-double   *area;  /* erosion area */
-int      *ncc;   /* number of convex components after erosion*/
-int      conv; /*do NOT convexify after erosion*/
+     Dlist    li;     /* input/output Dlist */
+     double   eps2;   /* relative precision squared */
+     double   gam;    /* power of the curvature*/
+     double   *scale; /* final scale (return real one)*/
+     double   *area;  /* erosion area */
+     int      *ncc;   /* number of convex components after erosion*/
+     int      conv;   /*do NOT convexify after erosion*/
 {
   double        eps,a,b,alpha,delta,narea,min_area,d,h,sign;
   double        *first,*last;
@@ -1009,10 +997,10 @@ int      conv; /*do NOT convexify after erosion*/
 /* global variables explicitly appear*/
 
 Dlists gcsf(in,out,gam,first,last,eps,area,n,r,v,iter,conv)
-Dlists     in,out;
-double     *first,*last,*eps,*area,*r,*gam;
-char       *v,*conv;
-int        *n,*iter;
+     Dlists     in,out;
+     double     *first,*last,*eps,*area,*r,*gam;
+     char       *v,*conv;
+     int        *n,*iter;
 {
   int       i,j,ncc,MAX_PTS,MAX_CC,npts,maxsize,collapsed;
   double    a,are,remaining,newlast,rad,eps2,omega,t,step;

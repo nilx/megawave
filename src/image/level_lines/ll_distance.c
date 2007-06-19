@@ -1,20 +1,15 @@
-/*--------------------------------------------------------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {ll_distance};
-version={"1.1"};
-author={"Frederic Guichard, Lionel Moisan"};
-function={"Compute signed distance image to a level line of an image"};
-usage = {
-'l':[level=128.0]->level    
-    "gray level (default 128.0)",
-'m':MaxDist->MaxDist
-    "maximum distance to look for (integer, default=image size)",
-'n':nearest<-nearest
-    "image of nearest levels (to get Voronoï Diagram)",
-in -> in 
-    "input Fimage",
-out <- out 
-    "output Fimage"
+ name = {ll_distance};
+ version = {"1.2"};
+ author = {"Frederic Guichard, Lionel Moisan"};
+ function = {"Compute signed distance image to a level line of an image"};
+ usage = {
+  'l':[level=128.]->level  "gray level",
+  'm':MaxDist->MaxDist     "maximum distance to look for (default=image size)",
+  'n':nearest<-nearest     "image of nearest levels (to get Voronoi Diagram)",
+  in->in                   "input Fimage",
+  out<-out                 "output Fimage"
 };
 */
 
@@ -27,9 +22,9 @@ out <- out
 
 
 void ll_distance(in, out, level, MaxDist, nearest)
-Fimage in,out,nearest;
-float *level;
-int *MaxDist;
+     Fimage in,out,nearest;
+     float *level;
+     int *MaxDist;
 {
   int i,j,X1,Y1,X2,Y2,kx,ky,dx,dy,pos,ok,maxdist;
   float d,cur,min,max;

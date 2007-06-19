@@ -1,27 +1,29 @@
-/*---------------------------------------------------------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {cfdiffuse};
-version = {"1.0"};
+version = {"1.1"};
 author = {"Antonin Chambolle, Jacques Froment"};
 function = {"One-step Diffusion of a Color Float Image using Total Variation minimization"};
 usage = {
-'t':[deltat=10.0]->deltat  "Time for the diffusion (default 10.)",
-'l':[epsilon=1.0]->epsilon [0.1,100.0] "Lower bound for the RGB norm (default 1.)",
-in->in       "original image (input cfimage)",
-out<-out         "diffused image (output cfimage)",
-notused -> MDiag0   "Diagonal of the matrix #0 (internal use)",
-notused -> MDiag1   "Diagonal of the matrix #1 (internal use)",
-notused -> U0       "Vector of real values (internal use)",
-notused -> Yimage   "Vector of RGB values (internal use)",
-notused -> Vimage   "Vector of RGB values (internal use)",
-notused -> L2h      "Horizontal Lambda matrix (internal use)",
-notused -> L2v      "Vertical Lambda matrix (internal use)"
+ 't':[deltat=10.0]->deltat  "Time for the diffusion",
+ 'l':[epsilon=1.0]->epsilon [0.1,100.0] "Lower bound for the RGB norm",
+ in->in              "original image (input cfimage)",
+ out<-out            "diffused image (output cfimage)",
+ notused -> MDiag0   "Diagonal of the matrix #0 (internal use)",
+ notused -> MDiag1   "Diagonal of the matrix #1 (internal use)",
+ notused -> U0       "Vector of real values (internal use)",
+ notused -> Yimage   "Vector of RGB values (internal use)",
+ notused -> Vimage   "Vector of RGB values (internal use)",
+ notused -> L2h      "Horizontal Lambda matrix (internal use)",
+ notused -> L2v      "Vertical Lambda matrix (internal use)"
 };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
-
 #include "mw.h"
 
 #define EPSILON 0.5

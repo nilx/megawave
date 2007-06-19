@@ -1,17 +1,14 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {ml_reconstruct};
-  version = {"3.7"};
-  author = {"Georges Koepfler"};
-  function = {"Reconstruct image from morpho_lines of mimage"};
-  usage = {
-  'i'->v_flag
-         "use the maxvalue of the morpho_lines (default minvalue)",
-  m_image->m_image
-         "input mimage",
-  image_out<-ml_reconstruct
-         "reconstructed fimage"
-  };
+ name = {ml_reconstruct};
+ version = {"3.7"};
+ author = {"Georges Koepfler"};
+ function = {"Reconstruct image from morpho_lines of mimage"};
+ usage = {
+  'i'->v_flag        "use the maxvalue of the morpho_lines (default minvalue)",
+  m_image->m_image           "input mimage",
+  image_out<-ml_reconstruct  "reconstructed fimage"
+};
 */
 /*----------------------------------------------------------------------
  v3.7: upgrade for new kernel (L.Moisan)

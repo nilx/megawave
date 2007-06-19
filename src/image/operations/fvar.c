@@ -1,40 +1,47 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {fvar};
-author = {"Jacques Froment"};
-function = {"Compute the variance of the gray level of an image"};
-usage = {
-A->A "input fimage",
-v<-fvar "output variance"
+ name = {fvar};
+ version = {"1.2"};
+ author = {"Jacques Froment"};
+ function = {"Compute the variance of the gray level of an image"};
+ usage = {
+   'e'->e  "compute the true empirical variance (not the unbiased estimate)",
+   's'->s  "take square root (compute standart deviation instead of variance)",
+   A->A    "input fimage",
+   v<-fvar "output variance"
 };
-version = {"1.1"};
 */
+/*----------------------------------------------------------------------
+ v1.2: added -e and -s options (L.Moisan)
+ ----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <math.h>
 #include  "mw.h"
 
-float fvar(A)
-
-Fimage A;
-
+float fvar(A,e,s)
+     Fimage A;
+     int *e,*s;
 {
-  int s;
+  int size;
   register float *ptr;
   register int i;
   double m,v,vr;
 
-  s = A->ncol*A->nrow;
-  if (s <= 1) return(0.);
+  size = A->ncol*A->nrow;
+  if (size <= 1) return(0.);
 
-  for (m=0., i=0, ptr = A->gray; i<s; i++,ptr++) m += *ptr;
-  m /= (double)s;
+  for (m=0., i=0, ptr = A->gray; i<size; i++,ptr++) m += *ptr;
+  m /= (double)size;
       
   vr = 0.0;
-  for (i=0, ptr = A->gray;i<s;i++,ptr++) 
+  for (i=0, ptr = A->gray;i<size;i++,ptr++) 
     {
       v = *ptr - m;  
       vr += v*v;
     }
-  vr /=  (double)s - 1.;
-  return((float) vr);
+  vr /=  (double)size - (e?0.:1.);
+  if (s) vr = sqrt(vr);
+
+  return ((float)vr);
 }

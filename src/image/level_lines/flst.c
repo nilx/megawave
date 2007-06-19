@@ -1,14 +1,14 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-  name = {flst}; 
-  version = {"2.0"}; 
-  author = {"Pascal Monasse"}; 
-  function = {"Fast Level Sets Transform of an image"}; 
-  usage = { 
-    'a': min_area-> pMinArea "argument of the grain filter",
-    image-> pImageInput  "Input fimage",
-    tree<- pTree "The tree of shapes"
-    }; 
+ name = {flst}; 
+ version = {"2.0"}; 
+ author = {"Pascal Monasse"}; 
+ function = {"Fast Level Sets Transform of an image"}; 
+ usage = { 
+    'a':min_area->pMinArea  "argument of the grain filter",
+    image->pImageInput      "Input fimage",
+    tree<-pTree             "The tree of shapes"
+}; 
 */ 
 
 #include <assert.h>

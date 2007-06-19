@@ -1,4 +1,4 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {sop};
    version = {"1.3"};
@@ -35,9 +35,9 @@
 #define ABS(x) ((x)>0?(x):(-(x)))
 
 void sop(B,out,A,a,plus,minus,times,divide,dist,norm,inf,sup,less,greater,equal)
-Fsignal B,out,A;
-float *a;
-char *plus,*minus,*times,*divide,*dist,*norm,*inf,*sup,*less,*greater,*equal;
+     Fsignal B,out,A;
+     float *a;
+     char *plus,*minus,*times,*divide,*dist,*norm,*inf,*sup,*less,*greater,*equal;
 {
   int i;
   float left,res;

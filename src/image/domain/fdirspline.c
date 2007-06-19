@@ -1,4 +1,4 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {fdirspline};
   version = {"1.0"};
@@ -15,8 +15,8 @@
 
 /* extract image value (symmetrize outside image domain) */
 float v(in,x,y)
-Fimage in;
-int x,y;
+     Fimage in;
+     int x,y;
 {
   if (x<0) x=-x;
   if (x>=in->ncol) x=2*(in->ncol-1)-x;

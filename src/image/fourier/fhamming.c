@@ -1,12 +1,12 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {fhamming};
-   version = {"1.0"};
-   author = {"Lionel Moisan"};
-   function = {"Apply Hamming window to a Fimage"};
-   usage = {
-           in->in           "input Fimage",
-           out<-out         "windowed Fimage"
+ name = {fhamming};
+ version = {"1.0"};
+ author = {"Lionel Moisan"};
+ function = {"Apply Hamming window to a Fimage"};
+ usage = {
+      in->in      "input Fimage",
+      out<-out    "windowed Fimage"
    };
 */
 
@@ -18,7 +18,7 @@
 /* NB: Calling this module with out=in is possible */
 
 void fhamming(in,out)
-Fimage in,out;
+     Fimage in,out;
 {
   int     n,p,i,j;
   double  alpha,x,y,w;

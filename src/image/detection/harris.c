@@ -1,24 +1,21 @@
-/*----------------------------MegaWave2 module----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {harris};
-version = {"1.0"};
+version = {"1.1"};
 author = {"Frederic Cao"};
 function = {"Harris corner detector"};
 usage = {
-   'k':[k=0.04]->k
-      "weight of trace, default 0.04 (suggested by Harris)",
-   'g':[g=1.]->g
-      "standard deviation of gaussian filtering, default 1.0",
-   's':[s=3]->size
-      "size of neighborhood for maxima research",
-   't':[t=4.]->t
-      "log10(threshold) for cornerness, default 4.0",
-   in->in
-      "Input image",
-   out<-harris
-      "Corner list (Flist)"
-      };
+   'k':[k=0.04]->k    "weight of trace, default value suggested by Harris",
+   'g':[g=1.]->g      "standard deviation of gaussian filtering",
+   's':[s=3]->size    "size of neighborhood for maxima research",
+   't':[t=4.]->t      "log10(threshold) for cornerness",
+   in->in             "Input image",
+   out<-harris        "Corner list (Flist)"
+};
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

@@ -1,11 +1,11 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {fkprintasc};
    version = {"1.1"};
    author = {"Jacques Froment"};
    function = {"Print the content of a fcurves"};
    usage = {            
-    in->fcvs    "input Fcurves"
+      in->fcvs    "input Fcurves"
    };
 */
 
@@ -13,8 +13,8 @@
 #include "mw.h"
 
 void fkprintasc(fcvs)
-Fcurves fcvs;
-
+     Fcurves fcvs;
+     
 {
   Fcurve fcv;
   Point_fcurve  p;

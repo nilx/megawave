@@ -1,14 +1,14 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-  name = {flst_boundary}; 
-  version = {"1.0"}; 
-  author = {"Pascal Monasse"}; 
-  function = {"Find boundary of shape"}; 
-  usage = { 
-    tree -> pTree "The tree of shapes",
-    shape -> pShape "The shape whose boundary is to be computed",
-    boundary <- pBoundary "boundary computed (output Flist)"
-    }; 
+ name = {flst_boundary}; 
+ version = {"1.0"}; 
+ author = {"Pascal Monasse"}; 
+ function = {"Find boundary of shape"}; 
+ usage = { 
+    tree->pTree          "The tree of shapes",
+    shape->pShape        "The shape whose boundary is to be computed",
+    boundary<-pBoundary  "boundary computed (output Flist)"
+}; 
 */ 
 
 #include "mw.h"

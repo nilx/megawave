@@ -1,39 +1,30 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
-  name = {cml_draw};
-  version = {"1.0"};
-  author = {"Jacques Froment, Georges Koepfler"};
-  function = {"Draw cmorpho_lines of cmimage"};
-  usage = {
-  'b'->border
-         "draw border",
-  'a':bimage->bimage
-          "add the original bitmap ccimage to the background",
-  'o':movie<-movie
-         "color movie made with one b/w image per level",
-  cmimage->cmimage
-         "input cmimage",
-  image_out<-cml_draw
-        "color image of cmorpho_lines, size (2L-1)x(2C-1)"
-  };
+ name = {cml_draw};
+ version = {"1.0"};
+ author = {"Jacques Froment, Georges Koepfler"};
+ function = {"Draw cmorpho_lines of cmimage"};
+ usage = {
+   'b'->border           "draw border",
+   'a':bimage->bimage    "add the original bitmap ccimage to the background",
+   'o':movie<-movie      "color movie made with one b/w image per level",
+   cmimage->cmimage      "input cmimage",
+   image_out<-cml_draw   "color image of cmorpho_lines, size (2L-1)x(2C-1)"
+};
 */
-/*--------------------------------------------------------------------------*/
-
 
 #include <stdio.h>
 #include <assert.h>
-
 #include "mw.h"
 
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))
 
 void draw_cmlines(mline,image,NL,NC,border)
-Cmorpho_line mline;
-Ccimage image;
-int NL,NC;
-unsigned char *border;
-
+     Cmorpho_line mline;
+     Ccimage image;
+     int NL,NC;
+     unsigned char *border;
 {
   Point_curve point_ptr;
   int BNL,BNC,l,c,dl,dc;
@@ -95,11 +86,9 @@ unsigned char *border;
 */
 
 void  setimage(border,bimage,mlimage)
-
-char *border;
-Ccimage bimage;
-Ccimage mlimage;
-
+     char *border;
+     Ccimage bimage;
+     Ccimage mlimage;
 {
   int NCb,NLb,NCml,NLml;
   int xb,yb,xml,yml,x0,x1,y0,y1;
@@ -137,12 +126,10 @@ Ccimage mlimage;
 }
 
 Ccimage cml_draw(cmimage,bimage,border,movie)
-
-Cmimage cmimage;
-Ccimage bimage;
-char *border;
-Ccmovie movie;
-
+     Cmimage cmimage;
+     Ccimage bimage;
+     char *border;
+     Ccmovie movie;
 { 
   Ccimage cb=NULL,newcb,oldcb;
   Cmorpho_line mline_list,mline;

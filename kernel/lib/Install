@@ -3,10 +3,10 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Install a new version of the MegaWave2 System Library";
 _Prog="`basename $0`"
-_Vers="1.1"
-_Date="2002-03"
+_Vers="1.2"
+_Date="2002-2007"
 _Auth="Jacques Froment";
-_Usage="[-static] [-public] [-clear] [-debug]"
+_Usage="[-static] [-public] [-clear] [-debug] [-nofstackprotector]"
 #-----------------------------------------------------------------------------
 # This file is part of the MegaWave2 system library 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -65,6 +65,10 @@ do
 		    ;;
 
 	  "-debug") opt="$opt debug"
+		    shift
+		    ;;
+
+	  "-nofstackprotector") opt="$opt nofstackprotector"
 		    shift
 		    ;;
 

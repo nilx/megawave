@@ -1,23 +1,23 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {sr_signature};
-   version = {"1.4"};
-   author = {"Thierry Cohignac, Lionel Moisan"};
-   function = {"Compute the signature of a shape (density on rings)"};
-   usage = {            
-	    'n':[n=20]->n           "number of parameters (default: 20)",
-	    'a':base->base          "initial set of parameters (Fimage)",
-            in->in                  "input shape (Fcurves)",
-            out<-sr_signature       "final set of parameters"
-   };
+ name = {sr_signature};
+ version = {"1.5"};
+ author = {"Thierry Cohignac, Lionel Moisan"};
+ function = {"Compute the signature of a shape (density on rings)"};
+ usage = {            
+     'n':[n=20]->n        "number of parameters",
+     'a':base->base       "initial set of parameters (Fimage)",
+     in->in               "input shape (Fcurves)",
+     out<-sr_signature    "final set of parameters"
+};
 */
 /*----------------------------------------------------------------------
- v1.3: fkcenter (L.Moisan)
+ v1.4: use fkcenter (L.Moisan)
+ v1.5 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
-
 #include "mw.h"
 
 extern void fkcenter();

@@ -7,7 +7,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /* Generation of C code - main function 
-   V 2.05
+   V 2.06
 
    Original version : Sylvain Parrino 
    Main modifications :
@@ -25,11 +25,13 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 V 2.05 : 04/09/03 by JF : - Warning added 11/08/01 is now removed.
                           - Added same change than the one of 11/08/01 for the last
                             variable in the function call (See e.g. module perimeter).
+V 2.06 (JF, 23/02/2006) added include <string.h>
 
 */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "bintree.h"
 #include "symbol.h"
@@ -104,9 +106,11 @@ FILE *fd;
     /* Added by JF 20/06/2000 : stdlib is needed by Linux to get
        a correct behavior of the atof() function, at least without 
        a cast to a float !
+       Added by JF 23/02/2006 : string.h for strcpy() with Linux 2.6.12 & gcc 4.0.2
     */
     fprintf(fd,"#ifdef __STDC__\n");
     fprintf(fd,"#include <stdlib.h>\n");
+    fprintf(fd,"#include <string.h>\n");
     fprintf(fd,"#endif\n");
 
     /* Suppressed by JF 21/09/2000 : useless since mw.h contains all of

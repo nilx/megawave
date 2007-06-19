@@ -1,21 +1,25 @@
 /*----------------------------- MegaWave Module -----------------------------*/
 /* mwcommand 
 name = {ll_edges}; 
-version = {"1.0"}; 
+version = {"1.2"}; 
 author = {"Lionel Moisan"}; 
 function = {"Extract maximal meaningful edges (contrasted pieces of level lines) from a Fimage"}; 
 usage = { 
 
-'e':[eps=0]->eps      "-log10(max. number of false alarms), default 0",
-'s':step->step        "quantization step (bilinear), default 1.",
-'p':p->precision      "sampling precision (bilinear), default 2",
-'t':tree->tree        "use a precomputed FLST tree",
-'z'->z                "use zero order instead of bilinear interpolation",
-in->in                "input Fimage",
-out<-ll_edges         "output edges (Flists)"
+ 'e':[eps=0]->eps      "-log10(max. number of false alarms)",
+ 's':step->step        "quantization step (bilinear), default 1.",
+ 'p':p->precision      "sampling precision (bilinear), default 2",
+ 't':tree->tree        "use a precomputed FLST tree",
+ 'z'->z                "use zero order instead of bilinear interpolation",
+ in->in                "input Fimage",
+ out<-ll_edges         "output edges (Flists)"
 
 }; 
 */ 
+/*----------------------------------------------------------------------
+ v1.1: upgraded fhisto() call (L.Moisan)
+ v1.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <float.h>
@@ -237,7 +241,7 @@ char *z;
 
   /* compute logProbaOfDu */
   histo_step = HISTO_STEP;
-  logProbaOfDu = fhisto(NormOfDu,NULL,&fzero,NULL,NULL,&histo_step,NULL);
+  logProbaOfDu = fhisto(NormOfDu,NULL,&fzero,NULL,NULL,&histo_step,NULL,NULL);
   logProbaOfDu->values[0]=0.; /* because Du!=0 on level lines */
   sintegral(logProbaOfDu,1,1);
   for (i=0;i<logProbaOfDu->size;i++)

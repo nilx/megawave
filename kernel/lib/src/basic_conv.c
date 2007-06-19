@@ -1,15 +1,18 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    basic_conv.c
    
-   Vers. 1.19
-   (C) 1993-2002 Jacques Froment
+   Vers. 1.20
+   Author : Jacques Froment
    Basic routines to convert internal MegaWave2 types (C structures)
-
-   Modified by LM (1.19): include data fields in mw_*list*_to_*list*()
 
    Warning : since this source file is read by make_type_conv to detect the
              existing functions, do not use extravagant syntax. In particular,
 	     do not set function declaration between comments.
+
+
+   Main changes :
+   1.19 (LM): include data fields in mw_*list*_to_*list*()
+   1.20 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -20,8 +23,11 @@ The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
 CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
+
 #include "mw.h"
 
 int _mw_convert_struct_warning = 0;

@@ -1,17 +1,18 @@
-/*-------------------------MegaWave2 module---------------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {canny};
-  version = {"1.1"};
+  version = {"1.2"};
   author = {"Yann Guyonvarc'h"};
   function = {"Canny-Deriche's Edge Detector"};
   usage = {
-  'a':[alpha=1.]->alpha    "Width of the impulse response, default 1",
+  'a':[alpha=1.]->alpha    "Width of the impulse response",
    IN -> IN                "input fimage",
    OUT <- OUT              "output fimage"
 };
 */
 /*----------------------------------------------------------------------
  v1.1: (some) simplifications, bug nrow/ncol fixed (L.Moisan)
+ v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

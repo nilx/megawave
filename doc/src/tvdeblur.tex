@@ -1,0 +1,66 @@
+This module computes the image $out$ that minimizes the energy
+functional proposed by Rudin, Osher and 
+Fatemi~\cite{rudin.osher.ea:nonlinear}\cite{rudin.osher:total},
+$$E(out) = \int_{\Omega'} (ker \star out -ref)^2
++ W \cdot \int_{\Omega} |\nabla_{eps}(out)|.$$
+Here, $\Omega$ is the whole image domain, whereas $\Omega'$ is the
+largest subdomain of $\Omega$ on which the convolution product $ker \star out$
+is well defined. This solution is more robust than periodicity or symmetry
+conventions to extend images, that generally cause strong ringing on deblurred
+images.
+
+\medskip
+
+The energy $E$ is the combination of a fidelity term ($L^2$ square error on 
+$\Omega'$) and a regularity term (the total 
+variation).
+\index{deblurring!total variation}
+\index{total variation!deblurring}
+The regularity term is obtained like in the \verb+tvdenoise+ module, 
+from the local estimate of the gradient norm
+$$|\nabla_{eps}(u)| = \sqrt{eps + p \cdot 
+\frac{\displaystyle (a-d)^2+(b-a)^2+(c-b)^2+(d-a)^2}2
++ (1-p)\cdot \frac{\displaystyle (b-d)^2+(c-a)^2}2},$$
+where the local images values are 
+\begin{eqnarray*}
+a &=& u(x,y), \\
+b &=& u(x+1,y), \\
+c &=& u(x+1,y+1), \\
+d &=& u(x,y+1),
+\end{eqnarray*}
+and $p$ is any positive weight specified by the \verb+-p+ option (default
+value is $p=1/2$).
+
+\medskip
+
+An explicit 
+gradient descent algorithm, starting with image $in$, is applied with an 
+initial step $s$.
+The stopping criterion may be specified through a relative distance
+between successive images (\verb+-e+ option, default value is 0.02)
+or directly with a fixed number of iterations (\verb+-n+ option).
+
+\medskip
+
+At each step, if the energy does not decrease, then $s$ is multiplied by
+$0.8$ and the iteration is tried with this new value instead (unless
+$s$ goes beyond $10^{-20}$ times the initial step, in which case the
+program terminates). If the \verb+-c+ option is set, then this automatic
+step reduction process is not applied and any energy decrease
+causes the program to terminate immediately.
+
+\medskip
+
+If $ref$ is not specified, then $ref=in$ is assumed. 
+Other options are straightforward.
+
+\medskip
+
+Example of use:
+\begin{verbatim}
+fconvol fimage blur5x5.ir blurry
+fnoise -g 1 blurry blurry
+cview blurry &
+tvdeblur -v -W 0.2 blurry blur5x5.ir out
+cview out &
+\end{verbatim}

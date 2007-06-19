@@ -1,36 +1,36 @@
-/*--------------------------------------------------------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {amss};
-version = {"1.5"};
+version = {"1.6"};
 author = {"Jacques Froment, Frederic Guichard, Lionel Moisan"};
 function = { "Affine Morphological Scale Space (or Mean Curvature Motion) - by anisotropic diffusion"};
 usage = {
 
-'i'->isotrop      
-     "flag to cancel isotropic diffusion in smooth area",
-'p'->power        
-     "flag to compute AMSS model (power 1/3) instead of MCM (power 1)",
-'S':[Step=0.1]->Step [0.0,0.5] 
-     "scale step for each iteration (default 0.1)",
-'m':[MinGrad=0.5]->MinGrad [0.0,1e6] 
-     "Minimum of the gradient norm to compute the curvature (default 0.5)",
-'s':[outputStep=0.1]->outputStep [0.0, 10.0] 
-     "scale interval between two images (for movie outputs) (default 0.1)",
-'f':[firstScale=0.0]->firstScale 
-     "first scale of diffusion (default 0.0)",
-'l':[lastScale=2.0]->lastScale   
-     "last scale of diffusion (default 2.0)",
-'n'->no_norm
-     "flag to prevent curvature normalization",
+ 'i'->isotrop 
+      "flag to cancel isotropic diffusion in smooth area",
+ 'p'->power   
+      "flag to compute AMSS model (power 1/3) instead of MCM (power 1)",
+ 'S':[Step=0.1]->Step [0.0,0.5]    
+      "scale step for each iteration",
+ 'm':[MinGrad=0.5]->MinGrad [0.0,1e6] 
+      "Minimum of the gradient norm to compute the curvature",
+ 's':[outputStep=0.1]->outputStep [0.0, 10.0] 
+      "scale interval between two images (for movie outputs)",
+ 'f':[firstScale=0.0]->firstScale   
+      "first scale of diffusion",
+ 'l':[lastScale=2.0]->lastScale     
+      "last scale of diffusion",
+ 'n'->no_norm                       
+      "flag to prevent curvature normalization",
 
-'d':cimageD<-imageD  "output fimage of the last diffusion",
-'g':cimageG<-imageG  "output fimage of the last gradient",
-'c':cimageC<-imageC  "output fimage of the last curvature",
-'D':cmovieD<-cmovieD "output cmovie of successive diffusions",
-'G':cmovieG<-cmovieG "output cmovie of successive gradients",
-'C':cmovieC<-cmovieC "output cmovie of successive curvatures",
+ 'd':cimageD<-imageD  "output fimage of the last diffusion",
+ 'g':cimageG<-imageG  "output fimage of the last gradient",
+ 'c':cimageC<-imageC  "output fimage of the last curvature",
+ 'D':cmovieD<-cmovieD "output cmovie of successive diffusions",
+ 'G':cmovieG<-cmovieG "output cmovie of successive gradients",
+ 'C':cmovieC<-cmovieC "output cmovie of successive curvatures",
 
-image->image   "original picture (input fimage)"
+ image->image         "original picture (input fimage)"
 
 };
 */
@@ -39,8 +39,8 @@ image->image   "original picture (input fimage)"
       - own gradient/curvature computation as in fderiv
       - allows non-coupled outputs (e.g. gradient OR curvature)
       - no_norm flag to cancel curvature normalization
+ v1.6 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
-
 
 /* NB: input image is destroyed */
 
@@ -62,9 +62,9 @@ image->image   "original picture (input fimage)"
 /*   especially if the gradient norm is not needed (no sqrt to compute) */
 /*----------------------------------------------------------------------*/
 void one_step(in,out,grad,curv,step,MinGrad,isotrop,power,no_norm)
-Fimage in,out,grad,curv;
-float step,MinGrad;
-char *isotrop,*power,*no_norm;
+     Fimage in,out,grad,curv;
+     float step,MinGrad;
+     char *isotrop,*power,*no_norm;
 {
   int y,nx,ny;
   register int x,xm,x1,Ym,Y0,Y1;
@@ -177,9 +177,9 @@ char *isotrop,*power,*no_norm;
 /* ------------------------------------------------------------------------*/
 
 float  number_iterations(power,lastScale,firstScale,Step)
-
-char *power;
-float  lastScale,Step,firstScale;
+     
+     char *power;
+     float  lastScale,Step,firstScale;
 
 {
   double cfs;
@@ -203,9 +203,9 @@ float  lastScale,Step,firstScale;
 /*----------------- Insert of an image into the output movie ----------------*/
 
 FINAL(pict,sortie)
-
-Fimage pict;
-Cmovie sortie;
+     
+     Fimage pict;
+     Cmovie sortie;
 
 {	
   register int i;

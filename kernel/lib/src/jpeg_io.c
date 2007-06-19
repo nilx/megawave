@@ -1,13 +1,16 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    jpeg_io.c
    
-   Vers. 0.1
-   (C) 2002 Jacques Froment
+   Vers. 1.0
+   Author : Jacques Froment
    Parts of this code inspired from XV: Copyright 1989, 1994 by John Bradley,
    and from the IJG JPEG (Independent JPEG Group) distribution.
 
    Input/Output functions for the JPEG file compatibility with MegaWave2.
    Need the IJG JPEG library.
+
+   Main changes :
+   v1.0 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
@@ -19,6 +22,8 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include <stdio.h>
+#include <string.h>
+
 #ifdef JPEG
 #include <setjmp.h>
 #include <jpeglib.h>

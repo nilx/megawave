@@ -1,33 +1,25 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {biowave1};
-version = {"1.3"};
+version = {"1.4"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Computes the biorthogonal wavelet transform of an 1D signal"};
 usage = {
-'r':[RecursNum=1]->NumRec [1,20]
-	"Number of levels (default 1)", 
-'e':[EdgeMode=2]->Edge [0,2]
-	"Edge processing mode (0/1/2, default 2)", 
-'n':[FilterNorm=0]->FilterNorm [0,2]
-	"Normalization mode for filter bank (0/1/2, default 0)", 
-Signal->Signal
-	"Input signal (fsignal)", 
-WavTrans<-Output
-	"Wavelet transform of Signal (wtrans1d)", 
-ImpulseResponse1->Ri1
-	"Impulse response of filter 1 (fsignal)", 
-ImpulseResponse2->Ri2
-	"Impulse response of filter 2 (fsignal)"
+ 'r':[RecursNum=1]->NumRec [1,20]     "Number of levels", 
+ 'e':[EdgeMode=2]->Edge [0,2]         "Edge processing mode", 
+ 'n':[FilterNorm=0]->FilterNorm [0,2] "Normalization mode for filter bank", 
+ Signal->Signal         "Input signal (fsignal)", 
+ WavTrans<-Output       "Wavelet transform of Signal (wtrans1d)", 
+ ImpulseResponse1->Ri1  "Impulse response of filter 1 (fsignal)", 
+ ImpulseResponse2->Ri2  "Impulse response of filter 2 (fsignal)"
 	};
  */
+/*----------------------------------------------------------------------
+ v1.4 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
-
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules ---*/

@@ -3,6 +3,105 @@
 			----------------------------
 
 
+Version 3.01	20/06/2007
+============
+
+First public distribution of 3.x release.
+
+Version 3.00	14/05/2007
+============
+
+MegaWave2 version 3.00 comes with a new preprocessor of modules sources,
+called the 'light' preprocessor, and with many new modules or new capabilities.
+
+- System library update. 
+  + mwplight, the 'light' preprocessor, has been added.
+    By default, modules are now compiled with the 'light' preprocessor.
+    This preprocessor avoids parsing errors in system's include files but
+    it imposes some limitation in module's sources (see guide #1).
+    The 'traditional' preprocessor is still available for Linux systems
+    with correct or patched system's include files (basically, the same
+    than those working with MegaWave2 version 2.31).
+  + Internal type Wpack2d and external type A_WPACK2D have been
+    added to manage 2D-wavelet packets (see guide #2).
+  + Search path convention has changed for external types (see guide #2).
+  + Revision of the entire library to conform to gcc 4.0.
+
+- Documentation update.
+  + All three guides have been updated.
+
+- Module update.
+  + Added module's group "wave/packets" for 2D-wavelet packets (see guide #3) :
+      * wp2dchangepack : transform a wp decomposition into another one
+      * wp2dchangetree : modify a wp quad-tree
+      * wp2dchecktree : check if an image is a wp decomposition quad-tree
+      * wp2ddecomp : compute the wp transform of an image
+      * wp2deigenval : eigenvalues in wp basis and convolution approximation
+      * wp2dfreqorder : wp index / frequency band correspondence
+      * wp2dmktree : create a wp quad-tree
+      * wp2doperate : image change using wp operation
+      * wp2drecomp : recomposition of a wp decomposition
+      * wp2dview : display the wp transform of a Fimage
+      * wpsconvolve : signal convolution with donwn- (or up-) sampling
+      * Wp2dcheck : demo 
+   + New modules for filtering
+      * tvdeblur : image deblurring by total variation minimization 
+      * tvdenoise2 : image denoising by total variation minimization using
+          Chambolle's dual algorithm, with real-time visualization 
+      * nlmeans : image denoising with Buades et al. Non-Local means 
+      * flipschitz : lipschitz sup- or inf-enveloppe of an image 
+      * prolatef : create a prolate kernel in Fourier domain 
+   + New module for visualization
+      * flip : interactive image comparison using flipping 
+   + New modules for Fourier domain
+      * fft1dshrink, fft2dshrink : signal/image shrinking to speed up FFT 
+      * fkeepphase : combine DFT phase/modulus of two images 
+      * fshift : periodic image translation 
+   + New capabilities
+      * fft1d,fft2d : any dimensions (not only 2^k) now available 
+      * fft2dpol,fft2dview,fft2drad,fftconvol,fftgrad,fftrot,frandphase, wiener 
+        have been adapted in the same way (any image dimensions available)
+      * fftzoom : any zoom factor and image dimension available
+      * prolate : added energy output
+      * fsample : added shift (-d) and normalization (-n) options
+      * sreadasc : added scale/shift/gain specifications (-s/-t/-g options)
+      * sinfo : added standart deviation
+      * saxpb : added -M option (set total mass) and some field preserving
+      * faxpb : added -N option (set l^2 norm)
+      * fvar : added -s (standart deviation) and -e (empirical estimate) options
+      * fnoise, cnoise, cmnoise : added -q option (quantization noise) 
+        and processus id term in the random seed initialization
+      * frandphase : added processus id term in the random seed initialization
+      * fhisto : added -w option (weight image)
+      * tvdenoise : added -p option (allow more general gradient schemes)
+      * tvdenoise,wiener: -w option replaced by -W option (see doc)
+      * fthre : now can discard extremal values (-p -q -d -a -l options)
+      * fview : now can discard extremal values (-d -m -M options),removed s key
+      * fft2dview : improved display (-d instead of -s option)
+   + Bugs fixed
+      * one_levelset, segct, msegct (fixed static/non static definitions)
+      * fiscalq (bug with optional argument, temporary solution)
+      * fscalq (bug with optional argument + fmse() call fixed)
+      * signal/sconst (include string.h)
+      * align becomes falign (avoid collision with align Linux command)
+      * align_mdl becomes falign_mdl (coherence with align -> falign)
+      * wiener (fixed missing deallocations)
+      * cdisc (bug with cy variable fixed)
+      * fsmooth (convolution bug)
+      * tvdenoise (consistency and step reduction loop bugs)
+      * frandphase (bug with non-square images)
+
+   + Miscellaneous
+      * image_motion/hs_flow (unused part removed)
+      * segtxt,mschannels,flst_bilinear,llmap,tjpoint,tjmap,mscarea,ll_distance,
+        finfo,fftconvol,fconvol,rotaffin,forder,fsmooth,infsup,fvq,cvsorgcode,
+        cvsencode,cvsfrecode,fencode,entropy (mwcommand syntax normalization)
+      * faxpb, frandphase (fvar upgrade)
+      * ll_boundaries, ll_edges (fhisto upgrade)
+      * heat : C syntax change
+      * forder : removed constraint on n
+      * fadd (fthre upgrade, removed useless -n option)
+
 Version 2.31	08/10/2004
 ============
 

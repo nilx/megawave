@@ -1,15 +1,15 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {amle3d};
-  version = {"1.1"};
-  author = {"Frederic Cao"};
-  function = {"Compute the solution of the AMLE Model using the inf sup scheme in the 3d case"};
-  usage = {
-  'n':[num=100]->num "Number of iterations",
-  'i':movie_init->init "Initial condition",
-  in->in "Input quantized movie obtained from the amle3d_init procedure",
-  out<-out  "Output fmovie solution of the amle equation"
-  };
+ name = {amle3d};
+ version = {"1.1"};
+ author = {"Frederic Cao"};
+ function = {"Compute the solution of the AMLE Model using the inf sup scheme in the 3d case"};
+ usage = {
+   'n':[num=100]->num     "Number of iterations",
+   'i':movie_init->init   "Initial condition",
+   in->in                 "Input quantized movie obtained from the amle3d_init procedure",
+   out<-out               "Output fmovie solution of the amle equation"
+};
 */
 /*----------------------------------------------------------------------
  v1.1: changed createmovie() + amle3d returns void (L.Moisan)
@@ -21,10 +21,8 @@
 /*create a movie with value 0.0 with the same number of images as the input*/
 
 void createmovie(input,output,nl,nc)
-
-Fmovie input,output;
-int nc,nl;
-
+     Fmovie input,output;
+     int nc,nl;
 {
   Fimage u,cur,prev,*next;
 
@@ -45,10 +43,9 @@ int nc,nl;
                            If the pixel is at a border, a mirror effect is applied  ------*/
 
 void neighbor_4(x,y,xmax,ymax,p,left,right,up,down)
-
-register int x,y,xmax,ymax;
-register float *p;
-float **left,**right,**up,**down;
+     register int x,y,xmax,ymax;
+     register float *p;
+     float **left,**right,**up,**down;
 {
   if (x>0)
     {
@@ -119,10 +116,8 @@ then replace the value by 0.5(max+min).*/
 
 
 void iterate(input,output,nl,nc)
-
-Fmovie input,output;
-int nl,nc;
-
+     Fmovie input,output;
+     int nl,nc;
 {
   Fmovie mov,del;
   Fimage iminput,ima,im,imoutput;
@@ -193,10 +188,8 @@ int nl,nc;
 
 
 void copymovie(input,output,nl,nc)
-
-int nl,nc;
-Fmovie input,output;
-
+     int nl,nc;
+     Fmovie input,output;
 {
   Fimage imin,imout,im;
   float *I,*O;
@@ -232,10 +225,8 @@ Fmovie input,output;
 /*-----------------------------  Main Program --------------------------*/
 
 void amle3d(num,init,in,out)
-
-int *num;
-Fmovie in,out,init;
-
+     int *num;
+     Fmovie in,out,init;
 {
   int NC,NL,i;
   Fimage ima;

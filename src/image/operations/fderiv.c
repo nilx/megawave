@@ -1,7 +1,7 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
   name = {fderiv};
-  version = {"1.3"};
+  version = {"1.4"};
   author = {"Lionel Moisan"};
   function = {"1st and 2nd order derivatives of an image (3x3 stencil)"};
   usage = {
@@ -22,15 +22,16 @@
 'p':gradp<-gradp 
       "gradient phase (degrees) in [-180,180] U {mw_not_an_argument (=1.0e9)}",
 'm':[MinGrad=0.0]->MinGrad
-      "minimum of |Du| to compute 2nd order derivatives (default 0.0)",
+      "minimum of |Du| to compute 2nd order derivatives",
 's':[nsize=8]->nsize
-      "neighborhood size used for the gradient: 8 (default), 4, 3 or 2",
+      "neighborhood size used for the gradient: 8, 4, 3 or 2",
 in->in           
       "input Fimage"
   };
 */
 /*----------------------------------------------------------------------
  v1.3: removed unary + (L.Moisan)
+ v1.4 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -45,9 +46,9 @@ in->in
 
 
 void fderiv(in,curv,anti,canny,laplacian,gradx,grady,gradn,gradp,MinGrad,nsize)
-Fimage in,curv,anti,canny,laplacian,gradx,grady,gradn,gradp;
-float *MinGrad;
-int *nsize;
+     Fimage in,curv,anti,canny,laplacian,gradx,grady,gradn,gradp;
+     float *MinGrad;
+     int *nsize;
 {
   int y,nx,ny;
   register int x,xm,x1,Ym,Y0,Y1;

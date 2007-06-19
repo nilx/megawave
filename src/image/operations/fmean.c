@@ -1,22 +1,20 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {fmean};
-author = {"Jacques Froment"};
-function = {"Compute the mean gray level of an image"};
-usage = {
-A->A "input fimage",
-m<-fmean "output mean gray level value"
+ name = {fmean};
+ version = {"1.0"};
+ author = {"Jacques Froment"};
+ function = {"Compute the mean gray level of an image"};
+ usage = {
+   A->A      "input fimage",
+   m<-fmean  "output mean gray level value"
 };
-version = {"1.0"};
 */
 
 #include <stdio.h>
 #include  "mw.h"
 
 float fmean(A)
-
-Fimage A;
-
+     Fimage A;
 {
   int s;
   register float *ptr;

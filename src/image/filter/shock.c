@@ -2,23 +2,25 @@
 /* mwcommand
  name = {shock};
  author = {"Lionel Moisan"};
- version = {"1.1"};
+ version = {"1.2"};
  function = {"Rudin shock filter"};
  usage = {
- 'n':[n=10]->n               "number of iterations (default: 10)",
- 's':[s=0.1]->s[0.0,1.0]     "scale step (in [0,1], default 0.1)",
- in->in                      "input image",
- out<-shock                  "output image"
+   'n':[n=10]->n               "number of iterations",
+   's':[s=0.1]->s[0.0,1.0]     "scale step",
+   in->in                      "input image",
+   out<-shock                  "output image"
 };
 */
-/*--------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------
+ v1.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
 
 void iter(u,v,s)
-Fimage u,v;
-float s;
+     Fimage u,v;
+     float s;
 {
   int   i,j,im,i1,jm,j1;
   float new,val;
@@ -60,9 +62,9 @@ float s;
 /*-------------------- MAIN MODULE --------------------*/
 
 Fimage shock(in,n,s)
-Fimage in;
-int    *n;
-float  *s;
+     Fimage in;
+     int    *n;
+     float  *s;
 {
   Fimage u,*old,*new,*tmp;
   int    i;

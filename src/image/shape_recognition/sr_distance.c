@@ -1,15 +1,15 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {sr_distance};
-   version = {"1.3"};
-   author = {"Thierry Cohignac, Lionel Moisan"};
-   function = {"Compute distance between two shapes (binary product)"};
-   usage = {            
-            in1->Shape1               "input shape 1 (Fcurves)",
-	    in2->Shape2               "input shape 2 (Fcurves)",
-	    out<-sr_distance          "result"
-   };
-   */
+ name = {sr_distance};
+ version = {"1.3"};
+ author = {"Thierry Cohignac, Lionel Moisan"};
+ function = {"Compute distance between two shapes (binary product)"};
+ usage = {            
+     in1->Shape1         "input shape 1 (Fcurves)",
+     in2->Shape2         "input shape 2 (Fcurves)",
+     out<-sr_distance    "result"
+};
+*/
 /*----------------------------------------------------------------------
  v1.3: changed Shape to the_shape, fkzrt, fkcenter, fkplot (L.Moisan)
 ----------------------------------------------------------------------*/

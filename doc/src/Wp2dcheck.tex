@@ -1,0 +1,14 @@
+This macro checks and demonstrates the use of the 2D-wavelet packet representation.
+The input image is first decomposed and reconstructed using a Daubechies' 
+basis with a cardinal sine quad-tree. The error between the original image
+and the reconstructed one is printed and you should check that it is very low : 
+typically the MSE (Mean Square Error) is below the computer's floating point precision.
+The representation i.e. the quad-tree containing computed 2D-wavelet packet coefficients,
+is also viewed in a window.
+
+Then, the macro demonstrates how one can denoise images by wavelet packets soft 
+thresholding with cycle spinning : gaussian noise is added to the input image,
+and the resulting noisy image is denoised using \verb+wp2doperate+.
+The printed errors allow to verify that the objective MSE criterion is
+decreasing by this denoising operation. Also for visual comparison, 
+the noisy and denoised images are displayed in two windows. 

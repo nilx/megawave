@@ -1,23 +1,25 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {fhisto};
-  version = {"1.4"};
-  author = {"Lionel Moisan"};
-  function = {"Compute the histogram of a Fimage"};
-  usage = {
+ name = {fhisto};
+ version = {"1.5"};
+ author = {"Lionel Moisan"};
+ function = {"Compute the histogram of a Fimage"};
+ usage = {
     'l':l->l    "left bound of sampling interval",
     'r':r->r    "right bound of sampling interval",
     'n':n->n    "number of cells (if no option specified: 100)",
     's':s->s    "size of each cell (alternate option)",
     't'->t      "truncate values outside interval",
+    'w':w->w    "specify a weight Fimage",
     input->in   "input Fimage",
     output<-out "output Fsignal"
-          };
+};
 */
 /*----------------------------------------------------------------------
  v1.2: more possible combinations of options, new -t option (L.Moisan)
  v1.3: default num = (max-min)/size (L.Moisan)
  v1.4: fixed -t option (P.Monasse)
+ v1.5: added -w option (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -26,8 +28,8 @@
 
 #define DEFAULT_NUMBER_OF_CELLS 100
 
-Fsignal fhisto(in,out,l,r,n,s,t)
-     Fimage   in;
+Fsignal fhisto(in,out,l,r,n,s,t,w)
+     Fimage   in,w;
      Fsignal  out;
      float    *l,*r;
      int      *n;
@@ -102,7 +104,7 @@ Fsignal fhisto(in,out,l,r,n,s,t)
       if (cell<0) cell=0;
       if (cell>=num) cell=num-1;
     }
-    if (cell>=0 && cell<num) out->values[cell] += 1.;
+    if (cell>=0 && cell<num) out->values[cell] += (w?w->gray[i]:1.);
   }
 
   return(out);

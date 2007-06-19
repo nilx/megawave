@@ -1,19 +1,18 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {amle_init};
-  version = {"1.1"};
-  author = {"Jacques Froment"};
-  function = {"Compute initial data for the level line image interpolation scheme (AMLE)"};
-  usage = {
-  in->in
+ name = {amle_init};
+ version = {"1.1"};
+ author = {"Jacques Froment"};
+ function = {"Compute initial data for the level line image interpolation scheme (AMLE)"};
+ usage = {
+   in->in
          "Input uniformly quantized fimage",
-  delta->delta
+   delta->delta
          "Width step of the uniform quantization used for the input image",
-  out<-out
+   out<-out
          "Output fimage as initial data (input) for the AMLE model"
-  };
+};
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
 
 #include <stdio.h>
 #include "mw.h"

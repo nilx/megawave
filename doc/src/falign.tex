@@ -1,0 +1,24 @@
+This module extracts ``meaningful alignments'' 
+\index{meaningful!segments}
+\index{meaningful!alignments}
+from an image.
+An alignment is detected when a discrete segment of the image
+contains a relatively high number of points for which the
+direction orthogonal to the gradient (that is, the direction 
+of the level line passing through the point) is equal to the direction
+of the segment modulo a given precision $p$. The detection is made
+using a thresholding function balancing between the density of
+aligned points and the length of the segment. This function ensures
+that at most $10^{-eps}$ false detections could occur by chance
+with random gradient directions (see~\cite{desolneux.moisan.ea:meaningful}).
+
+\medskip
+
+The result is a 5-Flist, that has 0 element if no alignment was detected.
+The \verb+-c+ option store the detected segments as a collection of curves
+(Flists), allowing direct visualization with the \verb+fkview+ module.
+
+\medskip
+
+See the \verb+falign_mdl+ command for a Minimum Description Length version
+of this module.

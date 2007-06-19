@@ -1,15 +1,18 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {circle};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Lionel Moisan"};
   function = {"build a circle (Dlist)"};
   usage = {
-     'r':[r=1.0]->r   "circle radius (default: 1.0)",
-     'n':[n=100]->n   "number of points (default: 100)",
+     'r':[r=1.0]->r   "circle radius",
+     'n':[n=100]->n   "number of points",
      out<-out         "output circle (Dlist)"
           };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <math.h>
 #include "mw.h"
@@ -23,6 +26,7 @@ Dlist circle(out,r,n)
   double *p;
 
   out = mw_change_dlist(out,*n+1,*n+1,2);
+  if (!out) mwerror(FATAL,1,"Not enough memory\n");
   p = out->values;
   for (k=0;k<*n;k++) {
     *(p++) = *r * cos(2.*M_PI*(double)k/(double)(*n));

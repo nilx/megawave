@@ -2,12 +2,13 @@
 #--------------------------- Shell MegaWave2 Macro --------------------------#
 _sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
 _Prog="Checkmodules"
-_Vers="1.06"
-_Date="2002-2004"
+_Vers="1.08"
+_Date="2002-2007"
 _Func="Test system modules"
 _Auth="Lionel Moisan";
 _Usage="[-help]"
 # v 1.03 07/02/02 (JF) : changed test [ $numvar == 0 ] to [ $numvar -eq 0 ]
+# v 1.08 04/07 (LM): bc -> bc -l in Check_approx() and Check_more_approx()
 #----------------------------------------------------------------------------#
 # This file is part of the MegaWave2 system macros. 
 # MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -31,14 +32,14 @@ Check_exact()
 # used for float numbers (threshold at 1% error)
 Check_approx()
 {
-    r=`echo "a=$1;b=$2;c=(a-b)^2;d=0.0001*(a^2+b^2);if (c<=d) 1" | bc 2> /dev/null`
+    r=`echo "a=$1;b=$2;c=(a-b)^2;d=0.0001*(a^2+b^2);if (c<=d) 1" | bc -l 2> /dev/null`
     if [ "$r" != "1" ]; then Incerr; fi
 }
 
 # used for random variables (threshold at 10% error)
 Check_more_approx()
 {
-    r=`echo "a=$1;b=$2;c=(a-b)^2;d=0.01*(a^2+b^2);if (c<=d) 1" | bc 2> /dev/null`
+    r=`echo "a=$1;b=$2;c=(a-b)^2;d=0.01*(a^2+b^2);if (c<=d) 1" | bc -l 2> /dev/null`
     if [ "$r" != "1" ]; then Incerr; fi
 }
 
@@ -204,6 +205,10 @@ Check_exact $v 2
 Pass Mkmovie
 
 fconst $tmp/1 10 100 100 || Incerr
+v=`fnorm -p 1 $tmp/1 | cut -d"=" -f2`
+Check_exact $v 10
+Pass fconst
+
 v=`fmean $tmp/1 | cut -d"=" -f2`
 Check_approx $v 10
 Pass fmean
@@ -213,6 +218,19 @@ v=`grep "Average step distance" $tmp/1 | cut -d":" -f2`
 Check_approx $v 2.04765
 Pass dkinfo
 
+faxpb -a 2 -b 10 cimage $tmp/1 || Incerr
+faxpb -a 0.5 -b -5 $tmp/1 $tmp/2 || Incerr
+fdiff $tmp/2 cimage $tmp/3
+v=`fnorm -p 2 $tmp/3 | cut -d"=" -f2`
+Check_exact $v 0
+Pass faxpb
+
+fconst $tmp/1 0 10 10
+fpset $tmp/1 5 5 100 $tmp/1 || Incerr
+v=`fnorm -v $tmp/1 | cut -d"=" -f2`
+Check_approx $v 2
+Pass fpset
+
 echo
 
 
@@ -221,26 +239,40 @@ echo
 mwecho -n "compression/ezwave: "
 
 cfunzoom -z 4 -o 0 ccimage $tmp/1
-cfezw -d -b wave/biortho/htilde/sd09.ir $tmp/1 wave/biortho/h/sd07.ir > /dev/null || Incerr
+
+cfezw -R 0.5 -o $tmp/3 $tmp/1 wave/biortho/h/sd07.ir $tmp/2 > /dev/null || Incerr
+v=`fnorm -v $tmp/2 2> /dev/null | cut -d"=" -f2`
+Check_approx $v 11.0831
 Pass cfezw
 
-Cfezw $tmp/1 > /dev/null || Incerr
+cfiezw $tmp/3 wave/biortho/h/sd07.ir $tmp/4 > /dev/null || Incerr
+v=`fnorm -p 2 -c $tmp/4 $tmp/2 2> /dev/null | cut -d"=" -f2`
+Check_exact $v 0
+Pass cfiezw
+
+Cfezw $tmp/1 > $tmp/2 || Incerr
+v=`tail -1 $tmp/2 | cut -f2`
+Check_approx $v 31.18
 Pass Cfezw
 
 funzoom -z 4 -o 0 cimage $tmp/1
-fezw -d -b wave/biortho/htilde/sd09.ir $tmp/1 wave/biortho/h/sd07.ir > /dev/null || Incerr
+
+fezw -R 0.5 -o $tmp/3 $tmp/1 wave/biortho/h/sd07.ir $tmp/2 > /dev/null || Incerr
+v=`fnorm -v $tmp/2 2> /dev/null | cut -d"=" -f2`
+Check_approx $v 18.1235
 Pass fezw
+Pass ezw
 
-Fezw $tmp/1 > /dev/null || Incerr
+fiezw $tmp/3 wave/biortho/h/sd07.ir $tmp/4 > /dev/null || Incerr
+v=`fnorm -p 2 -c $tmp/4 $tmp/2 | cut -d"=" -f2`
+Check_exact $v 0
+Pass fiezw
+Pass iezw
+
+Fezw $tmp/1 > $tmp/2 || Incerr
+v=`tail -1 $tmp/2 | cut -f2`
+Check_approx $v 33.62
 Pass Fezw
-
-#owave2 -r 5 -e 0 cimage $tmp/1 wave/ortho/da02.ir
-#ezw $tmp/1 $tmp/2
-NoPass ezw
-
-NoPass fiezw
-NoPass iezw
-NoPass cfiezw
 
 echo
 
@@ -441,8 +473,21 @@ v=`perimeter $tmp/2 | cut -d"=" -f2`
 Check_approx $v 318.806
 Pass kspline
 
-NoPass flconcat
-NoPass flscale
+echo "0.1 0.2" | sreadasc $tmp/1 2
+flscale -ftype MW2_FCURVE curve $tmp/1 $tmp/2 || Incerr
+perimeter $tmp/2 > $tmp/3 
+v=`cut -d"=" -f2 $tmp/3`
+Check_exact $v 1313
+area $tmp/2 > $tmp/3
+v=`cut -d"=" -f2 $tmp/3`
+Check_exact $v 4194.36
+Pass flscale
+
+flconcat -ftype MW2_FCURVES $tmp/2 curve $tmp/3
+fkbox $tmp/3 | grep ymax > $tmp/4
+v=`cut -d"=" -f2 $tmp/4`
+Check_exact $v -24.6
+Pass flconcat
 
 echo
 
@@ -517,6 +562,10 @@ v=`kplotasc $tmp/1 | wc -c`
 Check_exact $v 84
 Pass kplotasc
 
+NoPass readpoly
+
+# common: dkinfo
+
 echo
 
 
@@ -567,14 +616,27 @@ echo
 
 mwecho -n "curve/matching: "
 
-NoPass km_bitangents
+gass -l 3 -e 2 curve $tmp/1
+km_inflexionpoints $tmp/1 $tmp/2 || Incerr
+v=`flprintasc $tmp/2 | wc -l`
+Check_exact $v 43
+Pass km_inflexionpoints
+
+km_bitangents $tmp/1 $tmp/2 $tmp/3 || Incerr
+v=`flprintasc $tmp/3 | wc -l`
+Check_exact $v 20
+Pass km_bitangents
+
+km_flatpoints $tmp/1 $tmp/2 $tmp/4 0.1 0.1 || Incerr
+v=`flprintasc $tmp/4 | wc -l`
+Check_exact $v 25
+Pass km_flatpoints
+
 NoPass km_codecurve_ai
 NoPass km_codecurve_si
 NoPass km_createdict_ai
 NoPass km_createdict_si
 NoPass KM_DEMO
-NoPass km_flatpoints
-NoPass km_inflexionpoints
 NoPass km_match_ai
 NoPass km_match_si
 NoPass km_prematchings
@@ -674,22 +736,43 @@ v=`fnorm -v $tmp/2 | cut -d"=" -f2`
 Check_approx $v 13.5183
 Pass canny
 
-align -e 4.3 $tmp/1 $tmp/2 > /dev/null || Incerr
+falign -e 4.3 $tmp/1 $tmp/2 > /dev/null || Incerr
 v=`flprintasc $tmp/2 | wc -l`
 Check_exact $v 14
-Pass align
+Pass falign
+
+falign_mdl -e -2 -l 1 -n 30 cimage $tmp/2 > /dev/null || Incerr
+v=`fsize $tmp/2`
+Check_exact "$v" "6 43"
+Pass falign_mdl
+
+vpoint cimage $tmp/2 $tmp/3 > /dev/null || Incerr
+v=`flprintasc $tmp/3 | cut -d" " -f2`
+Check_approx $v 17.9527
+Pass vpoint
 
 ll_boundaries -e 11 $tmp/1 $tmp/2 > /dev/null || Incerr
 v=`flprintasc $tmp/2 | wc -l`
 Check_exact $v 1139
 Pass ll_boundaries
 
+ll_boundaries2 -e 11 $tmp/1 $tmp/2 > /dev/null || Incerr
+v=`flprintasc $tmp/2 | wc -l`
+Check_exact $v 1073
+Pass ll_boundaries2
+
 ll_edges -e 17 $tmp/1 $tmp/2 > /dev/null || Incerr
 v=`flprintasc $tmp/2 | wc -l`
 Check_exact $v 526
 Pass ll_edges
 
-NoPass harris
+harris $tmp/1 $tmp/2 || Incerr
+v=`flprintasc $tmp/2 | wc -l`
+Check_approx $v 55
+Pass harris
+
+NoPass vpsegplot
+NoPass VP_DEMO
 
 echo
 
@@ -745,6 +828,11 @@ Check_approx $v 8.50785
 Pass cclocal_zoom
 
 funzoom -o 0 -z 4 cimage $tmp/1
+
+fshift -h $tmp/1 $tmp/2 || Incerr
+v=`fnorm -p 2 -c $tmp/1 $tmp/2 | cut -d"=" -f2`
+Check_approx $v 110.12
+Pass fshift
 
 czoom -X 4 -o 5 $tmp/1 $tmp/2 2> /dev/null || Incerr
 v=`fnorm -v $tmp/2 | cut -d"=" -f2`
@@ -849,6 +937,8 @@ Pass cmparitysep
 NoPass cmcollect
 NoPass ccmcollect
 
+# common: funzoom cfunzoom
+
 echo
 
 
@@ -904,7 +994,7 @@ Pass heat
 
 fsmooth -S 2 -W 1 $tmp/1 $tmp/2 || Incerr
 v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 6.23447
+Check_approx $v 7.20909
 Pass fsmooth
 
 echo "-1 1 -1 1" | freadasc $tmp/2 2 2
@@ -932,8 +1022,6 @@ fsharpen -p 50 $tmp/1 $tmp/2 || Incerr
 v=`fnorm -v $tmp/2 | cut -d"=" -f2`
 Check_approx $v 22.7716
 Pass fsharpen
-
-NoPass cfsharpen 
 
 rotaffin -r 5 -a 3 -t 3 -T 0 -A 5 $tmp/2 || Incerr
 v=`grep nimage $tmp/2 | cut -d":" -f2`
@@ -964,8 +1052,24 @@ Pass shock
 
 tvdenoise $tmp/1 $tmp/2 || Incerr
 v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 14.5187
+Check_approx $v 14.5648
 Pass tvdenoise
+
+tvdenoise2 $tmp/1 $tmp/2 || Incerr
+v=`fnorm -v $tmp/2 | cut -d"=" -f2`
+Check_approx $v 14.4665
+Pass tvdenoise2
+
+nlmeans -s 3 -d 5 cimage $tmp/2 || Incerr
+v=`fnorm -v $tmp/2 | cut -d"=" -f2`
+Check_approx $v 6.45733
+Pass nlmeans
+
+fconvol $tmp/1 blur3x3.ir $tmp/2
+tvdeblur -n 30 $tmp/2 blur3x3.ir $tmp/3 || Incerr
+v=`fnorm -p 2 -c $tmp/1 $tmp/3 | cut -d"=" -f2`
+Check_approx $v 7.51181
+Pass tvdeblur
 
 cmextract cmovie $tmp/1 128 128 3 140 140 7
 mam -n 20 -a 0 $tmp/1 $tmp/2 > /dev/null || Incerr
@@ -979,6 +1083,10 @@ Check_exact "$v" "3 3"
 v=`fmean $tmp/1 | cut -d"=" -f2`
 Check_approx $v 0.111111
 Pass prolate
+
+NoPass cfsharpen 
+NoPass flipschitz
+NoPass prolatef
 
 echo
 
@@ -1014,7 +1122,7 @@ Pass fft2drad
 
 fft2dview -t 0 -o $tmp/1 cimage || Incerr
 v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 2.04972
+Check_approx $v 1923.05
 Pass fft2dview
 
 fftgrad -n $tmp/1 cimage || Incerr
@@ -1044,25 +1152,45 @@ v=`fnorm -v $tmp/2 | cut -d"=" -f2`
 Check_more_approx $v 1.63
 Pass frandphase
 
-fextract cimage $tmp/1 10 10 200 200 
-fshrink2 $tmp/1 $tmp/1 || Incerr
-v=`fsize $tmp/1` 
+fextract cimage $tmp/1 10 10 200 210 
+fft2dshrink $tmp/1 $tmp/2 || Incerr
+v=`fsize $tmp/2` 
+Check_exact "$v" "189 200"
+Pass fft2dshrink
+
+fshrink2 $tmp/1 $tmp/2 || Incerr
+v=`fsize $tmp/2` 
 Check_exact "$v" "128 128"
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
+v=`fnorm -v $tmp/2 | cut -d"=" -f2`
 Check_approx $v 8.33146
 Pass fshrink2
 
-fsym2 $tmp/1 $tmp/1 || Incerr
-v=`fsize $tmp/1` 
+fsym2 $tmp/2 $tmp/2 || Incerr
+v=`fsize $tmp/2` 
 Check_exact "$v" "256 256"
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
+v=`fnorm -v $tmp/2 | cut -d"=" -f2`
 Check_approx $v 8.36696
 Pass fsym2
 
-wiener -w 10 -g 1 cimage $tmp/1 || Incerr
+wiener -W 0.1 -g 1 cimage $tmp/1 || Incerr
 v=`fnorm -b 10 -v $tmp/1 | cut -d"=" -f2`
 Check_approx $v 11.1962
 Pass wiener
+
+fkeepphase cimage fimage $tmp/1 || Incerr
+v=`fnorm -v $tmp/1 | cut -d"=" -f2`
+Check_approx $v 14.041
+Pass fkeepphase
+
+faxpb -a 0 -b 0 cimage $tmp/1
+fpset $tmp/1 0 0 1 $tmp/1
+fsepconvol -b 2 -g 3 $tmp/1 $tmp/2 
+fft2d -A $tmp/3 $tmp/2
+fftconvol cimage $tmp/3 $tmp/4 || Incerr
+fsepconvol -b 2 -g 3 cimage $tmp/5
+v=`fnorm -t 0.0001 -p 2 -c $tmp/4 $tmp/5 | cut -d"=" -f2`
+Check_exact $v 0
+Pass fftconvol
 
 echo
 
@@ -1099,6 +1227,7 @@ NoPass fview
 NoPass ccview
 NoPass cmview
 NoPass ccmview
+NoPass flip
 
 fconst $tmp/1 0 60 20
 echo "hi guys..." | ccputstring -r 3 -c 900 -C 90 $tmp/1 10 1 $tmp/1 || Incerr
@@ -1151,6 +1280,8 @@ v=`cat $tmp/2 | wc -l`
 Check_exact $v 1
 Pass fprintasc
 
+#common: freadasc Mkmovie cfgetchannels
+
 echo
 
 
@@ -1158,36 +1289,41 @@ echo
 
 mwecho -n "image/level_lines: "
 
-Pass flst
-Pass flst_pixels
-Pass flst_reconstruct
-Pass flst_boundary
+NoPass flst
+NoPass flst_pixels
+NoPass flst_reconstruct
+NoPass flst_boundary
 
-Pass flst_bilinear
-Pass flstb_boundary
-Pass flstb_dual
-Pass flstb_dualchain
-Pass flstb_quantize
-Pass flstb_tv
+NoPass flst_bilinear
+NoPass flstb_boundary
+NoPass flstb_dual
+NoPass flstb_dualchain
+NoPass flstb_quantize
+NoPass flstb_tv
 
-Pass fml_ml
-Pass fsaddles
-Pass ll_distance
-Pass ll_extract
-Pass llmap
-Pass ll_remove
-Pass llremove
-Pass llview
+NoPass fml_ml
+NoPass fsaddles
+NoPass ll_distance
+NoPass ll_extract
+NoPass llmap
+NoPass ll_remove
+NoPass llremove
+NoPass llview
 
-Pass ml_decompose
-Pass ml_draw
-Pass ml_extract
-Pass ml_fml
-Pass ml_reconstruct
+NoPass ml_decompose
+NoPass ml_draw
+NoPass ml_extract
+NoPass ml_fml
+NoPass ml_reconstruct
 
-Pass mscarea
-Pass tjmap
-Pass tjpoint
+NoPass mscarea
+NoPass tjmap
+NoPass tjpoint
+
+NoPass cll_remove
+NoPass cml_decompose
+NoPass cml_draw
+NoPass cml_reconstruct
 
 echo
 
@@ -1241,6 +1377,7 @@ Pass skeleton
 NoPass lsnakes
 NoPass lsnakes_demo
 NoPass mac_snakes
+NoPass ccdisocclusion
 
 echo
 
@@ -1249,17 +1386,10 @@ echo
 
 mwecho -n "image/operations: "
 
-faxpb -a 2 -b 10 cimage $tmp/1 || Incerr
-faxpb -a 0.5 -b -5 $tmp/1 $tmp/2 || Incerr
-fdiff $tmp/2 cimage $tmp/3
-v=`fnorm -p 2 $tmp/3 | cut -d"=" -f2`
-Check_exact $v 0
-Pass faxpb
-
-#fop -m -A cimage cimage $tmp/1 || Incerr
-#v=`fnorm -p 2 $tmp/1 | cut -d"=" -f2`
-#Check_exact $v 0
-NoPass fop
+fop -p -A cimage cimage $tmp/1 || Incerr
+v=`fnorm -p 2 $tmp/1 | cut -d"=" -f2`
+Check_approx $v 287.596
+Pass fop
 
 faxpb -a -1 cimage $tmp/1
 fabso $tmp/1 $tmp/2
@@ -1272,12 +1402,6 @@ fentropy cimage > $tmp/1 || Incerr
 v=`cat $tmp/1 | cut -d"=" -f2`
 Check_approx $v 7.51668
 Pass fentropy
-
-fconst $tmp/1 0 10 10
-fpset $tmp/1 5 5 100 $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 2
-Pass fpset
 
 fderiv -n $tmp/1 cimage || Incerr
 v=`fnorm -v $tmp/1 | cut -d"=" -f2`
@@ -1315,6 +1439,8 @@ frthre -l 100 cimage $tmp/1 || Incerr
 v=`fmean $tmp/1 | cut -d"=" -f2`
 Check_approx $v 44.9395
 Pass frthre
+
+#common: faxpb fpset cfdiff fadd fconst fdiff fmean fnorm fsize fvar
 
 echo
 
@@ -1403,11 +1529,6 @@ v=`fnorm -v $tmp/1 | cut -d"=" -f2`
 Check_approx $v 13.2157
 Pass ccontrast_local
 
-Pass cfquant
-Pass chisto
-Pass fhisto
-Pass fthre
-
 fconst $tmp/1 0 100 100
 cnoise -i 50 $tmp/1 $tmp/1 || Incerr
 v=`fmean $tmp/1 | cut -d"=" -f2`
@@ -1421,17 +1542,47 @@ Check_more_approx $v 100
 Pass fnoise
 
 cmextract cmovie $tmp/1 10 10 1 210 210 10
-cmnoise -i 50 $tmp/1 $tmp/2
+cmnoise -i 50 $tmp/1 $tmp/2 || Incerr
 v=`grep nimage $tmp/2 | cut -d":" -f2`
 Check_exact $v 10
 v=`fmean $tmp/2_05 | cut -d"=" -f2`
 Check_more_approx $v 116
 Pass cmnoise
 
-NoPass fcontrast
-NoPass frank
-NoPass flgamma
+chisto cimage $tmp/1 || Incerr
+v=`snorm -p 2 $tmp/1 | cut -d"=" -f2`
+Check_approx $v 366.222
+Pass chisto
+
+fhisto cimage $tmp/1 || Incerr
+v=`snorm -p 2 $tmp/1 | cut -d"=" -f2`
+Check_approx $v 929.198
+Pass fhisto
+
+flgamma -f 256 $tmp/1 || Incerr
+v=`flprintasc $tmp/1 | grep "^246" | cut -d" " -f2`
+Check_approx $v 236.391
+Pass flgamma
+
+fcontrast cimage $tmp/1 $tmp/2 || Incerr
+v=`fnorm -p 2 $tmp/2 | cut -d"=" -f2`
+Check_approx $v 103.585
+Pass fcontrast
+
+frank -r $tmp/1 cimage || Incerr
+v=`fnorm -p 2 $tmp/1 | cut -d"=" -f2`
+Check_approx $v 0.577342
+Pass frank
+
+fthre -N cimage $tmp/1 || Incerr
+v=`fnorm -p 2 $tmp/1 | cut -d"=" -f2`
+Check_approx $v 143.798
+Pass fthre
+
+NoPass cfquant
 NoPass bicontrast
+
+# common: fquant
 
 echo
 
@@ -1444,6 +1595,16 @@ entropy fsignal > $tmp/1 || Incerr
 v=`cut -d"=" -f2 $tmp/1`
 Check_approx $v 11.0934
 Pass entropy
+
+sprintasc fsignal 101 101 > $tmp/1 || Incerr
+Check_exact `cat $tmp/1` 3014
+Pass sprintasc
+
+sprintasc fsignal 1 123 | sreadasc $tmp/1 123
+fft1dshrink $tmp/1 $tmp/2 || Incerr
+v=`grep "size:" $tmp/2 | cut -d":" -f2`
+Check_exact $v 121
+Pass fft1dshrink
 
 sshrink2 fsignal $tmp/1 || Incerr
 v=`grep "size:" $tmp/1 | cut -d":" -f2`
@@ -1501,7 +1662,7 @@ v=`grep MSE $tmp/3 | cut -d"=" -f2`
 Check_approx $v 1.57536
 v=`grep MRD $tmp/3 | cut -d"=" -f2`
 Check_approx $v 70.6568
-NoPass smse
+Pass smse
 
 sconst -s 1000 -a 0 $tmp/1
 snoise -g 1 $tmp/1 $tmp/2 || Incerr
@@ -1509,11 +1670,15 @@ v=`snorm -p 2 $tmp/2 | cut -d"=" -f2`
 Check_more_approx $v 1
 Pass snoise
 
-#sop -A fsignal -d fsignal $tmp/1 || Incerr
-#sop -a 1 -m $tmp/1 $tmp/2 || Incerr
-#v=`snorm -p 2 $tmp/2 | cut -d"=" -f2`
-#Check_exact $v 0
-NoPass sop
+sop -p -A fsignal fsignal $tmp/1 || Incerr
+v=`snorm -p 2 $tmp/1 | cut -d"=" -f2`
+Check_approx $v 5349.16
+Pass sop
+
+saxpb -a 2 fsignal $tmp/1 || Incerr
+v=`snorm -p 2 $tmp/1 | cut -d"=" -f2`
+Check_approx $v 5349.16
+Pass saxpb
 
 splot -ftype RIM -o $tmp/1 -n fsignal 2> /dev/null || Incerr
 v=`fnorm -v $tmp/1 | cut -d"=" -f2`
@@ -1530,12 +1695,17 @@ v=`snorm -v $tmp/1 | cut -d"=" -f2`
 Check_approx $v 0.0785888
 Pass ssinus
 
+sprintasc fsignal 1 1024 | sreadasc $tmp/1 1024
+Swtvdenoise -D 10 -N 200 $tmp/1 $tmp/2 > /dev/null || Incerr
+v=`snorm -p 2 -c $tmp/1 $tmp/2 | cut -d"=" -f2`
+Check_approx $v 11.52
+Pass Swtvdenoise
+
 NoPass stvrestore
-NoPass Swtvdenoise
 NoPass w1threshold
 NoPass sinfo
-NoPass sprintasc
-NoPass saxpb
+
+# common: snorm
 
 echo
 
@@ -1566,7 +1736,7 @@ Pass biowave1
 ibiowave1 -e 0 $tmp/1 $tmp/2 wave/biortho/h/sp02.ir wave/biortho/htilde/sl05.ir || Incerr
 v=`snorm -t 0.001 -b 2 -p 2 -c fsignal $tmp/2 | cut -d"=" -f2`
 Check_exact $v 0
-Pass iowave1
+Pass ibiowave1
 
 NoPass biowave2
 NoPass dybiowave2
@@ -1578,6 +1748,53 @@ NoPass owtrans_fimage
 NoPass precond1d
 NoPass precond2d
 NoPass sconvolve
+
+echo
+
+
+# wave/packets
+
+mwecho -n "wave/packets: "
+
+wp2dmktree -w 4 $tmp/1 || Incerr
+v=`fsize $tmp/1`
+Check_exact "$v" "16 16"
+v=`fmean $tmp/1 | cut -d"=" -f2`
+Check_exact $v 1.32812
+Pass wp2dmktree
+
+wp2doperate -t 2 -s 15 -b biortho/htilde/sd09.ir $tmp/1 biortho/h/sd07.ir cimage $tmp/2 || Incerr
+v=`fnorm -v $tmp/2 | cut -d"=" -f2`
+Check_approx $v 6.15582
+Pass wp2doperate
+
+wp2ddecomp $tmp/1 cimage ortho/da05.ir $tmp/2 || Incerr
+Pass wp2ddecomp
+
+NoPass wp2dchangepack
+NoPass wp2dchangetree
+NoPass Wp2dcheck
+NoPass wp2dchecktree
+NoPass wp2deigenval
+NoPass wp2dfreqorder
+NoPass wp2drecomp
+NoPass wp2dview
+NoPass wpsconvolve
+
+echo
+
+
+# wave/ridgelet
+
+mwecho -n "wave/ridgelet: "
+
+NoPass iridgelet
+NoPass istkwave1
+NoPass ridgelet
+NoPass ridgpolrec
+NoPass ridgrecpol
+NoPass ridgthres
+NoPass stkwave1
 
 echo
 

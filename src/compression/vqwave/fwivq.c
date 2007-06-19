@@ -1,49 +1,44 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {fwivq};
-version = {"2.00"};
+version = {"2.0"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Decompress an image compressed by vector quantization of its wavelet transform"};
 usage = {
-'e':EdgeIR->Edge_Ri
+ 'e':EdgeIR->Edge_Ri
       	"Impulse reponses of edge and preconditionning filters for orthogonal transform (fimage)",
-'b':ImpulseResponse2->Ri2
+ 'b':ImpulseResponse2->Ri2
 	"Impulse response of filter 2 for biorthogonal transform (fsignal)",
-'n':FilterNorm->FilterNorm [0,2]
+ 'n':FilterNorm->FilterNorm [0,2]
 	"Normalization mode for filter bank", 
-'w':WeightFac->WeightFac
+ 'w':WeightFac->WeightFac
         "Scaling factor for wavelet coefficients", 
-'x':CodeBook2->CodeBook2
+ 'x':CodeBook2->CodeBook2
 	"Sequence of codebooks for second class (fimage)",
-'y':CodeBook3->CodeBook3
+ 'y':CodeBook3->CodeBook3
 	"Sequence of codebooks for third class (fimage)",
-'A':ResCodeBook1->ResCodeBook1
+ 'A':ResCodeBook1->ResCodeBook1
 	"Sequence of codebooks for residu quantization after quantization with CodeBook1 (fimage)",
-'B':ResCodeBook2->ResCodeBook2
+ 'B':ResCodeBook2->ResCodeBook2
 	"Sequence of codebooks for residu quantization after quantization with CodeBook2 (fimage)",
-'C':ResCodeBook3->ResCodeBook3
+ 'C':ResCodeBook3->ResCodeBook3
 	"Sequence of codebooks for residu quantization after quantization with CodeBook3 (fimage)",
-'D':ResResCodeBook1->ResResCodeBook1
+ 'D':ResResCodeBook1->ResResCodeBook1
 	"Sequence of codebooks for residu quantization after quantization with CodeBook1 and ResCodeBook1 (fimage)",
-'E':ResResCodeBook2->ResResCodeBook2
+ 'E':ResResCodeBook2->ResResCodeBook2
 	"Sequence of codebooks for residu quantization after quantization with CodeBook2 and ResCodeBook2 (fimage)",
-Cimage->Compress
-          "Input string of codewords (cimage)",
-CodeBook1->CodeBook1
-	"Sequence of codebooks for first class (fimage)", 
-ImpulseResponse->Ri
-	"Impulse response of inner filters (fsignal)", 
-Result<-Output
-	"Reconstructed image (fimage)"
-	};
- */
+
+ Cimage->Compress      "Input string of codewords (cimage)",
+ CodeBook1->CodeBook1  "Sequence of codebooks for first class (fimage)", 
+ ImpulseResponse->Ri   "Impulse response of inner filters (fsignal)", 
+ Result<-Output        "Reconstructed image (fimage)"
+
+};
+*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

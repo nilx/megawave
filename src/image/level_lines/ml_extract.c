@@ -1,10 +1,10 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {ml_extract};
-   version = {"8.1"};
-   author = {"Georges Koepfler"};
-   function = {"Extract morpho_lines of image"};
-   usage = {
+ name = {ml_extract};
+ version = {"8.1"};
+ author = {"Georges Koepfler"};
+ function = {"Extract morpho_lines of image"};
+ usage = {
    'L':level->level
        "for the value `level' compute morpho_lines (float)",
    'l':levels->levels
@@ -19,7 +19,7 @@
        "original image",
    mimage<-m_image
        "mimage with morpho_lines of image_in"
-       };
+};
 */
 
 #include <stdio.h>

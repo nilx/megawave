@@ -1,0 +1,18 @@
+This modules shrinks a Fimage $in$ of size $M\times N$ into a Fimage $out$ 
+of size $M'\times N'$, with 
+$$1-\frac p{100}\leq \frac{M'}M \leq 1
+\quad\mathrm{and}\quad
+1-\frac p{100}\leq \frac{N'}N \leq 1
+\eqno(1)$$ 
+in order the complexity per pixel
+of the Fast Fourier Transform (FFT)\index{Fourier Transform} of $out$
+to be as small as possible. This amounts to minimize
+$$C(M',N') = \sum_i (p_i-1) + \sum_j (q_j-1),$$
+where $M'=\prod_i p_i$ and $N'=\prod_j q_j$ are the prime factor 
+decompositions of $M'$ and $N'$, 
+with the constraint (1). The new image $out$ starts at pixel
+$((M-M')/2,(N-N')/2)$.
+If the \verb+-v+ option is selected, the module writes on standart output
+the initial and final complexity, and the speed-up ratio
+$C(M,N)/C(M',N')$. 
+\index{crop!an image}

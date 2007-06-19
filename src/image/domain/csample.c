@@ -1,4 +1,4 @@
-/*-------------------------- MegaWave2  Module ------------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name     = {csample};
 author   = {"Jacques Froment, Regis Monneau"};

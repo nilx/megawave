@@ -1,20 +1,21 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {disocclusion};
-version = {"2.0"};
-author = {"Simon Masnou"};
-function = {"Disocclusion using global minimisation of cost by dynamic recursive programing"};
-usage = {
-  'e':[energy_type=1]->energy_type    
-       "Energy of a level line : 0 = only length, 1 = only angle (default), otherwise = angle+length",
-  'a'->angle        "If used then the orientation of each entering level line is computed more accurately on a ball of radius 4",
-  input->Input      "Input occluded Cimage",
-  holes->Holes      "Input Fimage containing the only occlusions",
-  output<-Output    "Output disoccluded Cimage"
-  };
+ name = {disocclusion};
+ version = {"2.0"};
+ author = {"Simon Masnou"};
+ function = {"Disocclusion using global minimisation of cost by dynamic recursive programing"};
+ usage = {
+   'e':[energy_type=1]->energy_type    
+       "Energy of a level line : 0 = only length, 1 = only angle, otherwise = angle+length",
+   'a'->angle        "If used then the orientation of each entering level line is computed more accurately on a ball of radius 4",
+   input->Input      "Input occluded Cimage",
+   holes->Holes      "Input Fimage containing the only occlusions",
+   output<-Output    "Output disoccluded Cimage"
+};
 */
 /*----------------------------------------------------------------------
  v2.0: revised version, added -e option, no more -m option (S.Masnou)
+ v2.1 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 

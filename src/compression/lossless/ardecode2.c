@@ -1,37 +1,25 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {ardecode2};
 version = {"1.01"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Arithmetic decoding of a compressed fimage"};
 usage = {
-'i'->Print
-        "Do not print info on decoding process",
-'r':NRow->NRow [1,32383]
-          "Number of rows in output Fimage",
-'n':NSymbol->NSymb
-          "Number of different symbols in source",
-'c':Cap_Histo->Cap_Histo
-          "Capacity of histogram",
-'p':Predic->Predic [0,1]
-          "0 : no prediction, 1 : predictive encoding has been used, default : info is in header",        
-'h':Fsignal->Histo
-          "Histogram model for input symbols (fsignal)", 
-Cimage->Input
-          "Input string of symbols (cimage)",
-Rate<-Rate
-          "Rate of output",
-Fimage<-Output
-          "Output string of codewords (fimage)"
+'i'->Print               "Do not print info on decoding process",
+'r':NRow->NRow [1,32383] "Number of rows in output Fimage",
+'n':NSymbol->NSymb       "Number of different symbols in source",
+'c':Cap_Histo->Cap_Histo "Capacity of histogram",
+'p':Predic->Predic [0,1] "0 : no prediction, 1 : predictive encoding has been used, default : info is in header",        
+'h':Fsignal->Histo       "Histogram model for input symbols (fsignal)", 
+Cimage->Input            "Input string of symbols (cimage)",
+Rate<-Rate               "Rate of output",
+Fimage<-Output           "Output string of codewords (fimage)"
 };
  */
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Library megawave2 ---*/
 #include  "mw.h"
 
 

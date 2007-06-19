@@ -9,7 +9,7 @@
     "unit mass constant kernel of specified width",
    'g':std->std[0.0,1.0e4]    
     "Gaussian kernel, standart deviation std (precision 1e-3)",
-   'b':[b=1]->b  "boundary condition: 0=zero, 1=symmetry (default), 2=torus",
+   'b':[b=1]->b  "boundary condition: 0=zero, 1=symmetry, 2=torus",
    in->in        "input Fimage",
    out<-out      "output (convolved Fimage)",
  { xker->xker    "use a Fsignal (and its shift) as kernel along x axis",
@@ -31,10 +31,10 @@ extern Fsignal sgauss();
 
 
 Fimage fsepconvol(in,out,xker,yker,width,std,b)
-Fimage in,out;
-Fsignal xker,yker;
-int *width,*b;
-float *std;
+     Fimage in,out;
+     Fsignal xker,yker;
+     int *width,*b;
+     float *std;
 {
   Fimage tmp;
   int nx,nx2,ny,ny2,x,y,org,i,iter,s;

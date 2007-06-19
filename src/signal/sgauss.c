@@ -1,18 +1,19 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {sgauss};
-  version = {"1.1"};
+  version = {"1.2"};
   author = {"Lionel Moisan"};
   function = {"Create a Gaussian Fsignal with unit mass"};
   usage = {
    's':size->size      "set size directly ...",
-   'p':[prec=4]->prec  "... or specify -log10 signal precision (default 4)",
+   'p':[prec=4]->prec  "... or specify -log10 signal precision",
    out<-out            "output Fsignal",
    std->std            "standart deviation"
   };
 */
 /*----------------------------------------------------------------------
  v1.1: added -p option and return output (L.Moisan)
+ v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -20,9 +21,9 @@
 #include "mw.h"
 
 Fsignal sgauss(std,out,size,prec)
-Fsignal out;
-float std,*prec;
-int *size;
+     Fsignal out;
+     float std,*prec;
+     int *size;
 {
   int i,n;
   double sum,v;

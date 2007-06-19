@@ -4,6 +4,13 @@
       Generate module's interface to XMegaWave software.
  -------------------------------------------------------------------------*/
 
+/*
+   V 1.1
+   Main changes :
+   1.1 (JF, 23/02/2006) added include <string.h>
+*/
+
+
 /*~~~~~~~~~~~  This file is part of the MegaWave2 preprocessor ~~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
 been developed for research purposes and it comes without any warranty.
@@ -14,6 +21,8 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 
 #ifdef XMWP
 #include <stdio.h>
+#include <string.h>
+
 #include "bintree.h"
 #include "symbol.h"
 #include "token.h"

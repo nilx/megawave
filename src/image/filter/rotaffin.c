@@ -1,23 +1,25 @@
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
 name = {rotaffin};
-version={"2.1"};
+version = {"2.2"};
 author = {"Frederic Guichard, Denis Pasquignon"};
 function = {"rotations and orthogonal affinities of binary images"};
 usage = {
-'r':[Nrotations=8]->Nrota [1, 360]     "Number of rotations",
-'a':[Naffi=2]->Naffi[1,100]            "Number of affinities",
-'t':[Size=10]->Size [1,1000]       "Size of the masks",
-'T':[Type=0]->Type [0,3]               "Type of object, default is square (0)",
-'A':[Area=15]->Area[1,5000]            "Square root of the Area of object",
-'d':[Definition=10]->Definition [1,10000]   "Precision of the calculs",
-'o':[OptSym=2.0]->OptSym[0.0,1000.0]   "2pi/OptSym symmetry of mask",
-'f':[Factor=1.0]->Factor[0.01,100.0]   "Factor of affinity, should be 1",
-'M':cimage->cimage "a mask",
-cmovie<-cmovie    "rotations and affinities of the mask (movie of masks)"
+ 'r':[Nrotations=8]->Nrota [1, 360]    "Number of rotations",
+ 'a':[Naffi=2]->Naffi[1,100]           "Number of affinities",
+ 't':[Size=10]->Size [1,1000]          "Size of the masks",
+ 'T':[Type=0]->Type [0,3]              "Type of object, default is square (0)",
+ 'A':[Area=15]->Area[1,5000]           "Square root of the Area of object",
+ 'd':[Definition=10]->Definition [1,10000]   "Precision of the calculs",
+ 'o':[OptSym=2.0]->OptSym[0.0,1000.0]  "2pi/OptSym symmetry of mask",
+ 'f':[Factor=1.0]->Factor[0.01,100.0]  "Factor of affinity, should be 1",
+ 'M':cimage->cimage   "a mask",
+ cmovie<-cmovie       "rotations and affinities of the mask (movie of masks)"
 };
 */
 /*----------------------------------------------------------------------
  v2.1: return void (L.Moisan)
+ v2.2: version syntax fixed (JF)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

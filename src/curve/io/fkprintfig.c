@@ -1,18 +1,21 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {fkprintfig};
-  version = {"1.3"};
+  version = {"1.4"};
   author = {"Lionel Moisan"};
   function = {"Convert fcurves to fig 3.2 polygons (on stdout)"};
   usage = {
-  'd':[d=2]->d [1,3]   "display mode: 1=points, 2=lines (default), 3=both",
-  'e'->e_flag          "to mark extremal points",
-  's'->s_flag          "to symmetrize y coordinate (y -> -y)",
-  'm':m->m             "to set magnification factor (default: auto + shift)",
-  'r':[r=0.2]->r       "relative size of displayed points (default: 0.2)",
-  in->in               "input Fcurves"
+   'd':[d=2]->d [1,3]   "display mode: 1=points, 2=lines, 3=both",
+   'e'->e_flag          "to mark extremal points",
+   's'->s_flag          "to symmetrize y coordinate (y -> -y)",
+   'm':m->m             "to set magnification factor (default: auto + shift)",
+   'r':[r=0.2]->r       "relative size of displayed points",
+   in->in               "input Fcurves"
   };
 */
+/*----------------------------------------------------------------------
+ v1.4 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -45,10 +48,10 @@ extern void fkbox();
 /*---------- MAIN MODULE ----------*/
 
 void fkprintfig(in,d,e_flag,s_flag,m,r)
-Fcurves in;
-int *d;
-char *e_flag,*s_flag;
-float *m,*r;
+     Fcurves in;
+     int *d;
+     char *e_flag,*s_flag;
+     float *m,*r;
 {
   Fcurve c;
   Point_fcurve p,last;

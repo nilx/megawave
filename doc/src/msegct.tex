@@ -8,6 +8,8 @@
 \def\R{{\rm I\!\!R}}
 \def\NC{{\tt nb\_ch}}
 
+\index{segmentation!multi-channel}
+
 The command {\bf msegct} computes a segmentation of multichannel data.
 Each channel is an {\tt fimage} which is part of the input {\em fmovie}.
 Thus we consider a picture where to each pixel are associated 
@@ -23,7 +25,8 @@ We use a classical region-growing algorithm to achieve the partition of the
 image in homogeneous regions.
 
 The criterion which measures the resemblance of regions is given by the 
-Mumford and Shah model. Call $g$ the picture defined on an open rectangle $R\subset\R$,
+Mumford and Shah model. \index{segmentation!Mumford and Shah}
+Call $g$ the picture defined on an open rectangle $R\subset\R$,
 $u$ a piecewise constant function, which approximates $g$, and
 let $B$ be the boundaries between the regions, i.e. the set of jump points of
 $u$ (remember that $g$ and $u$ are elements of $\R^{\mbox{\small \NC}}$).

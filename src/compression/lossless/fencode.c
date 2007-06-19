@@ -1,12 +1,12 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {fencode};
-version={"0.0"};
+version = {"0.1"};
 author = {"Jacques Froment"};
 function = {"Encode a fimage : return bit rate for lossless compression"};
 usage = {
-U->U "input fimage",
-brate<-fencode "best rate (bit per pixel)"
+  U->U            "input fimage",
+  brate<-fencode  "best rate (bit per pixel)"
         };
 */
 

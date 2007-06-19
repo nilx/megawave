@@ -1,21 +1,23 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {mac_snakes};
-   version = {"1.0"};
-   author = {"Lionel Moisan"};
-   function = {"Maximizing Average Contrast Snakes for contour detection"};
-   usage = {
-   'p':[power=1.]->power   "g(s)=|s|^power (default power=1.0)",
-   'n':[niter=1000]->niter "number of iterations (default 1000)",
-   's':[step=1.]->step     "evolution step (default 1.0)",
+ name = {mac_snakes};
+ version = {"1.1"};
+ author = {"Lionel Moisan"};
+ function = {"Maximizing Average Contrast Snakes for contour detection"};
+ usage = {
+   'p':[power=1.]->power   "g(s)=|s|^power",
+   'n':[niter=1000]->niter "number of iterations",
+   's':[step=1.]->step     "evolution step",
    'v'->v                  "verbose mode",
    'V':V->V                "select video mode and specify zoom (e.g. 2)",
     u->u                   "input Fimage",
     in->in                 "input curves (Dlists)",
     out<-mac_snakes        "output curves (modified input)"
-   };
+};
 */
-
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -180,13 +182,16 @@ Dlists mac_snakes(u,in,niter,step,power,v,V)
   uxx = (double *)malloc(sizemax*sizeof(double));
   uxy = (double *)malloc(sizemax*sizeof(double));
   uyy = (double *)malloc(sizemax*sizeof(double));
-
   nx = u->ncol; ny = u->nrow;
   imux = mw_change_fimage(NULL,ny,nx);
   imuy = mw_change_fimage(NULL,ny,nx);
   imuxx = mw_change_fimage(NULL,ny,nx);
   imuxy = mw_change_fimage(NULL,ny,nx);
   imuyy = mw_change_fimage(NULL,ny,nx);
+  if (!xt || !yt || !dg || !h || !dx || !dy || !dn || !ux || !uy || !uxx
+      || !uxy || !uyy || !imux || !imuy || !imuxx || !imuxy || !imuyy)
+    mwerror(FATAL,1,"Not enough memory\n");
+  
   mingrad = 0.;
   nsize = 8;
   fderiv(u,NULL,NULL,NULL,NULL,imux,imuy,NULL,NULL,&mingrad,&nsize);
@@ -264,6 +269,11 @@ Dlists mac_snakes(u,in,niter,step,power,v,V)
   }
   if (V && !stop) 
     while (WUserEvent(win)!=W_KEYPRESS || WGetKeyboard()!=(int)'q');
+
+  mw_delete_fimage(imuyy); mw_delete_fimage(imuxy); mw_delete_fimage(imuxx);
+  mw_delete_fimage(imuy); mw_delete_fimage(imux);
+  free(uyy); free(uxy); free(uxx); free(uy); free(ux);
+  free(dn); free(dy); free(dx); free(h); free(dg); free(yt); free(xt);
 
   return(in);
 }

@@ -1,5 +1,7 @@
-This module computes the values at the saddle points in a bilinear
-interpolated image. The resulting image has one column and one line missing
+This module computes the values at the saddle points 
+\index{saddle point} in a bilinear interpolated image. 
+\index{interpolation!bilinear}
+The resulting image has one column and one line missing
 compared to the original image. The value at $(i,j)$ is the one at the saddle
 point in the dual pixel of corners $(i,j)$, $(i+1,j)$, $(i,j+1)$ and
 $(i+1,j+1)$ if there is one, and \texttt{FLT\_MAX} (defined in \texttt{math.h})

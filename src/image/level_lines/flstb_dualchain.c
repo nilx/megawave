@@ -1,16 +1,15 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-  name = {flstb_dualchain}; 
-  version = {"1.0"}; 
-  author = {"Pascal Monasse"}; 
-  function = {"Find chain of dual pixels adjacent to a shape \
-in bilinear interpolated image"}; 
-  usage = { 
+ name = {flstb_dualchain}; 
+ version = {"1.0"}; 
+ author = {"Pascal Monasse"}; 
+ function = {"Find chain of dual pixels adjacent to a shape in bilinear interpolated image"}; 
+ usage = { 
     tree -> pTree "The tree of shapes",
     shape -> pShape "The shape whose boundary is to be computed",
     boundary <- pBoundary "The chain of adjacent dual pixels (output flist)",
     notused -> ctabtabSaddleValues "Saddle values"
-    }; 
+}; 
 */ 
 
 #include <float.h>

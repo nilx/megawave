@@ -1,18 +1,21 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {finvspline};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Lionel Moisan"};
   function = {"2D inverse B-spline transform"};
   usage = {
      in->in               "input (Fimage)",
-     order->order[2,11]   "spline order (2..11)",
+     order->order[2,11]   "spline order",
      out<-out             "output (Fimage of coefficients)"
           };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
+
 #include <math.h>
 #include "mw.h"
-
 
 double initcausal(c,n,z)
      double *c;

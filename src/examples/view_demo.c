@@ -1,20 +1,15 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {view_demo};
   version = {"1.1"};
   author = {"Jacques Froment"};
   function = {"Demo of a user's lib call to the view modules: View images"};
   usage = {
-  'x':[pos_x=50]->x0
-      "X coordinate for the upper-left corner of the Window",
-  'y':[pos_y=50]->y0
-      "Y coordinate for the upper-left corner of the Window",
-  'z':[zoom=1.0]->zoom
-      "Zoom factor (float value)",
-  cimage->cimage
-        "Input cimage",
-  ccimage->ccimage
-        "Input ccimage"
+  'x':[pos_x=50]->x0    "X coordinate for the upper-left corner of the window",
+  'y':[pos_y=50]->y0    "Y coordinate for the upper-left corner of twe Window",
+  'z':[zoom=1.0]->zoom  "Zoom factor (float value)",
+  cimage->cimage        "Input cimage",
+  ccimage->ccimage      "Input ccimage"
   };
 */
 /*----------------------------------------------------------------------
@@ -30,10 +25,10 @@
 
 void view_demo(cimage,ccimage,x0,y0,zoom)
 
-int *x0,*y0;
-float *zoom;
-Cimage cimage;
-Ccimage ccimage;
+     int *x0,*y0;
+     float *zoom;
+     Cimage cimage;
+     Ccimage ccimage;
 
 {
  Wframe *ImageWindow;

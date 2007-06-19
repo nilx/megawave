@@ -1,6 +1,7 @@
 This module applies a multiplicative mask on a Fimage $u(x,y)$, called 
-the Hamming window. If $u$ is defined on $[-a,a] \times [-b,b]$, 
-the result is given by
+the Hamming window. 
+\index{Hamming window}
+If $u$ is defined on $[-a,a] \times [-b,b]$, the result is given by
 $$u'(x,y) = u(x,y) . \left( \alpha + (1-\alpha) \cos \frac{\pi x}{a} \right)
 \left( \alpha + (1-\alpha) \cos \frac{\pi y}{b} \right),$$
 where $\alpha = 0.54$.
@@ -8,6 +9,7 @@ Applying this operator to a non-periodic image before computing its Fourier
 Transform results in a better frequency estimation, since the high energy
 of the vertical and horizontal frequencies (due to the border's gap of 
 the image) are cancelled.
+\index{Fourier Transform}
 
 \vskip 0.5 cm
 

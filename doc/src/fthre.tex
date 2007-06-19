@@ -1,15 +1,35 @@
-{\em fthre} copies the input image in the output and makes a thresold 
-into the following interval:
-\begin{itemize}
-\item $]-\infty, \mbox{max}]$ if \verb+-M max+ is selected;
-\item $[\mbox{min}, \infty[$ if \verb+-m min+ is selected;
-\item $[\mbox{min}, \mbox{max}]$ if both \verb+-m+ and \verb+-M+ are selected.
-\end{itemize}
 
-Using the option \verb+-n+ you can normalize the image before the
-thresholding. 
-In that case, you must select both \verb+-m+ and \verb+-M+ and the
-normalization consists to apply an affine transformation on the gray levels,
-such that the lowest level becomes the level \verb+min+ and the greatest
-level the level \verb+max+.
+This module performs an affine normalization or/and a thresholding
+on the image $in$, according to the selected options.
 
+\medskip
+
+If neither the \verb+-n+ nor the \verb+-N+ option is selected,
+then a simple thresholding is performed, constraining the 
+minimum and/or maximum value of the grey-level to stay
+inside specified bounds with the \verb+-m+ and \verb+-M+ options.
+
+\medskip
+
+If the \verb+-n+ option is selected, then an affine normalization
+is performed to send the interval $[m,M]$ onto the interval $[min,max]$,
+where $m$ and $M$ are minimal and maximal values of the input image
+$in$ (default), or selected percentiles of its histogram if the \verb+-p+,
+\verb+-q+ or \verb+-d+ options are used. In the latter case, a thresholding
+is then applied unless the \verb+-a+ option is selected.
+
+\medskip
+
+If the \verb+-N+ option is selected, then an affine normalization
+is performed to send the interval $[m,M]$ onto the interval $[0,255]$,
+where $m$ and $M$ are minimal and maximal values of the input image
+$in$ (default), or selected percentiles of its histogram if the \verb+-p+,
+\verb+-q+ or \verb+-d+ options are used, or fixed values if the \verb+-m+
+and \verb+-M+ options are used. Like for the \verb+-n+ option, thresholding
+can be avoided by using the \verb+-a+ option.
+
+\medskip
+
+In all cases, a linear (instead of affine) normalization can be enforced
+by selecting the \verb+-l+ option. In this case, minimum values are not
+used for normalization (but they are used for thresholding).

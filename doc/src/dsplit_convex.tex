@@ -1,4 +1,6 @@
-This module splits a curve, given by a 2-Dlist, into convex components.
+This module splits a curve, given by a 2-Dlist, into convex components
+\index{convex components}
+(see \cite{lisani.monasse.ea:on}).
 
 \medskip
 
@@ -23,7 +25,7 @@ For each sequence of 4 successive remaining points $A,B,C,D$,
 we say that $(B,C)$ is an inflexion
 segment when $d(A,B,C)$ and $d(B,C,D)$ have opposite signs.
 When this occurs, we define the middle of $(B,C)$ as an inflexion
-point and break the curve accordingly.
+point \index{inflexion point} and break the curve accordingly.
 
 The result is a Dlists describing the successive convex components
 encountered. Notice that this module is compatible with the convention

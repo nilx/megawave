@@ -1,12 +1,14 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    bmp_io.c
    
-   Vers. 1.01
-   (C) 2002 Emmanuel Villeger and Jacques Froment
+   Vers. 1.02
+   Authors : Emmanuel Villeger and Jacques Froment
    Parts of this code inspired from XV: Copyright 1989, 1994 by John Bradley.
 
    Input/Output functions for the BMP file compatibility with MegaWave2
 
+   Main changes :
+   v1.02 (JF) : bug on size of scan line corrected, in case of 24-bits plane.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -132,23 +134,43 @@ unsigned int *size, *planes, *bitcount, *compression;
     }
   *compression=0;
   if (
-    getint(fp) == EOF ||            /* bfSize      */
-    getshort(fp) == EOF ||          /* bfReserved1 */
-    getshort(fp) == EOF ||          /* bfReserved2 */
-    (*offset = getint(fp)) == EOF || /* bfOffBits   */
-    (*size=getint(fp)) == EOF ||        /* size   */
-    (*nx = getint(fp)) == EOF || /* biWidth  */
-    (*ny = getint(fp)) == EOF ||   /* biHeight */
-    (*planes = getshort(fp))==EOF ||
-    (*bitcount = getshort(fp))==EOF ||    
-    ((*size == 40 || *size == 64) /* New BMP format with extended header */
-     &&(*compression=getint(fp))==EOF) /* New format may include compression */
-    )
+      getint(fp) == EOF ||            /* bfSize      */
+      getshort(fp) == EOF ||          /* bfReserved1 */
+      getshort(fp) == EOF ||          /* bfReserved2 */
+      (*offset = getint(fp)) == EOF || /* bfOffBits   */
+      (*size=getint(fp)) == EOF        /* size   */
+      )
     {
       mwerror(ERROR, 0,"Error while reading header of file \"%s\"... Not a BMP format or file corrupted !\n",fname);
       fclose(fp);
       return(NULL);
+    }  
+
+  if ((*size == 40 || *size == 64)) 
+    /* New BMP format with extended header */
+    {
+      if (
+	  (*nx = getint(fp)) == EOF || /* biWidth  */
+	  (*ny = getint(fp)) == EOF ||   /* biHeight */
+	  (*planes = getshort(fp))==EOF ||
+	  (*bitcount = getshort(fp))==EOF ||    
+	  (*compression=getint(fp))==EOF /* New format may include compression */
+	  )
+	{
+	  mwerror(ERROR, 0,"Error while reading header of file \"%s\"... Not a new BMP format or file corrupted !\n",fname);
+	  fclose(fp);
+	  return(NULL);
+    }  
+
     }
+  else
+    /* Old BMP format */
+    {
+      mwerror(ERROR, 0,"Error while reading header of file \"%s\"... Unsupported old BMP format !\n",fname);
+      fclose(fp);
+      return(NULL);
+    }
+  
   return(fp);
 }
 
@@ -183,6 +205,7 @@ char *file;
     }
 
   allocsize = nx + ((nx&3) ? 4 - (nx&3) : 0);
+
   if (fseek(fp,offset,SEEK_SET)) 
     {
     mwerror(ERROR, 0,"Error while reading file \"%s\"... Not a BMP format or file corrupted !\n",file);
@@ -193,27 +216,30 @@ char *file;
   if (!(image = mw_change_cimage(NULL,ny,nx)))
     mwerror(FATAL,0,"Not enough memory to load BMP image \"%s\"\n",file);
 
-  for (j = ny-1; j>=0; j--) {
-    for (i = 0; i < nx; i++)
-      if ((c = getc(fp)) == EOF) 
+  for (j = ny-1; j>=0; j--) 
+    {
+      for (i = 0; i < nx; i++)
 	{
-	  mwerror(ERROR, 0,"Error while reading file \"%s\"... Not a BMP format or file corrupted !\n",file);
-	  mw_delete_cimage(image);
-	  image = NULL;
-	  fclose(fp);
-	  return(NULL);
+	  if ((c = getc(fp)) == EOF) 
+	    {
+	      mwerror(ERROR, 0,"Error while reading file \"%s\"... Not a BMP format or file corrupted !\n",file);
+	      mw_delete_cimage(image);
+	      image = NULL;
+	      fclose(fp);
+	      return(NULL);
+	    }
+	  else image->gray[i + j*nx] = c;
 	}
-      else image->gray[i + j*nx] = c;
-    for (; i < allocsize; i++)
-      if (getc(fp) == EOF) 
-	{
-	  mwerror(ERROR, 0,"Error while reading file \"%s\"... Not a BMP format or file corrupted !\n",file);
-	  mw_delete_cimage(image);
-	  image = NULL;
-	  fclose(fp);
-	  return(NULL);
-	}
-  }
+      for (; i < allocsize; i++)
+	if (getc(fp) == EOF) 
+	  {
+	    mwerror(ERROR, 0,"Error while reading file \"%s\"... Not a BMP format or file corrupted !\n",file);
+	    mw_delete_cimage(image);
+	    image = NULL;
+	    fclose(fp);
+	    return(NULL);
+	  }
+    }
   
   fclose(fp);
   return(image);
@@ -349,7 +375,8 @@ char *file;
   if (!(image = mw_change_ccimage(NULL,ny,nx)))
      mwerror(FATAL,0,"Not enough memory to load BMP image \"%s\"\n",file);
   
-  allocsize = nx + ((nx&3) ? 4 - (nx&3) : 0);
+  /*  allocsize = nx + ((nx&3) ? 4 - (nx&3) : 0);*/
+  allocsize=nx + ((4 - ((nx*3) % 4)) & 0x03);
   
   if (fseek(fp,offset,SEEK_SET)) {
     mwerror(ERROR, 0,"Error while reading file \"%s\"... Not a BMP format or file corrupted !\n",file);
@@ -409,7 +436,8 @@ Ccimage image;
     mwerror(INTERNAL, 0,"[_mw_ccimage_create_bmp] NULL cimage or cimage plane\n");
   nx = image->ncol;
   ny = image->nrow;
-  allocsize = nx + ((nx&3) ? 4-(nx&3) : 0);
+  /*allocsize = nx + ((nx&3) ? 4-(nx&3) : 0);*/
+  allocsize=nx + ((4 - ((nx*3) % 4)) & 0x03);
   
   if (!(fp = fopen(file,"w")))
     {

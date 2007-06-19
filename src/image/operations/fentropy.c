@@ -1,12 +1,12 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {fentropy};
-author = {"Jacques Froment"};
-version = {"1.4"};
-function = {"Compute the entropy of an image"};
-usage = {
-A->A "input fimage",
-e<-fentropy "output entropy value"
+ name = {fentropy};
+ author = {"Jacques Froment"};
+ version = {"1.4"};
+ function = {"Compute the entropy of an image"};
+ usage = {
+   A->A         "input fimage",
+   e<-fentropy  "output entropy value"
 };
 */
 /*----------------------------------------------------------------------
@@ -24,9 +24,7 @@ extern Fsignal fvalues();
 
 
 double entropy(input)
-
-Fsignal input;
-
+     Fsignal input;
 {
   int i;
   double sum, entr, p;

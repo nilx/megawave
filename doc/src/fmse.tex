@@ -1,4 +1,5 @@
 {\em fmse} computes the maximal relative difference, mean square error, signal to noise ratio, and peak signal to noise ratio between two digitized images whose gray-level values are stored in the files {\em Image1} and {\em Image2}. 
+\index{comparison!of two images}
 
 The maximal relative difference is given by 
 \[
@@ -11,6 +12,7 @@ The mean square error is defined by
 MSE = \frac{\sum_{x,y}|f_{1}(x,y) - f_{2}(x,y)|^{2}}{d_{x} \times d_{y}}
 \]
 where $d_{x}$ and $d_{y}$ are respectively the number of columns and the number of lines in the images.
+\index{mean square error}
 
 In maximal relative difference and mean square difference the two images have symetric roles. This is no longer the case in (peak) signal to noise ratio. 
 These quantities can be calculated for any two images, but are more meaningful if $f_{1}$ is considered as an original image and $f_{2}$ as an approximation to it. The signal to noise ratio and peak signal to noise ratio are defined as follows
@@ -21,6 +23,8 @@ SNR = 10 \times \log_{10} \frac{\sigma_{1}^{2}}{MSE}
 PSNR = 10 \times \log_{10} \frac{(\max_{x,y}f_{1}(x,y) - \min_{x,y}f_{1}(x,y))^{2}}{MSE}
 \]
 where $\sigma_{1}^{2}$ is the empirical variance of the original image.
+\index{SNR|see{Signal to Noise Ratio}}
+\index{Signal to Noise Ratio}
 
 The \verb+-n+ option specifies that the two images are normalized to $0.0$ mean and $1.0$ variance before the computation of the quantities listed above.
 
@@ -29,6 +33,7 @@ the peak signal to noise ratio (it should be selected for 8-bits images only):
 \[
 PSNR = 10 \times \log_{10} \frac{255^{2}}{MSE}
 \].
-
+\index{PSNR|see{Peak Signal to Noise Ratio}}
+\index{Peak Signal to Noise Ratio}
 
 

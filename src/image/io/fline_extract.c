@@ -1,23 +1,18 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {fline_extract};
-author = {"Jean-Pierre D'Ales, Jacques Froment"};
-function = {"Extract a line or a column of a fimage and store it as an 1D fsignal"};
-version = {"1.02"};
-
-usage = {
-  'c'->cflag "Flag for column number",
-  Image->Image "Input fimage", 
-  ExtractedSig<-Signal "Output fsignal",
-  Number->Index "Line (default) or column number"
+ name = {fline_extract};
+ author = {"Jean-Pierre D'Ales, Jacques Froment"};
+ function = {"Extract a line or a column of a fimage and store it as an 1D fsignal"};
+ version = {"1.02"};
+ usage = {
+    'c'->cflag            "Flag for column number",
+    Image->Image          "Input fimage", 
+    ExtractedSig<-Signal  "Output fsignal",
+    Number->Index         "Line (default) or column number"
 };
+*/
 
- */
-
-/*--- Fichiers inclus UNIX C ---*/
 #include <stdio.h>
-
-/*--- Bibliotheque megawave2 ---*/
 #include  "mw.h"
 
 

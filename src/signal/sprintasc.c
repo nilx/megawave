@@ -1,4 +1,4 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {sprintasc};
   version = {"1.0"};
@@ -11,7 +11,7 @@
       i1->i1       "first sample",
       i2->i2       "last sample"
     }
-          };
+};
 */
 
 #include <stdio.h>

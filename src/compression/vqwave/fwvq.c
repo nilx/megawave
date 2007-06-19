@@ -1,65 +1,43 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {fwvq};
-version = {"2.02"};
+version = {"2.3"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Compress an image with vector quantization of wavelet transform"};
 usage = {
-'r':NLevel->NumRec [1,15]
-	"Number of level for wavelet tranform", 
-'e':EdgeIR->Edge_Ri
-      	"Impulse reponses of edge and preconditionning filters for orthogonal transform (fimage)",
-'b':ImpulseResponse2->Ri2
-	"Impulse response of filter 2 for biorthogonal transform (fsignal)",
-'n':FilterNorm->FilterNorm [0,2]
-	"Normalization mode for filter bank", 
-'w':WeightFac->WeightFac
-	"Scaling factor for wavelet coefficients", 
-'s':ScalQuant->NumRecScal [0,15]
-	"Use uniform scalar quantization for the resume at level NLevelWav if ScalQuant = NLevelWav or all subimages at levels larger than SalQuant otherwise", 
-'u':[UnifQuantStep=0]->NStep
-	"Use UnifQuantStep levels to uniformly scalar quantize the resume or subimages", 
-'m':[MultiCB=2]->MultiCB [1,2]
-        "1: approximative memory allocation procedure, 2: exhaustive memory allocation procedure (default)",
-'x':CodeBook2->CodeBook2
-	"Sequence of codebooks for second class vectors (fimage)",
-'y':CodeBook3->CodeBook3
-	"Sequence of codebooks for third class vectors (fimage)",
-'A':ResCodeBook1->ResCodeBook1
-	"Sequence of codebooks for residu quantization after quantization with CodeBook1 (fimage)",
-'B':ResCodeBook2->ResCodeBook2
-	"Sequence of codebooks for residu quantization after quantization with CodeBook2 (fimage)",
-'C':ResCodeBook3->ResCodeBook3
-	"Sequence of codebooks for residu quantization after quantization with CodeBook3 (fimage)",
-'D':ResResCodeBook1->ResResCodeBook1
-	"Sequence of codebooks for residu quantization after quantization with CodeBook1 and ResCodeBook1 (fimage)",
-'E':ResResCodeBook2->ResResCodeBook2
-	"Sequence of codebooks for residu quantization after quantization with CodeBook2 and ResCodeBook2 (fimage)",
-'d'->DistRate
-        "Computes distorsion-rate function", 
-'R':TargetRate->TargRate 
-        "Target Rate", 
-'o':Compress<-Output
-	"Compressed Image (cimage)", 
-Image->Image
-	"Input image (fimage)", 
-CodeBook1->CodeBook1
-	"First sequence of codebooks (fimage)", 
-ImpulseResponse->Ri
-	"Impulse response of inner filters (fsignal)", 
+ 'r':NLevel->NumRec [1,15]    "Number of level for wavelet tranform", 
+ 'e':EdgeIR->Edge_Ri          "Impulse reponses of edge and preconditionning filters for orthogonal transform (fimage)",
+ 'b':ImpulseResponse2->Ri2    "Impulse response of filter 2 for biorthogonal transform (fsignal)",
+ 'n':FilterNorm->FilterNorm [0,2]  "Normalization mode for filter bank", 
+ 'w':WeightFac->WeightFac          "Scaling factor for wavelet coefficients", 
+ 's':ScalQuant->NumRecScal [0,15]  "Use uniform scalar quantization for the resume at level NLevelWav if ScalQuant = NLevelWav or all subimages at levels larger than SalQuant otherwise", 
+ 'u':[UnifQuantStep=0]->NStep      "Use UnifQuantStep levels to uniformly scalar quantize the resume or subimages", 
+ 'm':[MultiCB=2]->MultiCB [1,2]    "1: approximative memory allocation procedure, 2: exhaustive memory allocation procedure",
+ 'x':CodeBook2->CodeBook2          "Sequence of codebooks for second class vectors (fimage)",
+ 'y':CodeBook3->CodeBook3          "Sequence of codebooks for third class vectors (fimage)",
+ 'A':ResCodeBook1->ResCodeBook1    "Sequence of codebooks for residu quantization after quantization with CodeBook1 (fimage)",
+ 'B':ResCodeBook2->ResCodeBook2    "Sequence of codebooks for residu quantization after quantization with CodeBook2 (fimage)",
+ 'C':ResCodeBook3->ResCodeBook3    "Sequence of codebooks for residu quantization after quantization with CodeBook3 (fimage)",
+ 'D':ResResCodeBook1->ResResCodeBook1   "Sequence of codebooks for residu quantization after quantization with CodeBook1 and ResCodeBook1 (fimage)",
+ 'E':ResResCodeBook2->ResResCodeBook2   "Sequence of codebooks for residu quantization after quantization with CodeBook2 and ResCodeBook2 (fimage)",
+ 'd'->DistRate             "Computes distorsion-rate function", 
+ 'R':TargetRate->TargRate  "Target Rate", 
+ 'o':Compress<-Output      "Compressed Image (cimage)", 
+ Image->Image              "Input image (fimage)", 
+ CodeBook1->CodeBook1      "First sequence of codebooks (fimage)", 
+ ImpulseResponse->Ri       "Impulse response of inner filters (fsignal)", 
 	{
-	  Qimage<-QImage
-	          "Quantized image (fimage)"
+	   Qimage<-QImage  "Quantized image (fimage)"
 	}
 	};
  */
+/*----------------------------------------------------------------------
+ v2.3 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

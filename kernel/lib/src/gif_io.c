@@ -1,13 +1,18 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    gif_io.c
    
-   Vers. 0.0
+   Vers. 1.0
+   Author : Jacques Froment
+   Part of code
    (C) 1988, 1989 by Patrick J. Naughton, Michael Mauldin and David Rowley
    (C) 1989, 1990 by the University of Pennsylvania
-   (C) 1993 Jacques Froment
 
    Input/Output functions for the GIF file compatibility with MegaWave2
 
+   Main changes :
+   v1.0 (JF): 
+     - added include <string> (Linux 2.6.12 & gcc 4.0.2)
+     - cast added in strncmp((char *)ptr, id, 6));
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -16,7 +21,9 @@ The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
 CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 #include <stdio.h>
+#include <string.h>
 
 #include "mw.h"
 
@@ -133,7 +140,7 @@ char *fname;
   if (!(Raster = (byte *) malloc(filesize+256)))    
     mwerror(FATAL,1,"Not enough memory to read any GIF file !\n");
   
-  if ((fread(ptr, filesize, 1, fp) != 1) || (strncmp(ptr, id, 6)))
+  if ((fread(ptr, filesize, 1, fp) != 1) || (strncmp((char *)ptr, id, 6)))
     {
       mwerror(ERROR, 0,"Error while reading file \"%s\"... Not a GIF format or file corrupted !\n",fname);
       free(ptr);

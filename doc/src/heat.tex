@@ -1,9 +1,18 @@
-This module implements the heat equation with a finite differences 
-scheme using a 4-neighbors estimation of the Laplacian. The 
-transform $u\mapsto T(u)$, defined by
+This module implements the heat equation 
+\index{heat equation}
+\index{convolution}
+with a finite differences 
+scheme using a 4-neighbors estimation of the Laplacian. 
+\index{laplacian}
+The transform $u\mapsto T(u)$, defined by
 $$T(u)(x,y) = 
 s \cdot \left( \frac{}{} u(x+1,y)+u(x-1,y)+u(x,y+1)+u(x,y-1) \right)
 \; + \; (1-4s) u(x,y),$$
-is iterated $n$ times on the image $in$, with the convention
+is iterated $n$ times from the image $in$, with the convention
 that $u$ is periodic. Notice that the $s$ parameter can be
 taken negative for deblurring purposes.
+\index{deblurring!heat equation}
+
+\medskip
+
+NOTE: calling this module with in=out is possible

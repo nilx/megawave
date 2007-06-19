@@ -1,23 +1,26 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {fft2dview};
-   version = {"1.4"};
-   author = {"Lionel Moisan"};
-   function = {"Compute and Visualize the 2D-FFT of a Fimage"};
-   usage = {
- 't':[type=0]->type "0=modulus (default),1=phase,2=Re,3=Im,4=log(1+modulus)",
- 's':[sd=50.0]->sd  "standart deviation for visualization (default: 50.0)",
- 'i'->i_flag        "to compute inverse FFT",
- 'h'->h_flag        "to apply a Hamming window first",
- 'o':out<-out       "to create an output Cimage instead of calling cview",
- input->in          "input Fimage"
-   };
+ name = {fft2dview};
+ version = {"1.7"};
+ author = {"Lionel Moisan"};
+ function = {"Compute and Visualize the 2D-FFT of a Fimage"};
+ usage = {
+   't':[type=0]->type "0=modulus,1=phase,2=Re,3=Im,4=log(1+modulus)",
+   'd':[d=1.]->d      "discard d percent of the extremal values",
+   'i'->i_flag        "to compute inverse FFT",
+   'h'->h_flag        "to apply a Hamming window first",
+   'o':out<-out       "to create an output Fimage instead of calling fview",
+   input->in          "input Fimage"
+};
 */
 /*----------------------------------------------------------------------
-  v1.1: fmeanvar() replaced by faxpb() (L.Moisan)
-  v1.2: cview syntax (L.Moisan)
-  v1.3: min = 0 when type = 0 (L.Moisan)
-  v1.4: upgrade faxpb() call (L.Moisan)
+ v1.1: fmeanvar() replaced by faxpb() (L.Moisan)
+ v1.2: cview syntax (L.Moisan)
+ v1.3: min = 0 when type = 0 (L.Moisan)
+ v1.4: upgrade faxpb() call (L.Moisan)
+ v1.5: allow any image size (not only powers of two !) (LM)
+ v1.6: remove -s and add -d option to improve display with fview (LM)
+ v1.7 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -27,92 +30,64 @@
 /* Include the window since we use windows facility */
 #include "window.h"
 
-extern void    fshrink2();
 extern void    fhamming();
 extern void    fft2d();
 extern void    fft2dpol();
-
-extern void    faxpb();
-extern void    cview();
+extern void    fview();
 
 
-#define PIXRANGE(c) ( (c)<0?0:((c)>255?255:(unsigned char)(c)) )
-
-
-void fft2dview(type,sd,h_flag,in,out,i_flag)
-int	*type;
-float	*sd;
-char    *h_flag;
-Fimage	in;
-Cimage  out;
-char    *i_flag;
+void fft2dview(type,h_flag,in,out,i_flag,d)
+     int     *type;
+     float   *d;
+     char    *h_flag,*i_flag;
+     Fimage  in,out;
 {
-    Fimage      tmp;
-    int		x,y,i,n,p,n0,p0, out_flag;
-    float       v, mean;
+  Fimage      tmp;
+  int	      x,y,i,n,p,out_flag;
+  
+  /*** for fview ***/
+  int         x0=50,y0=50,order=0;
+  float       zoom=1.0;
+  Wframe      *ImageWindow;
+  
+  out_flag = (out!=NULL);
+  
+  /*** Prepare input image (hamming) ***/
+  n = in->nrow;
+  p = in->ncol;
+  tmp = mw_change_fimage(NULL,n,p);
+  if (!tmp) mwerror(FATAL,1,"Not enough memory\n");
+  if (h_flag) fhamming(in,tmp); else mw_copy_fimage(in,tmp);
+  
+  /*** Compute desired part of FFT ***/
+  switch(*type) {
     
-    /*** for cview ***/
-    int         x0=50,y0=50,order=0;
-    float       zoom=1.0;
-    Wframe      *ImageWindow;
-
-
-    out_flag = (out!=NULL);
-
-    /*** Prepare input image (shrink, hamming) ***/
-    tmp = mw_new_fimage();
-
-    n0 = in->nrow;
-    p0 = in->ncol;
-    fshrink2(in,tmp);
-    n = tmp->nrow;
-    p = tmp->ncol;
-    if (n!=n0 || p!=p0) 
-      mwerror(WARNING,0,"%dx%d input image has been shrinked to %dx%d\n",
-	      p0,n0,p,n);
-
-   if (h_flag) fhamming(tmp,tmp);
-
-    /*** Compute desired part of FFT ***/
-    switch(*type) {
-
-    case 0: fft2dpol( tmp,NULL,tmp ,NULL,i_flag); break;
-    case 1: fft2dpol( tmp,NULL,NULL,tmp ,i_flag); break;
-    case 2: fft2d(    tmp,NULL,tmp ,NULL,i_flag); break;
-    case 3: fft2d(    tmp,NULL,NULL,tmp ,i_flag); break;
-    case 4: fft2dpol( tmp,NULL,tmp ,NULL,i_flag); 
-            for (i=n*p; i--; ) 
-	      tmp->gray[i] = (float)log1p((double)tmp->gray[i]);
-            break;
-
-    default: mwerror(FATAL,1,"Unrecognized argument value : type.");
-    }
-
-    /*** Normalize mean and variance ***/
-    if (*type == 0) {
-      faxpb(tmp,tmp,NULL,sd,NULL,NULL,NULL,NULL);
-    } else {
-      mean = 128.0;
-      faxpb(tmp,tmp,NULL,sd,NULL,&mean,NULL,NULL);
-    }
-
-    /*** Center output and sample to unsigned char values ***/
-    out = mw_change_cimage(out,tmp->nrow,tmp->ncol);
-    for (x=0; x<p; x++)
-      for (y=0; y<n; y++) {
-	v = tmp->gray[y*p+x];
-	out->gray[((y+n/2)%n)*p+(x+p/2)%p] = PIXRANGE(v);
-      }
+  case 0: fft2dpol( tmp,NULL,tmp ,NULL,i_flag); break;
+  case 1: fft2dpol( tmp,NULL,NULL,tmp ,i_flag); break;
+  case 2: fft2d(    tmp,NULL,tmp ,NULL,i_flag); break;
+  case 3: fft2d(    tmp,NULL,NULL,tmp ,i_flag); break;
+  case 4: fft2dpol( tmp,NULL,tmp ,NULL,i_flag); 
+    for (i=n*p; i--; ) 
+      tmp->gray[i] = (float)log1p((double)tmp->gray[i]);
+    break;
     
-    if (!out_flag) {
-      ImageWindow = (Wframe *)
-	mw_get_window((Wframe *)NULL,out->ncol,out->nrow,x0,y0,out->name);
-      cview(out,&x0,&y0,&zoom,&order,NULL,ImageWindow);
-      mw_delete_cimage(out);
-    };
+  default: mwerror(FATAL,1,"Unrecognized argument value : type.");
+  }
+  
+  /*** Center output ***/
+  out = mw_change_fimage(out,tmp->nrow,tmp->ncol);
+  if (!out) mwerror(FATAL,1,"Not enough memory\n");
+  for (x=0; x<p; x++)
+    for (y=0; y<n; y++) 
+      out->gray[((y+n/2)%n)*p+(x+p/2)%p] = tmp->gray[y*p+x];
 
-    /*** free memory ***/
-    mw_delete_fimage(tmp);
+  if (!out_flag) {
+    ImageWindow = (Wframe *)
+      mw_get_window((Wframe *)NULL,out->ncol,out->nrow,x0,y0,out->name);
+    fview(out,&x0,&y0,&zoom,&order,NULL,ImageWindow,NULL,NULL,NULL,d);
+    mw_delete_cimage(out);
+  }
+  mw_delete_fimage(tmp);
 } 
 
  

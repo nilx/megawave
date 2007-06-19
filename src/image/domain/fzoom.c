@@ -1,20 +1,23 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {fzoom};
-  version = {"2.01"};
+  version = {"2.2"};
   author = {"Lionel Moisan"};
   function = {"Zoom of a floating point image"};
   usage = {
-'x'->x_flg          "to zoom only in the x direction", 
-'y'->y_flg          "to zoom only in the y direction",      
-'X':[zoom=2.]->zoom "zoom factor (default 2.0)",
-'o':[o=0]->o        "order: 0,1,-3,3,5,..11 (zoom) / 0..5 (unzoom) default 0",
-'p':p->p            "Keys' parameter (when o=-3), in [-1,0], default -0.5",
-'i'->i_flg          "apply inverse zooming",
-in->in              "input Fimage",
-out<-out            "output Fimage"
+    'x'->x_flg          "to zoom only in the x direction", 
+    'y'->y_flg          "to zoom only in the y direction",      
+    'X':[zoom=2.]->zoom "zoom factor",
+    'o':[o=0]->o        "order: 0,1,-3,3,5,..11 (zoom) / 0..5 (unzoom)",
+    'p':p->p            "Keys' parameter (when o=-3), in [-1,0]",
+    'i'->i_flg          "apply inverse zooming",
+    in->in              "input Fimage",
+    out<-out            "output Fimage"
 };
 */
+/*----------------------------------------------------------------------
+ v2.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"

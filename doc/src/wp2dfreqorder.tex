@@ -1,0 +1,18 @@
+A 2D-wavelet packet decomposition is defined by a quad-tree and a \verb+Fsignal+ (or
+a pair of \verb+Fsignal+ in case of biorthogonal bases).  
+At each leaf of the tree,  coefficients
+mostly contain the information in a particular sub-band of
+the Fourier transform of the image. (See \cite{mallat:wavelet} and
+references therein and \cite{malgouyres:framework} where this is
+illustrated.) 
+
+However, the ordering of these frequency sub-bands does not correspond
+to most natural way to order a wavelet packet structure. We therefore
+chose to implement the wavelet packet in a straightforward way, and to
+makes the correspondence between wavelet packet indexes and frequency
+bands only when necessary.
+
+The correspondence is detailed in \cite{mallat:wavelet}.
+
+One can find examples of the use of \verb+wp2dfreqorder+ in the
+modules \verb+wp2mktree+, \verb+wp2deigenval+ and \verb+wp2dview+.

@@ -1,5 +1,5 @@
 
-				MegaWave2 Versions 2.x
+                                MegaWave2 Versions 2.x and 3.x
 
 
 
@@ -45,19 +45,19 @@ source codes that have been used to perform the experiments presented in our
 traditional paper publication.
 
 
-3) HOW TO GET THE LAST VERSION OF MEGAWAVE2 2.x
+3) HOW TO GET THE LAST VERSION OF MEGAWAVE2 3.x
 
   From the Web site http://www.cmla.ens-cachan.fr/Cmla/Megawave
-download the main package named MegaWave2_V2.<x>.tar.gz (if you have gunzip) or
-MegaWave2_V2.<x>.tar.Z (if you don't), where <x> is a minor version number.
+download the main package named MegaWave2_V3.<x>.tar.gz (if you have gunzip) or
+MegaWave2_V3.<x>.tar.Z (if you don't), where <x> is a minor version number.
 
   Decompress the main package using the command:
-		gunzip MegaWave2_V2.<x>.tar.gz
+		gunzip MegaWave2_V3.<x>.tar.gz
 	  or 
-		uncompress MegaWave2_V2.<x>.tar.Z  
+		uncompress MegaWave2_V3.<x>.tar.Z  
 
   Then restore the main package MegaWave2 by typing
-		tar xf MegaWave2_V2.<x>.tar
+		tar xf MegaWave2_V3.<x>.tar
 
   in the current local directory where you want to put the software.
 
@@ -80,22 +80,43 @@ for the very common systems and machine architectures only.
 
   MegaWave2 needs a Unix system with the following standard tools :
 
-  [in brackets one gives the group name where the corresponding
-   package is usually located on standard Linux distributions. 
-   Beware, some of these packages are not selected by default
-   during Linux installation stage !]
+  [in brackets one gives the group or section name where the 
+   corresponding package is usually located on standard Linux distributions. 
+   Beware, some of these packages are not selected by default during Linux 
+   installation stage !]
 
-  C compiler K&R or ANSI-compliant                     [Development/C]
-  C language preprocessor cpp;                         [Development/C]
-  Lexical analyzer generator lex or flex;              [Development/Other]
-  Parser generator yacc or bison;                      [Development/Other]
-  Bourne shell script /bin/sh (bash on Linux);         [Shells]
-  X11 libraries and include files;                     [System/XFree86]
-  bc/dc                                                [Sciences/Mathematics]
-  LaTeX (since MegaWave2 Vers 2.10 LaTeX2e is assumed) [Publishing]
+  C compiler K&R or ANSI-compliant                       [Development/C]
+  Bourne shell script /bin/sh (bash on Linux)            [Shells] or [Base system]
+  X11 libraries and development files (libx11-dev)       [System/XFree86] or [Libraries/Development]
+  bc/dc                                                  [Sciences/Mathematics] or [Mathematics]
+  LaTeX (since MegaWave2 Vers 2.10 LaTeX2e is assumed)   [Publishing] or [TeX Authoring]
 
+  The 'traditional' preprocessor needs the additional standard tools 
+(note : the 'traditional' preprocessor is the standard one on versions 2.x;
+on versions 3.x the standard is the 'light' preprocessor. Therefore, you don't need
+these tools on versions 3.x) :
+
+  C language preprocessor cpp                             [Development/C] or [Interpreted Computer Languages]
+  Parser generator yacc or bison                          [Development/Other] 
+  Lexical analyzer generator lex or flex                  [Development/Other]
+
+  The following tools are not needed but highly recommended :
+
+  JPEG library and development files (libjpeg*-dev)       [Libraries/Development]
+  TIFF library and development files (libtiff*-dev)       [Libraries/Development]
+  ImageMagick, xv or other image display tool             [Graphics]
+	
   The installation procedure has been successfully checked on the following Unix
-systems :
+  systems. Notice that 64-bit Unix are not supported at that time.
+  On versions 3.x, syntax error may occur with the 'traditional' preprocessor; 
+  the 'light' preprocessor is the default. 
+
+  MegaWave2 Vers 3.00 & 3.01 :
+    - Linux :
+      + Ubuntu 7.04 (The Feisty Fawn) kernel  2.6.20-15-generic (gcc 4.1.2, glibc 2.5)
+      + Ubuntu 6.06.1 LTS (Dapper Drake) kernel 2.6.15-28-386 (gcc 4.0.3, glibc 2.3.6)
+      + Ubuntu 5.10 (Breezy Badger) kernel 2.6.12-10-386 (gcc 4.0.2, glibc 2.3.5)
+      + Mandrake 9.2 kernel 2.4.22-10mdk (gcc 3.3.1, glibc 2.3.2)
 
   MegaWave2 Vers 2.31 :
     - Linux :
@@ -129,14 +150,6 @@ systems :
     - Linux RedHat 5.2, Mandrake 6.0
     - HP-UX B.10.20 (with optional HP-UX C compiler)
     - SunOS 5.6, SunOS 5.7 (with optional Solaris C compiler)
-
-  We guess that MegaWave2 V.2.30 may be installed without to much work on the
-following Unix systems :
-
-  Linux kernel 2.x with gcc 2.x or gcc 3.y (with y>=2) and glibc 2.x
-  HP-UX A.09.x
-  SGI IRIX 5.x
-  SunOS 4.1.x, SunOS 5.x
 
 6) BUGS AND COMMENTS
 

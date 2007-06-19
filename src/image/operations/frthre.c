@@ -5,22 +5,19 @@
  version = {"1.0"};
  function = {"Thresold the pixel's gray-levels of a noisy fimage for optimal recovery"};
  usage = {
- 'l':[noise=20.0]->noise    "Absolute value of the additive noise",
- fimage->A    "Input fimage", 
- result<-B    "Output image"
+    'l':[noise=20.]->noise   "Absolute value of the additive noise",
+    fimage->A                "Input fimage", 
+    result<-B                "Output image"
 };
 */
-/*--------------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
 #include  "mw.h"
 
 void frthre(A,B,noise)
-
-Fimage	A,B;
-float *noise;
-
+     Fimage	A,B;
+     float *noise;
 {
   register float *ptrA,*ptrB;
   register int i;

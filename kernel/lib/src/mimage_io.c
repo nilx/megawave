@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mimage_io.c
    
-   Vers. 1.16
-   (C) 1996-2002 Jacques Froment
+   Vers. 1.17
+   Author : Jacques Froment
    Input/output functions for the 
      morpho_line
      Fmorpho_line
@@ -11,6 +11,8 @@
      mimage
    structures
 
+   Main changes :
+   v1.17 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
@@ -20,6 +22,8 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
+#include <string.h>
+
 #include <sys/file.h>
 #include <sys/types.h>
 

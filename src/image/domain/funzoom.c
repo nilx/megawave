@@ -1,20 +1,21 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {funzoom};
-   version = {"2.3"};
-   author = {"Lionel Moisan"};
-   function = {"Image reduction by projection on a B-spline space"};
-   usage = {  
-'z':[z=2.0]->z     "unzoom factor (default 2.0)",
-'x':tx->tx         "to first translate (x) the original image",
-'y':ty->ty         "to first transalte (y) the original image",
-'o':[o=0]->o       "spline space order, 0..5, default 0",
-in->in             "input Fimage",
-out<-out           "output Fimage"
+ name = {funzoom};
+ version = {"2.4"};
+ author = {"Lionel Moisan"};
+ function = {"Image reduction by projection on a B-spline space"};
+ usage = {  
+   'z':[z=2.0]->z     "unzoom factor",
+   'x':tx->tx         "to first translate (x) the original image",
+   'y':ty->ty         "to first transalte (y) the original image",
+   'o':[o=0]->o       "spline space order, 0..5",
+   in->in             "input Fimage",
+   out<-out           "output Fimage"
 };
 */
 /*----------------------------------------------------------------------
  v2.3: fixed image border bug (L.Moisan)
+ v2.4 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -29,8 +30,8 @@ extern Fimage fdirspline();
 
 /* extract image value (symmetrize outside image domain) */
 float v(in,x,y)
-Fimage in;
-int x,y;
+     Fimage in;
+     int x,y;
 {
   if (x<0) x=-x;
   if (x>=in->ncol) x=2*(in->ncol-1)-x;

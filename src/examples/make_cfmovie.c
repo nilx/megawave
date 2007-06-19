@@ -1,26 +1,23 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {make_cfmovie};
   version = {"1.0"};
   author = {"Jacques Froment"};
   function = {"Make a very simple color movie (as a demo of movie use)"};
   usage = {
-  's':[size=256]->size "size of each square image",
-  cfmovie_out<-Output   "output movie"
+      's':[size=256]->size   "size of each square image",
+      cfmovie_out<-Output    "output movie"
   };
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
 
 Cfmovie make_cfmovie(size,Output)
-
-int *size;
-Cfmovie Output;
-
+     
+     int *size;
+     Cfmovie Output;
+     
 {
   short dx,dy,l,x,y;
   unsigned char r,g,b;

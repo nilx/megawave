@@ -1,10 +1,10 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-   name = {fop};
-   version = {"1.1"};
-   author = {"Lionel Moisan"};
-   function = {"Perform an elementary operation between 2 Fimages"};
-   usage = {
+ name = {fop};
+ version = {"1.1"};
+ author = {"Lionel Moisan"};
+ function = {"Perform an elementary operation between 2 Fimages"};
+ usage = {
             'A':A->A       "take Fimage A as left term",
             'a':a->a       "take constant a as left term",
             'p' -> plus    "the A + B (plus) operator",
@@ -20,8 +20,8 @@
 	    'e' -> equal   "the A == B operator (result: 1=true, 0=false)",
 	    B->B           "input Fimage B (right term)",
 	    out<-out       "result Fimage"
-   };
-   */
+};
+*/
 /*----------------------------------------------------------------------
  v1.1: fixed check for -l -g -e options (L.Moisan)
 ----------------------------------------------------------------------*/
@@ -33,9 +33,9 @@
 #define ABS(x) ((x)>0?(x):(-(x)))
 
 void fop(B,out,A,a,plus,minus,times,divide,dist,norm,inf,sup,less,greater,equal)
-Fimage B,out,A;
-float *a;
-char *plus,*minus,*times,*divide,*dist,*norm,*inf,*sup,*less,*greater,*equal;
+     Fimage B,out,A;
+     float *a;
+     char *plus,*minus,*times,*divide,*dist,*norm,*inf,*sup,*less,*greater,*equal;
 {
   int i;
   float left,res;

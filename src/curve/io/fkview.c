@@ -1,21 +1,21 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {fkview};
-  version = {"2.3"};
+  version = {"2.4"};
   author = {"Lionel Moisan"};
   function = {"Interactive view of curves (Flists)"};
   usage = {
-  'x':[pos_x=50]->x_0  "position of upleft window corner (x), default 50",
-  'y':[pos_y=50]->y_0  "position of upleft window corner (y), default 50",
-  'X':[size_x=800]->sx "window size (x), default 800",
-  'Y':[size_y=600]->sy "window size (y), default 600",
+  'x':[pos_x=50]->x_0  "position of upleft window corner (x)",
+  'y':[pos_y=50]->y_0  "position of upleft window corner (y)",
+  'X':[size_x=800]->sx "window size (x)",
+  'Y':[size_y=600]->sy "window size (y)",
   'r':ref->ref         "use ref to set the scaling",
   'b':bg->bg           "use background image bg",
-  'i':[i=1]->i         "interpolation order for bg (0,1,3,-3..-11, default 1)",
+  'i':[i=1]->i         "interpolation order for bg (0,1,3,-3..-11)",
   'a'->a               "performs affine scaling to fit both image dimensions",
   's'->s               "symmetrize y axis (origin is bottomleft)",
   'e'->e               "to mark extremal points",
-  'd':[d=2]->d [1,3]   "display mode: 1=points, 2=lines (default), 3=both",
+  'd':[d=2]->d [1,3]   "display mode: 1=points, 2=lines, 3=both",
   'g':g->g [0,4]       "grid mode: 0=none .. 4=full (default 2 or 0 (if bg))",
   'c':c->c [0,999]     "display color (RGB, 1 decimal digit per channel)",
   'C':C->C [0,999]     "display color for ref (idem, default is no display)",
@@ -31,7 +31,8 @@
  v2.0: added grid, bg zoom, motion, full lines, ref, colors, etc (L.Moisan)
  v2.1: fixed color bug (L.Moisan)
  v2.2: added -k option plus miscellaneous corrections (L.Moisan)
- v2.2: added 'k' and 'n' intercative keys (F.Cao)
+ v2.3: added 'k' and 'n' interactive keys (F.Cao)
+ v2.4 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

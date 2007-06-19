@@ -1,45 +1,39 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
 name = {fscalq};
 author = {"Jean-Pierre D'Ales"};
-version = {"2.03"};
+version = {"2.05"};
 function = {"Scalar quantization of an image"};
 usage = {
-'p'->PrintSNR 
-        "Do not print info on SNR",
-'h'->SmallHeader
-        "Insert only a reduced header at top of Compress",
-'n':StepNum->NStep
-	"Number of quantization steps", 
-'s':StepSize->SStep
-	"Size of quantization steps", 
-'c'->Center
-        "0 is a quantization step",
-'o':Compress<-Compress
-        "Compressed representation of Image",
-Input->Image
-	"Input image (fimage)", 
-QImage<-Result
-	"Output quantized image (fimage)", 
+ 'p'->PrintSNR           "Do not print info on SNR",
+ 'h'->SmallHeader        "Insert only a reduced header at top of Compress",
+ 'n':StepNum->NStep      "Number of quantization steps", 
+ 's':StepSize->SStep     "Size of quantization steps", 
+ 'c'->Center             "0 is a quantization step",
+ 'o':Compress<-Compress  "Compressed representation of Image",
+ Input->Image            "Input image (fimage)", 
+ QImage<-Result          "Output quantized image (fimage)", 
   { 
-    MSE<-MSE
-	"", 
-    SNR<-SNR
-	"",
-    Entropy<-Ent
-       	"",
-    RateAr<-RateAr
-        ""
+    MSE<-MSE             "MSR", 
+    SNR<-SNR             "SNR",
+    Entropy<-Ent         "Ent",
+    RateAr<-RateAr       "RateAr"
   }
 	};
  */
 
+/*----------------------------------------------------------------------
+  v2.05 (JF) revision according to the light preprocessor :
+      1/ allocation of <Ent> and <RateAr> added to avoid core dump
+         with the right process of optional arguments (light preprocessor),
+	 when no optional arguments are given. This is a temporary 
+         solution : the module's header needs to be rewritten !
+      2/ bad call to fmse() corrected.
+----------------------------------------------------------------------*/
+ 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/
@@ -475,6 +469,9 @@ double     *ratear;             /* Arithmetic coding rate */
   Cimage        bufcomp;         /* Buffer for compressed image */
   int           testoverflow;    /* test for overflow in encoding of stepsize 
 				  * or ashift */
+
+  if (!ent) mwerror(FATAL,1,"NULL <ent> in unif_quant()\n");
+
   min_max(image);
   isize = (long) image->nrow * image->ncol;
   
@@ -614,6 +611,7 @@ double     *ratear;             /* Arithmetic coding rate */
 
   histo->scale = (max - min) / (float) hsize;
   histo->sgrate = stepsize;
+
   entropy(histo, ent);
   printf("entropy : ent=%g\n",*ent);
 
@@ -682,6 +680,12 @@ double     *RateAr;             /* Arithmetic coding rate */
     					 * original and quantized image */
   char PsnrFlg = '1';           /* To compute 255-PSNR */
 
+  /* TO AVOID CORE DUMP WHEN NO OPTIONAL ARGUMENTS ARE GIVEN.
+     Should be rewritten.
+  */
+  if (!Ent) Ent=(double *) malloc(sizeof(double));
+  if (!RateAr) RateAr=(double *) malloc(sizeof(double));
+
   if (NStep && SStep) 
     mwerror(FATAL, 2, "Flag -n and -s are incompatible.\n");
 
@@ -691,8 +695,7 @@ double     *RateAr;             /* Arithmetic coding rate */
   
   unif_quant(PrintSNR, SmallHeader, NStep, SStep, Center, Image, Result, Compress, Ent, RateAr);
   
-  if (MSE)
-    fmse(Image, Result, NULL, &PsnrFlg, MSE, &mrd, SNR, &psnr);
+  if (MSE) fmse(Image, Result, NULL, &PsnrFlg, SNR, &psnr, MSE, &mrd);
 
   if (!PrintSNR) 
     printf("%.4f %.4f %.2f\n", *Ent, *RateAr, psnr);

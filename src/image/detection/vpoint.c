@@ -1,14 +1,14 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {vpoint};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Andres Almansa"};
   function = {"Detect (MDL) maximal meaningful vanishing regions"};
   usage = {  
  'a'->all           "to get all meaningful v.points (before MDL)",
  'm'->masked        "to get also masked v.points",
  'v'->verbose       "display verbose messages during computations",
- 'e':[eps=0.]->eps  "-log10(max. number of false alarms), default 0",
+ 'e':[eps=0.]->eps  "-log10(max. number of false alarms)",
  's':csegs<-segs    "store segments indexes associated to each vanishing region (output Flists)",
   imagein->imagein  "input image (only used to extract image domain)",
   allsegs->allsegs  "input segments (5xn)-Fimage (x1 y1 x2 y2 -log10(nfa))",
@@ -17,9 +17,10 @@
   NVP_masked<-maskedVPs  "number of detected masked vanishing regions"
           };
 */
-/*
-V 1.01 : (JF) backslash removed (lexical error on SunOS 5.x) 
-*/
+/*----------------------------------------------------------------------
+ v1.01: backslash removed (lexical error on SunOS 5.x)  (JF)
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

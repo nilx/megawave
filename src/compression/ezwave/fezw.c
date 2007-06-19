@@ -1,4 +1,4 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {fezw};
 version = {"1.32"};
@@ -37,17 +37,13 @@ ImpulseResponse->Ri
                   "Distorsion rate curve"
 	};
  */
-/*-------------------------------------------------------------------------------
- v1.32: bugs on memory deallocation on Wtrans and QWtrans corrected (J. Froment)
---------------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------
+ v1.32: bugs on memory deallocation on Wtrans and QWtrans corrected (JF)
+----------------------------------------------------------------------*/
 
-/*--- Include files UNIX C ---*/
 
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
-
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

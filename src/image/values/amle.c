@@ -1,20 +1,22 @@
-/*------------------------- MegaWave2 Module -------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {amle};
-version = {"1.2"};
-author = {"Jean-Pierre D'Ales, Jacques Froment, Catalina Sbert"};
-function = {"Level line image interpolation using the AMLE model"};
-usage = {
-  'i':image_init->Init "Initial condition image",
-  'n':[n=1000]->n "Number of iterations for the implicit Euler scheme",
-  'w':[omega=1.8]->omega [0.01,1.99] "Relaxation parameter, must be in ]0,2[",
-  't':[ht=1.0]->ht "Time increment",
-  's':mse->mse "Stop if the MSE between two iterations is lower than mse",
-  input->Input  "Original cimage with missing level lines",
-  output<-Output "Output fimage with interpolated level lines"
-  };
+ name = {amle};
+ version = {"1.3"};
+ author = {"Jean-Pierre D'Ales, Jacques Froment, Catalina Sbert"};
+ function = {"Level line image interpolation using the AMLE model (implicit Euler scheme)"};
+ usage = {
+   'i':image_init->Init                "Initial condition image",
+   'n':[n=1000]->n                     "number of iterations",
+   'w':[omega=1.8]->omega [0.01,1.99]  "Relaxation parameter",
+   't':[ht=1.0]->ht                    "Time increment",
+   's':mse->mse   "Stop if the MSE between two iterations is lower than mse",
+   input->Input   "Original cimage with missing level lines",
+   output<-Output "Output fimage with interpolated level lines"
+};
 */
-/*-------------------------------------------------------------------*/
+/*----------------------------------------------------------------------
+ v1.3 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

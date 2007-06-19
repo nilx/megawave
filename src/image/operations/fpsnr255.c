@@ -1,21 +1,19 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {fpsnr255};
-author = {"Jacques Froment"};
-function = {"Returns the additive factor to get the '255' PSNR from the 'max-min' PSNR"};
-version = {"0.0"};
-usage = {
-'n'->Norm     "flag to normalize the image",
-Image->image    "original image", 
-ADDPSNR<-fpsnr255 "additive PSNR factor"
+ name = {fpsnr255};
+ author = {"Jacques Froment"};
+ function = {"Returns the additive factor to get the '255' PSNR from the 'max-min' PSNR"};
+ version = {"1.0"};
+ usage = {
+   'n'->Norm           "flag to normalize the image",
+   Image->image        "original image", 
+   ADDPSNR<-fpsnr255   "additive PSNR factor"
 };
- */
+*/
 
-/*--- Fichiers inclus UNIX C ---*/
+
 #include <stdio.h>
 #include <math.h>
-
-/*--- Bibliotheque megawave2 ---*/
 #include  "mw.h"
 
 void

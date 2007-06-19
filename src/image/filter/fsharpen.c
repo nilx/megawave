@@ -2,10 +2,10 @@
 /* mwcommand
 name = {fsharpen};
 author = {"Jacques Froment"};
-version = {"1.1"};
+version = {"1.2"};
 function = {"Sharpening using linear filtering"};
 usage = {
-   'p':[p=75]->p [0,99]  "percent of sharpening, default is 75%",
+   'p':[p=75]->p [0,99]  "percent of sharpening",
    A->A                  "Input Fimage",
    B<-B                  "Output sharpened Fimage"
 };
@@ -13,11 +13,12 @@ usage = {
 
 /*----------------------------------------------------------------------
  v1.1 : fixed bug on non-square image (JF)
+ v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
-
 
 #include <stdio.h>
 #include  "mw.h"
+
 
 Fimage fsharpen(A,B,p)
      

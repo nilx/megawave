@@ -6,15 +6,22 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* I/O functions
-   V 1.0   
+   V 1.1
    Original version : Sylvain Parrino
    Several modifications done by Jacques Froment (JF)
+
+   Last changes :
+   V 1.1 (JF, 23/02/2006) 
+    - changed the depreciated sys_errlist[errno] to strerror()   
+    - added include <string.h>
 */
 
 #define sparc 1
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
+
 #ifdef __STDC__
 #include <stdarg.h>
 #else
@@ -159,8 +166,11 @@ char *func;
   fprintf(mwerr, "%s : INTERNAL ERROR line %d\n", file, line);
   for (i = strlen(file) + 2; i>=0; i--)
     putc(' ', mwerr);
+
   fprintf(mwerr, "function or macro %s.\n", func);
-  fprintf(mwerr, "%s\n", sys_errlist[errno]);
+  /*fprintf(mwerr, "%s\n", sys_errlist[errno]);*/ /* Depreciated */
+
+  fprintf(mwerr, "%s\n", strerror(errno));
   for (i = strlen(file) + 2; i>=0; i--)
     putc(' ', mwerr);
   fprintf(mwerr, "Exit.\n");

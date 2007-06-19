@@ -1,15 +1,18 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {extract_connex};
-   version = {"1.4"};
+   version = {"1.5"};
    author = {"Thierry Cohignac, Lionel Moisan"};
    function = {"Extract connected components"};
    usage = {            
-            'g':[g=128]->g      "thresholding grey level (default: 128)",
+            'g':[g=128]->g      "thresholding grey level",
             in->in              "input cimage",
             out<-curves         "output connected components (fcurves)"
    };
-   */
+*/
+/*----------------------------------------------------------------------
+ v1.5 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

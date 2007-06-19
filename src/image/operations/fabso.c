@@ -1,24 +1,21 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
  name = {fabso};
  author = {"Jacques Froment"};
  function = {"Computes the absolute gray level values of a fimage"};
- version = {"1.00"};
+ version = {"1.0"};
  usage = {
- A->A       "input fimage", 
- O<-O       "output O=fabs(A)"
+   A->A       "input fimage", 
+   O<-O       "output O=fabs(A)"
 };
 */
-/* ------------------------------------------------------------------------- */
 
 #include <stdio.h>
 #include <math.h>
 #include  "mw.h"
 
 void fabso(A,O)
-
-Fimage	A,O;
-
+     Fimage	A,O;
 {
   long l;
   long	dx, dy;		/* Size of image */

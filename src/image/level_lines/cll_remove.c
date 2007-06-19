@@ -1,16 +1,15 @@
-/*------------------------- MegaWave2 Module -------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {cll_remove};
-version = {"1.0"};
-author = {"Jacques Froment"};
-function = {"Remove small level lines in a color mimage"};
-usage = {
-  'l':[L=10]->L "Minimal level lines length",
-  input->cmimage  "Original cmimage",
-  output<-cll_remove "Output cmimage with missing level lines"
-  };
+ name = {cll_remove};
+ version = {"1.0"};
+ author = {"Jacques Froment"};
+ function = {"Remove small level lines in a color mimage"};
+ usage = {
+   'l':[L=10]->L       "Minimal level lines length",
+   input->cmimage      "Original cmimage",
+   output<-cll_remove  "Output cmimage with missing level lines"
+};
 */
-/*-------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"

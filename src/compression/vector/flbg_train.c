@@ -1,43 +1,28 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {flbg_train};
 version = {"2.00"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Generates a sequence of codebooks from a training set of vectors using LBG (generalized Lloyd) algorithm"};
 usage = {
-'s':[CodeBookSize=1]->Size
-	"Size of output codebook", 
-'W':Weight->Weight
-        "Weighting factors for the components of vector (fsignal)",
-'M'->MultiCB
-        "Generate a sequence of codebooks of size equal to a power of two and <= Size",
-'i':InitCodeBook->InitCodeBook
-        "Initial codebook (fimage)",
-'p'->PrintSNR
-        "Print number of iterations for each loop instead of distortion rate results",
-'f':NResCB->NResCB
-        "Index of first residual codebook (in ResCodeBook)",
-'g':NResResCB->NResResCB
-        "Index of second residual codebook (in ResResCodeBook)",
-'a':ResCodeBook->ResCodeBook
-	"First residual codebook (fimage)",
-'b':ResResCodeBook->ResResCodeBook
-	"Second residual codebook (fimage)",
-TrainSet->TrainSet
-	"Training set of vectors (fimage)",
-MSE<-MSE
-	"Quantization mean square error", 
-CodeBook<-CodeBook
-	"Output codebook (fimage)"
-	};
- */
+ 's':[CodeBookSize=1]->Size          "Size of output codebook", 
+ 'W':Weight->Weight                  "Weighting factors for the components of vector (fsignal)",
+ 'M'->MultiCB                        "Generate a sequence of codebooks of size equal to a power of two and <= Size",
+ 'i':InitCodeBook->InitCodeBook      "Initial codebook (fimage)",
+ 'p'->PrintSNR                       "Print number of iterations for each loop instead of distortion rate results",
+ 'f':NResCB->NResCB                  "Index of first residual codebook (in ResCodeBook)",
+ 'g':NResResCB->NResResCB            "Index of second residual codebook (in ResResCodeBook)",
+ 'a':ResCodeBook->ResCodeBook        "First residual codebook (fimage)",
+ 'b':ResResCodeBook->ResResCodeBook  "Second residual codebook (fimage)",
+ TrainSet->TrainSet                  "Training set of vectors (fimage)",
+ MSE<-MSE                            "Quantization mean square error", 
+ CodeBook<-CodeBook                  "Output codebook (fimage)"
+};
+*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Constants ---*/

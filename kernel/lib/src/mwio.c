@@ -1,9 +1,14 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mwio.c
    
-   Vers. 2.16
-   (C) 1993-2003 Jacques Froment
+   Vers. 2.17
+   Author : Jacques Froment
    Input/Output functions as a link between External and Internal Types.
+
+   Version history
+   2.17 (JF, march 2006) : 
+     - I/O function for wpack2d added
+     - data directory path search changed (see _search_filename_in_dir())
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
@@ -177,6 +182,7 @@ char *founddir;
   char newdir[BUFSIZ];
 
   sprintf(dname,"%s/%s",searchdir,fname);
+
   if (_get_file_status(dname)==1)  /* searchdir/fname is found */
     {
       strcpy(founddir,searchdir);
@@ -201,10 +207,12 @@ char *founddir;
   return(FALSE);
 }	     
 
-/* Search fname in this order :
+/* Search fname in this order, <mwgroup> being the module's group :
    1) fname
-   2) fname in $MY_MEGAWAVE2/data/ (including subdirectories)
-   3) fname in $MEGAWAVE2/data/ (including subdirectories)
+   2) fname in $MY_MEGAWAVE2/data/<mwgroup>/ (including subdirectories)
+   3) fname in all $MY_MEGAWAVE2/data/ (including subdirectories)
+   4) fname in $MEGAWAVE2/data/<mwgroup> (including subdirectories)
+   5) fname in all $MEGAWAVE2/data/ (including subdirectories)
 */
 
 int _search_filename(fname)  /* Return 1 if found, 0 else */
@@ -228,9 +236,16 @@ char *fname;
   /* Search in subdirs of $MY_MEGAWAVE2/data */
   if ((path = getenv("MY_MEGAWAVE2")) != NULL)
     {
+      sprintf(searchdir,"%s/data/%s",path,mwgroup);  
+      if (_search_filename_in_dir(fname,searchdir,founddir)==TRUE)
+	{
+	  /* founddir/fname found ! */
+	  sprintf(newfname,"%s/%s",founddir,fname);  	  
+	  strcpy(fname,newfname);
+	  return(TRUE);
+	}
       sprintf(searchdir,"%s/data",path);  
-      i=_search_filename_in_dir(fname,searchdir,founddir);
-      if (i==TRUE) 
+      if (_search_filename_in_dir(fname,searchdir,founddir)==TRUE)
 	{
 	  /* founddir/fname found ! */
 	  sprintf(newfname,"%s/%s",founddir,fname);  	  
@@ -242,15 +257,23 @@ char *fname;
   /* Search in subdirs of $MEGAWAVE2/data */
   if ((path = getenv("MEGAWAVE2")) != NULL)
     {
-      sprintf(searchdir,"%s/data",path);  
-      i=_search_filename_in_dir(fname,searchdir,founddir);
-      if (i==TRUE) 
+      sprintf(searchdir,"%s/data/%s",path,mwgroup);  
+      if (_search_filename_in_dir(fname,searchdir,founddir)==TRUE)
 	{
 	  /* founddir/fname found ! */
 	  sprintf(newfname,"%s/%s",founddir,fname);  	  
 	  strcpy(fname,newfname);
 	  return(TRUE);
 	}
+      sprintf(searchdir,"%s/data",path);  
+      if (_search_filename_in_dir(fname,searchdir,founddir)==TRUE)
+	{
+	  /* founddir/fname found ! */
+	  sprintf(newfname,"%s/%s",founddir,fname);  	  
+	  strcpy(fname,newfname);
+	  return(TRUE);
+	}
+      
     }
   return(FALSE);
 }
@@ -368,9 +391,9 @@ Cimage im;
   if (im->cmt[0] == '?') sprintf(im->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_cimage_create_image(name,im,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Fimage =====*/
@@ -417,9 +440,9 @@ Fimage im;
   if (im->cmt[0] == '?') sprintf(im->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_fimage_create_image(name,im,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -464,9 +487,9 @@ Cmovie movie;
   if (movie->cmt[0] == '?') sprintf(movie->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_cmovie_create_movie(name,movie,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Fmovie =====*/
@@ -509,9 +532,9 @@ Fmovie movie;
   if (movie->cmt[0] == '?') sprintf(movie->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_fmovie_create_movie(name,movie,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Ccmovie =====*/
@@ -559,9 +582,9 @@ Ccmovie movie;
   if (movie->cmt[0] == '?') sprintf(movie->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_ccmovie_create_movie(name,movie,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Cfmovie =====*/
@@ -610,9 +633,9 @@ Cfmovie movie;
   if (movie->cmt[0] == '?') sprintf(movie->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_cfmovie_create_movie(name,movie,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -651,9 +674,9 @@ Curve cv;
 
   _mw_choose_type(type,type_force,"curve");
   if (_mw_create_curve(name,cv,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Curves =====*/
@@ -698,9 +721,9 @@ Curves cv;
   if (cv->cmt[0] == '?') sprintf(cv->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_curves(name,cv,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Polygon =====*/
@@ -737,9 +760,9 @@ Polygon poly;
 {
   _mw_choose_type(type,type_force,"polygon");
   if (_mw_create_polygon(name,poly,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Polygons =====*/
@@ -783,9 +806,9 @@ Polygons poly;
   if (poly->cmt[0] == '?') sprintf(poly->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_polygons(name,poly,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Fcurve =====*/
@@ -822,9 +845,9 @@ Fcurve cv;
 {
   _mw_choose_type(type,type_force,"fcurve");
   if (_mw_create_fcurve(name,cv,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Fcurves =====*/
@@ -868,9 +891,9 @@ Fcurves cv;
   if (cv->cmt[0] == '?') sprintf(cv->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_fcurves(name,cv,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Fpolygon =====*/
@@ -907,9 +930,9 @@ Fpolygon poly;
 {
   _mw_choose_type(type,type_force,"fpolygon");
   if (_mw_create_fpolygon(name,poly,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Fpolygons =====*/
@@ -953,9 +976,9 @@ Fpolygons poly;
   if (poly->cmt[0] == '?') sprintf(poly->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_fpolygons(name,poly,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -1000,9 +1023,9 @@ Fsignal signal;
   if (signal->cmt[0] == '?') sprintf(signal->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_fsignal(name,signal,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -1046,9 +1069,9 @@ Wtrans1d wtrans;
   if (wtrans->cmt[0] == '?') sprintf(wtrans->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_wtrans1d_create_wtrans(name,wtrans,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -1094,9 +1117,9 @@ Wtrans2d wtrans;
   if (wtrans->cmt[0] == '?') sprintf(wtrans->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_wtrans2d_create_wtrans(name,wtrans,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Vchain_wmax =====*/
@@ -1130,9 +1153,9 @@ Vchain_wmax vchain;
 {
   if (type_force[0] != '?') strcpy(type,type_force);
   if (_mw_create_vchain_wmax(name,vchain) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Vchains_wmax (set of Vchain_wmax) =====*/
@@ -1171,9 +1194,9 @@ Vchains_wmax vchains;
   if (vchains->cmt[0] == '?') sprintf(vchains->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_vchains_wmax(name,vchains) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -1217,9 +1240,9 @@ Ccimage im;
   if (im->cmt[0] == '?') sprintf(im->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_ccimage_create_image(name,im,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -1266,9 +1289,9 @@ Cfimage im;
   if (im->cmt[0] == '?') sprintf(im->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_cfimage_create_image(name,im,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -1316,9 +1339,9 @@ Modules modules;
   if (modules->cmt[0] == '?') sprintf(modules->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_modules(name,modules) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Morpho_line  =====*/
@@ -1357,9 +1380,9 @@ Morpho_line ll;
 
   _mw_choose_type(type,type_force,"morpho_line");
   if (_mw_create_morpho_line(name,ll,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Fmorpho_line  =====*/
@@ -1397,9 +1420,9 @@ Fmorpho_line fll;
 {
   _mw_choose_type(type,type_force,"fmorpho_line");
   if (_mw_create_fmorpho_line(name,fll,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : morpho_set  =====*/
@@ -1437,9 +1460,9 @@ Morpho_set morpho_set;
 {
   _mw_choose_type(type,type_force,"morpho_set");
   if (_mw_create_morpho_set(name,morpho_set,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : morpho_sets  =====*/
@@ -1477,9 +1500,9 @@ Morpho_sets morpho_sets;
 {
   _mw_choose_type(type,type_force,"morpho_sets");
   if (_mw_create_morpho_sets(name,morpho_sets,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Mimage  =====*/
@@ -1523,9 +1546,9 @@ Mimage mimage;
   if (mimage->cmt[0] == '?') sprintf(mimage->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_mimage(name,mimage,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -1564,9 +1587,9 @@ Cmorpho_line ll;
 {
   _mw_choose_type(type,type_force,"cmorpho_line");
   if (_mw_create_cmorpho_line(name,ll,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Cfmorpho_line  =====*/
@@ -1604,9 +1627,9 @@ Cfmorpho_line fll;
 {
   _mw_choose_type(type,type_force,"cfmorpho_line");
   if (_mw_create_cfmorpho_line(name,fll,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : cmorpho_set  =====*/
@@ -1644,9 +1667,9 @@ Cmorpho_set cmorpho_set;
 {
   _mw_choose_type(type,type_force,"cmorpho_set");
   if (_mw_create_cmorpho_set(name,cmorpho_set,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : cmorpho_sets  =====*/
@@ -1684,9 +1707,9 @@ Cmorpho_sets cmorpho_sets;
 {
   _mw_choose_type(type,type_force,"cmorpho_sets");
   if (_mw_create_cmorpho_sets(name,cmorpho_sets,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Cmimage  =====*/
@@ -1730,9 +1753,9 @@ Cmimage cmimage;
   if (cmimage->cmt[0] == '?') sprintf(cmimage->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_cmimage(name,cmimage,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Shape  =====*/
@@ -1769,9 +1792,9 @@ Shape shape;
   _mw_choose_type(type,type_force,"shape");
 
   if (_mw_create_shape(name,shape,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Shapes  =====*/
@@ -1815,9 +1838,9 @@ Shapes shapes;
   if (shapes->cmt[0] == '?') sprintf(shapes->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_shapes(name,shapes,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -1855,9 +1878,9 @@ Dcurve cv;
 {
   _mw_choose_type(type,type_force,"dcurve");
   if (_mw_create_dcurve(name,cv,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Dcurves =====*/
@@ -1901,9 +1924,9 @@ Dcurves cv;
   if (cv->cmt[0] == '?') sprintf(cv->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_dcurves(name,cv,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Rawdata =====*/
@@ -1936,9 +1959,9 @@ Rawdata rd;
 
 {
   if (_mw_create_rawdata(name,rd) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -1977,9 +2000,9 @@ Flist lst;
 {
   _mw_choose_type(type,type_force,"flist");
   if (_mw_create_flist(name,lst,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Flists =====*/
@@ -2023,9 +2046,9 @@ Flists lsts;
   if (lsts->cmt[0] == '?') sprintf(lsts->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_flists(name,lsts,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
@@ -2063,9 +2086,9 @@ Dlist lst;
 {
   _mw_choose_type(type,type_force,"dlist");
   if (_mw_create_dlist(name,lst,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 /*===== Internal type : Dlists =====*/
@@ -2109,14 +2132,54 @@ Dlists lsts;
   if (lsts->cmt[0] == '?') sprintf(lsts->cmt,"%s(%s)",mwname,comment);
 
   if (_mw_create_dlists(name,lsts,type) >= 0)
-    return 0;
+    return(0);
   else
-    return -1;
+    return(-1);
 }
 
 
+/*===== Internal type : Wpack2d =====*/
 
+short _mwload_wpack2d(name, type, comment, pack)
 
+char *name; /* Name of the 2D wavelet packet decomposition */
+char type[]; /* Input: old default type; Output: new default type */
+char comment[]; /* Input: old comments; Output: new comments */
+Wpack2d *pack;
 
+{
+  char type_in[mw_ftype_size];
+  char comment_in[BUFSIZ];
+  char fname[BUFSIZ];
 
+  strcpy(fname,name);      /* Do Not Change the value of name */
+  search_filename(fname);
+  *pack = (Wpack2d) _mw_load_wpack2d(fname, type_in);
+  if (*pack == NULL) return(-1);  
+
+  format_filename((*pack)->name,fname);
+
+  strcpy(comment_in,(*pack)->cmt);
+  _mw_make_type(type,type_in,"wpack2d");
+  _mw_make_comment(comment,comment_in);
+  return(0);
+}
+
+short _mwsave_wpack2d(name, type, type_force, comment, pack)
+
+char *name; /* Name of the 2D wavelet packet decomposition */
+char type[]; /* Default pack type for the output file */
+char type_force[]; /* Overwrite the default type file, if not '?' */
+char comment[];
+Wpack2d pack;
+
+{
+  _mw_choose_type(type,type_force,"wpack2d");
+  if (pack->cmt[0] == '?') sprintf(pack->cmt,"%s(%s)",mwname,comment);
+
+  if (_mw_create_wpack2d(name,pack,type) >= 0)
+    return(0);
+  else
+    return(-1);
+}
 

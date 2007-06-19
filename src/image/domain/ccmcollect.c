@@ -1,20 +1,23 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {ccmcollect};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Lionel Moisan"};
   function = {"Collect images of a Ccmovie into a single Ccimage"};
   usage = {
     'n':n->n       "number of images per line (default auto 4/3)",
-    'i':[i=1]->i   "inside margin in pixels (default 1)",    
-    'o':[o=1]->o   "outside margin in pixels (default 1)",
-    'c':[c=0]->c   "margin grey level (default 0)",
+    'i':[i=1]->i   "inside margin in pixels",    
+    'o':[o=1]->o   "outside margin in pixels",
+    'c':[c=0]->c   "margin grey level",
     'x':x->x       "image width (default from first image)",
     'y':y->y       "image height (default from first image)",
     in->in         "input Ccmovie",
     out<-out       "output Ccimage"
 };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

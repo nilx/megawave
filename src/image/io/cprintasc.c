@@ -1,31 +1,28 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {cprintasc};
-  version = {"1.0"};
-  author = {"Jacques Froment, Lionel Moisan"};
-  function = {"Print a part of a cimage in ascii format"};
-  usage = {
-    'v'->verbose "display line and column positions",
-    input->u  "input cimage",
-    {
-      x1->x1    "first column",
-      y1->y1    "first line",
-      x2->x2    "last column",
-      y2->y2    "last line"
-    }
-          };
+ name = {cprintasc};
+ version = {"1.0"};
+ author = {"Jacques Froment, Lionel Moisan"};
+ function = {"Print a part of a cimage in ascii format"};
+ usage = {
+   'v'->verbose "display line and column positions",
+   input->u  "input cimage",
+   {
+     x1->x1    "first column",
+     y1->y1    "first line",
+     x2->x2    "last column",
+     y2->y2    "last line"
+   }
+};
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
  
 void cprintasc(u,x1,y1,x2,y2,verbose)
-Cimage u;
-int *x1,*y1,*x2,*y2;
-char *verbose;
+     Cimage u;
+     int *x1,*y1,*x2,*y2;
+     char *verbose;
 {
   int x,y,nx,ny;
   int vx1,vy1,vx2,vy2;

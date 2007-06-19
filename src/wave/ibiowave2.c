@@ -1,37 +1,27 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {ibiowave2};
-version = {"1.4"};
+version = {"1.5"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Reconstructs an image from a biorthogonal wavelet transform"};
 usage = {
-'r':[NLevel=0]->NumRec [0,20]
-	"Start reconstruction from level NLevel (default 0)", 
-'h':HaarNLevel->Haar
-	"Start reconstruction with Haar filter from level HaarNLevel down to level NLevel + 1",
-'e':[EdgeMode=2]->Edge [0,2]
-	"Edge processing mode (0/1/2, default 2)", 
-'n':[FilterNorm=0]->FilterNorm [0,2]
-	"Normalization mode for filter bank (0/1/2, default 0)", 
-WavTrans->Wtrans
-	"Input wavelet transform (wtrans2d)", 
-RecompImage<-Output
-	"Output reconstructed image (fimage)", 
-ImpulseResponse1->Ri1
-	"Impulse response of filter 1 (fsignal)", 
-ImpulseResponse2->Ri2
-	"Impulse response of filter 2 (fsignal)" 
+ 'r':[NLevel=0]->NumRec [0,20]  "Start reconstruction from level NLevel", 
+ 'h':HaarNLevel->Haar           "Start reconstruction with Haar filter from level HaarNLevel down to level NLevel + 1",
+ 'e':[EdgeMode=2]->Edge [0,2]           "Edge processing mode", 
+ 'n':[FilterNorm=0]->FilterNorm [0,2]   "Normalization mode for filter bank",
+ WavTrans->Wtrans         "Input wavelet transform (wtrans2d)", 
+ RecompImage<-Output      "Output reconstructed image (fimage)", 
+ ImpulseResponse1->Ri1    "Impulse response of filter 1 (fsignal)", 
+ ImpulseResponse2->Ri2    "Impulse response of filter 2 (fsignal)" 
 	};
 */
+/*----------------------------------------------------------------------
+ v1.5 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
-
-/*--- Include files UNIX C ---*/
 
 #include <stdio.h>
 #include <math.h>
-
-/*--- Library megawave2 ---*/
-
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

@@ -1,17 +1,19 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {fmaskrot};
-   version = {"1.0"};
+   version = {"1.1"};
    author = {"Lionel Moisan"};
    function = {"crop the central circular region of a Fimage"};
    usage = {  
-'b':[bg=0.0]->bg   "background grey value, default: 0.0",
-'s':[s=10.]->s     "linear transition support (in pixels), default 10.0",
-in->in             "input Fimage",
-out<-out           "output Fimage"
-
+    'b':[bg=0.0]->bg   "background grey value",
+    's':[s=10.]->s     "linear transition support (in pixels)",
+    in->in             "input Fimage",
+    out<-out           "output Fimage"
 };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

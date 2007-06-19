@@ -1,19 +1,22 @@
-/*----------------------Megawave2 Module-----------------------------------*/
-/*mwcommand
-  name = {forder};
-  version = {"2.1"};
-  author = {"Jacques Froment, Yann Guyonvarc'h"};
-  function = {"Order filtering : do Erosion/Dilation/Median in a 3x3 window"};
-  usage = { 
-  'e':[e=5]->e[1,9]  "order of the pixel in a ascending list which sorts the values of the pixels in the window (1..9, default 5)",
-  'n':[n=1]->N[1,10000] "number of the filter's iterations (default 1)",
-  in->in "Input fimage",
-  out<-out "Output fimage"
-          };
+/*--------------------------- MegaWave2 Module -----------------------------*/
+/* mwcommand
+   name = {forder};
+   version = {"2.4"};
+   author = {"Jacques Froment, Yann Guyonvarc'h"};
+   function = {"Order filtering : do Erosion/Dilation/Median in a 3x3 window"};
+   usage = { 
+     'e':[e=5]->e[1,9]  "order of the pixel in a ascending list which sorts the values of the pixels in the window",
+     'n':[n=1]->N       "number of iterations",
+     in->in             "Input fimage",
+     out<-out           "Output fimage"
+};
 */
 /*----------------------------------------------------------------------
  v2.0: fixed free() bug  (L.Moisan)
  v2.1: fixed nrow/ncol inversion bug  (L.Moisan)
+ v2.2: mwcommand syntax fixed (JF)
+ v2.3: removed constraint on n (LM)
+ v2.4 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -24,9 +27,7 @@
 
 
 static  int compare(k,l)
-         
-float *k, *l;
-         
+     float *k, *l;
 {
   if (*k > *l) return(1);
   if (*k < *l) return(-1);
@@ -34,9 +35,8 @@ float *k, *l;
 }
 
 void forder(e,N,in,out)
-Fimage in,out;
-int *e,*N;        
-         
+     Fimage in,out;
+     int *e,*N;        
 {
  float *a;
  int n;

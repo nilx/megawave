@@ -1,26 +1,22 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {ml_fml};
-  version = {"1.5"};
-  author = {"Georges Koepfler"};
-  function = {"Transform morpho_lines into fmorpho_lines with a (-0.5,-0.5) translation"};
-  usage = {
-  morpho_line_in->lline
-         "input morpho_line",
-  fmorpho_line_out<-ml_fml
-         "output fmorpho_line"
-  };
+ name = {ml_fml};
+ version = {"1.5"};
+ author = {"Georges Koepfler"};
+ function = {"Transform morpho_lines into fmorpho_lines with a (-0.5,-0.5) translation"};
+ usage = {
+    morpho_line_in->lline     "input morpho_line",
+    fmorpho_line_out<-ml_fml  "output fmorpho_line"
+};
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
 
 #include <stdio.h>
 #include <assert.h>
-
 #include "mw.h"
 
-Fmorpho_line
-ml_fml(lline)
-Morpho_line lline;
+
+Fmorpho_line ml_fml(lline)
+     Morpho_line lline;
 { 
   Fmorpho_line  flline=NULL,old_flline,first_flline;
   Point_fcurve fpoint;

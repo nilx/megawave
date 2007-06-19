@@ -1,20 +1,23 @@
-/*--------------------------- MegaWave2 module  -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
  name = {ofdraw};
  author = {"Lionel Moisan"};
- version = {"1.0"};
+ version = {"1.1"};
  function = {"Draw optical flow data"};
  usage = {
    'a'->a          "do NOT draw arrows",
-   'm':[m=0.]->m   "minimum norm threshold for drawing, default 0.",
-   'p':[p=8]->p    "grid step for drawing, default 8, integer",
-   'z':[z=2]->z    "zoom factor, default 2, integer",
-   'h':[h=20]->h   "height of a unit speed vector in pixels, default 20",
+   'm':[m=0.]->m   "minimum norm threshold for drawing",
+   'p':[p=8]->p    "grid step for drawing",
+   'z':[z=2]->z    "zoom factor",
+   'h':[h=20]->h   "height of a unit speed vector in pixels",
    U->U            "optical flow (input Fmovie of X coordinates)",
    V->V            "optical flow (input Fmovie of Y coordinates)",
    out<-ofdraw     "output Cmovie"
 };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

@@ -1,33 +1,30 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {mscarea};
-version={"1.0"};
-author = {"Jacques Froment"};
-function = {"compute the area of a morpho set, from a cimage"};
-usage = {
-'c'->connex8 "8-connexity (default : 4)",
-'o':O<-O "Output the m.s. in a cimage",
-'s':stoparea->stoparea "stop when the given area is reached",
-U->U "input cimage U",
-a->a   "min value a for the m.s. {(x,y)/ a <= U(x,y) <= b}",
-b->b   "max value b for the m.s. {(x,y)/ a <= U(x,y) <= b}",
-x0->x0 "x0 coordinate such that the point (x0,y0) belongs to the m.s.",
-y0->y0 "y0 coordinate such that the point (x0,y0) belongs to the m.s.",
-area<-mscarea "output area of the m.s."
-        };
+ name = {mscarea};
+ version = {"1.1"};
+ author = {"Jacques Froment"};
+ function = {"compute the area of a morpho set, from a cimage"};
+ usage = {
+   'c'->connex8  "8-connexity (default : 4)",
+   'o':O<-O      "Output the m.s. in a cimage",
+   's':stoparea->stoparea "stop when the given area is reached",
+   U->U   "input cimage U",
+   a->a   "min value a for the m.s. {(x,y)/ a <= U(x,y) <= b}",
+   b->b   "max value b for the m.s. {(x,y)/ a <= U(x,y) <= b}",
+   x0->x0 "x0 coordinate such that the point (x0,y0) belongs to the m.s.",
+   y0->y0 "y0 coordinate such that the point (x0,y0) belongs to the m.s.",
+   area<-mscarea "output area of the m.s."
+};
 */
-/* ------------------------------------------------------------------------- */
 
 #include <stdio.h>
 #include "mw.h"
 
 void compute_area(connex8, U, O, M, nrow, ncol, a, b, x, y, l, stoparea, area)
-
-char *connex8;
-unsigned char *U,*O,*M;
-int nrow,ncol,a,b,x,y,l;
-int *stoparea,*area;
-
+     char *connex8;
+     unsigned char *U,*O,*M;
+     int nrow,ncol,a,b,x,y,l;
+     int *stoparea,*area;
 {
   int k;
 
@@ -80,12 +77,10 @@ int *stoparea,*area;
 
 
 int mscarea(connex8, U, O, stoparea, a, b, x0, y0)
-
-char *connex8;
-Cimage U,O;
-int a,b,x0,y0;
-int *stoparea;
-
+     char *connex8;
+     Cimage U,O;
+     int a,b,x0,y0;
+     int *stoparea;
 {
   Cimage M=NULL; /* Cimage to mark the pixels */
   int area,l,c;

@@ -1,13 +1,13 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-  name = {flstb_dual};
-  version = {"1.1"}; 
-  author = {"Pascal Monasse"}; 
-  function = {"Level lines passing through centers of dual pixels in bilinear image"};
-  usage = { 
-    bilinear_tree -> pTree "The bilinear tree of the image",
-    dual_tree <- pDualTree "The new tree"
-    }; 
+ name = {flstb_dual};
+ version = {"1.1"}; 
+ author = {"Pascal Monasse"}; 
+ function = {"Level lines passing through centers of dual pixels in bilinear image"};
+ usage = { 
+    bilinear_tree->pTree  "The bilinear tree of the image",
+    dual_tree<-pDualTree  "The new tree"
+}; 
 */ 
 /*----------------------------------------------------------------------
  v1.1: minor bug correction (P.Monasse)

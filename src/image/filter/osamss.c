@@ -1,30 +1,26 @@
-/*--------------------------------------------------------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {osamss};
-version = {"1.1"};
-author = {"Lionel Moisan"};
-function = { "AMSS as a stack filter (Osher Sethian scheme)"};
-usage = {
+ name = {osamss};
+ version = {"1.2"};
+ author = {"Lionel Moisan"};
+ function = { "AMSS as a stack filter (Osher Sethian scheme)"};
+ usage = {
 
-'i'->isotrop      
-     "flag to cancel isotropic diffusion in smooth area",
-'p'->power        
-     "flag to compute AMSS model (power 1/3) instead of MCM (power 1)",
-'S':[Step=0.1]->Step [0.0,0.5] 
-     "scale step for each iteration (default 0.1)",
-'m':[MinGrad=0.5]->MinGrad [0.0,1e6] 
-     "Minimum of the gradient norm to compute the curvature (default 0.5)",
-'f':[firstScale=0.0]->firstScale 
-     "first scale of diffusion (default 0.0)",
-'l':[lastScale=2.0]->lastScale   
-     "last scale of diffusion (default 2.0)",
+  'i'->isotrop   "flag to cancel isotropic diffusion in smooth area",
+  'p'->power     "flag to compute AMSS (power 1/3) instead of MCM (power 1)",
+  'S':[Step=0.1]->Step [0.0,0.5]     "scale step for each iteration",
+  'm':[MinGrad=0.5]->MinGrad [0.0,1e6] 
+                 "Minimum gradient norm to compute the curvature",
+  'f':[firstScale=0.0]->firstScale   "first scale of diffusion",
+  'l':[lastScale=2.0]->lastScale     "last scale of diffusion",
 
-input->input   "original picture (input Fimage)",
-output<-output "result (Fimage)"
+  input->input   "original picture (input Fimage)",
+  output<-output "result (Fimage)"
 
 }; */
 /*----------------------------------------------------------------------
  v1.1: upgrade for new fvalues() call (L.Moisan)
+ v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

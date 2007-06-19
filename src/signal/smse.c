@@ -1,17 +1,17 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {smse};
 author = {"Jean-Pierre D'Ales, Jacques Froment"};
 function = {"Computes the mean square error between two fsignals"};
 version = {"1.02"};
 usage = {
-'n'->Norm      "flag to normalize the signals",
-Signal1->Sig1  "original signal", 
-Signal2->Sig2  "reconstructed signal",
-SNR<-SNR      "signal to noise ratio / `Sig1` (SNR)",
-PSNR<-PSNR    "peak signal to noise ratio / `Sig1` (PSNR)",
-MSE<-MSE      "mean square error between Sig1 and Sig2 (MSE)",
-MRD<-MRD      "maximal relative difference (MRD)"
+ 'n'->Norm      "flag to normalize the signals",
+ Signal1->Sig1  "original signal", 
+ Signal2->Sig2  "reconstructed signal",
+ SNR<-SNR       "signal to noise ratio / `Sig1` (SNR)",
+ PSNR<-PSNR     "peak signal to noise ratio / `Sig1` (PSNR)",
+ MSE<-MSE       "mean square error between Sig1 and Sig2 (MSE)",
+ MRD<-MRD       "maximal relative difference (MRD)"
 };
  */
 

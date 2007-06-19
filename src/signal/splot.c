@@ -1,14 +1,14 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {splot};
-  version = {"2.2"};
+  version = {"2.3"};
   author = {"Lionel Moisan"};
   function = {"Plot a Fsignal"};
   usage = {
-  'x':[pos_x=50]->x_0  "position of upleft window corner (x), default 50",
-  'y':[pos_y=50]->y_0  "position of upleft window corner (y), default 50",
-  'X':[size_x=800]->sx "window size (x), default 800",
-  'Y':[size_y=600]->sy "window size (y), default 600",
+  'x':[pos_x=50]->x_0  "position of upleft window corner (x)",
+  'y':[pos_y=50]->y_0  "position of upleft window corner (y)",
+  'X':[size_x=800]->sx "window size (x)",
+  'Y':[size_y=600]->sy "window size (y)",
   'o':out<-out         "to save the last view as a Ccimage",
   'N'->no_refresh      "do not refresh the window (library call)",
   'n'->n               "no display (useful with -o option)",
@@ -23,6 +23,7 @@
  v2.0: complete new version with image output (L.Moisan)
  v2.1: added W_LEAVE test (L.Moisan)
  v2.2: added up and down scrolling with mouse (JF)
+ v2.3 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

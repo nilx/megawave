@@ -1,18 +1,18 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {cvsfrecode};
-version={"1.1"};
+version = {"1.2"};
 author = {"Jacques Froment"};
 function = {"Encode the change of direction of points in the curves : return bit rate for lossless compression"};
 usage = {
-C->C "input curves",
-N<-N "output number of points",
-B<-B "output number of bits to code the curves (without origin points)",
-brate<-cvsfrecode "compression rate (bit per point = B/N)"
+ C->C  "input curves",
+ N<-N  "output number of points",
+ B<-B  "output number of bits to code the curves (without origin points)",
+ brate<-cvsfrecode "compression rate (bit per point = B/N)"
         };
 */
 /*----------------------------------------------------------------------
- v1.1: upgrade for new kernel (L.Moisan)
+ v1.2: upgrade for new kernel (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

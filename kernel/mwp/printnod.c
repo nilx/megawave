@@ -1,11 +1,10 @@
-/**
- ** printnod
- ** (c)1993-2001 J.Froment - S.Parrino
- ** Version 1.2
- ** Added from V1.1 : ANSI function declaration for main module function,
- **                   so that declarations is right on ANSI C.
- ** Print node structure.
- **/
+/* Print node structure.
+   Version 1.3
+   Main changes :
+   V1.2 (JF) : ANSI function declaration for main module function, so that declarations is right on ANSI C.
+   V1.3 (JF, 23/02/2006) added include <string.h>
+*/
+
 /*~~~~~~~~~~~  This file is part of the MegaWave2 preprocessor ~~~~~~~~~~~~~~~~
 MegaWave2 is a "soft-publication" for the scientific community. It has
 been developed for research purposes and it comes without any warranty.
@@ -15,6 +14,8 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include <stdio.h>
+#include <string.h>
+
 #include <ctype.h>
 #include "bintree.h"
 #include "symbol.h"

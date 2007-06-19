@@ -1,32 +1,28 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {cextcenter};
-author = {"Jean-Pierre D'Ales"};
-function = {"Copy the center part of a cimage into another image"};
-usage = {
-'f':[Fact=16]->Fact
-  "Factor (default:16)", 
-OriginalImage->Image 
-  "Input Cimage", 
-CopyImage<-cextcenter
-  "Output center part of the input"
+ name = {cextcenter};
+ version = {"1.1"};
+ author = {"Jean-Pierre D'Ales"};
+ function = {"Copy the center part of a cimage into another image"};
+ usage = {
+   'f':[Fact=16]->Fact      "Factor", 
+   OriginalImage->Image     "Input Cimage", 
+   CopyImage<-cextcenter    "Output center part of the input"
 };
-version = {"1.00"};
  */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
-
-/*--- Library megawave2 ---*/
 #include  "mw.h"
 
 
-Cimage
-cextcenter(Fact, Image)
-
-int            *Fact;   /* Output size must be a multiple of Fact */
-Cimage          Image;	/* Original image */
+Cimage cextcenter(Fact, Image)
+     
+     int            *Fact;   /* Output size must be a multiple of Fact */
+     Cimage          Image;	/* Original image */
 
 {
   Cimage          Result;	    /* Resulting image */

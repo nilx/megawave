@@ -1,16 +1,16 @@
-/*------------------------- MegaWave2 Module -------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {llremove};
-version = {"1.1"};
-author = {"Jacques Froment"};
-function = {"Remove small level lines in an gray level image"};
-usage = {
-  'i'->invert "Invert: remove first gray levels local minima and then local maxima",
-  'l':[Lmin=10]->Lmin "Minimal level lines length (local gray levels minima)",
-  'L':[Lmax=10]->Lmax "Minimal level lines length (local gray levels maxima)",
-  input->Input  "Original fimage",
-  output<-llremove "Output fimage with missing level lines"
-  };
+ name = {llremove};
+ version = {"1.1"};
+ author = {"Jacques Froment"};
+ function = {"Remove small level lines in an gray level image"};
+ usage = {
+   'i'->invert         "Invert: remove first gray levels local minima and then local maxima",
+   'l':[Lmin=10]->Lmin "Minimal level lines length (local gray levels minima)",
+   'L':[Lmax=10]->Lmax "Minimal level lines length (local gray levels maxima)",
+   input->Input        "Original fimage",
+   output<-llremove    "Output fimage with missing level lines"
+};
 */
 
 #include <stdio.h>
@@ -24,42 +24,39 @@ extern Mimage ll_remove();
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))
 
 void llcheck(mimage)
-
-Mimage mimage;
-
-{  Point_curve point;
-   Morpho_line ll;
-   int NC,NL;
-   
-   NC=mimage->ncol;
-   NL=mimage->nrow;
-   for (ll=mimage->first_ml; ll; ll=ll->next)
-     {
-       point=ll->first_point;
-       while(point!=NULL) 
-	 {
-	   if(BAD_POINT(point,NL,NC))
-	     {
-	       mwdebug("point->x=%d (NC=%d) \t point->y=%d (NL=%d)\n",point->x,NC,point->y,NL);
-	       mwerror(WARNING,0,"[llcheck] Point out of image.\n");
-	     }
-	   point=point->next;
-	 }
-     }
-
+     Mimage mimage;
+{  
+  Point_curve point;
+  Morpho_line ll;
+  int NC,NL;
+  
+  NC=mimage->ncol;
+  NL=mimage->nrow;
+  for (ll=mimage->first_ml; ll; ll=ll->next)
+    {
+      point=ll->first_point;
+      while(point!=NULL) 
+	{
+	  if(BAD_POINT(point,NL,NC))
+	    {
+	      mwdebug("point->x=%d (NC=%d) \t point->y=%d (NL=%d)\n",point->x,NC,point->y,NL);
+	      mwerror(WARNING,0,"[llcheck] Point out of image.\n");
+	    }
+	  point=point->next;
+	}
+    }
 }
 
 Fimage llremove(Input,Lmin,Lmax,invert)
-Fimage Input;
-int *Lmin,*Lmax;
-char *invert;
-
+     Fimage Input;
+     int *Lmin,*Lmax;
+     char *invert;
 {
   Fimage Output1,Output2=NULL;
   Mimage mimage=NULL;
   int ml_dec;
   char ml_recons = 1;
-
+  
   if (invert)
     {
       ml_dec = 1;

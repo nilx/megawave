@@ -1,27 +1,24 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
  name = {cfdiff};
  author = {"Jacques Froment"};
  function = {"Computes the difference between pixel's colors of two cfimages"};
- version = {"1.00"};
+ version = {"1.0"};
  usage = {
- 'a'->absd  "flag to compute the absolute difference",
- A->A       "input cfimage A", 
- B->B       "input cfimage B", 
- O<-O       "output O=A-B"
+   'a'->absd  "flag to compute the absolute difference",
+   A->A       "input cfimage A", 
+   B->B       "input cfimage B", 
+   O<-O       "output O=A-B"
 };
 */
-/* ------------------------------------------------------------------------- */
 
 #include <stdio.h>
 #include <math.h>
 #include  "mw.h"
 
 void cfdiff(absd,A,B,O)
-
-char *absd;
-Cfimage	A,B,O;
-
+     char *absd;
+     Cfimage	A,B,O;
 {
   long l;
   long	dx, dy;		/* Size of image */

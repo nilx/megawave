@@ -1,4 +1,4 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {fsplit_convex};
    author = {"Lionel Moisan"};
@@ -22,10 +22,10 @@
 
 /*** return +1, 0 or -1, the sign of det(b-a,c-b) modulo double precision ***/
 int dir(ax,ay,bx,by,cx,cy,eps)
-double ax,ay,bx,by,cx,cy,eps;
+     double ax,ay,bx,by,cx,cy,eps;
 {
   double det,prec;
-
+  
   det = (bx-ax)*(cy-by) - (by-ay)*(cx-bx);
   prec = eps*(   ABS(bx-ax)*(ABS(cy)+ABS(by))
 	       + ABS(cy-by)*(ABS(bx)+ABS(ax))

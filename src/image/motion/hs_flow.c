@@ -1,17 +1,22 @@
-/*--------------------------- MegaWave Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {hs_flow};
-  version = {"1.0"};
-  author = {"Olivia Sanchez"};
-  function = {"Horn and Schunck iterative scheme to compute optical flow"};
-  usage = {
-  'n':[niter=200]->niter   "number of iterations, default 200",
-  'a':[alpha=10.]->alpha   "weight on smoothing term, default 50.",  
-  in->in                   "input Fmovie",
-  xflow<-xflow             "output Fmovie: x coordinate of optical flow",
-  yflow<-yflow             "output Fmovie: y coordinate of optical flow"
-  };
+ name = {hs_flow};
+ version = {"1.2"};
+ author = {"Olivia Sanchez"};
+ function = {"Horn and Schunck iterative scheme to compute optical flow"};
+ usage = {
+   'n':[niter=200]->niter   "number of iterations",
+   'a':[alpha=10.]->alpha   "weight on smoothing term",  
+   in->in                   "input Fmovie",
+   xflow<-xflow             "output Fmovie: x coordinate of optical flow",
+   yflow<-yflow             "output Fmovie: y coordinate of optical flow"
+};
 */
+
+/*----------------------------------------------------------------------
+ v1.1: removed unused angle() function (JF)
+ v1.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -242,45 +247,6 @@ int SENS(adr,numero_image)
   if( (rx>0) && (ry<0) )  sens=3;
   
   return(sens); 
-}
-
-
-/* function which computes optical flow orientation */
-
-float angle(adr,numero_image)
-     int numero_image;
-{
-  double rapport,racine;
-  int sens,r;
-  double theta,reponse;
-  float rx,ry;
-  
-  rx = U[1][adr+nx*ny*numero_image];
-  ry = -V[1][adr+nx*ny*numero_image];
-  
-  if((rx==0) && (ry==0)) reponse=0;
-  
-  if((rx!=0) || (ry!=0)) {
-
-    racine = (double)(sqrt((double)CARRE(rx) + (double)CARRE(ry)));
-    theta = acos((double)(ABS(rx))/racine);
-    
-    if( (rx!=0) && (ry!=0))
-      sens=SENS(adr,numero_image);
-    
-    if( (rx>0) && (ry==0) ) reponse=0;
-    if( (rx<0) && (ry==0) ) reponse=M_PI;
-    if( (rx==0) && (ry>0) ) reponse=M_PI/2;
-    if( (rx==0) && (ry<0) ) reponse=3*M_PI/2;
-    
-    if(sens==0) reponse=theta;
-    if(sens==1) reponse=M_PI-theta;  
-    if(sens==2) reponse=M_PI+theta; 
-    if(sens==3) reponse=2*M_PI-theta;
-    
-  }
-  
-  return(reponse);
 }
 
 

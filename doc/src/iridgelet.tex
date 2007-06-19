@@ -1,5 +1,6 @@
 The module {\tt iridgelet} reconstructs the image from its ridgelet decomposition (obtained by {\tt ridgelet}) following the algorithm 
 in~\cite{starck.candes.ea:curvelet}.
+\index{ridgelet}
 
 In order to detect straight lines, you can use {\tt ridgthres} before {\tt iridgelet}.
 As long as each step of the ridgelet transformation is invertible, we can obtain an exact reconstruction of the image computing the inverse wavelet transform for each line of the $2N \times 2N$ image, conversing the result from polar to cartesian and finally computing the two dimensionnal IFFT.

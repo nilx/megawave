@@ -1,21 +1,24 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {fzrt};
-   version = {"1.0"};
+   version = {"1.1"};
    author = {"Lionel Moisan"};
    function = {"Zoom, Rotate then translate an image"};
    usage = {
-    'o':[o=3]->o   "order: 0,1=linear,-3=cubic,3,5..11=spline, default 3",
-    'p':[p=-.5]->p "Keys' parameter (when o=-3), in [-1,0], default -0.5",
-    'b':[b=0.]->b  "background grey value, default: 0.0",
-    in->in         "input Fimage",
-    out<-out       "output Fimage",
-    zoom->zoom     "zoom factor",
-    angle->angle   "rotation angle (in degrees, counterclockwise)",
-    x->x           "translation vector (x coordinate)",
-    y->y           "translation vector (y coordinate)"
+    'o':[o=3]->o    "order: 0,1=linear,-3=cubic,3,5..11=spline",
+    'p':[p=-.5]->p  "Keys' parameter (when o=-3), in [-1,0]",
+    'b':[b=0.]->b   "background grey value",
+    in->in          "input Fimage",
+    out<-out        "output Fimage",
+    zoom->zoom      "zoom factor",
+    angle->angle    "rotation angle (in degrees, counterclockwise)",
+    x->x            "translation vector (x coordinate)",
+    y->y            "translation vector (y coordinate)"
    };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

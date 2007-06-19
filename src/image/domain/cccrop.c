@@ -1,24 +1,27 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {cccrop};
-  version = {"1.1"};
+  version = {"1.2"};
   author = {"Lionel Moisan"};
   function = {"Color image croping (with zoom) using interpolation."};
   usage = {
-'x':sx->sx         "force x-size of output image",
-'y':sy->sy         "force y-size of output image",
-'z':z->z           "zoom factor (default 1.0)",
-'b':[bg=0]->bg     "background grey value, default: 0",
-'o':[o=3]->o       "order: 0,1=linear,-3=cubic,3,5..11=spline, default 3",
-'p':p->p           "Keys' parameter (when o=-3), in [-1,0], default -0.5",
-in->in             "input Ccimage",
-out<-out           "output Ccimage",
-X1->X1             "upleft corner",
-Y1->Y1             "upleft corner",
-X2->X2             "downright corner",
-Y2->Y2             "downright corner"
+   'x':sx->sx         "force x-size of output image",
+   'y':sy->sy         "force y-size of output image",
+   'z':z->z           "zoom factor (default 1.0)",
+   'b':[bg=0]->bg     "background grey value",
+   'o':[o=3]->o       "order: 0,1=linear,-3=cubic,3,5..11=spline",
+   'p':p->p           "Keys' parameter (when o=-3), in [-1,0], default -0.5",
+   in->in             "input Ccimage",
+   out<-out           "output Ccimage",
+   X1->X1             "upleft corner",
+   Y1->Y1             "upleft corner",
+   X2->X2             "downright corner",
+   Y2->Y2             "downright corner"
 };
 */
+/*----------------------------------------------------------------------
+ v1.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"

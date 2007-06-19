@@ -1,10 +1,10 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
-  name = {ridgelet};
-  version = {"1.0"};
-  author = {"Claire Jonchery, Amandine Robin"};
-  function ={"Ridgelet transform of an image"};
-  usage = {
+ name = {ridgelet};
+ version = {"1.0"};
+ author = {"Claire Jonchery, Amandine Robin"};
+ function ={"Ridgelet transform of an image"};
+ usage = {
   'I':in_im->in_im        "imaginary input (Fimage N*N)",
   np->np                  "resolution np",
   in_re->in_re            "real input (Fimage N*N)",

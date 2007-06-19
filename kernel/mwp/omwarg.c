@@ -6,12 +6,17 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* Check and print arguments.
-   V 1.0   
+   V 1.1 
    Original version : Sylvain Parrino
    Several modifications done by Jacques Froment (JF)
+   
+   Last changes :
+   V 1.1 (JF, 23/02/2006) added include <string.h> 
 */
 
 #include <stdio.h>
+#include <string.h>
+
 #include "bintree.h"
 #include "symbol.h"
 #include "token.h"

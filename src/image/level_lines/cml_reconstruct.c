@@ -1,19 +1,15 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
-  name = {cml_reconstruct};
-  version = {"2.6"};
-  author = {"Jacques Froment, Georges Koepfler"};
-  function = {"Reconstruct a color image from cmorpho_lines of cmimage"};
-  usage = {
-  'i'->v_flag
-         "use the maxvalue of the cmorpho_lines (default minvalue)",
-  m_image->m_image
-         "input cmimage",
-  image_out<-cml_reconstruct
-        "reconstructed cfimage"
-  };
+ name = {cml_reconstruct};
+ version = {"2.6"};
+ author = {"Jacques Froment, Georges Koepfler"};
+ function = {"Reconstruct a color image from cmorpho_lines of cmimage"};
+ usage = {
+   'i'->v_flag     "use the maxvalue of the cmorpho_lines (default minvalue)",
+   m_image->m_image            "input cmimage",
+   image_out<-cml_reconstruct  "reconstructed cfimage"
+};
 */
-/*--------------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <assert.h>

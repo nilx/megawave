@@ -1,27 +1,21 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
-   name = {cml_decompose};
-   version = {"1.0"};
-   author = {"Jacques Froment, Georges Koepfler"};
-   function = {"Compute all the cmorpho_lines of a color image"};
-   usage = {
-   'c':cmimage_in->cmimage_in
-       "original image in Cmimage structure",
-   'o':[ml_opt=0]->ml_opt [0,2]
-       "choose form of morpho_lines",
-   'l':[L=0]->L "Minimal level lines length to be kept",
-   image_in->image_in
-       "original color image",
-   cmimage<-cml_decompose
-       "cmimage with all morpho_lines"
-       };
+ name = {cml_decompose};
+ version = {"1.0"};
+ author = {"Jacques Froment, Georges Koepfler"};
+ function = {"Compute all the cmorpho_lines of a color image"};
+ usage = {
+   'c':cmimage_in->cmimage_in   "original image in Cmimage structure",
+   'o':[ml_opt=0]->ml_opt [0,2] "choose form of morpho_lines",
+   'l':[L=0]->L                 "Minimal level lines length to be kept",
+   image_in->image_in           "original color image",
+   cmimage<-cml_decompose       "cmimage with all morpho_lines"
+};
 */
-/*--------------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
 #include "mw.h"
 
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))

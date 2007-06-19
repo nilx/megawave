@@ -1,25 +1,22 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {creadasc};
-  version = {"1.0"};
-  author = {"Jacques Froment"};
-  function = {"Read an image in ascii format (char values)"};
-  usage = {
+ name = {creadasc};
+ version = {"1.0"};
+ author = {"Jacques Froment"};
+ function = {"Read an image in ascii format (char values)"};
+ usage = {
     output<-u  "output cimage",
     dx->dx     "number of columns",
     dy->dy     "number of rows"
-    };
+};
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
  
 void creadasc(u,dx,dy)
-Cimage u;
-int dx,dy;
+     Cimage u;
+     int dx,dy;
 {
   register unsigned char *ptr;
   int i,c;

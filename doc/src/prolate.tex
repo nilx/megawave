@@ -1,8 +1,30 @@
 This module produces a prolate convolution kernel for optimal
 image reduction~\cite{landau.pollak:prolate}. 
+It is similar to the \verb+prolatef+ module, but here
+the support constraint is enforced in
+the space domain.
 Among all $n\times n$ images $u$ such that $u(x)=0$ 
-outside a $s\times s$ window and $\int u^2=1$, the energy 
-$\int_{|\xi|\leq dn/2} |\hat u(\xi)|^2$ is maximized ($\hat u$ is 
+outside a $s\times s$ window, the energy 
+$$E(u) = \frac{\displaystyle \sum_{|\xi|\leq dn/2} |\hat u(\xi)|^2}
+{\displaystyle \sum_{\xi} |\hat u(\xi)|^2}$$
+is maximized ($\hat u$ is 
 the Fourier Transform of $u$), yielding an optimal image $\bar u$.
 The result is then normalized to produce a unit mass kernel 
-$out= \bar u/\int \bar u$.
+$out$.
+
+%\medskip
+
+%The relative choice of the $d$ and $s$ parameters can be made easier
+%by using the \verb+prolates+ module.
+
+\medskip
+
+Example of use (reduction of an image by a factor 2):
+
+\begin{verbatim}
+prolate -n 256 3 0.5 kernel
+fview -z 100 kernel &
+fconvol fimage kernel out
+fsample out out 2
+fview out &
+\end{verbatim}

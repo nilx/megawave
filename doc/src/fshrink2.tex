@@ -1,6 +1,10 @@
-This module is required for the 2D Fast Fourier transform ({\sf fft2d}).
-It extracts of an input image its largest centered part which dimensions 
+This module is no longer required for the 2D Fast Fourier Transform 
+index{Fourier Transform}
+({\sf fft2d} module), but can be useful to speed-up computations, though
+the more efficient module {\sf fft2dshrink} should be prefered in general.
+It extracts from an input image the largest centered part whose dimensions 
 are power of $2$.
+\index{crop!an image}
 For example, an original image of size $600 \times 300$ will be shrinked to 
 size $512 \times 256$, by extracting the part $[44,555]\times [22,277]$.
 

@@ -1,0 +1,29 @@
+#!/bin/sh
+# CompileProto : use this shell to compile mwplight after modification of source files.
+#                It regenerates proto file 'mwpl_proto.h' from the content of the
+#                source files. Works on Linux systems only, when -aux-info is selected
+#                in cc (See Makefile.in)
+#
+
+MakeProto()
+{
+ /bin/rm $proto
+ for a in `ls *.aux`
+  do 
+   b=`basename $a .aux`
+#   echo "-- including $b"
+   m=${b}.c
+   grep $m $a | grep ":[ON]F" >> $proto
+  done
+}
+
+proto=mwpl_proto.h
+MakeProto
+make all
+if [ $? -eq 0 ]; then
+ MakeProto
+ make all
+ if [ $? -eq 0 ]; then
+  make install
+ fi
+fi

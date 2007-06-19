@@ -1,7 +1,7 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
   name = {fftgrad};
-  version = {"1.1"};
+  version = {"1.2"};
   author = {"Lionel Moisan"};
   function = {"Compute the gradient of an image using Fourier interpolation"};
   usage = {
@@ -19,6 +19,7 @@ in->in
 */
 /*----------------------------------------------------------------------
  v1.1: bug fixed (missing computation for -n option) (L.Moisan)
+ v1.2: allow any image size (not only powers of two !) (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -77,8 +78,8 @@ Fimage in,gradx,grady,gradn,gradp;
       xx = normx * (float)(x>nx/2?x-nx:x);
       yy = normy * (float)(y>ny/2?y-ny:y);
 
-      if (x==nx/2) xx=0.0;
-      if (y==ny/2) yy=0.0;
+      if (2*x==nx) xx=0.0;
+      if (2*y==ny) yy=0.0;
 
       re->gray[adr] =  yy * cx + xx * cy;
       im->gray[adr] = -xx * cx + yy * cy;

@@ -5,7 +5,13 @@ cell (interval) of a uniform grid.
 The size and the position of these cells can be specified in different
 ways using all combinations of the options. The \verb+-t+ option tells
 whether the values outside the specified interval should be ignored or
-counted on the boundary cells.
+counted on the boundary cells. A weight image can be specified with
+the \verb+-w+ option; in that case, each cell will sum up the weights
+of its associated pixels instead of simply counting the number of its
+associted pixels. In other terms, the default behavior (no \verb+-w+
+option) is equivalent to a constant weight image $w(x,y)=1$.
+\index{histogram!of an image}
+
 
 
 

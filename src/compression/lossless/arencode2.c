@@ -1,41 +1,27 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {arencode2};
 version = {"1.01"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Arithmetic encoding of a string of symbol"};
 usage = {
-'i'->Print
-        "Do not print info on encoding process",
-'s':Size->Size
-          "Number of symbols to encode",
-'n':NSymbol->NSymb
-          "Number of different symbols in source (size of alphabet)",
-'c':Cap_Histo->Cap_Histo
-          "Capacity of histogram",
-'p'->Predic
-          "Use predictive model",        
-'h':Histo->Histo
-          "Histogram model for input symbols (fsignal)", 
-'H'->Header
-          "Insert header with size of alphabet and predictive info",
-Input->Input
-          "Input string of symbols (fimage)",
-Rate<-Rate
-          "Rate of output",
-{ 
-Output<-Output
-          "Output string of codewords (cimage)"
-}
+ 'i'->Print         "Do not print info on encoding process",
+ 's':Size->Size     "Number of symbols to encode",
+ 'n':NSymbol->NSymb "Number of different symbols in source (size of alphabet)",
+ 'c':Cap_Histo->Cap_Histo  "Capacity of histogram",
+ 'p'->Predic        "Use predictive model",        
+ 'h':Histo->Histo   "Histogram model for input symbols (fsignal)", 
+ 'H'->Header        "Insert header with size of alphabet and predictive info",
+ Input->Input       "Input string of symbols (fimage)",
+ Rate<-Rate         "Rate of output",
+  { 
+    Output<-Output  "Output string of codewords (cimage)"
+  }
 };
- */
+*/
 
-
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Library megawave2 ---*/
 #include  "mw.h"
 
 

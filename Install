@@ -3,8 +3,8 @@
 _sccsid="%Z%MegaWave %R%, %M% %I%, %G%";
 _Func="Install a new MegaWave2 version";
 _Prog="`basename $0`"
-_Vers="1.8"
-_Date="1999-2003"
+_Vers="1.11"
+_Date="1999-2006"
 _Auth="Jacques Froment";
 _Usage=""
 #-----------------------------------------------------------------------------
@@ -148,6 +148,17 @@ if [ "$ans" = "Y" ]; then
   Echo "OK, but I hope you know what your are doing !"
 fi
 
+Echo "**** This version includes the new 'light' preprocessor ****"
+Echo "At the time being, the system will install both 'traditional' and 'light' preprocessors"
+Echo "so that you can compile modules using the preprocessor of your choice."
+Echo "Now, you have to decide which one you want to use for the first compilation phase."
+Echo "If you answer NO to the following question I will use the 'light' preprocessor if possible"
+Echo "that is, I will turn to the 'traditional' one only if your system fails with the 'light' one."
+Answer "Do you want to use the 'traditional' preprocessor" "N"
+if [ "$ans" = "Y" ]; then  
+  insopt="$insopt -traditional"
+fi
+
 Echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 Echo "Well ladies and gentlemen, I am ready to start the BIG installation process"
 Echo ""
@@ -199,16 +210,5 @@ if [ -x $MWPROFILE ] || [ -x $MWCSHRC ]; then
     Echo "+++++ $MWCSHRC (Csh for C-compatible shells)"
   fi
 fi
-
-
-
-
-
-
-
-
-
-
-
 
 

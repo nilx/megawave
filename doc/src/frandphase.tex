@@ -5,6 +5,7 @@ antisymetric field of random independant variables uniformely distributed
 on $[0,2\pi[$.
 In addition to that, a gain-offset correction is finally applied on $u'$ 
 in order to keep the $u$'s original mean and variance.
+\index{Fourier Transform}
 
 \vskip 0.3cm
 
@@ -14,11 +15,12 @@ $$\Gamma_u(x) = <u(t)u(t+x)>_t,$$
 which Fourier Transform equals $| F \{ u \} | ^2$ up to a multiplicative 
 coefficient (Wiener-Kichnine theorem). Thus, this function is a kind of 
 projection on the space of microscopic textures.
+\index{texture}
 
 \vskip 0.3cm
 
 The random seed used ({\sf drand48}) is reinitialized with the current time
-unless the -i option is set.
+plus the process id unless the -i option is set.
 
 \vskip 0.5cm
 

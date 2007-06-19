@@ -1,21 +1,21 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {thinning};
-  version = {"2.2"};
-  author = {"Jacques Froment, Denis Pasquignon"};
-  function = {"homotopic thinning of a B&W cimage"};
-  usage = {
-  'n':niter->niter
+ name = {thinning};
+ version = {"2.2"};
+ author = {"Jacques Froment, Denis Pasquignon"};
+ function = {"homotopic thinning of a B&W cimage"};
+ usage = {
+   'n':niter->niter
       "number of iterations (default : until idempotent result)",
-  'i'->inv
+   'i'->inv
        "inversion (shape is black - 0 - , background is white - 255 -)",
-  'm':cmovie_out<-M
+   'm':cmovie_out<-M
        "output cmovie of successive iterations",
-  cimage_in->imageI
+   cimage_in->imageI
      "input cimage",
-  cimage_out<-imageO
+   cimage_out<-imageO
      "output cimage (thinned input)" 
-  };
+};
 */
 /*----------------------------------------------------------------------
  v2.2: return result (L.Moisan)

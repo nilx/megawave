@@ -26,11 +26,12 @@ SRC =   mw.h cimage.h fimage.h fsignal.h \
         curve.h cfimage.h ccimage.h ccmovie.h cfmovie.h unix_bsd.h module.h \
 	fcurve.h dcurve.h fpolygon.h mimage.h cmimage.h shape.h \
 	basic_conv.h rawdata.h type_conv.h native_ftype.h \
-	wpanel.h list.h
+	wpanel.h list.h wpack2d.h
 
 LINUXSRC = Linux/README Linux/libio.h Linux/libio_2.1.h Linux/libio_2.2.h \
 	Linux/libio_2.3.3.h Linux/stdio.h Linux/stdio_2.1.h Linux/stdio_2.2.h \
-	Linux/stdio_2.3.h Linux/stdio_2.3.3.h Linux/stdarg.h Linux/stdarg_2.1.h \
+	Linux/stdio_2.3.h Linux/stdio_2.3.3.h  \
+	Linux/stdarg.h Linux/stdarg_2.1.h \
 	Linux/stdarg_2.2.h Linux/stdarg_2.3.h
 
 LINUXX11SRC = Linux/X11/Xlib.h Linux/X11/Xlib_2.1.h Linux/X11/Xlib_v1.5.h 

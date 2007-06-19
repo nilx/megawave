@@ -1,28 +1,22 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {skeleton};
-  version = {"2.1"};
-  author = {"Denis Pasquignon"};
-  function = {"compute the skeleton of a cimage"};
-  usage = {
-  'n':[iteration=2]->iteration
- "number of iterations, default 2",
-  'c':[infsup_iter=1]->infsup_iter
- "number of iterations of infsup, default 1",
-  'l':[extremite=10]->extremite
- "stopping test for the extremities, default 10",
-  'a'->average 
- "swap first and second level med and take the average",
-  cimage_in->image
-     "input cimage",
-  cmovie->cmovie
-     "masks sequence", 
-  cmovie<-output
-     "skeletons sequence of the image"     
-  };
+ name = {skeleton};
+ version = {"2.2"};
+ author = {"Denis Pasquignon"};
+ function = {"compute the skeleton of a cimage"};
+ usage = {
+   'n':[iteration=2]->iteration      "number of iterations",
+   'c':[infsup_iter=1]->infsup_iter  "number of iterations of infsup",
+   'l':[extremite=10]->extremite     "stopping test for the extremities",
+   'a'->average      "swap first and second level med and take the average",
+   cimage_in->image  "input cimage",
+   cmovie->cmovie    "masks sequence", 
+   cmovie<-output    "skeletons sequence of the image"     
+};
 */
 /*----------------------------------------------------------------------
  v2.1: return result + external call (L.Moisan)
+ v2.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>

@@ -1,29 +1,32 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {sconst};
-  version = {"1.0"};
+  version = {"1.2"};
   author = {"Jacques Froment"};
   function = {"Create a constant fsignal"};
   usage = {
-  's':[size=512]->size    "number of samples in the signal (default 512)",
-  'a':[amplitude=1.0]->A  "amplitude (default 1.0)",
+  's':[size=512]->size    "number of samples in the signal",
+  'a':[amplitude=1.0]->A  "amplitude",
   sconst<-signal          "output fsignal"
   };
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
+
+/*----------------------------------------------------------------------
+ v1.01: added string.h include file (strcpy warning) (LM)
+ v1.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
-
-/* Include always the MegaWave2 include file */
 #include "mw.h"
 
 void sconst(size,A,signal)
-
-int *size;
-float *A;
-Fsignal signal;
-
+     
+     int *size;
+     float *A;
+     Fsignal signal;
+     
 {
 
   signal = mw_change_fsignal(signal, *size);

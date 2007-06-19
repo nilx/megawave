@@ -1,78 +1,48 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {fwlbg_adap};
-version = {"2.00"};
+version = {"2.1"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Generates training set(s) (starting from image(s)) and constructs a codebook sequence for wavelet transform vector quantization using LBG algorithm"};
 usage = {
-'r':[NLevel=1]->NumRecMax
-	"Quantization is performed on MaxLevel scales", 
-'q':Level->Level [1,16]
-	"Create codebook(s) at scale Level", 
-'o':Orient->Orient [0,3]
-	"Create codebook(s) for orientation Orient",
-'e':EdgeIR->Edge_Ri
-      	"Impulse reponses of edge and preconditionning filters for orthogonal transform (fimage)",
-'b':ImpulseResponse2->Ri2
-	"Impulse response of filter 2 for biorthogonal transform (fsignal)",
-'n':FilterNorm->FilterNorm [0,2]
-	"Normalization mode for filter bank", 
-'d':[StopDecimLevel=2]->StopDecim [1,20]
-	"Level for decimation stop (default : 2)",
-'w':[VectorWidth=2]->Width
-	"Width of vectors (default : 2)", 
-'h':[VectorHeight=2]->Height
-	"Height of vectors (default : 2)", 
-'M'->MultiCB
-        "Generate codebooks of size equal to a power of two",
-'l'->Lap
-	"Take overlapping vectors in training images", 
-'s':Sizec1->Sizec1
-	"Size of output codebook for first class", 
-'t':Size2->Sizec2
-	"Size of output codebook for second class", 
-'u':Size3->Sizec3
-	"Size of output codebook for third class", 
-'S':ThresVal1->ThresVal1
-	"First threshold value for classified VQ",
-'T':ThresVal2->ThresVal2
-	"Second threshold value for classified VQ",
-'U':ThresVal3->ThresVal3
-	"Third threshold value for classified VQ",
-'O':OldCodeBook->OldCodeBook
-	"Modify the first class codebook sequence (fimage)",
-'X':OldAdapCodeBook1->OldAdapCodeBook2
-	"Modify the second class codebook sequence (fimage)",
-'Y':OldAdapCodeBook2->OldAdapCodeBook3
-	"Modify the third class codebook sequence (fimage)",
-'x':AdapCodeBook2<-Output2
-	"Sequence of second class codebooks (fimage)",
-'y':AdapCodeBook3<-Output3
-	"Sequence of third class codebooks (fimage)",
-'A':TrainImage2->Image2
-	"Training image (fimage)",
-'B':TrainImage3->Image3
-	"Training image (fimage)",
-'C':TrainImage4->Image4
-	"Training image (fimage)",
-'Q':ResCodeBook->ResCodeBook
-	"Generate codebook(s) for residu of quantization with ResCodeBook (fimage)",
-'R':ResResCodeBook->ResResCodeBook
-	"Generate codebook(s) for residu of quantization with ResCodeBook and ResResCodeBook (fimage)",
-TrainImage1->Image1
-	"Training image (fimage)", 
-ImpulseResponse->Ri
-	"Impulse response of inner filters (fsignal)", 
-CodeBook1<-Output1
-	"Sequence of first class codebooks (fimage)"
+ 'r':[NLevel=1]->NumRecMax "Quantization is performed on MaxLevel scales", 
+ 'q':Level->Level [1,16]   "Create codebook(s) at scale Level", 
+ 'o':Orient->Orient [0,3]  "Create codebook(s) for orientation Orient",
+ 'e':EdgeIR->Edge_Ri       "Impulse reponses of edge and preconditionning filters for orthogonal transform (fimage)",
+ 'b':ImpulseResponse2->Ri2 "Impulse response of filter 2 for biorthogonal transform (fsignal)",
+ 'n':FilterNorm->FilterNorm [0,2]        "Normalization mode for filter bank", 
+ 'd':[StopDecimLevel=2]->StopDecim [1,20]"Level for decimation stop",
+ 'w':[VectorWidth=2]->Width              "Width of vectors",
+ 'h':[VectorHeight=2]->Height            "Height of vectors",
+ 'M'->MultiCB             "Generate codebooks of size equal to a power of two",
+ 'l'->Lap                 "Take overlapping vectors in training images", 
+ 's':Sizec1->Sizec1       "Size of output codebook for first class", 
+ 't':Size2->Sizec2        "Size of output codebook for second class", 
+ 'u':Size3->Sizec3        "Size of output codebook for third class", 
+ 'S':ThresVal1->ThresVal1 "First threshold value for classified VQ",
+ 'T':ThresVal2->ThresVal2 "Second threshold value for classified VQ",
+ 'U':ThresVal3->ThresVal3 "Third threshold value for classified VQ",
+ 'O':OldCodeBook->OldCodeBook            "Modify the first class codebook sequence (fimage)",
+ 'X':OldAdapCodeBook1->OldAdapCodeBook2  "Modify the second class codebook sequence (fimage)",
+ 'Y':OldAdapCodeBook2->OldAdapCodeBook3  "Modify the third class codebook sequence (fimage)",
+ 'x':AdapCodeBook2<-Output2              "Sequence of second class codebooks (fimage)",
+ 'y':AdapCodeBook3<-Output3              "Sequence of third class codebooks (fimage)",
+ 'A':TrainImage2->Image2  "Training image (fimage)",
+ 'B':TrainImage3->Image3  "Training image (fimage)",
+ 'C':TrainImage4->Image4  "Training image (fimage)",
+ 'Q':ResCodeBook->ResCodeBook            "Generate codebook(s) for residu of quantization with ResCodeBook (fimage)",
+ 'R':ResResCodeBook->ResResCodeBook      "Generate codebook(s) for residu of quantization with ResCodeBook and ResResCodeBook (fimage)",
+ TrainImage1->Image1      "Training image (fimage)", 
+ ImpulseResponse->Ri      "Impulse response of inner filters (fsignal)", 
+ CodeBook1<-Output1       "Sequence of first class codebooks (fimage)"
 	};
 */
+/*----------------------------------------------------------------------
+ v2.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

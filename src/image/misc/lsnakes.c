@@ -1,18 +1,21 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-  name = {lsnakes};
-  version = {"1.0"};
-  author = {"Francoise Dibos, Jacques Froment, Kamal Lakhiari"};
-  function = {"Level Set implementation of the Snakes Model"};
-  usage = {
-  'n':[Niter=1]->Niter       "number of iterations, default 1",
-  't':[thre=1.0]->thre       "threshold to binarize mask images, default 1.0",
-  'f':[force=0.0001]->force  "force term, default 0.0001",
-  in->in                     "input contour (Fimage mask)",
-  ref->ref                   "input reference Fimage",
-  out<-lsnakes               "output contour (Fimage mask)"
-  };
+ name = {lsnakes};
+ version = {"1.1"};
+ author = {"Francoise Dibos, Jacques Froment, Kamal Lakhiari"};
+ function = {"Level Set implementation of the Snakes Model"};
+ usage = {
+   'n':[Niter=1]->Niter       "number of iterations",
+   't':[thre=1.0]->thre       "threshold to binarize mask images",
+   'f':[force=0.0001]->force  "force term",
+   in->in                     "input contour (Fimage mask)",
+   ref->ref                   "input reference Fimage",
+   out<-lsnakes               "output contour (Fimage mask)"
+};
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>

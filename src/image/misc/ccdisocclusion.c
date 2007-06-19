@@ -1,18 +1,21 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {ccdisocclusion};
-version = {"1.0"};
-author = {"Simon Masnou"};
-function = {"Disocclusion of a RGB Ccimage by independent processing of each channel in the normalized YUV representation"};
-usage = {
-  'e':[energy_type=1]->energy_type 
-                  "Energy of a level line : 0  = only length, 1 = only angle (default), otherwise = angle+length",
-  'a'->angle     "If used then the orientation of each entering level line is computed more accurately on a ball of radius 4",
-  input->Input   "Input occluded Ccimage (RGB)",
-  holes->Holes   "Input Fimage containing the only occlusions",
-  output<-Output "Output disoccluded Ccimage (RGB)"
-  };
+ name = {ccdisocclusion};
+ version = {"1.1"};
+ author = {"Simon Masnou"};
+ function = {"Disocclusion of a RGB Ccimage by independent processing of each channel in the normalized YUV representation"};
+ usage = {
+   'e':[energy_type=1]->energy_type 
+                  "Energy of a level line : 0  = only length, 1 = only angle, otherwise = angle+length",
+   'a'->angle     "If used then the orientation of each entering level line is computed more accurately on a ball of radius 4",
+   input->Input   "Input occluded Ccimage (RGB)",
+   holes->Holes   "Input Fimage containing the only occlusions",
+   output<-Output "Output disoccluded Ccimage (RGB)"
+};
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 /****************************************************************************/
 /* The color cfimage in the RGB color system is first transformed into the YUV

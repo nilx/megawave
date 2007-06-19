@@ -1,37 +1,28 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {dybiowave2};
-version = {"1.1"};
+version = {"1.2"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Computes the biorthogonal wavelet coefficients of an image without decimation"};
 usage = {
-'r':[NLevel=1]->NumRec [1,20]
-	"Number of levels (default 1)", 
-'d':[StopDecimLevel=2]->StopDecim [1,20]
-	"Level for decimation stop (default 2)",
-'o'->Ortho
-	"Computes orthogonal coefficients", 
-'e':[EdgeMode=2]->Edge [0,2]
-	"Edge processing mode (0/1/2, default 2)", 
-'n':[FiltNorm=0]->FilterNorm
-	"Normalization mode for filter bank (default 0)", 
-Image->Image
-	"Input image (fimage)", 
-WavTrans<-Output
-	"Wavelet transform of Image (wtrans2d)", 
-ImpulseResponse1->Ri1
-	"Impulse response of filter 1 (fsignal)", 
-ImpulseResponse2->Ri2
-	"Impulse response of filter 2 (fsignal)"
-	};
- */
+ 'r':[NLevel=1]->NumRec [1,20]             "Number of levels", 
+ 'd':[StopDecimLevel=2]->StopDecim [1,20]  "Level for decimation stop",
+ 'o'->Ortho                    "Computes orthogonal coefficients", 
+ 'e':[EdgeMode=2]->Edge [0,2]  "Edge processing mode",
+ 'n':[FiltNorm=0]->FilterNorm  "Normalization mode for filter bank",
+ Image->Image            "Input image (fimage)", 
+ WavTrans<-Output        "Wavelet transform of Image (wtrans2d)", 
+ ImpulseResponse1->Ri1   "Impulse response of filter 1 (fsignal)", 
+ ImpulseResponse2->Ri2   "Impulse response of filter 2 (fsignal)"
+};
+*/
+/*----------------------------------------------------------------------
+ v1.2 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

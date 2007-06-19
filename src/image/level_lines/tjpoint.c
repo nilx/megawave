@@ -1,29 +1,28 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {tjpoint};
-version={"1.1"};
-author = {"Vicent Caselles, Bartomeu Coll, Jacques Froment, JL Lisani"};
-labo = {"Universitat de les Illes Balears and CEREMADE"};
-function = {"Return the type of junction of a point in a cimage"};
-usage = {
-'c'->connex8 "8-connexity (default : 4)",
-'a':[tarea=40]->tarea[0,5000] "area threshold",
-'q':[tquant=2]->tquant[0,255] "quantization threshold",
-'l':lambda<-lambda "returns lambda such that {x / U(x) <= lambda} is significant at the junction",
-'m':mu<-mu "returns mu such that {x / U(x) >= mu} is significant at the junction",
-'x':xlambda<-xlambda "returns the T-junction point xlambda belonging to the border of {x / U(x) <= lambda}",
-'y':ylambda<-ylambda "returns the T-junction point ylambda belonging to the border of {x / U(x) <= lambda}",
-'X':xmu<-xmu "returns the T-junction point xmu belonging to the border of {x / U(x) >= mu}",
-'Y':ymu<-ymu "returns the T-junction point ymu belonging to the border of {x / U(x) >= mu}",
-U->U "input cimage U",
-x0->x0 "x coordinate of the point",
-y0->y0 "y coordinate of the point",
-tj<-tjpoint "type of junction at (x0,y0)",
-notused->M  "M array (library call)",
-notused->P  "P array (library call)"
-        };
+ name = {tjpoint};
+ version = {"1.2"};
+ author = {"Vicent Caselles, Bartomeu Coll, Jacques Froment, Jose-Luis Lisani"};
+ labo = {"Universitat de les Illes Balears and CEREMADE"};
+ function = {"Return the type of junction of a point in a cimage"};
+ usage = {
+   'c'->connex8 "8-connexity (default : 4)",
+   'a':[tarea=40]->tarea[0,5000] "area threshold",
+   'q':[tquant=2]->tquant[0,255] "quantization threshold",
+   'l':lambda<-lambda "returns lambda such that {x / U(x) <= lambda} is significant at the junction",
+   'm':mu<-mu "returns mu such that {x / U(x) >= mu} is significant at the junction",
+   'x':xlambda<-xlambda "returns the T-junction point xlambda belonging to the border of {x / U(x) <= lambda}",
+   'y':ylambda<-ylambda "returns the T-junction point ylambda belonging to the border of {x / U(x) <= lambda}",
+   'X':xmu<-xmu "returns the T-junction point xmu belonging to the border of {x / U(x) >= mu}",
+   'Y':ymu<-ymu "returns the T-junction point ymu belonging to the border of {x / U(x) >= mu}",
+   U->U "input cimage U",
+   x0->x0 "x coordinate of the point",
+   y0->y0 "y coordinate of the point",
+   tj<-tjpoint "type of junction at (x0,y0)",
+   notused->M  "M array (library call)",
+   notused->P  "P array (library call)"
+};
 */
-/* ------------------------------------------------------------------------- */
 
 #include <stdio.h>
 #include "mw.h"

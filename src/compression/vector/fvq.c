@@ -1,83 +1,52 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {fvq};
-version = {"2.01"};
+version = {"2.3"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Performs the vector quantization of an image"};
 usage = {
-'p':PrintSNR->PrintSNR 
-        " 1 -> print info on classified VQ",
-'h'->SmallHeader
-        "Insert only a reduced header at top of Compress",
-'M'->BitMapCode
-        "Encode bitmap even if all codebooks have size 1",
-'m'->RateDist
-        "Compute rate distortion curve",
-'n':NCB1->NCB1 
-        "Index of codebook in CodeBook1",
-'X':NCB2->NCB2
-        "Index of codebook in CodeBook2",
-'Y':NCB3->NCB3
-        "Index of codebook in CodeBook3",
-'Z':NCB4->NCB4
-        "Index of codebook in CodeBook4",
-'x':CodeBook2->CodeBook2
-	"Sequence of codebooks for second class (fimage)",
-'y':CodeBook3->CodeBook3
-	"Sequence of codebooks for third class (fimage)",
-'z':CodeBook4->CodeBook4
-	"Sequence of codebooks for fourth class (fimage)",
-'A':NResCB1->NResCB1
-        "Index of codebook in ResCodeBook1",
-'B':NResCB2->NResCB2
-        "Index of codebook in ResCodeBook2",
-'C':NResCB3->NResCB3
-        "Index of codebook in ResCodeBook3",
-'D':NResCB4->NResCB4
-        "Index of codebook in CodeBook4",
-'a':ResCodeBook1->ResCodeBook1
-	"Codebook for residu quantization after quantization with CodeBook1 (fimage)",
-'b':ResCodeBook2->ResCodeBook2
-	"Codebook for residu quantization after quantization with CodeBook2 (fimage)",
-'c':ResCodeBook3->ResCodeBook3
-	"Codebook for residu quantization after quantization with CodeBook3 (fimage)",
-'d':ResCodeBook4->ResCodeBook4
-	"Codebook for residu quantization after quantization with CodeBook4 (fimage)",
-'E':NResResCB1->NResResCB1
-        "Index of codebook in ResResCodeBook1",
-'F':NResResCB2->NResResCB2
-        "Index of codebook in ResResCodeBook2",
-'e':ResResCodeBook1->ResResCodeBook1
-	"Codebook for residu quantization after quantization with CodeBook1 and ResCodeBook1 (fimage)",
-'f':ResResCodeBook2->ResResCodeBook2
-	"Codebook for residu quantization after quantization with CodeBook2 and ResCodeBook2 (fimage)",
-'o':Compress<-Compress
-        "Compressed representation of Image (cimage)",
-Image->Image
-	"Input Fimage (fimage)", 
-CodeBook1->CodeBook1
-	"Sequence of codebooks for first class (fimage)", 
-QImage<-Result
-	"Quantized image (fimage)",
-  { 
-    MSE<-MSE
-	"", 
-    SNR<-SNR
-	"",
-    Entropy<-Entropy
-       	"",
-    RateAr<-RateAr
-        ""
-  }
+ 'p':PrintSNR->PrintSNR    " 1 -> print info on classified VQ",
+ 'h'->SmallHeader          "Insert only a reduced header at top of Compress",
+ 'M'->BitMapCode           "Encode bitmap even if all codebooks have size 1",
+ 'm'->RateDist             "Compute rate distortion curve",
+ 'n':NCB1->NCB1            "Index of codebook in CodeBook1",
+ 'X':NCB2->NCB2            "Index of codebook in CodeBook2",
+ 'Y':NCB3->NCB3            "Index of codebook in CodeBook3",
+ 'Z':NCB4->NCB4            "Index of codebook in CodeBook4",
+ 'x':CodeBook2->CodeBook2  "Sequence of codebooks for second class (fimage)",
+ 'y':CodeBook3->CodeBook3  "Sequence of codebooks for third class (fimage)",
+ 'z':CodeBook4->CodeBook4  "Sequence of codebooks for fourth class (fimage)",
+ 'A':NResCB1->NResCB1      "Index of codebook in ResCodeBook1",
+ 'B':NResCB2->NResCB2      "Index of codebook in ResCodeBook2",
+ 'C':NResCB3->NResCB3      "Index of codebook in ResCodeBook3",
+ 'D':NResCB4->NResCB4      "Index of codebook in CodeBook4",
+ 'a':ResCodeBook1->ResCodeBook1  "Codebook for residu quantization after quantization with CodeBook1 (fimage)",
+ 'b':ResCodeBook2->ResCodeBook2  "Codebook for residu quantization after quantization with CodeBook2 (fimage)",
+ 'c':ResCodeBook3->ResCodeBook3  "Codebook for residu quantization after quantization with CodeBook3 (fimage)",
+ 'd':ResCodeBook4->ResCodeBook4  "Codebook for residu quantization after quantization with CodeBook4 (fimage)",
+ 'E':NResResCB1->NResResCB1      "Index of codebook in ResResCodeBook1",
+ 'F':NResResCB2->NResResCB2      "Index of codebook in ResResCodeBook2",
+ 'e':ResResCodeBook1->ResResCodeBook1  "Codebook for residu quantization after quantization with CodeBook1 and ResCodeBook1 (fimage)",
+ 'f':ResResCodeBook2->ResResCodeBook2  "Codebook for residu quantization after quantization with CodeBook2 and ResCodeBook2 (fimage)",
+ 'o':Compress<-Compress    "Compressed representation of Image (cimage)",
+ Image->Image              "Input Fimage (fimage)", 
+ CodeBook1->CodeBook1      "Sequence of codebooks for first class (fimage)", 
+ QImage<-Result            "Quantized image (fimage)",
+   { 
+     MSE<-MSE              "MSE", 
+     SNR<-SNR              "SNR",
+     Entropy<-Entropy      "Entropy",
+     RateAr<-RateAr        "RateAr"
+   }
 };
  */
+/*----------------------------------------------------------------------
+ v2.3 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules definition ---*/

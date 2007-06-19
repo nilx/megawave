@@ -1,32 +1,26 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {gass};
    author = {"Lionel Moisan"};
-   version = {"1.0"};
+   version = {"1.1"};
    function = {"Geometric Affine Scale Space of curves (Dlists)"};
    usage = {    
         
-'f':[first=0.]->first    "first scale (default 0.)",
-
-'l':[last=1.]->last      "last scale (default 1.)",
-
-'e':[eps=3.]->eps[2.,13.]   
-    "relative sampling precision (-log10 scale), in [2,13] (default 3.)",
-
-'s':step->step           "maximal scale step",
-
-'n':[n=5]->n             "or minimal number of iterations (default 5)",
-
-'r':r->r                 "bounding box radius (default: minimal)",
-
-'v'->v                   "verbose mode",
-
-in->in                   "input curves (Dlists)",
-
-out<-out                 "output curves (Dlists)"
+ 'f':[first=0.]->first       "first scale",
+ 'l':[last=1.]->last         "last scale",
+ 'e':[eps=3.]->eps[2.,13.]   "relative sampling precision (-log10 scale)",
+ 's':step->step              "maximal scale step",
+ 'n':[n=5]->n                "or minimal number of iterations",
+ 'r':r->r                    "bounding box radius (default: minimal)",
+ 'v'->v                      "verbose mode",
+ in->in                      "input curves (Dlists)",
+ out<-out                    "output curves (Dlists)"
 
 	    };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -47,7 +41,7 @@ double tmp;
 
 /*** return +1, 0 or -1, the sign of det(b-a,c-b) modulo double precision ***/
 int dir(ax,ay,bx,by,cx,cy)
-double ax,ay,bx,by,cx,cy;
+     double ax,ay,bx,by,cx,cy;
 {
   double det,prec;
 
@@ -64,9 +58,9 @@ double ax,ay,bx,by,cx,cy;
 /*----------------- Split a curve into convex components -----------------*/
 
 int my_split_convex(in,out,ncc)
-Dlist  in;
-double **out;
-int    *ncc;
+     Dlist  in;
+     double **out;
+     int    *ncc;
 {
   int     il,i,d1,d2,ni,n,is_closed,ok;
   double  *p,*q,*pmax,mx,my,px1,py1,px2,py2,px3,py3,px4,py4,*first;
@@ -180,9 +174,9 @@ int    *ncc;
 
 /*** sample a curve : return next available address for out ***/
 double *sample(in,size,out,eps2)
-double  *in,*out;
-int     size;
-double  eps2;
+     double  *in,*out;
+     int     size;
+     double  eps2;
 {
   double  x,y,ox,oy,d2,dx,dy,threshold,*p,*q,*pmax;
   int     i,j,k,n,osize;
@@ -245,7 +239,7 @@ double  eps2;
 
 /*** signed area of a polygonal sector p-q1-q2-p ***/
 double area_pol(p,q1,q2)
-double *p,*q1,*q2;
+     double *p,*q1,*q2;
 {
   double area,*q;
 
@@ -379,11 +373,11 @@ int aceros(in,size,out,area)
 /*----------------------- DISCRETE AFFINE EROSION  -----------------------*/
 
 void dafferos(l,area,eps2,rad,ncc)
-Dlist    l;      /* input/output curve */
-double   *area;  /* desired absolute area step (real one is returned) */
-double   eps2;   /* absolute precision squared */
-double   rad;    /* bounding box radius */
-int      *ncc;   /* output: number of connected components after evolution */
+     Dlist    l;      /* input/output curve */
+     double   *area;  /* desired absolute area step (real one is returned) */
+     double   eps2;   /* absolute precision squared */
+     double   rad;    /* bounding box radius */
+     int      *ncc;   /* output: number of connected components after evol. */
 {
   double        a,narea,r2,min_area,*first,*last;
   int           i,nc;

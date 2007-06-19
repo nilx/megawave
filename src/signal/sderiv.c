@@ -1,26 +1,23 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {sderiv};
   version = {"0.1"};
   author = {"Jacques Froment"};
   function = {"Compute the discrete derivative of a fsignal (basic example)"};
   usage = {
-  fsignal_in->A "input fsignal",
-  fsignal_out<-B "output fsignal"
+     fsignal_in->A   "input fsignal",
+     fsignal_out<-B  "output fsignal"
   };
 */
-/*--- MegaWave - Copyright (C) 1992 Jacques Froment. All Rights Reserved. ---*/
 
 #include <stdio.h>
 #include <math.h>
-
-/* Include always the MegaWave2 include file */
 #include "mw.h"
 
 void sderiv(A,B)
-
-Fsignal A,B;
-
+     
+     Fsignal A,B;
+     
 {
   int i,size;
 

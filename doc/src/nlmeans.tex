@@ -1,0 +1,46 @@
+This module applies to an image $in$
+the denoising ``non-local means'' method\index{denoising!non-local means} 
+proposed by Buades, Coll and 
+Morel~\cite{buades.coll.morel:nlmeans}. The image $out$ is defined by
+
+$$out(x) = \frac{\displaystyle \sum_y w(x,y) \cdot in(y)}
+{\displaystyle \sum_y w(x,y)},
+\eqno{(1)}$$
+where $w(x,x)=c$ and for $y\neq x$,
+$$w(x,y) = \exp\left( -\frac 1{2h^2} \cdot \frac{\displaystyle
+\sum_{-\frac s2 \leq p,q \leq \frac s2} 
+\exp \left(-\frac{p^2+q^2}{2a^2}\right) 
+\left( \frac{}{} in(y+(p,q))-in(x+(p,q)) \right)^2}
+{\displaystyle
+\sum_{-\frac s2 \leq p,q \leq \frac s2} 
+\exp \left(-\frac{p^2+q^2}{2a^2}\right)}\right)
+\eqno{(2)}.$$
+The coefficient $w(x,y)$ involves a weighted Euclidean norm between
+two $s\times s$ patches of the input image, centered respectively
+in $y$ and $x$. The default value for the weight is
+$a=(s-1)/4$, which gives relative weights (compared to the central value)
+between 0.02 and 0.13 on the patch boundary. Note that values of
+$a$ smaller than $(s-1)/6$ would be computationally inefficient, in the sense
+that similar result could be obtained faster by decreasing $s$.
+In the limit case $s=1$, the value of $a$ has no influence on the result.
+\medskip
+
+In (1), the sum is restricted to the points $y$ for which
+$\|x-y\|\leq d$ (that is, patches that are not too far apart from the
+current point $x$), 
+which may allow important speed-ups since the complexity of the algorithm is
+$O(s^2d^2)$ per pixel of the input image. The default value of $d$
+is $10$. Note that the image is not denoised in the vicinity of the image
+frame (precisely, in a band of width $s/2$). The value of $w(x,x)$
+given by (2) would be $w(x,x)=1$, but it can be changed using the \verb+-c+
+option since the point $y=x$ plays a very particular role in (1).
+
+\medskip
+
+Example of use:
+\begin{verbatim}
+fnoise -g 10 fimage noisy
+cview noisy &
+nlmeans -h 10 noisy denoised
+cview denoised &
+\end{verbatim}

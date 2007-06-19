@@ -6,7 +6,8 @@ is the number of pixels, is allocated and stored in
 pointers to positions in this array.
 The consequence is that in order to free the allocated memory, the user must
 use the command \verb+free(pTree->the_shapes[0].pixels+.
-
+\index{Fast Level Set Transform} 
+\index{level line}
 The number of pixels in each shape is stored in its field \verb+area+.
 
 The complexity of the algorithm is $O(N)$, $N$ being the number of

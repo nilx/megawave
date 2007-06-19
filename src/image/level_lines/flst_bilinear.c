@@ -1,15 +1,18 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand 
-  name = {flst_bilinear}; 
-  version = {"1.1"}; 
-  author = {"Pascal Monasse"}; 
-  function = {"Fast Level Sets Transform of a bilinear interpolated image"}; 
-  usage = { 
-    'a': min_area-> pMinArea "argument of the grain filter",
-    image-> pImageInput  "Input fimage",
-    tree<- pTree "The tree of shapes"
-    }; 
+ name = {flst_bilinear}; 
+ version = {"1.2"}; 
+ author = {"Pascal Monasse"}; 
+ function = {"Fast Level Sets Transform of a bilinear interpolated image"}; 
+ usage = { 
+    'a':min_area->pMinArea   "argument of the grain filter",
+    image->pImageInput       "Input fimage",
+    tree<-pTree              "The tree of shapes"
+}; 
 */ 
+/*----------------------------------------------------------------------
+ v1.2: removed IMAGE_T macro (JF)
+----------------------------------------------------------------------*/
 
 #include <float.h>
 #include <assert.h>
@@ -29,7 +32,6 @@ values seem good for most images. */
 /* To deal with another type of image, just change these macros, and the call
 to fsaddles */
 #define PIXEL_T float
-#define IMAGE_T Fimage
 #define IMAGE_ALLOC_FUNC mw_change_fimage
 
 /* A 'local configuration' of the pixel is the logical OR of these values,
@@ -780,7 +782,7 @@ Only shapes of area >= *pMinArea are in the tree. pMinArea==NULL means 1.
 Output: *pTree is filled (pTree must point to an allocated tree). */
 void flst_bilinear(pMinArea, pImageInput, pTree)
 int* pMinArea;
-IMAGE_T pImageInput;
+Fimage pImageInput;
 Shapes pTree;
 {
   PIXEL_T** tabtabPixelsOutput; /* Array accessing pixels of output image */

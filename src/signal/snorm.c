@@ -1,14 +1,14 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {snorm};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Lionel Moisan"};
   function = {"Compute the norm of a Fsignal"};
   usage = {
     'p':p->p      "compute average L^p norm",
     's'->s        "compute L^infinity norm (sup of absolute values)",
     'v'->v        "compute average total variation",
-    'b':[b=0]->b  "number of samples to crop on the borders (default: 0)",
+    'b':[b=0]->b  "number of samples to crop on the borders",
     'c':ref->ref  "compare with Fsignal ref (ie compute ||in - ref||)",
     'n'->n        "normalized comparison (with -c), ie ||in - ref||/ ||ref||)",
     't':t->t      "force result to 0 if less or equal than threshold t",
@@ -16,17 +16,21 @@
     out<-snorm    "computed norm"
     };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
+
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
 
 float snorm(in,ref,p,s,v,b,n,t)
-Fsignal in,ref;
-float *p;
-char *s,*v;
-int *b;
-char *n;
-float *t;
+     Fsignal in,ref;
+     float *p;
+     char *s,*v;
+     int *b;
+     char *n;
+     float *t;
 {
   int x,y,num;
   double sum,diff,val;

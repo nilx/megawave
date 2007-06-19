@@ -1,17 +1,17 @@
-/*--------------------------- MegaWave2 Command -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
-name = {bicontrast};
-version = {"1.0"};
-author = {"Lionel Moisan"};
-function = {"Find optimal contrast change between two images"};
-usage = { 
- 'v'->verb        "verbose mode",
- 'r':r<-r         "output Flist : raw (unconstrained) contrast change",
- 'g':g<-g         "output Flist : resulting (nondecreasing) contrast change",
- u->u             "input Fimage 1 (reference)",
- v->v             "input Fimage 2",
+ name = {bicontrast};
+ version = {"1.0"};
+ author = {"Lionel Moisan"};
+ function = {"Find optimal contrast change between two images"};
+ usage = { 
+   'v'->verb        "verbose mode",
+   'r':r<-r         "output Flist : raw (unconstrained) contrast change",
+   'g':g<-g         "output Flist : resulting (nondecreasing) contrast change",
+   u->u             "input Fimage 1 (reference)",
+   v->v             "input Fimage 2",
  {
-   out<-out       "output (Fimage 2 after contrast change g)"
+   out<-out         "output (Fimage 2 after contrast change g)"
  }
 };
 */

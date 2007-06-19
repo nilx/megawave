@@ -1,4 +1,4 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {demohead2};
   version = {"1.0"};
@@ -14,8 +14,9 @@
        "Input scalar (int) with default value and boundary - optional argument -",
      input1 -> in1 
        "Input scalar (float) - optional argument -",
+
      output1 <- out1
-       "Output MegaWave2 type (cimage) - optional argument -"
+       "Output MegaWave2 type (cimage) - optional argument -"    
      }
            };
 */

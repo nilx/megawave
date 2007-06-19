@@ -1,16 +1,16 @@
-/* ---------------- M E G A W A V E 2  h e a d e r ------------------------- */
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {cvsencode};
-version={"0.0"};
+version = {"0.1"};
 author = {"Jacques Froment"};
 function = {"Encode a set of curves : return bit rate for lossless compression"};
 usage = {
-'s':L->L "split curves with overlapping parts of length greater than L",
-'o':O<-O "output the encoded curves (C=O if option -s is not selected)",
-C->C "input curves",
-N<-N "output number of points",
-B<-B "output number of bits to code the curves",
-brate<-cvsencode "compression rate (bit per point = B/N)"
+ 's':L->L  "split curves with overlapping parts of length greater than L",
+ 'o':O<-O  "output the encoded curves (C=O if option -s is not selected)",
+ C->C      "input curves",
+ N<-N      "output number of points",
+ B<-B      "output number of bits to code the curves",
+ brate<-cvsencode "compression rate (bit per point = B/N)"
         };
 */
 
@@ -27,11 +27,11 @@ extern double cvsorgcode();
 */
 
 void Get_Size_Image(C,ncol,nrow,mincol,minrow)
-
-Curves C;
-int *ncol, *nrow;
-int *mincol, *minrow;
-
+     
+     Curves C;
+     int *ncol, *nrow;
+     int *mincol, *minrow;
+     
 {
   Curve cv;
   Point_curve point;
@@ -60,11 +60,11 @@ int *mincol, *minrow;
 
 int Seek_Non_Multiple_Point(C,bitmap,mincol,minrow,p0,p1)
 
-Curves C;
-Cimage bitmap;
-int mincol,minrow;
-Point_curve p0,*p1;
-
+     Curves C;
+     Cimage bitmap;
+     int mincol,minrow;
+     Point_curve p0,*p1;
+     
 {
   Point_curve p;
   int n,ncol;
@@ -94,11 +94,11 @@ Point_curve p0,*p1;
 
 void Add_Curve(O,fpoint,lpoint,bitmap,mincol,minrow)
 
-Curves O;
-Point_curve fpoint,lpoint;
-Cimage bitmap;
-int mincol,minrow;
-
+     Curves O;
+     Point_curve fpoint,lpoint;
+     Cimage bitmap;
+     int mincol,minrow;
+     
 {
   Curve cv,lcv;
   Point_curve p,p0,p1;
@@ -139,11 +139,11 @@ int mincol,minrow;
 Curves Split_Curves(O,C,L,bitmap,mincol,minrow)
 
 
-Curves O,C;
-int L;
-Cimage bitmap;
-int mincol,minrow;
-
+     Curves O,C;
+     int L;
+     Cimage bitmap;
+     int mincol,minrow;
+     
 {
   Curve cv;
   Point_curve P, p0, p1, begp;
@@ -180,11 +180,11 @@ int mincol,minrow;
 }
 
 double cvsencode(L,O,C,N,B)
-
-int *L;
-Curves O,C;
-unsigned int *N;
-double *B;
+     
+     int *L;
+     Curves O,C;
+     unsigned int *N;
+     double *B;
 
 {
   Cimage bitmap=NULL;  /* Bitmap the points of the curves to detect multiple

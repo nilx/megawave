@@ -1,6 +1,8 @@
 This module allows to extract a part of an image and to resize it to
 the desired dimensions. This operation is realized using an 
 interpolation~\cite{thevenaz.blu.ea:image}\cite{unser.aldroubi.ea:fast}
+\index{interpolation!of an image}
+\index{crop!an image}
 that can be chosen with the \verb+-o+ option. The image is assumed
 to be equal to a constant value $bg$ (set with the \verb+-b+ option)
 outside its boundaries. Moreover, it is assumed that the image
@@ -35,6 +37,7 @@ $$\beta^0(x) = \left\{\begin{array}{lcl}
 1       & & -1/2 \leq |x| < 1/2 \\ 
 0       & & {\mathrm else}.
 \end{array}\right.$$
+\index{interpolation!nearest neighbor}
 
 $\bullet$ 1: bilinear interpolation, which corresponds to direct interpolation
 with a B-spline of order 1,
@@ -42,6 +45,7 @@ $$\beta^1(x) = \left\{\begin{array}{lcl}
 1-|x|   & & 0 \leq |x| \leq 1 \\ 
 0       & & 1 \leq |x|.
 \end{array}\right.$$
+\index{interpolation!bilinear}
 
 $\bullet$ -3: direct interpolation with cubic Keys' function, defined by
 $$\varphi_a(x) = \left\{\begin{array}{lcl}
@@ -53,6 +57,7 @@ This function is $C^1$ and depends on a parameter $a \in [-1,0]$ that
 can be set with the \verb+-p+ option. Its default value, $-1/2$,
 ensures an approximation order equal to 3 (instead of 2 for other
 values).
+\index{interpolation!Keys bicubic}
 
 \smallskip
 
@@ -72,6 +77,8 @@ Note that $\beta^n$ is of class $C^{n-1}$. In particular, the
 cubic spline performs a better (indirect) interpolation ($C^2$ and
 approximation order of 4) than the Keys cubic (direct) interpolant 
 ($C^1$ and approximation order of 3).
+\index{interpolation!spline}
+\index{B-spline}
 
 \medskip
 

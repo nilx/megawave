@@ -1,30 +1,30 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
-   name = {fftrot};
-   version = {"1.01"};
-   author = {"Pascal Monasse"};
-   function = {"Rotate then translate an image using Fourier interpolation"};
-   usage = {
-
-   'a':[a=0.0]->a  
-       "rotation angle (in degrees, counterclockwise, default 0.0)",
-   'x':[x=0.0]->x  
-       "translation vector (x coordinate, default 0.0)",
-   'y':[y=0.0]->y  
-       "translation vector (y coordinate, default 0.0)",
-   'o'->o_flag     
-       "to take (0,0) as the rotation center (instead of the image center)",
-   in->in              
-       "input Fimage",
-   out<-out            
-       "output Fimage"
-   };
-   */
-/*-- MegaWave 2- Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
+ name = {fftrot};
+ version = {"1.3"};
+ author = {"Pascal Monasse"};
+ function = {"Rotate then translate an image using Fourier interpolation"};
+ usage = {
+   'a':[a=0.]->a  "rotation angle (in degrees, counterclockwise)",
+   'x':[x=0.]->x  "translation vector (x coordinate)",
+   'y':[y=0.]->y  "translation vector (y coordinate)",
+   'o'->o_flag    "take (0,0) as the rotation center (not the image center)",
+   in->in         "input Fimage",
+   out<-out       "output Fimage"
+};
+*/
+/*----------------------------------------------------------------------
+ v1.1: fix rotation center bug and allow any image dimensions (Said Ladjal)
+ v1.2: minor changes (Lionel Moisan)
+ v1.3 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include "mw.h"
+
+extern void fft1d();
 
 #define HORIZONTAL 0
 #define VERTICAL 1
@@ -33,18 +33,17 @@
 void yr_shear(dAmountOfShear, pFloatImageInput, pFloatImageOutput, iAxis, fDelta,PleaseDoNotCenter)
 double dAmountOfShear;
 Fimage pFloatImageInput, pFloatImageOutput;
-int iAxis;
+int iAxis, PleaseDoNotCenter;
 float fDelta;
-int PleaseDoNotCenter;
 {
   int i, j, iSize, iHalfSize, iOtherSize, iHalfOtherSize;
   Fsignal pRealSignal, pImaginarySignal, pRealSignalTransformed, pImaginarySignalTransformed;
   double dTranslation;
-  float fCos, fSin;
-  float fReal;
-  
-  /* iSize is the size of the image (must be a power of 2) in the direction of the
-     axis of shear. iOtherSize the size of the image in the orthogonal direction */
+  float fCos, fSin, fReal;
+  int odd,oddOther;
+
+  /* iSize is the size of the image in the direction of the axis of shear. 
+     iOtherSize the size of the image in the orthogonal direction */
   if(iAxis == HORIZONTAL)
     {
       iHalfSize = (iSize = pFloatImageInput->ncol) >> 1;
@@ -56,20 +55,18 @@ int PleaseDoNotCenter;
       iHalfOtherSize = (iOtherSize = pFloatImageInput->ncol) >> 1;
     }
 
-  /* Create temporary signals to compute the fourier transform of a line (or a column)
-     of the image */
+  if ((iOtherSize & 1)!= 0) oddOther=1; else oddOther=0;
+  if ((iSize & 1) !=0) odd=1; else odd=0;
+
+  /* Create temporary signals to compute the fourier transform of a line 
+     (or a column) of the image */
   pRealSignal = mw_change_fsignal(0, iSize);
-  if(pRealSignal == 0)
-    mwerror(FATAL, 1, "fftrot --> not enough memory to allocate the real signal\n");
   pImaginarySignal = mw_change_fsignal(0, iSize);
-  if(pImaginarySignal == 0)
-    mwerror(FATAL, 1, "fftrot --> not enough memory to allocate the imaginary signal\n");
   pRealSignalTransformed = mw_new_fsignal();
-  if(pRealSignalTransformed == 0)
-    mwerror(FATAL, 1, "fftrot --> not enough memory to allocate the real transformed signal\n");
   pImaginarySignalTransformed = mw_new_fsignal();
-  if(pImaginarySignalTransformed == 0)
-    mwerror(FATAL, 1, "fftrot --> not enough memory to allocate the imaginary transformed signal\n");
+  if(!pRealSignal || !pRealSignalTransformed ||
+     !pImaginarySignal || !pImaginarySignalTransformed) 
+    mwerror(FATAL,1,"fftrot: not enough memory\n");
 
   for(i = 0; i < iOtherSize; i++)
     {
@@ -81,13 +78,18 @@ int PleaseDoNotCenter;
       memset(pImaginarySignal->values, 0, iSize * sizeof(float));
 
       /* Compute the FFT of the current line (or column) of the image */
-      fft1d(pRealSignal, pImaginarySignal, pRealSignalTransformed, pImaginarySignalTransformed, 0);
+      fft1d(pRealSignal, pImaginarySignal, 
+	    pRealSignalTransformed, pImaginarySignalTransformed, 0);
 
       if (PleaseDoNotCenter) 
 	dTranslation = - (i * dAmountOfShear + fDelta) * 2. * M_PI;
-      else dTranslation = - ((i - iHalfOtherSize - .5) * dAmountOfShear + fDelta) * 2. * M_PI;
+      else 
+	if (oddOther)
+	  dTranslation = - ((i - iHalfOtherSize ) * dAmountOfShear + fDelta) * 2. * M_PI;
+	else
+	  dTranslation = - ((i - iHalfOtherSize + .5) * dAmountOfShear + fDelta) * 2. * M_PI;
 
-      for(j = 1; j < iHalfSize; j++)
+      for(j = 1; j < iHalfSize+odd; j++)
 	{
 	  fCos = (float) cos(j * dTranslation / iSize);
 	  fSin = (float) sin(j * dTranslation / iSize);
@@ -99,11 +101,15 @@ int PleaseDoNotCenter;
 	  pRealSignalTransformed->values[iSize - j] = pRealSignalTransformed->values[j];
 	  pImaginarySignalTransformed->values[iSize - j] = -pImaginarySignalTransformed->values[j];
 	}
-      pRealSignalTransformed->values[iHalfSize] = cos(dTranslation * .5) * pRealSignalTransformed->values[iHalfSize] - sin(dTranslation * .5) * pImaginarySignalTransformed->values[iHalfSize];
-      pImaginarySignalTransformed->values[iHalfSize] = 0.;
+
+      if (odd == 0) {
+	pRealSignalTransformed->values[iHalfSize] = cos(dTranslation * .5) * pRealSignalTransformed->values[iHalfSize] - sin(dTranslation * .5) * pImaginarySignalTransformed->values[iHalfSize];
+	pImaginarySignalTransformed->values[iHalfSize] = 0.;
+      }
 
       /* Compute the inverse FFT of the current line (or column) */
-      fft1d(pRealSignalTransformed, pImaginarySignalTransformed, pRealSignal, pImaginarySignal, (char*)1);
+      fft1d(pRealSignalTransformed, pImaginarySignalTransformed, 
+	    pRealSignal, pImaginarySignal, (char*)1);
       if(iAxis == HORIZONTAL)
 	memcpy(pFloatImageOutput->gray + i * iSize, pRealSignal->values, iSize * sizeof(float));
       else
@@ -138,7 +144,7 @@ Fimage in, out;
   /* Create the output image */
   out = mw_change_fimage(out, in->nrow, in->ncol);
   if(out == 0)
-    mwerror(FATAL,1,"fftrot --> not enough memory to allocate output image\n");
+    mwerror(FATAL,1,"fftrot: not enough memory\n");
 
   /* The rotation is decomposed into three shears :
      two horizontal and one vertical */

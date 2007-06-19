@@ -1,41 +1,32 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
 name = {iowave1};
-version = {"1.2"};
+version = {"1.3"};
 author = {"Jean-Pierre D'Ales"};
 function = {"Reconstructs a signal from an orthogonal wavelet transform"};
 usage = {
-'r':[RecursNum=1]->NumRec [1,20]
-	"Number of levels (default 1)", 
-'h':HaarLevel->Haar
-	"Start reconstruction with Haar from HaarLevel",
-'e':[EdgeMode=3]->Edge [0,3]
-	"Edge processing mode (0/1/2/3, default 3)", 
-'p':[PrecondMode=0]->Precond [0,2]
-	"Edge preconditionning mode (0/1/2, default 0)", 
-'i'->Inverse
-	"Invertible transform", 
-'n':[FilterNorm=2]->FilterNorm [0,2]
-	"Filter taps normalization (0/1/2, default 2)", 
-WavTrans->Wtrans
-	"Input wavelet transform (wtrans1d)", 
-RecompSignal<-Output
-	"Reconstructed signal (fsignal)", 
-ImpulseResponse->Ri
-	"Impulse response of inner filters (fsignal)", 
+ 'r':[RecursNum=1]->NumRec [1,20]   "Number of levels", 
+ 'h':HaarLevel->Haar           "Start reconstruction with Haar from HaarLevel",
+ 'e':[EdgeMode=3]->Edge [0,3]  "Edge processing mode", 
+ 'p':[PrecondMode=0]->Precond [0,2]   "Edge preconditionning mode", 
+ 'i'->Inverse                         "Invertible transform", 
+ 'n':[FilterNorm=2]->FilterNorm [0,2] "Filter taps normalization", 
+ WavTrans->Wtrans     "Input wavelet transform (wtrans1d)", 
+ RecompSignal<-Output "Reconstructed signal (fsignal)", 
+ ImpulseResponse->Ri  "Impulse response of inner filters (fsignal)", 
 	{
 	EdgeIR->Edge_Ri
-		"Impulse reponses of edge and preconditionning filters (fimage)"
+	     "Impulse reponses of edge and preconditionning filters (fimage)"
 	}
 	};
 */
+/*----------------------------------------------------------------------
+ v1.3 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 
-/*--- Include files UNIX C ---*/
 #include <stdio.h>
 #include <math.h>
-
-/*--- Library megawave2 ---*/
 #include  "mw.h"
 
 /*--- Megawave2 modules ---*/

@@ -1,22 +1,29 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {sreadasc};
-  version = {"1.0"};
+  version = {"1.1"};
   author = {"Lionel Moisan"};
   function = {"Read a signal in ascii format"};
   usage = {    
+      's':s->s  "specify scale field",
+      't':t->t  "specify shift field",
+      'g':g->g  "specify gain field",
       out<-out  "output Fsignal",
     { n->n      "size of signal" }
 
     };
 */
+/*----------------------------------------------------------------------
+ v1.1: added -s, -t and -g options (LM)
+-----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
  
-Fsignal sreadasc(out,n)
-Fsignal out;
-int *n;
+Fsignal sreadasc(out,n,s,t,g)
+     Fsignal out;
+     int *n;
+     float *s,*t,*g;
 {
   int i,size;
   float v;
@@ -27,6 +34,9 @@ int *n;
   } else size = *n;
 
   out = mw_change_fsignal(out,size);
+  if (s) out->scale = *s;
+  if (t) out->shift = *t;
+  if (g) out->gain = *g;
   mw_clear_fsignal(out,0.);
   if (!out) mwerror(FATAL,1,"Not enough memory\n");
 

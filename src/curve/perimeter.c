@@ -1,4 +1,4 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {perimeter};
    author = {"Lionel Moisan"};
@@ -17,8 +17,8 @@
 
 
 double perimeter(in,min,max)
-Dlist in;
-double *min,*max;
+     Dlist in;
+     double *min,*max;
 {
   int i,d;
   double per,s,*p;

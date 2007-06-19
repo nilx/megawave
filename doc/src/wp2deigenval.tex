@@ -1,0 +1,13 @@
+This module computes the eigenvalues of an operator which is diagonal
+in a 2D-wavelet packet basis. Only the quad-tree is necessary to compute these
+eigenvalues, since it defines how the wavelet packet basis splits
+the Fourier domain (the quad-tree describes the eigenvectors of the operator).
+
+The output of this module can be used as an input for the option 
+\verb+-c+ of the module \verb+wp2doperate+, see the documentation of
+these module to get examples.
+
+Operators that are diagonal in wavelet packet bases are useful for
+image deconvolution, see \cite{kalifa.mallat.ea:image}, 
+\cite{mallat:wavelet} and \cite{malgouyres:framework}.
+

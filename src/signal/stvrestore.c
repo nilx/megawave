@@ -1,21 +1,24 @@
 /*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
 name = {stvrestore};
-version = {"1.6"};
+version = {"1.7"};
 author = {"Jacques Froment"};
 function = {"Restoration of signal using total variation and thresholding in orthonormal bases"};
 usage = {
-'r'->relax  "Relax constraint on approximation space V_J",
-'n':[n=10000]->Niter  "Number of iterations (default: 10000)",
-'a':alpha->alpha [0., 1e-4] "Alpha parameter to smooth the total variation",
-'O':O->O          "Use orthonormal wavelet with the given impulse response",
-'I':I->I          "Use wavelet adapted to the interval with the given edge filter",
-'V':V<-V          "Output signal with minimal total variation",
-M->M              "Input thresholding mask (1|-1=coeff.kept, 0=coeff.thresholded)",
-u->u              "Input thresholded signal", 
-out<-stvrestore   "Output restored signal" 
+ 'r'->relax                  "Relax constraint on approximation space V_J",
+ 'n':[n=10000]->Niter        "Number of iterations",
+ 'a':alpha->alpha [0., 1e-4] "Alpha parameter to smooth the total variation",
+ 'O':O->O    "Use orthonormal wavelet with the given impulse response",
+ 'I':I->I    "Use wavelet adapted to the interval with the given edge filter",
+ 'V':V<-V    "Output signal with minimal total variation",
+ M->M        "Input thresholding mask (1|-1=coeff.kept, 0=coeff.thresholded)",
+ u->u              "Input thresholded signal", 
+ out<-stvrestore   "Output restored signal" 
 	};
 */
+/*----------------------------------------------------------------------
+ v1.7 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -39,9 +42,9 @@ void smse();
 */
 
 int GetWaveletDepth(M)
-
-Fsignal M;
-
+     
+     Fsignal M;
+     
 {
   int N,n0,n,p,r;
   float v;
@@ -72,9 +75,9 @@ Fsignal M;
 */
 
 double J(u,dJ)
-
-Fsignal u,dJ;
-
+     
+     Fsignal u,dJ;
+     
 {
   int n;
   double r,d,sd,ad;
@@ -100,9 +103,9 @@ Fsignal u,dJ;
 
 double J_alpha(u,dJ,alpha)
 
-Fsignal u,dJ;
-double alpha;
-
+     Fsignal u,dJ;
+     double alpha;
+     
 {
   int n;
   double r,a,b,c;
@@ -124,7 +127,7 @@ double alpha;
 /* Compute the projection on the constraint in the wavelet domain */
 
 Wproj(relax,WdJ,M)
-
+     
 char *relax;    /* If != NULL, relax constraint on approximation space V_J.
 		   Warning : on versions < 1.4, this option was active (bug) !
 		*/
@@ -213,11 +216,11 @@ int *r;
 */
 
 double f(t,u,dJ)
-
-double t;
-Fsignal u;
-Fsignal dJ;  
-
+     
+     double t;
+     Fsignal u;
+     Fsignal dJ;  
+     
 {
   int n;
   double r=0.0;
@@ -233,12 +236,12 @@ Fsignal dJ;
 */
 
 double f_alpha(t,u,dJ,alpha)
-
-double t;
-Fsignal u;
-Fsignal dJ;  
-double alpha;
-
+     
+     double t;
+     Fsignal u;
+     Fsignal dJ;  
+     double alpha;
+     
 {
   int n;
   double r,dn;
@@ -257,11 +260,11 @@ double alpha;
 */
 
 void output_f(u,dJ,alpha)
-
-Fsignal u;
-Fsignal dJ;  
-double *alpha;
-
+     
+     Fsignal u;
+     Fsignal dJ;  
+     double *alpha;
+     
 {
   double t;
 
@@ -277,10 +280,10 @@ double *alpha;
 
 double df(t,u,dJ)
 
-double t;
-Fsignal u;
-Fsignal dJ;  
-
+     double t;
+     Fsignal u;
+     Fsignal dJ;  
+     
 {
   int n;
   double r=0.0;
@@ -303,11 +306,11 @@ Fsignal dJ;
 
 double df_alpha(t,u,dJ,alpha)
 
-double t;
-Fsignal u;
-Fsignal dJ;  
-double alpha;
-
+     double t;
+     Fsignal u;
+     Fsignal dJ;  
+     double alpha;
+     
 {
   int n;
   double r,dw,dn;
@@ -328,13 +331,13 @@ double alpha;
 
 void Make_Comments(u,tv,Niter,alpha,O,I)
 
-Fsignal u;
-double tv;
-int Niter;
-double *alpha;
-Fsignal O;    
-Fimage I;     
-
+     Fsignal u;
+     double tv;
+     int Niter;
+     double *alpha;
+     Fsignal O;    
+     Fimage I;     
+     
 {
   char A[BUFSIZ];
 

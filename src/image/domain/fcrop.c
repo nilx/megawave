@@ -1,24 +1,27 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
    name = {fcrop};
-   version = {"1.0"};
+   version = {"1.1"};
    author = {"Lionel Moisan"};
    function = {"image croping (with zoom) using interpolation"};
    usage = {  
-'x':sx->sx         "force x-size of output image",
-'y':sy->sy         "force y-size of output image",
-'z':z->z           "zoom factor (default 1.0)",
-'b':[bg=0.0]->bg   "background grey value, default: 0.0",
-'o':[o=3]->o       "order: 0,1=linear,-3=cubic,3,5..11=spline, default 3",
-'p':p->p           "Keys' parameter (when o=-3), in [-1,0], default -0.5",
-in->in             "input Fimage",
-out<-out           "output Fimage",
-X1->X1             "upleft corner",
-Y1->Y1             "upleft corner",
-X2->X2             "downright corner",
-Y2->Y2             "downright corner"
+    'x':sx->sx         "force x-size of output image",
+    'y':sy->sy         "force y-size of output image",
+    'z':z->z           "zoom factor (default 1.0)",
+    'b':[bg=0.0]->bg   "background grey value",
+    'o':[o=3]->o       "order: 0,1=linear,-3=cubic,3,5..11=spline",
+    'p':p->p           "Keys' parameter (when o=-3), in [-1,0], default -0.5",
+    in->in             "input Fimage",
+    out<-out           "output Fimage",
+    X1->X1             "upleft corner",
+    Y1->Y1             "upleft corner",
+    X2->X2             "downright corner",
+    Y2->Y2             "downright corner"
 };
 */
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <math.h>
@@ -31,9 +34,9 @@ extern void finvspline();
 
 /* extract image value (even outside image domain) */
 float v(in,x,y,bg)
-Fimage in;
-int x,y;
-float bg;
+     Fimage in;
+     int x,y;
+     float bg;
 {
   if (x<0 || x>=in->ncol || y<0 || y>=in->nrow)
     return(bg); else return(in->gray[y*in->ncol+x]);
@@ -44,7 +47,7 @@ float bg;
 
 /* coefficients for cubic interpolant (Keys' function) */
 void keys(c,t,a)
-float *c,t,a;
+     float *c,t,a;
 {
   float t2,at;
 
@@ -58,7 +61,7 @@ float *c,t,a;
 
 /* coefficients for cubic spline */
 void spline3(c,t)
-float *c,t;
+     float *c,t;
 {
   float tmp;
 
@@ -71,8 +74,8 @@ float *c,t;
 
 /* pre-computation for spline of order >3 */
 void init_splinen(a,n)
-float *a;
-int n;
+     float *a;
+     int n;
 {
   int k;
 
@@ -98,8 +101,8 @@ float ipow(x,n)
 
 /* coefficients for spline of order >3 */
 void splinen(c,t,a,n)
-float *c,t,*a;
-int n;
+     float *c,t,*a;
+     int n;
 {
   int i,k;
   float xn;

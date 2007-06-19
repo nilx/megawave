@@ -1,4 +1,6 @@
 This modules performs a level lines based interpolation of missing parts in a color Ccimage. It is assumed that the $Input$ image follows the RGB representation. This module first applies a color transform, passing to the YUV normalized representation (i.e. which each channel an integer between 0 and 255). Then the \verb+disocclusion+ module is applied independently to each channel Y, U and V (the {\bf -a} and {\bf -e energy\_type} options rely to this module). The final image is obtained by the converse transform YUV~$\to$~RGB.
+\index{disocclusion}
+\index{inpainting|see{disocclusion}}
 
 \medskip
 \underline{Remark:} The interpolation method involved in the module \verb+disocclusion+ is not suited at all for texture interpolation.

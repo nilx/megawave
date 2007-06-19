@@ -1,24 +1,26 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 module -----------------------------*/
 /* mwcommand
-   name = {fft2d};
-   version = {"1.1"};
-   author = {"Lionel Moisan"};
-   function = {"Rectangular 2D Fast Fourier Transform"};
-   usage = {
-   'i'->i_flag     "to compute inverse FFT",
-   'I':input_im->in_im       "imaginary input (Fimage)",
-   'A':output_re<-out_re     "real output (Fimage)",
-   'B':output_im<-out_im     "imaginary output (Fimage)",
-    input_re->in_re "real input (Fimage)"
-   };
-   */
-/*-- MegaWave - Copyright (C) 1994 Jacques Froment. All Rights Reserved. --*/
+ name = {fft2d};
+ version = {"2.1"};
+ author = {"Lionel Moisan"};
+ function = {"Rectangular 2D Fast Fourier Transform"};
+ usage = {
+   'i'->i_flag            "to compute inverse FFT",
+   'I':input_im->in_im    "imaginary input (Fimage)",
+   'A':output_re<-out_re  "real output (Fimage)",
+   'B':output_im<-out_im  "imaginary output (Fimage)",
+    input_re->in_re       "real input (Fimage)"
+};
+*/
+/*----------------------------------------------------------------------
+ v2.0: allow any image size (not only powers of two !) (Said Ladjal)
+ v2.1: improved code, less memory used (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
 
-extern void   fft1d();
-extern void   fshrink2();
+extern void fft1d();
 
 /* NB : 
      * calling this module with in_im=NULL is possible and means 
@@ -28,96 +30,82 @@ extern void   fshrink2();
 */
 
 void fft2d(in_re, in_im, out_re, out_im, i_flag)
-Fimage  in_re, in_im, out_re, out_im;
-char    *i_flag;
+     Fimage  in_re, in_im, out_re, out_im;
+     char    *i_flag;
 {
-    int      i,j,n,p,n0,p0;
-    Fsignal  f1_re,f1_im,f2_re,f2_im;
-    Fimage   tmp_re,tmp_im,dre_flag,dim_flag;
-
-    if ((!out_re) && (!out_im)) mwerror(USAGE,1,
-					"At least one output needed\n");
-
-    /***** allocate output images if necessary *****/
-    dre_flag=out_re;
-    if (dre_flag == NULL) out_re = mw_new_fimage();
-    dim_flag=out_im;
-    if (dim_flag == NULL) out_im = mw_new_fimage();
-
-    /***** reduce original images to proper 2^p x 2^n dimensions *****/
-    /*****      reduced images are then in out_re and out_im     *****/  
-
-    n0 = in_re->nrow;
-    p0 = in_re->ncol;
-    fshrink2(in_re,out_re);
-    n = out_re->nrow;
-    p = out_re->ncol;
-
-    if (in_im) {
-	fshrink2(in_im,out_im); 
-	if (out_im->nrow!=n || out_im->ncol!=p) 
-	  mwerror(FATAL,1,"Input images have no compatible sizes");
-    } else {
-	out_im = mw_change_fimage(out_im,n,p);
-	mw_clear_fimage(out_im,0.0);
+  int      x,y,nx,ny;
+  Fsignal  f1_re,f1_im,f2_re,f2_im;
+  Fimage   dre_flag,dim_flag;
+  
+  if ((!out_re) && (!out_im)) 
+    mwerror(USAGE,1,"At least one output needed\n");
+  
+  /***** allocate output images if necessary *****/
+  dre_flag=out_re;
+  if (dre_flag == NULL) out_re = mw_new_fimage();
+  dim_flag=out_im;
+  if (dim_flag == NULL) out_im = mw_new_fimage();
+  
+  ny = in_re->nrow;
+  nx = in_re->ncol;
+  
+  out_re = mw_change_fimage(out_re,ny,nx);
+  mw_copy_fimage(in_re,out_re);
+  
+  out_im = mw_change_fimage(out_im,ny,nx);
+  if (in_im) {
+    if (in_im->nrow!=ny || in_im->ncol!=nx) 
+      mwerror(FATAL,1,"Input images have no compatible sizes");
+    mw_copy_fimage(in_im,out_im);
+  } else mw_clear_fimage(out_im,0.);
+  
+  if (!out_re || !out_im) mwerror(FATAL,1,"Not enough memory.");
+  
+  /***** 1D FFT on lines *****/
+  f1_re = mw_change_fsignal(NULL,nx);
+  f1_im = mw_change_fsignal(NULL,nx);
+  f2_re = mw_change_fsignal(NULL,nx);
+  f2_im = mw_change_fsignal(NULL,nx);
+  if (!f1_re || !f1_im || !f2_re || !f2_im) 
+    mwerror(FATAL,1,"Not enough memory.");
+  
+  for (y=0;y<ny;y++) {
+    for (x=0;x<nx;x++) {
+      f1_re->values[x] = out_re->gray[nx*y+x];
+      f1_im->values[x] = out_im->gray[nx*y+x];
     }
-
-    if (n!=n0 || p!=p0) 
-      mwerror(WARNING,0,"%dx%d input image has been shrinked to %dx%d\n",
-	      p0,n0,p,n);
-
-    /***** allocations *****/
-    tmp_re = mw_change_fimage(NULL,n,p);
-    tmp_im = mw_change_fimage(NULL,n,p);
-    if (!tmp_re || !tmp_im) mwerror(FATAL,1,"Not enough memory.");
-
-    /***** FFT 1D sur les lignes *****/
-    f1_re = mw_change_fsignal(NULL,p);
-    f1_im = mw_change_fsignal(NULL,p);
-    f2_re = mw_change_fsignal(NULL,p);
-    f2_im = mw_change_fsignal(NULL,p);
-    if (!f1_re || !f1_im || !f2_re || !f2_im) 
-      mwerror(FATAL,1,"Not enough memory.");
-
-    for (i=0;i<n;i++) {
-      for (j=0;j<p;j++) {
-	f1_re->values[j] = out_re->gray[p*i+j];
-	f1_im->values[j] = out_im->gray[p*i+j];
-      }
-      fft1d(f1_re,f1_im,f2_re,f2_im,i_flag);
-      for (j=0;j<p;j++) {
-	tmp_re->gray[p*i+j] = f2_re->values[j];
-	tmp_im->gray[p*i+j] = f2_im->values[j]; 
-      }
+    fft1d(f1_re,f1_im,f2_re,f2_im,i_flag);
+    for (x=0;x<nx;x++) {
+      out_re->gray[nx*y+x] = f2_re->values[x];
+      out_im->gray[nx*y+x] = f2_im->values[x]; 
     }
-
-   /***** FFT 1D sur les colones *****/
-    f1_re = mw_change_fsignal(f1_re,n);
-    f1_im = mw_change_fsignal(f1_im,n);
-    f2_re = mw_change_fsignal(f2_re,n);
-    f2_im = mw_change_fsignal(f2_im,n);
-    for (j=0;j<p;j++) {
-      for (i=0;i<n;i++) {
-	f1_re->values[i] = tmp_re->gray[p*i+j];
-	f1_im->values[i] = tmp_im->gray[p*i+j];
-      }
-      fft1d(f1_re,f1_im,f2_re,f2_im,i_flag);
-      for (i=0;i<n;i++) {
-	out_re->gray[p*i+j] = f2_re->values[i];
-	out_im->gray[p*i+j] = f2_im->values[i]; 
-      }
-    }	
-
-    /***** free signals *****/
-    mw_delete_fsignal(f2_re);
-    mw_delete_fsignal(f2_im);
-    mw_delete_fsignal(f1_im);
-    mw_delete_fsignal(f1_re);
-    mw_delete_fimage(tmp_im);
-    mw_delete_fimage(tmp_re);
-
-    /***** free output images if necessary *****/
-    if (dre_flag == NULL) mw_delete_fimage(out_re);
-    if (dim_flag == NULL) mw_delete_fimage(out_im);
+  }
+  
+  /***** 1D FFT on columns *****/
+  f1_re = mw_change_fsignal(f1_re,ny);
+  f1_im = mw_change_fsignal(f1_im,ny);
+  f2_re = mw_change_fsignal(f2_re,ny);
+  f2_im = mw_change_fsignal(f2_im,ny);
+  for (x=0;x<nx;x++) {
+    for (y=0;y<ny;y++) {
+      f1_re->values[y] = out_re->gray[nx*y+x];
+      f1_im->values[y] = out_im->gray[nx*y+x];
+    }
+    fft1d(f1_re,f1_im,f2_re,f2_im,i_flag);
+    for (y=0;y<ny;y++) {
+      out_re->gray[nx*y+x] = f2_re->values[y];
+      out_im->gray[nx*y+x] = f2_im->values[y]; 
+    }
+  }	
+  
+  /***** free signals *****/
+  mw_delete_fsignal(f2_re);
+  mw_delete_fsignal(f2_im);
+  mw_delete_fsignal(f1_im);
+  mw_delete_fsignal(f1_re);
+  
+  /***** free output images if necessary *****/
+  if (dre_flag == NULL) mw_delete_fimage(out_re);
+  if (dim_flag == NULL) mw_delete_fimage(out_im);
 }
 

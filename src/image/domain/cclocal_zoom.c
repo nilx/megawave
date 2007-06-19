@@ -1,4 +1,4 @@
-/*----------------------------- MegaWave Module -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {cclocal_zoom};
   version = {"1.2"};
@@ -13,21 +13,18 @@
     B<-cclocal_zoom  "Output (zoomed image)"
 };
 */
-/*--- MegaWave2 - Copyright (C)1994 Jacques Froment. All Rights Reserved. ---*/
 /*----------------------------------------------------------------------
  v1.2: fixed bug: values of x0 and y0 (*factor-1 term) (L.Moisan)
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
-
-/* Include always the MegaWave2 Library */
 #include "mw.h"
 
 Ccimage cclocal_zoom(Input, X, Y, W, factor)
-
-int *X,*Y,*W,*factor;
-Ccimage Input;
-
+     
+     int *X,*Y,*W,*factor;
+     Ccimage Input;
+     
 {
   unsigned char *squareR,*squareG,*squareB;
   unsigned char r,g,b;

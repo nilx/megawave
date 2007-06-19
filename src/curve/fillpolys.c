@@ -1,18 +1,19 @@
-/*--------------------------- Commande MegaWave -----------------------------*/
+/*--------------------------- MegaWave2 Module -----------------------------*/
 /* mwcommand
   name = {fillpolys};
-  version = {"1.02"};
+  version = {"1.3"};
   author = {"Jean-Pierre D'Ales, Jacques Froment"};
   function = {"Fill a set of Polygons and generate a Cimage"};
   usage = {
-  'x':[size_x=256]->dx 
-         "size in x (nb of columns) of the output cimage (default:256)",
-  'y':[size_y=256]->dy 
-         "size in y (nb of rows) of the output cimage (default:256)",
-  Polygons->polys    "set of Polygons (input)",
-  Cimage<-bitmap     "bitmapped Cimage of the filled polygons (output)"
+  'x':[size_x=256]->dx  "size in x (nb of columns) of the output cimage",
+  'y':[size_y=256]->dy  "size in y (nb of rows) of the output cimage",
+  Polygons->polys       "set of Polygons (input)",
+  Cimage<-bitmap        "bitmapped Cimage of the filled polygons (output)"
   };
 */
+/*----------------------------------------------------------------------
+ v1.3 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include "mw.h"
