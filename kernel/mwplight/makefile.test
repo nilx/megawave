@@ -1,0 +1,74 @@
+#!/usr/bin/make -f
+#
+# makefile for megawave 3, mwplight/test section
+#
+# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+
+include ./makefile.common
+
+#####################################################################
+# TEST
+#####################################################################
+
+MODDIR	= ../../src
+TESTMOD_ERRORS	= stvrestore.c
+TESTMOD	:= $(filter-out $(TESTMOD_ERRORS), \
+             $(sort $(notdir $(shell $(FIND) $(MODDIR) \
+                                     -type f -name "*.c"))))
+TESTMODSRC	= $(addprefix $(TESTDIR)/mod/, $(TESTMOD))
+
+TESTSRC	= $(addprefix $(TESTDIR)/src/, $(notdir $(TESTMOD:.c=.a.c))) \
+          $(addprefix $(TESTDIR)/src/, $(notdir $(TESTMOD:.c=.m.c)))
+TESTHDR	=
+
+MWPLIGHT	= $(SRCDIR)/mwplight
+MWPLIGHTOPTS	= -a /dev/null -m /dev/null -t /dev/null \
+                  -i /dev/null -n /dev/null -g test
+
+LIBMODULES	= $(TESTDIR)/libmwmodules.so
+
+IPATH 	+= ../lib/include
+CWARN	=
+CPPFLAGS	= M_PI=3.1415926535897931 M_PI_2=9.869604401089358 \
+                  M_PI_4=97.409091034002429
+
+default	:
+	echo $(TESTDIR)
+
+$(MWPLIGHT) :
+	$(MAKE) $@
+
+.PHONY	: test
+test 	: test-flag
+test-flag	: $(TESTOBJ)
+	$(TOUCH) test-flag
+
+.PHONY	: clean-test
+clean-test :
+	$(RM) $(TESTSRC)
+	$(RM) $(TESTOBJ)
+	$(RM) $(TESTDEP)
+	$(RM) test-flag
+
+.PHONY	: distclean-test
+distclean-test : clean-test
+
+# RULES
+
+$(TESTDIR)/mod/%.c	:
+	@$(FIND) $(MODDIR) -type f -name "$(notdir $@)" \
+		-exec $(CP) -a {} $@ \;
+$(TESTDIR)/src/%.a.c	: $(TESTDIR)/mod/%.c $(MWPLIGHT)
+	$(MWPLIGHT) $(MWPLIGHTOPTS) -a $@ $<
+$(TESTDIR)/src/%.m.c	: $(TESTDIR)/mod/%.c $(MWPLIGHT)
+	$(MWPLIGHT) $(MWPLIGHTOPTS) -m $@ $<
+$(TESTDIR)/src/%.info	: $(TESTDIR)/mod/%.c $(MWPLIGHT)
+	$(MWPLIGHT) $(MWPLIGHTOPTS) -i $@ $<
+$(TESTDIR)/src/%.tex	: $(TESTDIR)/mod/%.c $(MWPLIGHT)
+	$(MWPLIGHT) $(MWPLIGHTOPTS) -t $@ $<
+$(TESTDIR)/src/%.group	: $(TESTDIR)/mod/%.c $(MWPLIGHT)
+	$(MWPLIGHT) $(MWPLIGHTOPTS) -n $@ $<
+
+# include the prerequisites files
+# they will be built and re-read if they are missing
+#-include $(TESTDEP)

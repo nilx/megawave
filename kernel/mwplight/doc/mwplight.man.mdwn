@@ -1,0 +1,63 @@
+% MWPLIGHT(1)
+% The original author of mwplight is Jacques Froment <jacques.froment@univ-ubs.fr>. The current version is developped and maintained for megawave 4 by Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr>.
+% 2008-04-21
+
+# NAME
+
+mwplight\ --\ the light preprocessor for megawave
+
+# SYNOPSYS
+
+**mwplight** \[ options \] modulesource  
+**mwplight** \[ **-vh?** \]
+
+# DESCRIPTION
+
+**mwplight** parses a formatted module file for megawave, extracts
+  information from the megawave header, and produces various files for
+  a latter library or document compilation.
+
+# OPTIONS
+
+**-a** and **-m** options and the name of the module source file are required.
+
+-a, -\-afile *filename*
+:	name of the A-file to write (main function of the run-time)
+
+-m, -\-mfile *filename*
+:	name of the M-file to write (source of the modified module)
+
+-t, -\-tfile *filename*
+:	name of the T-file to write (source of the module documentation)
+
+-i, -\-ifile *filename*
+:	name of the N-file to write (greoup and name of the module)
+
+-n, -\-nfile *filename*
+:	name of the I-file to write (interface file for an interpretor)
+
+-g, -\-group *groupname*
+:	group the module belongs to (defaults to "unknown")
+
+-d, -\-debug
+:	debug flag
+
+-v, -\-version
+:	print the version information
+
+-h, -?, -\-help
+:	print a short usage help
+
+# ENVIRONMENT
+
+Unlike previous versions, **mwplight** doesn't use any environment
+variable; you must provide the full (absolute or relative) path to the
+files.
+
+# EXAMPLES
+
+mwplight -a foo_a.c -m foo_m.c -t foo.tex -g bar foo.c
+
+# SEE ALSO
+
+**megawave(1)**, **libmw(3)**, **megawave-modules(1)**
