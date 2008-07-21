@@ -29,8 +29,6 @@ LIBMODULES	= $(TESTDIR)/libmwmodules.so
 
 IPATH 	+= ../lib/include
 CWARN	=
-CPPFLAGS	= M_PI=3.1415926535897931 M_PI_2=9.869604401089358 \
-                  M_PI_4=97.409091034002429
 
 default	:
 	echo $(TESTDIR)
