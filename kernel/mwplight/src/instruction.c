@@ -1228,23 +1228,15 @@ static void FillNewFunction(t_varfunc * f, t_statement * c)
      case I_FUNCDECL_ANSI:
           FillParam_Funcdecl_Ansi(f, c, cwfn->next);
           break;
-
      case I_FUNCDECL_KR:
           FillParam_Funcdecl_KR(f, c, cwfn->next);
           break;
+/* not implemented */
+     case I_FUNCPROTO_ANSI:
+	  break;
+     case I_FUNCPROTO_KR:
+	  break;
 
-/* TODO: implement or drop */
-/*
- * not implemented
- *
- *     case I_FUNCPROTO_ANSI:
- *        FillParam_Funcproto_Ansi(f, c, cwfn->next);
- *        break;
- *
- *     case I_FUNCPROTO_KR:
- *        FillParam_Funcproto_KR(f, c, cwfn->next);
- *        break;
- */
      default:
           error(MSG_ERROR_FUNCTION_ITYPE, c->phrase, c->Itype);
      }

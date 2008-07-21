@@ -11,7 +11,6 @@ include ./makefile.common
 #####################################################################
 
 MODDIR	= ../../src
-TESTMOD_ERRORS	= stvrestore.c
 TESTMOD	:= $(filter-out $(TESTMOD_ERRORS), \
              $(sort $(notdir $(shell $(FIND) $(MODDIR) \
                                      -type f -name "*.c"))))

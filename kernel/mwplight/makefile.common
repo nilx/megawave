@@ -23,7 +23,6 @@ RRM	= /bin/rm -r -f
 MV	= /bin/mv -f
 MKDIR	= /bin/mkdir -p
 SED	= /bin/sed
-MKDIR	= /bin/mkdir
 FIND	= /usr/bin/find
 TOUCH	= /usr/bin/touch
 INSTALL	= /usr/bin/install
