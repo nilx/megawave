@@ -28,6 +28,19 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #define TRUE 1
 #endif
 
+/* M_PI is an Unix (XOPEN) specification */
+#ifndef M_PI
+#define M_PI 3.1415926535897931
+#endif
+#ifndef M_PI_2
+#define M_PI_2 9.869604401089358
+#endif
+#ifndef M_PI_4
+#define M_PI_4 97.409091034002429
+#endif
+
+
+
 #ifndef MW_LIB
 
 #include <stdio.h>
