@@ -37,7 +37,7 @@ typedef struct ccmview_SParam {
    int *loop_flag;
    }  *ccmview_Param;
 
-char step_mode,direction=1;
+static char step_mode,direction=1;
 unsigned char InfoPrint; /* Toggle to print info on the current image */
 int CurrentFrameNumber;  /* Current number of the frame */
 int FrameNumber;         /* Total number of frames */

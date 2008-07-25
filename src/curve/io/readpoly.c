@@ -26,7 +26,7 @@ Polygon pl,npl;
 Point_curve pc,npc;
 
 int x0,y0,x1,y1,oldx1,oldy1,dx,dy;
-char first_point=0;
+static char first_point=0;
 
 
 void DrawLinePoly(ImageWindow,a0,b0,a1,b1)

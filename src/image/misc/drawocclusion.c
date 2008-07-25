@@ -239,7 +239,7 @@ Point_curve pc,npc;
 int max_number_of_points_in_poly=0;
 
 int x0,y0,x1,y1,oldx1,oldy1,dx,dy;
-char first_point=0;
+static char first_point=0;
 char print_mode=0;
 
 /* Return the number of points in a polygon */

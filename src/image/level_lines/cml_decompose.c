@@ -31,7 +31,7 @@ typedef struct cfsignal {
 
 extern int mwdbg;
 
-int ascending_order=1;
+static int ascending_order=1;
 
 /* ------------------------------------------------------------------
    Compare two colors : return -1 if v1<v2, 1 if v1>v2 and 0 if v1=v2
