@@ -1,0 +1,147 @@
+#!/usr/bin/make -f
+#
+# global common makefile for megawave
+#
+# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+
+default :
+
+#####################################################################
+# COMMON SETTINGS
+#####################################################################
+
+.SUFFIXES: .c .o
+
+# TOOLS PATH
+
+CC	= /usr/bin/gcc
+LD	= $(CC)
+MAKEDEP	= /usr/bin/gcc -MM
+CP	= /bin/cp -f
+RM	= /bin/rm -f
+RRM	= /bin/rm -r -f
+MV	= /bin/mv -f
+MKDIR	= /bin/mkdir -p
+SED	= /bin/sed
+FIND	= /usr/bin/find
+TOUCH	= /usr/bin/touch
+INSTALL	= /usr/bin/install
+LINT	= /usr/bin/splint
+EXPAND	= /usr/bin/expand
+DOXYGEN	= /usr/bin/doxygen
+PANDOC	= /usr/bin/pandoc
+LATEX	= /usr/bin/pdflatex
+
+# LOCATIONS
+
+DESTDIR	= /usr/local
+SRCDIR	= src
+TESTDIR	= test
+DOCDIR	= doc
+
+DOXDIR	= $(DOCDIR)/srcdoc
+
+# CC OPTIONS
+
+CCVERSION	:= $(shell  $(CC) --version | head -n 1 | cut -d ' ' -f 3)
+CSTRICT_4_1	:= $(shell if [ "$(CCVERSION)" \> "4.1" ]; then   \
+                             echo "-Wc++-compat -Wextra";         \
+                           fi) # available from gcc 4.1
+
+CSTD	= -ansi
+CWARN	= -Wall
+CSTRICT	= 
+CPROF	= 
+COPTI	= 
+CDEBUG	= 
+
+ifdef STRICT
+CSTRICT	= -pedantic -Werror $(CSTRICT_4_1)               \
+          -Wfloat-equal -Wundef -Wshadow -Wpointer-arith \
+          -Wbad-function-cast -Wcast-qual -Wcast-align   \
+          -Waggregate-return -Wstrict-prototypes         \
+          -Wmissing-prototypes                           \
+          -Wmissing-declarations -Wnested-externs
+endif
+
+ifdef PROF
+CPROF	= -pg
+OPTI	= 1
+endif
+
+ifdef OPTI
+COPTI	= -O2 -funroll-loops -finline-functions
+endif
+
+ifdef DEBUG
+CDEBUG	= -O0 -g
+endif
+
+IPATH	= .
+LDDEBUG	= 
+LPATH	= .
+LIBS	=
+
+CPPFLAGS	=
+
+CFLAGS	= $(CSTD) $(CWARN) $(CSTRICT) $(CPROF) $(COPTI) $(CDEBUG) \
+          -fPIC $(addprefix -I, $(IPATH)) $(addprefix -D, $(CPPFLAGS))
+
+LDFLAGS	= -fPIC $(LDDEBUG) $(CPROF) \
+          $(addprefix -L, $(LPATH)) $(addprefix -l, $(LIBS))
+
+# TOOLS OPTIONS
+
+LINTFLAGS	= -posixlib -weak -ansi89limits
+PANDFLAGS	= --standalone --reference-links --smart
+
+DOXYCONF	= $(DOCDIR)/doxygen.conf
+HEVEA_CSS	= $(DOCDIR)/hevea.css
+
+CHARSET	= us-ascii
+MAXLENGTH	= 80
+
+# FILE PATTERNS
+
+HDR	= $(SRC:.c=.h)
+OBJ	= $(SRC:.c=.o)
+DEP	= $(SRC:.c=.d)
+TESTHDR	= $(TESTSRC:.c=.h)
+TESTOBJ	= $(TESTSRC:.c=.o)
+TESTDEP	= $(TESTSRC:.c=.d)
+
+MANHTML   = $(addsuffix .html, $(MAN))
+
+# GENERIC RULES
+
+# build a prerequisites file
+%.d : %.c
+	@set -e; $(RM) $@; \
+	    $(MAKEDEP) $(addprefix -I, $(IPATH)) $< > $@; \
+	    $(SED) 's|\($*\)\.o[ :]*|\1.o $@ : |g' $@ > $@.$$$$; \
+	    $(MV) $@.$$$$ $@;
+
+# std C compilation
+%.o : %.c %.d
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+# markdown to manpage
+%.man : %.man.mdwn
+	-test -x $(PANDOC) && $(PANDOC) $(PANDFLAGS) -t man -o $@ $<
+
+# markdown to html
+%.html : %.mdwn
+	-test -x $(PANDOC) && $(PANDOC) $(PANDFLAGS) -t html -o $@ $<
+
+# UTILITIES
+
+# TODO : empty blank lines at the end of the file
+%+cleanup : %
+	$(EXPAND) $< | $(SED) 's/[ \t]*$$//' > $<.$$$$ \
+	    && $(MV) $<.$$$$ $<;
+
+%+charset : %
+	test "`file -b -i $< | cut -d '=' -f 2`" = "$(CHARSET)"
+
+%+linelength : %
+	test `wc -L $< | cut -d ' ' -f 1` -le $(MAXLENGTH)
