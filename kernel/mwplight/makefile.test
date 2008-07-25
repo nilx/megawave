@@ -26,7 +26,7 @@ MWPLIGHTOPTS	=
 LIBMODULES	= $(TESTDIR)/libmwmodules.so
 
 IPATH 	+= ../lib/include
-CWARN	=
+#CWARN	=
 
 default	:
 	echo $(TESTDIR)
