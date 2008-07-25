@@ -13,16 +13,9 @@ The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
 CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/* MegaWave2 main function */
 
-#ifdef __STDC__
-main(int argc, char *argv[], char *envp[])
-#else
-main(argc, argv, envp)
-int argc;
-char *argv[], *envp[];
-#endif
+int main(int argc, char ** argv, char ** envp)
 {
-  _mw_main(argc,argv,envp);
+     _mw_main(argc, argv, envp);
 }
 

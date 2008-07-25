@@ -45,12 +45,7 @@ struct my_error_mgr {
 typedef struct my_error_mgr *my_error_ptr;
 
 #undef PARM
-#ifdef __STDC__
-#  define PARM(a) a
-#else
-#  define PARM(a) ()
-#  define const
-#endif
+#define PARM(a) a
 
 static void         mw_error_exit      PARM((j_common_ptr));
 static void         mw_error_output    PARM((j_common_ptr));
@@ -67,8 +62,7 @@ static char *lfname;
    call mw_error_output and resume execution 
 */
 
-static void mw_error_exit(cinfo) 
-     j_common_ptr cinfo;
+static void mw_error_exit(j_common_ptr cinfo) 
 {
   my_error_ptr myerr;
 
@@ -78,8 +72,7 @@ static void mw_error_exit(cinfo)
 }
 
 /* Print jpeglib error message */
-static void mw_error_output(cinfo) 
-     j_common_ptr cinfo;
+static void mw_error_output(j_common_ptr cinfo) 
 {
   my_error_ptr myerr;
   char         buffer[JMSG_LENGTH_MAX];
@@ -91,8 +84,7 @@ static void mw_error_output(cinfo)
 	  lfname, buffer); 
 }
 
-static unsigned int j_getc(cinfo)
-     j_decompress_ptr cinfo;
+static unsigned int j_getc(j_decompress_ptr cinfo)
 {
   struct jpeg_source_mgr *datasrc = cinfo->src;
   
@@ -105,8 +97,7 @@ static unsigned int j_getc(cinfo)
   return GETJOCTET(*datasrc->next_input_byte++);
 }
 
-static boolean mw_process_comment(cinfo)
-     j_decompress_ptr cinfo;
+static boolean mw_process_comment(j_decompress_ptr cinfo)
 {
   int          length, hasnull;
   unsigned int ch;
@@ -141,10 +132,7 @@ static boolean mw_process_comment(cinfo)
 
 /* Load JPEG/JFIF format into a Cimage */
 
-Cimage _mw_cimage_load_jpeg(fname)
-
-char *fname;
-
+Cimage _mw_cimage_load_jpeg(char * fname)
 {
   Cimage image;
   struct jpeg_decompress_struct    cinfo;
@@ -241,10 +229,7 @@ char *fname;
 
 /* Load JPEG/JFIFC format into a Ccimage */
 
-Ccimage _mw_ccimage_load_jpeg(fname)
-
-char *fname;
-
+Ccimage _mw_ccimage_load_jpeg(char * fname)
 {
   Ccimage image;
   struct jpeg_decompress_struct    cinfo;
@@ -352,12 +337,7 @@ char *fname;
 
 /* Write 8-bits gray level JPEG */
 
-short _mw_cimage_create_jpeg(fname,image,Quality)
-
-char *fname;
-Cimage image;
-char *Quality;
-
+short _mw_cimage_create_jpeg(char * fname, Cimage * image, char * Quality)
 {
   FILE                            *fp;
   struct     jpeg_compress_struct cinfo;
@@ -430,12 +410,7 @@ char *Quality;
 
 /* Write 24-bits color JPEG CHAR */ 
 
-short _mw_ccimage_create_jpeg(fname,image,Quality)
-
-char *fname;
-Ccimage image;
-char *Quality;
-
+short _mw_ccimage_create_jpeg(char * fname, Ccimage image, char * Quality)
 {
   FILE                            *fp;
   struct     jpeg_compress_struct cinfo;
@@ -521,10 +496,7 @@ char *Quality;
 #else
 /* --- JPEG not defined --- */
 
-Cimage _mw_cimage_load_jpeg(fname)
-
-char *fname;
-
+Cimage _mw_cimage_load_jpeg(char * fname)
 {
   mwerror(ERROR, 0,"JPEG library needed to load image file \"%s\" unsupported !\n",
 	  fname);
@@ -532,32 +504,21 @@ char *fname;
 }
 
 
-Ccimage _mw_ccimage_load_jpeg(fname)
-
-char *fname;
-
+Ccimage _mw_ccimage_load_jpeg(char * fname)
 {
   mwerror(ERROR, 0,"JPEG library needed to load image file \"%s\" unsupported !\n",
 	  fname);
   return(NULL);
 }
 
-short _mw_ccimage_create_jpeg(fname,image)
-
-char *fname;
-Ccimage image;
-
+short _mw_ccimage_create_jpeg(char * fname, Ccimage image)
 {
   mwerror(ERROR, 0,"JPEG library needed to save image file \"%s\" unsupported !\n",
 	  fname);
   return(-1);
 }
 
-short _mw_cimage_create_jpeg(fname,image)
-
-char *fname;
-Cimage image;
-
+short _mw_cimage_create_jpeg(char * fname, Cimage image)
 {
   mwerror(ERROR, 0,"JPEG library needed to save image file \"%s\" unsupported !\n",
 	  fname);
