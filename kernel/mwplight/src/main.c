@@ -52,7 +52,7 @@ Options:\n\
   -h, -?, --help      print usage help\n"
 #define USAGE_3 "\
 \n\
-  -a and -m options and the filename are required.\n"
+  \"-\" can be used for standard input/output.\n"
 
 static void usage(void)
 {
@@ -172,6 +172,61 @@ int main(int argc, char ** argv)
      }
      strcpy(sfile_name, argv[optind]);
 
+     /* open the input file handlers */
+     if (0 == strcmp("-", sfile_name))
+     {
+	  sfile = tmpfile();
+	  while (EOF != (c = getc(stdin)))
+	       putc(c, sfile);
+	  rewind(sfile);
+     }
+     else
+	  if (NULL == (sfile = fopen(sfile_name, "r")))
+	       error(MSG_ERROR_OPEN_FILE, sfile_name);
+
+     /* open the output file handlers */
+     if (0 != strcmp("", afile_name))
+     {
+	  if (0 == strcmp("-", afile_name))
+	       afile = stdout;
+	  else
+	       if (NULL == (afile = fopen(afile_name, "w")))
+		    error(MSG_ERROR_OPEN_FILE, afile_name);
+     }
+     if (0 != strcmp("", mfile_name))
+     {
+	  if (0 == strcmp("-", mfile_name))
+	       mfile = stdout;
+	  else
+	       if (NULL == (mfile = fopen(mfile_name, "w")))
+		    error(MSG_ERROR_OPEN_FILE, mfile_name);
+     }
+     if (0 != strcmp("", tfile_name))
+     {
+	  if (0 == strcmp("-", tfile_name))
+	       tfile = stdout;
+	  else
+	       if (NULL == (tfile = fopen(tfile_name, "w")))
+		    error(MSG_ERROR_OPEN_FILE, tfile_name);
+     }
+     if (0 != strcmp("", ifile_name))
+     {
+	  if (0 == strcmp("-", ifile_name))
+	       ifile = stdout;
+	  else
+	       if (NULL == (ifile = fopen(ifile_name, "w")))
+		    error(MSG_ERROR_OPEN_FILE, ifile_name);
+     }
+     if (0 != strcmp("", nfile_name))
+     {
+	  if (0 == strcmp("-", nfile_name))
+	       nfile = stdout;
+	  else
+	       if (NULL == (nfile = fopen(nfile_name, "w")))
+		    error(MSG_ERROR_OPEN_FILE, nfile_name);
+     }
+
+
      /*
       * extract the module name from its filename
       * - find the last '/' in sfile_name
@@ -191,32 +246,10 @@ int main(int argc, char ** argv)
      if (module_name[0] == '\0')
           strcpy(module_name, "unknown");
 
-     if (tfile_name[0] == '\0')
-          sprintf(tfile_name, "%s.tex", module_name);
-
-     if (ifile_name[0] == '\0')
-          sprintf(ifile_name, "int_%s.c", module_name);
-
-     /* -a and -m are mandatory */
-     if (afile_name[0] == '\0' || mfile_name[0] == '\0')
-     {
-          usage();
-          exit(EXIT_FAILURE);
-     }
-
-     if (debug_flag)
-          debug(MSG_DEBUG_PARAMS, \
-                afile_name, mfile_name, nfile_name, tfile_name, ifile_name,      \
-                module_name, sfile_name, group_name);
-
      /* parse the input module file and build the tree H */
-     if ((sfile = fopen(sfile_name, "r")) == NULL)
-          error(MSG_ERROR_OPEN_FILE, sfile_name);
      sfile_global = sfile;
      parse(sfile);
-     fclose(sfile);
-     sfile = NULL;
-     sfile_global = sfile;
+     rewind(sfile);
 
      /* Set the <protobuf> variable which prototypes the main function
         using K&R convention.
@@ -235,39 +268,43 @@ int main(int argc, char ** argv)
       * - the I-file
       * - the N-file
       */
-     if ((mfile = fopen(mfile_name, "w")) == NULL)
-          error(MSG_ERROR_OPEN_FILE, mfile_name);
-     if ((sfile = fopen(sfile_name, "r")) == NULL)
-          error(MSG_ERROR_OPEN_FILE, sfile_name);
-     sfile_global = sfile;
-     genMfile(mfile, sfile);
-     fclose(sfile);
-     sfile = NULL;
-     sfile_global = sfile;
-     fclose(mfile);
+     if (NULL != mfile)
+     {
+	  genMfile(mfile, sfile);
+	  if (stdout != mfile)
+	       fclose(mfile);
+     }
 
-     if ((tfile = fopen(tfile_name, "w")) == NULL)
-          error(MSG_ERROR_OPEN_FILE, tfile_name);
-     genTfile(tfile);
-     fclose(tfile);
+     if (NULL != tfile)
+     {
+	  genTfile(tfile);
+	  if (stdout != tfile)
+	       fclose(tfile);
+     }
 
-     if ((afile = fopen(afile_name, "w")) == NULL)
-          error(MSG_ERROR_OPEN_FILE, afile_name);
-     genAfile(afile);
-     fclose(afile);
+     if (NULL != afile)
+     {
+	  genAfile(afile);
+	  if (stdout != afile)
+	       fclose(afile);
+     }
 
-     if ((ifile = fopen(ifile_name, "w")) == NULL)
-          error(MSG_ERROR_OPEN_FILE, ifile_name);
-     genIfile(ifile);
-     fclose(ifile);
+     if (NULL != ifile)
+     {
+	  genIfile(ifile);
+	  if (stdout != ifile)
+	       fclose(ifile);
+     }
 
-     if (nfile_name[0] == '\0')
-          exit(0);
+     if (NULL != nfile)
+     {
+	  fprintf(nfile, "%s/%s\n", group_name, module_name);
+	  if (stdout != nfile)
+	       fclose(nfile);
+     }
 
-     if ((nfile = fopen(nfile_name, "w")) == NULL)
-          error(MSG_ERROR_OPEN_FILE, nfile_name);
-     fprintf(nfile, "%s/%s\n", group_name, module_name);
-     fclose(nfile);
+     if (stdin != sfile)
+	  fclose(sfile);
 
      exit(0);
 }

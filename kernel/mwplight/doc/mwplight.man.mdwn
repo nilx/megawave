@@ -1,6 +1,6 @@
 % MWPLIGHT(1)
-% The original author of mwplight is Jacques Froment <jacques.froment@univ-ubs.fr>. The current version is developped and maintained for megawave 4 by Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr>.
-% 2008-04-21
+% The original author of mwplight is Jacques Froment <jacques.froment@univ-ubs.fr>. The current version is maintained for megawave 4 by Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr>.
+% 2008-07-25
 
 # NAME
 
@@ -19,7 +19,8 @@ mwplight\ --\ the light preprocessor for megawave
 
 # OPTIONS
 
-**-a** and **-m** options and the name of the module source file are required.
+The name of the module source file are required. "-" can be used for
+standard input/output.
 
 -a, -\-afile *filename*
 :	name of the A-file to write (main function of the run-time)

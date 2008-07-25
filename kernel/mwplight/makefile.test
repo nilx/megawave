@@ -21,8 +21,7 @@ TESTSRC	= $(addprefix $(TESTDIR)/src/, $(notdir $(TESTMOD:.c=.a.c))) \
 TESTHDR	=
 
 MWPLIGHT	= $(SRCDIR)/mwplight
-MWPLIGHTOPTS	= -a /dev/null -m /dev/null -t /dev/null \
-                  -i /dev/null -n /dev/null -g test
+MWPLIGHTOPTS	=
 
 LIBMODULES	= $(TESTDIR)/libmwmodules.so
 
