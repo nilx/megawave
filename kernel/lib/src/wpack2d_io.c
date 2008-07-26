@@ -16,13 +16,30 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 #include <stdio.h>
-#include <fcntl.h>
 #include <string.h>
+/* FIXME : UNIX-centric */
 #include <sys/stat.h>
 
+/*
+#include <fcntl.h>
+*/
+
+#include "libmw.h"
+#include "utils.h"
 #include "ascii_file.h"
-#include "mw.h"
+#include "wpack2d.h"
+#include "mwio.h"
+#include "cimage.h"
+#include "cimage_io.h"
+#include "fsignal.h"
+#include "fimage.h"
+#include "fimage_io.h"
+#include "file_type.h"
+#include "type_conv.h"
+
+#include "wpack2d_io.h"
 
 extern int _mw_convert_struct_warning;
 
@@ -41,7 +58,6 @@ Wpack2d _mw_load_wpack2d_ascii(char *fname)
      char ns1[mw_namesize],ns2[mw_namesize],nim[mw_namesize];
      Fsignal signal1,signal2;
      Cimage tree;
-     short f;
      char type[mw_ftype_size];
      char comment[mw_cmtsize];
      struct stat statbuf;
@@ -271,6 +287,7 @@ Wpack2d _mw_load_wpack2d(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Wpack2d !\n",fname,type);
+     return NULL;
 }
 
 
@@ -369,4 +386,5 @@ short _mw_create_wpack2d(char *fname, Wpack2d pack, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }

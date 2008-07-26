@@ -16,13 +16,18 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include <sys/file.h>
-#include <sys/types.h>
+#include "libmw.h"
+#include "utils.h"
+#include "list.h"
+#include "file_type.h"
+#include "type_conv.h"
+#include "mwio.h"
 
-#include "mw.h"
+#include "list_io.h"
 
 /* ========== Flist / Flists ========== */
 
@@ -33,7 +38,6 @@
 Flist _mw_read_mw2_flist(char *fname, FILE *fp, int need_flipping)
 { 
      Flist lst;
-     unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
      unsigned int i,n;
 
      lst = mw_new_flist();
@@ -78,7 +82,7 @@ Flist _mw_read_mw2_flist(char *fname, FILE *fp, int need_flipping)
 
      if (need_flipping == 1) /* Strange that we need {} here to avoid run-time errors ! */
      {
-	  for (i=0;i<n;i++) _mw_in_flip_float(&(lst->values[i]));
+	  for (i=0;i<n;i++) _mw_in_flip_float((lst->values[i]));
      }
 
      /* Read the array data */
@@ -156,6 +160,7 @@ Flist _mw_load_flist(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Curve !\n",fname,type);
+     return NULL;
 }  
 
 
@@ -175,8 +180,9 @@ int _mw_write_mw2_flist(FILE *fp, Flist lst)
 	      n) return(1);
 
      if (lst->data_size > 0) 
+          /* FIXME: wrong types, dirty temporary fix */
 	  if (fwrite((char *)lst->data,sizeof(char),lst->data_size,fp) != 
-	      lst->data_size) return(1);
+	      (unsigned int) lst->data_size) return(1);
 
      return(0);
 }
@@ -230,6 +236,7 @@ short _mw_create_flist(char *fname, Flist lst, char *type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname); 
+     return -1;
 }
 
 
@@ -395,6 +402,7 @@ Flists _mw_load_flists(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Curve !\n",fname,type);
+     return NULL;
 }  
 
 
@@ -432,8 +440,9 @@ short _mw_create_mw2_flists(char *fname, Flists lsts)
 	  }
 
      if (lsts->data_size > 0) 
+          /* FIXME: wrong types, dirty temporary fix */
 	  if (fwrite((char *)lsts->data,sizeof(char),lsts->data_size,fp)!=
-	      lsts->data_size) 
+	      (unsigned int) lsts->data_size) 
 	  {
 	       mwerror(ERROR,1,"Error while writing file %s !\n",fname);
 	       return(1);
@@ -472,6 +481,7 @@ short _mw_create_flists(char *fname, Flists lsts, char *type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname); 
+     return -1;
 }
 
 
@@ -484,7 +494,6 @@ short _mw_create_flists(char *fname, Flists lsts, char *type)
 static Dlist _mw_read_mw2_dlist(char *fname, FILE *fp, int need_flipping)
 { 
      Dlist lst;
-     unsigned long flip_double; /* buffer for macro _mw_in_flip_double */
      unsigned long *pdouble;
      unsigned int i,n;
 
@@ -611,6 +620,7 @@ Dlist _mw_load_dlist(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Curve !\n",fname,type);
+     return NULL;
 }  
 
 
@@ -629,8 +639,9 @@ int _mw_write_mw2_dlist(FILE *fp, Dlist lst)
      if (n > 0) 
 	  if (fwrite(lst->values,sizeof(double),n,fp)!=n) return(1);
      if (lst->data_size > 0) 
+          /* FIXME: wrong types, dirty temporary fix */
 	  if (fwrite((char *)lst->data,sizeof(char),lst->data_size,fp)!=
-	      lst->data_size) return(1);
+	      (unsigned int) lst->data_size) return(1);
 
      return(0);
 }
@@ -684,6 +695,7 @@ short _mw_create_dlist(char *fname, Dlist lst, char *type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname); 
+     return -1;
 }
 
 /* ---- I/O for Dlists ---- */
@@ -848,6 +860,7 @@ Dlists _mw_load_dlists(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Curve !\n",fname,type);
+     return NULL;
 }  
 
 
@@ -885,8 +898,9 @@ short _mw_create_mw2_dlists(char *fname, Dlists lsts)
 	  }
 
      if (lsts->data_size > 0) 
+          /* FIXME: wrong types, dirty temporary fix */
 	  if (fwrite((char *)lsts->data,sizeof(char),lsts->data_size,fp)!=
-	      lsts->data_size)
+	      (unsigned int) lsts->data_size)
 	  {
 	       mwerror(ERROR,1,"Error while writing file %s !\n",fname);
 	       return(1);
@@ -925,4 +939,5 @@ short _mw_create_dlists(char *fname, Dlists lsts, char *type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname); 
+     return -1;
 }

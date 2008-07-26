@@ -1,31 +1,21 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  gif_io.c
-   
-  Vers. 1.0
-  Author : Jacques Froment
-  Part of code
-  (C) 1988, 1989 by Patrick J. Naughton, Michael Mauldin and David Rowley
-  (C) 1989, 1990 by the University of Pennsylvania
-
-  Input/Output functions for the GIF file compatibility with MegaWave2
-
-  Main changes :
-  v1.0 (JF): 
-  - added include <string> (Linux 2.6.12 & gcc 4.0.2)
-  - cast added in strncmp((char *)ptr, id, 6));
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
-  MegaWave2 is a "soft-publication" for the scientific community. It has
-  been developed for research purposes and it comes without any warranty.
-  The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-  CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*
+ * gif_io.c
+ *
+ * part of this code is
+ * (C) 1988, 1989 by Patrick J. Naughton, Michael Mauldin and David Rowley
+ * (C) 1989, 1990 by the University of Pennsylvania
+ */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "cimage.h"
+#include "mwio.h"
+
+#include "gif_io.h"
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOAD GIF */
 
@@ -37,9 +27,6 @@ typedef unsigned char byte;
 #define EXTENSION 0x21
 #define INTERLACEMASK 0x40
 #define COLORMAPMASK 0x80
-
-#define True 1
-#define False 0
 
 /* MONO returns total intensity of r,g,b components */
 #define MONO(rd,gn,bl) (((rd)*11 + (gn)*16 + (bl)*5) >> 5)  /*.33R+ .5G+ .17B*/
@@ -55,7 +42,7 @@ int BitOffset = 0,		/* Bit Offset of next code */
      BitsPerPixel,		/* Bits per pixel, read from GIF header */
      BytesPerScanline,		/* bytes per scanline in output raster */
      ColorMapSize,		/* number of colors */
-     Background,			/* background color */
+     Background,		/* background color */
      CodeSize,			/* Code size, read from GIF header */
      InitCodeSize,		/* Starting code size, used during Clear */
      Code,			/* Value returned by ReadCode */
@@ -68,7 +55,7 @@ int BitOffset = 0,		/* Bit Offset of next code */
      FinChar,			/* Decompressor variable */
      BitMask,			/* AND mask for data size */
      ReadMask,			/* Code AND mask for current code size */
-     Misc;                       /* miscellaneous bits (interlace, local cmap)*/
+     Misc;                      /* miscellaneous bits (interlace, local cmap)*/
 
 
 boolean Interlace, HasColormap;
@@ -89,8 +76,9 @@ static byte r[256],g[256],b[256];
 
 
 char *id = "GIF87a";
-  
-static int  ReadCode();
+
+
+static int  ReadCode(void);
 static void DoInterlace(byte);
 
 int filesize;
@@ -156,7 +144,7 @@ Cimage _mw_cimage_load_gif(char * fname)
      RHeight = ch + 0x100 * NEXTBYTE;
   
      ch = NEXTBYTE;
-     HasColormap = ((ch & COLORMAPMASK) ? True : False);
+     HasColormap = ((ch & COLORMAPMASK) ? TRUE : FALSE);
   
      BitsPerPixel = (ch & 7) + 1;
      ColorMapSize = 1 << BitsPerPixel; /* Number of colors */
@@ -193,23 +181,29 @@ Cimage _mw_cimage_load_gif(char * fname)
 
 
      while ( (i=NEXTBYTE) == EXTENSION) {  /* parse extension blocks */
-	  int i, fn, blocksize, aspnum, aspden;
+	  int j, fn, blocksize, aspnum, aspden;
 
 	  /* read extension block */
 	  fn = NEXTBYTE;
 
 	  do {
-	       i = 0;  blocksize = NEXTBYTE;
-	       while (i<blocksize) {
+	       j = 0;  blocksize = NEXTBYTE;
+	       while (j<blocksize) {
 		    if (fn == 'R' && blocksize == 2) {   /* aspect ratio extension */
-			 aspnum = NEXTBYTE;  i++;
-			 aspden = NEXTBYTE;  i++;
+			 aspnum = NEXTBYTE;  j++;
+			 aspden = NEXTBYTE;  j++;
 			 if (aspden>0 && aspnum>0) 
 			      normaspect = (float) aspnum / (float) aspden;
 			 else { normaspect = 1.0;  aspnum = aspden = 1; }
 
 		    }
-		    else { NEXTBYTE;  i++; }
+		    else 
+		    {
+                         /* FIXME : unclean macro use */
+			 /* NEXTBYTE; */
+			 ptr++;
+			 j++; 
+		    }
 	       }
 	  } while (blocksize);
      }
@@ -237,7 +231,7 @@ Cimage _mw_cimage_load_gif(char * fname)
      Height = ch + 0x100 * NEXTBYTE;
 
      Misc = NEXTBYTE;
-     Interlace = ((Misc & INTERLACEMASK) ? True : False);
+     Interlace = ((Misc & INTERLACEMASK) ? TRUE : FALSE);
 
      if (Misc & 0x80) {
 	  for (i=0; i< 1 << ((Misc&7)+1); i++) {
@@ -431,7 +425,7 @@ Cimage _mw_cimage_load_gif(char * fname)
  * bring the desired code to the bottom, then mask it off and return it. 
  */
 
-static int ReadCode()
+static int ReadCode(void)
 {
      int RawCode, ByteOffset;
   
@@ -501,7 +495,6 @@ typedef long int        count_int;
 static int  curx, cury;
 static long CountDown;
 /* static int  Interlace; */
-static byte bw[2] = {0, 0xff};
 
 static void putword(int, FILE *);
 static void compress(int, FILE *, byte *, int);
@@ -519,13 +512,14 @@ static void flush_char(void);
 short _mw_cimage_create_gif(char * fname, Cimage image)
 {
      FILE *fp;
-     byte *pic;
      int   w,h;
      int   numcols;
-     int RWidth, RHeight;
-     int LeftOfs, TopOfs;
-     int Resolution, ColorMapSize, InitCodeSize, Background, BitsPerPixel;
-     int i,j;
+     int i;
+     /* FIXME : variable shadows, temporary dirty fix */
+     byte *_pic;
+     int _RWidth, _RHeight;
+     int _LeftOfs, _TopOfs;
+     int Resolution, _ColorMapSize, _InitCodeSize, _Background, _BitsPerPixel;
 
      if ((image->ncol>=65536)||(image->nrow>=65536))
      {
@@ -548,45 +542,45 @@ short _mw_cimage_create_gif(char * fname, Cimage image)
      w = image->ncol;
      h = image->nrow;
      numcols = 256;
-     pic = image->gray;
+     _pic = image->gray;
 
      Interlace = 0;
-     Background = 0;
+     _Background = 0;
 
-     BitsPerPixel = 8;
+     _BitsPerPixel = 8;
 
-     ColorMapSize = 1 << BitsPerPixel;
+     _ColorMapSize = 1 << _BitsPerPixel;
 	
-     RWidth  = Width  = w;
-     RHeight = Height = h;
-     LeftOfs = TopOfs = 0;
+     _RWidth  = Width  = w;
+     _RHeight = Height = h;
+     _LeftOfs = _TopOfs = 0;
 	
-     Resolution = BitsPerPixel;
+     Resolution = _BitsPerPixel;
 
      CountDown = w * h;    /* # of pixels we'll be doing */
 
-     if (BitsPerPixel <= 1) InitCodeSize = 2;
-     else InitCodeSize = BitsPerPixel;
+     if (_BitsPerPixel <= 1) _InitCodeSize = 2;
+     else _InitCodeSize = _BitsPerPixel;
 
      curx = cury = 0;
 
      fwrite("GIF87a", 1, 6, fp);    /* the GIF magic number */
 
-     putword(RWidth, fp);           /* screen descriptor */
-     putword(RHeight, fp);
+     putword(_RWidth, fp);           /* screen descriptor */
+     putword(_RHeight, fp);
 
      i = 0x80;	                 /* Yes, there is a color map */
      i |= (8-1)<<4;                 /* OR in the color resolution (hardwired 8) */
-     i |= (BitsPerPixel - 1);       /* OR in the # of bits per pixel */
+     i |= (_BitsPerPixel - 1);       /* OR in the # of bits per pixel */
      fputc(i,fp);          
 
-     fputc(Background, fp);         /* background color */
+     fputc(_Background, fp);         /* background color */
 
      fputc(0, fp);                  /* future expansion byte */
 
 
      /* Put greyscale colormap */
-     for (i=0; i<ColorMapSize; i++) 
+     for (i=0; i<_ColorMapSize; i++) 
      {
 	  fputc(i, fp);
 	  fputc(i, fp);
@@ -595,15 +589,15 @@ short _mw_cimage_create_gif(char * fname, Cimage image)
      fputc( ',', fp );              /* image separator */
 
      /* Write the Image header */
-     putword(LeftOfs, fp);
-     putword(TopOfs,  fp);
+     putword(_LeftOfs, fp);
+     putword(_TopOfs,  fp);
      putword(Width,   fp);
      putword(Height,  fp);
      if (Interlace) fputc(0x40, fp);   /* Use Global Colormap, maybe Interlace */
      else fputc(0x00, fp);
 
-     fputc(InitCodeSize, fp);
-     compress(InitCodeSize+1, fp, pic, w*h);
+     fputc(_InitCodeSize, fp);
+     compress(_InitCodeSize+1, fp, _pic, w*h);
 
      fputc(0,fp);                      /* Write out a Zero-length packet (EOF) */
      fputc(';',fp);                    /* Write GIF file terminator */
@@ -906,9 +900,10 @@ static void cl_block ()             /* table clear for block compress */
 
 
 /********************************/
-static void cl_hash(count_int hsize)          /* reset code table */
+/* FIXME : variable shadows, temporary dirty fix */
+static void cl_hash(count_int _hsize)          /* reset code table */
 {
-     register count_int * htab_p = htab+hsize;
+     register count_int * htab_p = htab+_hsize;
      register long i;
      register long m1 = -1;
 

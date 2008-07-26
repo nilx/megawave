@@ -16,10 +16,18 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "curve.h"
+#include "fcurve.h"
+
+#include "mimage.h"
+
+
+#define MORPHO_INFTY FLT_MAX
 
 /*--- Point-type ---*/
 
@@ -482,7 +490,6 @@ void mw_delete_morpho_set(Morpho_set morpho_set)
 
 Morpho_set mw_copy_morpho_set(Morpho_set in, Morpho_set out)
 { 
-     Hsegment pc,qc0,qc1;
      Hsegment s,s0,s1;
 
      if (!in)
@@ -599,8 +606,8 @@ void mw_delete_morpho_sets(Morpho_sets morpho_sets)
 
 Morpho_sets mw_copy_morpho_sets(Morpho_sets in, Morpho_sets out)
 { 
-     Morpho_sets iss,oldiss,newiss,p,q,qq,nin,nout;
-     unsigned int i,n,num;
+     Morpho_sets oldiss,newiss,p,q,qq,nin;
+     unsigned int n;
 
      if (!in)
      {
@@ -700,7 +707,7 @@ unsigned int mw_num_morpho_sets(Morpho_sets mss_first)
      {
 	  mwerror(ERROR, 0,
 		  "[mw_num_morpho_sets] NULL input morpho_sets\n");
-	  return;
+	  return -1;
      }  
      for (mss=mss_first, n=1; mss && mss->morphoset; 
 	  mss->morphoset->num=n, mss=mss->next, n++);
@@ -912,9 +919,7 @@ unsigned int mw_length_fml_mimage(Mimage mimage)
 
 unsigned int mw_length_ms_mimage(Mimage mimage)
 { 
-     unsigned int n;
-     Fmorpho_line pfirst,p;
-
-     if ((!mimage) || (!mimage->first_ms)) return(0);
-     return(mw_length_morpho_sets(mimage->first_ms));
+     if ((!mimage) || (!mimage->first_ms)) 
+	  return 0;
+     return mw_length_morpho_sets(mimage->first_ms);
 }

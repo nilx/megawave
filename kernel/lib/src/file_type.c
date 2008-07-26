@@ -16,26 +16,33 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/file.h>
-#include <string.h>     
-
-#ifdef sun4_5
-/* Needed for atof() on Sun 5.7 */
 #include <stdlib.h>
-#endif
-
-#ifdef JPEG
+#include <string.h>
+#include <stdio.h>
+#include <ctype.h>
+/* FIXME : avoid */
 #include <setjmp.h>
-#include <jpeglib.h>
-#endif
+/* FIXME : UNIX-centric */
+#include <fcntl.h>
+#include <unistd.h>
 
-#include "ascii_file.h"
-#include "file_type.h"
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "type_conv.h"
+#include "mwio.h"
 #include "pm.h"
+#include "ascii_file.h"
+/* FIXME : use standard headers */
 #include "tiffio.h"
+#include "jpeglib.h"
+
+#include "file_type.h"
+
+/* 
+   Size of Header ID for MW2 binary types. 
+   Header ID is now defined from the file format version number 
+   by a call to _mw_write_header_file().
+*/
 
 static char temp_char;
 #define flipl2(p) temp_char = *p ;  *p = *(p+3); *(p+3) = temp_char;	\
@@ -121,7 +128,8 @@ int _mw_exist_array(char * a, char * b, char * A[])
 
      /* Check if ':' is found in b. If yes, record the position in n.*/
      n=BUFSIZ;
-     for (i=0; i<strlen(b); i++)
+     /* FIXME: wrong types, dirty temporary fix */
+     for (i=0; i< (int) strlen(b); i++)
 	  if (b[i]==':') 
 	  {
 	       n=i;
@@ -312,7 +320,8 @@ char *_mw_get_ftype_opt(char * ftype)
      int i;
 
      b=ftype;
-     for (i=0; i<strlen(ftype); i++,b++)
+     /* FIXME: wrong types, dirty temporary fix */
+     for (i=0; i< (int) strlen(ftype); i++,b++)
 	  if ((*b==':')&&(*(b+1)!='\0')) return(++b);
      return(NULL);
 }
@@ -334,7 +343,8 @@ char *_mw_get_ftype_only(char * ftype)
      out=(char *) malloc(l*sizeof(char));
      if (!out) mwerror(FATAL,1,"[_mw_get_ftype_only] Not enough memory !\n");
 
-     for (i=1; i<strlen(ftype); i++)
+     /* FIXME: wrong types, dirty temporary fix */
+     for (i=1; i< (int) strlen(ftype); i++)
 	  if (ftype[i]==':') 
 	  {
 	       strncpy(out,ftype,i);
@@ -356,7 +366,8 @@ int _mw_is_of_ftype(char * in, char * type)
      char *a,*b;
 
      l=strlen(in); 
-     if (strlen(type)>l) return(0);
+     /* FIXME: wrong types, dirty temporary fix */
+     if (strlen(type)> (unsigned int) l) return(0);
      for (i=0,a=in,b=type; i<l; i++,a++,b++)
      {
 	  if (*a==':') 
@@ -609,10 +620,8 @@ extern FILE * _mw_read_bmp_header(char *, unsigned int*, unsigned int*,
 
 static int what_kind_of_BMP(char * file, char * subtype, char * mtype)
 {
-     int    allocsize; /* size of scan lines             */
      unsigned int   nx,ny;     /* image size                     */
      unsigned int   offset;    /* offset to the begining of data */
-     int    c,c1;      /* character read                 */
      FILE   *fp;       /* file to read                   */
      unsigned int size, planes, bitcount, compression;
  
@@ -648,7 +657,6 @@ static int what_kind_of_BMP(char * file, char * subtype, char * mtype)
 
 static int what_kind_of_TIFF(char * file, char * subtype, char * mtype)
 {
-     FILE *fp;
      TIFF  *tif;
      short photo,spp;
 
@@ -679,8 +687,6 @@ static int what_kind_of_TIFF(char * file, char * subtype, char * mtype)
 }
 
 /*--------------------- Functions to deal with JPEG format --------------------*/
-
-#ifdef JPEG
 
 struct my_error_mgr {
      struct jpeg_error_mgr pub;
@@ -794,14 +800,6 @@ static int what_kind_of_JPEG(char * fname, char * subtype, char * mtype)
      }
      return(0);
 }
-#else
-static int what_kind_of_JPEG(char * file, char * subtype, char * mtype)
-{
-     mwerror(ERROR,0,"Unable to state image file \"%s\" : JPEG library unsupported !\n",
-	     file);
-     return(0);
-}
-#endif
 
 /*---------------------  --------------------*/
 
@@ -829,7 +827,8 @@ static void  _Get_MW2_X_V_header(char header[],
   
      *X_Vsize = Xsize;
      *version=0.0;
-     if (strlen(header) < Xsize+SIZE_OF_MW2_BIN_TYPE_ID) 
+     /* FIXME: wrong types, dirty temporary fix */
+     if (strlen(header) < (unsigned int) Xsize+SIZE_OF_MW2_BIN_TYPE_ID) 
 	  /* No V field in the header */
 	  return;
      if ((header[Xsize]!='/')||(header[Xsize+SIZE_OF_MW2_BIN_TYPE_ID-1]!='/')||

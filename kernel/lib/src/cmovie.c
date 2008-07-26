@@ -16,10 +16,14 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "cimage.h"
+
+#include "cmovie.h"
 
 /* creates a new cmovie structure */
 

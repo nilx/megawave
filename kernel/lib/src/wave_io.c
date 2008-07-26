@@ -20,9 +20,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/file.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "mwio.h"
+#include "fsignal.h"
+
+#include "wave_io.h"
 
 /*~~~~~~ WAVE PCM format ~~~~~~*/
 
@@ -38,7 +42,6 @@ Fsignal _mw_fsignal_load_wave_pcm(char *fname, Fsignal signal,
      unsigned short wBlockAlign; /* basic block size */
      unsigned short wBitsPerSample; /* Bits per Sample */
      unsigned int dwDataLength; /* Number of bytes of the data */
-     char rifftype[5]; /* RIFF type in the header, as WAVE */
 
      /* Size of buffer for I/O buffering */
 #define BS 65536
@@ -189,7 +192,7 @@ Fsignal _mw_fsignal_load_wave_pcm(char *fname, Fsignal signal,
      /* Now begin the buffered data read */
      remain=dwDataLength;
      ptr=signal->values;
-     buf=malloc(BS);
+     buf=(char *) malloc(BS);
      if (buf == NULL)  
      { 
 	  mwerror(ERROR,1,"Cannot load WAVE file '%s' : not enough memory for I/O buffering ! \n",fname);
@@ -201,7 +204,8 @@ Fsignal _mw_fsignal_load_wave_pcm(char *fname, Fsignal signal,
      while (remain > 0)
      {
 	  toread = (remain>BS) ? BS : remain;
-	  if (fread(buf,1,toread,fp)!=toread) 
+          /* FIXME: wrong types, dirty temporary fix */
+	  if (fread(buf,1,toread,fp)!= (unsigned int) toread) 
 	  {
 	       mwerror(WARNING,1,"Corrupted WAVE file '%s' : unexpected EOF !\n",fname);
 	       free(buf);
@@ -339,7 +343,7 @@ short _mw_fsignal_create_wave_pcm(char *fname, Fsignal signal)
      /* Now begin the buffered data write */
      remain=dwDataLength;
      ptr=signal->values;
-     buf=malloc(BS);
+     buf= (unsigned char *) malloc(BS);
      if (buf == NULL)  
      { 
 	  mwerror(ERROR,1,"Cannot load WAVE file '%s' : not enough memory for I/O buffering ! \n",fname);
@@ -378,7 +382,8 @@ short _mw_fsignal_create_wave_pcm(char *fname, Fsignal signal)
 		    if (dwbuf[i]!=*ptr++) lost=1;
 	       }	    
 	  }
-	  if (fwrite(buf,1,towrite,fp)!=towrite) 
+          /* FIXME: wrong types, dirty temporary fix */
+	  if (fwrite(buf,1,towrite,fp)!= (unsigned int) towrite) 
 	  {
 	       mwerror(ERROR, 0,"Cannot write WAVE PCM data into file \"%s\" !\n",fname);
 	       free(buf);

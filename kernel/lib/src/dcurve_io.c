@@ -13,14 +13,20 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#include <stdlib.h>
 #include <stdio.h>
-#include <sys/file.h>
-#include <sys/types.h>
+#include <string.h>
+/* FIXME : UNIX-centric */
 #include <sys/stat.h>
-#include <math.h>
-#include <unistd.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "file_type.h"
+#include "type_conv.h"
+#include "dcurve.h"
+#include "mwio.h"
+
+#include "dcurve_io.h"
 
 /* Markers for old format 1.00 */
 
@@ -44,6 +50,9 @@
 
 Point_dcurve _mw_point_dcurve_load_native(char *fname, char *type)
 {
+     /* FIXME : unused parameter */
+     fname = fname;
+     type = type;
      return(NULL);
 }
 
@@ -67,7 +76,6 @@ Dcurve _mw_load_dcurve_mw2_dcurve(char *fname)
      char ftype[mw_ftype_size],mtype[mw_mtype_size];
      int need_flipping;
      unsigned long *lptr; /* for flip */
-     unsigned long flip_double; /* buffer for macro _mw_in_flip_double */
      int hsize;  /* Size of the header, in bytes */
      float version;/* Version number of the file format */
 
@@ -77,7 +85,7 @@ Dcurve _mw_load_dcurve_mw2_dcurve(char *fname)
 
   
      if ( (need_flipping==-1) ||
-	  (!(fp = fopen(fname, "r"))) || (fstat(fileno(fp),&buf) != 0) )
+	  (!(fp = fopen(fname, "r"))) || (stat(fname,&buf) != 0) )
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -104,7 +112,8 @@ Dcurve _mw_load_dcurve_mw2_dcurve(char *fname)
 	  return(NULL);
      }
 
-     if (fread(buffer,1,hsize,fp) != hsize)
+     /* FIXME: wrong types, dirty temporary fix */
+     if (fread(buffer,1,hsize,fp) != (unsigned int) hsize)
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -117,7 +126,8 @@ Dcurve _mw_load_dcurve_mw2_dcurve(char *fname)
      {
 	  readsize=remainsize;
 	  if (readsize > buf_size) readsize=buf_size;
-	  if (fread(buffer,sizeof(double),readsize,fp) != readsize)
+          /* FIXME: wrong types, dirty temporary fix */
+	  if (fread(buffer,sizeof(double),readsize,fp) != (unsigned int) readsize)
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       free(buffer);
@@ -201,6 +211,7 @@ Dcurve _mw_load_dcurve(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Dcurve !\n",fname,type);
+     return NULL;
 }
 
 
@@ -210,7 +221,6 @@ short _mw_create_dcurve_mw2_dcurve(char *fname, Dcurve cv)
 {
      FILE *fp;
      Point_dcurve pc;
-     int n;
      double vx=0.0,vy=0.0;
 
      if (cv == NULL)
@@ -266,6 +276,7 @@ short _mw_create_dcurve(char *fname, Dcurve cv, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }
 
 /* ---- I/O for Dcurves ---- */
@@ -290,7 +301,6 @@ Dcurves _mw_load_dcurves_mw2_dcurves_1_00(char *fname)
      char header[BUFSIZ];
      double xsave;
      int eof;
-     unsigned long flip_double; /* buffer for macro _mw_in_flip_double */
      int hsize;  /* Size of the header, in bytes */
      float version;/* Version number of the file format */
 
@@ -306,7 +316,8 @@ Dcurves _mw_load_dcurves_mw2_dcurves_1_00(char *fname)
 	  return(NULL);
      }
 
-     if (fread(header,1,hsize,fp) != hsize)
+     /* FIXME: wrong types, dirty temporary fix */
+     if (fread(header,1,hsize,fp) != (unsigned int) hsize)
      {
 	  mwerror(ERROR, 0,"Error while reading header of file \"%s\" !\n",fname);
 	  fclose(fp);
@@ -429,7 +440,6 @@ Dcurves _mw_load_dcurves_mw2_dcurves(char *fname)
      char ftype[mw_ftype_size],mtype[mw_mtype_size];
      int need_flipping; 
      char header[BUFSIZ];
-     unsigned long flip_double; /* buffer for macro _mw_in_flip_double */
      int hsize;  /* Size of the header, in bytes */
      float version;/* Version number of the file format */
 
@@ -448,7 +458,8 @@ Dcurves _mw_load_dcurves_mw2_dcurves(char *fname)
 	  return(NULL);
      }
 
-     if (fread(header,1,hsize,fp) != hsize)
+     /* FIXME: wrong types, dirty temporary fix */
+     if (fread(header,1,hsize,fp) != (unsigned int) hsize)
      {
 	  mwerror(ERROR, 0,"Error while reading header of file \"%s\" !\n",fname);
 	  fclose(fp);
@@ -552,6 +563,7 @@ Dcurves _mw_load_dcurves(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Dcurves !\n",fname,type);
+     return NULL;
 }
 
 
@@ -623,6 +635,7 @@ short _mw_create_dcurves(char *fname, Dcurves cvs, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }
    
 

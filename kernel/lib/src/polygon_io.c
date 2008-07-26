@@ -15,10 +15,17 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include <stdio.h>
-#include <sys/file.h>
+#include <string.h>
 
+#include "libmw.h"
+#include "utils.h"
 #include "ascii_file.h"
-#include "mw.h"
+#include "file_type.h"
+#include "type_conv.h"
+#include "polygon.h"
+#include "curve.h"
+
+#include "polygon_io.h"
 
 /* ---- I/O for Polygon ---- */
 
@@ -130,6 +137,7 @@ Polygon _mw_load_polygon(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Polygon !\n",fname,type);
+     return NULL;
 }
 
 /* Write file in A_POLY format */  
@@ -192,6 +200,7 @@ short _mw_create_polygon(char *fname, Polygon poly, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }
 
 
@@ -315,6 +324,7 @@ Polygons _mw_load_polygons(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Polygons !\n",fname,type);
+     return NULL;
 }
 
 
@@ -385,4 +395,5 @@ short _mw_create_polygons(char *fname, Polygons poly, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }

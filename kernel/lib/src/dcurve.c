@@ -15,11 +15,13 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+
+#include "dcurve.h"
 
 /* creates a new point_dcurve structure */
 
@@ -159,8 +161,6 @@ void mw_delete_dcurve(Dcurve dcurve)
 
 Dcurve mw_copy_dcurve(Dcurve in, Dcurve out)
 { 
-     Point_dcurve pc,qc0,qc1;
-
      if (!in)
      {
 	  mwerror(ERROR, 0,"[mw_copy_dcurve] NULL input dcurve\n");

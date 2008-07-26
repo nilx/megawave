@@ -14,11 +14,19 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
-#include <fcntl.h>
 #include <string.h>
+/* FIXME : UNIX-centric */
+#include <fcntl.h>
+#include <unistd.h>
 
+#include "libmw.h"
+#include "utils.h"
+#include "fimage.h"
+#include "fimage_io.h"
+#include "fmovie.h"
 #include "ascii_file.h"
-#include "mw.h"
+
+#include "fmovie_io.h"
 
 extern int _mw_convert_struct_warning;
 
@@ -31,7 +39,7 @@ Fmovie _mw_fmovie_load_movie_old_format(char *NomFic, char *Type)
      char FicImage[BUFSIZ];
      char Ext[BUFSIZ];
      short f,num;
-     short i;
+     /*short i;*/
       
      movie = NULL;
      strcpy(Type,"?");  /* Type a priori inconnu */
@@ -198,7 +206,7 @@ Fmovie _mw_fmovie_load_movie(char *fname, char *Type)
 
 short _mw_fmovie_create_movie(char *NomFic, Fmovie movie, char *Type)
 {
-     Fimage image,image_next;
+     Fimage image;
      char FicImage1[BUFSIZ],FicImage2[BUFSIZ];
      char *BaseName,*c;
      char field[10];

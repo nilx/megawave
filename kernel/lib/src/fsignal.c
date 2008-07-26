@@ -16,11 +16,13 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+
+#include "fsignal.h"
 
 /* creates a new fsignal structure */
 
@@ -71,7 +73,7 @@ Fsignal mw_alloc_fsignal(Fsignal signal, int N)
      {
 	  mwerror(ERROR, 0,
 		  "[mw_alloc_fsignal] Attempts to alloc a fsignal with null size\n");
-	  return;
+	  return NULL;
      }
 
      if (signal->values != NULL)

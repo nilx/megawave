@@ -13,20 +13,36 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/file.h>
-#include <sys/stat.h>
+
 #include <string.h>
 #include <math.h>
-#include <sys/types.h>
+#include <stdio.h>
+/* FIXME : UNIX-centric */
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <unistd.h>
-#include "mw.h"
+
+#include "libmw.h"
+#include "utils.h"
+#include "cimage.h"
+#include "mwio.h"
+#include "file_type.h"
+#include "tiff_io.h"
+#include "pm_io.h"
+#include "gif_io.h"
+#include "bmp_io.h"
+#include "ps_io.h"
+#include "epsf_io.h"
+#include "pgm_io.h"
+#include "jpeg_io.h"
+#include "type_conv.h"
+
+#include "cimage_io.h"
 
 
 long fsize(int fd)  /* Return the size of the file */
 {
-     struct stat  stbuf;
+     struct stat stbuf;
 
      if (fstat(fd, &stbuf) < 0)
 	  mwerror(INTERNAL,0,"[fsize] Cannot get stat from the opened file\n");
@@ -132,7 +148,6 @@ Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
      unsigned short bytesread;               /* Nbre de bytes lus */
      unsigned short minheader = 8; /* Nbre de bytes entete minimale du fichier */
      unsigned short header;        /* Nbre de bytes entete du format du fichier */
-     long  TailleBuffer;                   /* Taille du Buffer en octets */
      unsigned short dx,dy;                 /* Taille de l'image du fichier */
      unsigned short taillezc;              /* Taille de la zone de commentaires */
      unsigned short n;                       /* Nbre de bytes a lire */
@@ -179,7 +194,7 @@ Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
 	  /* Read the comments */
 	  if (taillezc > 0)
 	  {
-	       if (lseek(fic,64,L_SET) == -1L) 
+	       if (lseek(fic,64,SEEK_SET) == -1L) 
 		    mwerror(FATAL, 0,"IMG image header file \"%s\" is corrupted\n",NomFic);
 	       bytesread = read(fic,Comment,taillezc);
 	       if (bytesread != taillezc) 
@@ -210,7 +225,8 @@ Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
 	       }
 	       else 
 	       {  /* May be BIN */
-		    sqrt_fsize = sqrt((double) fsize(fic));
+		    /* FIXME: wrong types, dirty temporary fix */
+		    sqrt_fsize = sqrt((long int) fsize(fic));
 		    L = (int) sqrt_fsize;
 		    if ( ((double) L - sqrt_fsize) == 0.0 ) /* Size is a square */
 		    {
@@ -236,7 +252,7 @@ Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
 
      /* On se positionne sur le debut de la zone pixel (0,0) */
 
-     if (lseek(fic,header,L_SET) == -1L) 
+     if (lseek(fic,header,SEEK_SET) == -1L) 
      {
 	  mw_delete_cimage(image);
 	  image = NULL;
@@ -338,7 +354,7 @@ short _mw_cimage_create_megawave1(char * NomFic, Cimage image,
 	  /* Header already written */
      {
 	  if ( ((fic = open(NomFic,O_WRONLY)) == -1) || 
-	       (lseek(fic,(long)taillezc+header,L_SET) != taillezc+header) )
+	       (lseek(fic,(long)taillezc+header,SEEK_SET) != taillezc+header) )
 	       mwerror(FATAL,1,"Unable to write in the file \"%s\"\n",NomFic);
      }
 
@@ -500,6 +516,7 @@ Cimage _mw_cimage_load_image(char * NomFic, char * Type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",NomFic);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cimage !\n",NomFic,Type);
+     return NULL;
 }
 
 
@@ -519,5 +536,6 @@ short _mw_cimage_create_image(char * NomFic, Cimage image, char * Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",NomFic);  
+     return -1;
 }
 

@@ -17,10 +17,14 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+
+#include "curve.h"
 
 /* creates a new point_curve structure */
 
@@ -159,8 +163,6 @@ void mw_delete_curve(Curve curve)
 
 Curve mw_copy_curve(Curve in, Curve out)
 { 
-     Point_curve pc,qc0,qc1;
-
      printf("Enter mw_copy_curve()\n");
 
      if (!in)
@@ -191,7 +193,8 @@ Curve mw_copy_curve(Curve in, Curve out)
 	  mwerror(ERROR, 0,"[mw_copy_curve] Not enough memory to copy the curve\n");
 	  return(NULL);
      }
-     printf("return out=%x\n",out);
+     /* FIXME: wrong types, dirty temporary fix */
+     printf("return out=%x\n", (unsigned int) out);
      return(out);
 }
 

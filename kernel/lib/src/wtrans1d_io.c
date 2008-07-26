@@ -14,12 +14,15 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
-#include <fcntl.h>
-#include <sys/file.h>
-#include <string.h>
 
+#include "libmw.h"
+#include "utils.h"
+#include "wtrans1d.h"
 #include "ascii_file.h"
-#include "mw.h"
+#include "fsignal_io.h"
+#include "file_type.h"
+
+#include "wtrans1d_io.h"
 
 /*  Load the Header Ascii file and define the wtrans */
 
@@ -205,7 +208,8 @@ void *_mw_wtrans1d_load_signal_wtrans(char *fname, char *type,
 				      Wtrans1d wtrans, Fsignal (*S)[50], 
 				      char *Sname)
 {
-     int f,j,v,size;
+     FILE * fp;
+     int j,v,size;
      char wfname[BUFSIZ];
      char type_in[mw_ftype_size];
      Fsignal signal;
@@ -222,15 +226,15 @@ void *_mw_wtrans1d_load_signal_wtrans(char *fname, char *type,
 		    else
 			 sprintf(wfname,"%s_%2.2d.%2.2d_%s.wtrans1d",fname,j,v,Sname);
 		    
-		    f = open(wfname,O_RDONLY);
-		    if (f == -1)
+		    fp = fopen(wfname,"r");
+		    if (NULL == fp)
 		    {
 			 mwerror(ERROR, 0,
 				 "Cannot find wavelet coeff. file \"%s\"\n",wfname);
 			 mw_delete_wtrans1d(wtrans);	
 			 return(NULL);
 		    }
-		    close(f);
+		    fclose(fp);
 		    
 		    signal = S[j][v];
 		    if (signal == NULL)
@@ -269,10 +273,7 @@ void *_mw_wtrans1d_load_signal_wtrans(char *fname, char *type,
 Wtrans1d _mw_wtrans1d_load_wtrans(char *fname, char *type)
 {
      Wtrans1d wtrans;               
-     int f,j,v,size,use_average;
-     char wfname[BUFSIZ];
-     char type_in[mw_ftype_size];
-     Fsignal signal;
+     int use_average;
 
      wtrans = _mw_load_wtrans1d_header(fname);
      if (wtrans == NULL) return(NULL);

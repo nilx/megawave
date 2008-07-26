@@ -17,9 +17,15 @@ The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
 CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 #include <stdio.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "cimage.h"
+#include "ccimage.h"
+
+#include "bmp_io.h"
 
 /* some functions designed to read and write on file */
 
@@ -111,12 +117,13 @@ FILE * _mw_read_bmp_header(char * fname,
 	  return(NULL);
      }
      *compression=0;
+     /* FIXME: wrong types, dirty temporary fix */
      if (
-	  getint(fp) == EOF ||            /* bfSize      */
-	  getshort(fp) == EOF ||          /* bfReserved1 */
-	  getshort(fp) == EOF ||          /* bfReserved2 */
-	  (*offset = getint(fp)) == EOF || /* bfOffBits   */
-	  (*size=getint(fp)) == EOF        /* size   */
+	  getint(fp) == (unsigned int) EOF ||            /* bfSize      */
+	  getshort(fp) == (unsigned int) EOF ||          /* bfReserved1 */
+	  getshort(fp) == (unsigned int) EOF ||          /* bfReserved2 */
+	  (*offset = getint(fp)) == (unsigned int) EOF || /* bfOffBits   */
+	  (*size=getint(fp)) == (unsigned int) EOF        /* size   */
 	  )
      {
 	  mwerror(ERROR, 0,"Error while reading header of file \"%s\"... Not a BMP format or file corrupted !\n",fname);
@@ -127,12 +134,13 @@ FILE * _mw_read_bmp_header(char * fname,
      if ((*size == 40 || *size == 64)) 
 	  /* New BMP format with extended header */
      {
+	  /* FIXME: wrong types, dirty temporary fix */
 	  if (
-	       (*nx = getint(fp)) == EOF || /* biWidth  */
-	       (*ny = getint(fp)) == EOF ||   /* biHeight */
-	       (*planes = getshort(fp))==EOF ||
-	       (*bitcount = getshort(fp))==EOF ||    
-	       (*compression=getint(fp))==EOF /* New format may include compression */
+	       (*nx = getint(fp)) == (unsigned int) EOF || /* biWidth  */
+	       (*ny = getint(fp)) == (unsigned int) EOF ||   /* biHeight */
+	       (*planes = getshort(fp))== (unsigned int)EOF ||
+	       (*bitcount = getshort(fp))== (unsigned int)EOF ||    
+	       (*compression=getint(fp))== (unsigned int)EOF /* New format may include compression */
 	       )
 	  {
 	       mwerror(ERROR, 0,"Error while reading header of file \"%s\"... Not a new BMP format or file corrupted !\n",fname);
@@ -193,7 +201,8 @@ Cimage _mw_cimage_load_bmp(char * file)
 
      for (j = ny-1; j>=0; j--) 
      {
-	  for (i = 0; i < nx; i++)
+	  /* FIXME: wrong types, dirty temporary fix */
+	  for (i = 0; i < (int) nx; i++)
 	  {
 	       if ((c = getc(fp)) == EOF) 
 	       {
@@ -228,7 +237,6 @@ short _mw_cimage_create_bmp(char * file, Cimage image)
      int allocsize; /* size of scan lines */
      int nx,ny;     /* image size         */
      FILE *fp;      /* file for save      */
-     char buf[BUFSIZ];
   
      if ((image == NULL) || (image->gray == NULL))
      {
@@ -355,7 +363,8 @@ Ccimage _mw_ccimage_load_bmp(char * file)
      }
   
      for (j = ny-1; j>=0; j--) {
-	  for (i = 0; i < nx; i++)
+	  /* FIXME: wrong types, dirty temporary fix */
+	  for (i = 0; i < (int) nx; i++)
 	       if ((b = getc(fp)) == EOF ||
 		   (g = getc(fp)) == EOF ||
 		   (r = getc(fp)) == EOF) {

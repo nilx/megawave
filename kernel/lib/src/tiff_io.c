@@ -20,13 +20,20 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "mwio.h"
+#include "cimage.h"
+#include "ccimage.h"
+#include "basic_conv.h"
+/* FIXME : use standard headers */
 #include "tiffio.h"
 
-#include <stdarg.h>
+#include "tiff_io.h"
 
 typedef int boolean;
 typedef unsigned char byte;
@@ -46,7 +53,6 @@ static int   loadImage   PARM((TIFF *, uint32, uint32, byte *, int));
 static void  _TIFFerr    PARM((const char *, const char *, va_list));
 static void  _TIFFwarn   PARM((const char *, const char *, va_list));
 
-static long  filesize;
 static char *filename;
 
 static int   error_occurred;
@@ -60,9 +66,8 @@ Ccimage _mw_ccimage_load_tiff(char * fname)
      TIFF  *tif;
      uint32 w, h;
      short	 bps, spp, photo, orient;
-     FILE  *fp;
      byte  *pic24;
-     char  *desc, *sp;
+     char  *desc;
      Ccimage image;
      char Comment[BUFSIZ];
 
@@ -162,9 +167,8 @@ Cimage _mw_cimage_load_tiff(char * fname)
      TIFF  *tif;
      uint32 w, h;
      short	 bps, spp, photo, orient;
-     FILE  *fp;
      byte  *pic8;
-     char  *desc, *sp;
+     char  *desc;
      Cimage image;
      char Comment[BUFSIZ];
 
@@ -268,7 +272,7 @@ static void _TIFFerr(const char * module, const char * fmt, va_list ap)
 
      if (module != NULL) {
 	  sprintf(cp, "%s: ", module);
-	  cp = (char *) index(cp, '\0');
+	  cp = strchr(cp, '\0');
      }
 
      vsprintf(cp, fmt, ap);
@@ -288,9 +292,9 @@ static void _TIFFwarn(const char * module, const char * fmt, va_list ap)
 
      if (module != NULL) {
 	  sprintf(cp, "%s: ", module);
-	  cp = (char *) index(cp, '\0');
+	  cp = strchr(cp, '\0');
      }
-     cp = (char *) index(cp, '\0');
+     cp = strchr(cp, '\0');
      vsprintf(cp, fmt, ap);
      strcat(cp, ".");
 
@@ -324,8 +328,6 @@ typedef void (*tileContigRoutine)   PARM((byte*, u__char*, RGBvalue*,
 typedef void (*tileSeparateRoutine) PARM((byte*, u__char*, u__char*, u__char*, 
 					  RGBvalue*, uint32, uint32, int, int));
 
-
-static int    checkcmap             PARM((int, u__short*, u__short*, u__short*));
 
 static int    gt                       PARM((TIFF *, uint32, uint32, byte *));
 static uint32 setorientation           PARM((TIFF *, uint32));
@@ -454,17 +456,6 @@ static int loadImage(TIFF * tif, uint32 rwidth, uint32 rheight,
      if (PALmap)
 	  free((char *)PALmap);
      return (ok);
-}
-
-
-/*******************************************/
-static int checkcmap(int n, u__short * r, u__short * g, u__short * b)
-{
-     while (n-- >= 0)
-	  if (*r++ >= 256 || *g++ >= 256 || *b++ >= 256) return (16);
-
-     TIFFWarning(filename, "Assuming 8-bit colormap");
-     return (8);
 }
 
 
@@ -1022,8 +1013,11 @@ static int makecmap(void)
 static void put8bitcmaptile(byte * cp, u__char * pp, RGBvalue * Map,
 			    uint32 w, uint32 h, int fromskew, int toskew)
 {
+     /* FIXME : unused parameter */
+     Map = Map;
+
      while (h-- > 0) {
-	  UNROLL8(w,0, *cp++ = PALmap[*pp++][0]);
+	  UNROLL8(w, , *cp++ = PALmap[*pp++][0]);
 	  cp += toskew;
 	  pp += fromskew;
      }
@@ -1037,6 +1031,9 @@ static void put4bitcmaptile(byte * cp, u__char * pp, RGBvalue * Map,
 {
      register byte *bw;
   
+     /* FIXME : unused parameter */
+     Map = Map;
+
      fromskew /= 2;
      while (h-- > 0) {
 	  UNROLL2(w, bw = PALmap[*pp++], *cp++ = *bw++);
@@ -1054,6 +1051,9 @@ static void put2bitcmaptile(byte * cp, u__char * pp, RGBvalue * Map,
 {
      register byte *bw;
   
+     /* FIXME : unused parameter */
+     Map = Map;
+
      fromskew /= 4;
      while (h-- > 0) {
 	  UNROLL4(w, bw = PALmap[*pp++], *cp++ = *bw++);
@@ -1070,6 +1070,9 @@ static void put1bitcmaptile(byte * cp, u__char * pp, RGBvalue * Map,
 {
      register byte *bw;
   
+     /* FIXME : unused parameter */
+     Map = Map;
+
      fromskew /= 8;
      while (h-- > 0) {
 	  UNROLL8(w, bw = PALmap[*pp++], *cp++ = *bw++);
@@ -1085,6 +1088,9 @@ static void put1bitcmaptile(byte * cp, u__char * pp, RGBvalue * Map,
 static void putgreytile(byte * cp, u__char * pp, RGBvalue * Map,
 			uint32 w, uint32 h, int fromskew, int toskew)
 {
+     /* FIXME : unused parameter */
+     Map = Map;
+
      while (h-- > 0) {
 	  register uint32 x;
 	  for (x = w; x-- > 0;)
@@ -1103,6 +1109,9 @@ static void put1bitbwtile(byte * cp, u__char * pp, RGBvalue * Map,
 {
      register byte *bw;
   
+     /* FIXME : unused parameter */
+     Map = Map;
+
      fromskew /= 8;
      while (h-- > 0) {
 	  UNROLL8(w, bw = BWmap[*pp++], *cp++ = *bw++);
@@ -1119,6 +1128,9 @@ static void put2bitbwtile(byte * cp, u__char * pp, RGBvalue * Map,
 {
      register byte *bw;
   
+     /* FIXME : unused parameter */
+     Map = Map;
+
      fromskew /= 4;
      while (h-- > 0) {
 	  UNROLL4(w, bw = BWmap[*pp++], *cp++ = *bw++);
@@ -1135,6 +1147,9 @@ static void put4bitbwtile(byte * cp, u__char * pp, RGBvalue * Map,
 {
      register byte *bw;
   
+     /* FIXME : unused parameter */
+     Map = Map;
+
      fromskew /= 2;
      while (h-- > 0) {
 	  UNROLL2(w, bw = BWmap[*pp++], *cp++ = *bw++);
@@ -1184,7 +1199,7 @@ static void putRGBcontig8bittile(byte * cp, u__char * pp, RGBvalue * Map,
 	  }
      } else {
 	  while (h-- > 0) {
-	       UNROLL8(w,0,
+	       UNROLL8(w, ,
 		       *cp++ = pp[0];
 		       *cp++ = pp[1];
 		       *cp++ = pp[2];
@@ -1250,7 +1265,7 @@ static void putRGBseparate8bittile(byte * cp,
 	  }
      } else {
 	  while (h-- > 0) {
-	       UNROLL8(w,0,
+	       UNROLL8(w, ,
 		       *cp++ = *r++;
 		       *cp++ = *g++;
 		       *cp++ = *b++;
@@ -1359,6 +1374,9 @@ static void putcontig8bitYCbCrtile(byte * cp, u__char * pp, RGBvalue * Map,
      byte *tp;
      uint32 x;
   
+     /* FIXME : unused parameter */
+     Map = Map;
+
      /* XXX adjust fromskew */
      while (h >= YCbCrVertSampling) {
 	  tp = cp;
@@ -1399,6 +1417,9 @@ static tileContigRoutine pickTileContigCase(RGBvalue * Map)
 {
      tileContigRoutine put = 0;
   
+     /* FIXME : unused parameter */
+     Map = Map;
+
      switch (photometric) {
      case PHOTOMETRIC_RGB:
 	  switch (bitspersample) {
@@ -1449,6 +1470,9 @@ static tileSeparateRoutine pickTileSeparateCase(RGBvalue * Map)
 {
      tileSeparateRoutine put = 0;
   
+     /* FIXME : unused parameter */
+     Map = Map;
+
      switch (photometric) {
      case PHOTOMETRIC_RGB:
 	  switch (bitspersample) {

@@ -14,12 +14,15 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
-#include <fcntl.h>
-#include <sys/file.h>
-#include <string.h>
 
+#include "libmw.h"
+#include "utils.h"
 #include "ascii_file.h"
-#include "mw.h"
+#include "wtrans2d.h"
+#include "fimage_io.h"
+#include "file_type.h"
+
+#include "wtrans2d_io.h"
 
 /*  Load the Header Ascii file and define the wtrans */
 
@@ -200,11 +203,11 @@ short _mw_create_wtrans2d_header(char *fname, Wtrans2d wtrans)
 Wtrans2d _mw_wtrans2d_load_wtrans(char *fname, char *type)
 {
      Wtrans2d wtrans;               
-     int f,j,d,dx,dy;
+     FILE * fp;
+     int j,d;
      char wfname[BUFSIZ];
      char type_in[mw_ftype_size];
      Fimage image;
-     char sizedif = 0;         /* 1 if not the expected size in the image */
 
      wtrans = _mw_load_wtrans2d_header(fname);
      if (wtrans == NULL) return(NULL);
@@ -216,14 +219,14 @@ Wtrans2d _mw_wtrans2d_load_wtrans(char *fname, char *type)
 		    sprintf(wfname,"%s_%2.2d_S.wtrans2d",fname,j);
 	       else
 		    sprintf(wfname,"%s_%2.2d_D%d.wtrans2d",fname,j,d);
-	       f = open(wfname,O_RDONLY);
-	       if ((f == -1) && ((d != 0) || (j == wtrans->nlevel)))
+	       fp = fopen(wfname, "r");
+	       if ((NULL == fp) && ((d != 0) || (j == wtrans->nlevel)))
 	       {
 		    mwerror(ERROR, 0,"Cannot find wavelet coeff. file \"%s\"\n",wfname);
 		    mw_delete_wtrans2d(wtrans);	
 		    return(NULL);
 	       }
-	       close(f);
+	       fclose(fp);
 	       
 	       /* Load with new memory allocation */
 	       image = (Fimage) _mw_fimage_load_image(wfname, type_in);

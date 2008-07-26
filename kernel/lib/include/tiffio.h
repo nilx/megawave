@@ -1,10 +1,3 @@
-/*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
-MegaWave2 is a "soft-publication" for the scientific community. It has
-been developed for research purposes and it comes without any warranty.
-The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-      94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*
  * Copyright (c) 1988, 1989, 1990, 1991, 1992, 1993, 1994 Sam Leffler
  * Copyright (c) 1991, 1992, 1993, 1994 Silicon Graphics, Inc.
@@ -29,15 +22,13 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
  * OF THIS SOFTWARE.
  */
 
-/* Modified by JF 3/11/95 - Add functions declaration for non-Ansi compilers */
-
-#ifndef _TIFFIO_
-#define	_TIFFIO_
+#ifndef _TIFFIO_H
+#define	_TIFFIO_H
 
 /*
  * TIFF I/O Library Definitions.
  */
-#include "tiff.h"
+#include <tiff.h>
 
 /*
  * TIFF is defined as an incomplete type to hide the
@@ -95,10 +86,6 @@ typedef	int32 toff_t;		/* file offset */
 #define	TIFFGetB(abgr)	(((abgr) >> 16) & 0xff)
 #define	TIFFGetA(abgr)	(((abgr) >> 24) & 0xff)
 
-
-/*----------- Function prototypes for ANSI compilers -------------*/
-
-#ifdef __STDC__
 
 #include <stdarg.h>
 
@@ -199,89 +186,4 @@ extern	void TIFFModeCCITTFax3(TIFF* tif, int isClassF);	/* XXX */
 }
 #endif
 
-#else
-
-/*----------- Function prototypes for non-ANSI compilers -------------*/
-
-typedef	void (*TIFFErrorHandler)();
-typedef	tsize_t (*TIFFReadWriteProc)();
-typedef	toff_t (*TIFFSeekProc)();
-typedef	int (*TIFFCloseProc)();
-typedef	toff_t (*TIFFSizeProc)();
-typedef	int (*TIFFMapFileProc)();
-typedef	void (*TIFFUnmapFileProc)();
-
-extern	char* TIFFGetVersion();
-
-extern	void TIFFClose();
-extern	int TIFFFlush();
-extern	int TIFFFlushData();
-extern	int TIFFGetField();
-extern	int TIFFVGetField();
-extern	int TIFFGetFieldDefaulted();
-extern	int TIFFVGetFieldDefaulted();
-extern	int TIFFReadDirectory();
-extern	tsize_t TIFFScanlineSize();
-extern	tsize_t TIFFStripSize();
-extern	tsize_t TIFFVStripSize();
-extern	tsize_t TIFFTileRowSize();
-extern	tsize_t TIFFTileSize();
-extern	tsize_t TIFFVTileSize();
-extern	int TIFFFileno();
-extern	int TIFFGetMode();
-extern	int TIFFIsTiled();
-extern	int TIFFIsByteSwapped();
-extern	uint32 TIFFCurrentRow();
-extern	tdir_t TIFFCurrentDirectory();
-extern	tstrip_t TIFFCurrentStrip();
-extern	ttile_t TIFFCurrentTile();
-extern	int TIFFReadBufferSetup();
-extern	int TIFFLastDirectory();
-extern	int TIFFSetDirectory();
-extern	int TIFFSetSubDirectory();
-extern	int TIFFUnlinkDirectory();
-extern	int TIFFSetField();
-extern	int TIFFVSetField();
-extern	int TIFFWriteDirectory();
-
-extern	void TIFFPrintDirectory();
-extern	int TIFFReadScanline();
-extern	int TIFFWriteScanline();
-extern	int TIFFReadRGBAImage();
-
-extern	TIFF* TIFFOpen();
-extern	TIFF* TIFFFdOpen();
-extern	TIFF* TIFFClientOpen();
-extern	char* TIFFFileName();
-extern	void TIFFError();
-extern	void TIFFWarning();
-extern	TIFFErrorHandler TIFFSetErrorHandler();
-extern	TIFFErrorHandler TIFFSetWarningHandler();
-extern	ttile_t TIFFComputeTile();
-extern	int TIFFCheckTile();
-extern	ttile_t TIFFNumberOfTiles();
-extern	tsize_t TIFFReadTile();
-extern	tsize_t TIFFWriteTile();
-extern	tstrip_t TIFFComputeStrip();
-extern	tstrip_t TIFFNumberOfStrips();
-extern	tsize_t TIFFReadEncodedStrip();
-extern	tsize_t TIFFReadRawStrip();
-extern	tsize_t TIFFReadEncodedTile();
-extern	tsize_t TIFFReadRawTile();
-extern	tsize_t TIFFWriteEncodedStrip();
-extern	tsize_t TIFFWriteRawStrip();
-extern	tsize_t TIFFWriteEncodedTile();
-extern	tsize_t TIFFWriteRawTile();
-extern	void TIFFSetWriteOffset();
-extern	void TIFFSwabShort();
-extern	void TIFFSwabLong();
-extern	void TIFFSwabArrayOfShort();
-extern	void TIFFSwabArrayOfLong();
-extern	void TIFFReverseBits();
-extern	unsigned char* TIFFGetBitRevTable();
-
-extern	void TIFFModeCCITTFax3();	/* XXX */
-
-#endif
-
-#endif /* _TIFFIO_ */
+#endif /* !_TIFFIO_H */

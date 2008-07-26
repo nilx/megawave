@@ -16,7 +16,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "cimage.h"
+#include "mwio.h"
+
+#include "pgm_io.h"
 
 /*~~~~~~ Return the next integer item or a the appened comments lines ~~~~~*/
 
@@ -187,7 +192,8 @@ Cimage _mw_cimage_load_pgmr(char *file)
 	  mwerror(FATAL,0,"Not enough memory to load the image \"%s\"\n",file);
 
      size=ncol*nrow;
-     if (fread(image->gray,1,size,fp) != size)
+     /* FIXME: wrong types, dirty temporary fix */
+     if (fread(image->gray,1,size,fp) != (unsigned int) size)
      {
 	  mwerror(ERROR,0,"Error while reading PGMR image \"%s\": unexpected end of file !\n",file);
 	  fclose(fp);

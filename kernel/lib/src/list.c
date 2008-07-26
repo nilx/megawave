@@ -17,12 +17,18 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+
+#include "list.h"
 
 
+/* Memory growth rate for reallocations */
+#define MW_LIST_ENLARGE_FACTOR 1.5  
+ 
 /******************************** FLIST ********************************/
 
 /* Create a new flist structure */
@@ -90,8 +96,6 @@ Flist mw_enlarge_flist(Flist l)
 
 Flist mw_change_flist(Flist l, int max_size, int size, int dimension)
 {
-     int n;
-
      if (!l) {
 	  l = mw_new_flist();
 	  if (!l) return(NULL);
@@ -245,8 +249,6 @@ Flists mw_enlarge_flists(Flists ls)
 
 Flists mw_change_flists(Flists ls, int max_size, int size)
 {
-     int n;
-
      if (!ls) {
 	  ls = mw_new_flists();
 	  if (!ls) return(NULL);
@@ -271,7 +273,6 @@ Flists mw_change_flists(Flists ls, int max_size, int size)
 
 void mw_delete_flists(Flists ls)
 {
-     Flist l;
      int i;
 
      if (!ls) 
@@ -387,8 +388,6 @@ Dlist mw_enlarge_dlist(Dlist l)
 
 Dlist mw_change_dlist(Dlist l, int max_size, int size, int dimension)
 {
-     int n;
-
      if (!l) {
 	  l = mw_new_dlist();
 	  if (!l) return(NULL);
@@ -532,7 +531,7 @@ Dlists mw_enlarge_dlists(Dlists ls)
      if (!ls) 
      {
 	  mwerror(ERROR,0,"[mw_enlarge_dlists] dlists structure is NULL\n");
-	  return;
+	  return NULL;
      }
     
      n = (int)(1+(double)ls->max_size*MW_LIST_ENLARGE_FACTOR);
@@ -544,8 +543,6 @@ Dlists mw_enlarge_dlists(Dlists ls)
 
 Dlists mw_change_dlists(Dlists ls, int max_size, int size)
 {
-     int n;
-
      if (!ls) {
 	  ls = mw_new_dlists();
 	  if (!ls) return(NULL);
@@ -569,7 +566,6 @@ Dlists mw_change_dlists(Dlists ls, int max_size, int size)
 
 void mw_delete_dlists(Dlists ls)
 {
-     Dlist l;
      int i;
 
      if (!ls) {

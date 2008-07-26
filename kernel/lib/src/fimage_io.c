@@ -16,14 +16,21 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-#include <stdio.h>
 #include <string.h>
-
+#include <stdio.h>
+/* FIXME : UNIX-centric */
 #include <fcntl.h>
-#include <sys/file.h>
+#include <unistd.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "fimage.h"
+#include "mwio.h"
+#include "file_type.h"
+#include "type_conv.h"
+#include "pm_io.h"
+
+#include "fimage_io.h"
 
 /*~~~~~~ MegaWaveI formats ~~~~~*/
 
@@ -80,7 +87,6 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
      unsigned short bytesread;               /* Nbre de bytes lus */
      unsigned short minheader = 8; /* Nbre de bytes entete minimale du fichier */
      unsigned short header;        /* Nbre de bytes entete du format du fichier */
-     long  TailleBuffer;                   /* Taille du Buffer en octets */
      unsigned short dx,dy;                 /* Taille de l'image du fichier */
      unsigned short taillezc;              /* Taille de la zone de commentaires */
      unsigned short n;                     /* Nbre de bytes a lire */
@@ -131,7 +137,7 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
 	  /* Read the comments */
 	  if (taillezc > 0)
 	  {
-	       if (lseek(fic,64,L_SET) == -1L) 
+	       if (lseek(fic,64,SEEK_SET) == -1L) 
 		    mwerror(FATAL,1,"RIM image header file \"%s\" is corrupted\n",NomFic);
 	       bytesread = read(fic,Comment,taillezc);
 	       if (bytesread != taillezc) 
@@ -172,7 +178,7 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
 
      /* On se positionne sur le debut de la zone pixel (0,0) */
 
-     if (lseek(fic,header,L_SET) == -1L) 
+     if (lseek(fic,header,SEEK_SET) == -1L) 
      {
 	  mw_delete_fimage(image);
 	  image = NULL;
@@ -241,7 +247,7 @@ short _mw_fimage_create_megawave1(char *NomFic, Fimage image, char *Type)
 		  Type);
 
      if ( ( (fic = open(NomFic,O_WRONLY)) == -1) || 
-	  (lseek(fic,(long)taillezc+header,L_SET) != taillezc+header) )
+	  (lseek(fic,(long)taillezc+header,SEEK_SET) != taillezc+header) )
      {
 	  mwerror(FATAL,1,"Unable to write in the file \"%s\"\n",NomFic);
 	  return(-1);
@@ -334,6 +340,7 @@ Fimage _mw_fimage_load_image(char *NomFic, char *Type)
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Fimage !\n",NomFic,Type);
   
+     return NULL;
 }
 
 
@@ -353,4 +360,5 @@ short _mw_fimage_create_image(char *NomFic, Fimage image, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",NomFic);  
+     return -1;
 }

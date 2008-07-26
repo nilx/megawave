@@ -15,10 +15,16 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "curve.h"
+#include "fcurve.h"
+#include "mimage.h"
+
+#include "cmimage.h"
 
 /*--- Cmorpho_line ---*/
 
@@ -80,8 +86,6 @@ void mw_delete_cmorpho_line(Cmorpho_line cmorpho_line)
 
 Cmorpho_line mw_copy_cmorpho_line(Cmorpho_line in, Cmorpho_line out)
 { 
-     Point_curve pc,qc0,qc1;
-
      if ((!in) || (!out))
      {
 	  mwerror(ERROR, 0,"[mw_copy_cmorpho_line] NULL input cmorpho_line\n");
@@ -350,7 +354,6 @@ void mw_delete_cmorpho_set(Cmorpho_set cmorpho_set)
 
 Cmorpho_set mw_copy_cmorpho_set(Cmorpho_set in, Cmorpho_set out)
 { 
-     Hsegment pc,qc0,qc1;
      Hsegment s,s0,s1;
 
      if (!in)
@@ -466,8 +469,8 @@ void mw_delete_cmorpho_sets(Cmorpho_sets cmorpho_sets)
 
 Cmorpho_sets mw_copy_cmorpho_sets(Cmorpho_sets in, Cmorpho_sets out)
 { 
-     Cmorpho_sets iss,oldiss,newiss,p,q,qq,nin,nout;
-     unsigned int i,n,num;
+     Cmorpho_sets oldiss,newiss,p,q,qq,nin;
+     unsigned int n;
 
      if (!in)
      {
@@ -566,7 +569,7 @@ unsigned int mw_num_cmorpho_sets(Cmorpho_sets mss_first)
      {
 	  mwerror(ERROR, 0,
 		  "[mw_num_cmorpho_sets] NULL input cmorpho_sets\n");
-	  return;
+	  return -1;
      }  
      for (mss=mss_first, n=1; mss && mss->cmorphoset; 
 	  mss->cmorphoset->num=n, mss=mss->next, n++);
@@ -665,9 +668,6 @@ void mw_delete_cmimage(Cmimage cmimage)
 
 Cmimage mw_copy_cmimage(Cmimage in, Cmimage out)
 { 
-     Cmorpho_sets iss,oldiss,newiss,p,q,qq,nin,nout;
-     unsigned int i,n,num;
-
      if (!in) 
      {
 	  mwerror(ERROR, 0,"[mw_copy_cmimage] NULL input cmimage\n");
@@ -755,9 +755,6 @@ unsigned int mw_length_fml_cmimage(Cmimage cmimage)
 
 unsigned int mw_length_ms_cmimage(Cmimage cmimage)
 { 
-     unsigned int n;
-     Cfmorpho_line pfirst,p;
-
      if ((!cmimage) || (!cmimage->first_ms)) return(0);
      return(mw_length_cmorpho_sets(cmimage->first_ms));
 }

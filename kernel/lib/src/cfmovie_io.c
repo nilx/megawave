@@ -13,12 +13,22 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
-#include <fcntl.h>
-#include <string.h>
 
+#include <stdio.h>
+#include <string.h>
+/* FIXME : UNIX-centric */
+#include <fcntl.h>
+#include <unistd.h>
+
+#include "libmw.h"
+#include "utils.h"
+#include "cfimage_io.h"
+#include "cfmovie.h"
 #include "ascii_file.h"
-#include "mw.h"
+#include "file_type.h"
+#include "type_conv.h"
+
+#include "cfmovie_io.h"
 
 extern int _mw_convert_struct_warning;
 
@@ -31,7 +41,7 @@ Cfmovie _mw_cfmovie_load_movie_old_format(char *NomFic, char *Type)
      char FicImage[BUFSIZ];
      char Ext[BUFSIZ];
      short f,num;
-     short i;
+     /* short i; */
       
      movie = NULL;
      strcpy(Type,"?");  /* Type a priori inconnu */
@@ -56,7 +66,7 @@ Cfmovie _mw_cfmovie_load_movie_old_format(char *NomFic, char *Type)
      if (f == -1) 
 	  mwerror(FATAL,1,"First image file \"%s\" not found or unreadable\n",FicImage);
      close(f);
-     image = (Cfimage) _mw_cfimage_load_image(FicImage,Type,NULL);
+     image = (Cfimage) _mw_cfimage_load_image(FicImage,Type);
      if (image == NULL) return(movie);
 
      movie = (Cfmovie) mw_new_cfmovie();
@@ -75,7 +85,7 @@ Cfmovie _mw_cfmovie_load_movie_old_format(char *NomFic, char *Type)
 	       close(f);
 	       if (_mw_convert_struct_warning >= 3)
 		    _mw_convert_struct_warning = -1; /* Disable warnings */
-	       image_next = (Cfimage) _mw_cfimage_load_image(FicImage,Type,NULL);
+	       image_next = (Cfimage) _mw_cfimage_load_image(FicImage,Type);
 	       if (image_next != NULL) 
 	       {
 		    image->next = image_next;
@@ -161,7 +171,7 @@ Cfmovie _mw_cfmovie_load_native(char *fname, char *Type)
 		    num++;
 		    if (num == 1)  /* 1st image */
 		    {
-			 image = (Cfimage) _mw_cfimage_load_image(FicImage,Type,NULL);
+			 image = (Cfimage) _mw_cfimage_load_image(FicImage,Type);
 			 if (image == NULL) return(movie);
 			 movie = (Cfmovie) mw_new_cfmovie();
 			 movie->first = image;
@@ -170,7 +180,7 @@ Cfmovie _mw_cfmovie_load_native(char *fname, char *Type)
 		    {
 			 if (_mw_convert_struct_warning >= 3)
 			      _mw_convert_struct_warning = -1; /* Disable warnings */
-			 image_next = (Cfimage) _mw_cfimage_load_image(FicImage,Type,NULL);
+			 image_next = (Cfimage) _mw_cfimage_load_image(FicImage,Type);
 			 if (image_next != NULL) 
 			 {
 			      image->next = image_next;
@@ -217,6 +227,7 @@ Cfmovie _mw_cfmovie_load_movie(char *NomFic, char *Type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",NomFic);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cfmovie !\n",NomFic,Type);
+     return NULL;
 }
 
 
@@ -227,7 +238,7 @@ short _mw_cfmovie_create_movie(char *NomFic, Cfmovie movie, char *Type)
 /* Type de format du fichier */
 
 {
-     Cfimage image,image_next;
+     Cfimage image;
      char FicImage1[BUFSIZ],FicImage2[BUFSIZ];
      char *BaseName,*c;
      char field[10];

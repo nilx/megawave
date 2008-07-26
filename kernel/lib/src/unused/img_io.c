@@ -13,11 +13,13 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/file.h>
+#include <xstdio.h>
+#include <xfcntl.h>
+#include <xsys/file.h>
 
-#include "mw.h"
+#include "libmw.h"
+
+#include "img_io.h"
 
 /*~~~~~~ MegaWaveI formats ~~~~~*/
 

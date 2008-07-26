@@ -17,10 +17,13 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+
+#include "cimage.h"
 
 /* creates a new cimage structure */
 
@@ -327,7 +330,9 @@ unsigned char ** mw_newtab_gray_cimage(Cimage image)
      }
     
      im[0]=image->gray;
-     for(l=1;l<image->nrow;l++) im[l]=im[l-1]+image->ncol;
+     /* FIXME: wrong types, dirty temporary fix */
+     for(l=1;l < (unsigned long) image->nrow;l++)
+	  im[l]=im[l-1]+image->ncol;
 
      return(im);
 }
@@ -345,7 +350,7 @@ unsigned char mw_isitbinary_cimage(Cimage image)
      {
 	  mwerror(ERROR, 0,
 		  "[mw_isitbinary_cimage] NULL image struct or NULL gray plane\n");
-	  return;
+	  return -1;
      }
 
      min=1000; max=-1;
@@ -355,6 +360,7 @@ unsigned char mw_isitbinary_cimage(Cimage image)
 	  if (max < *p) max=*p;
      }
      if (min > 0) return(0);
+     /* FIXME: wrong types, dirty temporary fix */
      for (l=0, p=image->gray; l < image->ncol * image->nrow; l++,p++)
 	  if ((*p != min)&&(*p!=max)) return(0);
      return(max);

@@ -15,11 +15,13 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+
+#include "fcurve.h"
 
 /* creates a new point_fcurve structure */
 
@@ -159,8 +161,6 @@ void mw_delete_fcurve(Fcurve fcurve)
 
 Fcurve mw_copy_fcurve(Fcurve in, Fcurve out)
 { 
-     Point_fcurve pc,qc0,qc1;
-
      if (!in)
      {
 	  mwerror(ERROR, 0,"[mw_copy_fcurve] NULL input fcurve\n");

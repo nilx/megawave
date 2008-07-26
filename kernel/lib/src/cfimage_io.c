@@ -13,11 +13,16 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/file.h>
 
-#include "mw.h"
+#include <string.h>
+
+#include "libmw.h"
+#include "pm_io.h"
+#include "file_type.h"
+#include "type_conv.h"
+#include "utils.h"
+
+#include "cfimage_io.h"
 
 /*~~~~~~ MegaWave2 formats ~~~~~*/
 
@@ -71,7 +76,7 @@ Cfimage _mw_cfimage_load_image(char *NomFic, char *Type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",NomFic);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cfimage !\n",NomFic,Type);
-
+     return NULL;
 }
 
 
@@ -91,4 +96,5 @@ short _mw_cfimage_create_image(char *NomFic, Cfimage image, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",NomFic);  
+     return -1;
 }

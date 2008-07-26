@@ -1,20 +1,13 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   pm.h
+/*
+ * pm.h
+ */
 
-   Vers. 1.1
-   (C) 1989, 1990 by the University of Pennsylvania
-   Provides the PM file compatibility with MegaWave2
+/*
+ * (C) 1989, 1990 by the University of Pennsylvania
+ */
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
-MegaWave2 is a "soft-publication" for the scientific community. It has
-been developed for research purposes and it comes without any warranty.
-The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-      94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#ifndef pm_flg
-#define pm_flg
+#ifndef _PM_H
+#define _PM_H
 
 #define	PM_MAGICNO	0x56494557		/* Hex for VIEW */
 #define PM_MAXNELM	1024
@@ -139,20 +132,16 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
  */
 #define pm_isize(p)	((p)->pm_np * pm_psize(p))
 
-#ifdef SunOS
-#include <sys/types.h>
-#endif
-
 typedef struct {
-	int	pm_id;		/* Magic number for pm format files.	*/
-	int	pm_np;		/* Number of planes. Normally 1.	*/
-	int	pm_nrow;	/* Number of rows. Typically 512.	*/
-	int	pm_ncol;	/* Number of columns. Typically 512.	*/
-	int	pm_nband;	/* Number of bands. Humans use only 1.	*/
-	int	pm_form;	/* Pixel format.			*/
-	int	pm_cmtsize;	/* Number comment bytes. Includes NULL. */
-	unsigned char	*pm_image;	/* The image itself.			*/
-	char	*pm_cmt;	/* Description of operations performed.	*/
+     int pm_id;		/* Magic number for pm format files.	*/
+     int pm_np;		/* Number of planes. Normally 1.	*/
+     int pm_nrow;	/* Number of rows. Typically 512.	*/
+     int pm_ncol;	/* Number of columns. Typically 512.	*/
+     int pm_nband;	/* Number of bands. Humans use only 1.	*/
+     int pm_form;	/* Pixel format.			*/
+     int pm_cmtsize;	/* Number comment bytes. Includes NULL. */
+     unsigned char * pm_image;	/* The image itself.			*/
+     char *pm_cmt;	/* Description of operations performed.	*/
 } pmpic;
 
 /*
@@ -183,4 +172,4 @@ typedef struct {
 #define PM_ERROR(e)	(((e) < PM_EBASE || (e) > (PM_EBASE + PM_NERROR)) ? \
 				0 : (e) - PM_EBASE)
 
-#endif
+#endif /* !_PM_H */

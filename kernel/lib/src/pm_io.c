@@ -17,14 +17,20 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "cimage.h"
+#include "fimage.h"
+#include "ccimage.h"
+#include "cfimage.h"
 #include "pm.h"
+#include "mwio.h"
 
-static char temp_char;
-static int temp_int;
+#include "pm_io.h"
 
 /*~~~~~ Load PM CHAR ~~~~~*/
 
@@ -99,7 +105,8 @@ Cimage _mw_cimage_load_pm(char *file)
      }
 
      isize = pm_isize(pm);
-     if (isize != (pm->pm_nrow * pm->pm_ncol * sizeof(char)))
+     /* FIXME: wrong types, dirty temporary fix */
+     if (isize != (int) (pm->pm_nrow * pm->pm_ncol * sizeof(char)))
      {
 	  mwerror(INTERNAL, 0,"[_mw_cimage_load_pm] PM file \"%s\" cannot be loaded into a cimage\n",file);
 	  free(pm);
@@ -191,7 +198,8 @@ short _mw_cimage_create_pm(char *file, Cimage image)
      }
 
      isize = pm_isize(pm);
-     if (isize != (image->nrow * image->ncol * sizeof(char)))
+     /* FIXME: wrong types, dirty temporary fix */
+     if (isize != (int) (image->nrow * image->ncol * sizeof(char)))
      {
 	  mwerror(INTERNAL, 0,"[_mw_cimage_create_pm] Illegal image size\n");
 	  free(pm);
@@ -297,7 +305,8 @@ Fimage _mw_fimage_load_pm(char *file)
      }
   
      isize = pm_isize(pm);
-     if (isize != (pm->pm_nrow * pm->pm_ncol * sizeof(float)))
+     /* FIXME: wrong types, dirty temporary fix */
+     if (isize != (int) (pm->pm_nrow * pm->pm_ncol * sizeof(float)))
      {
 	  mwerror(INTERNAL, 0,"[_mw_fimage_load_pm] PM file \"%s\" cannot be loaded into a fimage\n",file);
 	  free(pm);
@@ -387,7 +396,8 @@ short _mw_fimage_create_pm(char *file, Fimage image)
      }
 
      isize = pm_isize(pm);
-     if (isize != (image->nrow * image->ncol * sizeof(float)))
+     /* FIXME: wrong types, dirty temporary fix */
+     if (isize != (int) (image->nrow * image->ncol * sizeof(float)))
      {
 	  mwerror(INTERNAL, 0,"[_mw_fimage_create_pm] Illegal image size\n");
 	  free(pm);
@@ -494,7 +504,8 @@ Ccimage _mw_ccimage_load_pm(char *file)
      }
   
      isize = pm_isize(pm);
-     if (isize != (3 * pm->pm_nrow * pm->pm_ncol * sizeof(char)))
+     /* FIXME: wrong types, dirty temporary fix */
+     if (isize != (int) (3 * pm->pm_nrow * pm->pm_ncol * sizeof(char)))
      {
 	  mwerror(INTERNAL, 0,"[_mw_ccimage_load_pm] PM file \"%s\" cannot be loaded into a ccimage\n",file);
 	  free(pm);
@@ -597,7 +608,8 @@ short _mw_ccimage_create_pm(char *file, Ccimage image)
      }
 
      isize = pm_isize(pm);
-     if (isize != (3 * image->nrow * image->ncol * sizeof(char)))
+     /* FIXME: wrong types, dirty temporary fix */
+     if (isize != (int) (3 * image->nrow * image->ncol * sizeof(char)))
      {
 	  mwerror(INTERNAL, 0,"[_mw_ccimage_create_pm] Illegal image size\n");
 	  free(pm);
@@ -726,7 +738,8 @@ Cfimage _mw_cfimage_load_pm(char *file)
      }
 
      isize = pm_isize(pm);
-     if (isize != (3 * pm->pm_nrow * pm->pm_ncol * sizeof(float)))
+     /* FIXME: wrong types, dirty temporary fix */
+     if (isize != (int) (3 * pm->pm_nrow * pm->pm_ncol * sizeof(float)))
      {
 	  mwerror(INTERNAL, 0,"[_mw_cfimage_load_pm] PM file \"%s\" cannot be loaded into a cfimage\n",file);
 	  free(pm);
@@ -854,7 +867,8 @@ short _mw_cfimage_create_pm(char *file, Cfimage image)
      }
 
      isize = pm_isize(pm);
-     if (isize != (3 * image->nrow * image->ncol * sizeof(float)))
+     /* FIXME: wrong types, dirty temporary fix */
+     if (isize != (int) (3 * image->nrow * image->ncol * sizeof(float)))
      {
 	  mwerror(INTERNAL, 0,"[_mw_cfimage_create_pm] Illegal image size\n");
 	  free(pm);

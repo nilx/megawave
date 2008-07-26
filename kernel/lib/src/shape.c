@@ -15,10 +15,14 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "list.h"
+
+#include "shape.h"
 
 /*--- Point_plane ---*/
 
@@ -299,7 +303,7 @@ Shapes mw_alloc_shapes(Shapes shs, int nrow, int ncol, float value)
 
 Shapes mw_change_shapes(Shapes shs, int nrow, int ncol, float value)
 {
-     int size,i;
+     int i;
 
      if (shs == NULL) shs = mw_new_shapes();
      if (shs == NULL) return(NULL);

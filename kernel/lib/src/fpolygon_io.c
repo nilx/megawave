@@ -14,11 +14,17 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
-#include <sys/file.h>
+#include <string.h>
 
+#include "libmw.h"
+#include "utils.h"
 #include "ascii_file.h"
-#include "mw.h"
+#include "file_type.h"
+#include "type_conv.h"
+#include "fpolygon.h"
+#include "fcurve.h"
 
+#include "fpolygon_io.h"
 
 /* ---- I/O for Fpolygon ---- */
 
@@ -129,6 +135,7 @@ Fpolygon _mw_load_fpolygon(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Fpolygon !\n",fname,type);
+     return NULL;
 }
 
 /* Write file in A_POLY format */  
@@ -191,6 +198,7 @@ short _mw_create_fpolygon(char *fname, Fpolygon fpoly, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }
 
 /* ---- I/O for Fpolygons ---- */
@@ -315,6 +323,7 @@ Fpolygons _mw_load_fpolygons(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Fpolygons !\n",fname,type);
+     return NULL;
 }
 
 
@@ -385,4 +394,5 @@ short _mw_create_fpolygons(char *fname, Fpolygons fpoly, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }

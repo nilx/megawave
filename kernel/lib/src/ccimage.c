@@ -15,10 +15,14 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
+
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+
+#include "ccimage.h"
 
 /* creates a new ccimage structure */
 
@@ -413,7 +417,9 @@ unsigned char ** mw_newtab_red_ccimage(Ccimage image)
      }
     
      im[0]=image->red;
-     for(l=1;l<image->nrow;l++) im[l]=im[l-1]+image->ncol;
+     /* FIXME: wrong types, dirty temporary fix */
+     for(l=1;l< (unsigned long) image->nrow;l++) 
+	  im[l]=im[l-1]+image->ncol;
 
      return(im);
 }
@@ -440,7 +446,9 @@ unsigned char ** mw_newtab_green_ccimage(Ccimage image)
      }
     
      im[0]=image->green;
-     for(l=1;l<image->nrow;l++) im[l]=im[l-1]+image->ncol;
+     /* FIXME: wrong types, dirty temporary fix */
+     for(l=1;l< (unsigned long) image->nrow;l++)
+	  im[l]=im[l-1]+image->ncol;
 
      return(im);
 }
@@ -467,7 +475,9 @@ unsigned char ** mw_newtab_blue_ccimage(Ccimage image)
      }
     
      im[0]=image->blue;
-     for(l=1;l<image->nrow;l++) im[l]=im[l-1]+image->ncol;
+     /* FIXME: wrong types, dirty temporary fix */
+     for(l=1;l< (unsigned long) image->nrow;l++)
+	  im[l]=im[l-1]+image->ncol;
 
      return(im);
 }

@@ -18,10 +18,13 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+
+#include "wmax2d.h"
 
 /* ----- Virtual Maxima points & chains ----- */
 
@@ -129,8 +132,8 @@ void mw_delete_vchain_wmax(Vchain_wmax vchain)
      vpoint=vchain->first;
      if (vpoint != NULL)
      {
-	  for (vpoint; vpoint && vpoint->next; vpoint = vpoint->next);
-	  for (vpoint; vpoint && vpoint->previous ; vpoint = vpoint->previous)
+	  for ( ; vpoint && vpoint->next; vpoint = vpoint->next);
+	  for ( ; vpoint && vpoint->previous ; vpoint = vpoint->previous)
 	       if (vpoint->next) mw_delete_vpoint_wmax(vpoint->next);
 	  mw_delete_vpoint_wmax(vchain->first);
      }
@@ -190,8 +193,8 @@ void mw_delete_vchains_wmax(Vchains_wmax vchains)
      vchain=vchains->first;
      if (vchain != NULL)
      {
-	  for (vchain; vchain && vchain->next; vchain = vchain->next);
-	  for (vchain; vchain && vchain->previous ; vchain = vchain->previous)
+	  for ( ; vchain && vchain->next; vchain = vchain->next);
+	  for ( ; vchain && vchain->previous ; vchain = vchain->previous)
 	       if (vchain->next) mw_delete_vchain_wmax(vchain->next);
 	  mw_delete_vchain_wmax(vchains->first);
      }
@@ -236,7 +239,7 @@ Vpoint_wmax mw_copy_vpoint_wmax(Vpoint_wmax vpoint1, Vpoint_wmax vpoint0)
 
 Vchain_wmax mw_copy_vchain_wmax(Vchain_wmax vchain1, Vchain_wmax vchain0)
 {
-     Vpoint_wmax vpoint0,vpoint1,oldvpoint1,nextvpoint1;
+     Vpoint_wmax vpoint0,vpoint1,oldvpoint1;
 
      if (vchain1 == NULL) vchain1 = mw_new_vchain_wmax();   
      if (vchain1 == NULL) return(NULL);

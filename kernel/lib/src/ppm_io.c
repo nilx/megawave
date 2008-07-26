@@ -14,9 +14,18 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "mw.h"
+
+#include "libmw.h"
+#include "utils.h"
+#include "ppmr_io.h"
+#include "pgm_io.h"
+#include "ccimage.h"
+#include "basic_conv.h"
+
+#include "ppm_io.h"
 
 /*~~~~~~ Load 24-bits color PPM Raw file ~~~~~*/
 
@@ -60,7 +69,8 @@ Ccimage _mw_ccimage_load_ppmr(char *file)
      if ((!image)||(!pic))
 	  mwerror(FATAL,0,"Not enough memory to load the image \"%s\"\n",file);
 
-     if (fread(pic,1,size,fp) != size)
+     /* FIXME: wrong types, dirty temporary fix */
+     if (fread(pic,1,size,fp) != (unsigned int) size)
      {
 	  mwerror(ERROR,0,"Error while reading PPM image \"%s\": unexpected end of file !\n",file);
 	  fclose(fp);

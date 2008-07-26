@@ -14,10 +14,16 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
-#include <sys/file.h>
+#include <string.h>
 
+#include "libmw.h"
+#include "utils.h"
 #include "ascii_file.h"
-#include "mw.h"
+#include "file_type.h"
+#include "fsignal.h"
+#include "wave_io.h"
+
+#include "fsignal_io.h"
 
 /*~~~~~~ ASCII Format ~~~~~~*/
 
@@ -28,7 +34,6 @@ Fsignal _mw_load_fsignal_ascii(char *fname, Fsignal signal)
      long pos0,pos1;
      register int i;
      float v;
-     register float *ptr;
      int BitsPerSample;
 
      fp = _mw_open_data_ascii_file(fname);
@@ -168,6 +173,7 @@ Fsignal _mw_load_fsignal(char *fname, char *type, Fsignal signal)
      }
   
      mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",type,fname);
+     return NULL;
 }
 
 
@@ -180,4 +186,5 @@ short _mw_create_fsignal(char *fname, Fsignal signal, char *type)
 	  return(_mw_fsignal_create_wave_pcm(fname,signal));
 
      mwerror(FATAL, 0,"Invalid type \"%s\" for the file \"%s\"\n",type,fname);
+     return -1;
 }

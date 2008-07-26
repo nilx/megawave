@@ -24,11 +24,25 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-#include <stdio.h>
-#include <math.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "cimage.h"
+#include "fimage.h"
+#include "ccimage.h"
+#include "cfimage.h"
+#include "polygon.h"
+#include "fpolygon.h"
+#include "curve.h"
+#include "fcurve.h"
+#include "dcurve.h"
+#include "mimage.h"
+#include "cmimage.h"
+#include "list.h"
+
+#include "basic_conv.h"
 
 int _mw_convert_struct_warning = 0;
 
@@ -78,7 +92,6 @@ void _mw_uchar_to_float(register unsigned char *ptr_uchar,
 			register float *ptr_float, int N)
 {
      register int l;
-     register int c;
 
      for (l=1; l <= N; l++, *(ptr_float++) = (float) *(ptr_uchar++));
 }
@@ -2845,8 +2858,8 @@ Cmimage mw_mimage_to_cmimage(Mimage mimage, Cmimage cmimage)
      Cmorpho_line cml0,cml1;
      Fmorpho_line fml;
      Cfmorpho_line cfml0,cfml1;
-     Morpho_sets ms;
-     Cmorpho_sets cms0,cms1;
+/*     Morpho_sets ms;         */
+/*     Cmorpho_sets cms0,cms1; */
 
      if ((cmimage = mw_change_cmimage(cmimage)) == NULL)
      {
@@ -2912,8 +2925,8 @@ Mimage mw_cmimage_to_mimage(Cmimage cmimage, Mimage mimage)
      Cmorpho_line cml;
      Fmorpho_line fml0,fml1;
      Cfmorpho_line cfml;
-     Morpho_sets ms0,ms1;
-     Cmorpho_sets cms;
+/*     Morpho_sets ms0,ms1; */
+/*     Cmorpho_sets cms;    */
      int clost;
 
      if ((mimage = mw_change_mimage(mimage)) == NULL)

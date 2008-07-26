@@ -5,7 +5,38 @@
 */
 
 #include <stdio.h>
-#include "mw.h"
+#include <string.h>
+
+#include "libmw.h"
+#include "utils.h"
+#include "basic_conv.h"
+#include "cimage.h"
+#include "cimage_io.h"
+#include "fimage.h"
+#include "fimage_io.h"
+#include "ccimage.h"
+#include "ccimage_io.h"
+#include "cfimage.h"
+#include "cfimage_io.h"
+#include "curve.h"
+#include "curve_io.h"
+#include "fcurve.h"
+#include "fcurve_io.h"
+#include "dcurve.h"
+#include "dcurve_io.h"
+#include "polygon.h"
+#include "polygon_io.h"
+#include "fpolygon.h"
+#include "fpolygon_io.h"
+#include "list.h"
+#include "list_io.h"
+#include "mimage.h"
+#include "mimage_io.h"
+#include "cmimage.h"
+#include "cmimage_io.h"
+#include "file_type.h"
+
+#include "type_conv.h"
 
 /* Convert any possible internal type to another one. */
 
@@ -8655,9 +8686,6 @@ short _mw_create_etype_from_itype(char *fname, void *mwstruct,
      Polygon polygon;
      Fcurve fcurve;
      Fpolygon fpolygon;
-     Point_curve point_curve;
-     Point_fcurve point_fcurve;
-     Point_dcurve point_dcurve;
      Dcurve dcurve;
      Morpho_line morpho_line;
      Fmorpho_line fmorpho_line;

@@ -13,13 +13,20 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#include <stdlib.h>
 #include <stdio.h>
-#include <sys/file.h>
-#include <sys/types.h>
+#include <string.h>
+/* FIXME : UNIX-centric */
 #include <sys/stat.h>
-#include <unistd.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "curve.h"
+#include "file_type.h"
+#include "type_conv.h"
+#include "mwio.h"
+
+#include "curve_io.h"
 
 /* Those values of int type reserved */
 
@@ -32,6 +39,9 @@
 
 Point_curve _mw_point_curve_load_native(char *fname, char *type)
 {
+     /* FIXME : unused parameter */
+     fname = fname;
+     type = type;
      return(NULL);
 }
 
@@ -62,7 +72,7 @@ Curve _mw_load_curve_mw2_curve(char *fname)
 	  mwerror(INTERNAL, 0,"[_mw_load_curve_mw2_curve] File \"%s\" is not in the MW2_CURVE format\n",fname);
   
      if ( (need_flipping==-1) ||
-	  (!(fp = fopen(fname, "r"))) || (fstat(fileno(fp),&buf) != 0) )
+	  (!(fp = fopen(fname, "r"))) || (stat(fname,&buf) != 0) )
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -90,7 +100,8 @@ Curve _mw_load_curve_mw2_curve(char *fname)
 	  return(NULL);
      }
 
-     if (fread(buffer,1,hsize,fp) != hsize)
+     /* FIXME: wrong types, dirty temporary fix */
+     if (fread(buffer,1,hsize,fp) != (unsigned int) hsize)
      {
 	  mwerror(ERROR, 0,"Error while reading header of file \"%s\" !\n",fname);
 	  fclose(fp);
@@ -103,8 +114,8 @@ Curve _mw_load_curve_mw2_curve(char *fname)
      {
 	  readsize=remainsize;
 	  if (readsize > buf_size) readsize=buf_size;
-
-	  if (fread(buffer,sizeof(int),readsize,fp) != readsize)
+          /* FIXME: wrong types, dirty temporary fix */
+	  if (fread(buffer,sizeof(int),readsize,fp) != (unsigned int) readsize)
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       free(buffer);
@@ -185,6 +196,7 @@ Curve _mw_load_curve(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Curve !\n",fname,type);
+     return NULL;
 }
 
 
@@ -194,7 +206,6 @@ short _mw_create_curve_mw2_curve(char *fname, Curve cv)
 {
      FILE *fp;
      Point_curve pc;
-     int n;
 
      if (cv == NULL)
 	  mwerror(INTERNAL,1,"[_mw_create_curve_mw2_curve] Cannot create file: Curve structure is NULL\n");
@@ -246,6 +257,7 @@ short _mw_create_curve(char *fname, Curve cv, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }
 
 
@@ -284,8 +296,8 @@ static Curves _mw_load_curves_mw2_curves_1_00(char *fname)
 	  fclose(fp);
 	  return(NULL);
      }
-
-     if (fread(header,1,hsize,fp) != hsize)
+     /* FIXME: wrong types, dirty temporary fix */
+     if (fread(header,1,hsize,fp) != (unsigned int) hsize)
      {
 	  mwerror(ERROR, 0,"Error while reading header of file \"%s\" !\n",fname);
 	  fclose(fp);
@@ -408,7 +420,8 @@ Curves _mw_load_curves_mw2_curves(char *fname)
 	  return(NULL);
      }
 
-     if (fread(header,1,hsize,fp) != hsize)
+     /* FIXME: wrong types, dirty temporary fix */
+     if (fread(header,1,hsize,fp) != (unsigned int) hsize)
      {
 	  mwerror(ERROR, 0,"Error while reading header of file \"%s\" !\n",fname);
 	  fclose(fp);
@@ -506,6 +519,7 @@ Curves _mw_load_curves(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Curves !\n",fname,type);
+     return NULL;
 }
 
 
@@ -574,4 +588,5 @@ short _mw_create_curves(char *fname, Curves cvs, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }

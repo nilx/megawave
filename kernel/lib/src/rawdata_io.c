@@ -15,12 +15,14 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
-#include <sys/file.h>
-#include <sys/types.h>
+/* FIXME : UNIX-centric */
 #include <sys/stat.h>
-#include <unistd.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "rawdata.h"
+
+#include "rawdata_io.h"
 
 /* Load rawdata from a file of any format */
 
@@ -31,7 +33,7 @@ Rawdata _mw_load_rawdata(char *fname)
      struct stat buf;
      int fsize;
 
-     if ( (!(fp = fopen(fname, "r"))) || (fstat(fileno(fp),&buf) != 0) )
+     if ( (!(fp = fopen(fname, "r"))) || (stat(fname,&buf) != 0) )
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -45,7 +47,8 @@ Rawdata _mw_load_rawdata(char *fname)
 	  fclose(fp);
 	  return(NULL);
      }
-     if (fread(rd->data,1,fsize,fp) != fsize)
+     /* FIXME: wrong types, dirty temporary fix */
+     if (fread(rd->data,1,fsize,fp) != (unsigned int) fsize)
      {
 	  mwerror(ERROR, 0,"Error while reading rawdata file \"%s\" !\n",fname);
 	  fclose(fp);
@@ -73,7 +76,8 @@ short _mw_create_rawdata(char *fname, Rawdata rd)
      fp = fopen(fname, "w");
      if (fp == NULL) return(-1);
   
-     if (fwrite(rd->data,1,rd->size,fp) != rd->size)
+     /* FIXME: wrong types, dirty temporary fix */
+     if (fwrite(rd->data,1,rd->size,fp) != (unsigned int) rd->size)
      {
 	  mwerror(ERROR, 0,"Error while writing rawdata file \"%s\" !\n",fname);
 	  fclose(fp);

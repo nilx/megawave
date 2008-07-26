@@ -19,12 +19,19 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/file.h>
-#include <sys/types.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "shape.h"
+#include "curve.h"
+#include "file_type.h"
+#include "type_conv.h"
+#include "mwio.h"
+
+#include "shape_io.h"
 
 /* ---- I/O for shape ---- */
 
@@ -37,7 +44,6 @@ static Shape _mw_read_mw2_shape_1_00(char * fname, FILE * fp,
 { 
      Point_curve newpc,oldpc;
      unsigned int npc;
-     unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
      int i;
      Curve cv;
 
@@ -64,7 +70,7 @@ static Shape _mw_read_mw2_shape_1_00(char * fname, FILE * fp,
   
      if (need_flipping == 1)
      {
-	  _mw_in_flip_float( &(sh->value) );
+	  _mw_in_flip_float( (sh->value) );
 	  _mw_in_flip_b4(sh->area);
 	  _mw_in_flip_b4(i);
 	  _mw_in_flip_b4(npc);
@@ -102,7 +108,8 @@ static Shape _mw_read_mw2_shape_1_00(char * fname, FILE * fp,
 	  return(NULL);
      }
      oldpc = newpc = NULL;
-     for (i = 1; i <= npc; i++)
+     /* FIXME: wrong types, dirty temporary fix */
+     for (i = 1; i <= (int) npc; i++)
      {
 	  newpc = mw_new_point_curve();
 	  if (newpc == NULL)
@@ -144,8 +151,6 @@ Flist _mw_read_mw2_flist(char *,FILE *,int);
 static Shape _mw_read_mw2_shape(char * fname, FILE * fp,
 				int need_flipping, Shape sh, int * iparent)
 { 
-     Point_curve newpc,oldpc;
-     unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
      int i;
      char bound;
   
@@ -173,7 +178,7 @@ static Shape _mw_read_mw2_shape(char * fname, FILE * fp,
 
      if (need_flipping == 1)
      {
-	  _mw_in_flip_float( &(sh->value) );
+	  _mw_in_flip_float( (sh->value) );
 	  _mw_in_flip_b4(sh->area);
 	  _mw_in_flip_b4(i);
 	  _mw_in_flip_b4(sh->data_size);
@@ -261,7 +266,6 @@ Shape _mw_load_mw2_shape(char * fname)
 Shape _mw_load_shape(char * fname, char * Type)
 {
      char mtype[mw_mtype_size];
-     Shape shape;
      int hsize;  /* Size of the header, in bytes */
      float version;/* Version number of the file format */
 
@@ -284,7 +288,6 @@ void _mw_write_mw2_flist(FILE *, Flist);
 
 void _mw_write_mw2_shape(FILE * fp, Shape sh, int iparent)
 {
-     Point_curve pc;
      char bound; /* 1 if boundary defined (non NULL), 0 elsewhere */
 
      fwrite(&(sh->inferior_type),sizeof(char),1,fp);
@@ -350,7 +353,6 @@ Shapes _mw_load_mw2_shapes_1_00(char * fname)
      int i,IDs,absolute,iparent;
      char ftype[mw_ftype_size],mtype[mw_mtype_size];
      int need_flipping;
-     unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
      int hsize;  /* Size of the header, in bytes */
      float version;/* Version number of the file format */
 
@@ -509,7 +511,6 @@ Shapes _mw_load_mw2_shapes(char * fname)
      int i,IDs,absolute,iparent;
      char ftype[mw_ftype_size],mtype[mw_mtype_size];
      int need_flipping;
-     unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
      int hsize;  /* Size of the header, in bytes */
      float version;/* Version number of the file format */
 
@@ -683,7 +684,6 @@ Shapes _mw_load_mw2_shapes(char * fname)
 Shapes _mw_load_shapes(char * fname, char * Type)
 {
      char mtype[mw_mtype_size];
-     Shapes shapes;
      int hsize;  /* Size of the header, in bytes */
      float version;/* Version number of the file format */
 
@@ -706,7 +706,6 @@ Shapes _mw_load_shapes(char * fname, char * Type)
 short _mw_create_mw2_shapes(char * fname, Shapes shs)
 {
      FILE *fp;
-     Point_curve pc;
      unsigned int size;
      int i,*tabIDs,new_nb_shapes,absolute;
      Shape sh;

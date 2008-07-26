@@ -1,10 +1,3 @@
-/*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
-MegaWave2 is a "soft-publication" for the scientific community. It has
-been developed for research purposes and it comes without any warranty.
-The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-      94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*
  * Copyright (c) 1988, 1989, 1990, 1991, 1992, 1993, 1994 Sam Leffler
  * Copyright (c) 1991, 1992, 1993, 1994 Silicon Graphics, Inc.
@@ -29,8 +22,8 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
  * OF THIS SOFTWARE.
  */
 
-#ifndef _TIFF_
-#define	_TIFF_
+#ifndef _TIFF_H
+#define	_TIFF_H
 /*
  * Tag Image File Format (TIFF)
  *
@@ -57,13 +50,8 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
  */
 typedef	short int16;
 typedef	unsigned short uint16;	/* sizeof (uint16) must == 2 */
-#if defined(__alpha) || _MIPS_SZLONG == 64
 typedef	int int32;
 typedef	unsigned int uint32;	/* sizeof (uint32) must == 4 */
-#else
-typedef	long int32;
-typedef	unsigned long uint32;	/* sizeof (uint32) must == 4 */
-#endif
 
 typedef	struct {
 	uint16	tiff_magic;	/* magic number (defines byte order) */
@@ -291,4 +279,5 @@ typedef	enum {
  */
 #define TIFFTAG_PIXAR_IMAGEFULLWIDTH    33300   /* full image size in x */
 #define TIFFTAG_PIXAR_IMAGEFULLLENGTH   33301   /* full image size in y */
-#endif /* _TIFF_ */
+
+#endif /* !_TIFF_ */

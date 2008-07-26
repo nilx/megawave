@@ -15,10 +15,14 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "curve.h"
+
+#include "polygon.h"
 
 /* Creates a new polygon structure with 0 channel.                  */
 
@@ -99,8 +103,6 @@ Polygon mw_change_polygon(Polygon poly, int nc)
 
 void mw_delete_polygon(Polygon polygon)
 {
-     Point_curve point,point_next;
-
      if (polygon == NULL)
      {
 	  mwerror(ERROR, 0,

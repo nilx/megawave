@@ -17,31 +17,10 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #ifndef rawdata_flg
 #define rawdata_flg
 
-#ifdef SunOS
-#include <sys/types.h>
-#endif
-
-typedef struct rawdata {
-  int size;               /* Number of samples */
-  unsigned char *data;    /* data field */
-} *Rawdata;
-
-/* Functions definition */
-
-#ifdef __STDC__
-
 Rawdata mw_new_rawdata(void);
 Rawdata mw_alloc_rawdata(Rawdata, int);
 void mw_delete_rawdata(Rawdata);
 Rawdata mw_change_rawdata(Rawdata, int);
 void mw_copy_rawdata(Rawdata, Rawdata);
-#else
-
-Rawdata mw_new_rawdata();
-Rawdata mw_alloc_rawdata();
-void mw_delete_rawdata();
-Rawdata mw_change_rawdata();
-void mw_copy_rawdata();
-#endif
 
 #endif

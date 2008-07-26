@@ -16,12 +16,14 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
-#include <sys/file.h>
 #include <string.h>
 
-#include "ascii_file.h"
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
 #include "module.h"
+#include "ascii_file.h"
+
+#include "module_io.h"
 
 /* Read an entire line (until \n). Return 0 if EOF. */
 
@@ -75,10 +77,11 @@ static void convert_groupname(char *string)
      /* Remove path */
      strcpy(buff,string);
      for (i=strlen(buff); (i >= 0) && (buff[i] != '/') ; i--);
-     if ((i>=0) && (i<strlen(buff))) strcpy(string,&buff[i+1]);
+     /* FIXME: wrong types, dirty temporary fix */
+     if ((i>=0) && (i< (int) strlen(buff))) strcpy(string,&buff[i+1]);
 
      /* Replace '_' by space */
-     for (i=0;i<=strlen(string);i++) 
+     for (i=0;i<= (int) strlen(string);i++) 
 	  if (string[i] == '_') string[i] = ' ';
   
 }
@@ -152,7 +155,6 @@ Modules _mw_load_modules(char *fname)
      FILE    *fp;
      Modules modules;
      Module newm,oldm;
-     char mname[mw_namesize];
      char line[BUFSIZ];
 
      if (!(fp = fopen(fname, "r")))
@@ -284,7 +286,7 @@ void _mw_write_submodules(FILE *fp, Module levelm, char *groupid)
 short _mw_create_modules(char *fname, Modules modules)
 {
      FILE *fp;
-     Module upm,module;
+     Module upm;
      int Group_nb;
      char groupid[BUFSIZ];
 
@@ -314,7 +316,7 @@ short _mw_create_modules(char *fname, Modules modules)
 	  if (!upm->down)
 	  {
 	       mwerror(ERROR,1,"Group \"%s\" is empty !\n",upm->name);
-	       return;
+	       return -1;
 	  }
 	  sprintf(groupid,"Group%d",Group_nb);
 	  _mw_write_submodules(fp,upm->down,groupid);

@@ -24,8 +24,10 @@
 #include <string.h>
 #include <sys/file.h>
 
+#include "libmw.h"
+#include "utils.h"
+
 #include "ascii_file.h"
-#include "mw.h"
 
 /*     Locate a string in a file */
 /*     Characted ? in str may match any non-null character in the file */

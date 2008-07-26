@@ -16,10 +16,20 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-#include <stdio.h>
+#include <stdlib.h>
+/*#include <stdio.h>*/
 #include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "cimage.h"
+#include "fimage.h"
+#include "fsignal.h"
+
+#include "wpack2d.h"
+
+#define WPACK2D_DEFAULT_NAME "untitled"
+#define WPACK2D_DEFAULT_CMT "?"
 
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 
@@ -142,14 +152,14 @@ Wpack2d mw_new_wpack2d(void)
      Wpack2d newpack;
 
      /* allocate memory for structure */
-     if ((newpack=malloc(sizeof(struct wpack2d)))==NULL)
+     if ((newpack=(Wpack2d) malloc(sizeof(struct wpack2d)))==NULL)
 	  mwerror(FATAL,-1,"[mw_new_wpack2d] Not enough memory\n");
   
      /* set name to default */
-     sprintf(newpack->name, "%s", WPACK2D_DEFAULT_NAME);
+     strcpy(newpack->name, WPACK2D_DEFAULT_NAME);
   
      /* set comment to default */
-     sprintf(newpack->cmt , "%s", WPACK2D_DEFAULT_CMT);
+     strcpy(newpack->cmt, WPACK2D_DEFAULT_CMT);
   
      newpack->signal1 = NULL;
      newpack->signal2 = NULL;
@@ -290,12 +300,12 @@ Wpack2d mw_alloc_wpack2d(Wpack2d pack, Cimage tree,
 	  return(NULL);
     
      mw_copy_cimage(tree,pack->tree);
-     sprintf(pack->tree->name, "%s", tree->name);
+     strcpy(pack->tree->name, tree->name);
      
      /* initializes pack->signal1 */
      pack->signal1 = mw_change_fsignal(pack->signal1, signal1->size);
      mw_copy_fsignal(signal1,pack->signal1);
-     sprintf(pack->signal1->name, "%s", signal1->name);
+     strcpy(pack->signal1->name, signal1->name);
      pack->signal1->shift=signal1->shift;
     
      /* initializes pack->signal2 */
@@ -304,7 +314,7 @@ Wpack2d mw_alloc_wpack2d(Wpack2d pack, Cimage tree,
 	  pack->signal2 = mw_change_fsignal(pack->signal2, signal1->size);
 	  if (!pack->signal2) return(NULL);
 	  mw_copy_fsignal(signal1,pack->signal2);
-	  sprintf(pack->signal2->name, "%s", signal1->name);
+	  strcpy(pack->signal2->name, signal1->name);
 	  pack->signal2->shift=signal1->shift;
      }
      else
@@ -312,7 +322,7 @@ Wpack2d mw_alloc_wpack2d(Wpack2d pack, Cimage tree,
 	  pack->signal2 = mw_change_fsignal(pack->signal2, signal2->size);
 	  if (!pack->signal2) return(NULL);
 	  mw_copy_fsignal(signal2,pack->signal2);
-	  sprintf(pack->signal2->name, "%s", signal2->name);
+	  strcpy(pack->signal2->name, signal2->name);
 	  pack->signal2->shift=signal2->shift;
      }
 
@@ -320,7 +330,7 @@ Wpack2d mw_alloc_wpack2d(Wpack2d pack, Cimage tree,
      if (pack->images==NULL)
      {
 	  pack->img_array_size=pack->tree->ncol*pack->tree->nrow;
-	  if ((pack->images = malloc(pack->img_array_size*sizeof(Fimage)))==NULL)
+	  if ((pack->images = (Fimage *) malloc(pack->img_array_size*sizeof(Fimage)))==NULL)
 	       mwerror(FATAL,-1,"[mw_alloc_wpack2d] Not enough memory for image array\n");
 
 	  for (i=0 ; i<pack->img_array_size ; i++)
@@ -337,7 +347,7 @@ Wpack2d mw_alloc_wpack2d(Wpack2d pack, Cimage tree,
       
 	  pack->img_array_size=pack->tree->ncol*pack->tree->nrow;
       
-	  if ((pack->images = realloc(pack->images,pack->img_array_size*sizeof(Fimage)))==NULL)
+	  if ((pack->images = (Fimage *) realloc(pack->images,pack->img_array_size*sizeof(Fimage)))==NULL)
 	       mwerror(FATAL,-1,"[mw_alloc_wpack2d] Not enough memory for image array\n");
 	
 	  for (i=0 ; i<pack->img_array_size ; i++)
@@ -464,7 +474,7 @@ void mw_copy_wpack2d(Wpack2d in, Wpack2d out, int new_tree_size)
 		    for(x=0;x<extra;x++) for(y=0;y<extra;y++)
 					      tree->gray[(kx1+x)*new_tree_size+ky1+y]=value;
 	       }
-	  sprintf(tree->name, "%s",in->tree->name);
+	  strcpy(tree->name, in->tree->name);
       
 	  out = mw_change_wpack2d(out, tree, in->signal1, in->signal2, in->img_nrow,in->img_ncol);
 	  if (!out) mwerror(FATAL,-1,"[mw_copy_wpack2d] Not enough memory\n");      
@@ -542,7 +552,7 @@ void mw_prune_wpack2d(Wpack2d in, Wpack2d out, Cimage tree)
      {
 	  /*copy the result if tree need not being modified */
 	  mw_copy_wpack2d(in, out, 0);    
-	  sprintf(out->tree->name, "%s", tree->name);
+	  strcpy(out->tree->name, tree->name);
      }
      else 
 	  /* modify tree if needed */ 

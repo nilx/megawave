@@ -14,10 +14,13 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
-#include <sys/file.h>
 
+#include "libmw.h"
+#include "utils.h"
 #include "ascii_file.h"
-#include "mw.h"
+#include "wmax2d.h"
+
+#include "wmax2d_io.h"
 
 /* ----- Virtual Maxima points & chains ----- */
 
@@ -34,7 +37,6 @@ Vchains_wmax _mw_load_vchains_wmax(char *fname)
      int px,py,vcs_size;
      float pargp;
      register int n;
-     long t;
 
      fp = _mw_open_data_ascii_file(fname);
      if (fp == NULL) return(NULL);

@@ -39,15 +39,6 @@ extern void mwerror(int, int, char *, ...);
 
 /* Global Variables */
 
-char *mwname=NULL;         /* Name of the module */
-char *mwgroup=NULL;        /* Group of the module */
-char *mwerrormessage=NULL; /* Error message (from a module to XMegaWave2) */
-
-/* Mode in which the library is running */
-/* 1 :  Unix command */
-/* 2 :  XMegaWave2  */
-int mwrunmode=0;
-
 /* For MegaWave interpretor (XMegaWave2) */
 jmp_buf *_mwienv = NULL;
 

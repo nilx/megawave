@@ -13,13 +13,22 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/file.h>
-#include <string.h>
-#include <math.h>
 
-#include "mw.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "libmw.h"
+#include "utils.h"
+#include "pm_io.h"
+#include "tiff_io.h"
+#include "bmp_io.h"
+#include "ppmr_io.h"
+#include "jpeg_io.h"
+#include "file_type.h"
+#include "type_conv.h"
+
+#include "ccimage_io.h"
 
 /*~~~~~~ MegaWave2 formats ~~~~~*/
 
@@ -103,6 +112,8 @@ Ccimage _mw_ccimage_load_image(char *NomFic, char *Type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",NomFic);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I don't know how to load such external type into a Ccimage !\n",NomFic,Type);
+
+     return NULL;
 }
 
 
@@ -122,5 +133,7 @@ short _mw_ccimage_create_image(char *NomFic, Ccimage image, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",NomFic);  
+
+     return -1;
 }
 

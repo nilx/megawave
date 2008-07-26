@@ -16,12 +16,16 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
 #include <stdio.h>
-#include <string.h>
 #include <time.h>
+#include <string.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "cimage.h"
+#include "mwio.h"
+
+#include "ps_io.h"
 
 /* Table de conversion Hexa -> Ascii */
 char  hval[] = {'0', '1', '2', '3', '4', '5', '6',
@@ -87,8 +91,9 @@ static void remove_special_char(char *s)
 
 short _mw_cimage_create_ps(char *fname, Cimage image)
 {
+     /* FIXME : write remplaced by fwrite */
      FILE *fp;
-     int  PSfd;
+     /* int  PSfd; */
 
 #define   MAXBUFSIZE  10000  /* Taille max du Buffer fichier PostScript */
 #define   PSHEADS     1000
@@ -150,7 +155,7 @@ short _mw_cimage_create_ps(char *fname, Cimage image)
 	  mwerror(ERROR, 0,"Cannot create the file \"%s\"\n",fname);
 	  return(-1);
      }
-     PSfd = fileno(fp);
+     /* PSfd = fileno(fp); */
 
      /* Header */
      strcpy(headbuf,"%!PS-Adobe\n");
@@ -176,7 +181,7 @@ short _mw_cimage_create_ps(char *fname, Cimage image)
 
 
      PSfcmd = strlen(headbuf);
-     write(PSfd,headbuf,PSfcmd);
+     fwrite(headbuf, sizeof(char), PSfcmd, fp);
   
      /* Comments */
      strcpy(headbuf,"/Times-BoldItalic findfont 10 scalefont setfont\n");
@@ -186,7 +191,8 @@ short _mw_cimage_create_ps(char *fname, Cimage image)
      while ( *comm != '\0'  ) 
      {
 	  i=MAXLCOM;
-	  while ( (i<strlen(comm)) && (comm[i] != ' ') ) i++;
+          /* FIXME: wrong types, dirty temporary fix */
+	  while ( (i< (int) strlen(comm)) && (comm[i] != ' ') ) i++;
 	  strncpy(lcom,comm,i);
 	  lcom[i++] = '\0';
 	  comm = (char *) &comm[i];
@@ -198,8 +204,8 @@ short _mw_cimage_create_ps(char *fname, Cimage image)
 	  lg -= 10;
      }
      PSfcmd = strlen(headbuf);
-     write(PSfd,headbuf,PSfcmd);
-
+     fwrite(headbuf, sizeof(char), PSfcmd, fp);
+ 
      /* DATA */
 
      bdy = (bufsize / image->ncol) >> 1;
@@ -276,8 +282,8 @@ short _mw_cimage_create_ps(char *fname, Cimage image)
 	  sprintf (hbuf ,"[%d 0 0 -%d 0 %d] <", image->ncol, bdy, bdy);
 	  strcat (headbuf ,hbuf);
       
-	  PSfcmd = strlen (headbuf);
-	  write (PSfd, headbuf, PSfcmd);
+	  PSfcmd = strlen(headbuf);
+	  fwrite(headbuf, sizeof(char), PSfcmd, fp);
 
 	  /* Lecture des pixels de l'image et conversion PostScript */
 
@@ -288,21 +294,21 @@ short _mw_cimage_create_ps(char *fname, Cimage image)
 	       PSfbuf[j] = hval[image->gray[pixoffs]>>4];
 	       PSfbuf[j+1]=hval[image->gray[pixoffs++]&15];
 	  }
-	  write (PSfd, PSfbuf, pixcnt);
+	  fwrite(PSfbuf, sizeof(unsigned char), pixcnt, fp);
       
 	  /* Fin commandes PostScript */	
 
 	  sprintf (headbuf, "> image\n");
-	  PSfcmd = strlen (headbuf);
-	  write (PSfd, headbuf, PSfcmd);
-	  sprintf (headbuf, "");
+	  PSfcmd = strlen(headbuf);
+	  fwrite(headbuf, sizeof(char), PSfcmd, fp);
+	  headbuf[0] = '\0';
 	  cntdy += bdy;
 
      }
      /* Show the page and Restore original state */
      sprintf(headbuf,"showpage\norigstate restore\n");
      PSfcmd = strlen(headbuf);
-     write(PSfd,headbuf,PSfcmd);
+     fwrite(headbuf, sizeof(char), PSfcmd, fp);
     
      fclose (fp);
      return (0);

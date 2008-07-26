@@ -23,31 +23,12 @@ distclean	: distclean-bin distclean-test distclean-doc
 # BIN
 #
 
-SRC_OBSOLETE	= $(addprefix $(SRCDIR)/, img_io.c rim_io.c make_type_conv.c)
-SRC	= $(filter-out $(SRC_OBSOLETE), $(addprefix $(SRCDIR)/, \
-            ascii_file.c basic_conv.c bmp_io.c ccimage.c ccimage_io.c \
-            ccmovie.c ccmovie_io.c cfimage.c cfimage_io.c cfmovie.c \
-            cfmovie_io.c cimage.c cimage_io.c cmimage.c cmimage_io.c \
-            cmovie.c cmovie_io.c curve.c curve_io.c dcurve.c \
-            dcurve_io.c epsf_io.c fcurve.c fcurve_io.c file_type.c \
-            fimage.c fimage_io.c fmovie.c fmovie_io.c fpolygon.c \
-            fpolygon_io.c fsignal.c fsignal_io.c gif_io.c img_io.c \
-            jpeg_io.c list.c list_io.c make_type_conv.c mimage.c \
-            mimage_io.c module.c module_io.c mw.c mwio.c mw_main.c \
-            notiff.c pgm_io.c pm_io.c polygon.c polygon_io.c ppm_io.c \
-            ps_io.c rawdata.c rawdata_io.c rim_io.c shape.c shape_io.c \
-            tiff_io.c type_conv.c unix_bsd.c wave_io.c window.c \
-            wmax2d.c wmax2d_io.c wpack2d.c wpack2d_io.c wpanel.c \
-            wtrans1d.c wtrans1d_io.c wtrans2d.c wtrans2d_io.c xmw_com.c))
-HDR	= $(addprefix $(SRCDIR)/, strtoul.h)
+SRC	:= $(sort $(shell find $(SRCDIR) -maxdepth 1 -type f -name *.c))
+HDR	= $(addprefix include/, $(notdir $(SRC:.c=.h)))
 IPATH	= ./include
-CSTD	=
 
 BINNAME	= libmw
 
-foo:
-	@echo $(OBJ)
- 
 .PHONY	: bin
 bin 	: $(SRCDIR)/$(BINNAME).so
 $(SRCDIR)/$(BINNAME).so 	: $(OBJ)

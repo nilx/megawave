@@ -21,12 +21,22 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 #include <stdio.h>
 #include <string.h>
-#include <sys/file.h>
-#include <sys/types.h>
 
-#include "mw.h"
+#include "libmw.h"
+#include "utils.h"
+#include "cmimage.h"
+#include "curve.h"
+#include "mimage.h"
+#include "file_type.h"
+#include "mimage_io.h"
+#include "type_conv.h"
+#include "mwio.h"
+#include "fcurve.h"
+
+#include "cmimage_io.h"
 
 /* ---- I/O for cmorpho_line ---- */
 
@@ -34,12 +44,11 @@
 
 static Cmorpho_line _mw_read_cml_mw2_cml(char * fname, FILE * fp, 
 					 int need_flipping)
-{ 
+{
      Cmorpho_line ll;
      Point_curve newpc,oldpc;
      Point_type newpt,oldpt;
      unsigned int npc, npt, i;
-     unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
 
      ll = mw_new_cmorpho_line();
      if (ll == NULL) 
@@ -72,13 +81,13 @@ static Cmorpho_line _mw_read_cml_mw2_cml(char * fname, FILE * fp,
 
      if (need_flipping == 1)
      {
-	  _mw_in_flip_float( &(ll->minvalue.red) );
-	  _mw_in_flip_float( &(ll->minvalue.green) );
-	  _mw_in_flip_float( &(ll->minvalue.blue) );
-	  _mw_in_flip_float( &(ll->maxvalue.red) );
-	  _mw_in_flip_float( &(ll->maxvalue.green) );
-	  _mw_in_flip_float( &(ll->maxvalue.blue) );
-	  _mw_in_flip_float( &(ll->data) );
+	  _mw_in_flip_float( (ll->minvalue.red) );
+	  _mw_in_flip_float( (ll->minvalue.green) );
+	  _mw_in_flip_float( (ll->minvalue.blue) );
+	  _mw_in_flip_float( (ll->maxvalue.red) );
+	  _mw_in_flip_float( (ll->maxvalue.green) );
+	  _mw_in_flip_float( (ll->maxvalue.blue) );
+	  _mw_in_flip_float( (ll->data) );
 	  _mw_in_flip_b4(npc);
 	  _mw_in_flip_b4(npt);
      }
@@ -215,6 +224,7 @@ Cmorpho_line _mw_load_cmorpho_line(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cmorpho_line !\n",fname,type);
+     return NULL;
 }
 
 
@@ -225,6 +235,9 @@ void _mw_write_cml_mw2_cml(FILE *fp, Cmorpho_line ll, unsigned int nml)
      Point_curve pc;
      Point_type pt;
      unsigned int npc,npt;
+
+     /* FIXME : unused param, dirty fix */
+     nml = nml;
 
      fwrite(&(ll->minvalue.model),sizeof(unsigned char),1,fp);
      fwrite(&(ll->minvalue.red),sizeof(float),1,fp);
@@ -305,7 +318,8 @@ short _mw_create_cml_mw2_cml(char *fname, Cmorpho_line ll)
 short _mw_cmorpho_line_create_native(char *fname, Cmorpho_line ll, char *Type)
 {
      if (strcmp(Type,"MW2_CMORPHO_LINE") == 0)
-	  return(_mw_create_ml_mw2_ml(fname,ll));
+	  /* FIXME: wrong types, dirty temporary fix */
+	  return(_mw_create_ml_mw2_ml(fname, (Morpho_line) ll));
   
      return(-1);
 }
@@ -328,6 +342,7 @@ short _mw_create_cmorpho_line(char *fname, Cmorpho_line ll, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }
 
 /* ---- I/O for Cfmorpho_line ---- */
@@ -341,7 +356,6 @@ static Cfmorpho_line _mw_read_cfml_mw2_cfml(char *fname, FILE *fp,
      Point_fcurve newpc,oldpc;
      Point_type newpt,oldpt;
      unsigned int npc, npt, i;
-     unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
 
      fll = mw_new_cfmorpho_line();
      if (fll == NULL) 
@@ -372,13 +386,13 @@ static Cfmorpho_line _mw_read_cfml_mw2_cfml(char *fname, FILE *fp,
 
      if (need_flipping == 1)
      {
-	  _mw_in_flip_float( &(fll->minvalue.red) );
-	  _mw_in_flip_float( &(fll->minvalue.green) );
-	  _mw_in_flip_float( &(fll->minvalue.blue) );
-	  _mw_in_flip_float( &(fll->maxvalue.red) );
-	  _mw_in_flip_float( &(fll->maxvalue.green) );
-	  _mw_in_flip_float( &(fll->maxvalue.blue) );
-	  _mw_in_flip_float( &(fll->data) );
+	  _mw_in_flip_float( (fll->minvalue.red) );
+	  _mw_in_flip_float( (fll->minvalue.green) );
+	  _mw_in_flip_float( (fll->minvalue.blue) );
+	  _mw_in_flip_float( (fll->maxvalue.red) );
+	  _mw_in_flip_float( (fll->maxvalue.green) );
+	  _mw_in_flip_float( (fll->maxvalue.blue) );
+	  _mw_in_flip_float( (fll->data) );
 	  _mw_in_flip_b4(npc);
 	  _mw_in_flip_b4(npt);
      }
@@ -411,8 +425,8 @@ static Cfmorpho_line _mw_read_cfml_mw2_cfml(char *fname, FILE *fp,
 	  }
 	  if (need_flipping == 1)
 	  {
-	       _mw_in_flip_float(&(newpc->x));
-	       _mw_in_flip_float(&(newpc->y));
+	       _mw_in_flip_float((newpc->x));
+	       _mw_in_flip_float((newpc->y));
 	  }
 	  oldpc = newpc;
      }
@@ -513,6 +527,7 @@ Cfmorpho_line _mw_load_cfmorpho_line(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cfmorpho_line !\n",fname,type);
+     return NULL;
 }
 
 
@@ -588,7 +603,8 @@ short _mw_create_cfml_mw2_cfml(char *fname, Cfmorpho_line fll)
 short _mw_cfmorpho_line_create_native(char *fname, Cfmorpho_line ll, char *Type)
 {
      if (strcmp(Type,"MW2_CFMORPHO_LINE") == 0)
-	  return(_mw_create_fml_mw2_fml(fname,ll));
+	  /* FIXME: wrong types, dirty temporary fix */
+	  return(_mw_create_fml_mw2_fml(fname, (Fmorpho_line) ll));
   
      return(-1);
 }
@@ -611,6 +627,7 @@ short _mw_create_cfmorpho_line(char *fname, Cfmorpho_line ll, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }
 
 
@@ -623,7 +640,6 @@ Cmorpho_set _mw_read_cms_mw2_cms(char *fname, FILE *fp, int need_flipping)
      Cmorpho_set is;
      Hsegment news,olds;
      unsigned int ns, i;
-     unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
 
      is = mw_new_cmorpho_set();
      if (is == NULL) 
@@ -651,12 +667,12 @@ Cmorpho_set _mw_read_cms_mw2_cms(char *fname, FILE *fp, int need_flipping)
      }
      if (need_flipping == 1)
      {
-	  _mw_in_flip_float( &(is->minvalue.red) );
-	  _mw_in_flip_float( &(is->minvalue.green) );
-	  _mw_in_flip_float( &(is->minvalue.blue) );
-	  _mw_in_flip_float( &(is->maxvalue.red) );
-	  _mw_in_flip_float( &(is->maxvalue.green) );
-	  _mw_in_flip_float( &(is->maxvalue.blue) );
+	  _mw_in_flip_float( (is->minvalue.red) );
+	  _mw_in_flip_float( (is->minvalue.green) );
+	  _mw_in_flip_float( (is->minvalue.blue) );
+	  _mw_in_flip_float( (is->maxvalue.red) );
+	  _mw_in_flip_float( (is->maxvalue.green) );
+	  _mw_in_flip_float( (is->maxvalue.blue) );
 	  _mw_in_flip_b4(is->area);
 	  _mw_in_flip_b4(ns);
      }
@@ -770,6 +786,7 @@ Cmorpho_set _mw_load_cmorpho_set(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cmorpho_set !\n",fname,type);
+     return NULL;
 }
 
 
@@ -827,7 +844,8 @@ short _mw_create_cms_mw2_cms(char *fname, Cmorpho_set is)
 short _mw_cmorpho_set_create_native(char *fname, Cmorpho_set ms, char *Type)
 {
      if (strcmp(Type,"MW2_CMORPHO_SET") == 0)
-	  return(_mw_create_ms_mw2_ms(fname,ms));
+	  /* FIXME: wrong types, dirty temporary fix */
+	  return(_mw_create_ms_mw2_ms(fname, (Morpho_set) ms));
   
      return(-1);
 }
@@ -850,6 +868,7 @@ short _mw_create_cmorpho_set(char *fname, Cmorpho_set ms, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }
 
 
@@ -1015,6 +1034,7 @@ Cmorpho_sets _mw_load_cmorpho_sets(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cmorpho_sets !\n",fname,type);
+     return NULL;
 }
 
 
@@ -1075,7 +1095,8 @@ short _mw_create_cmss_mw2_cmss(char *fname, Cmorpho_sets iss)
 short _mw_cmorpho_sets_create_native(char *fname, Cmorpho_sets mss, char *Type)
 {
      if (strcmp(Type,"MW2_CMORPHO_SETS") == 0)
-	  return(_mw_create_mss_mw2_mss(fname,mss));
+	  /* FIXME: wrong types, dirty temporary fix */
+	  return(_mw_create_mss_mw2_mss(fname, (Morpho_sets) mss));
   
      return(-1);
 }
@@ -1098,6 +1119,7 @@ short _mw_create_cmorpho_sets(char *fname, Cmorpho_sets mss, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }
 
 
@@ -1116,7 +1138,6 @@ Cmimage _mw_load_cmimage_mw2_cmimage(char *fname)
      unsigned int size,nll,i,mlnum,msnum;
      char ftype[mw_ftype_size],mtype[mw_mtype_size];
      int need_flipping;
-     unsigned long * flip_float; /* buffer for macro _mw_in_flip_float */
      int hsize;  /* Size of the header, in bytes */
      float version;/* Version number of the file format */
 
@@ -1200,12 +1221,12 @@ Cmimage _mw_load_cmimage_mw2_cmimage(char *fname)
      {
 	  _mw_in_flip_b4(cmimage->nrow);
 	  _mw_in_flip_b4(cmimage->ncol);
-	  _mw_in_flip_float( &(cmimage->minvalue.red) );
-	  _mw_in_flip_float( &(cmimage->minvalue.green) );
-	  _mw_in_flip_float( &(cmimage->minvalue.blue) );
-	  _mw_in_flip_float( &(cmimage->maxvalue.red) );
-	  _mw_in_flip_float( &(cmimage->maxvalue.green) );
-	  _mw_in_flip_float( &(cmimage->maxvalue.blue) );
+	  _mw_in_flip_float( (cmimage->minvalue.red) );
+	  _mw_in_flip_float( (cmimage->minvalue.green) );
+	  _mw_in_flip_float( (cmimage->minvalue.blue) );
+	  _mw_in_flip_float( (cmimage->maxvalue.red) );
+	  _mw_in_flip_float( (cmimage->maxvalue.green) );
+	  _mw_in_flip_float( (cmimage->maxvalue.blue) );
 	  _mw_in_flip_b4(nll);
      }
 
@@ -1354,6 +1375,7 @@ Cmimage _mw_load_cmimage(char *fname, char *type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cmimage !\n",fname,type);
+     return NULL;
 }
 
 /* Write file in MW2_CMIMAGE format */  
@@ -1457,4 +1479,5 @@ short _mw_create_cmimage(char *fname, Cmimage cmimage, char *Type)
 	of a write failure (e.g. the output file name is write protected).
      */
      mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
+     return -1;
 }

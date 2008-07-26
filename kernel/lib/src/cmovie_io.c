@@ -14,14 +14,22 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/file.h>
-#include <string.h>
-#include <strings.h>
 
+#include <stdio.h>
+#include <string.h>
+/* FIXME : UNIX-centric */
+#include <fcntl.h>
+#include <unistd.h>
+
+#include "libmw.h"
+#include "utils.h"
+#include "cimage_io.h"
+#include "cmovie.h"
 #include "ascii_file.h"
-#include "mw.h"
+#include "file_type.h"
+#include "type_conv.h"
+
+#include "cmovie_io.h"
 
 extern int _mw_convert_struct_warning;
 
@@ -34,7 +42,7 @@ Cmovie _mw_cmovie_load_movie_old_format(char *NomFic, char *Type)
      char FicImage[BUFSIZ];
      char Ext[BUFSIZ];
      short f,num;
-     short i;
+     /* short i; */
       
      movie = NULL;
      strcpy(Type,"?");  /* Type a priori inconnu */
@@ -220,11 +228,12 @@ Cmovie _mw_cmovie_load_movie(char *NomFic, char *Type)
 	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",NomFic);
      else
 	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cmovie !\n",NomFic,Type);
+     return NULL;
 }
 
 short _mw_cmovie_create_movie(char *NomFic, Cmovie movie, char *Type)
 {
-     Cimage image,image_next;
+     Cimage image;
      char FicImage1[BUFSIZ],FicImage2[BUFSIZ];
      char *BaseName,*c;
      char field[10];

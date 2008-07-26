@@ -57,11 +57,13 @@ CDEBUG	=
 
 ifdef STRICT
 CSTRICT	= -pedantic -Werror $(CSTRICT_4_1)               \
-          -Wfloat-equal -Wundef -Wshadow -Wpointer-arith \
+          -Wundef -Wshadow -Wpointer-arith               \
           -Wbad-function-cast -Wcast-qual -Wcast-align   \
           -Waggregate-return -Wstrict-prototypes         \
           -Wmissing-prototypes                           \
           -Wmissing-declarations -Wnested-externs
+#          -Wfloat-equal -Wundef -Wshadow -Wpointer-arith \
+
 endif
 
 ifdef PROF
@@ -115,7 +117,7 @@ MANHTML   = $(addsuffix .html, $(MAN))
 # GENERIC RULES
 
 # build a prerequisites file
-%.d : %.c
+%.d : %.c %.h
 	@set -e; $(RM) $@; \
 	    $(MAKEDEP) $(addprefix -I, $(IPATH)) $< > $@; \
 	    $(SED) 's|\($*\)\.o[ :]*|\1.o $@ : |g' $@ > $@.$$$$; \

@@ -18,21 +18,47 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 
+/* FIXME : UNIX-centric and irregular */
+/* FIXME : dirty fix*/
 #define __USE_XOPEN
 #include <sys/stat.h>
 #undef __USE_XOPEN
-#include <sys/types.h>
+#include <dirent.h>
 #include <unistd.h>
 
-/* for opendir(),readdir(),... */
-#include <sys/types.h>
-#include <dirent.h>
+#include "libmw.h"
+#include "utils.h"
+#include "cimage_io.h"
+#include "fimage_io.h"
+#include "ccimage_io.h"
+#include "cfimage_io.h"
+#include "cmovie_io.h"
+#include "fmovie_io.h"
+#include "ccmovie_io.h"
+#include "cfmovie_io.h"
+#include "curve_io.h"
+#include "fcurve_io.h"
+#include "dcurve_io.h"
+#include "polygon_io.h"
+#include "fpolygon_io.h"
+#include "fsignal_io.h"
+#include "wtrans1d_io.h"
+#include "wtrans2d_io.h"
+#include "wmax2d_io.h"
+#include "wpack2d_io.h"
+#include "module_io.h"
+#include "mimage_io.h"
+#include "cmimage_io.h"
+#include "shape_io.h"
+#include "rawdata_io.h"
+#include "list_io.h"
+#include "file_type.h"
 
-#include "mw.h"
+#include "mwio.h"
 
 /*===== Flip the image's buffer =====*/
 
@@ -144,15 +170,9 @@ static int _get_file_status(char * fname)
    Return 1 if found and the found directory in founddir, 0 elsewhere.
 */
 
-static int _search_filename_in_dir(fname,searchdir,founddir)  
-
-char *fname;
-char *searchdir;
-char *founddir;
-
+static int _search_filename_in_dir(char *fname, char *searchdir, char *founddir)
 {
      char dname[BUFSIZ];
-     FILE *fp;
      DIR *D;
      struct dirent *dirbuf; 
      struct stat statbuf;
@@ -194,9 +214,7 @@ char *founddir;
 
 int _search_filename(char * fname)  /* Return 1 if found, 0 else */
 {
-     FILE *fp;
-     int i;
-     char *path,*getenv(),searchdir[BUFSIZ],founddir[BUFSIZ],newfname[BUFSIZ];
+     char *path,searchdir[BUFSIZ],founddir[BUFSIZ],newfname[BUFSIZ];
 
      *founddir = '\0';
      if (_get_file_status(fname)==1) /* fname is found */
@@ -318,7 +336,7 @@ int _mw_byte_ordering_is_little_endian(void)
 
 /*===== Internal type : Cimage =====*/
 
-short _mwload_cimage(char * name, char type, char comment, Cimage * im)
+short _mwload_cimage(char * name, char type[], char comment[], Cimage * im)
 {
      char type_in[mw_ftype_size];
      char comment_in[BUFSIZ];
@@ -545,6 +563,9 @@ short _mwload_curve(char * name, char type[], char comment[],
      char type_in[mw_ftype_size];
      char fname[BUFSIZ];
 
+     /* FIXME : unused parameter */
+     comment = comment;
+
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
      *cv = (Curve) _mw_load_curve(fname,type_in);
@@ -558,6 +579,9 @@ short _mwload_curve(char * name, char type[], char comment[],
 short _mwsave_curve(char * name, char type[], char type_force[], 
 		    char comment[], Curve cv)
 {
+
+     /* FIXME : unused parameter */
+     comment = comment;
 
      _mw_choose_type(type,type_force,"curve");
      if (_mw_create_curve(name,cv,type) >= 0)
@@ -593,6 +617,9 @@ short _mwsave_curves(char * name, char type[], char type_force[],
 		     char comment[], Curves cv)
 {
 
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"curves");
      if (cv->cmt[0] == '?') sprintf(cv->cmt,"%s(%s)",mwname,comment);
 
@@ -610,6 +637,9 @@ short _mwload_polygon(char * name, char type[], char comment[],
      char type_in[mw_ftype_size];
      char fname[BUFSIZ];
 
+     /* FIXME : unused parameter */
+     comment = comment;
+
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
      *poly = (Polygon) _mw_load_polygon(fname,type_in);
@@ -623,6 +653,9 @@ short _mwload_polygon(char * name, char type[], char comment[],
 short _mwsave_polygon(char * name, char type[], char type_force[],
 		      char comment[], Polygon poly)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"polygon");
      if (_mw_create_polygon(name,poly,type) >= 0)
 	  return(0);
@@ -656,6 +689,9 @@ short _mwload_polygons(char * name, char type[], char comment[],
 short _mwsave_polygons(char * name, char type[], char type_force[],
 		       char comment[], Polygons poly)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"polygons");
      if (poly->cmt[0] == '?') sprintf(poly->cmt,"%s(%s)",mwname,comment);
 
@@ -673,6 +709,9 @@ short _mwload_fcurve(char * name, char type[], char comment[],
      char type_in[mw_ftype_size];
      char fname[BUFSIZ];
 
+     /* FIXME : unused parameter */
+     comment = comment;
+
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
      *cv = (Fcurve) _mw_load_fcurve(fname,type_in);
@@ -686,6 +725,9 @@ short _mwload_fcurve(char * name, char type[], char comment[],
 short _mwsave_fcurve(char * name, char type[], char type_force[],
 		     char comment[], Fcurve cv)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"fcurve");
      if (_mw_create_fcurve(name,cv,type) >= 0)
 	  return(0);
@@ -736,6 +778,9 @@ short _mwload_fpolygon(char * name, char type[], char comment[],
      char type_in[mw_ftype_size];
      char fname[BUFSIZ];
 
+     /* FIXME : unused parameter */
+     comment = comment;
+
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
      *poly = (Fpolygon) _mw_load_fpolygon(fname,type_in);
@@ -749,6 +794,9 @@ short _mwload_fpolygon(char * name, char type[], char comment[],
 short _mwsave_fpolygon(char * name, char type[], char type_force[],
 		       char comment[], Fpolygon poly)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"fpolygon");
      if (_mw_create_fpolygon(name,poly,type) >= 0)
 	  return(0);
@@ -800,6 +848,9 @@ short _mwload_fsignal(char * name, char type[], char comment[],
      char type_in[mw_ftype_size];
      char comment_in[BUFSIZ];
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     comment = comment;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
@@ -905,6 +956,10 @@ short _mwload_vchain_wmax(char * name, char type[], char comment[],
 {
      char fname[BUFSIZ];
 
+     /* FIXME : unused parameter */
+     comment = comment;
+     type = type;
+
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
      *vchain = (Vchain_wmax) _mw_load_vchain_wmax(fname);
@@ -915,6 +970,9 @@ short _mwload_vchain_wmax(char * name, char type[], char comment[],
 short _mwsave_vchain_wmax(char * name, char type[], char type_force[],
 			  char comment[], Vchain_wmax vchain)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      if (type_force[0] != '?') strcpy(type,type_force);
      if (_mw_create_vchain_wmax(name,vchain) >= 0)
 	  return(0);
@@ -928,6 +986,9 @@ short _mwload_vchains_wmax(char * name, char type[], char comment[],
 			   Vchains_wmax * vchains)
 {
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     type = type;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
@@ -943,6 +1004,9 @@ short _mwload_vchains_wmax(char * name, char type[], char comment[],
 short _mwsave_vchains_wmax(char * name, char type[], char type_force[],
 			   char comment[], Vchains_wmax vchains)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      if (type_force[0] != '?') strcpy(type,type_force);
      if (vchains->cmt[0] == '?') sprintf(vchains->cmt,"%s(%s)",mwname,comment);
 
@@ -978,6 +1042,9 @@ short _mwload_ccimage(char * name, char type[], char comment[],
 short _mwsave_ccimage(char * name, char type[], char type_force[],
 		      char comment[], Ccimage im)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"ccimage");
      if (im->cmt[0] == '?') sprintf(im->cmt,"%s(%s)",mwname,comment);
 
@@ -1016,6 +1083,9 @@ short _mwload_cfimage(char * name, char type[], char comment[],
 short _mwsave_cfimage(char * name, char type[], char type_force[],
 		      char comment[], Cfimage im)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"cfimage");
      if (im->cmt[0] == '?') sprintf(im->cmt,"%s(%s)",mwname,comment);
 
@@ -1033,9 +1103,11 @@ short _mwsave_cfimage(char * name, char type[], char type_force[],
 short _mwload_modules(char * name, char type[], char comment[],
 		      Modules * modules)
 {
-     char type_in[mw_ftype_size];
      char comment_in[BUFSIZ];
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     type = type;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
 
@@ -1055,6 +1127,9 @@ short _mwload_modules(char * name, char type[], char comment[],
 short _mwsave_modules(char * name, char type[], char type_force[],
 		      char comment[], Modules modules)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      if (type_force[0] != '?') strcpy(type,type_force);
      if (modules->cmt[0] == '?') sprintf(modules->cmt,"%s(%s)",mwname,comment);
 
@@ -1070,8 +1145,10 @@ short _mwload_morpho_line(char * name, char type[], char comment[],
 			  Morpho_line * ll)
 {
      char type_in[mw_ftype_size];
-     char comment_in[BUFSIZ];
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     comment = comment;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
@@ -1086,6 +1163,8 @@ short _mwload_morpho_line(char * name, char type[], char comment[],
 short _mwsave_morpho_line(char * name, char type[], char type_force[],
 			  char comment[], Morpho_line ll)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
 
      _mw_choose_type(type,type_force,"morpho_line");
      if (_mw_create_morpho_line(name,ll,type) >= 0)
@@ -1100,8 +1179,10 @@ short _mwload_fmorpho_line(char * name, char type[], char comment[],
 			   Fmorpho_line * fll)
 {
      char type_in[mw_ftype_size];
-     char comment_in[BUFSIZ];
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     comment = comment;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
@@ -1116,6 +1197,9 @@ short _mwload_fmorpho_line(char * name, char type[], char comment[],
 short _mwsave_fmorpho_line(char * name, char type[], char type_force[],
 			   char comment[], Fmorpho_line fll)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"fmorpho_line");
      if (_mw_create_fmorpho_line(name,fll,type) >= 0)
 	  return(0);
@@ -1129,8 +1213,10 @@ short _mwload_morpho_set(char * name, char type[], char comment[],
 			 Morpho_set * morpho_set)
 {
      char type_in[mw_ftype_size];
-     char comment_in[BUFSIZ];
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     comment = comment;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
@@ -1145,6 +1231,9 @@ short _mwload_morpho_set(char * name, char type[], char comment[],
 short _mwsave_morpho_set(char * name, char type[], char type_force[],
 			 char comment[], Morpho_set morpho_set)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"morpho_set");
      if (_mw_create_morpho_set(name,morpho_set,type) >= 0)
 	  return(0);
@@ -1158,8 +1247,10 @@ short _mwload_morpho_sets(char * name, char type[], char comment[],
 			  Morpho_sets * morpho_sets)
 {
      char type_in[mw_ftype_size];
-     char comment_in[BUFSIZ];
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     comment = comment;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
@@ -1174,6 +1265,9 @@ short _mwload_morpho_sets(char * name, char type[], char comment[],
 short _mwsave_morpho_sets(char * name, char type[], char type_force[],
 			  char comment[], Morpho_sets morpho_sets)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"morpho_sets");
      if (_mw_create_morpho_sets(name,morpho_sets,type) >= 0)
 	  return(0);
@@ -1223,8 +1317,10 @@ short _mwload_cmorpho_line(char * name, char type[], char comment[],
 			   Cmorpho_line * ll)
 {
      char type_in[mw_ftype_size];
-     char comment_in[BUFSIZ];
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     comment = comment;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
@@ -1239,6 +1335,9 @@ short _mwload_cmorpho_line(char * name, char type[], char comment[],
 short _mwsave_cmorpho_line(char * name, char type[], char type_force[],
 			   char comment[], Cmorpho_line ll)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"cmorpho_line");
      if (_mw_create_cmorpho_line(name,ll,type) >= 0)
 	  return(0);
@@ -1252,8 +1351,10 @@ short _mwload_cfmorpho_line(char * name, char type[], char comment[],
 			    Cfmorpho_line * fll)
 {
      char type_in[mw_ftype_size];
-     char comment_in[BUFSIZ];
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     comment = comment;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
@@ -1268,6 +1369,9 @@ short _mwload_cfmorpho_line(char * name, char type[], char comment[],
 short _mwsave_cfmorpho_line(char * name, char type[], char type_force[],
 			    char comment[], Cfmorpho_line fll)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"cfmorpho_line");
      if (_mw_create_cfmorpho_line(name,fll,type) >= 0)
 	  return(0);
@@ -1281,8 +1385,10 @@ short _mwload_cmorpho_set(char * name, char type[], char comment[],
 			  Cmorpho_set * cmorpho_set)
 {
      char type_in[mw_ftype_size];
-     char comment_in[BUFSIZ];
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     comment = comment;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
@@ -1297,6 +1403,9 @@ short _mwload_cmorpho_set(char * name, char type[], char comment[],
 short _mwsave_cmorpho_set(char * name, char type[], char type_force[],
 			  char comment[], Cmorpho_set cmorpho_set)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"cmorpho_set");
      if (_mw_create_cmorpho_set(name,cmorpho_set,type) >= 0)
 	  return(0);
@@ -1310,8 +1419,10 @@ short _mwload_cmorpho_sets(char * name, char type[], char comment[],
 			   Cmorpho_sets * cmorpho_sets)
 {
      char type_in[mw_ftype_size];
-     char comment_in[BUFSIZ];
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     comment = comment;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
@@ -1326,6 +1437,9 @@ short _mwload_cmorpho_sets(char * name, char type[], char comment[],
 short _mwsave_cmorpho_sets(char * name, char type[], char type_force[],
 			   char comment[], Cmorpho_sets cmorpho_sets)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"cmorpho_sets");
      if (_mw_create_cmorpho_sets(name,cmorpho_sets,type) >= 0)
 	  return(0);
@@ -1359,6 +1473,9 @@ short _mwload_cmimage(char * name, char type[], char comment[],
 short _mwsave_cmimage(char * name, char type[], char type_force[],
 		      char comment[], Cmimage cmimage)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"cmimage");
      if (cmimage->cmt[0] == '?') sprintf(cmimage->cmt,"%s(%s)",mwname,comment);
 
@@ -1376,6 +1493,9 @@ short _mwload_shape(char * name, char type[], char comment[],
      char type_in[mw_ftype_size];
      char fname[BUFSIZ];
 
+     /* FIXME : unused parameter */
+     comment = comment;
+
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
      *shape = (Shape) _mw_load_shape(fname,type_in);
@@ -1388,6 +1508,9 @@ short _mwload_shape(char * name, char type[], char comment[],
 short _mwsave_shape(char * name, char type[], char type_force[],
 		    char comment[], Shape shape)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"shape");
 
      if (_mw_create_shape(name,shape,type) >= 0)
@@ -1440,6 +1563,9 @@ short _mwload_dcurve(char * name, char type[], char comment[],
      char type_in[mw_ftype_size];
      char fname[BUFSIZ];
 
+     /* FIXME : unused parameter */
+     comment = comment;
+
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
      *cv = (Dcurve) _mw_load_dcurve(fname,type_in);
@@ -1453,6 +1579,9 @@ short _mwload_dcurve(char * name, char type[], char comment[],
 short _mwsave_dcurve(char * name, char type[], char type_force[],
 		     char comment[], Dcurve cv)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"dcurve");
      if (_mw_create_dcurve(name,cv,type) >= 0)
 	  return(0);
@@ -1486,6 +1615,9 @@ short _mwload_dcurves(char * name, char type[], char comment[],
 short _mwsave_dcurves(char * name, char type[], char type_force[],
 		      char comment[], Dcurves cv)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"dcurves");
      if (cv->cmt[0] == '?') sprintf(cv->cmt,"%s(%s)",mwname,comment);
 
@@ -1500,8 +1632,11 @@ short _mwsave_dcurves(char * name, char type[], char type_force[],
 short _mwload_rawdata(char * name, char type[], char comment[],
 		      Rawdata * rd)
 {
-     char type_in[mw_ftype_size];
      char fname[BUFSIZ];
+
+     /* FIXME : unused parameter */
+     comment = comment;
+     type = type;
 
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
@@ -1513,6 +1648,11 @@ short _mwload_rawdata(char * name, char type[], char comment[],
 short _mwsave_rawdata(char * name, char type[], char type_force[],
 		      char comment[], Rawdata rd)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+     type = type;
+     type_force = type_force;
+
      if (_mw_create_rawdata(name,rd) >= 0)
 	  return(0);
      else
@@ -1529,6 +1669,9 @@ short _mwload_flist(char * name, char type[], char comment[],
      char type_in[mw_ftype_size];
      char fname[BUFSIZ];
 
+     /* FIXME : unused parameter */
+     comment = comment;
+
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
      *lst = (Flist) _mw_load_flist(fname,type_in);
@@ -1542,6 +1685,9 @@ short _mwload_flist(char * name, char type[], char comment[],
 short _mwsave_flist(char * name, char type[], char type_force[],
 		    char comment[], Flist lst)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"flist");
      if (_mw_create_flist(name,lst,type) >= 0)
 	  return(0);
@@ -1593,6 +1739,9 @@ short _mwload_dlist(char * name, char type[], char comment[],
      char type_in[mw_ftype_size];
      char fname[BUFSIZ];
 
+     /* FIXME : unused parameter */
+     comment = comment;
+
      strcpy(fname,name);      /* Do Not Change the value of name */
      search_filename(fname);
      *lst = (Dlist) _mw_load_dlist(fname,type_in);
@@ -1606,6 +1755,9 @@ short _mwload_dlist(char * name, char type[], char comment[],
 short _mwsave_dlist(char * name, char type[], char type_force[],
 		    char comment[], Dlist lst)
 {
+     /* FIXME : unused parameter */
+     comment = comment;
+
      _mw_choose_type(type,type_force,"dlist");
      if (_mw_create_dlist(name,lst,type) >= 0)
 	  return(0);
