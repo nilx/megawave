@@ -25,13 +25,12 @@ distclean	: distclean-bin distclean-doc
 #####################################################################
 
 MODDIR	= compression curve examples image signal wave
-MOD	:= $(sort $(shell $(FIND) $(MODDIR) -type f -name "*.c"))
-SRC	= $(addprefix tmp/, $(MOD:.c=.a.c)) \
-          $(addprefix tmp/, $(MOD:.c=.m.c))
-MODOBJ	= $(addprefix tmp/, $(MOD:.c=.m.o))
+MOD	:= $(sort $(notdir $(shell $(FIND) $(MODDIR) -type f -name "*.c")))
+SRC	= $(addprefix src/, $(MOD:.c=.a.c) $(MOD:.c=.m.c))
+MODOBJ	= $(addprefix src/, $(MOD:.c=.m.o))
 HDR	=
 
-MODULES = $(addprefix tmp2/, $(MOD:.c=))
+MODULES = $(addprefix bin/, $(MOD:.c=))
 
 MWPLIGHT	= ../kernel/mwplight/src/mwplight
 
@@ -39,21 +38,23 @@ BINNAME	= libmwmodules
 
 IPATH	+= ../kernel/lib/include
 
+.PHONY	: $(DEP)
+
 .PHONY	: bin
 bin 	: $(BINNAME).so
 $(BINNAME).so 	: $(MODOBJ)
 	$(LD) -shared $(LDFLAGS) -o $@ $^
 
 # RULES
-tmp/%.a.c	: %.c $(MWPLIGHT)
-	$(MWPLIGHT) -a $@ $<
-tmp/%.m.c	: %.c $(MWPLIGHT)
-	$(MWPLIGHT) -m $@ $<
+src/%.a.c	: $(MWPLIGHT)
+	$(MWPLIGHT) -a $@ `$(FIND) -type f -name $*.c`
+src/%.m.c	: $(MWPLIGHT)
+	$(MWPLIGHT) -m $@ `$(FIND) -type f -name $*.c`
 
 .PHONY	: modules
 modules	: $(MODULES)
-tmp2/%	: tmp/%.a.o
-	$(CC) $(CFLAGS) -lX11 -lm \
+bin/%	: src/%.a.o
+	$(CC) $(CFLAGS) -lX11 -lm -ltiff \
 	./libmwmodules.so ../kernel/Wdevice/src/libWdevice.so \
 	../kernel/lib/src/libmw.so -o $@ $<
 
