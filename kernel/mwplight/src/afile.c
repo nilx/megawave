@@ -362,12 +362,12 @@ static void writegendecl(FILE * afile)
 
      fprintf(afile, "extern int _%s();\n", module_name);
      fprintf(afile, "extern int usage_%s();\n", module_name);
-     fprintf(afile, "int mwind = 0;\n");
-     fprintf(afile, "Mwiline mwicmd[] = { { "
+/*     fprintf(afile, "int mwind = 0;\n"); */
+/*     fprintf(afile, "Mwiline mwicmd[] = { { "
 	     "\"%s\", _%s, usage_%s, \"%s\", \"%s\", \"%s\", \"%s\"} };\n",
              module_name, module_name, module_name,
              group_name, H->Function, usagebuf, protobuf);
-
+*/
      fprintf(afile, "#define TRUE  1\n");
      fprintf(afile, "#define FALSE 0\n");
 

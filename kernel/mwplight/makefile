@@ -1,32 +1,37 @@
-#!/usr/bin/make -f
+#! make -f
 #
 # makefile for megawave 3, mwplight section
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-include ./makefile.common
+COMMONDIR	= ../common
+include	$(COMMONDIR)/makefile
 
 #
 # TOP-LEVEL
 #
 
-.PHONY	: default lint beautify all \
-          install install-all uninstall uninstall-all clean distclean
-default	: bin manpage
-all	: bin test doc
-lint	: lint-bin lint-test lint-doc
-beautify	: beautify-bin beautify-test beautify-doc
-clean 	: clean-bin clean-test clean-doc
-distclean	: distclean-bin distclean-test distclean-doc
+.PHONY	: default all lint beautify clean distclean
+default	: bin
+all	: bin manpage test doc
+lint	: lint-bin lint-doc
+beautify	: beautify-bin beautify-doc
+clean 	: clean-bin clean-doc
+distclean	: distclean-bin distclean-doc
 
 #
 # BIN
 #
 
+SRCDIR	= src
 SRC	= $(addprefix $(SRCDIR)/, \
 	  tree.c parse.c instruction.c io.c header.c \
           afile.c ifile.c mfile.c tfile.c present.c \
-          main.c)
+          main.c) $(SRCDIR)/main_cmdline.c
+
+HDR	= $(SRC:.c=.h)
+OBJ	= $(SRC:.c=.o)
+DEP	= $(SRC:.c=.d)
 
 BINNAME	= mwplight
 
@@ -63,20 +68,11 @@ distclean-bin : clean-bin
 # they will be built and re-read if they are missing
 -include $(DEP)
 
-#####################################################################
-# TEST
-#####################################################################
-
-.PHONY	: test clean-test distclean-test
-test clean-test distclean-test	:
-	$(MAKE) -f makefile.test $@
-$(TESTDIR)/%	:
-	$(MAKE) -f makefile.test $@
-
-#####################################################################
+#
 # DOC
-#####################################################################
+#
 
+DOCDIR	= doc
 MAN	= $(DOCDIR)/$(BINNAME).man
 
 .PHONY	: doc
