@@ -57,12 +57,11 @@ CDEBUG	=
 
 ifdef STRICT
 CSTRICT	= -pedantic -Werror $(CSTRICT_4_1)               \
-          -Wundef -Wshadow -Wpointer-arith               \
+          -Wfloat-equal -Wundef -Wshadow -Wpointer-arith \
           -Wbad-function-cast -Wcast-qual -Wcast-align   \
           -Waggregate-return -Wstrict-prototypes         \
           -Wmissing-prototypes                           \
           -Wmissing-declarations -Wnested-externs
-#          -Wfloat-equal -Wundef -Wshadow -Wpointer-arith \
 
 endif
 

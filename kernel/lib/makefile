@@ -4,7 +4,10 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-include ./makefile.common
+include ../makefile.common
+
+#FIXME : Wfloat-equal tolerance
+CSTRICT	+= -Wno-float-equal
 
 #
 # TOP-LEVEL
@@ -23,7 +26,74 @@ distclean	: distclean-bin distclean-test distclean-doc
 # BIN
 #
 
-SRC	:= $(sort $(shell find $(SRCDIR) -maxdepth 1 -type f -name *.c))
+SRC	:= $(addprefix $(SRCDIR)/, \
+		ascii_file.c \
+		basic_conv.c \
+		bmp_io.c \
+		ccimage.c \
+		ccimage_io.c \
+		ccmovie.c \
+		ccmovie_io.c \
+		cfimage.c \
+		cfimage_io.c \
+		cfmovie.c \
+		cfmovie_io.c \
+		cimage.c \
+		cimage_io.c \
+		cmimage.c \
+		cmimage_io.c \
+		cmovie.c \
+		cmovie_io.c \
+		curve.c \
+		curve_io.c \
+		dcurve.c \
+		dcurve_io.c \
+		epsf_io.c \
+		fcurve.c \
+		fcurve_io.c \
+		file_type.c \
+		fimage.c \
+		fimage_io.c \
+		fmovie.c \
+		fmovie_io.c \
+		fpolygon.c \
+		fpolygon_io.c \
+		fsignal.c \
+		fsignal_io.c \
+		gif_io.c \
+		jpeg_io.c \
+		libmw.c \
+		list.c \
+		list_io.c \
+		mimage.c \
+		mimage_io.c \
+		module.c \
+		module_io.c \
+		mwio.c \
+		pgm_io.c \
+		pm_io.c \
+		polygon.c \
+		polygon_io.c \
+		ppm_io.c \
+		ps_io.c \
+		rawdata.c \
+		rawdata_io.c \
+		shape.c \
+		shape_io.c \
+		tiff_io.c \
+		type_conv.c \
+		wave_io.c \
+		wmax2d.c \
+		wmax2d_io.c \
+		wpack2d.c \
+		wpack2d_io.c \
+		wtrans1d.c \
+		wtrans1d_io.c \
+		wtrans2d.c \
+		wtrans2d_io.c )
+#		window.c \
+		wpanel.c \
+
 HDR	= $(addprefix include/, $(notdir $(SRC:.c=.h)))
 IPATH	= ./include
 
