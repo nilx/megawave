@@ -84,10 +84,8 @@ LPATH	= .
 LIBS	=
 
 # compiler flags
-CFLAGS	= -fPIC $(CSTD) $(CWARN) $(CMISC)			\
-          $(addprefix -I, $(IPATH))
-CFLAGS_NOWARN	= -fPIC $(CSTD) $(CMISC)			\
-          $(addprefix -I, $(IPATH))
+CFLAGS	= -fPIC $(CSTD) $(CWARN) $(CMISC) $(addprefix -I, $(IPATH))
+CFLAGS_NOWARN	= -fPIC $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
 
 # linker flags
 LDFLAGS	= -fPIC $(LDDEBUG) $(CPROF)				\
@@ -105,7 +103,7 @@ GENGETOPT_FLAGS	= --func-name=mw_cmdline --arg-struct=mw_args_info	\
 	--no-handle-error 						\
 	--no-handle-help --no-help					\
 	--no-handle-version --no-version
-
+CPROTO_FLAGS	= $(addprefix -I, $(IPATH)) -q
 
 # GENERIC RULES
 
@@ -117,21 +115,13 @@ GENGETOPT_FLAGS	= --func-name=mw_cmdline --arg-struct=mw_args_info	\
 	    $(MV) $@.$$$$ $@;
 
 # std C compilation
-%_cmdline.o	: %_cmdline.c %_cmdline.d
-	$(CC) $(CFLAGS_NOWARN) -c -o $@ $<
 %.o : %.c %.d
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-# build the command-line parser
-# TODO: one pass
-%_cmdline.c	: %.ggo
-	$(GENGETOPT) ${GENGETOPT_FLAGS} -i $^ --file-name=$*_cmdline
-%_cmdline.h	: %.ggo
-	$(GENGETOPT) ${GENGETOPT_FLAGS} -i $^ --file-name=$*_cmdline
-
 # make a C prototype header
+# FIXME: cproto -q is buggy
 %.h	: %.c
-	$(CPROTO) $(CPROTOFLAGS) $(CPPFLAGS) $< > $@
+	$(CPROTO) $(CPROTO_FLAGS) $< -o $@
 	@HNAME=_`echo -n $(notdir $@) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_ \
 		&& ($(ECHO) -e "/*\n * $(notdir $@)\n */\n"; \
 			$(ECHO) -e "#ifndef $${HNAME}\n#define $${HNAME}\n"; \
@@ -144,6 +134,16 @@ GENGETOPT_FLAGS	= --func-name=mw_cmdline --arg-struct=mw_args_info	\
 	$(CSPLIT) $^ -f $*_split %GENGETOPT\ BEGIN%+1 /GENGETOPT\ END/
 	$(SED) 's/^ *\* *//' $*_split00 > $@
 	$(RM) $*_split0[01]
+
+# TODO: one pass
+%_cmdline.c	: %.ggo
+	cd $(dir $@) \
+		&& $(GENGETOPT) ${GENGETOPT_FLAGS} \
+			-i $(notdir $^) --file-name=$(notdir $*_cmdline)
+%_cmdline.h	: %.ggo
+	cd $(dir $@) \
+		&& $(GENGETOPT) ${GENGETOPT_FLAGS} \
+			-i $(notdir $^) --file-name=$(notdir $*_cmdline)
 
 # markdown to manpage
 %.man : %.man.mdwn

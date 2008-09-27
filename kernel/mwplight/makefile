@@ -17,19 +17,38 @@ all	: beautify lint bin test man
 clean	: clean-bin clean-doc
 distclean	: distclean-bin distclean-doc
 
+
 #
-# BIN
+# PREBUILD AND UTILS
+#
+
+.PHONY	: prebuild
+prebuild	: autohdr cmdline man
+
+.PHONY	: cmdline
+cmdline	: $(CMDLINE)
+
+.PHONY	: autohdr
+autohdr	: $(AUTOHDR)
+
+.PHONY	: dep
+dep	: $(DEP)
+
+#
+# BUILD
 #
 
 SRCDIR	= src
-SRC	= $(addprefix $(SRCDIR)/, \
-	  tree.c parse.c instruction.c io.c header.c \
-          afile.c ifile.c mfile.c tfile.c present.c \
-          main.c) $(SRCDIR)/main_cmdline.c
 
-HDR	= $(SRC:.c=.h)
-AUTOHDR	= $(filter-out $(SRCDIR)/main_cmdline.h $(SRCDIR)/mwpl.h, $(HDR))
-OBJ	= $(SRC:.c=.o)
+CMDLINE	= $(SRCDIR)/main_cmdline.c
+
+SRC	= $(addprefix $(SRCDIR)/, \
+	tree.c parse.c instruction.c io.c header.c afile.c ifile.c \
+	mfile.c tfile.c present.c main.c)
+
+AUTOHDR	= $(SRC:.c=.h)
+HDR	= $(AUTOHDR:.c=.h) $(CMDLINE:.c=.h) $(SRCDIR)/mwpl.h
+OBJ	= $(SRC:.c=.o) $(CMDLINE:.c=.o)
 DEP	= $(SRC:.c=.d)
 
 BINNAME	= mwplight
@@ -38,6 +57,11 @@ BINNAME	= mwplight
 bin 	: $(SRCDIR)/$(BINNAME)
 $(SRCDIR)/$(BINNAME) 	: $(OBJ)
 	$(LD) $(LDFLAGS) -o $@ $^
+
+
+# FIXME: unused parameters and long string
+$(CMDLINE:.c=.o)	: $(CMDLINE)
+	$(CC) -c -o $@ $<
 
 .PHONY	: lint
 lint	: lint-flag
@@ -56,12 +80,12 @@ beautify-flag	: $(SRC) $(HDR)
 .PHONY	: clean-bin
 clean-bin :
 	$(RM) $(OBJ) $(DEP)
-	$(RM) $(SRCDIR)/*.ggo $(SRCDIR)/main_cmdline.*
 	$(RM) lint-flag beautify-flag
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
 	$(RM) $(SRCDIR)/$(BINNAME)
+	$(RM) $(SRCDIR)/*.ggo
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
@@ -104,3 +128,4 @@ clean-doc	:
 .PHONY	: distclean-doc
 distclean-doc	: clean-doc
 	$(RM) $(DOCDIR)/$(BINNAME).man $(DOCDIR)/$(BINNAME).man.html
+

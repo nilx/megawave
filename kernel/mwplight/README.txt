@@ -23,6 +23,9 @@ COMPILATION OF THE MEGAWAVE LIGHT COMPILER
     make lint
 * test the code and the resulting program
     make test
+* do all the portable stuff for compiling later on a machine with only
+  a compiler and a linker
+    make prebuild
 
 # options
 
