@@ -38,49 +38,54 @@ CSTRICT_4_1	:= $(shell if [ "$(CCVERSION)" \> "4.1" ]; then   \
                              echo "-Wc++-compat -Wextra";         \
                            fi) # available from gcc 4.1
 
+# C language version
 CSTD	= -ansi
+# compiler warning level
 CWARN	= -Wall
-CSTRICT	= 
-CPROF	= 
-COPTI	= 
-CDEBUG	= 
+# compiler miscellaneous flags
+CMISC	=
 
-# CC OPTIONS SWITCHS FROM THE COMMANDLINE
+# strict compilation switch
 ifdef STRICT
-CSTRICT	= -pedantic -Werror $(CSTRICT_4_1)               \
-          -Wfloat-equal -Wundef -Wshadow -Wpointer-arith \
-          -Wbad-function-cast -Wcast-qual -Wcast-align   \
-          -Waggregate-return -Wstrict-prototypes         \
-          -Wmissing-prototypes                           \
-          -Wmissing-declarations -Wnested-externs
+CWARN 	+= -pedantic -Werror $(CSTRICT_4_1)		\
+	-Wfloat-equal -Wundef -Wshadow -Wpointer-arith	\
+	-Wbad-function-cast -Wcast-qual -Wcast-align	\
+	-Waggregate-return -Wstrict-prototypes		\
+	-Wmissing-prototypes				\
+	-Wmissing-declarations -Wnested-externs
 endif
 
+# profiling switch
 ifdef PROF
-CPROF	= -pg
+CMISC	+= -pg
 OPTI	= 1
 endif
 
+# optimisation switch
 ifdef OPTI
-COPTI	= -O2 -funroll-loops -finline-functions
+CMISC	+= -O2 -funroll-loops -finline-functions
 endif
 
+# debugger switch
 ifdef DEBUG
-CDEBUG	= -O0 -g
+CMISC	+= -O0 -g
 endif
 
+# include and link paths
 IPATH	= .
-LDDEBUG	= 
 LPATH	= .
+# libraries to link with
 LIBS	=
 
-CPPFLAGS	=
+# compiler flags
+CFLAGS	= -fPIC $(CSTD) $(CWARN) $(CMISC)			\
+          $(addprefix -I, $(IPATH))
 
-
-CFLAGS	= $(CSTD) $(CWARN) $(CSTRICT) $(CPROF) $(COPTI) $(CDEBUG) \
-          -fPIC $(addprefix -I, $(IPATH)) $(addprefix -D, $(CPPFLAGS))
-
-LDFLAGS	= -fPIC $(LDDEBUG) $(CPROF) \
+# linker flags
+LDFLAGS	= -fPIC $(LDDEBUG) $(CPROF)				\
           $(addprefix -L, $(LPATH)) $(addprefix -l, $(LIBS))
+
+
 
 
 # TOOLS OPTIONS
