@@ -28,6 +28,7 @@ SRC	= $(addprefix $(SRCDIR)/, \
           main.c) $(SRCDIR)/main_cmdline.c
 
 HDR	= $(SRC:.c=.h)
+AUTOHDR	= $(filter-out $(SRCDIR)/main_cmdline.h $(SRCDIR)/mwpl.h, $(HDR))
 OBJ	= $(SRC:.c=.o)
 DEP	= $(SRC:.c=.d)
 
@@ -40,7 +41,7 @@ $(SRCDIR)/$(BINNAME) 	: $(OBJ)
 
 .PHONY	: lint
 lint	: lint-flag
-lint-bin-flag	: $(SRC) $(HDR)
+lint-flag	: $(SRC) $(HDR)
 	$(LINT) $(LINTFLAGS) $?
 	$(MAKE) $(addsuffix +charset, $?)
 	$(MAKE) $(addsuffix +linelength, $?)
@@ -48,7 +49,7 @@ lint-bin-flag	: $(SRC) $(HDR)
 
 .PHONY	: beautify
 beautify	: beautify-flag
-beautify-flag	: $(SRC) $(HDR) $(EXTRASRC) $(EXTRAHDR)
+beautify-flag	: $(SRC) $(HDR)
 	$(MAKE) $(addsuffix +cleanup, $?)
 	touch beautify-flag
 

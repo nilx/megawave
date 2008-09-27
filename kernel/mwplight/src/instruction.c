@@ -1233,9 +1233,9 @@ static void FillNewFunction(t_varfunc * f, t_statement * c)
           break;
 /* not implemented */
      case I_FUNCPROTO_ANSI:
-	  break;
+          break;
      case I_FUNCPROTO_KR:
-	  break;
+          break;
 
      default:
           error(MSG_ERROR_FUNCTION_ITYPE, c->phrase, c->Itype);

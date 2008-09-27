@@ -14,6 +14,8 @@ RRM	= /bin/rm -r -f
 MV	= /bin/mv -f
 MKDIR	= /bin/mkdir -p
 SED	= /bin/sed
+CAT	= /bin/cat
+ECHO	= /bin/echo
 
 CC	= /usr/bin/gcc
 LD	= /usr/bin/gcc
@@ -127,9 +129,15 @@ GENGETOPT_FLAGS	= --func-name=mw_cmdline --arg-struct=mw_args_info	\
 %_cmdline.h	: %.ggo
 	$(GENGETOPT) ${GENGETOPT_FLAGS} -i $^ --file-name=$*_cmdline
 
-# make a C header
+# make a C prototype header
 %.h	: %.c
-	$(CPROTO) $(CCFLAGS) -q -f2 -P"int f(\n\ta,\n\tb)" $< > $@
+	$(CPROTO) $(CPROTOFLAGS) $(CPPFLAGS) $< > $@
+	@HNAME=_`echo -n $(notdir $@) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_ \
+		&& ($(ECHO) -e "/*\n * $(notdir $@)\n */\n"; \
+			$(ECHO) -e "#ifndef $${HNAME}\n#define $${HNAME}\n"; \
+			$(CAT) $@; \
+			$(ECHO) -e "\n#endif /* !$${HNAME} */";) > $@.$$$$ \
+		&& $(MV) $@.$$$$ $@
 
 # extract the command-line description
 %.ggo	: %.c

@@ -25,7 +25,7 @@
  * * an interface file, describing the module io, to design the \
  *   interface for some external code;
  * * a name file, containing the name and group of the module.
- * 
+ *
  * Author: Jacques Froment <jacques.froment@univ-ubs.fr>
  * "
  *
@@ -66,7 +66,7 @@
  * the source file, and no output activated. The output order doesn't
  * follow the options order (in case of multiple output to a single
  * file/pipe).
- *  
+ *
  * This program is part of the megawave framework.
  * See http://megawave.cmla.ens-cachan.fr/ for details.
  * (C) 2008 CMLA, ENS Cachan, 94235 Cachan cedex, France."
@@ -90,25 +90,25 @@
 /**
  * @brief Open a file for read or write, with a default file
  *
- * @param filename file name 
+ * @param filename file name
  * @param mode opening mode
  * @param default_file default file
  *
  * @return the file pointer
- */ 
-static FILE * open_file(const char * filename, const char * mode, 
-			FILE * default_file)
+ */
+static FILE * open_file(const char * filename, const char * mode,
+                        FILE * default_file)
 {
      FILE * file;
 
      if (0 == strcmp("-", filename))
-	  return default_file;
+          return default_file;
      else
-	  if (NULL == (file = fopen(filename, mode)))
-	  {
-	       fprintf(stderr, "mwplight: cannot open file '%s'\n", filename);
-	       exit(1);
-	  }
+          if (NULL == (file = fopen(filename, mode)))
+          {
+               fprintf(stderr, "mwplight: cannot open file '%s'\n", filename);
+               exit(1);
+          }
      return file;
 }
 
@@ -121,10 +121,10 @@ static FILE * open_file(const char * filename, const char * mode,
  * - measure the length of the prefix without '.'
  * - copy
  *
- * @param filename file name 
+ * @param filename file name
  *
  * @return the base name, as an allocated string pointer
- */ 
+ */
 static char * basename(const char * filename)
 {
      char * base;
@@ -133,14 +133,14 @@ static char * basename(const char * filename)
 
      start = strrchr(filename, '/');
      if (start == NULL)
-	  start = filename;
+          start = filename;
      else
-	  start++;
+          start++;
      length = strcspn(start, ".");
      base = (char *) malloc(sizeof(char) * (length + 1));
      strncpy(base, start, length);
      base[length] = '\0';
-     
+
      return base;
 }
 
@@ -150,7 +150,7 @@ static char * basename(const char * filename)
  * @param str string
  *
  * @return the cloned string, as an allocated string pointer
- */ 
+ */
 static char * strclone(const char * str)
 {
      char * clone;
@@ -159,7 +159,7 @@ static char * strclone(const char * str)
      length = strlen(str);
      clone = (char *) malloc(sizeof(char) * (length + 1));
      strcpy(clone, str);
-     
+
      return clone;
 }
 
@@ -190,13 +190,13 @@ int main( int argc, char **argv)
      mw_cmdline_ext(argc, argv, &args_info, &args_params);
      if (args_info.help_given)
      {
-	  mw_cmdline_print_help();
-	  exit(0);
+          mw_cmdline_print_help();
+          exit(0);
      }
      if (args_info.version_given)
      {
-	  mw_cmdline_print_version();
-	  exit(0);
+          mw_cmdline_print_version();
+          exit(0);
      }
 
      /* 2nd parsing of the command-line, checking the options */
@@ -204,34 +204,34 @@ int main( int argc, char **argv)
      args_params.print_errors = 1;
      if (0 != mw_cmdline_ext(argc, argv, &args_info, &args_params))
      {
-	  printf("Use '--help' for details.\n");
-	  exit(1);
+          printf("Use '--help' for details.\n");
+          exit(1);
      }
 
      /* OK, use the params now */
      debug_flag = args_info.debug_flag;
      if (debug_flag)
      {
-	  debug("command-line parameters:");
-	  mw_cmdline_dump(stdout, &args_info);
+          debug("command-line parameters:");
+          mw_cmdline_dump(stdout, &args_info);
      }
 
      /*
       * if the module name was not given from the command-line (thus
-      * having its default value) and the source file is not stdin, 
+      * having its default value) and the source file is not stdin,
       * extract the module name from its filename
       */
      if  ((!args_info.module_name_given)
-	  && (0 != strcmp("-", args_info.source_arg)))
-	  module_name = basename(args_info.source_arg);
+          && (0 != strcmp("-", args_info.source_arg)))
+          module_name = basename(args_info.source_arg);
      else
-	  module_name = strclone(args_info.module_name_arg);
+          module_name = strclone(args_info.module_name_arg);
 
      group_name = strclone(args_info.group_name_arg);
-  
+
      if (debug_flag)
-	  printf("module name : '%s'\ngroup  name : '%s'\n", 
-		 module_name, group_name);
+          printf("module name : '%s'\ngroup  name : '%s'\n",
+                 module_name, group_name);
 
      /* open the input file */
      sfile = open_file(args_info.source_arg, "r", stdin);
@@ -242,13 +242,13 @@ int main( int argc, char **argv)
       */
      if (stdin == sfile)
      {
-	  sfile = tmpfile();
-	  while (EOF != (c = getc(stdin)))
-	       putc(c, sfile);
-	  rewind(sfile);
+          sfile = tmpfile();
+          while (EOF != (c = getc(stdin)))
+               putc(c, sfile);
+          rewind(sfile);
      }
 
-     /* 
+     /*
       * parse the source file and build the tree H (global variable)
       */
      sfile_global = sfile;
@@ -257,7 +257,7 @@ int main( int argc, char **argv)
 
      /*
       * set the <protobuf> variable (global) which prototypes the main
-      * function using K&R convention.  
+      * function using K&R convention.
       */
      /* TODO: use only ANSI */
      setprotobuf();
@@ -267,9 +267,9 @@ int main( int argc, char **argv)
       */
      if (args_info.library_given)
      {
-	  mfile = open_file(args_info.library_arg, "w", stdout);
-	  genMfile(mfile, sfile);
-	  fclose(mfile);
+          mfile = open_file(args_info.library_arg, "w", stdout);
+          genMfile(mfile, sfile);
+          fclose(mfile);
      }
 
      /*
@@ -277,9 +277,9 @@ int main( int argc, char **argv)
       */
      if (args_info.exec_given)
      {
-	  afile = open_file(args_info.exec_arg, "w", stdout);
-	  genAfile(afile);
-	  fclose(afile);
+          afile = open_file(args_info.exec_arg, "w", stdout);
+          genAfile(afile);
+          fclose(afile);
      }
 
      /*
@@ -287,9 +287,9 @@ int main( int argc, char **argv)
       */
      if (args_info.documentation_given)
      {
-	  tfile = open_file(args_info.documentation_arg, "w", stdout);
-	  genTfile(tfile);
-	  fclose(tfile);
+          tfile = open_file(args_info.documentation_arg, "w", stdout);
+          genTfile(tfile);
+          fclose(tfile);
      }
 
      /*
@@ -297,9 +297,9 @@ int main( int argc, char **argv)
       */
      if (args_info.interface_given)
      {
-	  ifile = open_file(args_info.interface_arg, "w", stdout);
-	  genIfile(ifile);
-	  fclose(ifile);
+          ifile = open_file(args_info.interface_arg, "w", stdout);
+          genIfile(ifile);
+          fclose(ifile);
      }
 
      /*
@@ -307,9 +307,9 @@ int main( int argc, char **argv)
       */
      if (args_info.name_given)
      {
-	  nfile = open_file(args_info.name_arg, "w", stdout);
-	  fprintf(nfile, "%s/%s\n", group_name, module_name);
-	  fclose(nfile);
+          nfile = open_file(args_info.name_arg, "w", stdout);
+          fprintf(nfile, "%s/%s\n", group_name, module_name);
+          fclose(nfile);
      }
 
      fclose(sfile);
