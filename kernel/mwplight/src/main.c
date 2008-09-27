@@ -30,33 +30,42 @@
  * "
  *
  * section "Input"
- * option "source"         s "module source file name"
+ * option "source"         s "module source file name"    optional
  *         string             typestr="filename" default="-"
  *
  * section "Outputs (optional)"
- * option "library"        l  "library code file name"
- *         string              typestr="filename" optional
- * option "main"           m  "main executable file name"
- *         string              typestr="filename" optional
- * option "documentation"  d  "documentation file name"
- *         string              typestr="filename" optional
- * option "interface"      i  "interface file"
- *         string              typestr="filename" optional
- * option "name"           n  "name file name"
- *         string              typestr="filename" optional
+ * option "library"        l  "library code file name"    optional
+ *         string              typestr="filename"
+ *
+ * option "exec"           e  "executable code file name" optional
+ *         string              typestr="filename"
+ *
+ * option "documentation"  d  "documentation file name"   optional
+ *         string              typestr="filename"
+ *
+ * option "interface"      i  "interface file"            optional
+ *         string              typestr="filename"
+ *
+ * option "name"           n  "name file name"            optional
+ *         string              typestr="filename"
  *
  * section "Misc"
- * option "module-name"    N  "module name"
+ * option "module-name"    m  "module name"
  *         string              typestr="name" default="unknown" optional
- * option "group-name"     G  "module group name"
+ *
+ * option "group-name"     g  "module group name"
  *         string              typestr="name" default="unknown" optional
+ *
  * text ""
  * option "help"           h  "print help and exit" flag off
  * option "version"        V  "print version and exit" flag off
  * option "debug"          D  "debug flag" flag off
  *
  * text "
- * Use '-' for standard input/output.
+ * Use '-' for standard input/output. Default mode is to use stdin for
+ * the source file, and no output activated. The output order doesn't
+ * follow the options order (in case of multiple output to a single
+ * file/pipe).
  *  
  * This program is part of the megawave framework.
  * See http://megawave.cmla.ens-cachan.fr/ for details.
@@ -167,8 +176,8 @@ int main( int argc, char **argv)
 
      /* io file pointers */
      FILE * sfile = NULL; /* source    */
-     FILE * afile = NULL; /* lib       */
-     FILE * mfile = NULL; /* main      */
+     FILE * afile = NULL; /* exec      */
+     FILE * mfile = NULL; /* lib       */
      FILE * tfile = NULL; /* doc       */
      FILE * ifile = NULL; /* interface */
      FILE * nfile = NULL; /* name      */
@@ -256,37 +265,52 @@ int main( int argc, char **argv)
      /*
       * generate the library code
       */
-     afile = open_file(args_info.library_arg, "w", stdout);
-     genAfile(afile);
-     fclose(afile);
+     if (args_info.library_given)
+     {
+	  mfile = open_file(args_info.library_arg, "w", stdout);
+	  genMfile(mfile, sfile);
+	  fclose(mfile);
+     }
 
      /*
       * generate the main code
       */
-     mfile = open_file(args_info.main_arg, "w", stdout);
-     genMfile(mfile, sfile);
-     fclose(mfile);
+     if (args_info.exec_given)
+     {
+	  afile = open_file(args_info.exec_arg, "w", stdout);
+	  genAfile(afile);
+	  fclose(afile);
+     }
 
      /*
       * generate the documentation
       */
-     tfile = open_file(args_info.documentation_arg, "w", stdout);
-     genTfile(tfile);
-     fclose(tfile);
+     if (args_info.documentation_given)
+     {
+	  tfile = open_file(args_info.documentation_arg, "w", stdout);
+	  genTfile(tfile);
+	  fclose(tfile);
+     }
 
      /*
       * generate the interface
       */
-     ifile = open_file(args_info.interface_arg, "w", stdout);
-     genIfile(ifile);
-     fclose(ifile);
+     if (args_info.interface_given)
+     {
+	  ifile = open_file(args_info.interface_arg, "w", stdout);
+	  genIfile(ifile);
+	  fclose(ifile);
+     }
 
      /*
       * generate the name
       */
-     nfile = open_file(args_info.name_arg, "w", stdout);
-     fprintf(nfile, "%s/%s\n", group_name, module_name);
-     fclose(nfile);
+     if (args_info.name_given)
+     {
+	  nfile = open_file(args_info.name_arg, "w", stdout);
+	  fprintf(nfile, "%s/%s\n", group_name, module_name);
+	  fclose(nfile);
+     }
 
      fclose(sfile);
      free(module_name);

@@ -26,6 +26,10 @@ external code;
 
 Use '-' for standard input/output instead of filenames.
 
+Default mode is to use stdin for the source file, with no output
+activated. The output order doesn't follow the options order (in case
+of multiple output to a single file/pipe).
+
 ## INPUT
 
 -s, -\-source=filename
@@ -37,8 +41,8 @@ These options are optional.
 
 -l, -\-library=filename
 :	library code file name
--m, -\-main=filename
-:	main executable file name
+-e, -\-exec=filename
+:	executable code file name
 -d, -\-documentation=filename
 :	documentation file name
 -i, -\-interface=filename
@@ -48,9 +52,9 @@ These options are optional.
 
 ## MISCELLANEOUS
 
--N, -\-module-name=name
+-m, -\-module-name=name
 :	module name  (default=`unknown')
--G, -\-group-name=name
+-g, -\-group-name=name
 :	module group name  (default=`unknown')
 -h, -\-help
 :	print help and exit  (default=off)
@@ -58,7 +62,6 @@ These options are optional.
 :	print version and exit  (default=off)
 -D, -\-debug
 :	debug flag  (default=off)
-
 
 # ENVIRONMENT
 
@@ -68,7 +71,8 @@ path to the files.
 
 # EXAMPLES
 
-mwplight -l foo_lib.c -m foo_main.c -d foo_doc.tex -G foogroup -s foo.c
+* `mwplight -l foo_lib.c -e foo_exec.c -d foo_doc.tex -g bar -s foo.c`
+* `< foo.c mwplight -l - > foo_lib.c`
 
 # COPYRIGHT
 
