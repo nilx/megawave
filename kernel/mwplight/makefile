@@ -15,7 +15,7 @@ include	$(COMMONDIR)/makefile
 default	: bin
 all	: beautify lint bin test man
 clean	: clean-bin clean-test clean-doc
-distclean	: distclean-bin distclean-doc
+distclean	: distclean-bin distclean-test distclean-doc
 
 
 #
@@ -58,10 +58,9 @@ bin 	: $(SRCDIR)/$(BINNAME)
 $(SRCDIR)/$(BINNAME) 	: $(OBJ)
 	$(LD) $(LDFLAGS) -o $@ $^
 
-
 # FIXME: unused parameters and long string
 $(CMDLINE:.c=.o)	: $(CMDLINE)
-	$(CC) -c -o $@ $<
+	$(CC) $(CFLACS_NOWARN) -c -o $@ $<
 
 .PHONY	: lint
 lint	: lint.flag
@@ -97,10 +96,11 @@ distclean-bin : clean-bin
 
 TEST_MODULES	= $(shell find ../../src -type f -name *.c)
 TEST_ENV	= MWPLIGHT=$(SRCDIR)/$(BINNAME) \
-	MODULES="$(TEST_MODULES)"
+	MODULES="$(TEST_MODULES)" \
+	TESTDIR=test/
 
 #TESTS	= $(addprefix test_, run library exec documentation interface name)
-TESTS	= $(addprefix test_, run documentation name)
+TESTS	= $(addprefix test_, run library documentation name)
 
 .PHONY	: test
 test	: $(addsuffix .flag, $(TESTS))
@@ -113,6 +113,9 @@ test_%.flag	: $(SRCDIR)/$(BINNAME)
 .PHONY	: clean-test
 clean-test :
 	$(RM) $(addsuffix .flag, $(TESTS))
+
+.PHONY	: distclean-test
+distclean-test : clean-test
 
 #
 # DOC
