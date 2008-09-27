@@ -1,6 +1,6 @@
 % MWPLIGHT(1)
-% The original author of mwplight is Jacques Froment <jacques.froment@univ-ubs.fr>. The current version is maintained for megawave 4 by Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr>.
-% 2008-07-25
+% Jacques Froment <jacques.froment@univ-ubs.fr>, Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (maintainer)
+% 2008-09-27
 
 # NAME
 
@@ -8,57 +8,73 @@ mwplight\ --\ the light preprocessor for megawave
 
 # SYNOPSYS
 
-**mwplight** \[ options \] modulesource  
-**mwplight** \[ **-vh?** \]
+**mwplight** \[-s module-source\] \[output-options\]
 
 # DESCRIPTION
 
-**mwplight** parses a formatted module file for megawave, extracts
-  information from the megawave header, and produces various files for
-  a latter library or document compilation.
+**mwplight** reads the megawave header of a module. It produces:
+* a library file, with a modified version of the module C code for inclusion in 
+the megawave modules library
+* a main file, with a main() function in C, for the stand-alone module
+* a documentation file, documenting the module syntax (interface) in TeX
+* an interface file, describing the module io, to design the interface for some 
+external code
+* a name file, containing the name and group of the module
 
 # OPTIONS
 
-The name of the module source file are required. "-" can be used for
-standard input/output.
+Use '-' for standard input/output instead of filenames.
 
--a, -\-afile *filename*
-:	name of the A-file to write (main function of the run-time)
+## INPUT
 
--m, -\-mfile *filename*
-:	name of the M-file to write (source of the modified module)
+-s, -\-source=filename
+:	module source file name  (default=`-')
 
--t, -\-tfile *filename*
-:	name of the T-file to write (source of the module documentation)
+## OUTPUT
 
--i, -\-ifile *filename*
-:	name of the N-file to write (greoup and name of the module)
+These options are optional.
 
--n, -\-nfile *filename*
-:	name of the I-file to write (interface file for an interpretor)
+-l, -\-library=filename
+:	library code file name
+-m, -\-main=filename
+:	main executable file name
+-d, -\-documentation=filename
+:	documentation file name
+-i, -\-interface=filename
+:	interface file
+-n, -\-name=filename
+:	name file name
 
--g, -\-group *groupname*
-:	group the module belongs to (defaults to "unknown")
+## MISCELLANEOUS
 
--d, -\-debug
-:	debug flag
+-N, -\-module-name=name
+:	module name  (default=`unknown')
+-G, -\-group-name=name
+:	module group name  (default=`unknown')
+-h, -\-help
+:	print help and exit  (default=off)
+-V, -\-version
+:	print version and exit  (default=off)
+-D, -\-debug
+:	debug flag  (default=off)
 
--v, -\-version
-:	print the version information
-
--h, -?, -\-help
-:	print a short usage help
 
 # ENVIRONMENT
 
-Unlike previous versions, **mwplight** doesn't use any environment
-variable; you must provide the full (absolute or relative) path to the
-files.
+Unlike previous versions, this version of **mwplight** doesn't use any
+environment variable; you must provide the full (absolute or relative)
+path to the files.
 
 # EXAMPLES
 
-mwplight -a foo_a.c -m foo_m.c -t foo.tex -g bar foo.c
+mwplight -l foo_lib.c -m foo_main.c -d foo_doc.tex -g foogroup -s foo.c
+
+# COPYRIGHT
+
+This program is part of the megawave framework.
+See http://megawave.cmla.ens-cachan.fr/ for details.
+(C) 2008 CMLA, ENS Cachan, 94235 Cachan cedex, France.
 
 # SEE ALSO
 
-**megawave(1)**, **libmw(3)**, **megawave-modules(1)**
+**megawave(7)**, **libmw(3)**, **megawave-modules(7)**
