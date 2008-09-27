@@ -46,7 +46,8 @@ CWARN	= -Wall
 CMISC	=
 
 # strict compilation switch
-ifdef STRICT
+STRICT	?= 0
+ifeq	($(STRICT), 1)
 CWARN 	+= -pedantic -Werror $(CSTRICT_4_1)		\
 	-Wfloat-equal -Wundef -Wshadow -Wpointer-arith	\
 	-Wbad-function-cast -Wcast-qual -Wcast-align	\
@@ -56,18 +57,21 @@ CWARN 	+= -pedantic -Werror $(CSTRICT_4_1)		\
 endif
 
 # profiling switch
-ifdef PROF
+PROF	?= 0
+ifeq	($(PROF), 1)
 CMISC	+= -pg
 OPTI	= 1
 endif
 
 # optimisation switch
-ifdef OPTI
+OPTI	?= 0
+ifeq	($(OPTI), 1)
 CMISC	+= -O2 -funroll-loops -finline-functions
 endif
 
 # debugger switch
-ifdef DEBUG
+DEBUG	?= 0
+ifeq	($(DEBUG), 1)
 CMISC	+= -O0 -g
 endif
 
@@ -79,6 +83,8 @@ LIBS	=
 
 # compiler flags
 CFLAGS	= -fPIC $(CSTD) $(CWARN) $(CMISC)			\
+          $(addprefix -I, $(IPATH))
+CFLAGS_NOWARN	= -fPIC $(CSTD) $(CMISC)			\
           $(addprefix -I, $(IPATH))
 
 # linker flags
@@ -93,8 +99,10 @@ LDFLAGS	= -fPIC $(LDDEBUG) $(CPROF)				\
 LINT_FLAGS	= -posixlib -weak -ansi89limits
 PANDOC_FLAGS	= --standalone --reference-links --smart
 DOXYCONF	= $(DOCDIR)/doxygen.conf
-GENGETOPT_FLAGS	= --no-handle-error --func-name=mw_cmdline \
-	--arg-struct mw_args_info --no-help --no-version
+GENGETOPT_FLAGS	= --func-name=mw_cmdline --arg-struct=mw_args_info	\
+	--no-handle-error 						\
+	--no-handle-help --no-help					\
+	--no-handle-version --no-version
 
 
 # GENERIC RULES
@@ -107,6 +115,8 @@ GENGETOPT_FLAGS	= --no-handle-error --func-name=mw_cmdline \
 	    $(MV) $@.$$$$ $@;
 
 # std C compilation
+%_cmdline.o	: %_cmdline.c %_cmdline.d
+	$(CC) $(CFLAGS_NOWARN) -c -o $@ $<
 %.o : %.c %.d
 	$(CC) $(CFLAGS) -c -o $@ $<
 

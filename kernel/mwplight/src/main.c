@@ -85,7 +85,7 @@
  * @param mode opening mode
  * @param default_file default file
  *
- * @param 
+ * @return the file pointer
  */ 
 static FILE * open_file(const char * filename, const char * mode, 
 			FILE * default_file)
@@ -103,10 +103,67 @@ static FILE * open_file(const char * filename, const char * mode,
      return file;
 }
 
+/**
+ * @brief Strip directory and suffix part of a fule name
+ *
+ * - find the last '/' in sfile_name
+ * - go to the next position if it exists
+ * - stay at the beginning if not
+ * - measure the length of the prefix without '.'
+ * - copy
+ *
+ * @param filename file name 
+ *
+ * @return the base name, as an allocated string pointer
+ */ 
+static char * basename(const char * filename)
+{
+     char * base;
+     const char * start;
+     int length;
+
+     start = strrchr(filename, '/');
+     if (start == NULL)
+	  start = filename;
+     else
+	  start++;
+     length = strcspn(start, ".");
+     base = (char *) malloc(sizeof(char) * (length + 1));
+     strncpy(base, start, length);
+     base[length] = '\0';
+     
+     return base;
+}
+
+/**
+ * @brief Clone a string
+ *
+ * @param str string
+ *
+ * @return the cloned string, as an allocated string pointer
+ */ 
+static char * strclone(const char * str)
+{
+     char * clone;
+     int length;
+
+     length = strlen(str);
+     clone = (char *) malloc(sizeof(char) * (length + 1));
+     strcpy(clone, str);
+     
+     return clone;
+}
+
+
+/* TODO: cleanup */
+extern char * module_name;
+extern char * group_name;
+
 #include "main_cmdline.h"
 int main( int argc, char **argv)
 {
      struct mw_args_info args_info;
+     struct mw_cmdline_params args_params;
 
      /* io file pointers */
      FILE * sfile = NULL; /* source    */
@@ -117,66 +174,56 @@ int main( int argc, char **argv)
      FILE * nfile = NULL; /* name      */
 
      char c;
-     char * start;
-     int length;
-     char * module_name;
-     char * group_name;
-     int cmdline_err;
 
-     /* parse the command-line */
-     cmdline_err = mw_cmdline(argc, argv, &args_info);
+     /* 1rst parsing of the command-line, searching -h or -v */
+     args_params.check_required = 0;
+     args_params.print_errors = 0;
+     mw_cmdline_ext(argc, argv, &args_info, &args_params);
      if (args_info.help_given)
-	  mw_cmdline_print_help();
-     if (args_info.version_given)
-	  mw_cmdline_print_version();
-     if (cmdline_err)
      {
-	  printf("Command-line error. Use '--help' for details.\n");
+	  mw_cmdline_print_help();
+	  exit(0);
+     }
+     if (args_info.version_given)
+     {
+	  mw_cmdline_print_version();
+	  exit(0);
+     }
+
+     /* 2nd parsing of the command-line, checking the options */
+     args_params.check_required = 1;
+     args_params.print_errors = 1;
+     if (0 != mw_cmdline_ext(argc, argv, &args_info, &args_params))
+     {
+	  printf("Use '--help' for details.\n");
 	  exit(1);
      }
 
+     /* OK, use the params now */
      debug_flag = args_info.debug_flag;
-
      if (debug_flag)
+     {
+	  debug("command-line parameters:");
 	  mw_cmdline_dump(stdout, &args_info);
+     }
 
      /*
       * if the module name was not given from the command-line (thus
       * having its default value) and the source file is not stdin, 
       * extract the module name from its filename
-      * - find the last '/' in sfile_name
-      * - go to the next position if it exists
-      * - stay at the beginning if not
-      * - measure the length of the prefix without '.'
-      * - copy to module_name
       */
      if  ((!args_info.module_name_given)
 	  && (0 != strcmp("-", args_info.source_arg)))
-     {
-	  start = strrchr(args_info.source_arg, '/');
-	  if (start == NULL)
-	       start = args_info.source_arg;
-	  else
-	       start++;
-	  length = strcspn(start, ".");
-	  module_name = (char *) malloc(sizeof(char) * (length + 1));
-	  strncpy(module_name, start, length);
-	  module_name[length] = '\0';
-     }
+	  module_name = basename(args_info.source_arg);
      else
-     {
-	  length = strlen(args_info.module_name_arg);
-	  module_name = (char *) malloc(sizeof(char) * (length + 1));
-	  strcpy(module_name, args_info.module_name_arg);
-     }
+	  module_name = strclone(args_info.module_name_arg);
 
-     length = strlen(args_info.group_name_arg);
-     group_name = (char *) malloc(sizeof(char) * (length + 1));
-     strcpy(group_name, args_info.group_name_arg);
+     group_name = strclone(args_info.group_name_arg);
   
      if (debug_flag)
 	  printf("module name : '%s'\ngroup  name : '%s'\n", 
 		 module_name, group_name);
+
      /* open the input file */
      sfile = open_file(args_info.source_arg, "r", stdin);
 
