@@ -1,5 +1,5 @@
 % MWPLIGHT(1)
-% Jacques Froment <jacques.froment@univ-ubs.fr>, Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (maintainer)
+% Jacques Froment <jacques.froment@univ-ubs.fr>
 % 2008-09-27
 
 # NAME
@@ -8,18 +8,19 @@ mwplight\ --\ the light preprocessor for megawave
 
 # SYNOPSYS
 
-**mwplight** \[-s module-source\] \[output-options\]
+**mwplight** \[-s module-source\] \[output-options\] \[misc-options\]
 
 # DESCRIPTION
 
 **mwplight** reads the megawave header of a module. It produces:
+
 * a library file, with a modified version of the module C code for inclusion in 
-the megawave modules library
-* a main file, with a main() function in C, for the stand-alone module
-* a documentation file, documenting the module syntax (interface) in TeX
+the megawave modules library;
+* a main file, with a main() function in C, for the stand-alone module;
+* a documentation file, documenting the module syntax (interface) in TeX;
 * an interface file, describing the module io, to design the interface for some 
-external code
-* a name file, containing the name and group of the module
+external code;
+* a name file, containing the name and group of the module.
 
 # OPTIONS
 
@@ -67,13 +68,13 @@ path to the files.
 
 # EXAMPLES
 
-mwplight -l foo_lib.c -m foo_main.c -d foo_doc.tex -g foogroup -s foo.c
+mwplight -l foo_lib.c -m foo_main.c -d foo_doc.tex -G foogroup -s foo.c
 
 # COPYRIGHT
 
-This program is part of the megawave framework.
-See http://megawave.cmla.ens-cachan.fr/ for details.
-(C) 2008 CMLA, ENS Cachan, 94235 Cachan cedex, France.
+This program is part of the megawave framework.  
+See http://megawave.cmla.ens-cachan.fr/ for details.  
+(C) 2008 CMLA, ENS Cachan, 94235 Cachan cedex, France.  
 
 # SEE ALSO
 

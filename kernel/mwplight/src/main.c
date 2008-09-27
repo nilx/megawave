@@ -17,14 +17,14 @@
  * description "This parser reads the megawave header of a module. It \
  * produces:
  * * a library file, with a modified version of the module C code for \
- *   inclusion in the megawave modules library
+ *   inclusion in the megawave modules library;
  * * a main file, with a main() function in C, for the stand-alone \
- *   module
+ *   module;
  * * a documentation file, documenting the module syntax (interface) \
- *   in TeX
+ *   in TeX;
  * * an interface file, describing the module io, to design the \
- *   interface for some external code
- * * a name file, containing the name and group of the module
+ *   interface for some external code;
+ * * a name file, containing the name and group of the module.
  * 
  * Author: Jacques Froment <jacques.froment@univ-ubs.fr>
  * "
