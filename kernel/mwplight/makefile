@@ -14,7 +14,7 @@ include	$(COMMONDIR)/makefile
 .PHONY	: default all clean distclean
 default	: bin
 all	: beautify lint bin test man
-clean	: clean-bin clean-doc
+clean	: clean-bin clean-test clean-doc
 distclean	: distclean-bin distclean-doc
 
 
@@ -64,18 +64,18 @@ $(CMDLINE:.c=.o)	: $(CMDLINE)
 	$(CC) -c -o $@ $<
 
 .PHONY	: lint
-lint	: lint-flag
-lint-flag	: $(SRC) $(HDR)
+lint	: lint.flag
+lint.flag	: $(SRC) $(HDR)
 	$(LINT) $(LINTFLAGS) $?
 	$(MAKE) $(addsuffix +charset, $?)
 	$(MAKE) $(addsuffix +linelength, $?)
-	touch lint-flag
+	@touch $@
 
 .PHONY	: beautify
-beautify	: beautify-flag
-beautify-flag	: $(SRC) $(HDR)
+beautify	: beautify.flag
+beautify.flag	: $(SRC) $(HDR)
 	$(MAKE) $(addsuffix +cleanup, $?)
-	touch beautify-flag
+	@touch $@
 
 .PHONY	: clean-bin
 clean-bin :
@@ -90,6 +90,29 @@ distclean-bin : clean-bin
 # include the prerequisites files
 # they will be built and re-read if they are missing
 -include $(DEP)
+
+#
+# TEST
+#
+
+TEST_MODULES	= $(shell find ../../src -type f -name *.c)
+TEST_ENV	= MWPLIGHT=$(SRCDIR)/$(BINNAME) \
+	MODULES="$(TEST_MODULES)"
+
+#TESTS	= $(addprefix test_, run library exec documentation interface name)
+TESTS	= $(addprefix test_, run documentation name)
+
+.PHONY	: test
+test	: $(addsuffix .flag, $(TESTS))
+
+test_%.flag	: $(SRCDIR)/$(BINNAME)
+	@echo test_$*.sh 
+	@env $(TEST_ENV) sh test/test_$*.sh
+	@touch $@
+
+.PHONY	: clean-test
+clean-test :
+	$(RM) $(addsuffix .flag, $(TESTS))
 
 #
 # DOC
