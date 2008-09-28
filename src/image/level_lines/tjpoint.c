@@ -25,6 +25,7 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 #include "mw.h"
 
 /*----- Module mscarea customised to speed up the computations -----*/
