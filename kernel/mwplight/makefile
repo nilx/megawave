@@ -54,8 +54,8 @@ DEP	= $(SRC:.c=.d)
 BINNAME	= mwplight
 
 .PHONY	: bin
-bin 	: $(SRCDIR)/$(BINNAME)
-$(SRCDIR)/$(BINNAME) 	: $(OBJ)
+bin 	: $(BINNAME)
+$(BINNAME) 	: $(OBJ)
 	$(LD) $(LDFLAGS) -o $@ $^
 
 # FIXME: unused parameters and long string
@@ -83,7 +83,7 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(SRCDIR)/$(BINNAME)
+	$(RM) $(BINNAME)
 	$(RM) $(SRCDIR)/*.ggo
 
 # include the prerequisites files
@@ -95,9 +95,9 @@ distclean-bin : clean-bin
 #
 
 TEST_MODULES	= $(shell find ../../src -type f -name *.c)
-TEST_ENV	= MWPLIGHT=$(SRCDIR)/$(BINNAME) \
+TEST_ENV	= MWPLIGHT=./$(BINNAME) \
 	MODULES="$(TEST_MODULES)" \
-	TESTDIR=test/
+	TESTDIR=test
 
 #TESTS	= $(addprefix test_, run library exec documentation interface name)
 TESTS	= $(addprefix test_, run library exec documentation name)
@@ -105,7 +105,7 @@ TESTS	= $(addprefix test_, run library exec documentation name)
 .PHONY	: test
 test	: $(addsuffix .flag, $(TESTS))
 
-test_%.flag	: $(SRCDIR)/$(BINNAME)
+test_%.flag	: $(BINNAME)
 	@echo test_$*.sh 
 	@env $(TEST_ENV) sh test/test_$*.sh
 	@touch $@

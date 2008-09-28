@@ -9,13 +9,11 @@ for MODSRC in ${MODULES}; do
 	echo error : ${OUT} != "unknown/${NAME}"
 	exit 1
     fi
-    echo -n .
     OUT=`< ${MODSRC} ${MWPLIGHT} -m ${NAME} -n -` || exit 1
     if [ ${OUT} != "unknown/${NAME}" ]; then
 	echo error : ${OUT} != "unknown/${NAME}"
 	exit 1
     fi
-    echo -n .
     GROUP=${NAME}
     OUT=`< ${MODSRC} ${MWPLIGHT} -m ${NAME} -g ${GROUP} -n -` || exit 1
     if [ ${OUT} != "${GROUP}/${NAME}" ]; then

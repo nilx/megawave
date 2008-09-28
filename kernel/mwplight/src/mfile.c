@@ -54,7 +54,11 @@ static void writeMheader(FILE * mfile)
       * to be adapted (by e.g. adding a new one after the declaration to
       * re-synchronize line numbers following the example of printfslocation()).
       */
-     fprintf(mfile, "# 1\n");
+     /*
+      * FIXME : standard ANSI syntax?
+      *
+      * fprintf(mfile, "# 1 %s.c\n", module_name);
+      */
 }
 
 /*

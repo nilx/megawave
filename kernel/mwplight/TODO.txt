@@ -1,2 +1,2 @@
 * fix the cproto bug
- 
+* review the executable output quality
