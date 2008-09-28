@@ -16,8 +16,11 @@
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include "mw.h"
+
+#define M_PI 3.1415926535897931
 
 void ssinus(size,A,D,signal)
      
