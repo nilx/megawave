@@ -20,7 +20,7 @@
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include  "mw.h"
 
 extern Curve disc();
