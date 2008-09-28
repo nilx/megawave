@@ -58,7 +58,7 @@ void ccontrast(in,out,g)
     if (g) yd = fgamma(*g,yd);
     y = (int)(yd*256.0);
     /* grey level 255 correction */
-    if (x2+h==size<<1 || y>255) y = 255;
+    if (x2+h==size<<1) y = 255;
     x2 += 2*h;
     new[i] = y;
     mwdebug("gray %d -> %d\n",i,y);
