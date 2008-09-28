@@ -29,7 +29,7 @@ usage = {
 
 #define _(a,i,j) ((a)->values[(i)*((a)->dim)+(j)])
 
-#define PI M_PI
+#define PI 3.1415926535897931
 #define EPSDIST6 1E-4F
 /*#define MINANGLE 1.309F */ /*75 degres*/
 /*#define MINANGLE 0.7854F*/ /*45 degres*/
