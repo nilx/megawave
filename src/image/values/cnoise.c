@@ -28,6 +28,8 @@
 #include <unistd.h>
 #include "mw.h"
 
+#define M_PI 3.1415926535897931
+
 /* for drand48() */
 #ifdef __STDC__
 #include <stdlib.h>
