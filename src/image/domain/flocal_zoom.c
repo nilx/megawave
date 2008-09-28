@@ -18,6 +18,7 @@
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <string.h>
 #include "mw.h"
 
 Fimage flocal_zoom(Input, X, Y, W, factor)
