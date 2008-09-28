@@ -13,6 +13,7 @@
  v1.1: minor bug correction (P.Monasse)
 ----------------------------------------------------------------------*/
 
+#include <string.h>
 #include "mw.h"
 
 extern void flst_pixels();
