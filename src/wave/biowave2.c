@@ -438,11 +438,12 @@ Fsignal     ri1, ri2;	/* Impulse responses of the low-pass filters */
     /*--- Copy last point if number of lines is odd ---*/
 
     if (L2 > dy2)
+    {
       if (haary == 0)
 	Im1->gray[ldxc] = s2 * Im->gray[dy1 * dx + c];
       else
 	Im1->gray[ldxc] = shaar * Im->gray[dy1 * dx + c];
-      
+    }
 
     /*--- Convolution with high-pass filter ---*/
 
@@ -544,11 +545,12 @@ int        *edge;           /* Type of edge processing (see `Edge`
     /*--- Copy last point if number of columns is odd ---*/
 
     if (K2 > dx2)
+    {
      if (haarx == 0)
        Tab->gray[lK2+c] = s2 * wtrans->images[J-1][0]->gray[ldx+dx1];
      else
        Tab->gray[lK2+c] = shaar * wtrans->images[J-1][0]->gray[ldx+dx1];
-
+    }
     ldx += dx;
     lK2 += K2;
   }
@@ -621,7 +623,6 @@ Fsignal     Ri1, Ri2;	      /* Impulse responses of the low pass filters */
 
 {
   int         J;			/* Current level of decomposition */
-  int         i;			/* Orientation parameter */
 
   /*--- Detection of errors in command line ---*/
 
