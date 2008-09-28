@@ -25,6 +25,8 @@
 #include <math.h>
 #include "mw.h"
 
+#define M_PI 3.1415926535897931
+
 struct one_segment
 {
   short start;    /* starting position (distance from border) */
