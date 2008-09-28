@@ -30,6 +30,8 @@
 
 #define VERBOSE 0
 
+#define M_PI 3.1415926535897931
+
 struct one_segment
 {
   char side;     /* side where the line starts: 0,1,2 or 3 */
