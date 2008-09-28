@@ -20,6 +20,7 @@
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <string.h>
 #include "mw.h"
 
 extern Ccimage cczoom();
