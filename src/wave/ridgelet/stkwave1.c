@@ -21,6 +21,7 @@
 #include "mw.h"
 
 #define EPS 1e-15
+#define M_PI 3.1415926535897931
 
 extern void   fft1d();
 
