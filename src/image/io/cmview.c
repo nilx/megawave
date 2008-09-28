@@ -23,6 +23,7 @@
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <string.h>
 #include "mw.h"
 
 /* Include the window since we use windows facility */
