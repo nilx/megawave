@@ -21,6 +21,8 @@
 #include <math.h>
 #include  "mw.h"
 
+#define M_PI 3.1415926535897931
+
 /* Define DEGRES to compute HUE in degres (else computed in radian) */
 
 #define DEGRES
