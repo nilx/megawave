@@ -18,6 +18,7 @@
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <string.h>
 #include "mw.h"
 
 Ccimage cclocal_zoom(Input, X, Y, W, factor)
