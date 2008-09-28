@@ -100,7 +100,7 @@ TEST_ENV	= MWPLIGHT=$(SRCDIR)/$(BINNAME) \
 	TESTDIR=test/
 
 #TESTS	= $(addprefix test_, run library exec documentation interface name)
-TESTS	= $(addprefix test_, run library documentation name)
+TESTS	= $(addprefix test_, run library exec documentation name)
 
 .PHONY	: test
 test	: $(addsuffix .flag, $(TESTS))
