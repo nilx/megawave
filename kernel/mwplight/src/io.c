@@ -58,7 +58,7 @@
  * write a report in the <out> string, which must be longer than
  * LINE_LENGTH * 3
  */
-static char * str_fileposition(char * out, FILE * posfile, char * filename)
+static char * str_fileposition(char * out, FILE * posfile)
 {
      long position;
      int nblines = 0;
@@ -102,8 +102,8 @@ static char * str_fileposition(char * out, FILE * posfile, char * filename)
      fseek(posfile, position, SEEK_SET);
 
      sprintf(out,                                                       \
-              "%s:%i,%i:\n%s%*c\n",                                     \
-              filename, nblines, nbchars, line, nbchars, '^');
+              "%i,%i:\n%s%*c\n",                                     \
+              nblines, nbchars, line, nbchars, '^');
 
      return out;
 }
@@ -187,8 +187,7 @@ void error(char * fmt, ...)
 
      logger(LOG_ERROR, stderr, msg);
      fprintf(stderr, "\n");
-     fprintf(stderr, str_fileposition(position_info, \
-                                      sfile_global, sfile_name));
+     fprintf(stderr, str_fileposition(position_info, sfile_global));
      abort();
 }
 

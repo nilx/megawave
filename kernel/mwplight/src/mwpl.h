@@ -427,7 +427,7 @@ typedef struct s_statement
 
 FILE * sfile_global;
 
-unsigned char debug_flag;
+int debug_flag;
 t_header * H;
 t_body * C;
 struct stat module_fstat;
@@ -447,13 +447,11 @@ int inside_optionarg;
 
 /*
  * names of
- * - the input module file (with path and extension)
  * - the input module file (without path or extension)
  * - the group (from the current working dir.)
  */
-char sfile_name[BUFSIZ];
-char module_name[BUFSIZ];
-char group_name[BUFSIZ];
+char * module_name;
+char * group_name;
 
 /*
  * buffers storing
