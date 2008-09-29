@@ -1,0 +1,32 @@
+% LIBMW-WDEVICE(3)
+% Jacques Froment <jacques.froment@univ-ubs.fr>
+% 2008-09-29
+
+# NAME
+
+WIsAnActiveWindow, WSetColorMap, WFlushWindow, WFlushAreaWindow,
+WColorsAvailable, WSetColorPencil, WSetForegroundColorPencil,
+WSetBackgroundColorPencil, WSetSpecialColorPencil, WSetTypePencil,
+WDrawPoint, WDrawLine, WDrawString, WDrawRectangle, WFillRectangle,
+WClearWindow, WDestroyWdeviceWindow, WDestroyWindow, WMoveWindow,
+WPutTitleWindow, WSaveImageWindow, WRestoreImageWindow,
+WLoadBitMapImage, WLoadBitMapColorImage, WSystemEvent, WSetUserEvent,
+WUserEvent, WGetStateMouse, WGetKeyboard, WNewImageWindow,
+WOpenImageWindow, WReOpenImageWindow - Window device library for the
+megawave framework.
+
+# LIBRARY
+
+library "libmw-mwplight"
+
+# SYNOPSYS
+
+**FIXME**: to be filled
+
+# DESCRIPTION
+
+**FIXME**: to be filled
+
+# SEE ALSO
+
+**megawave(7)**, **libmw(3)**, **megawave-modules(7)**

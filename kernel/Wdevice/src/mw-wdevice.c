@@ -26,17 +26,17 @@
 #include <math.h>
 #include <string.h>
 
-/* W_X11R4 Include File */
-#include "W_X11R4.h"
+/* global header */
+#include "libmw-wdevice.h"
+/* variables */
+#include "mw-wdevice_var.h"
+/* miscellaneous functions */
+#include "mw-wdevice_misc.h"
+/* icon */
+#include "mw-wdevice_icon.h"
 
-/* W_X11R3 Global Variables */
-#include "W_X11R4_var.c"
-
-/* Miscellanous functions for W_X11R4 */
-#include "W_X11R4_misc.c"
-
-/* Icon's Bitmap */
-#include "W_X11R4.Icon"
+/* self */
+#include "mw-wdevice.h"
 
 /*           Return 1 if the window is active, 0 elsewhere */
 

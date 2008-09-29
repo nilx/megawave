@@ -1,111 +1,127 @@
-#!/usr/bin/make -f
+#! make -f
 #
-# makefile for megawave 3, lib section
+# makefile for the megawave wdevice library
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-include ./makefile.common
+COMMONDIR	= ../common
+include	$(COMMONDIR)/makefile
 
 #
 # TOP-LEVEL
 #
 
-.PHONY	: default lint beautify all \
-          install install-all uninstall uninstall-all clean distclean
-default	: bin
-all	: bin test doc
-lint	: lint-bin lint-test lint-doc
-beautify	: beautify-bin beautify-test beautify-doc
-clean 	: clean-bin clean-test clean-doc
-distclean	: distclean-bin distclean-test distclean-doc
+.PHONY	: default all clean distclean
+default	: lib
+all	: beautify lint lib test man
+clean 	: clean-bin clean-doc
+distclean	: distclean-bin distclean-doc
+
+
+SRCDIR	= src
+
+SRC	= $(addprefix $(SRCDIR)/, 				\
+	mw-wdevice.c mw-wdevice_misc.c mw-wdevice_var.c)
+
+AUTOHDR	= $(SRC:.c=.h)
+HDR	= $(AUTOHDR) $(SRCDIR)/libmw-wdevice.h
+OBJ	= $(SRC:.c=.o)
+DEP	= $(SRC:.c=.d)
+
+LIBNAME	= libmw-wdevice
+
+#
+# PREBUILD AND UTILS
+#
+
+.PHONY	: prebuild
+prebuild	: autohdr dep man
+
+.PHONY	: autohdr
+autohdr	: $(AUTOHDR)
+	echo $(AUTOHDR)
+
+.PHONY	: dep
+dep	: $(DEP)
 
 #
 # BIN
 #
 
-SRC	= $(addprefix $(SRCDIR)/, W_X11R4.c)
-HDR	= 
-IPATH	= ./include
-CSTD	=
+.PHONY	: lib
+lib 	: $(LIBNAME).so
+$(LIBNAME).so 	: $(OBJ)
+	$(LD) -shared $(LDFLAGS) -o $@ $^
 
-BINNAME	= libWdevice
-
-foo:
-	@echo $(OBJ)
- 
-.PHONY	: bin
-bin 	: $(SRCDIR)/$(BINNAME).so
-$(SRCDIR)/$(BINNAME).so 	: $(OBJ)
-	$(LD) $(LDFLAGS) -shared -o $@ $^
-
-.PHONY	: lint-bin
-lint-bin	: lint-bin-flag
-lint-bin-flag	: $(SRC) $(HDR)
+.PHONY	: lint
+lint	: lint.flag
+lint.flag	: $(SRC) $(HDR)
 	$(LINT) $(LINTFLAGS) $?
 	$(MAKE) $(addsuffix +charset, $?)
 	$(MAKE) $(addsuffix +linelength, $?)
-	touch lint-bin-flag
+	@touch $@
 
-.PHONY	: beautify-bin
-beautify-bin	: beautify-bin-flag
-beautify-bin-flag	: $(SRC) $(HDR) $(EXTRASRC) $(EXTRAHDR)
+.PHONY	: beautify
+beautify	: beautify.flag
+beautify.flag	: $(SRC) $(HDR)
 	$(MAKE) $(addsuffix +cleanup, $?)
-	touch beautify-bin-flag
+	@touch $@
 
 .PHONY	: clean-bin
 clean-bin :
-	$(RM) $(OBJ)
-	$(RM) $(DEP)
-	$(RM) lint-bin-flag beautify-bin-flag
+	$(RM) $(OBJ) $(DEP)
+	$(RM) lint-flag beautify-flag
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(SRCDIR)/$(BINNAME).so
+	$(RM) $(LIBNAME).so
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
 -include $(DEP)
 
-#####################################################################
+
+#
 # TEST
-#####################################################################
+#
 
-.PHONY	: test clean-test distclean-test
+.PHONY	: test
 
-#####################################################################
+#
 # DOC
-#####################################################################
+#
 
-MAN	= $(DOCDIR)/$(BINNAME).man
 
-.PHONY	: doc
-doc	: srcdoc
+DOCDIR	= doc
+MAN	= $(DOCDIR)/$(LIBNAME).man
 
-.PHONY	: srcdoc
-srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
-$(DOXDIR)/html/index.html	: $(SRC) $(HDR)
-	$(MKDIR) $(DOXDIR)/html
-	(cat $(DOXYCONF); \
-		echo "INPUT = $(SRCDIR), $(IPATH)"; \
-		echo "GENERATE_HTML = YES"; \
-		echo "HTML_OUTPUT = $(DOXDIR)/html";) | $(DOXYGEN) -
-$(DOXDIR)/latex/refman.tex	: $(SRC) $(HDR)
-	$(MKDIR) $(DOXDIR)/latex
-	(cat $(DOXYCONF); \
-		echo "INPUT = $(SRCDIR), $(IPATH)"; \
-		echo "GENERATE_LATEX = YES"; \
-		echo "LATEX_OUTPUT = $(DOXDIR)/latex";) | $(DOXYGEN) -
-$(DOXDIR)/srcdoc.pdf : $(DOXDIR)/latex/refman.tex
-	$(MAKE) -C $(DOXDIR)/latex refman.pdf
-	mv $(DOXDIR)/latex/refman.pdf $(DOXDIR)/srcdoc.pdf
+.PHONY	: man
+man	: $(DOCDIR)/$(LIBNAME).man $(DOCDIR)/$(LIBNAME).man.html
+
+# .PHONY	: srcdoc
+# srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
+# $(DOXDIR)/html/index.html	: $(SRC) $(HDR)
+# 	$(MKDIR) $(DOXDIR)/html
+# 	(cat $(DOXYCONF); \
+# 		echo "INPUT = $(SRCDIR), $(IPATH)"; \
+# 		echo "GENERATE_HTML = YES"; \
+# 		echo "HTML_OUTPUT = $(DOXDIR)/html";) | $(DOXYGEN) -
+# $(DOXDIR)/latex/refman.tex	: $(SRC) $(HDR)
+# 	$(MKDIR) $(DOXDIR)/latex
+# 	(cat $(DOXYCONF); \
+# 		echo "INPUT = $(SRCDIR), $(IPATH)"; \
+# 		echo "GENERATE_LATEX = YES"; \
+# 		echo "LATEX_OUTPUT = $(DOXDIR)/latex";) | $(DOXYGEN) -
+# $(DOXDIR)/srcdoc.pdf : $(DOXDIR)/latex/refman.tex
+# 	$(MAKE) -C $(DOXDIR)/latex refman.pdf
+# 	mv $(DOXDIR)/latex/refman.pdf $(DOXDIR)/srcdoc.pdf
 
 .PHONY	: clean-doc
 clean-doc	:
-	$(RM) $(DOXDIR)/html/*.md5 $(DOXDIR)/html/*.dot
-	$(RRM) $(DOXDIR)/latex
+#	$(RM) $(DOXDIR)/html/*.md5 $(DOXDIR)/html/*.dot
+#	$(RRM) $(DOXDIR)/latex
 
 .PHONY	: distclean-doc
 distclean-doc	: clean-doc
-	$(RM) $(MAN) $(MANHTML)
-	$(RRM) $(DOXDIR)
+	$(RM) $(DOCDIR)/$(LIBNAME).man $(DOCDIR)/$(LIBNAME).man.html
 
