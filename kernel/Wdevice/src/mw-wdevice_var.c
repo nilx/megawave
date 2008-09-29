@@ -15,6 +15,10 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* Since Wdevice V3, all global variables must begin with _W_ */
 
+#include <X11/Xlib.h>
+
+#include "mw-wdevice_var.h"
+
 Display 	*_W_Display=NULL;	/* -- Which display          */
 int		_W_Screen;	/* -- Which screen on the display    */
 int		_W_Depth;	/* -- Number of color planes         */

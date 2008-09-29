@@ -219,4 +219,27 @@ void WReOpenImageWindow();
 
 #endif
 
+/*
+ * GLOBAL VARIABLES
+ */
 
+/* defined in mw-wdevice_var.c */
+extern int             _W_XErrorOccured;
+extern Display         *_W_Display;
+extern int             _W_Screen;
+extern int             _W_Depth;
+extern unsigned long   _W_BlackPixel;
+extern unsigned long   _W_WhitePixel;
+extern Colormap        _W_Colormap;
+extern GC              _W_GC;
+extern Visual          *_W_Visual;
+extern Cursor          _W_Cursor;
+extern XFontStruct     *_W_Font; 
+extern int             _W_nfcols;
+extern unsigned long   _W_freecols[256];
+extern int             _W_NumCols;
+extern unsigned char   _W_special_color;
+extern unsigned char   _W_Red[256],_W_Green[256],_W_Blue[256];
+extern unsigned long   _W_cols[256];
+extern XColor          _W_RGB[256];
+extern int             _W_KeyBuffer; 

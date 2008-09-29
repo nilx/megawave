@@ -17,6 +17,20 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/cursorfont.h>
+
+#include "libmw-wdevice.h"
+#include "mw-wdevice.h"
+#include "mw-wdevice_var.h"
+
+#include "mw-wdevice_misc.h"
+
 /*===== For W_X11R4_misc  (internal use) =====*/
 
 typedef struct WWWWW
@@ -26,7 +40,6 @@ typedef struct WWWWW
 
 #define W_NOPIX 0xffffffff
 
-
 /*----- General Functions -----*/
 
 
@@ -34,6 +47,7 @@ int WX_ErrorHandler(Display *display, XErrorEvent *error)
 {
      WDEBUG(WX_ErrorHandler);
      _W_XErrorOccured = 1;
+     return 0;
 }
 
 
@@ -127,8 +141,6 @@ void  WX_AllocColors(void)
      int      i,j,unique,p2alloc,p3alloc;
      Colormap cmap;
      Status   ret;
-     unsigned long pmr[1],pix[1];
-     XColor   defs[256];
      XColor   ctab[256];
      unsigned long pixel, *fcptr;
      int      dc;
@@ -370,8 +382,6 @@ void WX_CreateXImage(Wframe *window, int dx, int dy)
 
 void WX_AllocXImage(Wframe *window, int dx, int dy)
 {
-     int nbpp;
-
      WDEBUG(WX_AllocXImage); 
 
      if ((window->ximage == NULL) || (window->pix == NULL))
