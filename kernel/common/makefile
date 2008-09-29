@@ -1,0 +1,147 @@
+#!/usr/bin/make -f
+#
+# global common makefile for megawave
+#
+# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+
+default :
+
+# TOOLS PATH
+
+CP	= /bin/cp -f
+RM	= /bin/rm -f
+RRM	= /bin/rm -r -f
+MV	= /bin/mv -f
+MKDIR	= /bin/mkdir -p
+SED	= /bin/sed
+
+CC	= /usr/bin/gcc
+LD	= /usr/bin/gcc
+MAKEDEP	= /usr/bin/gcc -MM
+CPROTO	= /usr/bin/cproto
+GENGETOPT	= /usr/bin/gengetopt
+
+FIND	= /usr/bin/find
+CSPLIT	= /usr/bin/csplit
+TOUCH	= /usr/bin/touch
+INSTALL	= /usr/bin/install
+LINT	= /usr/bin/splint
+EXPAND	= /usr/bin/expand
+DOXYGEN	= /usr/bin/doxygen
+PANDOC	= /usr/bin/pandoc
+PDFLATEX	= /usr/bin/pdflatex
+
+# CC OPTIONS
+
+CCVERSION	:= $(shell  $(CC) --version | head -n 1 | cut -d ' ' -f 3)
+CSTRICT_4_1	:= $(shell if [ "$(CCVERSION)" \> "4.1" ]; then   \
+                             echo "-Wc++-compat -Wextra";         \
+                           fi) # available from gcc 4.1
+
+CSTD	= -ansi
+CWARN	= -Wall
+CSTRICT	= 
+CPROF	= 
+COPTI	= 
+CDEBUG	= 
+
+# CC OPTIONS SWITCHS FROM THE COMMANDLINE
+ifdef STRICT
+CSTRICT	= -pedantic -Werror $(CSTRICT_4_1)               \
+          -Wfloat-equal -Wundef -Wshadow -Wpointer-arith \
+          -Wbad-function-cast -Wcast-qual -Wcast-align   \
+          -Waggregate-return -Wstrict-prototypes         \
+          -Wmissing-prototypes                           \
+          -Wmissing-declarations -Wnested-externs
+endif
+
+ifdef PROF
+CPROF	= -pg
+OPTI	= 1
+endif
+
+ifdef OPTI
+COPTI	= -O2 -funroll-loops -finline-functions
+endif
+
+ifdef DEBUG
+CDEBUG	= -O0 -g
+endif
+
+IPATH	= .
+LDDEBUG	= 
+LPATH	= .
+LIBS	=
+
+CPPFLAGS	=
+
+
+CFLAGS	= $(CSTD) $(CWARN) $(CSTRICT) $(CPROF) $(COPTI) $(CDEBUG) \
+          -fPIC $(addprefix -I, $(IPATH)) $(addprefix -D, $(CPPFLAGS))
+
+LDFLAGS	= -fPIC $(LDDEBUG) $(CPROF) \
+          $(addprefix -L, $(LPATH)) $(addprefix -l, $(LIBS))
+
+
+# TOOLS OPTIONS
+
+LINT_FLAGS	= -posixlib -weak -ansi89limits
+PANDOC_FLAGS	= --standalone --reference-links --smart
+DOXYCONF	= $(DOCDIR)/doxygen.conf
+GENGETOPT_FLAGS	= --no-handle-error --func-name=mw_cmdline \
+	--arg-struct mw_args_info --no-help --no-version
+
+
+# GENERIC RULES
+
+# build a prerequisites file
+%.d : %.c %.h
+	@set -e; $(RM) $@; \
+	    $(MAKEDEP) $(addprefix -I, $(IPATH)) $< > $@; \
+	    $(SED) 's|\($*\)\.o[ :]*|\1.o $@ : |g' $@ > $@.$$$$; \
+	    $(MV) $@.$$$$ $@;
+
+# std C compilation
+%.o : %.c %.d
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+# build the command-line parser
+# TODO: one pass
+%_cmdline.c	: %.ggo
+	$(GENGETOPT) ${GENGETOPT_FLAGS} -i $^ --file-name=$*_cmdline
+%_cmdline.h	: %.ggo
+	$(GENGETOPT) ${GENGETOPT_FLAGS} -i $^ --file-name=$*_cmdline
+
+# make a C header
+%.h	: %.c
+	$(CPROTO) $(CCFLAGS) -q -f2 -P"int f(\n\ta,\n\tb)" $< > $@
+
+# extract the command-line description
+%.ggo	: %.c
+	$(CSPLIT) $^ -f $*_split %GENGETOPT\ BEGIN%+1 /GENGETOPT\ END/
+	$(SED) 's/^ *\* *//' $*_split00 > $@
+	$(RM) $*_split0[01]
+
+# markdown to manpage
+%.man : %.man.mdwn
+	-test -x $(PANDOC) && $(PANDOC) $(PANDOC_FLAGS) -t man -o $@ $<
+
+# markdown to html
+%.html : %.mdwn
+	-test -x $(PANDOC) && $(PANDOC) $(PANDOC_FLAGS) -t html -o $@ $<
+
+
+# UTILITIES
+
+# TODO : empty blank lines at the end of the file
+%+cleanup : %
+	$(EXPAND) $< | $(SED) 's/[ \t]*$$//' > $<.$$$$ \
+	    && $(MV) $<.$$$$ $<;
+
+CHARSET	= us-ascii
+%+charset : %
+	test "`file -b -i $< | cut -d '=' -f 2`" = "$(CHARSET)"
+
+MAXLENGTH	= 80
+%+linelength : %
+	test `wc -L $< | cut -d ' ' -f 1` -le $(MAXLENGTH)
