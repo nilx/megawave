@@ -45,6 +45,10 @@ typedef struct WWWWW
 
 int WX_ErrorHandler(Display *display, XErrorEvent *error)
 {
+     /* FIXME: dummy instruction, unused parameter */
+     display = display;
+     error = error;
+
      WDEBUG(WX_ErrorHandler);
      _W_XErrorOccured = 1;
      return 0;

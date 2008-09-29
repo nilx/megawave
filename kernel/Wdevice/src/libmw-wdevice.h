@@ -146,13 +146,11 @@ typedef struct {
 
 /*===== Function definitions  =====*/
 
-#ifdef __STDC__
-
 int WIsAnActiveWindow(Wframe *);
-void WSetColorMap();
+void WSetColorMap(void);
 void WFlushWindow(Wframe *);
 void WFlushAreaWindow(Wframe *,int,int,int,int);
-int WColorsAvailable();
+int WColorsAvailable(void);
 void WSetColorPencil(Wframe *,int);
 void WSetForegroundColorPencil(Wframe *);
 void WSetBackgroundColorPencil(Wframe *);
@@ -178,46 +176,9 @@ void WSetUserEvent(Wframe *,unsigned long);
 int WUserEvent(Wframe *);
 int WGetStateMouse(Wframe *,int *,int *,int *);
 int WGetKeyboard(void);
-Wframe *WNewImageWindow();
+Wframe *WNewImageWindow(void);
 Wframe *WOpenImageWindow(int,int,int,int,char *);
 void WReOpenImageWindow(Wframe *,int,int,int,int,char *);
-
-#else
-
-int WIsAnActiveWindow();
-void WSetColorMap();
-void WFlushWindow();
-void WFlushAreaWindow();
-int WColorsAvailable();
-void WSetColorPencil();
-void WSetForegroundColorPencil();
-void WSetBackgroundColorPencil();
-void WSetSpecialColorPencil();
-void WSetTypePencil();
-void WDrawPoint();
-void WDrawLine();
-void WDrawString();
-void WDrawRectangle();
-void WFillRectangle();
-void WClearWindow();
-void WDestroyWdeviceWindow();
-void WDestroyWindow();
-void WMoveWindow();
-void WPutTitleWindow();
-void WSaveImageWindow();
-void WRestoreImageWindow();
-int WLoadBitMapImage();
-int WLoadBitMapColorImage();
-void WSystemEvent();
-void WSetUserEvent();
-int WUserEvent();
-int WGetStateMouse();
-int WGetKeyboard();
-Wframe *WNewImageWindow();
-Wframe *WOpenImageWindow();
-void WReOpenImageWindow();
-
-#endif
 
 /*
  * GLOBAL VARIABLES

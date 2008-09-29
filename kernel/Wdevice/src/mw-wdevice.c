@@ -39,7 +39,8 @@
 
 #define theIcon_width 64
 #define theIcon_height 64
-static /* unsigned */ char theIcon_bits[] = {
+/* FIXME: should be signed */
+static unsigned char theIcon_bits[] = {
    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
    0x00, 0x00, 0x00, 0x00, 0xfc, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1f,
    0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x04, 0x00, 0x00, 0x00,
@@ -211,6 +212,9 @@ int WColorsAvailable(void)
 
 void WSetColorPencil(Wframe *window, int color)
 {
+     /* FIXME: dummy instruction, unused parameter */
+     window = window;
+
      WDEBUG(WSetColorPencil); 
 
      if (_W_NumCols <=0) WSetColorMap();
@@ -231,6 +235,9 @@ void WSetColorPencil(Wframe *window, int color)
 
 void WSetForegroundColorPencil(Wframe *window)
 {
+     /* FIXME: dummy instruction, unused parameter */
+     window = window;
+
      WDEBUG(WSetForegroundColorPencil); 
 
      if (_W_NumCols <=0) WSetColorMap();
@@ -242,6 +249,9 @@ void WSetForegroundColorPencil(Wframe *window)
 
 void WSetBackgroundColorPencil(Wframe *window)
 {
+     /* FIXME: dummy instruction, unused parameter */
+     window = window;
+
      WDEBUG(WSetBackgroundColorPencil); 
 
      if (_W_NumCols <=0) WSetColorMap();
@@ -254,6 +264,9 @@ void WSetBackgroundColorPencil(Wframe *window)
 
 void WSetSpecialColorPencil(Wframe *window)
 {
+     /* FIXME: dummy instruction, unused parameter */
+     window = window;
+
      WDEBUG(WSetSpecialColorPencil); 
 
      if (_W_NumCols <=0) WSetColorMap();  
@@ -972,7 +985,7 @@ Wframe *WOpenImageWindow(int width, int height, int ltx, int lty, char *label)
 
      theIconPixmap = XCreateBitmapFromData( _W_Display,
 					    window->win,
-					    theIcon_bits,
+					    (char *) theIcon_bits,
 					    theIcon_width, 
 					    theIcon_height );
      theWMHints.initial_state = NormalState;
@@ -1064,7 +1077,7 @@ void WReOpenImageWindow(Wframe *window, int width, int height,
 
      theIconPixmap = XCreateBitmapFromData( _W_Display,
 					    window->win,
-					    theIcon_bits,
+					    (char *) theIcon_bits,
 					    theIcon_width, 
 					    theIcon_height );
      theWMHints.initial_state = NormalState;
