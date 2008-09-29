@@ -204,7 +204,7 @@ int main( int argc, char **argv)
      args_params.print_errors = 1;
      if (0 != mw_cmdline_ext(argc, argv, &args_info, &args_params))
      {
-          printf("Use '--help' for details.\n");
+          printf("Try '%s --help' for more information.\n", argv[0]);
           exit(1);
      }
 
