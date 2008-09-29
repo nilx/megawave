@@ -18,12 +18,27 @@ clean	: clean-bin clean-test clean-doc
 distclean	: distclean-bin distclean-test distclean-doc
 
 
+SRCDIR	= src
+
+CMDLINE	= $(SRCDIR)/main_cmdline.c
+
+SRC	= $(addprefix $(SRCDIR)/, \
+	tree.c parse.c instruction.c io.c header.c afile.c ifile.c \
+	mfile.c tfile.c present.c main.c)
+
+AUTOHDR	= $(SRC:.c=.h)
+HDR	= $(AUTOHDR) $(CMDLINE:.c=.h) $(SRCDIR)/mwpl.h
+OBJ	= $(SRC:.c=.o) $(CMDLINE:.c=.o)
+DEP	= $(SRC:.c=.d)
+
+BINNAME	= mwplight
+
 #
 # PREBUILD AND UTILS
 #
 
 .PHONY	: prebuild
-prebuild	: autohdr cmdline man
+prebuild	: autohdr cmdline dep man
 
 .PHONY	: cmdline
 cmdline	: $(CMDLINE)
@@ -37,21 +52,6 @@ dep	: $(DEP)
 #
 # BUILD
 #
-
-SRCDIR	= src
-
-CMDLINE	= $(SRCDIR)/main_cmdline.c
-
-SRC	= $(addprefix $(SRCDIR)/, \
-	tree.c parse.c instruction.c io.c header.c afile.c ifile.c \
-	mfile.c tfile.c present.c main.c)
-
-AUTOHDR	= $(SRC:.c=.h)
-HDR	= $(AUTOHDR:.c=.h) $(CMDLINE:.c=.h) $(SRCDIR)/mwpl.h
-OBJ	= $(SRC:.c=.o) $(CMDLINE:.c=.o)
-DEP	= $(SRC:.c=.d)
-
-BINNAME	= mwplight
 
 .PHONY	: bin
 bin 	: $(BINNAME)

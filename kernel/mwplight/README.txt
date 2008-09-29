@@ -3,7 +3,7 @@ COMPILATION OF THE MEGAWAVE LIGHT COMPILER
 # basic
 
 * compile the executable
-  The result is `src/mwplight`.
+  The result is `./mwplight`.
     make bin
 * cleanup the compilation headers, objects, ...
     make clean
@@ -15,7 +15,7 @@ COMPILATION OF THE MEGAWAVE LIGHT COMPILER
 # other targets
 
 * compile the manpage
-  The result is `doc/mwplight.man` and `doc/mwplight.man.html`.
+  The result is `./mwplight.man` and `./mwplight.man.html`.
     make man
 * beautify the source code
     make beautify
