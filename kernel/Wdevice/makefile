@@ -12,23 +12,26 @@ include	$(COMMONDIR)/makefile
 #
 
 .PHONY	: default all clean distclean
-default	: lib
-all	: beautify lint lib test man
+default	: lib api
+all	: beautify lint lib api test man
 clean 	: clean-bin clean-doc
 distclean	: distclean-bin distclean-doc
 
 
 SRCDIR	= src
 
-SRC	= $(addprefix $(SRCDIR)/, 				\
-	mw-wdevice.c mw-wdevice_misc.c mw-wdevice_var.c)
+SRC	= $(addprefix $(SRCDIR)/, 		\
+	wdevice.c wdevice-misc.c wdevice-var.c)
 
 AUTOHDR	= $(SRC:.c=.h)
-HDR	= $(AUTOHDR) $(SRCDIR)/libmw-wdevice.h
+HDR	= $(AUTOHDR) $(SRCDIR)/wdevice-common.h $(SRCDIR)/wdevice-defs.h
 OBJ	= $(SRC:.c=.o)
 DEP	= $(SRC:.c=.d)
 
 LIBNAME	= libmw-wdevice
+APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
+LIB	= $(LIBNAME).so
+API	= $(LIBNAME).h
 
 #
 # PREBUILD AND UTILS
@@ -49,9 +52,19 @@ dep	: $(DEP)
 #
 
 .PHONY	: lib
-lib 	: $(LIBNAME).so
-$(LIBNAME).so 	: $(OBJ)
+lib 	: $(LIB)
+$(LIB) 	: $(OBJ)
 	$(LD) -shared $(LDFLAGS) -o $@ $^
+
+.PHONY	: api
+api 	: $(API)
+$(API) 	: $(SRC) $(SRCDIR)/wdevice-defs.h
+	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
+	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
+	$(CAT) $(filter %.h, $^) >> $@
+	$(CPROTO) $(CPROTO_FLAGS) $(filter %.c, $^) >> $@
+	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
+
 
 .PHONY	: lint
 lint	: lint.flag
@@ -70,11 +83,13 @@ beautify.flag	: $(SRC) $(HDR)
 .PHONY	: clean-bin
 clean-bin :
 	$(RM) $(OBJ) $(DEP)
-	$(RM) lint-flag beautify-flag
+	$(RM) lint.flag beautify.flag
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(LIBNAME).so
+	$(RM) $(AUTOHDR)
+	$(RM) $(LIB)
+	$(RM) $(API)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing

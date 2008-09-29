@@ -17,7 +17,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 
 #include <X11/Xlib.h>
 
-#include "mw-wdevice_var.h"
+#include "wdevice-var.h"
 
 Display 	*_W_Display=NULL;	/* -- Which display          */
 int		_W_Screen;	/* -- Which screen on the display    */

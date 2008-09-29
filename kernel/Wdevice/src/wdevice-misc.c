@@ -25,11 +25,12 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 
-#include "libmw-wdevice.h"
-#include "mw-wdevice.h"
-#include "mw-wdevice_var.h"
+#include "wdevice-common.h"
+#include "wdevice-defs.h"
+#include "wdevice.h"
+#include "wdevice-var.h"
 
-#include "mw-wdevice_misc.h"
+#include "wdevice-misc.h"
 
 /*===== For W_X11R4_misc  (internal use) =====*/
 

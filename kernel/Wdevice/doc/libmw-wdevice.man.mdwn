@@ -27,6 +27,10 @@ library "libmw-mwplight"
 
 **FIXME**: to be filled
 
+# FILES
+
+/usr/include/libmw-wdevice.h
+
 # SEE ALSO
 
 **megawave(7)**, **libmw(3)**, **megawave-modules(7)**

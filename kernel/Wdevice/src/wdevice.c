@@ -22,20 +22,29 @@
   ----------------------------------------------------------------------*/
 
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/cursorfont.h>
+/* To get key symb (non-printable keys) */
+#define  XK_MISCELLANY
+#include <X11/keysymdef.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
 
 /* global header */
-#include "libmw-wdevice.h"
+#include "wdevice-common.h"
+/* definitions */
+#include "wdevice-defs.h"
 /* variables */
-#include "mw-wdevice_var.h"
+#include "wdevice-var.h"
 /* miscellaneous functions */
-#include "mw-wdevice_misc.h"
+#include "wdevice-misc.h"
 
 /* self */
-#include "mw-wdevice.h"
+#include "wdevice.h"
 
 #define theIcon_width 64
 #define theIcon_height 64

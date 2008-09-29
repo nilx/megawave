@@ -2,8 +2,11 @@ COMPILATION OF THE MEGAWAVE WDEVICE LIBRARY
 
 # basic
 
-* compile the library
+* compile the library shared object
   The result is `libmw-wdevice.so`.
+    make lib
+* compile the library api header
+  The result is `libmw-wdevice.h`.
     make lib
 * cleanup the compilation headers, objects, ...
     make clean

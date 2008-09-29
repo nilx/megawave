@@ -17,40 +17,6 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
  v3.4: mouse button 4 and 5 added (JF)
 ----------------------------------------------------------------------*/
 
-/* X11 Include Files */
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/cursorfont.h>
-
-/* To get key symb (non-printable keys) */
-#define  XK_MISCELLANY
-#include <X11/keysymdef.h>
-
-/* Wframe : main structure for a window */
-/*          This structure is device-dependent and the fields must NOT */
-/*          be accessed by any program running the Wgraphics library.  */
-
-typedef struct {
-
-  Window win;               /* X Window ID */
-  int x,y;                  /* Current Location of the Window */
-  int dx,dy;                /* Current Size of the Window */
-  unsigned char *pix;       /* BitMap for the Window (client side) */
-                            /* Format of pixels is screen-dependent */
-  unsigned char *pic;       /* BitMap - Format of pixels in 8 bits pp */
-                            /* Used only in case of not 8 bpp screens */
-                            /* (else pic = pix) */
-  XImage *ximage;           /* XImage structure of the Window (client side) */
-  int ix,iy;                /* Size of the window alloc. for ximage and pix */
-  Pixmap pixmap;            /* Pixmap structure for buffering the graphics */
-                            /* (server side) */
-  int px,py;                /* Size of the memory allocated for Pixmap */
-  unsigned long event_mask; /* Event Mask for this Window */
-
-} Wframe;
-
-
-
 /* Define W_DEBUG_ON in order to get a debug */
 
 /*
@@ -142,43 +108,6 @@ typedef struct {
 
 #define W_COPY GXcopy
 #define W_XOR  GXequiv  /* GXxor seems wrong... Why ? */
-
-
-/*===== Function definitions  =====*/
-
-int WIsAnActiveWindow(Wframe *);
-void WSetColorMap(void);
-void WFlushWindow(Wframe *);
-void WFlushAreaWindow(Wframe *,int,int,int,int);
-int WColorsAvailable(void);
-void WSetColorPencil(Wframe *,int);
-void WSetForegroundColorPencil(Wframe *);
-void WSetBackgroundColorPencil(Wframe *);
-void WSetSpecialColorPencil(Wframe *);
-void WSetTypePencil(int);
-void WDrawPoint(Wframe *,int,int);
-void WDrawLine(Wframe *,int,int,int,int);
-void WDrawString(Wframe *,int,int,char *);
-void WDrawRectangle(Wframe *,int,int,int,int);
-void WFillRectangle(Wframe *,int,int,int,int);
-void WClearWindow(Wframe *);
-void WDestroyWdeviceWindow(Wframe *);
-void WDestroyWindow(Wframe *);
-void WMoveWindow(Wframe *,int,int);
-void WPutTitleWindow(Wframe *,char *);
-void WSaveImageWindow(Wframe *,int,int,int,int);
-void WRestoreImageWindow(Wframe *,int,int,int,int);
-int WLoadBitMapImage(Wframe *,unsigned char *,int,int);
-int WLoadBitMapColorImage(Wframe *,unsigned char *,unsigned char *,
-			  unsigned char *,int,int);
-void WSystemEvent(Wframe *);
-void WSetUserEvent(Wframe *,unsigned long);
-int WUserEvent(Wframe *);
-int WGetStateMouse(Wframe *,int *,int *,int *);
-int WGetKeyboard(void);
-Wframe *WNewImageWindow(void);
-Wframe *WOpenImageWindow(int,int,int,int,char *);
-void WReOpenImageWindow(Wframe *,int,int,int,int,char *);
 
 /*
  * GLOBAL VARIABLES
