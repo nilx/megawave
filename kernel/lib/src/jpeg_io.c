@@ -12,7 +12,7 @@
 /* FIXME : avoid */
 #include <setjmp.h>
 
-#include "libmw.h"
+#include "libmw-defs.h"
 #include "utils.h"
 #include "cimage.h"
 #include "ccimage.h"

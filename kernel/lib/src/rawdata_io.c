@@ -18,7 +18,7 @@
 /* FIXME : UNIX-centric */
 #include <sys/stat.h>
 
-#include "libmw.h"
+#include "libmw-defs.h"
 #include "utils.h"
 #include "rawdata.h"
 

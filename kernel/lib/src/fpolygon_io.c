@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "libmw.h"
+#include "libmw-defs.h"
 #include "utils.h"
 #include "ascii_file.h"
 #include "file_type.h"

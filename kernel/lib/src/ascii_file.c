@@ -24,7 +24,7 @@
 #include <string.h>
 #include <sys/file.h>
 
-#include "libmw.h"
+#include "libmw-defs.h"
 #include "utils.h"
 
 #include "ascii_file.h"

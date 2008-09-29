@@ -16,7 +16,7 @@
 
 #include <string.h>
 
-#include "libmw.h"
+#include "libmw-defs.h"
 #include "pm_io.h"
 #include "file_type.h"
 #include "type_conv.h"

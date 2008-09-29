@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libmw.h"
+#include "libmw-defs.h"
 #include "utils.h"
 #include "cimage.h"
 #include "mwio.h"

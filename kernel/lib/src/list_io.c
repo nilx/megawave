@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "libmw.h"
+#include "libmw-defs.h"
 #include "utils.h"
 #include "list.h"
 #include "file_type.h"

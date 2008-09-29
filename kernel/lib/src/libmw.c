@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-#include "libmw.h"
+#include "libmw-defs.h"
 
 /*
  * native external (file) types sorted in decreasing priority order

@@ -20,8 +20,12 @@
 
 #include <string.h>
 
-#include "mw.h"
+#include "libmw-wdevice.h"
+#include "libmw-defs.h"
 #include "window.h"
+
+#include "wpanel-defs.h"
+#include "wpanel.h"
 
 /* draw button and return width (height is 16) */
 int Wp_DrawButton(Wframe *window, int x, int y, char *str, int color)

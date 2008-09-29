@@ -16,7 +16,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "mw.h"
+#include "libmw-wdevice.h"
+
+#include "libmw-defs.h"
 #include "window.h"
 
 #define mw_nmax_windows 10 /* Max Numbers of windows */

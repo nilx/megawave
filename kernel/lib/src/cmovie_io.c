@@ -21,7 +21,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "libmw.h"
+#include "libmw-defs.h"
 #include "utils.h"
 #include "cimage_io.h"
 #include "cmovie.h"

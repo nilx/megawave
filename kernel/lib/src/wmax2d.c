@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libmw.h"
+#include "libmw-defs.h"
 #include "utils.h"
 
 #include "wmax2d.h"

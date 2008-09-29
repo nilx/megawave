@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "libmw.h"
+#include "libmw-defs.h"
 #include "utils.h"
 #include "mimage.h"
 #include "curve.h"

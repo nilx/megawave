@@ -1,2 +1,4 @@
 * declarations, no definitions, in
   * type_conv
+* investigate the headers, for automatic generation
+* split wpanel

@@ -1,0 +1,28 @@
+% LIBMW(3)
+% Jacques Froment <jacques.froment@univ-ubs.fr>
+% 2008-09-30
+
+# NAME
+
+**FIXME**: to be filled
+- Kernel library for the megawave framework.
+
+# LIBRARY
+
+library "libmw"
+
+# SYNOPSYS
+
+**FIXME**: to be filled
+
+# DESCRIPTION
+
+**FIXME**: to be filled
+
+# FILES
+
+/usr/include/libmw.h
+
+# SEE ALSO
+
+**megawave(7)**, **libmw-wdevice(3)**, **megawave-modules(7)**
