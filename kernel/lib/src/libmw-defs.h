@@ -4,8 +4,8 @@
  * common definitions for libmw
  */
 
-#ifndef _LIBMW_H
-#define _LIBMW_H
+#ifndef _LIBMW_DEFS_H
+#define _LIBMW_DEFS_H
 
 /* FIXME : split */
 /* FIXME : rename libmw3 */
@@ -52,6 +52,10 @@
 /* Hue, Saturation, Value */
 /* more or less same than above but without trigonometric transform */
 #define MODEL_HSV 3
+
+/* ASCII header */
+
+#define _MW_DATA_ASCII_FILE_HEADER "MegaWave2 - DATA ASCII file -\n"
 
 /*
  * SIZES
@@ -999,4 +1003,4 @@ extern int mwrunmode;
 
 
 
-#endif /* !_LIBMW_H */
+#endif /* !_LIBMW_DEFS_H */
