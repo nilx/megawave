@@ -13,7 +13,7 @@ include	$(COMMONDIR)/makefile
 
 .PHONY	: default all clean distclean
 default	: lib api
-all	: beutify lint lib api test man
+all	: beautify lint lib api test man
 lint	: lint-bin lint-test lint-doc
 clean 	: clean-bin clean-doc
 distclean	: distclean-bin distclean-doc
@@ -96,9 +96,9 @@ HDR	= $(AUTOHDR) $(addprefix $(SRCDIR)/,	\
 OBJ	= $(SRC:.c=.o)
 DEP	= $(SRC:.c=.d)
 
-LIBNAME	= libmw
+LIBNAME	= mw
 APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
-LIB	= $(LIBNAME).so
+LIBMW	= lib$(LIBNAME).so
 API	= $(LIBNAME).h
 
 IPATH	= ../Wdevice
@@ -123,19 +123,18 @@ dep	: $(DEP)
 #
 
 .PHONY	: lib
-lib 	: $(LIB)
-$(LIB) 	: $(OBJ)
+lib 	: $(LIBMW)
+$(LIBMW) 	: $(OBJ)
 	$(LD) -shared $(LDFLAGS) -o $@ $^
 
 .PHONY	: api
 api 	: $(API)
-# FIXME: missing parts?
-$(API) 	: $(SRC)
+$(API) 	: $(SRC) $(SRCDIR)/libmw-defs.h $(SRCDIR)/wpanel-defs.h
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
+	$(CAT) $(filter %.h, $^) >> $@
 	$(CPROTO) $(CPROTO_FLAGS) $(filter %.c, $^) >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
-
 
 .PHONY	: lint
 lint	: lint.flag
@@ -158,7 +157,7 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(LIB)
+	$(RM) $(LIBMW)
 	$(RM) $(API)
 	$(RM) $(AUTOHDR)
 
@@ -179,10 +178,11 @@ distclean-bin : clean-bin
 #
 
 DOCDIR	= doc
-MAN	= $(DOCDIR)/$(LIBNAME).man
+MAN	= $(DOCDIR)/lib$(LIBNAME).man
+MANHTML	= $(DOCDIR)/lib$(LIBNAME).man
 
 .PHONY	: man
-man	: $(DOCDIR)/$(LIBNAME).man $(DOCDIR)/$(LIBNAME).man.html
+man	: $(MAN) $(MANHTML)
 
 # .PHONY	: srcdoc
 # srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
