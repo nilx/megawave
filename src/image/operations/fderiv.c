@@ -38,8 +38,6 @@ in->in
 #include <math.h>
 #include "mw.h"
 
-#define M_PI 3.1415926535897931
-
 #define IRAC8    0.35355339  /* 1/sqrt(8)   */
 #define IRAC2P2  0.29289322  /* 1/(sqrt(2)+2) */
 #define IRAC2    0.70710678  /* 1/sqrt(2) */

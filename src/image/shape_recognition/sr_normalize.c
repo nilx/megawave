@@ -22,8 +22,6 @@ extern Fcurves fkzrt();
 extern void fkcenter();
 extern Cimage opening();
 
-#define M_PI 3.1415926535897931
-
 /*** to interpret a Cimage ***/
 #define BLACK 0
 #define WHITE 255

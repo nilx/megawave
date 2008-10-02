@@ -23,8 +23,6 @@ extern Cimage erosion();
 extern Fcurves fkzrt();
 extern void fkcenter();
 
-#define M_PI 3.1415926535897931
-
 #define INT(x) (nint(x))
 #define BLACK 0
 #define WHITE 255

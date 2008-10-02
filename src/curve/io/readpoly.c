@@ -12,11 +12,8 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "mw.h"
-
-/* Include the window since we use windows facility */
-#include "window.h"
-
 
 /* Number of channels for the polygon: 1 (gray-level) */
 #define NB_OF_CHANNELS 1

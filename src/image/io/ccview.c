@@ -24,10 +24,6 @@
 #include <string.h>
 #include "mw.h"
 
-/* Include the window since we use windows facility */
-#include "window.h"
-
-
 /* Param structure used to send parameters to ccview_notify() */
 
 typedef struct ccview_SParam {

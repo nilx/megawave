@@ -23,11 +23,10 @@
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "mw.h"
-
-/* Include the window since we use windows facility */
-#include "window.h"
+#include "mw-wdevice.h"
 
 extern void cmzoom();
 

@@ -14,8 +14,6 @@
 #include <math.h>
 #include "mw.h"
 
-#define M_PI 3.1415926535897931
-
 /* NB: Calling this module with out=in is possible */
 
 void fhamming(in,out)

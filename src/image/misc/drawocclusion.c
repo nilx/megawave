@@ -22,9 +22,6 @@ usage = {
 #include <stdio.h>
 #include "mw.h"
 
-/* We need the windows facility */
-#include "window.h"
-
 /**********************************************************************/
 /* IMPORTANT NOTE : at the end of the labeling process, labels of each 
    connected component are sorted increasingly according to their

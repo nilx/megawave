@@ -26,9 +26,6 @@
 #include <string.h>
 #include "mw.h"
 
-/* Include the window since we use windows facility */
-#include "window.h"
-
 extern void cmzoom();
 
 

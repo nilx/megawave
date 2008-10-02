@@ -19,7 +19,6 @@
 
 #include <stdio.h>
 #include "mw.h"
-#include "window.h"
 
 
 void lsnakes_demo(u,out,Niter,Nframes,thre,force)

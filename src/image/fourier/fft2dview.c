@@ -27,9 +27,6 @@
 #include <math.h>
 #include "mw.h"
 
-/* Include the window since we use windows facility */
-#include "window.h"
-
 extern void    fhamming();
 extern void    fft2d();
 extern void    fft2dpol();

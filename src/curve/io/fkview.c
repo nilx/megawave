@@ -40,9 +40,6 @@
 #include <math.h>
 #include "mw.h"
 
-/* Include the window since we use windows facility */
-#include "window.h"
-
 /* "plot string" module and associated constants */
 #define FONTWIDTH 7
 #define FONTHEIGHT 14

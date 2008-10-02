@@ -23,9 +23,6 @@
 #include <stdio.h>
 #include "mw.h"
 
-#define M_PI 3.1415926535897931
-#define M_PI_2 9.869604401089358
-
 /***************************************************************************/
 /** This program performs disocclusion of simply connected sets. Any set with
     a hole will be automatically filled before the disocclusion process

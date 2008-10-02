@@ -24,8 +24,6 @@
 #include <math.h>
 #include "mw.h"
 
-#define M_PI 3.1415926535897931
-
 void rotate(cx,cy,ca,sa,x,y,nx,ny)
      double cx,cy,ca,sa,x,y;
      float *nx,*ny;

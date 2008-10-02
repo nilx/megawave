@@ -20,8 +20,6 @@
 #include <math.h>
 #include "mw.h"
 
-#define M_PI 3.1415926535897931
-
 void bound(x,y,ca,sa,xmin,xmax,ymin,ymax)
      int x,y;
      float ca,sa;

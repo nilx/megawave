@@ -19,8 +19,6 @@
 #include <math.h>
 #include  "mw.h"
 
-#define M_PI 3.1415926535897931
-
 int is_a_power_of_two(n)
      int n;
 {

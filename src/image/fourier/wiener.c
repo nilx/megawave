@@ -24,8 +24,6 @@
 #include <math.h>
 #include "mw.h"
 
-#define M_PI 3.1415926535897931
-
 extern void fft2d();
 
 /*** build a Gaussian kernel with std g in Fourier domain ***/

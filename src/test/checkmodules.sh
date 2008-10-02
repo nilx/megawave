@@ -1,1826 +1,1718 @@
 #!/bin/sh 
-#--------------------------- Shell MegaWave2 Macro --------------------------#
-_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
-_Prog="Checkmodules"
-_Vers="1.08"
-_Date="2002-2007"
-_Func="Test system modules"
-_Auth="Lionel Moisan";
-_Usage="[-help]"
-# v 1.03 07/02/02 (JF) : changed test [ $numvar == 0 ] to [ $numvar -eq 0 ]
-# v 1.08 04/07 (LM): bc -> bc -l in Check_approx() and Check_more_approx()
-#----------------------------------------------------------------------------#
-# This file is part of the MegaWave2 system macros. 
-# MegaWave2 is a "soft-publication" for the scientific community. It has
-# been developed for research purposes and it comes without any warranty.
-# The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-# CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-#       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-#-----------------------------------------------------------------------------
+#
+# Testsuite for the modules
 
-Incerr()
-{
-    err=`expr $err + 1`
+usage() {
+    echo "megawave_checkmodules (no option)"
+    echo "input:  none"
+    echo "output: unittests results"
 }
 
+if [ $# -ne 0 ]; then
+    usage
+    exit 1
+fi
+
 # used for integers
-Check_exact()
-{
-    if [ "$1" != "$2" ]; then Incerr; fi
+exact() {
+    if [ "$1" = "$2" ]; then
+	return 0
+    else
+	return 1
+    fi
 }
 
 # used for float numbers (threshold at 1% error)
-Check_approx()
-{
-    r=`echo "a=$1;b=$2;c=(a-b)^2;d=0.0001*(a^2+b^2);if (c<=d) 1" | bc -l 2> /dev/null`
-    if [ "$r" != "1" ]; then Incerr; fi
+approx() {
+    X=`echo "a=$1; b=$2; c=(a-b)^2; d=0.0001*(a^2+b^2); if (c<=d) 1" \
+	| bc -l 2> /dev/null`
+    if [ "$X" = "1" ]; then
+	return 0
+    else
+	return 1
+    fi
 }
 
 # used for random variables (threshold at 10% error)
-Check_more_approx()
-{
-    r=`echo "a=$1;b=$2;c=(a-b)^2;d=0.01*(a^2+b^2);if (c<=d) 1" | bc -l 2> /dev/null`
-    if [ "$r" != "1" ]; then Incerr; fi
-}
-
-Pass()
-{
-    if [ $err -ne 0 ]; then
-	echo
-	echo "*****" module '<'$1'>' failed
-	toterr=`expr $toterr + 1`
-	echo $1 >> $tmp/failed
+rand_approx() {
+    X=`echo "a=$1; b=$2; c=(a-b)^2; d=0.01*(a^2+b^2); if (c<=d) 1" \
+	| bc -l 2> /dev/null`
+    if [ "$X" = "1" ]; then
+	return 0
     else
-	mwecho -n "."
+	return 1
     fi
-    err=0
-    totmod=`expr $totmod + 1`
 }
 
-NoPass()
-{
-    err=0
-    totno=`expr $totno + 1`
+fail() {
+    FAIL=$(($FAIL + 1))
+    echo -n "X"
+}
+    
+pass() {
+    OK=$(($OK + 1))
+    echo -n "."
 }
 
-Error()
-{
-    echo $1
-    exit 2
+results() {
+    echo "test completed: $OK success, $FAIL failures"
+    rm -rf $TMP
+    exit $FAIL
 }
 
-Settmpdir()
-{
-    rmtmproot=0
-    if [ ! -d $1 ]; then return 1; fi
-    if [ ! -x $1 ]; then return 1; fi
-    if [ ! -w $1 ]; then return 1; fi
-    tmproot=$1/tmp
-    if [ ! -d $tmproot ]; then
-	mkdir $tmproot || return 1
-	rmtmproot=1
-    fi
-    if [ -d $tmproot ]; then 
-	if [ ! -x $tmproot ]; then return 1; fi
-	if [ ! -w $tmproot ]; then return 1; fi
-	tmp=$tmproot/checkmodules_tmp
-	rm -rf $tmp || return 1
-	mkdir $tmp || return 1
-    fi
-    return 0
-}
+OK=0
+FAIL=0
+TMP=/tmp/megawave_checkmodules.$$.tmp
+mkdir $TMP
 
+# check modules
+echo "checking megawave modules"
 
-#----------------------------- MACRO BEGINS HERE -----------------------
+# common modules
+echo -n 'common modules: '
 
-#--- Usage
-if [ $# -ne 0 ]; then
-  . .mw2_help_lg_com
-fi
+$MODDIR/fmean $DATA/images/cimage > $TMP/1 \
+    && VAL=`cut -d"=" -f2 $TMP/1` \
+    && approx $VAL 127.156 \
+    && pass || fail
 
-#--- define tmp dir
+$MODDIR/fsize $DATA/images/cimage > $TMP/1 \
+    && VAL=`cat $TMP/1` \
+    && exact "$VAL" "256 256" \
+    && pass || fail
 
-Settmpdir $MEGAWAVE2 || Settmpdir $MY_MEGAWAVE2 || Error "Cannot set tmp directory. Exit."
-rm -f $tmp/failed
-touch $tmp/failed
+$MODDIR/fnorm -v $DATA/images/cimage > $TMP/1 \
+    && VAL=`cut -d"=" -f2 $TMP/1` \
+    && approx $VAL 8.73267 \
+    && pass || fail
 
-#--- check needed commands
+$MODDIR/funzoom -z 4 -o 0 $DATA/images/cimage $TMP/1 > /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/1  | cut -d"=" -f2` \
+    && approx $VAL 16.5741 \
+    && pass || fail
 
-which cut > /dev/null || Error "Command <cut> not found. Exit."
+$MODDIR/cfunzoom -z 4 -o 0 $DATA/images/ccimage $TMP/1 \
+    && $MODDIR/cfgetchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
+    && $MODDIR/fdiff $TMP/2 $TMP/3 $TMP/4 \
+    && VAL=`$MODDIR/fnorm -v $TMP/4 | cut -d"=" -f2` \
+    && approx $VAL 12.6513 \
+    && pass || fail
 
+$MODDIR/cfgetchannels $DATA/images/ccimage \
+    $TMP/1 $TMP/2 $TMP/3 > /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 14.6397 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 17.8047 \
+    && VAL=`$MODDIR/fnorm -v $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 18.248 \
+    && pass || fail
 
-#--- check modules
+$MODDIR/fdiff $DATA/images/cimage $DATA/images/fimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 15.9042 \
+    && pass || fail
 
-totmod=0
-totno=0
-toterr=0 
-err=0
+$MODDIR/cfdiff $DATA/images/ccimage $DATA/images/cimage $TMP/1 \
+    && $MODDIR/cfgetchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 18.6356 \
+    && VAL=`$MODDIR/fnorm -v $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 21.3019 \
+    && VAL=`$MODDIR/fnorm -v $TMP/4 | cut -d"=" -f2` \
+    && approx $VAL 21.7275 \
+    && pass || fail
 
-echo "---------- Checking system modules ----------"
+$MODDIR/fadd $DATA/images/cimage $DATA/images/cimage $TMP/1 \
+    && $MODDIR/fdiff $TMP/1 $DATA/images/cimage $TMP/2 \
+    && VAL=`$MODDIR/fnorm -p 2 -c $DATA/images/cimage $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
+$MODDIR/fquant $DATA/images/cimage $TMP/1 5 > /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 8.42627 \
+    && pass || fail
 
-# common modules (needed for test)
+echo "1 5 2 3" | $MODDIR/freadasc $TMP/1 2 2 \
+    && VAL=`$MODDIR/fmean $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 2.75 \
+    && VAL=`$MODDIR/fvar $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 2.91667 \
+    && pass || fail
 
-mwecho -n 'common modules (needed for test): '
+$MODDIR/snorm -v $DATA/signals/fsignal > $TMP/1 \
+    && VAL=`cut -d"=" -f2 $TMP/1` \
+    && approx $VAL 37.827 \
+    && pass || fail
 
-fmean cimage > $tmp/1 || Incerr
-v=`cut -d"=" -f2 $tmp/1`
-Check_approx $v 127.156
-Pass fmean
+#$MODDIR/ccopy $DATA/images/cimage $TMP/1_1 \
+#    && $MODDIR/ccopy $DATA/images/fimage $TMP/1_2 \
+#    && $SCRIPTS/megawave_mkmovie Cmovie $TMP/1 1 2 \
+#    && VAL=`grep nimage $TMP/1 | cut -d":" -f2` \
+#    && exact $VAL 2 \
+#    && pass || fail
 
-fsize cimage > $tmp/1 || Incerr
-v=`cat $tmp/1`
-Check_exact "$v" "256 256"
-Pass fsize
+$MODDIR/fconst $TMP/1 10 100 100 \
+    && VAL=`$MODDIR/fnorm -p 1 $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 10 \
+    && pass || fail
 
-fnorm -v cimage > $tmp/1 || Incerr
-v=`cut -d"=" -f2 $tmp/1`
-Check_approx $v 8.73267
-Pass fnorm
+VAL=`$MODDIR/fmean $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 10 \
+    && pass || fail
 
-funzoom -z 4 -o 0 cimage $tmp/1 > /dev/null || Incerr
-v=`fnorm -v $tmp/1  | cut -d"=" -f2`
-Check_approx $v 16.5741
-Pass funzoom
+$MODDIR/dkinfo $DATA/curves/curve > $TMP/1 \
+    && VAL=`grep "Average step distance" $TMP/1 | cut -d":" -f2` \
+    && approx $VAL 2.04765 \
+    && pass || fail
 
-cfunzoom -z 4 -o 0 ccimage $tmp/1 || Incerr
-cfgetchannels $tmp/1 $tmp/2 $tmp/3 $tmp/4
-fdiff $tmp/2 $tmp/3 $tmp/4 
-v=`fnorm -v $tmp/4 | cut -d"=" -f2`
-Check_approx $v 12.6513
-Pass cfunzoom
+$MODDIR/faxpb -a 2 -b 10 $DATA/images/cimage $TMP/1 \
+    && $MODDIR/faxpb -a 0.5 -b -5 $TMP/1 $TMP/2 \
+    && $MODDIR/fdiff $TMP/2 $DATA/images/cimage $TMP/3 \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/3 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-cfgetchannels ccimage $tmp/1 $tmp/2 $tmp/3 > /dev/null || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 14.6397
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 17.8047
-v=`fnorm -v $tmp/3 | cut -d"=" -f2`
-Check_approx $v 18.248
-Pass cfgetchannels
-
-fdiff cimage fimage $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 15.9042
-Pass fdiff
-
-cfdiff ccimage cimage $tmp/1 || Incerr
-cfgetchannels $tmp/1 $tmp/2 $tmp/3 $tmp/4
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 18.6356
-v=`fnorm -v $tmp/3 | cut -d"=" -f2`
-Check_approx $v 21.3019
-v=`fnorm -v $tmp/4 | cut -d"=" -f2`
-Check_approx $v 21.7275
-Pass cfdiff
-
-fadd cimage cimage $tmp/1
-fdiff $tmp/1 cimage $tmp/2
-v=`fnorm -p 2 -c cimage $tmp/2 | cut -d"=" -f2`
-Check_exact $v 0
-Pass fadd
-
-fquant cimage $tmp/1 5 > /dev/null || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 8.42627
-Pass fquant
-
-echo "1 5 2 3" | freadasc $tmp/1 2 2 || Incerr
-v=`fmean $tmp/1 | cut -d"=" -f2`
-Check_approx $v 2.75
-v=`fvar $tmp/1 | cut -d"=" -f2`
-Check_approx $v 2.91667
-Pass freadasc
-
-snorm -v fsignal > $tmp/1 || Incerr
-v=`cut -d"=" -f2 $tmp/1`
-Check_approx $v 37.827
-Pass snorm
-
-ccopy cimage $tmp/1_1
-ccopy fimage $tmp/1_2
-Mkmovie Cmovie $tmp/1 1 2 || Incerr
-v=`grep nimage $tmp/1 | cut -d":" -f2`
-Check_exact $v 2
-Pass Mkmovie
-
-fconst $tmp/1 10 100 100 || Incerr
-v=`fnorm -p 1 $tmp/1 | cut -d"=" -f2`
-Check_exact $v 10
-Pass fconst
-
-v=`fmean $tmp/1 | cut -d"=" -f2`
-Check_approx $v 10
-Pass fmean
-
-dkinfo curve > $tmp/1 || Incerr
-v=`grep "Average step distance" $tmp/1 | cut -d":" -f2`
-Check_approx $v 2.04765
-Pass dkinfo
-
-faxpb -a 2 -b 10 cimage $tmp/1 || Incerr
-faxpb -a 0.5 -b -5 $tmp/1 $tmp/2 || Incerr
-fdiff $tmp/2 cimage $tmp/3
-v=`fnorm -p 2 $tmp/3 | cut -d"=" -f2`
-Check_exact $v 0
-Pass faxpb
-
-fconst $tmp/1 0 10 10
-fpset $tmp/1 5 5 100 $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 2
-Pass fpset
+$MODDIR/fconst $TMP/1 0 10 10 \
+    && $MODDIR/fpset $TMP/1 5 5 100 $TMP/1 || fail \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 2 \
+    && pass || fail
 
 echo
-
 
 # compression/ezwave
+echo -n "compression/ezwave: "
 
-mwecho -n "compression/ezwave: "
+$MODDIR/cfunzoom -z 4 -o 0 $DATA/images/ccimage $TMP/1
 
-cfunzoom -z 4 -o 0 ccimage $tmp/1
+$MODDIR/cfezw -R 0.5 -o $TMP/3 \
+    $TMP/1 $DATA/wave/biortho/h/sd07.ir $TMP/2 > /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 2> /dev/null | cut -d"=" -f2` \
+    && approx $VAL 11.0831 \
+    && pass || fail
 
-cfezw -R 0.5 -o $tmp/3 $tmp/1 wave/biortho/h/sd07.ir $tmp/2 > /dev/null || Incerr
-v=`fnorm -v $tmp/2 2> /dev/null | cut -d"=" -f2`
-Check_approx $v 11.0831
-Pass cfezw
+$MODDIR/cfiezw $TMP/3 $DATA/wave/biortho/h/sd07.ir $TMP/4 > /dev/null \
+    && VAL=`$MODDIR/fnorm -p 2 -c $TMP/4 $TMP/2 2> /dev/null | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-cfiezw $tmp/3 wave/biortho/h/sd07.ir $tmp/4 > /dev/null || Incerr
-v=`fnorm -p 2 -c $tmp/4 $tmp/2 2> /dev/null | cut -d"=" -f2`
-Check_exact $v 0
-Pass cfiezw
+#$SCRIPTS/megawave_cfezw $TMP/1 > $TMP/2 \
+#    && VAL=`tail -1 $TMP/2 | cut -f2` \
+#    && approx $VAL 31.18 \
+#    && pass || fail
 
-Cfezw $tmp/1 > $tmp/2 || Incerr
-v=`tail -1 $tmp/2 | cut -f2`
-Check_approx $v 31.18
-Pass Cfezw
+$MODDIR/funzoom -z 4 -o 0 $DATA/images/cimage $TMP/1
 
-funzoom -z 4 -o 0 cimage $tmp/1
+$MODDIR/fezw -R 0.5 -o $TMP/3 \
+    $TMP/1 $DATA/wave/biortho/h/sd07.ir $TMP/2 > /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 2> /dev/null | cut -d"=" -f2` \
+    && approx $VAL 18.1235 \
+    && pass || fail
 
-fezw -R 0.5 -o $tmp/3 $tmp/1 wave/biortho/h/sd07.ir $tmp/2 > /dev/null || Incerr
-v=`fnorm -v $tmp/2 2> /dev/null | cut -d"=" -f2`
-Check_approx $v 18.1235
-Pass fezw
-Pass ezw
+$MODDIR/fiezw $TMP/3 $DATA/wave/biortho/h/sd07.ir $TMP/4 > /dev/null \
+    && VAL=`$MODDIR/fnorm -p 2 -c $TMP/4 $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-fiezw $tmp/3 wave/biortho/h/sd07.ir $tmp/4 > /dev/null || Incerr
-v=`fnorm -p 2 -c $tmp/4 $tmp/2 | cut -d"=" -f2`
-Check_exact $v 0
-Pass fiezw
-Pass iezw
-
-Fezw $tmp/1 > $tmp/2 || Incerr
-v=`tail -1 $tmp/2 | cut -f2`
-Check_approx $v 33.62
-Pass Fezw
+#$SCRIPTS/megawave_fezw $TMP/1 > $TMP/2 \
+#    && VAL=`tail -1 $TMP/2 | cut -f2` \
+#    && approx $VAL 33.62 \
+#    && pass || fail
 
 echo
-
 
 # compression/lossless
+echo -n "compression/lossless: "
 
-mwecho -n "compression/lossless: "
+$MODDIR/funzoom -ftype IMG -z 4 -o 0 $DATA/images/cimage $TMP/1 2> /dev/null \
+    && $MODDIR/arencode2 $TMP/1 $TMP/2 > $TMP/3 \
+    && VAL=`grep Rate $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 7.57324 \
+    && VAL=`$MODDIR/fsize $TMP/2` \
+    && exact "$VAL" "3878 1" \
+    && pass || fail
 
-funzoom -ftype IMG -z 4 -o 0 cimage $tmp/1 2> /dev/null
-arencode2 $tmp/1 $tmp/2 > $tmp/3 || Incerr
-v=`grep Rate $tmp/3 | cut -d"=" -f2`
-Check_approx $v 7.57324
-v=`fsize $tmp/2` 
-Check_exact "$v" "3878 1"
-Pass arencode2
+$MODDIR/arencode2 -H $TMP/1 $TMP/2 > /dev/null \
+    && $MODDIR/ardecode2 -r 256 $TMP/2 $TMP/3 > /dev/null \
+    && pass || fail
 
-arencode2 -H $tmp/1 $tmp/2 > /dev/null || Incerr
-ardecode2 -r 256 $tmp/2 $tmp/3 > /dev/null || Incerr
-Pass ardecode2
+$MODDIR/cvsencode $DATA/curves/france.crv > $TMP/1 \
+    && VAL=`grep N $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 7887 \
+    && VAL=`grep B $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 10098 \
+    && pass || fail
 
-cvsencode france.crv > $tmp/1 || Incerr
-v=`grep N $tmp/1 | cut -d"=" -f2`
-Check_exact $v 7887
-v=`grep B $tmp/1 | cut -d"=" -f2`
-Check_exact $v 10098
-Pass cvsencode
+$MODDIR/cvsfrecode $DATA/curves/france.crv > $TMP/1 \
+    && VAL=`grep N $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 7887 \
+    && VAL=`grep B $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 10098 \
+    && pass || fail
 
-cvsfrecode france.crv > $tmp/1 || Incerr
-v=`grep N $tmp/1 | cut -d"=" -f2`
-Check_exact $v 7887
-v=`grep B $tmp/1 | cut -d"=" -f2`
-Check_exact $v 10098
-Pass cvsfrecode
+$MODDIR/cvsorgcode $DATA/curves/france.crv > $TMP/1 \
+    && VAL=`grep N $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 7887 \
+    && pass || fail
 
-cvsorgcode france.crv > $tmp/1 || Incerr
-v=`grep N $tmp/1 | cut -d"=" -f2`
-Check_exact $v 7887
-Pass cvsorgcode
-
-funzoom -ftype IMG -z 4 -o 0 cimage $tmp/1 2> /dev/null
-fencode $tmp/1 > $tmp/2 || Incerr
-v=`grep brate $tmp/2 | cut -d"=" -f2`
-Check_approx $v 7.34399
-Pass fencode
+$MODDIR/funzoom -ftype IMG -z 4 -o 0 $DATA/images/cimage $TMP/1 2> /dev/null \
+    && $MODDIR/fencode $TMP/1 > $TMP/2 \
+    && VAL=`grep brate $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 7.34399 \
+    && pass || fail
 
 echo
-
 
 # compression/scalar
+echo -n "compression/scalar: "
 
-mwecho -n "compression/scalar: "
+$MODDIR/fscalq -p -n 10 $DATA/images/cimage $TMP/1 > $TMP/2 \
+    && VAL=`cat $TMP/2` \
+    && VAL=`$MODDIR/fentropy $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 2.91987 \
+    && pass || fail
 
-fscalq -p -n 10 cimage $tmp/1 > $tmp/2 || Incerr
-v=`cat $tmp/2`
-#Check_exact "$v" "..."
-v=`fentropy $tmp/1 | cut -d"=" -f2`
-Check_approx $v 2.91987
-Pass fscalq
-
-fscalq -p -n 10 -o $tmp/2 cimage $tmp/1 > /dev/null || Incerr
-fiscalq $tmp/2 $tmp/3 > /dev/null || Incerr
-fdiff $tmp/1 $tmp/3 $tmp/2
-v=`fnorm -p 2 $tmp/2 | cut -d"=" -f2`
-Check_exact $v 0
-Pass fiscalq
+$MODDIR/fscalq -p -n 10 -o $TMP/2 $DATA/images/cimage $TMP/1 > /dev/null \
+    && $MODDIR/fiscalq $TMP/2 $TMP/3 > /dev/null \
+    && $MODDIR/fdiff $TMP/1 $TMP/3 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
 echo
-
 
 # compression/vector
+echo -n "compression/vector: "
 
-mwecho -n "compression/vector: "
+$MODDIR/mk_codebook $TMP/1 \
+    && VAL=`$MODDIR/fsize $TMP/1` \
+    && exact "$VAL" "4 6" \
+    && pass || fail
 
-mk_codebook $tmp/1 || Incerr
-v=`fsize $tmp/1`
-Check_exact "$v" "4 6"
-Pass mk_codebook
-
-NoPass fivq
-NoPass flbg_adap
-NoPass flbg
-NoPass flbg_train
-NoPass fvq
-NoPass mk_trainset
+# TODO
+# fivq
+# flbg_adap
+# flbg
+# flbg_train
+# fvq
+# mk_trainset
 
 echo
-
 
 # compression/vqwave
 
-mwecho -n "compression/vqwave: "
+echo -n "compression/vqwave: "
 
-NoPass Cfwivq
-NoPass Cfwvq
-NoPass Fwivq
-NoPass fwivq
-NoPass Fwlbg_adap
-NoPass fwlbg_adap
-NoPass Fwvq
-NoPass fwvq
-NoPass wlbg_adap
+# TODO
+# Cfwivq
+# Cfwvq
+# Fwivq
+# fwivq
+# Fwlbg_adap
+# fwlbg_adap
+# Fwvq
+# fwvq
+# wlbg_adap
 
 echo
 
+# $DATA/curves/curve
 
-# curve
+echo -n "curve: "
 
-mwecho -n "curve: "
+$MODDIR/area $DATA/curves/curve > $TMP/1 \
+    && VAL=`cut -d"=" -f2 $TMP/1` \
+    && exact $VAL 209718 \
+    && pass || fail
 
-area curve > $tmp/1 || Incerr
-v=`cut -d"=" -f2 $tmp/1`
-Check_exact $v 209718
-Pass area
+$MODDIR/perimeter $DATA/curves/curve > $TMP/1 \
+    && VAL=`cut -d"=" -f2 $TMP/1` \
+    && exact $VAL 8422 \
+    && pass || fail
 
-perimeter curve > $tmp/1 || Incerr
-v=`cut -d"=" -f2 $tmp/1`
-Check_exact $v 8422
-Pass perimeter
+$MODDIR/circle -r 10 -n 100 $TMP/1 \
+    && VAL=`$MODDIR/area $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 313.953 \
+    && VAL=`$MODDIR/perimeter $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 62.8215 \
+    && pass || fail
 
-circle -r 10 -n 100 $tmp/1 || Incerr
-v=`area $tmp/1 | cut -d"=" -f2`
-Check_approx $v 313.953
-v=`perimeter $tmp/1 | cut -d"=" -f2`
-Check_approx $v 62.8215
-Pass circle
+$MODDIR/disc $TMP/1 2.5 \
+    && VAL=`$MODDIR/perimeter $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 30.5708 \
+    && pass || fail
 
-disc $tmp/1 2.5 || Incerr
-v=`perimeter $tmp/1 | cut -d"=" -f2`
-Check_approx $v 30.5708
-Pass disc
+$MODDIR/dsplit_convex -c . $DATA/curves/curve $TMP/1 > $TMP/2 \
+    && VAL=`cut -d"=" -f2 $TMP/2` \
+    && exact $VAL 1866 \
+    && pass || fail
 
-dsplit_convex -c . curve $tmp/1 > $tmp/2 || Incerr
-v=`cut -d"=" -f2 $tmp/2`
-Check_exact $v 1866
-Pass dsplit_convex
+$MODDIR/fsplit_convex -c . $DATA/curves/curve $TMP/1 > $TMP/2 \
+    && VAL=`cut -d"=" -f2 $TMP/2` \
+    && exact $VAL 1866 \
+    && pass || fail
 
-fsplit_convex -c . curve $tmp/1 > $tmp/2 || Incerr
-v=`cut -d"=" -f2 $tmp/2`
-Check_exact $v 1866
-Pass fsplit_convex
+$MODDIR/extract_connex $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/dkinfo $TMP/1 | grep "Number of curves" | cut -d":" -f2` \
+    && exact $VAL 122 \
+    && pass || fail
 
-extract_connex cimage $tmp/1 || Incerr
-v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 122
-Pass extract_connex
-
-fillpoly -x 1100 -y 1100 france.crv $tmp/1 || Incerr
-v=`fmean $tmp/1 | cut -d"=" -f2`
-Check_approx $v 136.473
-Pass fillpoly
+$MODDIR/fillpoly -x 1100 -y 1100 $DATA/curves/france.crv $TMP/1 \
+    && VAL=`$MODDIR/fmean $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 136.473 \
+    && pass || fail
 
 echo "10 10 60 20 30 50 e 100 10 110 50 150 20 q" \
-| flreadasc 2 $tmp/1 > /dev/null 
-fillpolys -x 160 -y 60 $tmp/1 $tmp/1 || Incerr
-v=`fmean $tmp/1 | cut -d"=" -f2`
-Check_approx $v 201.423
-Pass fillpolys
+    | $MODDIR/flreadasc 2 $TMP/1 > /dev/null \
+    && $MODDIR/fillpolys -x 160 -y 60 $TMP/1 $TMP/1 \
+    && VAL=`$MODDIR/fmean $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 201.423 \
+    && pass || fail
 
-fkbox curve > $tmp/1 || Incerr
-v=`grep xmin $tmp/1 | cut -d"=" -f2`
-Check_exact $v 63
-v=`grep ymin $tmp/1 | cut -d"=" -f2`
-Check_exact $v -912
-v=`grep xmax $tmp/1 | cut -d"=" -f2`
-Check_exact $v 692
-v=`grep ymax $tmp/1 | cut -d"=" -f2`
-Check_exact $v -123
-Pass fkbox
+$MODDIR/fkbox $DATA/curves/curve > $TMP/1 \
+    && VAL=`grep xmin $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 63 \
+    && VAL=`grep ymin $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL -912 \
+    && VAL=`grep xmax $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 692 \
+    && VAL=`grep ymax $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL -123 \
+    && pass || fail
 
-fkcenter curve > $tmp/1 || Incerr
-v=`grep xg $tmp/1 | cut -d"=" -f2`
-Check_approx $v 336.298
-v=`grep yg $tmp/1 | cut -d"=" -f2`
-Check_approx $v -467.331
-Pass fkcenter
+$MODDIR/fkcenter $DATA/curves/curve > $TMP/1 \
+    && VAL=`grep xg $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 336.298 \
+    && VAL=`grep yg $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL -467.331 \
+    && pass || fail
 
-fkcrop 0 -100 700 -200 curve $tmp/1 || Incerr
-v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 5
-v=`fkcenter $tmp/1 | grep xg | cut -d"=" -f2`
-Check_approx $v 324.922
-Pass fkcrop
+$MODDIR/fkcrop 0 -100 700 -200 $DATA/curves/curve $TMP/1 \
+    && VAL=`$MODDIR/dkinfo $TMP/1 | grep "Number of curves" | cut -d":" -f2` \
+    && exact $VAL 5 \
+    && VAL=`$MODDIR/fkcenter $TMP/1 | grep xg | cut -d"=" -f2` \
+    && approx $VAL 324.922 \
+    && pass || fail
 
-fkzrt curve  $tmp/1 0.5 30 20 20 || Incerr
-v=`fkcenter $tmp/1 | grep xg | cut -d"=" -f2`
-Check_approx $v 282.455
-Pass fkzrt
+$MODDIR/fkzrt $DATA/curves/curve  $TMP/1 0.5 30 20 20 \
+    && VAL=`$MODDIR/fkcenter $TMP/1 | grep xg | cut -d"=" -f2` \
+    && approx $VAL 282.455 \
+    && pass || fail
 
-echo "40 40 60 30 100 100 200 80 80 240 e 240 20 280 20 260 240 200 150 240 40 q" | fkreadasc $tmp/1 > /dev/null
-ksplines -j 3 $tmp/1 $tmp/2 || Incerr
-v=`dkinfo $tmp/2 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 2
-Pass ksplines
+echo "40 40 60 30 100 100 200 80 80 240 e 240 20 280 20 260 240 200
+150 240 40 q" \
+    | $MODDIR/fkreadasc $TMP/1 > /dev/null \
+    && $MODDIR/ksplines -j 3 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/dkinfo $TMP/2 | grep "Number of curves" | cut -d":" -f2` \
+    && exact $VAL 2 \
+    && pass || fail
 
-echo "40 40 60 30 100 100 200 80 80 240 q" | fkreadasc $tmp/1 > /dev/null
-kspline -j 3 $tmp/1 $tmp/2 || Incerr
-v=`perimeter $tmp/2 | cut -d"=" -f2`
-Check_approx $v 318.806
-Pass kspline
+echo "40 40 60 30 100 100 200 80 80 240 q" \
+    | $MODDIR/fkreadasc $TMP/1 > /dev/null \
+    && $MODDIR/kspline -j 3 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/perimeter $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 318.806 \
+    && pass || fail
 
-echo "0.1 0.2" | sreadasc $tmp/1 2
-flscale -ftype MW2_FCURVE curve $tmp/1 $tmp/2 || Incerr
-perimeter $tmp/2 > $tmp/3 
-v=`cut -d"=" -f2 $tmp/3`
-Check_exact $v 1313
-area $tmp/2 > $tmp/3
-v=`cut -d"=" -f2 $tmp/3`
-Check_exact $v 4194.36
-Pass flscale
+echo "0.1 0.2" | $MODDIR/sreadasc $TMP/1 2 \
+    && $MODDIR/flscale -ftype MW2_FCURVE $DATA/curves/curve $TMP/1 $TMP/2 \
+    && $MODDIR/perimeter $TMP/2 > $TMP/3 \
+    && VAL=`cut -d"=" -f2 $TMP/3` \
+    && exact $VAL 1313 \
+    && $MODDIR/area $TMP/2 > $TMP/3 \
+    && VAL=`cut -d"=" -f2 $TMP/3` \
+    && exact $VAL 4194.36 \
+    && pass || fail
 
-flconcat -ftype MW2_FCURVES $tmp/2 curve $tmp/3
-fkbox $tmp/3 | grep ymax > $tmp/4
-v=`cut -d"=" -f2 $tmp/4`
-Check_exact $v -24.6
-Pass flconcat
-
-echo
-
-
-# curve/io
-
-mwecho -n "curve/io: "
-
-echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
-| fkreadasc $tmp/1 > /dev/null || Incerr
-v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 2
-v=`perimeter $tmp/1 | cut -d"=" -f2`
-Check_approx $v 93.4166
-Pass fkreadasc
-
-echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
-| flreadasc 2 $tmp/1 > /dev/null || Incerr
-v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 2
-v=`perimeter $tmp/1 | cut -d"=" -f2`
-Check_approx $v 93.4166
-Pass flreadasc
-
-kplot curve $tmp/1 || Incerr
-v=`fsize $tmp/1`
-Check_exact "$v" "630 790"
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 1.90955
-Pass kplot
-
-fkplot -s curve $tmp/1 || Incerr
-v=`fsize $tmp/1`
-Check_exact "$v" "630 790"
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 1.90955
-Pass fkplot
-
-fkprintasc curve > /dev/null || Incerr
-v=`fkprintasc curve | wc -l`
-Check_exact $v 4115
-Pass fkprintasc
-
-flprintasc curve > /dev/null || Incerr
-v=`flprintasc curve | wc -l`
-Check_exact $v 4115
-Pass flprintasc
-
-fkprintfig curve > /dev/null || Incerr
-v=`fkprintfig curve | wc -w`
-Check_exact $v 8255
-Pass fkprintfig
-
-echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
-| flreadasc 2 $tmp/1 > /dev/null
-fkprintfig $tmp/1 | kreadfig $tmp/2 > /dev/null || Incerr
-fkzrt $tmp/2 $tmp/2 0.001 0 0 0
-v=`dkinfo $tmp/2 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 2
-v=`area $tmp/2 | cut -d"=" -f2`
-Check_exact $v 3600
-Pass kreadfig
-
-fkview -o $tmp/1 -n curve || Incerr
-v=`fnorm -v $tmp/1 2> /dev/null | cut -d"=" -f2`
-Check_approx $v 2.61157
-Pass fkview
-
-echo "1 1 6 2 3 5 4 3 4 4 4 2 q" | fkreadasc $tmp/1 > /dev/null
-kplotasc $tmp/1 > /dev/null || Incerr
-v=`kplotasc $tmp/1 | wc -c`
-Check_exact $v 84
-Pass kplotasc
-
-NoPass readpoly
-
-# common: dkinfo
+$MODDIR/flconcat -ftype MW2_FCURVES $TMP/2 $DATA/curves/curve $TMP/3 \
+    && $MODDIR/fkbox $TMP/3 | grep ymax > $TMP/4 \
+    && VAL=`cut -d"=" -f2 $TMP/4` \
+    && exact $VAL -24.6 \
+    && pass || fail
 
 echo
 
+# $DATA/curves/curve/io
+echo -n "curve/io: "
+
+echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
+    | $MODDIR/fkreadasc $TMP/1 > /dev/null \
+    && VAL=`$MODDIR/dkinfo $TMP/1 | grep "Number of curves" | cut -d":" -f2` \
+    && exact $VAL 2 \
+    && VAL=`$MODDIR/perimeter $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 93.4166 \
+    && pass || fail
+
+echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
+    | $MODDIR/flreadasc 2 $TMP/1 > /dev/null \
+    && VAL=`$MODDIR/dkinfo $TMP/1 | grep "Number of curves" | cut -d":" -f2` \
+    && exact $VAL 2 \
+    && VAL=`$MODDIR/perimeter $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 93.4166 \
+    && pass || fail
+
+$MODDIR/kplot $DATA/curves/curve $TMP/1 \
+    && VAL=`$MODDIR/fsize $TMP/1` \
+    && exact "$VAL" "630 790" \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 1.90955 \
+    && pass || fail
+
+$MODDIR/fkplot -s $DATA/curves/curve $TMP/1 \
+    && VAL=`$MODDIR/fsize $TMP/1` \
+    && exact "$VAL" "630 790" \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 1.90955 \
+    && pass || fail
+
+$MODDIR/fkprintasc $DATA/curves/curve > /dev/null \
+    && VAL=`$MODDIR/fkprintasc $DATA/curves/curve | wc -l` \
+    && exact $VAL 4115 \
+    && pass || fail
+
+$MODDIR/flprintasc $DATA/curves/curve > /dev/null \
+    && VAL=`$MODDIR/flprintasc $DATA/curves/curve | wc -l` \
+    && exact $VAL 4115 \
+    && pass || fail
+
+$MODDIR/fkprintfig $DATA/curves/curve > /dev/null \
+    && VAL=`$MODDIR/fkprintfig $DATA/curves/curve | wc -w` \
+    && exact $VAL 8255 \
+    && pass || fail
+
+echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
+    | $MODDIR/flreadasc 2 $TMP/1 > /dev/null \
+    && $MODDIR/fkprintfig $TMP/1 | $MODDIR/kreadfig $TMP/2 > /dev/null \
+    && $MODDIR/fkzrt $TMP/2 $TMP/2 0.001 0 0 0 \
+    && VAL=`$MODDIR/dkinfo $TMP/2 | grep "Number of curves" | cut -d":" -f2` \
+    && exact $VAL 2 \
+    && VAL=`$MODDIR/area $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 3600 \
+    && pass || fail
+
+$MODDIR/fkview -o $TMP/1 -n $DATA/curves/curve \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 2> /dev/null | cut -d"=" -f2` \
+    && approx $VAL 2.61157 \
+    && pass || fail
+
+echo "1 1 6 2 3 5 4 3 4 4 4 2 q" | $MODDIR/fkreadasc $TMP/1 > /dev/null \
+    && $MODDIR/kplotasc $TMP/1 > /dev/null \
+    && VAL=`$MODDIR/kplotasc $TMP/1 | wc -c` \
+    && exact $VAL 84 \
+    && pass || fail
+
+# TODO
+# readpoly
+# dkinfo
+
+echo
 
 # curve/smooth
+echo -n "curve/smooth: "
 
-mwecho -n "curve/smooth: "
+$MODDIR/fksmooth -n 20 -s 10 $DATA/curves/curve $TMP/1 \
+    && VAL=`$MODDIR/area $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 204306 \
+    && VAL=`$MODDIR/perimeter $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 3128.84 \
+    && pass || fail
 
-fksmooth -n 20 -s 10 curve $tmp/1 || Incerr
-v=`area $tmp/1 | cut -d"=" -f2`
-Check_approx $v 204306
-v=`perimeter $tmp/1 | cut -d"=" -f2`
-Check_approx $v 3128.84
-Pass fksmooth
+$MODDIR/iter_fksmooth -N 2 -n 10 -s 10 $DATA/curves/curve $TMP/1 \
+    && VAL=`$MODDIR/dkinfo $TMP/1 | grep "Number of curves" | cut -d":" -f2` \
+    && exact $VAL 3 \
+    && pass || fail
 
-iter_fksmooth -N 2 -n 10 -s 10 curve $tmp/1 || Incerr
-v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 3
-Pass iter_fksmooth
+$MODDIR/gass -l 10 $DATA/curves/curve $TMP/1 \
+    && VAL=`$MODDIR/area $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 207081 \
+    && VAL=`$MODDIR/perimeter $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 3914.79 \
+    && pass || fail
 
-gass -l 10 curve $tmp/1 || Incerr
-v=`area $tmp/1 | cut -d"=" -f2`
-Check_approx $v 207081
-v=`perimeter $tmp/1 | cut -d"=" -f2`
-Check_approx $v 3914.79
-Pass gass
+$MODDIR/iter_gass -N 2 -S 10 $DATA/curves/curve $TMP/1 \
+    && VAL=`$MODDIR/dkinfo $TMP/1 | grep "Number of curves" | cut -d":" -f2` \
+    && exact $VAL 3 \
+    && pass || fail
 
-iter_gass -N 2 -S 10 curve $tmp/1 || Incerr
-v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 3
-Pass iter_gass
+$MODDIR/gcsf -l 10 $DATA/curves/curve $TMP/1 \
+    && VAL=`$MODDIR/area $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 209003 \
+    && VAL=`$MODDIR/perimeter $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 3929.08 \
+    && pass || fail
 
-gcsf -l 10 curve $tmp/1 || Incerr
-v=`area $tmp/1 | cut -d"=" -f2`
-Check_approx $v 209003
-v=`perimeter $tmp/1 | cut -d"=" -f2`
-Check_approx $v 3929.08
-Pass gcsf
-
-iter_gcsf -N 2 -l 20 curve $tmp/1 || Incerr
-v=`dkinfo $tmp/1 | grep "Number of curves" | cut -d":" -f2`
-Check_exact $v 3
-Pass iter_gcsf
-
-echo
-
-
-# curve/matching
-
-mwecho -n "curve/matching: "
-
-gass -l 3 -e 2 curve $tmp/1
-km_inflexionpoints $tmp/1 $tmp/2 || Incerr
-v=`flprintasc $tmp/2 | wc -l`
-Check_exact $v 43
-Pass km_inflexionpoints
-
-km_bitangents $tmp/1 $tmp/2 $tmp/3 || Incerr
-v=`flprintasc $tmp/3 | wc -l`
-Check_exact $v 20
-Pass km_bitangents
-
-km_flatpoints $tmp/1 $tmp/2 $tmp/4 0.1 0.1 || Incerr
-v=`flprintasc $tmp/4 | wc -l`
-Check_exact $v 25
-Pass km_flatpoints
-
-NoPass km_codecurve_ai
-NoPass km_codecurve_si
-NoPass km_createdict_ai
-NoPass km_createdict_si
-NoPass KM_DEMO
-NoPass km_match_ai
-NoPass km_match_si
-NoPass km_prematchings
-NoPass km_savematchings
+$MODDIR/iter_gcsf -N 2 -l 20 $DATA/curves/curve $TMP/1 \
+    && VAL=`$MODDIR/dkinfo $TMP/1 | grep "Number of curves" | cut -d":" -f2` \
+    && exact $VAL 3 \
+    && pass || fail
 
 echo
 
+# $DATA/curves/curve/matching
+echo -n "curve/matching: "
+
+$MODDIR/gass -l 3 -e 2 $DATA/curves/curve $TMP/1 \
+    && $MODDIR/km_inflexionpoints $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/flprintasc $TMP/2 | wc -l` \
+    && exact $VAL 43 \
+    && pass || fail
+
+$MODDIR/km_bitangents $TMP/1 $TMP/2 $TMP/3 \
+    && VAL=`$MODDIR/flprintasc $TMP/3 | wc -l` \
+    && exact $VAL 20 \
+    && pass || fail
+
+$MODDIR/km_flatpoints $TMP/1 $TMP/2 $TMP/4 0.1 0.1 \
+    && VAL=`$MODDIR/flprintasc $TMP/4 | wc -l` \
+    && exact $VAL 25 \
+    && pass || fail
+
+# TODO
+# km_codecurve_ai
+# km_codecurve_si
+# km_createdict_ai
+# km_createdict_si
+# KM_DEMO
+# km_match_ai
+# km_match_si
+# km_prematchings
+# km_savematchings
+
+echo
 
 # examples
+echo -n "examples: "
 
-mwecho -n "examples: "
+$MODDIR/demohead1 $DATA/images/cimage $TMP/1 > /dev/null \
+    && VAL=`$MODDIR/fsize $TMP/1` \
+    && exact "$VAL" "1 1" \
+    && pass || fail
 
-demohead1 cimage $tmp/1 > /dev/null || Incerr
-v=`fsize $tmp/1`
-Check_exact "$v" "1 1"
-Pass demohead1
+$MODDIR/demohead2 > /dev/null \
+    && pass || fail
 
-demohead2 > /dev/null || Incerr
-Pass demohead2
+$MODDIR/demohead3 $DATA/images/cimage $TMP/1 > /dev/null \
+    && VAL=`$MODDIR/fnorm -p 2 -c $DATA/images/cimage $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-demohead3 cimage $tmp/1 > /dev/null || Incerr
-v=`fnorm -p 2 -c cimage $tmp/1 | cut -d"=" -f2`
-Check_exact $v 0
-Pass demohead3
+$MODDIR/fadd $DATA/images/cimage $DATA/images/fimage $TMP/1 \
+    && $MODDIR/fadd1 $DATA/images/cimage $DATA/images/fimage $TMP/2 \
+    && VAL=`$MODDIR/fnorm -p 2 -c $TMP/1 $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-fadd cimage fimage $tmp/1
-fadd1 cimage fimage $tmp/2 || Incerr
-v=`fnorm -p 2 -c $tmp/1 $tmp/2 | cut -d"=" -f2`
-Check_exact $v 0
-Pass fadd1
+$MODDIR/fadd2 $DATA/images/cimage $DATA/images/fimage $TMP/2 \
+    && VAL=`$MODDIR/fnorm -p 2 -c $TMP/1 $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-fadd2 cimage fimage $tmp/2 || Incerr
-v=`fnorm -p 2 -c $tmp/1 $tmp/2 | cut -d"=" -f2`
-Check_exact $v 0
-Pass fadd2
+$MODDIR/fadd3 $DATA/images/cimage $DATA/images/fimage $TMP/2 \
+    && VAL=`$MODDIR/fnorm -p 2 -c $TMP/1 $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-fadd3 cimage fimage $tmp/2 || Incerr
-v=`fnorm -p 2 -c $tmp/1 $tmp/2 | cut -d"=" -f2`
-Check_exact $v 0
-Pass fadd3
+$MODDIR/fadd4 $DATA/images/cimage $DATA/images/fimage $TMP/2 \
+    && VAL=`$MODDIR/fnorm -p 2 -c $TMP/1 $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-fadd4 cimage fimage $tmp/2 || Incerr
-v=`fnorm -p 2 -c $tmp/1 $tmp/2 | cut -d"=" -f2`
-Check_exact $v 0
-Pass fadd4
+$MODDIR/make_cmovie $TMP/1 \
+    && VAL=`$MODDIR/fsize $TMP/1_01` \
+    && exact "$VAL" "256 256" \
+    && VAL=`grep nimage $TMP/1 | cut -d":" -f2` \
+    && exact $VAL 20 \
+    && pass || fail
 
-make_cmovie $tmp/1 || Incerr
-v=`fsize $tmp/1_01`
-Check_exact "$v" "256 256"
-v=`grep nimage $tmp/1 | cut -d":" -f2`
-Check_exact $v 20
-Pass make_cmovie
+$MODDIR/make_fmovie $TMP/1 \
+    && VAL=`$MODDIR/fsize $TMP/1_01` \
+    && exact "$VAL" "256 256" \
+    && VAL=`grep nimage $TMP/1 | cut -d":" -f2` \
+    && exact $VAL 21 \
+    && pass || fail
 
-make_fmovie $tmp/1 || Incerr
-v=`fsize $tmp/1_01`
-Check_exact "$v" "256 256"
-v=`grep nimage $tmp/1 | cut -d":" -f2`
-Check_exact $v 21
-Pass make_fmovie
+$MODDIR/make_ccmovie $TMP/1 \
+    && $MODDIR/ccopy $TMP/1_01 $TMP/2 2> /dev/null \
+    && VAL=`$MODDIR/fsize $TMP/2` \
+    && exact "$VAL" "256 256" \
+    && VAL=`grep nimage $TMP/1 | cut -d":" -f2` \
+    && exact $VAL 20 \
+    && pass || fail
 
-make_ccmovie $tmp/1 || Incerr
-ccopy $tmp/1_01 $tmp/2 2> /dev/null
-v=`fsize $tmp/2`
-Check_exact "$v" "256 256"
-v=`grep nimage $tmp/1 | cut -d":" -f2`
-Check_exact $v 20
-Pass make_ccmovie
+$MODDIR/make_cfmovie $TMP/1 \
+    && $MODDIR/ccopy $TMP/1_01 $TMP/2 2> /dev/null \
+    && VAL=`$MODDIR/fsize $TMP/2` \
+    && exact "$VAL" "256 256" \
+    && VAL=`grep nimage $TMP/1 | cut -d":" -f2` \
+    && exact $VAL 20 \
+    && pass || fail
 
-make_cfmovie $tmp/1 || Incerr
-ccopy $tmp/1_01 $tmp/2 2> /dev/null
-v=`fsize $tmp/2`
-Check_exact "$v" "256 256"
-v=`grep nimage $tmp/1 | cut -d":" -f2`
-Check_exact $v 20
-Pass make_cfmovie
+$MODDIR/make_cimage $TMP/1 \
+    && VAL=`$MODDIR/fsize $TMP/1` \
+    && exact "$VAL" "256 256" \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 0.992188 \
+    && pass || fail
 
-make_cimage $tmp/1 || Incerr
-v=`fsize $tmp/1`
-Check_exact "$v" "256 256"
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 0.992188
-Pass make_cimage
-
-NoPass view_demo
+# TODO
+# view_demo
 
 echo
-
 
 # image/detection
+echo -n "image/detection: "
 
-mwecho -n "image/detection: "
+$MODDIR/funzoom -o 0 -z 4 $DATA/images/cimage $TMP/1
 
-funzoom -o 0 -z 4 cimage $tmp/1
+$MODDIR/canny $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 13.5183 \
+    && pass || fail
 
-canny $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 13.5183
-Pass canny
+$MODDIR/falign -e 4.3 $TMP/1 $TMP/2 > /dev/null \
+    && VAL=`$MODDIR/flprintasc $TMP/2 | wc -l` \
+    && exact $VAL 14 \
+    && pass || fail
 
-falign -e 4.3 $tmp/1 $tmp/2 > /dev/null || Incerr
-v=`flprintasc $tmp/2 | wc -l`
-Check_exact $v 14
-Pass falign
+$MODDIR/falign_mdl -e -2 -l 1 -n 30 $DATA/images/cimage $TMP/2 > /dev/null \
+    && VAL=`$MODDIR/fsize $TMP/2` \
+    && exact "$VAL" "6 43" \
+    && pass || fail
 
-falign_mdl -e -2 -l 1 -n 30 cimage $tmp/2 > /dev/null || Incerr
-v=`fsize $tmp/2`
-Check_exact "$v" "6 43"
-Pass falign_mdl
+$MODDIR/vpoint $DATA/images/cimage $TMP/2 $TMP/3 > /dev/null \
+    && VAL=`$MODDIR/flprintasc $TMP/3 | cut -d" " -f2` \
+    && approx $VAL 17.9527 \
+    && pass || fail
 
-vpoint cimage $tmp/2 $tmp/3 > /dev/null || Incerr
-v=`flprintasc $tmp/3 | cut -d" " -f2`
-Check_approx $v 17.9527
-Pass vpoint
+$MODDIR/ll_boundaries -e 11 $TMP/1 $TMP/2 > /dev/null \
+    && VAL=`$MODDIR/flprintasc $TMP/2 | wc -l` \
+    && exact $VAL 1139 \
+    && pass || fail
 
-ll_boundaries -e 11 $tmp/1 $tmp/2 > /dev/null || Incerr
-v=`flprintasc $tmp/2 | wc -l`
-Check_exact $v 1139
-Pass ll_boundaries
+$MODDIR/ll_boundaries2 -e 11 $TMP/1 $TMP/2 > /dev/null \
+    && VAL=`$MODDIR/flprintasc $TMP/2 | wc -l` \
+    && exact $VAL 1073 \
+    && pass || fail
 
-ll_boundaries2 -e 11 $tmp/1 $tmp/2 > /dev/null || Incerr
-v=`flprintasc $tmp/2 | wc -l`
-Check_exact $v 1073
-Pass ll_boundaries2
+$MODDIR/ll_edges -e 17 $TMP/1 $TMP/2 > /dev/null \
+    && VAL=`$MODDIR/flprintasc $TMP/2 | wc -l` \
+    && exact $VAL 526 \
+    && pass || fail
 
-ll_edges -e 17 $tmp/1 $tmp/2 > /dev/null || Incerr
-v=`flprintasc $tmp/2 | wc -l`
-Check_exact $v 526
-Pass ll_edges
+$MODDIR/harris $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/flprintasc $TMP/2 | wc -l` \
+    && approx $VAL 55 \
+    && pass || fail
 
-harris $tmp/1 $tmp/2 || Incerr
-v=`flprintasc $tmp/2 | wc -l`
-Check_approx $v 55
-Pass harris
-
-NoPass vpsegplot
-NoPass VP_DEMO
+# TODO
+# vpsegplot
+# VP_DEMO
 
 echo
 
-
 # image/domain
+echo -n "image/domain: "
 
-mwecho -n "image/domain: "
+$MODDIR/fcrop -x 20 -y 20 -o 3 $DATA/images/cimage $TMP/1 40 100 50 110 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 3.21633 \
+    && pass || fail
 
-fcrop -x 20 -y 20 -o 3 cimage $tmp/1 40 100 50 110 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 3.21633
-Pass fcrop
+$MODDIR/cccrop -x 20 -y 20 -o 3 $DATA/images/ccimage $TMP/1 40 100 50 110 2> /dev/null \
+    && $MODDIR/cfgetchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
+    && $MODDIR/fdiff $TMP/3 $TMP/2 $TMP/4 \
+    && VAL=`$MODDIR/fnorm -v $TMP/4 | cut -d"=" -f2` \
+    && approx $VAL 6.01568 \
+    && pass || fail
 
-cccrop -x 20 -y 20 -o 3 ccimage $tmp/1 40 100 50 110 2> /dev/null || Incerr
-cfgetchannels $tmp/1 $tmp/2 $tmp/3 $tmp/4
-fdiff $tmp/3 $tmp/2 $tmp/4
-v=`fnorm -v $tmp/4 | cut -d"=" -f2`
-Check_approx $v 6.01568
-Pass cccrop
+$MODDIR/cextract $DATA/images/cimage $TMP/1 40 100 50 110 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 5.06073 \
+    && pass || fail
 
-cextract cimage $tmp/1 40 100 50 110 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 5.06073
-Pass cextract
+$MODDIR/fextract $DATA/images/cimage $TMP/1 40 100 50 110 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 5.06073 \
+    && pass || fail
 
-fextract cimage $tmp/1 40 100 50 110 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 5.06073
-Pass fextract
+$MODDIR/ccextract $DATA/images/ccimage $TMP/1 40 100 50 110 \
+    && $MODDIR/cfgetchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
+    && $MODDIR/fdiff $TMP/3 $TMP/2 $TMP/4 \
+    && VAL=`$MODDIR/fnorm -v $TMP/4 | cut -d"=" -f2` \
+    && approx $VAL 6.9226 \
+    && pass || fail
 
-ccextract ccimage $tmp/1 40 100 50 110 || Incerr
-cfgetchannels $tmp/1 $tmp/2 $tmp/3 $tmp/4
-fdiff $tmp/3 $tmp/2 $tmp/4
-v=`fnorm -v $tmp/4 | cut -d"=" -f2`
-Check_approx $v 6.9226
-Pass ccextract
+$MODDIR/clocal_zoom -x 100 -y 150 -W 64 -X 3 $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 8.07492 \
+    && pass || fail
 
-clocal_zoom -x 100 -y 150 -W 64 -X 3 cimage $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 8.07492
-Pass clocal_zoom
+$MODDIR/flocal_zoom -x 100 -y 150 -W 64 -X 3 $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 8.07492 \
+    && pass || fail
 
-flocal_zoom -x 100 -y 150 -W 64 -X 3 cimage $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 8.07492
-Pass flocal_zoom
+$MODDIR/cclocal_zoom -x 100 -y 150 -W 64 -X 3 $DATA/images/ccimage $TMP/1 \
+    && $MODDIR/cfgetchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
+    && $MODDIR/fdiff $TMP/3 $TMP/2 $TMP/4 \
+    && VAL=`$MODDIR/fnorm -v $TMP/4 | cut -d"=" -f2` \
+    && approx $VAL 8.50785 \
+    && pass || fail
 
-cclocal_zoom -x 100 -y 150 -W 64 -X 3 ccimage $tmp/1 || Incerr
-cfgetchannels $tmp/1 $tmp/2 $tmp/3 $tmp/4
-fdiff $tmp/3 $tmp/2 $tmp/4
-v=`fnorm -v $tmp/4 | cut -d"=" -f2`
-Check_approx $v 8.50785
-Pass cclocal_zoom
+$MODDIR/funzoom -o 0 -z 4 $DATA/images/cimage $TMP/1 \
+    && $MODDIR/fshift -h $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -p 2 -c $TMP/1 $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 110.12 \
+    && pass || fail
 
-funzoom -o 0 -z 4 cimage $tmp/1
+$MODDIR/czoom -X 4 -o 5 $TMP/1 $TMP/2 2> /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 5.97412 \
+    && pass || fail
 
-fshift -h $tmp/1 $tmp/2 || Incerr
-v=`fnorm -p 2 -c $tmp/1 $tmp/2 | cut -d"=" -f2`
-Check_approx $v 110.12
-Pass fshift
+$MODDIR/cczoom -X 4 -o 5 $TMP/1 $TMP/2 2> /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 5.97412 \
+    && pass || fail
 
-czoom -X 4 -o 5 $tmp/1 $tmp/2 2> /dev/null || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 5.97412
-Pass czoom
+$MODDIR/fzoom -X 4 -o 5 $TMP/1 $TMP/2 2> /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 5.969 \
+    && pass || fail
 
-cczoom -X 4 -o 5 $tmp/1 $tmp/2 2> /dev/null || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 5.97412
-Pass cczoom
+$MODDIR/csample $DATA/images/cimage $TMP/1 4 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 19.2588 \
+    && pass || fail
 
-fzoom -X 4 -o 5 $tmp/1 $tmp/2 2> /dev/null || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 5.969
-Pass fzoom
+$MODDIR/fsample $DATA/images/cimage $TMP/1 4 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 19.2588 \
+    && pass || fail
 
-csample cimage $tmp/1 4 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 19.2588
-Pass csample
+$MODDIR/cextcenter -f 27 $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fsize $TMP/1` \
+    && exact "$VAL" "243 243" \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 8.76071 \
+    && pass || fail
 
-fsample cimage $tmp/1 4 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 19.2588
-Pass fsample
+$MODDIR/cfextcenter -ftype IMG -f 27 $DATA/images/ccimage $TMP/1 2> /dev/null \
+    && VAL=`$MODDIR/fsize $TMP/1` \
+    && exact "$VAL" "243 243" \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 15.6567 \
+    && pass || fail
 
-cextcenter -f 27 cimage $tmp/1 || Incerr
-v=`fsize $tmp/1`
-Check_exact "$v" "243 243"
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 8.76071
-Pass cextcenter
+$MODDIR/fmaskrot -s 30 -b 10 $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 6.09773 \
+    && pass || fail
 
-cfextcenter -ftype IMG -f 27 ccimage $tmp/1 2> /dev/null || Incerr
-v=`fsize $tmp/1` 
-Check_exact "$v" "243 243"
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 15.6567
-Pass cfextcenter
+$MODDIR/fproj -x 100 -y 120 -o 3 $DATA/images/cimage $TMP/1 10 20 250 40 80 210 130 200 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 9.06184 \
+    && pass || fail
 
-fmaskrot -s 30 -b 10 cimage $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 6.09773
-Pass fmaskrot
+$MODDIR/fzrt -o 3 $DATA/images/cimage $TMP/1 1.1 57 -10 -20 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 7.30864 \
+    && pass || fail
 
-fproj -x 100 -y 120 -o 3 cimage $tmp/1 10 20 250 40 80 210 130 200 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 9.06184
-Pass fproj
+$MODDIR/frot -a 35 $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 5.02289 \
+    && pass || fail
 
-fzrt -o 3 cimage $tmp/1 1.1 57 -10 -20 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 7.30864
-Pass fzrt
+$MODDIR/fdirspline $DATA/images/cimage 5 $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 6.31651 \
+    && pass || fail
 
-frot -a 35 cimage $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 5.02289
-Pass frot
+$MODDIR/finvspline $DATA/images/cimage 5 $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 41.7204 \
+    && pass || fail
 
-fdirspline cimage 5 $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 6.31651
-Pass fdirspline
+#$MODDIR/ccopy $DATA/images/cimage $TMP/1_001 \
+#    && $MODDIR/ccopy $DATA/images/fimage $TMP/1_002 \
+#    && $SCRIPTS/megawave_mkmovie Cmovie $TMP/1 1 2 \
+#    && pass || fail
 
-finvspline cimage 5 $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 41.7204
-Pass finvspline
+$MODDIR/cmzoom -o 3 -X 2 $TMP/1 $TMP/2 2> /dev/null \
+    && $MODDIR/fdiff $TMP/2_01 $TMP/2_02 $TMP/3 \
+    && VAL=`$MODDIR/fnorm -v $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 9.81426 \
+    && pass || fail
 
-ccopy cimage $tmp/1_1
-ccopy fimage $tmp/1_2
-Mkmovie Cmovie $tmp/1 1 2
+$MODDIR/ccmzoom -o 3 -X 2 $TMP/1 $TMP/2 2> /dev/null \
+    && $MODDIR/fdiff $TMP/2_01 $TMP/2_02 $TMP/3 \
+    && VAL=`$MODDIR/fnorm -v $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 9.81426 \
+    && pass || fail
 
-cmzoom -o 3 -X 2 $tmp/1 $tmp/2 2> /dev/null || Incerr
-fdiff $tmp/2_01 $tmp/2_02 $tmp/3
-v=`fnorm -v $tmp/3 | cut -d"=" -f2`
-Check_approx $v 9.81426
-Pass cmzoom
+$MODDIR/cmextract -b 0 $TMP/2 $TMP/3 30 30 1 170 170 1 $TMP/1 50 50 2 \
+    && $MODDIR/fdiff $TMP/3_01 $TMP/3_02 $TMP/4 \
+    && VAL=`$MODDIR/fnorm -v $TMP/4 | cut -d"=" -f2` \
+    && approx $VAL 8.09011 \
+    && pass || fail
 
-ccmzoom -o 3 -X 2 $tmp/1 $tmp/2 2> /dev/null || Incerr
-fdiff $tmp/2_01 $tmp/2_02 $tmp/3
-v=`fnorm -v $tmp/3 | cut -d"=" -f2`
-Check_approx $v 9.81426
-Pass ccmzoom
+$MODDIR/cmparitysep -l $TMP/1 $TMP/2 \
+    && $MODDIR/fdiff $TMP/2_01 $TMP/2_03 $TMP/3 \
+    && $MODDIR/fdiff $TMP/2_02 $TMP/2_04 $TMP/4 \
+    && VAL=`$MODDIR/fnorm -v $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 14.6972 \
+    && VAL=`$MODDIR/fnorm -v $TMP/4 | cut -d"=" -f2` \
+    && approx $VAL 14.74 \
+    && pass || fail
 
-cmextract -b 0 $tmp/2 $tmp/3 30 30 1 170 170 1 $tmp/1 50 50 2 || Incerr
-fdiff $tmp/3_01 $tmp/3_02 $tmp/4
-v=`fnorm -v $tmp/4 | cut -d"=" -f2`
-Check_approx $v 8.09011
-Pass cmextract
-
-cmparitysep -l $tmp/1 $tmp/2 || Incerr
-fdiff $tmp/2_01 $tmp/2_03 $tmp/3
-fdiff $tmp/2_02 $tmp/2_04 $tmp/4
-v=`fnorm -v $tmp/3 | cut -d"=" -f2`
-Check_approx $v 14.6972
-v=`fnorm -v $tmp/4 | cut -d"=" -f2`
-Check_approx $v 14.74
-Pass cmparitysep
-
-NoPass cmcollect
-NoPass ccmcollect
+# TODO
+# cmcollect
+# ccmcollect
 
 # common: funzoom cfunzoom
 
 echo
 
-
 # image/filter
+echo -n "image/filter: "
 
-mwecho -n "image/filter: "
+$MODDIR/cfunzoom -z 4 -o 0 $DATA/images/ccimage $TMP/1 \
+    && $MODDIR/cfdiffuse $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 2> /dev/null | cut -d"=" -f2` \
+    && approx $VAL 9.08767 \
+    && pass || fail
 
-cfunzoom -z 4 -o 0 ccimage $tmp/1
-cfdiffuse $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 2> /dev/null | cut -d"=" -f2`
-Check_approx $v 9.08767
-Pass cfdiffuse
+$MODDIR/cfmdiffuse -n 2 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2_01 2> /dev/null | cut -d"=" -f2` \
+    && approx $VAL 9.08767 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2_02 2> /dev/null | cut -d"=" -f2` \
+    && approx $VAL 7.25923 \
+    && pass || fail
 
-cfmdiffuse -n 2 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2_01 2> /dev/null | cut -d"=" -f2`
-Check_approx $v 9.08767
-v=`fnorm -v $tmp/2_02 2> /dev/null | cut -d"=" -f2`
-Check_approx $v 7.25923
-Pass cfmdiffuse
+$MODDIR/funzoom -z 4 -o 0 -ftype IMG $DATA/images/cimage $TMP/1 2> /dev/null \
+    && $MODDIR/erosion -r 1.5 -n 1 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 13.8314 \
+    && pass || fail
 
-funzoom -z 4 -o 0 -ftype IMG cimage $tmp/1 2> /dev/null
+$MODDIR/opening -r 1.5 -n 1 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 13.77 \
+    && pass || fail
 
-erosion -r 1.5 -n 1 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 13.8314
-Pass erosion
+$MODDIR/median -r 1.5 -n 1 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 13.7447 \
+    && pass || fail
 
-opening -r 1.5 -n 1 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 13.77
-Pass opening
+$MODDIR/amss -l 2 -d $TMP/2 $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 11.838 \
+    && pass || fail
 
-median -r 1.5 -n 1 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 13.7447
-Pass median
+$MODDIR/fquant $TMP/1 $TMP/2 5 > /dev/null \
+    && $MODDIR/osamss -l 2 $TMP/2 $TMP/3 \
+    && VAL=`$MODDIR/fnorm -v $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 11.8249 \
+    && pass || fail
 
-amss -l 2 -d $tmp/2 $tmp/1 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 11.838
-Pass amss
+$MODDIR/heat -n 10 -s 0.1 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 10.777 \
+    && pass || fail
 
-fquant $tmp/1 $tmp/2 5 > /dev/null
-osamss -l 2 $tmp/2 $tmp/3 || Incerr
-v=`fnorm -v $tmp/3 | cut -d"=" -f2`
-Check_approx $v 11.8249
-Pass osamss
+$MODDIR/fsmooth -S 2 -W 1 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 7.20909 \
+    && pass || fail
 
-heat -n 10 -s 0.1 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 10.777
-Pass heat
+echo "-1 1 -1 1" | $MODDIR/freadasc $TMP/2 2 2 \
+    && $MODDIR/fconvol $TMP/1 $TMP/2 $TMP/3 \
+    && VAL=`$MODDIR/fnorm -v $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 26.6814 \
+    && pass || fail
 
-fsmooth -S 2 -W 1 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 7.20909
-Pass fsmooth
+$MODDIR/fsepconvol -g 2 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 9.13969 \
+    && pass || fail
 
-echo "-1 1 -1 1" | freadasc $tmp/2 2 2
-fconvol $tmp/1 $tmp/2 $tmp/3 || Incerr
-v=`fnorm -v $tmp/3 | cut -d"=" -f2`
-Check_approx $v 26.6814
-Pass fconvol
+$MODDIR/fgrain -a 20 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 13.8573 \
+    && pass || fail
 
-fsepconvol -g 2 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 9.13969
-Pass fsepconvol
+$MODDIR/forder -e 5 -n 1 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 13.697 \
+    && pass || fail
 
-fgrain -a 20 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 13.8573
-Pass fgrain
+$MODDIR/fsharpen -p 50 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 22.7716 \
+    && pass || fail
 
-forder -e 5 -n 1 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 13.697
-Pass forder
+$MODDIR/rotaffin -r 5 -a 3 -t 3 -T 0 -A 5 $TMP/2 \
+    && VAL=`grep nimage $TMP/2 | cut -d":" -f2` \
+    && exact $VAL 15 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2_10 | cut -d"=" -f2` \
+    && approx $VAL 29.1366 \
+    && pass || fail
 
-fsharpen -p 50 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 22.7716
-Pass fsharpen
+$MODDIR/infsup -n 2 $TMP/1 $TMP/2 $TMP/3 \
+    && VAL=`$MODDIR/fnorm -v $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 11.2894 \
+    && pass || fail
 
-rotaffin -r 5 -a 3 -t 3 -T 0 -A 5 $tmp/2 || Incerr
-v=`grep nimage $tmp/2 | cut -d":" -f2`
-Check_exact $v 15
-v=`fnorm -v $tmp/2_10 | cut -d"=" -f2`
-Check_approx $v 29.1366
-Pass rotaffin
+$MODDIR/ll_sharp -p 20 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 16.9317 \
+    && pass || fail
 
-infsup -n 2 $tmp/1 $tmp/2 $tmp/3 || Incerr
-v=`fnorm -v $tmp/3 | cut -d"=" -f2`
-Check_approx $v 11.2894
-Pass infsup
+$MODDIR/resthline $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 16.5496 \
+    && pass || fail
 
-ll_sharp -p 20 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 16.9317
-Pass ll_sharp
+$MODDIR/shock -n 10 -s 0.1 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 19.0514 \
+    && pass || fail
 
-resthline $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 16.5496
-Pass resthline
+$MODDIR/tvdenoise $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 14.5648 \
+    && pass || fail
 
-shock -n 10 -s 0.1 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 19.0514
-Pass shock
+$MODDIR/tvdenoise2 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 14.4665 \
+    && pass || fail
 
-tvdenoise $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 14.5648
-Pass tvdenoise
+$MODDIR/nlmeans -s 3 -d 5 $DATA/images/cimage $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 6.45733 \
+    && pass || fail
 
-tvdenoise2 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 14.4665
-Pass tvdenoise2
+$MODDIR/fconvol $TMP/1 $DATA/image/blur3x3.ir $TMP/2 \
+    && $MODDIR/tvdeblur -n 30 $TMP/2 $DATA/image/blur3x3.ir $TMP/3 \
+    && VAL=`$MODDIR/fnorm -p 2 -c $TMP/1 $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 7.51181 \
+    && pass || fail
 
-nlmeans -s 3 -d 5 cimage $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 6.45733
-Pass nlmeans
+$MODDIR/cmextract $DATA/movies/cmovie $TMP/1 128 128 3 140 140 7 \
+    && $MODDIR/mam -n 20 -a 0 $TMP/1 $TMP/2 > /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/2_03 | cut -d"=" -f2` \
+    && approx $VAL 8.49737 \
+    && pass || fail
 
-fconvol $tmp/1 blur3x3.ir $tmp/2
-tvdeblur -n 30 $tmp/2 blur3x3.ir $tmp/3 || Incerr
-v=`fnorm -p 2 -c $tmp/1 $tmp/3 | cut -d"=" -f2`
-Check_approx $v 7.51181
-Pass tvdeblur
+$MODDIR/prolate -n 128 3 0.5 $TMP/1 > /dev/null \
+    && VAL=`$MODDIR/fsize $TMP/1` \
+    && exact "$VAL" "3 3" \
+    && VAL=`$MODDIR/fmean $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 0.111111 \
+    && pass || fail
 
-cmextract cmovie $tmp/1 128 128 3 140 140 7
-mam -n 20 -a 0 $tmp/1 $tmp/2 > /dev/null || Incerr
-v=`fnorm -v $tmp/2_03 | cut -d"=" -f2`
-Check_approx $v 8.49737
-Pass mam
-
-prolate -n 128 3 0.5 $tmp/1 > /dev/null || Incerr
-v=`fsize $tmp/1` 
-Check_exact "$v" "3 3"
-v=`fmean $tmp/1 | cut -d"=" -f2`
-Check_approx $v 0.111111
-Pass prolate
-
-NoPass cfsharpen 
-NoPass flipschitz
-NoPass prolatef
+# TODO
+# cfsharpen
+# flipschitz
+# prolatef
 
 echo
-
 
 # image/fourier
+echo -n "image/fourier: "
 
-mwecho -n "image/fourier: "
+$MODDIR/fft2d -A $TMP/1 -B $TMP/2 $DATA/images/cimage  \
+    && $MODDIR/fextract $TMP/1 $TMP/1 20 20 230 230 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 1234.21 \
+    && $MODDIR/fextract $TMP/2 $TMP/2 20 20 230 230 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 1230.29 \
+    && pass || fail
 
-fft2d -A $tmp/1 -B $tmp/2 cimage  || Incerr
-fextract $tmp/1 $tmp/1 20 20 230 230
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 1234.21
-fextract $tmp/2 $tmp/2 20 20 230 230
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 1230.29
-Pass fft2d
+$MODDIR/fft2dpol -M $TMP/1 -P $TMP/2 $DATA/images/cimage  \
+    && $MODDIR/fextract $TMP/1 $TMP/1 20 20 230 230 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 784.174 \
+    && $MODDIR/fextract $TMP/2 $TMP/2 20 20 230 230 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 1.65156 \
+    && pass || fail
 
-fft2dpol -M $tmp/1 -P $tmp/2 cimage  || Incerr
-fextract $tmp/1 $tmp/1 20 20 230 230
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 784.174
-fextract $tmp/2 $tmp/2 20 20 230 230
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 1.65156
-Pass fft2dpol
+$MODDIR/fft2drad -l -s 100 $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/snorm -b 5 -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 0.0241473 \
+    && VAL=`$MODDIR/snorm -b 5 -p 2 $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 3.48635 \
+    && pass || fail
 
-fft2drad -l -s 100 cimage $tmp/1 || Incerr
-v=`snorm -b 5 -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 0.0241473
-v=`snorm -b 5 -p 2 $tmp/1 | cut -d"=" -f2`
-Check_approx $v 3.48635
-Pass fft2drad
+$MODDIR/fft2dview -t 0 -o $TMP/1 $DATA/images/cimage \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 1923.05 \
+    && pass || fail
 
-fft2dview -t 0 -o $tmp/1 cimage || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 1923.05
-Pass fft2dview
+$MODDIR/fftgrad -n $TMP/1 $DATA/images/cimage \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 8.00567 \
+    && pass || fail
 
-fftgrad -n $tmp/1 cimage || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 8.00567
-Pass fftgrad
+$MODDIR/fftrot -a 33 $DATA/images/cimage $TMP/1  \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 9.72568 \
+    && pass || fail
 
-fftrot -a 33 cimage $tmp/1  || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 9.72568
-Pass fftrot
+$MODDIR/funzoom -z 4 -o 0 $DATA/images/cimage $TMP/1 \
+    && $MODDIR/fftzoom -z 2 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 10.8767 \
+    && pass || fail
 
-funzoom -z 4 -o 0 cimage $tmp/1
-fftzoom -z 2 $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 10.8767
-Pass fftzoom
+$MODDIR/fhamming $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 2.74239 \
+    && pass || fail
 
-fhamming cimage $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 2.74239
-Pass fhamming
+$MODDIR/frandphase $DATA/images/fimage $TMP/1 \
+    && $MODDIR/fft2dpol -P $TMP/2 $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && rand_approx $VAL 1.63 \
+    && pass || fail
 
-frandphase fimage $tmp/1 || Incerr
-fft2dpol -P $tmp/2 $tmp/1
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_more_approx $v 1.63
-Pass frandphase
+$MODDIR/fextract $DATA/images/cimage $TMP/1 10 10 200 210 \
+    && $MODDIR/fft2dshrink $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fsize $TMP/2` \
+    && exact "$VAL" "189 200" \
+    && pass || fail
 
-fextract cimage $tmp/1 10 10 200 210 
-fft2dshrink $tmp/1 $tmp/2 || Incerr
-v=`fsize $tmp/2` 
-Check_exact "$v" "189 200"
-Pass fft2dshrink
+$MODDIR/fshrink2 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fsize $TMP/2` \
+    && exact "$VAL" "128 128" \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 8.33146 \
+    && pass || fail
 
-fshrink2 $tmp/1 $tmp/2 || Incerr
-v=`fsize $tmp/2` 
-Check_exact "$v" "128 128"
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 8.33146
-Pass fshrink2
+$MODDIR/fsym2 $TMP/2 $TMP/2 \
+    && VAL=`$MODDIR/fsize $TMP/2` \
+    && exact "$VAL" "256 256" \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 8.36696 \
+    && pass || fail
 
-fsym2 $tmp/2 $tmp/2 || Incerr
-v=`fsize $tmp/2` 
-Check_exact "$v" "256 256"
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 8.36696
-Pass fsym2
+$MODDIR/wiener -W 0.1 -g 1 $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -b 10 -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 11.1962 \
+    && pass || fail
 
-wiener -W 0.1 -g 1 cimage $tmp/1 || Incerr
-v=`fnorm -b 10 -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 11.1962
-Pass wiener
+$MODDIR/fkeepphase $DATA/images/cimage $DATA/images/fimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 14.041 \
+    && pass || fail
 
-fkeepphase cimage fimage $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 14.041
-Pass fkeepphase
-
-faxpb -a 0 -b 0 cimage $tmp/1
-fpset $tmp/1 0 0 1 $tmp/1
-fsepconvol -b 2 -g 3 $tmp/1 $tmp/2 
-fft2d -A $tmp/3 $tmp/2
-fftconvol cimage $tmp/3 $tmp/4 || Incerr
-fsepconvol -b 2 -g 3 cimage $tmp/5
-v=`fnorm -t 0.0001 -p 2 -c $tmp/4 $tmp/5 | cut -d"=" -f2`
-Check_exact $v 0
-Pass fftconvol
+$MODDIR/faxpb -a 0 -b 0 $DATA/images/cimage $TMP/1 \
+    && $MODDIR/fpset $TMP/1 0 0 1 $TMP/1 \
+    && $MODDIR/fsepconvol -b 2 -g 3 $TMP/1 $TMP/2 \
+    && $MODDIR/fft2d -A $TMP/3 $TMP/2 \
+    && $MODDIR/fftconvol $DATA/images/cimage $TMP/3 $TMP/4 \
+    && $MODDIR/fsepconvol -b 2 -g 3 $DATA/images/cimage $TMP/5 \
+    && VAL=`$MODDIR/fnorm -t 0.0001 -p 2 -c $TMP/4 $TMP/5 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
 echo
-
 
 # image/io
+echo -n "image/io: "
 
-mwecho -n "image/io: "
+$MODDIR/ccopy $DATA/images/cimage $TMP/1 \
+    && $MODDIR/fdiff $DATA/images/cimage $TMP/1 $TMP/1 \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-ccopy cimage $tmp/1 || Incerr
-fdiff cimage $tmp/1 $tmp/1
-v=`fnorm -p 2 $tmp/1 | cut -d"=" -f2`
-Check_exact $v 0
-Pass ccopy
+$MODDIR/fcopy $DATA/images/fimage $TMP/1 \
+    && $MODDIR/fdiff $DATA/images/fimage $TMP/1 $TMP/1 \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-fcopy fimage $tmp/1 || Incerr
-fdiff fimage $tmp/1 $tmp/1
-v=`fnorm -p 2 $tmp/1 | cut -d"=" -f2`
-Check_exact $v 0
-Pass fcopy
+$MODDIR/cccopy $DATA/images/ccimage $TMP/1 \
+    && $MODDIR/cfdiff $DATA/images/ccimage $TMP/1 $TMP/1 \
+    && $MODDIR/cfgetchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/3 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/4 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-cccopy ccimage $tmp/1 || Incerr
-cfdiff ccimage $tmp/1 $tmp/1
-cfgetchannels $tmp/1 $tmp/2 $tmp/3 $tmp/4
-v=`fnorm -p 2 $tmp/2 | cut -d"=" -f2`
-Check_exact $v 0
-v=`fnorm -p 2 $tmp/3 | cut -d"=" -f2`
-Check_exact $v 0
-v=`fnorm -p 2 $tmp/4 | cut -d"=" -f2`
-Check_exact $v 0
-Pass cccopy
+# TODO
+# cview
+# fview
+# ccview
+# cmview
+# ccmview
+# flip
 
-NoPass cview
-NoPass fview
-NoPass ccview
-NoPass cmview
-NoPass ccmview
-NoPass flip
+$MODDIR/fconst $TMP/1 0 60 20 \
+    && echo "hi guys..." | \
+    $MODDIR/ccputstring -r 3 -c 900 -C 90 $TMP/1 10 1 $TMP/1 \
+    && $MODDIR/ccopy $TMP/1 $TMP/1 2> /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 19.8406 \
+    && pass || fail
 
-fconst $tmp/1 0 60 20
-echo "hi guys..." | ccputstring -r 3 -c 900 -C 90 $tmp/1 10 1 $tmp/1 || Incerr
-ccopy $tmp/1 $tmp/1 2> /dev/null
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 19.8406
-Pass ccputstring
+$MODDIR/cfgetchannels $DATA/images/ccimage $TMP/1 $TMP/2 $TMP/3 \
+    && $MODDIR/cfputchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
+    && $MODDIR/cfdiff -ftype IMG \
+    $DATA/images/ccimage $TMP/4 $TMP/1 2> /dev/null \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-cfgetchannels ccimage $tmp/1 $tmp/2 $tmp/3
-cfputchannels $tmp/1 $tmp/2 $tmp/3 $tmp/4 || Incerr
-cfdiff -ftype IMG ccimage $tmp/4 $tmp/1 2> /dev/null
-v=`fnorm -p 2 $tmp/1 | cut -d"=" -f2`
-Check_exact $v 0
-Pass cfputchannels
+$MODDIR/cfchgchannels $DATA/images/ccimage $TMP/1 \
+    && $MODDIR/cfgetchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 7.36361 \
+    && VAL=`$MODDIR/fnorm -v $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 15.9369 \
+    && VAL=`$MODDIR/fnorm -v $TMP/4 | cut -d"=" -f2` \
+    && approx $VAL 9.98046 \
+    && pass || fail
 
-cfchgchannels ccimage $tmp/1 || Incerr
-cfgetchannels $tmp/1 $tmp/2 $tmp/3 $tmp/4
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 7.36361
-v=`fnorm -v $tmp/3 | cut -d"=" -f2`
-Check_approx $v 15.9369
-v=`fnorm -v $tmp/4 | cut -d"=" -f2`
-Check_approx $v 9.98046
-Pass cfchgchannels
+$MODDIR/cline_extract $DATA/images/cimage $TMP/1 30 \
+    && VAL=`$MODDIR/snorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 11.1133 \
+    && pass || fail
 
-cline_extract cimage $tmp/1 30 || Incerr
-v=`snorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 11.1133
-Pass cline_extract
+$MODDIR/fline_extract $DATA/images/cimage $TMP/1 30 \
+    && VAL=`$MODDIR/snorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 11.1133 \
+    && pass || fail
 
-fline_extract cimage $tmp/1 30 || Incerr
-v=`snorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 11.1133
-Pass fline_extract
+echo "1 5 2 3" | $MODDIR/creadasc $TMP/1 2 2 \
+    && VAL=`$MODDIR/fmean $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 2.75 \
+    && VAL=`$MODDIR/fvar $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 2.91667 \
+    && pass || fail
 
-echo "1 5 2 3" | creadasc $tmp/1 2 2 || Incerr
-v=`fmean $tmp/1 | cut -d"=" -f2`
-Check_approx $v 2.75
-v=`fvar $tmp/1 | cut -d"=" -f2`
-Check_approx $v 2.91667
-Pass creadasc
+$MODDIR/cprintasc $TMP/1 > $TMP/2 \
+    && VAL=`cat $TMP/2 | wc -l` \
+    && exact $VAL 1 \
+    && pass || fail
 
-cprintasc $tmp/1 > $tmp/2 || Incerr
-v=`cat $tmp/2 | wc -l`
-Check_exact $v 1
-Pass cprintasc
+$MODDIR/fprintasc $TMP/1 > $TMP/2 \
+    && VAL=`cat $TMP/2 | wc -l` \
+    && exact $VAL 1 \
+    && pass || fail
 
-fprintasc $tmp/1 > $tmp/2 || Incerr
-v=`cat $tmp/2 | wc -l`
-Check_exact $v 1
-Pass fprintasc
-
-#common: freadasc Mkmovie cfgetchannels
+# common: freadasc Mkmovie cfgetchannels
 
 echo
-
 
 # image/level_lines
+echo -n "image/level_lines: "
 
-mwecho -n "image/level_lines: "
+# TODO
+# flst
+# flst_pixels
+# flst_reconstruct
+# flst_boundary
 
-NoPass flst
-NoPass flst_pixels
-NoPass flst_reconstruct
-NoPass flst_boundary
+# TODO
+# flst_bilinear
+# flstb_boundary
+# flstb_dual
+# flstb_dualchain
+# flstb_quantize
+# flstb_tv
 
-NoPass flst_bilinear
-NoPass flstb_boundary
-NoPass flstb_dual
-NoPass flstb_dualchain
-NoPass flstb_quantize
-NoPass flstb_tv
+# TODO
+# fml_ml
+# fsaddles
+# ll_distance
+# ll_extract
+# llmap
+# ll_remove
+# llremove
+# llview
 
-NoPass fml_ml
-NoPass fsaddles
-NoPass ll_distance
-NoPass ll_extract
-NoPass llmap
-NoPass ll_remove
-NoPass llremove
-NoPass llview
+# TODO
+# ml_decompose
+# ml_draw
+# ml_extract
+# ml_fml
+# ml_reconstruct
 
-NoPass ml_decompose
-NoPass ml_draw
-NoPass ml_extract
-NoPass ml_fml
-NoPass ml_reconstruct
+# TODO
+# mscarea
+# tjmap
+# tjpoint
 
-NoPass mscarea
-NoPass tjmap
-NoPass tjpoint
-
-NoPass cll_remove
-NoPass cml_decompose
-NoPass cml_draw
-NoPass cml_reconstruct
+# TODO
+# cll_remove
+# cml_decompose
+# cml_draw
+# cml_reconstruct
 
 echo
-
 
 # image/misc
+echo -n "image/misc: "
 
-mwecho -n "image/misc: "
+$MODDIR/cdisc $TMP/1 100 100 \
+    && VAL=`$MODDIR/fmean $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 126.888 \
+    && pass || fail
 
-cdisc $tmp/1 100 100 || Incerr
-v=`fmean $tmp/1 | cut -d"=" -f2`
-Check_approx $v 126.888
-Pass cdisc
+$MODDIR/funzoom -z 4 -o 0 -ftype IMG \
+    $DATA/images/cimage $TMP/1 2> /dev/null \
+    && $MODDIR/cdisc -r 16 $TMP/2 64 64 \
+    && $MODDIR/binarize -i $TMP/2 $TMP/2 \
+    && $MODDIR/fmask $TMP/3 $TMP/2 $TMP/2 $TMP/1 \
+    && $MODDIR/fmask -i -c 1 $TMP/2 $TMP/2 $TMP/2 \
+    && $MODDIR/disocclusion $TMP/3 $TMP/2 $TMP/4 > $TMP/1 \
+    && VAL=`grep energy $TMP/1 | cut -d"=" -f5` \
+    && approx $VAL 980.02 \
+    && VAL=`$MODDIR/fnorm -v $TMP/4 | cut -d"=" -f2` \
+    && approx $VAL 14.66 \
+    && pass || fail
 
-funzoom -z 4 -o 0 -ftype IMG cimage $tmp/1 2> /dev/null
-cdisc -r 16 $tmp/2 64 64
-binarize -i $tmp/2 $tmp/2
-fmask $tmp/3 $tmp/2 $tmp/2 $tmp/1
-fmask -i -c 1 $tmp/2 $tmp/2 $tmp/2 
-disocclusion $tmp/3 $tmp/2 $tmp/4 > $tmp/1 || Incerr
-v=`grep energy $tmp/1 | cut -d"=" -f2`
-#Check_approx $v 980.02
-v=`fnorm -v $tmp/4 | cut -d"=" -f2`
-#Check_approx $v 14.66
-Pass disocclusion
-
-NoPass drawocclusion
+# TODO
+# drawocclusion
 
 echo "10 10 60 20 30 50 e 100 10 110 50 150 20 q" \
-| flreadasc 2 $tmp/1 > /dev/null 
-fillpolys -x 160 -y 60 $tmp/1 $tmp/1 
-emptypoly $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 12.4411
-Pass emptypoly
+    | $MODDIR/flreadasc 2 $TMP/1 > /dev/null  \
+    && $MODDIR/fillpolys -x 160 -y 60 $TMP/1 $TMP/1 \
+    && $MODDIR/emptypoly $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 12.4411 \
+    && pass || fail
 
-binarize -i -t 120 cimage $tmp/1
-thinning $tmp/1 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 17.7433
-Pass thinning
+$MODDIR/binarize -i -t 120 $DATA/images/cimage $TMP/1 \
+    && $MODDIR/thinning $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 17.7433 \
+    && pass || fail
 
-funzoom -z 4 -o 0 -ftype IMG cimage $tmp/1 2> /dev/null
-binarize -i -t 120 $tmp/1 $tmp/1
-skeleton -n 10 $tmp/1 seg_mask $tmp/2 > /dev/null || Incerr
-v=`grep nimage $tmp/2 | cut -d":" -f2`
-Check_exact $v 11
-v=`fnorm -v $tmp/2_11 | cut -d"=" -f2`
-Check_approx $v 32.5981
-Pass skeleton
+$MODDIR/funzoom -z 4 -o 0 -ftype IMG $DATA/images/cimage $TMP/1 2> /dev/null \
+    && $MODDIR/binarize -i -t 120 $TMP/1 $TMP/1 \
+    && $MODDIR/skeleton -n 10 $TMP/1 $DATA/image/seg_mask $TMP/2 > /dev/null \
+    && VAL=`grep nimage $TMP/2 | cut -d":" -f2` \
+    && exact $VAL 11 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2_11 | cut -d"=" -f2` \
+    && approx $VAL 32.5981 \
+    && pass || fail
 
-NoPass lsnakes
-NoPass lsnakes_demo
-NoPass mac_snakes
-NoPass ccdisocclusion
+# TODO
+# lsnakes
+# lsnakes_demo
+# mac_snakes
+# ccdisocclusion
 
 echo
-
 
 # image/operations
+echo -n "image/operations: "
 
-mwecho -n "image/operations: "
+$MODDIR/fop -p -A $DATA/images/cimage $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 287.596 \
+    && pass || fail
 
-fop -p -A cimage cimage $tmp/1 || Incerr
-v=`fnorm -p 2 $tmp/1 | cut -d"=" -f2`
-Check_approx $v 287.596
-Pass fop
+$MODDIR/faxpb -a -1 $DATA/images/cimage $TMP/1 \
+    && $MODDIR/fabso $TMP/1 $TMP/2 \
+    && $MODDIR/fdiff $TMP/2 $DATA/images/cimage $TMP/3 \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/3 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-faxpb -a -1 cimage $tmp/1
-fabso $tmp/1 $tmp/2
-fdiff $tmp/2 cimage $tmp/3
-v=`fnorm -p 2 $tmp/3 | cut -d"=" -f2`
-Check_exact $v 0
-Pass fabso
+$MODDIR/fentropy $DATA/images/cimage > $TMP/1 \
+    && VAL=`cat $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 7.51668 \
+    && pass || fail
 
-fentropy cimage > $tmp/1 || Incerr
-v=`cat $tmp/1 | cut -d"=" -f2`
-Check_approx $v 7.51668
-Pass fentropy
+$MODDIR/fderiv -n $TMP/1 $DATA/images/cimage \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 3.85916 \
+    && pass || fail
 
-fderiv -n $tmp/1 cimage || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 3.85916
-Pass fderiv
+$MODDIR/finfo $DATA/images/cimage > $TMP/1 \
+    && VAL=`grep "bv norm" $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 8.732667 \
+    && pass || fail
 
-finfo cimage > $tmp/1 || Incerr
-v=`grep "bv norm" $tmp/1 | cut -d"=" -f2`
-Check_approx $v 8.732667
-Pass finfo
+$MODDIR/fmse -n $DATA/images/cimage $DATA/images/fimage > $TMP/1 \
+    && VAL=`grep "^SNR" $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL -3.48774 \
+    && VAL=`grep PSNR $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 8.10192 \
+    && VAL=`grep MSE $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 2.23241 \
+    && VAL=`grep MRD $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 89.7111 \
+    && pass || fail
 
-fmse -n cimage fimage > $tmp/1 || Incerr
-v=`grep "^SNR" $tmp/1 | cut -d"=" -f2`
-Check_approx $v -3.48774
-v=`grep PSNR $tmp/1 | cut -d"=" -f2`
-Check_approx $v 8.10192
-v=`grep MSE $tmp/1 | cut -d"=" -f2`
-Check_approx $v 2.23241
-v=`grep MRD $tmp/1 | cut -d"=" -f2`
-Check_approx $v 89.7111
-Pass fmse
+$MODDIR/cdisc $TMP/1 256 256 \
+    && $MODDIR/fmask $TMP/2 $TMP/1 $DATA/images/cimage $DATA/images/fimage \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 11.5658 \
+    && pass || fail
 
-cdisc $tmp/1 256 256
-fmask $tmp/2 $tmp/1 cimage fimage || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 11.5658
-Pass fmask
+$MODDIR/fpsnr255 $DATA/images/fimage > $TMP/1 \
+    && VAL=`cat $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 0.347482 \
+    && pass || fail
 
-fpsnr255 fimage > $tmp/1 || Incerr
-v=`cat $tmp/1 | cut -d"=" -f2`
-Check_approx $v 0.347482
-Pass fpsnr255
+$MODDIR/frthre -l 100 $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fmean $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 44.9395 \
+    && pass || fail
 
-frthre -l 100 cimage $tmp/1 || Incerr
-v=`fmean $tmp/1 | cut -d"=" -f2`
-Check_approx $v 44.9395
-Pass frthre
-
-#common: faxpb fpset cfdiff fadd fconst fdiff fmean fnorm fsize fvar
+# common: faxpb fpset cfdiff fadd fconst fdiff fmean fnorm fsize fvar
 
 echo
-
 
 # image/seg
-
-mwecho -n "image/seg: "
-
-Pass one_levelset
-Pass segct
-Pass msegct
-Pass mschannel
-Pass segtxt
+echo -n "image/seg: "
 
 echo
-
 
 # image/shape_recognition
-
-mwecho -n "image/shape_recognition: "
-
-Pass CLEAR_BASE
-Pass PUT_TO_BASE
-Pass READ_BASE
-Pass RECOGNIZE
-Pass SR_DEMO
-Pass sr_distance
-Pass sr_genhypo
-Pass sr_normalize
-Pass sr_signature
+echo -n "image/shape_recognition: "
 
 echo
 
-
 # image/values
+echo -n "image/values: "
 
-mwecho -n "image/values: "
+$MODDIR/binarize -t 150 $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fmean $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 77.9132 \
+    && pass || fail
 
-binarize -t 150 cimage $tmp/1 || Incerr
-v=`fmean $tmp/1 | cut -d"=" -f2`
-Check_approx $v 77.9132
-Pass binarize
+$MODDIR/funzoom -z 8 $DATA/images/cimage $TMP/1 \
+    && $MODDIR/fquant $TMP/1 $TMP/1 5 > $TMP/2 \
+    && VAL=`cut -d"=" -f2 $TMP/2` \
+    && $MODDIR/amle_init $TMP/1 $VAL $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 48.7051 \
+    && pass || fail
 
-funzoom -z 8 cimage $tmp/1
-fquant $tmp/1 $tmp/1 5 > $tmp/2
-v=`cut -d"=" -f2 $tmp/2`
-amle_init $tmp/1 $v $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 48.7051
-Pass amle_init
+$MODDIR/amle $TMP/2 $TMP/3 2> /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 17.4285 \
+    && pass || fail
 
-amle $tmp/2 $tmp/3 2> /dev/null || Incerr
-v=`fnorm -v $tmp/3 | cut -d"=" -f2`
-Check_approx $v 17.4285
-Pass amle
+$MODDIR/cmextract $DATA/movies/cmovie $TMP/1 40 170 3 80 210 7 \
+    && for I in 1 2 3 4 5; do
+        $MODDIR/faxpb -ftype IMG -a 0.1 \
+	    $TMP/1_0$I $TMP/1_0$I 2> /dev/null
+	$MODDIR/faxpb -ftype IMG -a 10 -b 5 \
+	    $TMP/1_0$I $TMP/1_0$I 2> /dev/null
+    done \
+    && $MODDIR/amle3d_init $TMP/1 10 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2_03 | cut -d"=" -f2` \
+    && approx $VAL  26.1018 \
+    && pass || fail
 
-cmextract cmovie $tmp/1 40 170 3 80 210 7
-for v in 1 2 3 4 5; do
-faxpb -ftype IMG -a 0.1 $tmp/1_0$v $tmp/1_0$v 2> /dev/null
-faxpb -ftype IMG -a 10 -b 5 $tmp/1_0$v $tmp/1_0$v 2> /dev/null
-done
-amle3d_init $tmp/1 10 $tmp/2 || Incerr
-v=`fnorm -v $tmp/2_03 | cut -d"=" -f2`
-Check_approx $v  26.1018
-Pass amle3d_init
+$MODDIR/amle3d $TMP/2 $TMP/3 \
+    && VAL=`$MODDIR/fnorm -v $TMP/3_03 | cut -d"=" -f2` \
+    && approx $VAL 4.03325 \
+    && pass || fail
 
-amle3d $tmp/2 $tmp/3 || Incerr
-v=`fnorm -v $tmp/3_03 | cut -d"=" -f2`
-Check_approx $v 4.03325
-Pass amle3d
+$MODDIR/fvalues -r $TMP/1 $DATA/images/cimage $TMP/2 \
+    && VAL=`grep size $TMP/2 | cut -d":" -f2` \
+    && approx $VAL 256 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 8.73267 \
+    && pass || fail
 
-fvalues -r $tmp/1 cimage $tmp/2 || Incerr
-v=`grep size $tmp/2 | cut -d":" -f2`
-Check_approx $v 256
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 8.73267
-Pass fvalues
+$MODDIR/ccontrast $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 12.5844 \
+    && pass || fail
 
-ccontrast cimage $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 12.5844
-Pass ccontrast
+$MODDIR/ccontrast_local -d 2 $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 13.2157 \
+    && pass || fail
 
-ccontrast_local -d 2 cimage $tmp/1 || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 13.2157
-Pass ccontrast_local
+$MODDIR/fconst $TMP/1 0 100 100 \
+    && $MODDIR/cnoise -i 50 $TMP/1 $TMP/1 \
+    && VAL=`$MODDIR/fmean $TMP/1 | cut -d"=" -f2` \
+    && rand_approx $VAL 64 \
+    && pass || fail
 
-fconst $tmp/1 0 100 100
-cnoise -i 50 $tmp/1 $tmp/1 || Incerr
-v=`fmean $tmp/1 | cut -d"=" -f2`
-Check_more_approx $v 64
-Pass cnoise
+$MODDIR/fconst $TMP/1 0 100 100 \
+    && $MODDIR/fnoise -g 10 $TMP/1 $TMP/1 \
+    && VAL=`$MODDIR/fvar $TMP/1 | cut -d"=" -f2` \
+    && rand_approx $VAL 100 \
+    && pass || fail
 
-fconst $tmp/1 0 100 100
-fnoise -g 10 $tmp/1 $tmp/1 || Incerr
-v=`fvar $tmp/1 | cut -d"=" -f2`
-Check_more_approx $v 100
-Pass fnoise
+$MODDIR/cmextract $DATA/movies/cmovie $TMP/1 10 10 1 210 210 10 \
+    && $MODDIR/cmnoise -i 50 $TMP/1 $TMP/2 \
+    && VAL=`grep nimage $TMP/2 | cut -d":" -f2` \
+    && exact $VAL 10 \
+    && VAL=`$MODDIR/fmean $TMP/2_05 | cut -d"=" -f2` \
+    && rand_approx $VAL 116 \
+    && pass || fail
 
-cmextract cmovie $tmp/1 10 10 1 210 210 10
-cmnoise -i 50 $tmp/1 $tmp/2 || Incerr
-v=`grep nimage $tmp/2 | cut -d":" -f2`
-Check_exact $v 10
-v=`fmean $tmp/2_05 | cut -d"=" -f2`
-Check_more_approx $v 116
-Pass cmnoise
+$MODDIR/chisto $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/snorm -p 2 $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 366.222 \
+    && pass || fail
 
-chisto cimage $tmp/1 || Incerr
-v=`snorm -p 2 $tmp/1 | cut -d"=" -f2`
-Check_approx $v 366.222
-Pass chisto
+$MODDIR/fhisto $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/snorm -p 2 $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 929.198 \
+    && pass || fail
 
-fhisto cimage $tmp/1 || Incerr
-v=`snorm -p 2 $tmp/1 | cut -d"=" -f2`
-Check_approx $v 929.198
-Pass fhisto
+$MODDIR/flgamma -f 256 $TMP/1 \
+    && VAL=`$MODDIR/flprintasc $TMP/1 | grep "^246" | cut -d" " -f2` \
+    && approx $VAL 236.391 \
+    && pass || fail
 
-flgamma -f 256 $tmp/1 || Incerr
-v=`flprintasc $tmp/1 | grep "^246" | cut -d" " -f2`
-Check_approx $v 236.391
-Pass flgamma
+$MODDIR/fcontrast $DATA/images/cimage $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 103.585 \
+    && pass || fail
 
-fcontrast cimage $tmp/1 $tmp/2 || Incerr
-v=`fnorm -p 2 $tmp/2 | cut -d"=" -f2`
-Check_approx $v 103.585
-Pass fcontrast
+$MODDIR/frank -r $TMP/1 $DATA/images/cimage \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 0.577342 \
+    && pass || fail
 
-frank -r $tmp/1 cimage || Incerr
-v=`fnorm -p 2 $tmp/1 | cut -d"=" -f2`
-Check_approx $v 0.577342
-Pass frank
+$MODDIR/fthre -N $DATA/images/cimage $TMP/1 \
+    && VAL=`$MODDIR/fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 143.798 \
+    && pass || fail
 
-fthre -N cimage $tmp/1 || Incerr
-v=`fnorm -p 2 $tmp/1 | cut -d"=" -f2`
-Check_approx $v 143.798
-Pass fthre
-
-NoPass cfquant
-NoPass bicontrast
+# TODO
+# cfquant
+# bicontrast
 
 # common: fquant
 
 echo
 
-
 # signal
+echo -n "signal: "
 
-mwecho -n "signal: "
+$MODDIR/entropy $DATA/signals/fsignal > $TMP/1 \
+    && VAL=`cut -d"=" -f2 $TMP/1` \
+    && approx $VAL 11.0934 \
+    && pass || fail
 
-entropy fsignal > $tmp/1 || Incerr
-v=`cut -d"=" -f2 $tmp/1`
-Check_approx $v 11.0934
-Pass entropy
+$MODDIR/sprintasc $DATA/signals/fsignal 101 101 > $TMP/1 \
+    && exact `cat $TMP/1` 3014 \
+    && pass || fail
 
-sprintasc fsignal 101 101 > $tmp/1 || Incerr
-Check_exact `cat $tmp/1` 3014
-Pass sprintasc
+$MODDIR/sprintasc $DATA/signals/fsignal 1 123 | $MODDIR/sreadasc $TMP/1 123 \
+    && $MODDIR/fft1dshrink $TMP/1 $TMP/2 \
+    && VAL=`grep "size:" $TMP/2 | cut -d":" -f2` \
+    && exact $VAL 121 \
+    && pass || fail
 
-sprintasc fsignal 1 123 | sreadasc $tmp/1 123
-fft1dshrink $tmp/1 $tmp/2 || Incerr
-v=`grep "size:" $tmp/2 | cut -d":" -f2`
-Check_exact $v 121
-Pass fft1dshrink
+$MODDIR/sshrink2 $DATA/signals/fsignal $TMP/1 \
+    && VAL=`grep "size:" $TMP/1 | cut -d":" -f2` \
+    && exact $VAL 2048 \
+    && pass || fail
 
-sshrink2 fsignal $tmp/1 || Incerr
-v=`grep "size:" $tmp/1 | cut -d":" -f2`
-Check_exact $v 2048
-Pass sshrink2
+$MODDIR/fct1d $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/snorm -b 20 -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 3636.57 \
+    && pass || fail
 
-fct1d $tmp/1 $tmp/2 || Incerr
-v=`snorm -b 20 -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 3636.57
-Pass fct1d
+$MODDIR/fft1d -A $TMP/2 $TMP/1 \
+    && VAL=`$MODDIR/snorm -b 20 -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 1888.35 \
+    && pass || fail
 
-fft1d -A $tmp/2 $tmp/1 || Incerr
-v=`snorm -b 20 -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 1888.35
-Pass fft1d
+$MODDIR/sconst -s 256 -a 0.1 $TMP/1 \
+    && VAL=`grep "size:" $TMP/1 | cut -d":" -f2` \
+    && exact $VAL 256 \
+    && VAL=`$MODDIR/snorm -b 20 -v $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-sconst -s 256 -a 0.1 $tmp/1 || Incerr
-v=`grep "size:" $tmp/1 | cut -d":" -f2`
-Check_exact $v 256
-v=`snorm -b 20 -v $tmp/1 | cut -d"=" -f2`
-Check_exact $v 0
-Pass sconst
+$MODDIR/sderiv $DATA/signals/fsignal $TMP/1 \
+    && VAL=`$MODDIR/snorm -b 20 -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 42.9396 \
+    && pass || fail
 
-sderiv fsignal $tmp/1 || Incerr
-v=`snorm -b 20 -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 42.9396
-Pass sderiv
+$MODDIR/sdirac -s 100 -a 100 $TMP/1 \
+    && VAL=`$MODDIR/snorm -b 0 -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 2 \
+    && VAL=`$MODDIR/snorm -b 0 -p 2 $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 10 \
+    && pass || fail
 
-sdirac -s 100 -a 100 $tmp/1 || Incerr
-v=`snorm -b 0 -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 2
-v=`snorm -b 0 -p 2 $tmp/1 | cut -d"=" -f2`
-Check_approx $v 10
-Pass sdirac
+$MODDIR/sgauss -s 20 $TMP/1 3 || lls \
+    && VAL=`$MODDIR/snorm -b 0 -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 0.0130369 \
+    && VAL=`$MODDIR/snorm -b 0 -p 2 $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 0.0686237 \
+    && pass || fail
 
-sgauss -s 20 $tmp/1 3 || lls
-v=`snorm -b 0 -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 0.0130369
-v=`snorm -b 0 -p 2 $tmp/1 | cut -d"=" -f2`
-Check_approx $v 0.0686237
-Pass sgauss
+$MODDIR/sintegral $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/snorm -b 0 -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 0.05 \
+    && pass || fail
 
-sintegral $tmp/1 $tmp/2 || Incerr
-v=`snorm -b 0 -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 0.05
-Pass sintegral
+$MODDIR/sderiv $TMP/1 $TMP/2 \
+    && $MODDIR/smse -n $TMP/1 $TMP/2 > $TMP/3 \
+    && VAL=`grep "^SNR" $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL -1.9738 \
+    && VAL=`grep PSNR $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 6.66453 \
+    && VAL=`grep MSE $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 1.57536 \
+    && VAL=`grep MRD $TMP/3 | cut -d"=" -f2` \
+    && approx $VAL 70.6568 \
+    && pass || fail
 
-sderiv $tmp/1 $tmp/2
-smse -n $tmp/1 $tmp/2 > $tmp/3 || Incerr
-v=`grep "^SNR" $tmp/3 | cut -d"=" -f2`
-Check_approx $v -1.9738
-v=`grep PSNR $tmp/3 | cut -d"=" -f2`
-Check_approx $v 6.66453
-v=`grep MSE $tmp/3 | cut -d"=" -f2`
-Check_approx $v 1.57536
-v=`grep MRD $tmp/3 | cut -d"=" -f2`
-Check_approx $v 70.6568
-Pass smse
+$MODDIR/sconst -s 1000 -a 0 $TMP/1 \
+    && $MODDIR/snoise -g 1 $TMP/1 $TMP/2 \
+    && VAL=`$MODDIR/snorm -p 2 $TMP/2 | cut -d"=" -f2` \
+    && rand_approx $VAL 1 \
+    && pass || fail
 
-sconst -s 1000 -a 0 $tmp/1
-snoise -g 1 $tmp/1 $tmp/2 || Incerr
-v=`snorm -p 2 $tmp/2 | cut -d"=" -f2`
-Check_more_approx $v 1
-Pass snoise
+$MODDIR/sop -p -A $DATA/signals/fsignal $DATA/signals/fsignal $TMP/1 \
+    && VAL=`$MODDIR/snorm -p 2 $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 5349.16 \
+    && pass || fail
 
-sop -p -A fsignal fsignal $tmp/1 || Incerr
-v=`snorm -p 2 $tmp/1 | cut -d"=" -f2`
-Check_approx $v 5349.16
-Pass sop
+$MODDIR/saxpb -a 2 $DATA/signals/fsignal $TMP/1 \
+    && VAL=`$MODDIR/snorm -p 2 $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 5349.16 \
+    && pass || fail
 
-saxpb -a 2 fsignal $tmp/1 || Incerr
-v=`snorm -p 2 $tmp/1 | cut -d"=" -f2`
-Check_approx $v 5349.16
-Pass saxpb
+$MODDIR/splot -ftype RIM -o $TMP/1 -n $DATA/signals/fsignal 2> /dev/null \
+    && VAL=`$MODDIR/fnorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 15.6218 \
+    && pass || fail
 
-splot -ftype RIM -o $tmp/1 -n fsignal 2> /dev/null || Incerr
-v=`fnorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 15.6218
-Pass splot
+echo "0 2 3 4 5 4 3 2 3 4 5 4 3 2 1 0" \
+    | $MODDIR/sreadasc $TMP/1 16 \
+    && VAL=`$MODDIR/snorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 1 \
+    && pass || fail
 
-echo "0 2 3 4 5 4 3 2 3 4 5 4 3 2 1 0" | sreadasc $tmp/1 16 || Incerr
-v=`snorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 1
-Pass sreadasc
+$MODDIR/ssinus -s 100 -a 1 -d 1 $TMP/1  \
+    && VAL=`$MODDIR/snorm -v $TMP/1 | cut -d"=" -f2` \
+    && approx $VAL 0.0785888 \
+    && pass || fail
 
-ssinus -s 100 -a 1 -d 1 $tmp/1  || Incerr
-v=`snorm -v $tmp/1 | cut -d"=" -f2`
-Check_approx $v 0.0785888
-Pass ssinus
+#$MODDIR/sprintasc $DATA/signals/fsignal 1 1024 \
+#    | $MODDIR/sreadasc $TMP/1 1024 \
+#    && $SCRIPTS/megawave_swtvdenoise -D 10 -N 200 $TMP/1 $TMP/2 > /dev/null \
+#    && VAL=`$MODDIR/snorm -p 2 -c $TMP/1 $TMP/2 | cut -d"=" -f2` \
+#    && approx $VAL 11.52 \
+#    && pass || fail
 
-sprintasc fsignal 1 1024 | sreadasc $tmp/1 1024
-Swtvdenoise -D 10 -N 200 $tmp/1 $tmp/2 > /dev/null || Incerr
-v=`snorm -p 2 -c $tmp/1 $tmp/2 | cut -d"=" -f2`
-Check_approx $v 11.52
-Pass Swtvdenoise
-
-NoPass stvrestore
-NoPass w1threshold
-NoPass sinfo
+# TODO
+# stvrestore
+# w1threshold
+# sinfo
 
 # common: snorm
 
 echo
 
-
 # wave
+echo -n "wave: "
 
-mwecho -n "wave: "
+$MODDIR/owave1 -e 0 $DATA/signals/fsignal $TMP/1 $DATA/wave/ortho/da02.ir \
+    && VAL=`grep size $TMP/1_01_A.wtrans1d | cut -d":" -f2` \
+    && exact $VAL 1104 \
+    && VAL=`grep size $TMP/1_01_D.wtrans1d | cut -d":" -f2` \
+    && exact $VAL 1104 \
+    && pass || fail
 
-owave1 -e 0 fsignal $tmp/1 wave/ortho/da02.ir || Incerr
-v=`grep size $tmp/1_01_A.wtrans1d | cut -d":" -f2`
-Check_exact $v 1104
-v=`grep size $tmp/1_01_D.wtrans1d | cut -d":" -f2`
-Check_exact $v 1104
-Pass owave1
+$MODDIR/iowave1 -e 0 $TMP/1 $TMP/2 $DATA/wave/ortho/da02.ir \
+    && VAL=`$MODDIR/snorm -t 0.001 -b 2 -p 2 -c $DATA/signals/fsignal $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-iowave1 -e 0 $tmp/1 $tmp/2 wave/ortho/da02.ir || Incerr
-v=`snorm -t 0.001 -b 2 -p 2 -c fsignal $tmp/2 | cut -d"=" -f2`
-Check_exact $v 0
-Pass iowave1
+$MODDIR/biowave1 $DATA/signals/fsignal $TMP/1 \
+    $DATA/wave/biortho/h/sp02.ir $DATA/wave/biortho/htilde/sl05.ir \
+    && VAL=`grep size $TMP/1_01_A.wtrans1d | cut -d":" -f2` \
+    && exact $VAL 1104 \
+    && VAL=`grep size $TMP/1_01_D.wtrans1d | cut -d":" -f2` \
+    && exact $VAL 1104 \
+    && pass || fail
 
-biowave1 fsignal $tmp/1 wave/biortho/h/sp02.ir wave/biortho/htilde/sl05.ir || Incerr
-v=`grep size $tmp/1_01_A.wtrans1d | cut -d":" -f2`
-Check_exact $v 1104
-v=`grep size $tmp/1_01_D.wtrans1d | cut -d":" -f2`
-Check_exact $v 1104
-Pass biowave1
+$MODDIR/ibiowave1 -e 0 $TMP/1 $TMP/2 \
+    $DATA/wave/biortho/h/sp02.ir $DATA/wave/biortho/htilde/sl05.ir \
+    && VAL=`$MODDIR/snorm -t 0.001 -b 2 -p 2 -c $DATA/signals/fsignal $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
-ibiowave1 -e 0 $tmp/1 $tmp/2 wave/biortho/h/sp02.ir wave/biortho/htilde/sl05.ir || Incerr
-v=`snorm -t 0.001 -b 2 -p 2 -c fsignal $tmp/2 | cut -d"=" -f2`
-Check_exact $v 0
-Pass ibiowave1
-
-NoPass biowave2
-NoPass dybiowave2
-NoPass dyowave2
-NoPass ibiowave2
-NoPass iowave2
-NoPass owave2
-NoPass owtrans_fimage
-NoPass precond1d
-NoPass precond2d
-NoPass sconvolve
+# TODO
+# biowave2
+# dybiowave2
+# dyowave2
+# ibiowave2
+# iowave2
+# owave2
+# owtrans_fimage
+# precond1d
+# precond2d
+# sconvolve
 
 echo
-
 
 # wave/packets
+echo -n "wave/packets: "
 
-mwecho -n "wave/packets: "
+$MODDIR/wp2dmktree -w 4 $TMP/1 \
+    && VAL=`$MODDIR/fsize $TMP/1` \
+    && exact "$VAL" "16 16" \
+    && VAL=`$MODDIR/fmean $TMP/1 | cut -d"=" -f2` \
+    && exact $VAL 1.32812 \
+    && pass || fail
 
-wp2dmktree -w 4 $tmp/1 || Incerr
-v=`fsize $tmp/1`
-Check_exact "$v" "16 16"
-v=`fmean $tmp/1 | cut -d"=" -f2`
-Check_exact $v 1.32812
-Pass wp2dmktree
+$MODDIR/wp2doperate -t 2 -s 15 -b $DATA/wave/packets/biortho/htilde/sd09.ir \
+    $TMP/1 $DATA/wave/packets/biortho/h/sd07.ir $DATA/images/cimage $TMP/2 \
+    && VAL=`$MODDIR/fnorm -v $TMP/2 | cut -d"=" -f2` \
+    && approx $VAL 6.15582 \
+    && pass || fail
 
-wp2doperate -t 2 -s 15 -b biortho/htilde/sd09.ir $tmp/1 biortho/h/sd07.ir cimage $tmp/2 || Incerr
-v=`fnorm -v $tmp/2 | cut -d"=" -f2`
-Check_approx $v 6.15582
-Pass wp2doperate
+$MODDIR/wp2ddecomp $TMP/1 $DATA/images/cimage $DATA/wave/ortho/da05.ir $TMP/2 \
+    && pass || fail
 
-wp2ddecomp $tmp/1 cimage ortho/da05.ir $tmp/2 || Incerr
-Pass wp2ddecomp
-
-NoPass wp2dchangepack
-NoPass wp2dchangetree
-NoPass Wp2dcheck
-NoPass wp2dchecktree
-NoPass wp2deigenval
-NoPass wp2dfreqorder
-NoPass wp2drecomp
-NoPass wp2dview
-NoPass wpsconvolve
+# TODO
+# wp2dchangepack
+# wp2dchangetree
+# Wp2dcheck
+# wp2dchecktree
+# wp2deigenval
+# wp2dfreqorder
+# wp2drecomp
+# wp2dview
+# wpsconvolve
 
 echo
-
 
 # wave/ridgelet
+echo -n "wave/ridgelet: "
 
-mwecho -n "wave/ridgelet: "
-
-NoPass iridgelet
-NoPass istkwave1
-NoPass ridgelet
-NoPass ridgpolrec
-NoPass ridgrecpol
-NoPass ridgthres
-NoPass stkwave1
+# TODO
+# iridgelet
+# istkwave1
+# ridgelet
+# ridgpolrec
+# ridgrecpol
+# ridgthres
+# stkwave1
 
 echo
 
-
-#--- print results and set exit code
-
-if [ $toterr -eq 0 ]; then
-    echo "Test completed: $totmod modules successfully tested."
-    code=0
-else
-    echo
-    echo "***** $toterr module(s) failed ($totmod tested)."
-    echo "Note that some errors may have been caused by dependencies."
-    echo "Please fix the modules in the order given below."
-    echo
-    echo "***** the following modules failed:"
-    cat $tmp/failed
-    code=1
-fi
-
-#--- delete temporary files and dirs
-if [ $rmtmproot = 1 ]; then 
-    rm -rf $tmproot/
-else
-    rm -rf $tmp
-fi
-
-#--- exit
-exit $code
+results

@@ -26,10 +26,6 @@
 #include <math.h>
 #include "mw.h"
 
-#define M_PI 3.1415926535897931
-#define M_PI_2 9.869604401089358
-#define M_PI_4 97.409091034002429
-
 /*
    IdentifyOppositeTiles -- Global setting
                             defines how infinite opposite tiles are treated.

@@ -26,7 +26,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
-#include "window.h"
 
 extern void fcrop();
 

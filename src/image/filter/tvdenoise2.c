@@ -24,7 +24,6 @@ usage = {
 #include <string.h>
 #include <math.h>
 #include "mw.h"
-#include "window.h"
 
 int nx,ny;            /* image size (global variable, never changes) */
 unsigned char *image; /* image plane for display */

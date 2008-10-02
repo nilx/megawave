@@ -4,16 +4,16 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-COMMONDIR	= .
-include $(COMMONDIR)/makefile.common
+COMMONDIR	= ../kernel/common
+include $(COMMONDIR)/makefile
 
 #
 # TOP-LEVEL
 #
 
 .PHONY	: default all lint clean distclean
-default	: lib modules
-all	: lib modules doc test
+default	: lib api modules
+all	: lib api modules doc test
 clean	: clean-bin clean-doc
 clean	: distclean-bin distclean-doc
 
@@ -36,6 +36,8 @@ LIBMW	= ../kernel/lib/libmw.so
 LIBNAME	= libmw-modules
 LIBMOD	= $(LIBNAME).so
 MODULES	= $(BINOBJ:.o=)
+API	= $(LIBNAME).h
+APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
 LIBS 	+= m tiff X11 mw
 LPATH	+= ../kernel/lib
@@ -48,7 +50,6 @@ $(MWPLIGHT)	:
 $(LIBMW)	:
 	$(MAKE) -C ../kernel/lib $(notdir $@)
 
-
 .PHONY	: modules
 modules	: $(MODULES)
 
@@ -56,6 +57,14 @@ modules	: $(MODULES)
 lib 	: $(LIBMOD)
 $(LIBMOD)	: $(LIBOBJ)
 	$(LD) -shared $(LDFLAGS) -o $@ $^
+
+.PHONY	: api
+api 	: $(API)
+$(API) 	: $(LIBSRC)
+	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
+	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
+	$(CPROTO) $(CPROTO_FLAGS) $(filter %.c, $^) >> $@
+	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
 
 # RULES
 
@@ -69,8 +78,8 @@ $(LIBMOD)	: $(LIBOBJ)
 %.exec.o	: %.exec.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
-%.exec	: %.exec.o $(LIBMW)
-	$(LD) $(LDFLAGS) -o $@ $<
+%.run	: %.run.o $(LIBMW)
+	$(LD) $(LDFLAGS) -lmw-modules -o $@ $<
 
 .PHONY	: clean-bin
 clean-bin :
@@ -82,7 +91,9 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(LIBMOD)
+	$(RM) $(LIBMW_MODULES)
+	$(RM) $(MODULES)
+	$(RM) $(API)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
@@ -93,13 +104,17 @@ distclean-bin : clean-bin
 #
 
 TEST	= test/checkmodules.sh
-TESTMODDIR	= test/modules.tmp
+TESTMODDIR	= /mnt/tmp/mwmodules
 
 .PHONY	: test
 test	: $(MODULES)
 	$(MKDIR) $(TESTMODDIR)
-	cp $^ $(TESTMODDIR)
-	env MODDIR=$(TESTMODDIR) sh $(TEST)
+	cp $(MODULES) $(TESTMODDIR)
+	mmv "$(TESTMODDIR)/*.run" "$(TESTMODDIR)/#1"
+	env MODDIR=$(TESTMODDIR)	\
+		DATA=../data/PUBLIC	\
+	  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./:../kernel/lib:../kernel/Wdevice \
+		/bin/sh $(TEST)
 	$(RRM) $(TESTMODDIR)
 
 #

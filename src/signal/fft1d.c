@@ -23,8 +23,6 @@
 #include  <math.h>
 #include  "mw.h"
 
-#define M_PI 3.1415926535897931
-
 #define SIZE_PRIME 460
 #define MAX_PRIME 3257
 

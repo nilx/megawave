@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-#include "window.h"
 
 extern Cimage czoom();
 

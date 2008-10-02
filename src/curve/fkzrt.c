@@ -19,8 +19,6 @@
 #include <math.h>
 #include "mw.h"
 
-#define M_PI 3.1415926535897931
-
 Fcurves fkzrt(cs,zoom,angle,x,y,sym)
      Fcurves cs;
      float   zoom,angle,x,y;
