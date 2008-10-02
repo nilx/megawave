@@ -358,16 +358,17 @@ static void writegendecl(FILE * afile)
      fprintf(afile, "#include <string.h>\n");
 
      fprintf(afile, "#include \"mw.h\"\n");
-     fprintf(afile, "#include \"mwi.h\"\n\n");
+     fprintf(afile, "#include \"mw-modules.h\"\n");
+/*     fprintf(afile, "#include \"mwi.h\"\n\n"); */
 
      fprintf(afile, "extern int _%s();\n", module_name);
      fprintf(afile, "extern int usage_%s();\n", module_name);
-/*     fprintf(afile, "int mwind = 0;\n"); */
-/*     fprintf(afile, "Mwiline mwicmd[] = { { "
+     fprintf(afile, "int mwind = 0;\n");
+     fprintf(afile, "Mwiline mwicmd[] = { { "
              "\"%s\", _%s, usage_%s, \"%s\", \"%s\", \"%s\", \"%s\"} };\n",
              module_name, module_name, module_name,
              group_name, H->Function, usagebuf, protobuf);
-*/
+
      fprintf(afile, "#define TRUE  1\n");
      fprintf(afile, "#define FALSE 0\n");
 
@@ -1786,6 +1787,7 @@ static void writebody(FILE * afile)
 
      /* exit from main function */
      fprintf(afile, "\n  mwexit(0);\n");
+     fprintf(afile, "\n  return 0;\n");
      fprintf(afile, "}\n\n");
 
      fprintf(afile, "\n/* ~~~ end of [writebody] ~~~*/\n\n");
