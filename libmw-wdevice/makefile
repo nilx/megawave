@@ -4,7 +4,8 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-COMMONDIR	= ../common
+BASEDIR = ../
+COMMONDIR	= $(BASEDIR)/common
 include	$(COMMONDIR)/makefile
 
 #
