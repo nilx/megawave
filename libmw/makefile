@@ -4,7 +4,8 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-COMMONDIR	= ../common
+BASEDIR	= ..
+COMMONDIR	= $(BASEDIR)/kernel/common
 include	$(COMMONDIR)/makefile
 
 #
@@ -18,68 +19,53 @@ lint	: lint-bin lint-test lint-doc
 clean 	: clean-bin clean-doc
 distclean	: distclean-bin distclean-doc
 
+# TODO: drop unused or unwanted (module, unix_bsd, ...)
+# TODO: libmw/libmw-cmdline/libmw-wpanel(with libmw-wdevice?)
 SRCDIR	= src
 SRC	:= $(addprefix $(SRCDIR)/, \
-        ascii_file.c    \
-        basic_conv.c    \
-        bmp_io.c        \
         ccimage.c       \
         ccimage_io.c    \
-        ccmovie.c       \
-        ccmovie_io.c    \
         cfimage.c       \
         cfimage_io.c    \
-        cfmovie.c       \
-        cfmovie_io.c    \
         cimage.c        \
         cimage_io.c     \
-        cmimage.c       \
-        cmimage_io.c    \
+        fimage.c        \
+        fimage_io.c     \
+        \
+        ccmovie.c       \
+        ccmovie_io.c    \
+        cfmovie.c       \
+        cfmovie_io.c    \
         cmovie.c        \
         cmovie_io.c     \
+        fmovie.c        \
+        fmovie_io.c     \
+        \
+        cmimage.c       \
+        cmimage_io.c    \
+        mimage.c        \
+        mimage_io.c     \
+        \
         curve.c         \
         curve_io.c      \
         dcurve.c        \
         dcurve_io.c     \
-        epsf_io.c       \
         fcurve.c        \
         fcurve_io.c     \
-        file_type.c     \
-        fimage.c        \
-        fimage_io.c     \
-        fmovie.c        \
-        fmovie_io.c     \
         fpolygon.c      \
         fpolygon_io.c   \
-        fsignal.c       \
-        fsignal_io.c    \
-        gif_io.c        \
-        jpeg_io.c       \
-        libmw.c         \
-        list.c          \
-        list_io.c       \
-        mimage.c        \
-        mimage_io.c     \
-        module.c        \
-        module_io.c     \
-        mw.c            \
-        mw_main.c       \
-        mwio.c          \
-        pgm_io.c        \
-        pm_io.c         \
         polygon.c       \
         polygon_io.c    \
-        ppm_io.c        \
-        ps_io.c         \
-        rawdata.c       \
-        rawdata_io.c    \
         shape.c         \
         shape_io.c      \
-        tiff_io.c       \
-        type_conv.c     \
-        unix_bsd.c      \
+        \
+        fsignal.c       \
+        fsignal_io.c    \
+	\
+        list.c          \
+        list_io.c       \
+	\
         wave_io.c       \
-        window.c        \
         wmax2d.c        \
         wmax2d_io.c     \
         wpack2d.c       \
@@ -89,11 +75,39 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         wtrans1d_io.c   \
         wtrans2d.c      \
         wtrans2d_io.c   \
+        \
+        module.c        \
+        module_io.c     \
+	\
+        rawdata.c       \
+        rawdata_io.c    \
+        \
+        ascii_file.c    \
+        basic_conv.c    \
+        file_type.c     \
+        \
+        bmp_io.c        \
+        epsf_io.c       \
+        gif_io.c        \
+        jpeg_io.c       \
+        pgm_io.c        \
+        pm_io.c         \
+        ppm_io.c        \
+        ps_io.c         \
+        tiff_io.c       \
+        \
+        libmw.c         \
+        mw.c            \
+        mw_main.c       \
+        mwio.c          \
+        type_conv.c     \
+        unix_bsd.c      \
+        window.c        \
 	)
 
 AUTOHDR	= $(SRC:.c=.h)
 HDR	= $(AUTOHDR) $(addprefix $(SRCDIR)/,	\
-	tiff.h strtoul.h ppmr_io.h pm.h tiffio.h utils.h	\
+	tiff.h strtoul.h ppmr_io.h pm.h tiffio.h \
 	wpanel-defs.h libwp-defs.h)
 OBJ	= $(SRC:.c=.o)
 DEP	= $(SRC:.c=.d)
