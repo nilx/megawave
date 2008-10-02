@@ -15,10 +15,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "mwpl.h"
+#include "mwplight-defs.h"
 #include "io.h"
 
-#include "mfile.h"
+#include "library.h"
 
 #define MSG_ERROR_BODY_NOT_PARSED \
      "C body not parsed !"
@@ -116,7 +116,7 @@ static void writeMbody(FILE * mfile, FILE * sfile)
  * generate M-file
  */
 
-void genMfile(FILE * mfile, FILE * sfile)
+void gen_lib_file(FILE * mfile, FILE * sfile)
 {
      writeMheader(mfile);
      writeMbody(mfile, sfile);

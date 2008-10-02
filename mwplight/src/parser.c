@@ -7,20 +7,21 @@
  * author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
-/* required for fileno */
+/* FIXME: drop */
 #define _POSIX_SOURCE
+#include <unistd.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 
-#include "mwpl.h"
+#include "mwplight-defs.h"
 #include "io.h"
 #include "tree.h"
 #include "header.h"
 #include "instruction.h"
 
-#include "parse.h"
+#include "parser.h"
 
 /* t_header ID for megawave */
 #define HEADER_ID1 "/* mwcommand"

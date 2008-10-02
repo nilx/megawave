@@ -1,10 +1,10 @@
-/*
- * main.c
+/**
+ * @file mwplight.c
  *
  * main function of mwplight
  *
- * author : Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007)
- * author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 /**
@@ -37,17 +37,17 @@
  * option "library"        l  "library code file name"    optional
  *         string              typestr="filename"
  *
- * option "exec"           e  "executable code file name" optional
+ * option "executable"     e  "executable code file name" optional
  *         string              typestr="filename"
  *
  * option "documentation"  d  "documentation file name"   optional
  *         string              typestr="filename"
  *
  * option "interface"      i  "interface file"            optional
- *         string              typestr="filename"
+ *         string              typestr="filename"         hidden
  *
  * option "name"           n  "name file name"            optional
- *         string              typestr="filename"
+ *         string              typestr="filename"         hidden
  *
  * section "Misc"
  * option "module-name"    m  "module name"
@@ -75,17 +75,18 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 
-#include "mwpl.h"
+#include "mwplight-defs.h"
+
 #include "io.h"
-#include "parse.h"
-#include "mfile.h"
-#include "afile.h"
-#include "ifile.h"
-#include "tfile.h"
-#include "main.h"
+#include "parser.h"
+#include "library.h"
+#include "executable.h"
+#include "interface.h"
+#include "documentation.h"
+
+#include "mwplight.h"
 
 /**
  * @brief Open a file for read or write, with a default file
@@ -164,25 +165,25 @@ static char * strclone(const char * str)
 }
 
 
-/* TODO: cleanup */
 extern char * module_name;
 extern char * group_name;
+extern FILE * source_file_global;
 
-#include "main_cmdline.h"
+#include "mwplight_cmdline.h"
 int main( int argc, char **argv)
 {
      struct mw_args_info args_info;
      struct mw_cmdline_params args_params;
 
      /* io file pointers */
-     FILE * sfile = NULL; /* source    */
-     FILE * afile = NULL; /* exec      */
-     FILE * mfile = NULL; /* lib       */
-     FILE * tfile = NULL; /* doc       */
-     FILE * ifile = NULL; /* interface */
-     FILE * nfile = NULL; /* name      */
+     FILE * source_file = NULL; /* source        */
+     FILE * exec_file   = NULL; /* executable    */
+     FILE * lib_file    = NULL; /* library       */
+     FILE * doc_file    = NULL; /* documentation */
+     FILE * int_file    = NULL; /* interface     */
+     FILE * name_file   = NULL; /* name          */
 
-     char c;
+     int c;
 
      /* 1rst parsing of the command-line, searching -h or -v */
      args_params.check_required = 0;
@@ -234,26 +235,26 @@ int main( int argc, char **argv)
                  module_name, group_name);
 
      /* open the input file */
-     sfile = open_file(args_info.source_arg, "r", stdin);
+     source_file = open_file(args_info.source_arg, "r", stdin);
 
      /*
       * input is stdin : we store the data in a temporary file,
       * because we need to rewind on the source file
       */
-     if (stdin == sfile)
+     if (stdin == source_file)
      {
-          sfile = tmpfile();
+          source_file = tmpfile();
           while (EOF != (c = getc(stdin)))
-               putc(c, sfile);
-          rewind(sfile);
+               putc(c, source_file);
+          rewind(source_file);
      }
 
      /*
       * parse the source file and build the tree H (global variable)
       */
-     sfile_global = sfile;
-     parse(sfile);
-     rewind(sfile);
+     source_file_global = source_file;
+     parse(source_file);
+     rewind(source_file);
 
      /*
       * set the <protobuf> variable (global) which prototypes the main
@@ -267,19 +268,19 @@ int main( int argc, char **argv)
       */
      if (args_info.library_given)
      {
-          mfile = open_file(args_info.library_arg, "w", stdout);
-          genMfile(mfile, sfile);
-          fclose(mfile);
+          lib_file = open_file(args_info.library_arg, "w", stdout);
+          gen_lib_file(lib_file, source_file);
+          fclose(lib_file);
      }
 
      /*
-      * generate the main code
+      * generate the executable code
       */
-     if (args_info.exec_given)
+     if (args_info.executable_given)
      {
-          afile = open_file(args_info.exec_arg, "w", stdout);
-          genAfile(afile);
-          fclose(afile);
+          exec_file = open_file(args_info.executable_arg, "w", stdout);
+          gen_exec_file(exec_file);
+          fclose(exec_file);
      }
 
      /*
@@ -287,9 +288,9 @@ int main( int argc, char **argv)
       */
      if (args_info.documentation_given)
      {
-          tfile = open_file(args_info.documentation_arg, "w", stdout);
-          genTfile(tfile);
-          fclose(tfile);
+          doc_file = open_file(args_info.documentation_arg, "w", stdout);
+          gen_doc_file(doc_file);
+          fclose(doc_file);
      }
 
      /*
@@ -297,9 +298,9 @@ int main( int argc, char **argv)
       */
      if (args_info.interface_given)
      {
-          ifile = open_file(args_info.interface_arg, "w", stdout);
-          genIfile(ifile);
-          fclose(ifile);
+          int_file = open_file(args_info.interface_arg, "w", stdout);
+          gen_int_file(int_file);
+          fclose(int_file);
      }
 
      /*
@@ -307,12 +308,12 @@ int main( int argc, char **argv)
       */
      if (args_info.name_given)
      {
-          nfile = open_file(args_info.name_arg, "w", stdout);
-          fprintf(nfile, "%s/%s\n", group_name, module_name);
-          fclose(nfile);
+          name_file = open_file(args_info.name_arg, "w", stdout);
+          fprintf(name_file, "%s/%s\n", group_name, module_name);
+          fclose(name_file);
      }
 
-     fclose(sfile);
+     fclose(source_file);
      free(module_name);
      free(group_name);
      exit(0);

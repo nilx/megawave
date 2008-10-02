@@ -15,11 +15,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "mwpl.h"
-#include "io.h"
-#include "present.h"
+#include "mwplight-defs.h"
 
-#include "afile.h"
+#include "io.h"
+#include "usage.h"
+
+#include "executable.h"
 
 #define MSG_ERROR_CONVERSION \
     "[SetScalarConvFunction] No scalar conversion method implemented for C_id=\"%s\" of Ctype=%d (Stype=\"%s\")"
@@ -1797,7 +1798,7 @@ static void writebody(FILE * afile)
 /*
  * main entry : generate A-file
  */
-void genAfile(FILE * afile)
+void gen_exec_file(FILE * afile)
 {
      writeAheader(afile);
      writegendecl(afile);

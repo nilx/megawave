@@ -13,7 +13,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "mwpl.h"
+#include "mwplight-defs.h"
+
 #include "io.h"
 #include "tree.h"
 

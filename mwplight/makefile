@@ -4,7 +4,8 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-COMMONDIR	= ../common
+BASEDIR	= ../
+COMMONDIR	= $(BASEDIR)/kernel/common
 include	$(COMMONDIR)/makefile
 
 #
@@ -20,14 +21,16 @@ distclean	: distclean-bin distclean-test distclean-doc
 
 SRCDIR	= src
 
-CMDLINE	= $(SRCDIR)/main_cmdline.c
+SRC	= $(addprefix $(SRCDIR)/,				\
+	tree.c parser.c instruction.c io.c header.c usage.c	\
+	executable.c interface.c library.c documentation.c	\
+	mwplight.c)
+CMDLINE	= $(SRCDIR)/mwplight_cmdline.c
 
-SRC	= $(addprefix $(SRCDIR)/, \
-	tree.c parse.c instruction.c io.c header.c afile.c ifile.c \
-	mfile.c tfile.c present.c main.c)
 
 AUTOHDR	= $(SRC:.c=.h)
-HDR	= $(AUTOHDR) $(CMDLINE:.c=.h) $(SRCDIR)/mwpl.h
+HDR	= $(AUTOHDR) $(CMDLINE:.c=.h)				\
+	$(SRCDIR)/mwplight-defs.h $(SRCDIR)/mwplight-config.h
 OBJ	= $(SRC:.c=.o) $(CMDLINE:.c=.o)
 DEP	= $(SRC:.c=.d)
 
@@ -70,6 +73,7 @@ lint.flag	: $(SRC) $(HDR)
 	$(MAKE) $(addsuffix +linelength, $?)
 	@touch $@
 
+# TODO: add `indent`
 .PHONY	: beautify
 beautify	: beautify.flag
 beautify.flag	: $(SRC) $(HDR)
@@ -94,13 +98,13 @@ distclean-bin : clean-bin
 # TEST
 #
 
-TEST_MODULES	= $(shell find ../../src -type f -name *.c)
+TEST_MODULES	= $(shell find $(BASEDIR)/src -type f -name *.c)
 TEST_ENV	= MWPLIGHT=./$(BINNAME) \
-	MODULES="$(TEST_MODULES)" \
+	MODULES="$(TEST_MODULES)" 	\
 	TESTDIR=test
 
-#TESTS	= $(addprefix test_, run library exec documentation interface name)
-TESTS	= $(addprefix test_, run library exec documentation name)
+# TODO: test_interface
+TESTS	= $(addprefix test_, run library executable documentation name)
 
 .PHONY	: test
 test	: $(addsuffix .flag, $(TESTS))

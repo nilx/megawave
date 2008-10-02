@@ -8,19 +8,21 @@
  */
 
 /* TODO: simplify */
-/* TODO: use markdown and/or doxygen */
+/* TODO: use markdown and/or doxygen? */
+
+/* FIXME: drop */
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <time.h>
 
-#include "mwpl.h"
+#include "mwplight-defs.h"
 #include "io.h"
 
-#include "tfile.h"
+#include "documentation.h"
 
 #define MSG_ERROR_ILLEGAL_ICTYPE \
      "[printtex_interval_and_defval] Unexpected error for C_id=\"%s\" : illegal ICtype=%d"
@@ -351,7 +353,7 @@ static void writeTfoot(FILE * tfile)
 /*
  * generate T-file
  */
-void genTfile(FILE * tfile)
+void gen_doc_file(FILE * tfile)
 {
      writeTheader(tfile);
      writeSynopsis(tfile);

@@ -7,14 +7,17 @@
  * author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
+/* TODO: drop */
+#include <unistd.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <ctype.h>
 #include <stdarg.h>
 
-#include "mwpl.h"
+#include "mwplight-defs.h"
+
 #include "io.h"
 
 #define MSG_ERROR_NULL_FILE \
@@ -187,7 +190,7 @@ void error(char * fmt, ...)
 
      logger(LOG_ERROR, stderr, msg);
      fprintf(stderr, "\n");
-     fprintf(stderr, str_fileposition(position_info, sfile_global));
+     fprintf(stderr, str_fileposition(position_info, source_file_global));
      abort();
 }
 

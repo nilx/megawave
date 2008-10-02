@@ -1,2 +1,4 @@
-* fix the cproto bug
+* fix the cproto noise
 * review the executable output quality
+* add indent
+* drop the non-ANSI #includes

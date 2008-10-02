@@ -11,10 +11,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "mwpl.h"
+#include "mwplight-defs.h"
 #include "io.h"
 
-#include "ifile.h"
+#include "interface.h"
 
 #define MSG_ERROR_NULL_TREE \
      "[setprotobuf] NULL C tree. Need C body to be parsed"
@@ -86,7 +86,7 @@ void setprotobuf(void)
  * generate I-file
  */
 
-void genIfile(FILE * ifile)
+void gen_int_file(FILE * ifile)
 {
      /* write fields of the Mwiline structure (see kernel/lib/include/mwi.h) */
      fprintf(ifile, \

@@ -12,10 +12,10 @@
 #include <string.h>
 #include <time.h>
 
-#include "mwpl.h"
+#include "mwplight-defs.h"
 #include "io.h"
 
-#include "present.h"
+#include "usage.h"
 
 #define MSG_ERROR_UNEXPECTED_HEADER \
      "[cutstring] unexpected error with the header"
