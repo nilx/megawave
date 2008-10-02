@@ -4,7 +4,7 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-BASEDIR	= ../
+BASEDIR	= ..
 COMMONDIR	= $(BASEDIR)/kernel/common
 include	$(COMMONDIR)/makefile
 
@@ -20,13 +20,11 @@ distclean	: distclean-bin distclean-test distclean-doc
 
 
 SRCDIR	= src
-
 SRC	= $(addprefix $(SRCDIR)/,				\
 	tree.c parser.c instruction.c io.c header.c usage.c	\
 	executable.c interface.c library.c documentation.c	\
 	mwplight.c)
 CMDLINE	= $(SRCDIR)/mwplight_cmdline.c
-
 
 AUTOHDR	= $(SRC:.c=.h)
 HDR	= $(AUTOHDR) $(CMDLINE:.c=.h)				\
@@ -87,8 +85,9 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(BINNAME)
+	$(RM) $(AUTOHDR)
 	$(RM) $(SRCDIR)/*.ggo
+	$(RM) $(BINNAME)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
@@ -127,28 +126,29 @@ distclean-test : clean-test
 
 DOCDIR	= doc
 MAN	= $(DOCDIR)/$(BINNAME).man
+MANHTML	= $(MAN).html
 
 .PHONY	: man
-man	: $(DOCDIR)/$(BINNAME).man $(DOCDIR)/$(BINNAME).man.html
+man	: $(MAN) $(MANHTML)
 
-#.PHONY	: srcdoc
-#srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
-#$(DOXDIR)/html/index.html	: $(SRC) $(HDR)
-#	$(MKDIR) $(DOXDIR)/html
-#	(cat $(DOXYCONF); \
-#		echo "INPUT = $(SRCDIR)"; \
-#		echo "GENERATE_HTML = YES"; \
-#		echo "HTML_OUTPUT = $(DOXDIR)/html";) | $(DOXYGEN) -
-#$(DOXDIR)/latex/refman.tex	: $(SRC) $(HDR)
-#	$(MKDIR) $(DOXDIR)/latex
-#	(cat $(DOXYCONF); \
-#		echo "INPUT = $(SRCDIR)"; \
-#		echo "GENERATE_LATEX = YES"; \
-#		echo "LATEX_OUTPUT = $(DOXDIR)/latex";) | $(DOXYGEN) -
-#$(DOXDIR)/srcdoc.pdf : $(DOXDIR)/latex/refman.tex
-#	$(MAKE) -C $(DOXDIR)/latex refman.pdf
-#	mv $(DOXDIR)/latex/refman.pdf $(DOXDIR)/srcdoc.pdf
-#
+# .PHONY	: srcdoc
+# srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
+# $(DOXDIR)/html/index.html	: $(SRC) $(HDR)
+# 	$(MKDIR) $(DOXDIR)/html
+# 	(cat $(DOXYCONF); \
+# 		echo "INPUT = $(SRCDIR)"; \
+# 		echo "GENERATE_HTML = YES"; \
+# 		echo "HTML_OUTPUT = $(DOXDIR)/html";) | $(DOXYGEN) -
+# $(DOXDIR)/latex/refman.tex	: $(SRC) $(HDR)
+# 	$(MKDIR) $(DOXDIR)/latex
+# 	(cat $(DOXYCONF); \
+# 		echo "INPUT = $(SRCDIR)"; \
+# 		echo "GENERATE_LATEX = YES"; \
+# 		echo "LATEX_OUTPUT = $(DOXDIR)/latex";) | $(DOXYGEN) -
+# $(DOXDIR)/srcdoc.pdf : $(DOXDIR)/latex/refman.tex
+# 	$(MAKE) -C $(DOXDIR)/latex refman.pdf
+# 	mv $(DOXDIR)/latex/refman.pdf $(DOXDIR)/srcdoc.pdf
+
 
 .PHONY	: clean-doc
 clean-doc	:
@@ -157,5 +157,5 @@ clean-doc	:
 
 .PHONY	: distclean-doc
 distclean-doc	: clean-doc
-	$(RM) $(DOCDIR)/$(BINNAME).man $(DOCDIR)/$(BINNAME).man.html
+	$(RM) $(MAN) $(MANHTML)
 
