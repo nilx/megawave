@@ -4,8 +4,8 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-BASEDIR = ../
-COMMONDIR	= $(BASEDIR)/common
+BASEDIR	= ..
+COMMONDIR	= $(BASEDIR)/kernel/common
 include	$(COMMONDIR)/makefile
 
 #
@@ -20,12 +20,10 @@ distclean	: distclean-bin distclean-doc
 
 
 SRCDIR	= src
-
-SRC	= $(addprefix $(SRCDIR)/, 		\
-	wdevice.c wdevice-misc.c wdevice-var.c)
+SRC	= $(addprefix $(SRCDIR)/, wdevice.c wdevice-misc.c)
 
 AUTOHDR	= $(SRC:.c=.h)
-HDR	= $(AUTOHDR) $(SRCDIR)/wdevice-common.h $(SRCDIR)/wdevice-defs.h
+HDR	= $(AUTOHDR) $(SRCDIR)/wdevice-defs.h $(SRCDIR)/wdevice-config.h
 OBJ	= $(SRC:.c=.o)
 DEP	= $(SRC:.c=.d)
 
@@ -59,7 +57,7 @@ $(LIB) 	: $(OBJ)
 
 .PHONY	: api
 api 	: $(API)
-$(API) 	: $(SRC) $(SRCDIR)/wdevice-defs.h
+$(API) 	: $(SRC) $(SRCDIR)/wdevice-defs.h $(SRCDIR)/wdevice-config.h
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
 	$(CAT) $(filter %.h, $^) >> $@

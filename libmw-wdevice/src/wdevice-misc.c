@@ -1,21 +1,18 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  W_X11R4_misc.c    Window Device for X11 Release 4,5,6
-  This file regroups all miscellaneous WX* commands     
-  (That is, which should not be used as this by the     
-  main functions, but which are called in W_X11R4.c)    
-   
-  Vers. 3.3
-  (C) 1991-2001 Jacques Froment, 
-  Simon Masnou     (16 bits plane added)
-  Parts of this code inspired from XV: Copyright 1989, 1994 by John Bradley.
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/*~~~~~~~~~  This file is part of the MegaWave2 Wdevice library ~~~~~~~~~~~~~~
-  MegaWave2 is a "soft-publication" for the scientific community. It has
-  been developed for research purposes and it comes without any warranty.
-  The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-  CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/**
+ * @file wdevice.h
+ *
+ * structures and declarations for the megawave wdevice library
+ *
+ * @author John Bradley for XV <xv@trilon.com> (1989 - 1994),		\
+ *         Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2001), \
+ *         Simon Masnou <masnou@ann.jussieu.fr>(1991 - 2001),		\
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ */
+
+/*
+ * FIXME: non-free origin (see http://www.trilon.com/xv/pricing.html)
+ *        replace by a free alternative
+ */
 
 #include <string.h>
 #include <stdio.h>
@@ -25,17 +22,16 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 
-#include "wdevice-common.h"
 #include "wdevice-defs.h"
 #include "wdevice.h"
-#include "wdevice-var.h"
 
 #include "wdevice-misc.h"
 
 /*===== For W_X11R4_misc  (internal use) =====*/
 
 typedef struct WWWWW
-{ unsigned char r,g,b;
+{ 
+     unsigned char r,g,b;
      int oldindex;
      int use; } W_CMAPENT;
 

@@ -1,50 +1,61 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  W_X11R4.c    Window Device for X11 Release 4,5,6
-   
-  Vers. 2.9
-  Initial release from Jacques Froment
-  Parts of this code inspired from XV: Copyright 1989, 1994 by John Bradley.
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/*~~~~~~~~~  This file is part of the MegaWave2 Wdevice library ~~~~~~~~~~~~~~
-  MegaWave2 is a "soft-publication" for the scientific community. It has
-  been developed for research purposes and it comes without any warranty.
-  The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-  CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/**
+ * @file wdevice.h
+ *
+ * structures and declarations for the megawave wdevice library
+ *
+ * @author John Bradley for XV <xv@trilon.com> (1989 - 1994),		\
+ *         Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2001), \
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ */
 
-/*----------------------------------------------------------------------
-  History
-  v???: 16 bits plane added (Simon Masnou)
-  v2.7: corrections WFlushAreaWindow and WRestoreImageWindow (L.Moisan)
-  v2.8: mouse button 4 and 5 added (JF)
-  v2.9: added include <string.h> (for Linux 2.6.12 & gcc 4.0.2) (JF)
-  ----------------------------------------------------------------------*/
-
-
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/cursorfont.h>
-/* To get key symb (non-printable keys) */
-#define  XK_MISCELLANY
-#include <X11/keysymdef.h>
+/*
+ * FIXME: non-free origin (see http://www.trilon.com/xv/pricing.html)
+ *        replace by a free alternative
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
 
-/* global header */
-#include "wdevice-common.h"
-/* definitions */
+#include <X11/Xutil.h>
+#include <X11/cursorfont.h>
+#define  XK_MISCELLANY
+#include <X11/keysymdef.h>
+
 #include "wdevice-defs.h"
-/* variables */
-#include "wdevice-var.h"
-/* miscellaneous functions */
 #include "wdevice-misc.h"
 
-/* self */
 #include "wdevice.h"
+
+/*
+ * GLOBAL VARIABLES
+ */
+
+Display 	*_W_Display=NULL;	/* -- Which display          */
+int		_W_Screen;	/* -- Which screen on the display    */
+int		_W_Depth;	/* -- Number of color planes         */
+unsigned long	_W_BlackPixel;	/* -- System "Black" color           */
+unsigned long	_W_WhitePixel;	/* -- System "White" color           */
+Colormap	_W_Colormap;	/* -- default System color map       */
+Cursor		_W_Cursor;	/* -- Application program's cursor   */
+GC              _W_GC;          /* -- Graphic content to be used     */
+Visual          *_W_Visual;     /* -- Visual color structure         */
+XFontStruct     *_W_Font;       /* -- Font loaded                    */ 
+
+int             _W_KeyBuffer;          /* -- The Key pressed */
+int             _W_XErrorOccured = 0;  /* -- Used by WIsAnActiveWindow */
+
+/* Color parameters, located into the Wframe structure in Wdevice V2 : */
+unsigned char   _W_Red[256], _W_Green[256], _W_Blue[256];  /* User ColorMap */
+XColor          _W_RGB[256];           /* ColorMap (X11 format) */
+int             _W_NumCols=0;             /* Number of colors to allocate */
+unsigned char   _W_special_color; /* The special color (used as a mark) */
+                     
+/* Internal use only */
+int             _W_nfcols=0;          /* number of colors to free */
+unsigned long   _W_freecols[256]; /* list of pixel values to free */
+
 
 #define theIcon_width 64
 #define theIcon_height 64
@@ -96,7 +107,6 @@ static unsigned char theIcon_bits[] = {
 
 
 /*           Return 1 if the window is active, 0 elsewhere */
-
 int WIsAnActiveWindow(Wframe *window)
 {
      XTextProperty text_prop;
@@ -117,7 +127,6 @@ int WIsAnActiveWindow(Wframe *window)
 			   
 
 /*              Initialize the ColorMap */
-
 void WSetColorMap(void)
 {
      int i,r,g,b;

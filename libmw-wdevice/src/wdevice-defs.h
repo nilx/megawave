@@ -1,18 +1,31 @@
-/*
- * structures and definitions for the megawave wdevice library
+/**
+ * @file wdevice-defs.h
+ *
+ * structures and declarations for the megawave wdevice library
+ *
+ * @author John Bradley for XV <xv@trilon.com> (1989 - 1994),		\
+ *         Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2006), \
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
+
+/*
+ * FIXME: non-free origin (see http://www.trilon.com/xv/pricing.html)
+ *        replace by a free alternative
+ */
+
+#ifndef _WDEVICE_DEFS_H_
+#define _WDEVICE_DEFS_H_
+
+#include <X11/Xlib.h>
+
+#include "wdevice-config.h"
 
 /**
  * @brief Wframe : main structure for a window
  *
  * This structure is device-dependent and the fields must NOT
- *          be accessed by any program running the Wgraphics library.
+ * be accessed by any program running the Wgraphics library.
  */
-
-#include <X11/Xlib.h>
-#define  XK_MISCELLANY
-#include <X11/keysymdef.h>
-
 typedef struct {
      Window win;               /*< X Window ID                             */
      int x,y;                  /*< Current Location of the Window          */
@@ -34,8 +47,11 @@ typedef struct {
 } Wframe;
 
 
-/* #define W_DEBUG_ON */
+/*
+ * MACROS
+ */
 
+/* #define W_DEBUG_ON */
 #ifdef W_DEBUG_ON
 #define WDEBUG(Function) (fprintf(stderr,"\n>>> Function <<<\n"))
 #else
@@ -45,81 +61,30 @@ typedef struct {
 #define WLIB_ERROR (fprintf(stderr,"Wdevice Library error: "))
 
 /*
- * FONTS
+ * GLOBAL VARIABLES
  */
 
-#define WFONT1 "-misc-fixed-medium-r-normal-*-13-*"
-#define WFONT2 "8x13"
-#define WFONT3 "-*-courier-medium-r-*-*-12-*"
+/* defined in mw-wdevice_var.c */
+extern int             _W_XErrorOccured;
+extern Display         *_W_Display;
+extern int             _W_Screen;
+extern int             _W_Depth;
+extern unsigned long   _W_BlackPixel;
+extern unsigned long   _W_WhitePixel;
+extern Colormap        _W_Colormap;
+extern GC              _W_GC;
+extern Visual          *_W_Visual;
+extern Cursor          _W_Cursor;
+extern XFontStruct     *_W_Font; 
+extern int             _W_nfcols;
+extern unsigned long   _W_freecols[256];
+extern int             _W_NumCols;
+extern unsigned char   _W_special_color;
+extern unsigned char   _W_Red[256],_W_Green[256],_W_Blue[256];
+extern unsigned long   _W_cols[256];
+extern XColor          _W_RGB[256];
+extern int             _W_KeyBuffer; 
+extern unsigned long   _W_cols[256];
 
-/*
- * WINDOW PARAMETERS
- */
 
-#define BORDER_WIDTH  2  /* width of the window border */
-
-/* plot window attributes */
-#define PLOT_RES_NAME   "Plot" /* name of the plot window icon           */
-#define PLOT_RES_CLASS  "Plot" /* resource class of the plot window icon */
-#define PLOT_MIN_WIDTH  50     /* minimum useful size of the plot window */
-#define PLOT_MIN_HEIGHT 50
-#define PLOT_MAX_WIDTH  2000   /* maximum useful size of the plot Window */
-#define PLOT_MAX_HEIGHT 2000
-
-/* image window qttributes */
-#define IMAGE_RES_NAME   "View" /* name of the image window icon           */
-#define IMAGE_RES_CLASS  "View" /* resource class of the image window icon */
-#define IMAGE_MIN_WIDTH  50     /* minimum useful size of the image window */
-#define IMAGE_MIN_HEIGHT 50
-#define IMAGE_MAX_WIDTH  2000   /* maximum useful size of the image window */
-#define IMAGE_MAX_HEIGHT 2000
-
-/*
- * EVENTS
- */
-
-/*
- * Define which system events would be sent to the window.
- * The whole mask is created by a OR with this mask and the user
- * mask
- */ 
-#define SYSTEM_EVENT_MASK (ExposureMask			\
-			   | EnterWindowMask		\
-			   | LeaveWindowMask		\
-			   | StructureNotifyMask)
-
-/*
- * This is a list of user events as they can be set by WSetUserEvent()
- * and read with WUserEvent(). This list is a selection of most useful
- * events that are simultaneously defined in all of the various window
- * systems supported by Wdevice.
- */
-
-/* mouse */
-#define W_MS_LEFT    10 /* mouse buttons (not a mask) */
-#define W_MS_RIGHT   11 
-#define W_MS_MIDDLE  12
-#define W_MS_UP      13
-#define W_MS_DOWN    14
-#define W_MS_BUTTON  ButtonPressMask /* mask for button scanning */
-
-/*
- * For keyboard, non-printable characters: see X11 include file
- * keysymdef.h
- */ 
-
-/* window */
-#define W_REPAINT  ExposureMask        /* have to repaint the window    */
-#define W_RESIZE   ResizeRedirectMask  /* have to resize the window     */
-#define W_ENTER    EnterWindowMask     /* mouse enters the window       */
-#define W_LEAVE    LeaveWindowMask     /* mouse leaves the window       */
-#define W_KEYPRESS KeyPressMask        /* a key has been pressed        */
-#define W_DESTROY  StructureNotifyMask /* the window has been destroyed */
-
-/*
- * PENCIL
- */
-
-#define W_COPY GXcopy
-#define W_XOR  GXequiv
-
+#endif /* !_WDEVICE_DEFS_H_ */
