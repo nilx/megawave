@@ -10,6 +10,9 @@
  */
 
 #include <X11/Xlib.h>
+#define  XK_MISCELLANY
+#include <X11/keysymdef.h>
+
 typedef struct {
      Window win;               /*< X Window ID                             */
      int x,y;                  /*< Current Location of the Window          */

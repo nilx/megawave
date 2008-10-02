@@ -28,10 +28,10 @@ HDR	= $(AUTOHDR) $(SRCDIR)/wdevice-common.h $(SRCDIR)/wdevice-defs.h
 OBJ	= $(SRC:.c=.o)
 DEP	= $(SRC:.c=.d)
 
-LIBNAME	= libmw-wdevice
-APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
-LIB	= $(LIBNAME).so
+LIBNAME	= mw-wdevice
+LIB	= lib$(LIBNAME).so
 API	= $(LIBNAME).h
+APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
 #
 # PREBUILD AND UTILS
@@ -108,10 +108,11 @@ distclean-bin : clean-bin
 
 
 DOCDIR	= doc
-MAN	= $(DOCDIR)/$(LIBNAME).man
+MAN	= $(DOCDIR)/lib$(LIBNAME).man
+MANHTML	= $(MAN).html
 
 .PHONY	: man
-man	: $(DOCDIR)/$(LIBNAME).man $(DOCDIR)/$(LIBNAME).man.html
+man	: $(MAN) $(MANHTML)
 
 # .PHONY	: srcdoc
 # srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
@@ -138,5 +139,5 @@ clean-doc	:
 
 .PHONY	: distclean-doc
 distclean-doc	: clean-doc
-	$(RM) $(DOCDIR)/$(LIBNAME).man $(DOCDIR)/$(LIBNAME).man.html
+	$(RM) $(MAN) $(MANHTML)
 
