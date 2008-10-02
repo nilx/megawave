@@ -1,10 +1,10 @@
-/*
- * afile.c for megawave, section mwplight
+/**
+ * @file executable.c
  *
- * generate the A-file (argfile: main of run-time command)
+ * generate the executable source for a megawave module
  *
- * author : Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007)
- * author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 /* TODO: deep review */

@@ -1,15 +1,13 @@
-/*
- * mfile.c for megawave, section mwplight
+/**
+ * @file library.c
  *
- * generate the M-file (source of modified module)
+ * generate the library code for a megawave module
  *
- * author : Jacques Froment <jacques.froment@univ-ubs.fr> (2005-2007)
- * author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 /* TODO: move to ANSI-only code */
-/* (change call to WriteFuncPrototype() in afile.c and see note
- * in WriteFuncPrototype() */
 
 #include <stdio.h>
 #include <stdlib.h>

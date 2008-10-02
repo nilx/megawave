@@ -1,7 +1,7 @@
 /**
  * @file mwplight.c
  *
- * main function of mwplight
+ * main() function for mwplight, the megawave modules preprocessor
  *
  * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)

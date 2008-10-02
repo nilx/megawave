@@ -1,10 +1,10 @@
-/*
- * io.c for megawave, section mwplight
+/**
+ * @file io.c
  *
- * input/output all usage functions
+ * input/output functions for the megawave preprocessor
  *
- * author : Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007)
- * author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 /* TODO: drop */

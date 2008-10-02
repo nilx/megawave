@@ -1,10 +1,10 @@
-/*
- * instruction.c for megawave, section mwplight
+/**
+ * @file instruction.c
  *
- * seek and analyse some instructions in C body
+ * analyse some instructions in the body of a megawave module
  *
- * author : Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007)
- * author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 /* TODO : enforce ANSI only, drop K&R */

@@ -1,10 +1,10 @@
-/*
- * tree.c for megawave, section mwplight
+/**
+ * @file tree.c
  *
- * manage trees : header/arguments and function/parameters
+ * syntax tree tools for the megawave parser
  *
- * author : Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2006)
- * author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2006), \
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 #include <stdio.h>

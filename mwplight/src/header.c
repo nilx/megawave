@@ -1,10 +1,10 @@
-/*
- * header.c for megawave, section mwplight
+/**
+ * @file header.c
  *
- * analyse header statements and fill the header tree
+ * parse the header of a megawave module
  *
- * author : Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2006)
- * author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 #include <stdio.h>

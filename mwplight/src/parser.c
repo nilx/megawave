@@ -1,10 +1,10 @@
-/*
- * parse.c for megawave, section mwplight
+/**
+ * @file parser.c
  *
- * parse the moduke source
+ * module parser for the megawave preprocessor
  *
- * author : Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007)
- * author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 /* FIXME: drop */

@@ -1,10 +1,10 @@
-/*
- * ifile.c for megawave, section mwplight
+/**
+ * @file interface.c
  *
- * generate the I-file (interface file)
+ * generate the interface description file for a megawave module
  *
- * author : Jacques Froment <jacques.froment@univ-ubs.fr> (2005)
- * author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005), \
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 #include <stdio.h>
