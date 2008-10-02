@@ -16,8 +16,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "libmw-wdevice.h"
-
 #include "libmw-defs.h"
 #include "utils.h"
 #include "unix_bsd.h"
@@ -25,7 +23,7 @@
 
 #define mw_nmax_windows 10 /* Max Numbers of windows */
 
-int mwwindelay=100; /* Delay to refrech windows (in microseconds) */
+int mwwindelay=100; /* Delay to refresh windows (in microseconds) */
 int mw_n_windows=0; /* Current Number of windows */
 
 Wframe *mw_ptr_window[mw_nmax_windows]; /* ptr to each window */

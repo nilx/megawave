@@ -62,6 +62,8 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         mimage_io.c     \
         module.c        \
         module_io.c     \
+        mw.c            \
+        mw_main.c       \
         mwio.c          \
         pgm_io.c        \
         pm_io.c         \
@@ -97,11 +99,12 @@ OBJ	= $(SRC:.c=.o)
 DEP	= $(SRC:.c=.d)
 
 LIBNAME	= mw
-APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 LIBMW	= lib$(LIBNAME).so
 API	= $(LIBNAME).h
+APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
+APIINC	= \#include <stdio.h>
 
-IPATH	= ../Wdevice
+IPATH	+= ../Wdevice
 
 # FIXME: hacks
 CWARN	+= -Wno-float-equal
@@ -129,10 +132,11 @@ $(LIBMW) 	: $(OBJ)
 
 .PHONY	: api
 api 	: $(API)
-$(API) 	: $(SRC) $(SRCDIR)/libmw-defs.h $(SRCDIR)/wpanel-defs.h
+$(API) 	: $(SRC) $(SRCDIR)/wpanel-defs.h $(SRCDIR)/libmw-defs.h
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
 	$(CAT) $(filter %.h, $^) >> $@
+	$(ECHO) "$(APIINC)" >> $@
 	$(CPROTO) $(CPROTO_FLAGS) $(filter %.c, $^) >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
 

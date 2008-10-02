@@ -23,12 +23,13 @@
 #include <string.h>
 #include <stdarg.h>
 
-#include "libmw-wdevice.h"
+#include "mw-wdevice.h"
 #include "libmw-defs.h"
+#include "wpanel-defs.h"
+
 #include "window.h"
 #include "utils.h"
 
-#include "wpanel-defs.h"
 #include "wpanel.h"
 
 /* FIXME: unsafe snprintf() hack */

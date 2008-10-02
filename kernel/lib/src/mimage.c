@@ -26,9 +26,6 @@
 
 #include "mimage.h"
 
-
-#define MORPHO_INFTY FLT_MAX
-
 /*--- Point-type ---*/
 
 /* creates a new point_type structure */

@@ -25,15 +25,13 @@
 #include <fcntl.h>
 
 #include <stdarg.h>
-
+#include <ctype.h>
 #include <setjmp.h>
 
-/* MegaWave 2 include file */
-#define MW_LIB
-#include "mw.h"
-#include "mwi.h"
+#include "libmw-defs.h"
+#include "mwio.h"
 
-extern void mwerror(int, int, char *, ...);
+#include "mw.h"
 
 #define FNULL "/dev/null"
 
@@ -48,7 +46,7 @@ int verbose_flg = FALSE;
 /* Change, if wanted, stdout and/or stderr */
 static void setnewout(void)
 {
-     char *s, *getenv();
+     char *s;
 
      if ((s = getenv("MW_STDOUT")) != NULL && verbose_flg == FALSE) {
 	  char buffer[BUFSIZ];
@@ -172,80 +170,20 @@ struct mwargs {
      char *arg;
      int   argsiz;
      char *argtexname;
-     void (*action)();
+     void (*action)(void);
 };
 
 /* Default option buffer */
 char _mwdefoptbuf[BUFSIZ];
 
-static void call_help(), call_debug(), call_verbose(), call_ftype(),
-     call_vers(), call_fsum(), call_proto(), call_ftypelist();
+/*
+static void call_help(void), call_debug(void), call_verbose(void), 
+     call_ftype(void), call_vers(void), call_fsum(void), 
+     call_proto(void), call_ftypelist(void);
+*/
 char type_force[mw_ftype_size+1] = {'?', '\0'};
 
 
-/* System options */
-struct mwargs mwargs[] = { 
-     {"-debug",   NULL,       0,                  NULL,             call_debug}, 
-     {"-help",    NULL,       0,                  NULL,             call_help}, 
-     {"-verbose", NULL,       0,                  NULL,             call_verbose}, 
-     {"-ftype",   type_force, sizeof(type_force), "<image type>",   call_ftype}, 
-     {"-vers",   NULL,        0,                  NULL,             call_vers}, 
-     {"-fsum",   NULL,        0,                 NULL,             call_fsum}, 
-     {"-proto",   NULL,        0,                 NULL,             call_proto},
-     {"-ftypelist",   NULL,        0,                 NULL,             call_ftypelist},  
-     {NULL}
-};
-
-static struct mwargs *lookup(char *s)
-{
-     struct mwargs *p;
-     for (p=mwargs; p->name != NULL; p++)
-	  if (!strcmp(p->name, s))
-	       return p;
-     return NULL;
-}
-
-/* Actions for default MegaWave options */
-
-int mwdbg = FALSE;
-static void call_debug(char *s)
-{
-     mwdbg = TRUE;
-}
-
-int help_flg = FALSE;
-static void call_help(char *s)
-{
-     help_flg = TRUE;
-}
-
-static void call_verbose(char *s)
-{
-     verbose_flg = TRUE;
-}
-
-
-static void call_ftype(char *s)
-{
-     ;
-}
-
-int vers_flg = FALSE;
-static void call_vers(void)
-{
-     vers_flg = TRUE;
-}
-
-/* Write function summary */
-static void call_fsum(void)
-{
-     printf("%s",mwicmd[mwind].fsummary);
-     mwexit(0);
-}
-
-/* For call_proto() : return in <type> the type of the variable <var>
-   from the function declaration <fdecl> (fsum without first line).
-*/
 
 static void find_type(char * fdecl,char * var, char * type)
 {
@@ -302,6 +240,48 @@ static void find_type(char * fdecl,char * var, char * type)
 	       mwerror(INTERNAL,1,"[find_type] cannot find var='%s' !\n",var);
 	  i++;
      }
+}
+
+/* Actions for default MegaWave options */
+
+int mwdbg = FALSE;
+static void call_debug(void)
+{
+     mwdbg = TRUE;
+     return;
+}
+
+int help_flg = FALSE;
+static void call_help(void)
+{
+     help_flg = TRUE;
+     return;
+}
+
+static void call_verbose(void)
+{
+     verbose_flg = TRUE;
+     return;
+}
+
+
+static void call_ftype(void)
+{
+     return;
+}
+
+int vers_flg = FALSE;
+static void call_vers(void)
+{
+     vers_flg = TRUE;
+     return;
+}
+
+/* Write function summary */
+static void call_fsum(void)
+{
+     printf("%s",mwicmd[mwind].fsummary);
+     mwexit(0);
 }
 
 /* Write function prototype */
@@ -363,7 +343,6 @@ static void call_proto(void)
      mwexit(0);
 }
 
-/* Write function prototype */
 static void call_ftypelist(void)
 {
      char **A;
@@ -378,11 +357,37 @@ static void call_ftypelist(void)
      mwexit(0);
 }
 
+/* System options */
+struct mwargs mwargs[] = { 
+     {"-debug",   NULL,       0,                  NULL,             call_debug}, 
+     {"-help",    NULL,       0,                  NULL,             call_help}, 
+     {"-verbose", NULL,       0,                  NULL,             call_verbose}, 
+     {"-ftype",   type_force, sizeof(type_force), "<image type>",   call_ftype}, 
+     {"-vers",   NULL,        0,                  NULL,             call_vers}, 
+     {"-fsum",   NULL,        0,                 NULL,             call_fsum}, 
+     {"-proto",   NULL,        0,                 NULL,             call_proto},
+     {"-ftypelist",   NULL,        0,                 NULL,             call_ftypelist},  
+     {NULL, NULL, 0, NULL, NULL}
+};
+
+static struct mwargs *lookup(char *s)
+{
+     struct mwargs *p;
+     for (p=mwargs; p->name != NULL; p++)
+	  if (!strcmp(p->name, s))
+	       return p;
+     return NULL;
+}
+
+/* For call_proto() : return in <type> the type of the variable <var>
+   from the function declaration <fdecl> (fsum without first line).
+*/
+
 
 /* MegaWave2 main function */
-_mw_main(int argc, char *argv[], char *envp[])
+int _mw_main(int argc, char *argv[], char *envp[])
 { 
-     char *userargv[BUFSIZ], *strrchr();
+     char *userargv[BUFSIZ];
      int i, userargc, flg;
      struct mwargs *p;
      char command[BUFSIZ],*chm;
@@ -390,7 +395,9 @@ _mw_main(int argc, char *argv[], char *envp[])
 #ifdef XMWP
      char *mw_xmw;
 #endif
-     char *getenv();  
+
+     /* FIXME: unused parameter */
+     envp = envp;
 
      /* Name of module */
      if ((mwname = strrchr(argv[0], '/')) != NULL)
@@ -455,17 +462,17 @@ _mw_main(int argc, char *argv[], char *envp[])
 	corresponding action */
      for (i=1, userargc=1, userargv[0]=argv[0], flg = FALSE; i<argc; i++) {
 	  if (flg == TRUE) {
-	       if (strlen(argv[i]) > (p->argsiz-1))
+	       if (strlen(argv[i]) > (size_t) (p->argsiz -1))
 		    *(argv[i] + p->argsiz - 1) = '\0';
 	       strcpy(p->arg, argv[i]);
-	       (*p->action)(p->arg);
+	       (*p->action)();
 	       flg = FALSE;
 	  }
 	  else if ((p=lookup(argv[i])) != NULL) {
 	       if (p->arg != NULL)
 		    flg = TRUE;
 	       else
-		    (*p->action)(NULL);
+		    (*p->action)();
 	  }
 	  else
 	       userargv[userargc++]=argv[i];
@@ -474,6 +481,7 @@ _mw_main(int argc, char *argv[], char *envp[])
      setnewout();
      _mwmain(userargc, userargv);
      mwexit(0);
+     return 0;
 }
 
 /* MegaWave default options actions */
@@ -682,9 +690,8 @@ char *_mw_dtoa_(double d)
      return ret;
 }
 
-_mwis_open(char *s, char *rw)
+int _mwis_open(char *s, char *rw)
 {
-     FILE *fd, *fopen();
      char fname[BUFSIZ];
 
      if (*rw == 'r') /* read */

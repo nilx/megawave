@@ -13,9 +13,11 @@ The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
 CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#include <stdlib.h>
+#include "mw.h"
 
 int main(int argc, char ** argv, char ** envp)
 {
-     _mw_main(argc, argv, envp);
+     return _mw_main(argc, argv, envp);
 }
 

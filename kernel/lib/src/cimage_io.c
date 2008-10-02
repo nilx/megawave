@@ -40,7 +40,7 @@
 #include "cimage_io.h"
 
 
-long fsize(int fd)  /* Return the size of the file */
+static long fsize(int fd)  /* Return the size of the file */
 {
      struct stat stbuf;
 

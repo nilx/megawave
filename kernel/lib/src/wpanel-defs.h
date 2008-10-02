@@ -1,3 +1,8 @@
+#ifndef _WPANEL_DEFS_H_
+#define _WPANEL_DEFS_H_
+
+#include "mw-wdevice.h"
+
 #define Wp_max_buttons 100  /* maximum number of buttons */
 #define WP_STRSIZE 1000  /* maximum string size */
 
@@ -73,3 +78,6 @@ typedef struct wpanel {
   void **action;         /* bitmap (pointer to wp structure) */
   short *button;         /* bitmap (associated button number) */
 } *Wpanel;
+
+#endif /* !_WPANEL_DEFS_H_ */
+

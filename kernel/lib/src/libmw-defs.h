@@ -7,6 +7,8 @@
 #ifndef _LIBMW_DEFS_H
 #define _LIBMW_DEFS_H
 
+#include "mw-wdevice.h"
+
 /* FIXME : split libmw-common (#defines) and libmw-defs (typedef)*/
 /* FIXME : rename libmw3 */
 
@@ -145,6 +147,25 @@
 	  memset((s), 0, (n)); \
      }			       \
      while (0)
+
+/* I/O conversion macros called by mwp (data_io.c) */
+#define	_mw_atoq_(S)	(S)
+#define	_mw_atoc_(S)	*(S)
+#define	_mw_atouc_(S)	(unsigned char) *(S)
+#define	_mw_atos_(S)	(short) atoi(S)
+#define	_mw_atous_(S)	(unsigned short) atoi(S)
+#define	_mw_atoi_(S)	(int) atoi(S)
+#define	_mw_atoui_(S)	(unsigned int) atoi(S)
+#define	_mw_atol_(S)	atol(S)
+#define	_mw_atof_(S)	(float) atof(S)
+#define	_mw_atod_(S)	(double) atof(S)
+#define _mw_qtoa_(S)	(S)
+
+
+#define _mwis_readable(S)	_mwis_open(S, "r")
+#define _mwis_writable(S)	_mwis_open(S, "w")
+
+
 
 /*
  * STRUCTURES
@@ -476,6 +497,11 @@ typedef struct mimage {
      Fmorpho_line first_fml; /**< Pointer to the first morpho line  */
      Morpho_sets first_ms;   /**< Pointer to the first morpho sets  */
 } * Mimage;
+
+
+#include <float.h>
+#define MORPHO_INFTY FLT_MAX
+
 
 /** color */
 /* TODO : abstract the model */
@@ -1008,6 +1034,36 @@ extern int mwrunmode;
 #define mw_edges_mirror 3   /* mirror effect */
 #define mw_edges_wadapted 4 /* adapted wavelet on edges */
 
+/*
+ * MWI
+ */
+
+struct Mwiline {
+  char *name;
+  int (*mwarg)(int, char**);
+  int (*mwuse)(char *);
+  char *group;
+  char *function;
+  char *usage;
+  char *fsummary;
+};
+
+typedef struct Mwiline Mwiline;
+
+#ifndef MWI_DEC
+extern Mwiline mwicmd[];
+extern int mwind;
+
+#define mwusage(S)          (mwicmd[mwind].mwuse(S))
+#define _mwmain(ARGC, ARGV) (mwicmd[mwind].mwarg((ARGC), (ARGV)))
+
+#endif
+
+/*
+ * from window.h
+ */
+
+extern int mwwindelay;
 
 
 #endif /* !_LIBMW_DEFS_H */
