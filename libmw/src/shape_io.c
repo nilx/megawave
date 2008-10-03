@@ -24,7 +24,8 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "shape.h"
 #include "curve.h"
 #include "file_type.h"

@@ -88,7 +88,6 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         bmp_io.c        \
         epsf_io.c       \
         gif_io.c        \
-	img_io.c        \
         jpeg_io.c       \
         pgm_io.c        \
         pm_io.c         \

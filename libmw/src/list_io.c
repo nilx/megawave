@@ -21,7 +21,8 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "list.h"
 #include "file_type.h"
 #include "type_conv.h"

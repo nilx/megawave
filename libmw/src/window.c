@@ -13,14 +13,16 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/* usleep() */
+#define _BSD_SOURCE
+
 #include <stdio.h>
 #include <string.h>
-
-#include "unistd.h" /* usleep() */
+#include <unistd.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
-#include "unix_bsd.h"
+#include "mw.h"
+
 #include "window.h"
 
 #define mw_nmax_windows 10 /* Max Numbers of windows */

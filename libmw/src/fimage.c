@@ -21,7 +21,7 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
 
 #include "fimage.h"
 

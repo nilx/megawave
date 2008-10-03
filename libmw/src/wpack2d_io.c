@@ -27,7 +27,8 @@
 */
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "ascii_file.h"
 #include "wpack2d.h"
 #include "mwio.h"

@@ -8,7 +8,8 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "basic_conv.h"
 #include "cimage.h"
 #include "cimage_io.h"

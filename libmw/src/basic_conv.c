@@ -26,9 +26,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "cimage.h"
 #include "fimage.h"
 #include "ccimage.h"
@@ -43,6 +45,9 @@
 #include "list.h"
 
 #include "basic_conv.h"
+
+/* FIXME: clean casts */
+#pragma GCC diagnostic ignored "-Wbad-function-cast"
 
 int _mw_convert_struct_warning = 0;
 

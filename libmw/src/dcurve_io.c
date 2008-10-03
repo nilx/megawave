@@ -20,7 +20,8 @@
 #include <sys/stat.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "file_type.h"
 #include "type_conv.h"
 #include "dcurve.h"

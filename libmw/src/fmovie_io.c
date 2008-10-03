@@ -20,7 +20,8 @@
 #include <unistd.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "fimage.h"
 #include "fimage_io.h"
 #include "fmovie.h"

@@ -20,7 +20,8 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "ccimage.h"
 
 #include "ccmovie.h"

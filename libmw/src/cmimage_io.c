@@ -26,7 +26,8 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "cmimage.h"
 #include "curve.h"
 #include "mimage.h"

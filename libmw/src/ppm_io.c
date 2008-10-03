@@ -19,7 +19,8 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "ppmr_io.h"
 #include "pgm_io.h"
 #include "ccimage.h"

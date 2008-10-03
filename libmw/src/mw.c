@@ -29,6 +29,7 @@
 #include <setjmp.h>
 
 #include "libmw-defs.h"
+#include "mw.h"
 #include "mwio.h"
 
 #include "mw.h"

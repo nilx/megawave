@@ -17,10 +17,10 @@
 #include <string.h>
 
 #include "libmw-defs.h"
+#include "mw.h"
 #include "pm_io.h"
 #include "file_type.h"
 #include "type_conv.h"
-#include "utils.h"
 
 #include "cfimage_io.h"
 

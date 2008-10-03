@@ -25,10 +25,11 @@
 
 #include "mw-wdevice.h"
 #include "libmw-defs.h"
+#include "mw.h"
 #include "wpanel-defs.h"
 
 #include "window.h"
-#include "utils.h"
+
 
 #include "wpanel.h"
 

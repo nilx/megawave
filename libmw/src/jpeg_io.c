@@ -13,7 +13,8 @@
 #include <setjmp.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "cimage.h"
 #include "ccimage.h"
 #include "basic_conv.h"

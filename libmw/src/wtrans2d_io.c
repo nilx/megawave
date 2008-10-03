@@ -16,7 +16,8 @@
 #include <stdio.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "ascii_file.h"
 #include "wtrans2d.h"
 #include "fimage_io.h"

@@ -17,7 +17,8 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "ascii_file.h"
 #include "file_type.h"
 #include "fsignal.h"

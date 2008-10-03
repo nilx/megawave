@@ -19,7 +19,8 @@
 #include <sys/stat.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "mw.h"
+
 #include "rawdata.h"
 
 #include "rawdata_io.h"
