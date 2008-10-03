@@ -89,6 +89,7 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         bmp_io.c        \
         epsf_io.c       \
         gif_io.c        \
+	img_io.c        \
         jpeg_io.c       \
         pgm_io.c        \
         pm_io.c         \
@@ -116,9 +117,8 @@ LIBNAME	= mw
 LIBMW	= lib$(LIBNAME).so
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
-APIINC	= \#include <stdio.h>
 
-IPATH	+= ../Wdevice
+IPATH	+= $(BASEDIR)/libmw-wdevice
 
 # FIXME: hacks
 CWARN	+= -Wno-float-equal
@@ -150,7 +150,6 @@ $(API) 	: $(SRC) $(SRCDIR)/wpanel-defs.h $(SRCDIR)/libmw-defs.h
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
 	$(CAT) $(filter %.h, $^) >> $@
-	$(ECHO) "$(APIINC)" >> $@
 	$(CPROTO) $(CPROTO_FLAGS) $(filter %.c, $^) >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
 

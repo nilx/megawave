@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "unistd.h" /* usleep() */
+
 #include "libmw-defs.h"
 #include "utils.h"
 #include "unix_bsd.h"
