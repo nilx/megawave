@@ -4,110 +4,138 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-include ./makefile.common
+COMMONDIR	= .
+include $(COMMONDIR)/makefile.common
 
 #
 # TOP-LEVEL
 #
 
-.PHONY	: default lint beautify all \
-          install install-all uninstall uninstall-all clean distclean
-default	: bin
-all	: bin doc
-lint	: lint-bin lint-doc
-beautify	: beautify-bin beautify-doc
-clean 	: clean-bin clean-doc
-distclean	: distclean-bin distclean-doc
+.PHONY	: default all lint clean distclean
+default	: lib modules
+all	: lib modules doc test
+clean	: clean-bin clean-doc
+clean	: distclean-bin distclean-doc
 
-
-#####################################################################
+#
 # BIN
-#####################################################################
+#
 
-MODDIR	= compression curve examples image signal wave
-MOD	:= $(sort $(notdir $(shell $(FIND) $(MODDIR) -type f -name "*.c")))
-SRC	= $(addprefix src/, $(MOD:.c=.a.c) $(MOD:.c=.m.c))
-MODOBJ	= $(addprefix src/, $(MOD:.c=.m.o))
-HDR	=
+MODDIR	= compression curve image signal wave
+SRC	:= $(sort $(shell find $(MODDIR) -type f	\
+	-name "*.c" ! -name "*.lib.c" ! -name "*.exec.c"))
 
-MODULES = $(addprefix bin/, $(MOD:.c=))
+LIBSRC	= $(SRC:.c=.lib.c)
+BINSRC	= $(SRC:.c=.exec.c)
+LIBOBJ	= $(LIBSRC:.c=.o)
+BINOBJ	= $(BINSRC:.c=.o)
 
-MWPLIGHT	= ../kernel/mwplight/src/mwplight
+MWPLIGHT	= ../kernel/mwplight/mwplight
+LIBMW	= ../kernel/lib/libmw.so
 
-BINNAME	= libmwmodules
+LIBNAME	= libmw-modules
+LIBMOD	= $(LIBNAME).so
+MODULES	= $(BINOBJ:.o=)
 
-IPATH	+= ../kernel/lib/include
+LIBS 	+= m tiff X11 mw
+LPATH	+= ../kernel/lib
+# hacks
+IPATH	+= ./include.tmp ../kernel/lib ../kernel/Wdevice
+CFLAGS	+= -DM_PI=3 -DM_PI_2=9 -DM_PI_4=81
 
-.PHONY	: $(DEP)
+$(MWPLIGHT)	:
+	$(MAKE) -C ../kernel/mwplight $(notdir $@)
+$(LIBMW)	:
+	$(MAKE) -C ../kernel/lib $(notdir $@)
 
-.PHONY	: bin
-bin 	: $(BINNAME).so
-$(BINNAME).so 	: $(MODOBJ)
-	$(LD) -shared $(LDFLAGS) -o $@ $^
-
-# RULES
-src/%.a.c	: $(MWPLIGHT)
-	$(MWPLIGHT) -a $@ `$(FIND) -type f -name $*.c`
-src/%.m.c	: $(MWPLIGHT)
-	$(MWPLIGHT) -m $@ `$(FIND) -type f -name $*.c`
 
 .PHONY	: modules
 modules	: $(MODULES)
-bin/%	: src/%.a.o
-	$(CC) $(CFLAGS) -lX11 -lm -ltiff \
-	./libmwmodules.so ../kernel/Wdevice/src/libWdevice.so \
-	../kernel/lib/src/libmw.so -o $@ $<
+
+.PHONY	: lib
+lib 	: $(LIBMOD)
+$(LIBMOD)	: $(LIBOBJ)
+	$(LD) -shared $(LDFLAGS) -o $@ $^
+
+# RULES
+
+%.lib.c	: %.c $(MWPLIGHT)
+	$(MWPLIGHT) --source $< --library $@
+%.exec.c	: %.c $(MWPLIGHT)
+	$(MWPLIGHT) --source $< --exec $@
+
+%.lib.o	: %.lib.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+%.exec.o	: %.exec.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+%.exec	: %.exec.o $(LIBMW)
+	$(LD) $(LDFLAGS) -o $@ $<
 
 .PHONY	: clean-bin
 clean-bin :
-	$(RM) $(OBJ)
+	$(RM) $(LIBSRC)
+	$(RM) $(BINSRC)
+	$(RM) $(LIBOBJ)
+	$(RM) $(BINOBJ)
 	$(RM) $(DEP)
-	$(RM) lint-bin-flag beautify-bin-flag
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(SRCDIR)/$(BINNAME)
+	$(RM) $(LIBMOD)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
-#-include $(DEP)
+-include $(DEP)
 
-#####################################################################
+#
+# TEST
+#
+
+TEST	= test/checkmodules.sh
+TESTMODDIR	= test/modules.tmp
+
+.PHONY	: test
+test	: $(MODULES)
+	$(MKDIR) $(TESTMODDIR)
+	cp $^ $(TESTMODDIR)
+	env MODDIR=$(TESTMODDIR) sh $(TEST)
+	$(RRM) $(TESTMODDIR)
+
+#
 # DOC
-#####################################################################
+#
 
-MAN	= $(DOCDIR)/$(BINNAME).man
+
+MAN	= $(DOCDIR)/$(LIBNAME).man
 
 .PHONY	: doc
-doc	: manpage srcdoc
+doc	: man
 
 .PHONY	: manpage
-manpage	: $(MAN) $(MANHTML)
+manpage	: $(MAN)
 
-.PHONY	: srcdoc
-srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
-$(DOXDIR)/html/index.html	: $(SRC) $(HDR)
-	$(MKDIR) $(DOXDIR)/html
-	(cat $(DOXYCONF); \
-		echo "INPUT = $(SRCDIR)"; \
-		echo "GENERATE_HTML = YES"; \
-		echo "HTML_OUTPUT = $(DOXDIR)/html";) | $(DOXYGEN) -
-$(DOXDIR)/latex/refman.tex	: $(SRC) $(HDR)
-	$(MKDIR) $(DOXDIR)/latex
-	(cat $(DOXYCONF); \
-		echo "INPUT = $(SRCDIR)"; \
-		echo "GENERATE_LATEX = YES"; \
-		echo "LATEX_OUTPUT = $(DOXDIR)/latex";) | $(DOXYGEN) -
-$(DOXDIR)/srcdoc.pdf : $(DOXDIR)/latex/refman.tex
-	$(MAKE) -C $(DOXDIR)/latex refman.pdf
-	mv $(DOXDIR)/latex/refman.pdf $(DOXDIR)/srcdoc.pdf
+#.PHONY	: srcdoc
+#srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
+#$(DOXDIR)/html/index.html	: $(SRC) $(HDR)
+#	$(MKDIR) $(DOXDIR)/html
+#	(cat $(DOXYCONF); \
+#		echo "INPUT = $(SRCDIR)"; \
+#		echo "GENERATE_HTML = YES"; \
+#		echo "HTML_OUTPUT = $(DOXDIR)/html";) | $(DOXYGEN) -
+#$(DOXDIR)/latex/refman.tex	: $(SRC) $(HDR)
+#	$(MKDIR) $(DOXDIR)/latex
+#	(cat $(DOXYCONF); \
+#		echo "INPUT = $(SRCDIR)"; \
+#		echo "GENERATE_LATEX = YES"; \
+#		echo "LATEX_OUTPUT = $(DOXDIR)/latex";) | $(DOXYGEN) -
+#$(DOXDIR)/srcdoc.pdf : $(DOXDIR)/latex/refman.tex
+#	$(MAKE) -C $(DOXDIR)/latex refman.pdf
+#	mv $(DOXDIR)/latex/refman.pdf $(DOXDIR)/srcdoc.pdf
 
 .PHONY	: clean-doc
 clean-doc	:
-	$(RM) $(DOXDIR)/html/*.md5 $(DOXDIR)/html/*.dot
-	$(RRM) $(DOXDIR)/latex
 
 .PHONY	: distclean-doc
 distclean-doc	: clean-doc
-	$(RM) $(MAN) $(MANHTML)
-	$(RRM) $(DOXDIR)
+	$(RM) $(MAN)
