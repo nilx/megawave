@@ -4,7 +4,8 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-COMMONDIR	= ../kernel/common
+BASEDIR	= ..
+COMMONDIR	= $(BASEDIR)/kernel/common
 include $(COMMONDIR)/makefile
 
 #
@@ -21,8 +22,8 @@ clean	: distclean-bin distclean-doc
 # BIN
 #
 
-MODDIR	= compression curve image signal wave
-SRC	:= $(sort $(shell find $(MODDIR) -type f	\
+SRCDIR	= ./src
+SRC	:= $(sort $(shell find $(SRCDIR) -type f	\
 	-name "*.c" ! -name "*.lib.c" ! -name "*.exec.c"))
 
 LIBSRC	= $(SRC:.c=.lib.c)
@@ -30,8 +31,8 @@ BINSRC	= $(SRC:.c=.exec.c)
 LIBOBJ	= $(LIBSRC:.c=.o)
 BINOBJ	= $(BINSRC:.c=.o)
 
-MWPLIGHT	= ../kernel/mwplight/mwplight
-LIBMW	= ../kernel/lib/libmw.so
+MWPLIGHT	= $(BASEDIR)/mwplight/mwplight
+LIBMW	= $(NASEDIR)/libmw/libmw.so
 
 LIBNAME	= libmw-modules
 LIBMOD	= $(LIBNAME).so
@@ -40,15 +41,13 @@ API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
 LIBS 	+= m tiff X11 mw
-LPATH	+= ../kernel/lib
-# hacks
-IPATH	+= ./include.tmp ../kernel/lib ../kernel/Wdevice
-CFLAGS	+= -DM_PI=3 -DM_PI_2=9 -DM_PI_4=81
+LPATH	+= $(BASEDIR)/libmw
+IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 
 $(MWPLIGHT)	:
-	$(MAKE) -C ../kernel/mwplight $(notdir $@)
+	$(MAKE) -C $(BASEDIR)/mwplight $(notdir $@)
 $(LIBMW)	:
-	$(MAKE) -C ../kernel/lib $(notdir $@)
+	$(MAKE) -C $(BASEDIR)/libmw $(notdir $@)
 
 .PHONY	: modules
 modules	: $(MODULES)
