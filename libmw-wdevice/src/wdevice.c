@@ -23,6 +23,7 @@
 #define  XK_MISCELLANY
 #include <X11/keysymdef.h>
 
+#include "wdevice-config.h"
 #include "wdevice-defs.h"
 #include "wdevice-misc.h"
 

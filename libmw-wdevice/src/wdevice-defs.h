@@ -18,8 +18,6 @@
 
 #include <X11/Xlib.h>
 
-#include "wdevice-config.h"
-
 /**
  * @brief Wframe : main structure for a window
  *
