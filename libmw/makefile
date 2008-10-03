@@ -70,7 +70,6 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         wmax2d_io.c     \
         wpack2d.c       \
         wpack2d_io.c    \
-        wpanel.c        \
         wtrans1d.c      \
         wtrans1d_io.c   \
         wtrans2d.c      \
@@ -102,8 +101,8 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         mw_main.c       \
         mwio.c          \
         type_conv.c     \
-        unix_bsd.c      \
         window.c        \
+        wpanel.c        \
 	)
 
 AUTOHDR	= $(SRC:.c=.h)
