@@ -26,15 +26,15 @@
 #endif
 
 /* M_PI is an Unix (XOPEN) specification */
-/* TODO : remove?? */
+/* TODO : handle in modules? MW_PI? */
 #ifndef M_PI
-#define M_PI 3.1415926535897931
+#define M_PI           3.14159265358979323846  /* pi */
 #endif
 #ifndef M_PI_2
-#define M_PI_2 9.869604401089358
+#define M_PI_2         1.57079632679489661923  /* pi/2 */
 #endif
 #ifndef M_PI_4
-#define M_PI_4 97.409091034002429
+#define M_PI_4         0.78539816339744830962  /* pi/4 */
 #endif
 
 /* error levels */
