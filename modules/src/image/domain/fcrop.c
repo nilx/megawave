@@ -141,7 +141,7 @@ Fimage fcrop(in,out,sx,sy,z,bg,o,p,X1,Y1,X2,Y2)
   if (!sx && sy) zx = zy;
   if (z) zx = zy = *z;
   nsx = (int)floor((double)zx*(double)(X2-X1) + .5);
-  nsy = (int)floot((double)zy*(double)(Y2-Y1) + .5);
+  nsy = (int)floor((double)zy*(double)(Y2-Y1) + .5);
   mwdebug("Output size is %d x %d\n",nsx,nsy);
   if (nsx<0 || nsy<0) mwerror(FATAL,1,"illegal window specification.\n");
 

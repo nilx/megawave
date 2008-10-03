@@ -18,6 +18,21 @@ all	: lib api modules doc test
 clean	: clean-bin clean-doc
 clean	: distclean-bin distclean-doc
 
+
+# PREBUILD AND UTILS
+#
+
+.PHONY	: prebuild
+prebuild	: api dep man
+#prebuild	: autohdr api dep man
+
+.PHONY	: $(AUTOHDR)
+#.PHONY	: autohdr
+#autohdr	: $(AUTOHDR)
+
+.PHONY	: dep
+dep	: $(DEP)
+
 #
 # BIN
 #
@@ -27,21 +42,28 @@ SRC	:= $(sort $(shell find $(SRCDIR) -type f	\
 	-name "*.c" ! -name "*.lib.c" ! -name "*.exec.c"))
 
 LIBSRC	= $(SRC:.c=.lib.c)
+LIBHDR	= $(LIBSRC:.c=.h)
 BINSRC	= $(SRC:.c=.exec.c)
+BINHDR	= $(BINSRC:.c=.h)
+AUTOHDR	= $(LIBHDR) $(BINHDR)
 LIBOBJ	= $(LIBSRC:.c=.o)
 BINOBJ	= $(BINSRC:.c=.o)
 
 MWPLIGHT	= $(BASEDIR)/mwplight/mwplight
-LIBMW	= $(NASEDIR)/libmw/libmw.so
+LIBMW	= $(BASEDIR)/libmw/libmw.so
+LIBMW_WDEVICE	= $(BASEDIR)/libmw-wdevice/libmw-wdevice.so
 
-LIBNAME	= libmw-modules
-LIBMOD	= $(LIBNAME).so
 MODULES	= $(BINOBJ:.o=)
+
+LIBNAME	= mw-modules
+LIBMW_MODULES	= lib$(LIBNAME).so
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
+APIINC	= <mw.h>
+
 
 LIBS 	+= m tiff X11 mw
-LPATH	+= $(BASEDIR)/libmw
+LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 
 $(MWPLIGHT)	:
@@ -53,8 +75,8 @@ $(LIBMW)	:
 modules	: $(MODULES)
 
 .PHONY	: lib
-lib 	: $(LIBMOD)
-$(LIBMOD)	: $(LIBOBJ)
+lib 	: $(LIBMW_MODULES)
+$(LIBMW_MODULES)	: $(LIBOBJ)
 	$(LD) -shared $(LDFLAGS) -o $@ $^
 
 .PHONY	: api
@@ -62,6 +84,7 @@ api 	: $(API)
 $(API) 	: $(LIBSRC)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
+	$(ECHO) -e "$(addprefix \n#include , $(APIINC))\n" >> $@
 	$(CPROTO) $(CPROTO_FLAGS) $(filter %.c, $^) >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
 
@@ -77,8 +100,8 @@ $(API) 	: $(LIBSRC)
 %.exec.o	: %.exec.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
-%.run	: %.run.o $(LIBMW)
-	$(LD) $(LDFLAGS) -lmw-modules -o $@ $<
+%.exec	: %.exec.o $(LIBMW) $(LIBMW_WDEVICE) $(LIBMW_MODULES)
+	$(LD) $(LDFLAGS) -lmw-wdevice -lmw-modules -o $@ $<
 
 .PHONY	: clean-bin
 clean-bin :
@@ -109,7 +132,7 @@ TESTMODDIR	= /mnt/tmp/mwmodules
 test	: $(MODULES)
 	$(MKDIR) $(TESTMODDIR)
 	cp $(MODULES) $(TESTMODDIR)
-	mmv "$(TESTMODDIR)/*.run" "$(TESTMODDIR)/#1"
+	mmv "$(TESTMODDIR)/*.exec" "$(TESTMODDIR)/#1"
 	env MODDIR=$(TESTMODDIR)	\
 		DATA=../data/PUBLIC	\
 	  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./:../kernel/lib:../kernel/Wdevice \
@@ -120,14 +143,15 @@ test	: $(MODULES)
 # DOC
 #
 
-
+DOCDIR	= ./doc
 MAN	= $(DOCDIR)/$(LIBNAME).man
+MANHTML	= $(MAN).html
 
 .PHONY	: doc
 doc	: man
 
-.PHONY	: manpage
-manpage	: $(MAN)
+.PHONY	: man
+man	: $(MAN) $(MANHTML)
 
 #.PHONY	: srcdoc
 #srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
@@ -152,4 +176,4 @@ clean-doc	:
 
 .PHONY	: distclean-doc
 distclean-doc	: clean-doc
-	$(RM) $(MAN)
+	$(RM) $(MAN) $(MANHTML)
