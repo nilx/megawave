@@ -1050,14 +1050,8 @@ struct Mwiline {
 
 typedef struct Mwiline Mwiline;
 
-#ifndef MWI_DEC
 extern Mwiline mwicmd[];
 extern int mwind;
-
-#define mwusage(S)          (mwicmd[mwind].mwuse(S))
-#define _mwmain(ARGC, ARGV) (mwicmd[mwind].mwarg((ARGC), (ARGV)))
-
-#endif
 
 /*
  * from window.h

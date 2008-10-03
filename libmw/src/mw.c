@@ -480,7 +480,7 @@ int _mw_main(int argc, char *argv[], char *envp[])
      }
 
      setnewout();
-     _mwmain(userargc, userargv);
+     mwicmd[mwind].mwarg(userargc, userargv);
      mwexit(0);
      return 0;
 }
@@ -497,7 +497,8 @@ void MegaWaveDefOpt(char *vers)
 
      /* Help flag */
      if (help_flg == TRUE)
-	  mwusage(NULL);
+	  mwicmd[mwind].mwuse(NULL);
+
 }
 
 char _mwoptlist[BUFSIZ] = {'\0'};
@@ -566,7 +567,7 @@ void mwerror(int code, int exit_code, char *fmt, ...)
      case USAGE:
 	  (void) vsprintf(message, fmt, marker);
 	  if (mwrunmode == 1)
-	       mwusage(message);
+	       mwicmd[mwind].mwuse(message);
 	  else
 	  { /* Send error message to XMegaWave2 */
 	       if (mwerrormessage) free(mwerrormessage);

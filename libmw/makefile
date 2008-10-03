@@ -114,7 +114,8 @@ DEP	= $(SRC:.c=.d)
 LIBNAME	= mw
 LIBMW	= lib$(LIBNAME).so
 API	= $(LIBNAME).h
-APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
+APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
+APIINC	= <stdio.h>
 
 IPATH	+= $(BASEDIR)/libmw-wdevice
 
@@ -147,6 +148,7 @@ api 	: $(API)
 $(API) 	: $(SRC) $(SRCDIR)/wpanel-defs.h $(SRCDIR)/libmw-defs.h
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
+	$(ECHO) -e "$(addprefix \n#include , $(APIINC))\n" >> $@
 	$(CAT) $(filter %.h, $^) >> $@
 	$(CPROTO) $(CPROTO_FLAGS) $(filter %.c, $^) >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
