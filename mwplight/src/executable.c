@@ -1749,6 +1749,7 @@ static void writeusage(FILE * afile)
                }
 
      fprintf(afile, "  mwexit(1);\n");
+     fprintf(afile, "  return 0;\n");
      fprintf(afile, "}\n");
 
      fprintf(afile, "\n/* ~~~ end of [writeusage] ~~~*/\n\n");
