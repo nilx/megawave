@@ -7,7 +7,7 @@
 #ifndef _LIBMW_DEFS_H
 #define _LIBMW_DEFS_H
 
-/* FIXME : split */
+/* FIXME : split libmw-common (#defines) and libmw-defs (typedef)*/
 /* FIXME : rename libmw3 */
 
 /* 
@@ -54,8 +54,15 @@
 #define MODEL_HSV 3
 
 /* ASCII header */
-
 #define _MW_DATA_ASCII_FILE_HEADER "MegaWave2 - DATA ASCII file -\n"
+
+/* wmax */
+/* Preset value for an unknown argument */
+#define mw_not_an_argument 1.0e9
+
+/* Preset value for an unknown magnitude */
+#define mw_not_a_magnitude -1.0
+
 
 /*
  * SIZES

@@ -16,9 +16,11 @@
 #define emul_unix_bsd
 
 #include <math.h>
+#include <limits.h>
+/* FIXME: what is this header? */
 #include <poll.h>
 
-#include "mw.h"
+#include "unix_bsd.h"
 
 /* Round x */
 double my_rint(double x)
@@ -37,7 +39,11 @@ double aint(double x)
 /* Fonction nint() presente a partir de la release Sun 4.0  (math.h)*/
 int nint(double x)
 {
-     return((int)my_rint(x));
+     double r;
+
+     r = my_rint(x);
+     return((r > INT_MAX) ? INT_MAX : 
+	    ((r < INT_MIN) ? INT_MIN : (int) x));
 }
 
 /* Fonction log2() presente a partir de la release Sun 4.0  (math.h)*/

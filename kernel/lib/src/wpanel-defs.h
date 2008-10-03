@@ -25,8 +25,10 @@ typedef struct wp_toggle {
   short nbuttons;      /* number of buttons */
   short button;        /* current active button */
   char **button_text;  /* text for each button */
-  int x,y      ;       /* position on window (upleft corner) */
-  int (*proc)();       /* function to call when value changes (may be NULL) */
+  int x,y ;            /* position on window (upleft corner) */
+  int (*proc)(struct wp_toggle *, int); 
+                       /* function to call when value changes */
+                       /* (may be NULL) */
 } *Wp_toggle;
 
 typedef struct wp_int {
@@ -42,8 +44,10 @@ typedef struct wp_int {
   short nbuttons;      /* number of buttons */
   char **button_text;  /* text for each button */
   int *button_inc;     /* increment for each button */
-  int x,y      ;       /* position on window (upleft corner) */
-  int (*proc)();       /* function to call when value changes (may be NULL) */
+  int x,y ;            /* position on window (upleft corner) */
+  int (*proc)(struct wp_int *, int); 
+                       /* function to call when value changes */
+                       /* (may be NULL) */
 } *Wp_int;
 
 typedef struct wp_float {
@@ -55,8 +59,10 @@ typedef struct wp_float {
   short nbuttons;      /* number of buttons */
   char **button_text;  /* text for each button */
   float *button_inc;   /* increment for each button */
-  int x,y      ;       /* position on window (upleft corner) */
-  int (*proc)();       /* function to call when value changes (may be NULL) */
+  int x,y ;            /* position on window (upleft corner) */
+  int (*proc)(struct wp_float *, int); 
+                       /* function to call when value changes */
+                       /* (may be NULL) */
 } *Wp_float;
 
 typedef struct wpanel {

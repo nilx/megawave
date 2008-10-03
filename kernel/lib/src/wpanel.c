@@ -18,15 +18,34 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "libmw-wdevice.h"
 #include "libmw-defs.h"
 #include "window.h"
+#include "utils.h"
 
 #include "wpanel-defs.h"
 #include "wpanel.h"
 
+/* FIXME: unsafe snprintf() hack */
+static int snprintf(char * dest, int nb, const char * fmt, ...)
+{
+     /* arbitrary length, this isn't safe */
+     static char tmp[1024];
+     va_list args;
+
+     va_start(args, fmt);
+     sprintf(tmp, fmt, args);
+     va_end(args);
+     dest[0] = '\0';
+     strncat(dest, tmp, nb);
+     return strlen(dest);
+}
+ 
 /* draw button and return width (height is 16) */
 int Wp_DrawButton(Wframe *window, int x, int y, char *str, int color)
 {
@@ -45,7 +64,7 @@ int Wp_DrawButton(Wframe *window, int x, int y, char *str, int color)
 
 /* draw scale bar */
 void Wp_DrawScale(Wframe *window, int x, int y, int pos, 
-		  int div, int length, int color)
+		  int divisions, int length, int color)
 {
      int i;
 
@@ -54,8 +73,9 @@ void Wp_DrawScale(Wframe *window, int x, int y, int pos,
      WFillRectangle(window,x,y+10,x+length,y+12);
      WSetColorPencil(window,WP_BLACK);
      WDrawRectangle(window,x,y+6,x+length,y+9);
-     for (i=1;i<div;i++) 
-	  WDrawLine(window,x+(length*i)/div,y+7,x+(length*i)/div,y+8);
+     for (i=1;i<divisions;i++) 
+	  WDrawLine(window,x+(length*i)/divisions,y+7,
+		    x+(length*i)/divisions,y+8);
      WSetColorPencil(window,color);
      WDrawLine(window,x+pos,y+3,x+pos,y+5);
      WDrawLine(window,x+pos,y+10,x+pos,y+12);
@@ -274,6 +294,10 @@ int Wp_notify(Wframe *window, void *wp)
      return(ret);
 }
 
+/*
+ * FIXME:
+ * void mw_window_notify(Wframe *Win, void *param, int (*proc)(void));
+ */
 /* main loop */
 void Wp_main_loop(Wpanel wp)
 {

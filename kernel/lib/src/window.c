@@ -19,18 +19,20 @@
 #include "libmw-wdevice.h"
 
 #include "libmw-defs.h"
+#include "utils.h"
+#include "unix_bsd.h"
 #include "window.h"
 
 #define mw_nmax_windows 10 /* Max Numbers of windows */
 
-int mwwindelay=100; /* /* Delay to refrech windows (in microseconds) */
+int mwwindelay=100; /* Delay to refrech windows (in microseconds) */
 int mw_n_windows=0; /* Current Number of windows */
 
 Wframe *mw_ptr_window[mw_nmax_windows]; /* ptr to each window */
 void *mw_ptr_param[mw_nmax_windows]; /* ptr to each user's parameter */
 
 /* ptr to each notify proc associated to a window */
-int (*mw_ptr_window_notify[mw_nmax_windows])();
+int (*mw_ptr_window_notify[mw_nmax_windows])(Wframe *, void *);
 
 /* record the mwrunmode of each window */
 int mw_window_runmode[mw_nmax_windows]; 
@@ -68,7 +70,6 @@ unsigned char mw_CeldaColor(unsigned char * color)
 Wframe *mw_get_window(Wframe * window, int dx, int dy,
 		      int x0, int y0, char * title)
 {
-     int width,height;
      Wframe *ImageWindow;
      char s[255];
 
@@ -92,7 +93,9 @@ Wframe *mw_get_window(Wframe * window, int dx, int dy,
 
 /*   Add a new window to notify */
 
-void mw_window_notify(Wframe * Win, void * param, int (* proc)())
+void mw_window_notify(Wframe * Win, void * param, 
+		      int (* proc)(Wframe *, void *))
+
 {
      int i;
 
@@ -124,7 +127,7 @@ void mw_window_notify(Wframe * Win, void * param, int (* proc)())
 
 void mw_window_main_loop(void)
 {
-     int i,j,r,nr,cont,event_occured;
+     int i,j,r,cont,event_occured;
 
      if (mwrunmode <= 2)
      {

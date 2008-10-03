@@ -37,7 +37,7 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         cmimage_io.c    \
         cmovie.c        \
         cmovie_io.c     \
-        curve.c \
+        curve.c         \
         curve_io.c      \
         dcurve.c        \
         dcurve_io.c     \
@@ -55,26 +55,27 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         fsignal_io.c    \
         gif_io.c        \
         jpeg_io.c       \
-        libmw.c \
-        list.c  \
+        libmw.c         \
+        list.c          \
         list_io.c       \
         mimage.c        \
         mimage_io.c     \
         module.c        \
         module_io.c     \
-        mwio.c  \
+        mwio.c          \
         pgm_io.c        \
-        pm_io.c \
+        pm_io.c         \
         polygon.c       \
         polygon_io.c    \
         ppm_io.c        \
-        ps_io.c \
+        ps_io.c         \
         rawdata.c       \
         rawdata_io.c    \
-        shape.c \
+        shape.c         \
         shape_io.c      \
         tiff_io.c       \
         type_conv.c     \
+        unix_bsd.c      \
         wave_io.c       \
         window.c        \
         wmax2d.c        \
@@ -101,6 +102,9 @@ LIB	= $(LIBNAME).so
 API	= $(LIBNAME).h
 
 IPATH	= ../Wdevice
+
+# FIXME: hacks
+CWARN	+= -Wno-float-equal
 
 # PREBUILD AND UTILS
 #
