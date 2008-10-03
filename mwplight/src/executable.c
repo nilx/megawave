@@ -80,14 +80,14 @@
         {\n\
           char buffer[BUFSIZ];\n\
           sprintf(buffer, \"cannot find '%%s' in default path\", _mwoptarg);\n\
-          mwusage(buffer);\n\
+          mwicmd[mwind].mwuse(buffer);\n\
         }\n"
 #define CODE_OUTPUT_MW_OPTION "\
         if (!_mwis_writable(_mwoptarg))\n\
         {\n\
           char buffer[BUFSIZ];\n\
           sprintf(buffer, \"cannot write '%%s'\", _mwoptarg);\n\
-          mwusage(buffer);\n\
+          mwicmd[mwind].mwuse(buffer);\n\
         }\n"
 #define CODE_INPUT_MW_NEEDED "\
   /* input megawave needed argument H_id=%s */\n\
@@ -98,11 +98,11 @@
       char buffer[BUFSIZ];\n\
       sprintf(buffer, \"cannot find '%%s' in default path\", \\\n\
               argv[_mwoptind+%d]);\n\
-      mwusage(buffer);\n\
+      mwicmd[mwind].mwuse(buffer);\n\
     }\n\
   }\n\
   else\n\
-    mwusage(\"missing '%s'\");\n"
+    mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_OUTPUT_MW_NEEDED "\
   /* output megawave needed argument H_id=%s */\n\
   if (_mwoptind+%d<argc)\n\
@@ -111,11 +111,11 @@
     {\n\
       char buffer[BUFSIZ];\n\
       sprintf(buffer, \"cannot write '%%s'\", argv[_mwoptind+%d]);\n\
-      mwusage(buffer);\n\
+      mwicmd[mwind].mwuse(buffer);\n\
     }\n\
   }\n\
   else\n\
-    mwusage(\"missing '%s'\");\n"
+    mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_INPUT_MW_OPTION2 "\
     /* input megawave optional argument H_id=%s */\n\
     if (_mwoptind+%d<argc)\n\
@@ -125,11 +125,11 @@
         char buffer[BUFSIZ];\n\
         sprintf(buffer, \"cannot find '%%s' in default path\", \\\n\
                 argv[_mwoptind+%d]);\n\
-        mwusage(buffer);\n\
+        mwicmd[mwind].mwuse(buffer);\n\
       }\n\
     }\n\
     else\n\
-      mwusage(\"missing '%s'\");\n"
+      mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_OUTPUT_MW_OPTION2 "\
     /* output megawave optional argument H_id=%s */\n\
     if (_mwoptind+%d<argc)\n\
@@ -138,19 +138,19 @@
       {\n\
         char buffer[BUFSIZ];\n\
         sprintf(buffer, \"cannot write '%%s'\", argv[_mwoptind+%d]);\n\
-        mwusage(buffer);\n\
+        mwicmd[mwind].mwuse(buffer);\n\
       }\n\
     }\n\
     else\n\
-      mwusage(\"missing '%s'\");\n"
+      mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_INPUT_SCALAR_NEEDED "\
   /* input scalar needed argument H_id=%s */\n\
   if (_mwoptind+%d>=argc)\n\
-    mwusage(\"missing '%s'\");\n"
+    mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_INPUT_SCALAR_OPTION "\
     /* input scalar optional argument H_id=%s */\n\
     if (_mwoptind+%d>=argc)\n\
-      mwusage(\"missing '%s'\");\n"
+      mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_INPUT_SCALAR_ARGUMENT "\
   /* input scalar needed argument with interval checking H_id=%s */\n\
   if (_mwoptind+%d<argc)\n\
@@ -158,7 +158,7 @@
     %s\n\
   }\n\
   else\n\
-    mwusage(\"missing '%s'\");\n"
+    mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_INPUT_SCALAR_OPT_ARGUMENT "\
     /* input scalar optional argument with interval checking H_id=%s */\n\
     if (_mwoptind+%d<argc)\n\
@@ -166,7 +166,7 @@
       %s\n\
     }\n\
     else\n\
-      mwusage(\"missing '%s'\");\n"
+      mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_INPUT_MW_VAR_ARGUMENT "\
   /* input megawave variable argument H_id=%s */\n\
     if (!_mwis_readable(argv[%si]))\n\
@@ -174,7 +174,7 @@
       char buffer[BUFSIZ];\n\
       sprintf(buffer, \"cannot find '%%s' in default path\",  \\\n\
               argv[%si]);\n\", MWPF);\n\
-      mwusage(buffer);\n\
+      mwicmd[mwind].mwuse(buffer);\n\
    }\n"
 #define CODE_OUTPUT_MW_VAR_ARGUMENT "\
   /* output megawave variable argument H_id=%s */\n\
@@ -182,7 +182,7 @@
     {\n\
       char buffer[BUFSIZ];\n\
       sprintf(buffer, \"cannot write '%%s'\", argv[%si]);\n\
-      mwusage(buffer);\n\
+      mwicmd[mwind].mwuse(buffer);\n\
    }\n"
 #define CODE_INPUT_SCAL_VAR_ARGUMENT "\
   /* input scalar variable argument with interval checking H_id=%s */\n\
@@ -757,7 +757,7 @@ static void  print_check_interval_arg(FILE * afile, t_argument * a, char * s)
           fprintf(afile, "          sprintf(buffer, \"input data %%s ");
           fprintf(afile, "converted to type %s is out of %c%s, %s%c\", %s);\n", \
                   a->var->Stype, A, a->Min, a->Max, B, s);
-          fprintf(afile, "          mwusage(buffer);\n");
+          fprintf(afile, "          mwicmd[mwind].mwuse(buffer);\n");
      }
      else
      {
@@ -823,7 +823,7 @@ static char * str_chkint(/*@ out @*/char * str, t_argument * a, char * s)
                   "converted to type %s is out of %c%s, %s%c\", %s);\n", \
                   a->var->Stype, A, a->Min, a->Max, B, s);
           strcat(str, tmp);
-          strcat(str, "          mwusage(buffer);\n");
+          strcat(str, "          mwicmd[mwind].mwuse(buffer);\n");
      }
      else
      {
@@ -888,7 +888,7 @@ static void print_check_io_arg(FILE * afile)
           }
           /* default : unknown option calls usage function */
           fprintf(afile, "      case '?' :\n");
-          fprintf(afile, "        mwusage(NULL);\n");
+          fprintf(afile, "        mwicmd[mwind].mwuse(NULL);\n");
           fprintf(afile, "        break;\n");
           fprintf(afile, "      default :\n");
           fprintf(afile, "        break;\n");
