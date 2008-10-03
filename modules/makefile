@@ -127,15 +127,18 @@ distclean-bin : clean-bin
 
 TEST	= test/checkmodules.sh
 TESTMODDIR	= /mnt/tmp/mwmodules
+LIBPATH	= ./:$(BASEDIR)/libmw:$(BASEDIR)/libmw-wdevice
 
 .PHONY	: test
 test	: $(MODULES)
 	$(MKDIR) $(TESTMODDIR)
 	cp $(MODULES) $(TESTMODDIR)
 	mmv "$(TESTMODDIR)/*.exec" "$(TESTMODDIR)/#1"
-	env MODDIR=$(TESTMODDIR)	\
-		DATA=../data/PUBLIC	\
-	  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./:../kernel/lib:../kernel/Wdevice \
+	env MODDIR=$(TESTMODDIR)			\
+		DATA=$(BASEDIR)/data			\
+		SAMPLES=$(BASEDIR)/data/PUBLIC		\
+		PATH=$$PATH:$(TESTMODDIR)		\
+	  LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(LIBPATH)	\
 		/bin/sh $(TEST)
 	$(RRM) $(TESTMODDIR)
 
