@@ -17,6 +17,8 @@
 #define _WDEVICE_DEFS_H_
 
 #include <X11/Xlib.h>
+#define  XK_MISCELLANY
+#include <X11/keysymdef.h>
 
 /**
  * @brief Wframe : main structure for a window

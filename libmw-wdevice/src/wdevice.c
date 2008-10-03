@@ -20,8 +20,6 @@
 
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
-#define  XK_MISCELLANY
-#include <X11/keysymdef.h>
 
 #include "wdevice-config.h"
 #include "wdevice-defs.h"
