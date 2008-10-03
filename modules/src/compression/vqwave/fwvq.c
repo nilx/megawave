@@ -775,8 +775,10 @@ int        n;
   long     x, xi, xf;
   int      n1;
   
-  sizei = nint(codebook->gray[(codebook->nrow - 5) * codebook->ncol]);
-  sizef = nint(codebook->gray[(codebook->nrow - 6) * codebook->ncol]);
+  sizei = floor(codebook->gray[(codebook->nrow - 5) * codebook->ncol]
+		+ .5);
+  sizef = floor(codebook->gray[(codebook->nrow - 6) * codebook->ncol]
+		+ .5);
 	       
   if (n == 0) {
     xi = sizef;
@@ -829,7 +831,7 @@ count_cb(codebook)
 Fimage     codebook;
 
 {
-  int      size, sizei, sizef;
+  long      size, sizei, sizef;
   int      n;
 
   n = 0;
@@ -837,8 +839,10 @@ Fimage     codebook;
     if (codebook->nrow > 4) {
       n = 1;
       if (codebook->nrow > 6) {
-	sizei = nint(codebook->gray[(codebook->nrow - 5) * codebook->ncol]);
-	sizef = nint(codebook->gray[(codebook->nrow - 6) * codebook->ncol]);
+	sizei = floor(codebook->gray[(codebook->nrow - 5) *
+				    codebook->ncol] + .5);
+	sizef = floor(codebook->gray[(codebook->nrow - 6) *
+				    codebook->ncol] + .5);
 	if (((float) sizei == codebook->gray[(codebook->nrow - 5) * codebook->ncol]) && ((float) sizef == codebook->gray[(codebook->nrow - 6) * codebook->ncol]) && (sizei > 0) && (sizef >= sizef)) {
 	  n = 2;
 	  size = 1;

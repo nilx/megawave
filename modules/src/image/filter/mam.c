@@ -167,7 +167,7 @@ void mam(in,out,ptime,ppower,n_iter,pMAXvit,pMINvit,pfmxa)
       val = a[l*(nx*ny)+adr];
       if (val<0.0) val=0.0;
       if (val>255.0) val=255.0;
-      u->gray[adr] = (unsigned short) nint(val);
+      u->gray[adr] = (unsigned short) floor(val + .5);
     }
 
   free(ani); free(accel); free(inter); free(grad); free(curv); free(a);

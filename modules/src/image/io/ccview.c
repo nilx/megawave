@@ -99,7 +99,6 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 	  sprintf(mess," (%3d,%3d): (%3d,%3d,%3d) ",x1,y1,nred,ngreen,nblue);
 	  WDrawString(ImageWindow,0,10,mess);
 	  WFlushAreaWindow(ImageWindow,0,0,image->ncol-1,12);
-	  /* usleep(100);*/
 	}
     }
 

@@ -137,9 +137,11 @@ void one_step(in,out,grad,curv,step,MinGrad,isotrop,power,no_norm)
 	  GK *= an2*IRAC2P2*IRAC2P2;
 	  if (GK>=0.0) 
 	    /* here we use the fact that |Du|K^(1/3) = (|Du|^2*GK)^(1/3) */
-	    out->gray[x+Y0] = a00 + step * (float)cbrt((double)(GK));
+	       out->gray[x+Y0] = a00 + step * (float)pow((double)(GK),
+							 .33333333333333333333);
 	  else 
-	    out->gray[x+Y0] = a00 - step * (float)cbrt((double)(-GK));
+	       out->gray[x+Y0] = a00 - step * (float)pow((double)(-GK),
+							 .33333333333333333333);
 	} else 
 	  /* MCM diffusion */
 	  out->gray[x+Y0] = a00 + step * GK;

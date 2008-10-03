@@ -136,8 +136,8 @@ long         size;
   long    sizel;           /* Number of symbol in list */
   long    i, l;
   int     y, z;
-  int     intpart;
-  int     min, max;
+  long    intpart;
+  long    min, max;
   float   *buflist = NULL;
   int     sizebuf;
 
@@ -147,9 +147,9 @@ long         size;
 
   /*--- Compute min and max of input symbols ---*/
 
-    min = max = nint(input->gray[0]);
+    min = max = floor(input->gray[0] + .5);
     for (l = 1, ptri = input->gray + 1; l < size; l++, ptri++) {
-      intpart = nint(*ptri);
+      intpart = floor(*ptri + .5);
       if (max < intpart)
 	max = intpart;
       if (min > intpart)
@@ -176,11 +176,11 @@ long         size;
 	  mwerror(FATAL, 1, 
 		  "Memory allocation refused for list of different symbol!\n");
 	sizel = 1;
-	buflist[0] = (float) nint(input->gray[0]);
+	buflist[0] = (float) floor(input->gray[0] + .5);
 	for (i = 1, ptri = input->gray + 1; i < size; i++, ptri++) {
 	  l = 0;
 	  ptrl = buflist;
-	  while ((l < sizel) && (nint(*ptrl) != nint(*ptri))) {
+	  while ((l < sizel) && (floor(*ptrl + .5) != floor(*ptri + .5))) {
 	    l++;
 	    if (l >= sizebuf)
 	      mwerror(INTERNAL,1,
@@ -189,7 +189,7 @@ long         size;
 	  } 
 	  if (l == sizel) {
 	    sizel++;
-	    *ptrl = (float) nint(*ptri);
+	    *ptrl = (float) floor(*ptri + .5);
 	  }
 	}
 
@@ -290,7 +290,7 @@ long         size;
     {
       cum_freq[0][nsymbol] = 0;
       for (z = nsymbol; z > 0; z--) {
-	freq[0][z] = nint(histo->values[z-1]);
+	freq[0][z] = floor(histo->values[z-1] + .5);
 	cum_freq[0][z-1] = cum_freq[0][z] + freq[0][z];
       }
       freq[0][0] = 0;
@@ -547,7 +547,7 @@ Cimage        Output;            /* String of codewords */
 
     symb_pred = 0;
     if (size > 0) {
-      symb = symb_ind(nint(Input->gray[0]));
+      symb = symb_ind(floor(Input->gray[0] + .5));
       ENCODE_SYMBOL(symb, symb_pred, &low, &high, &nbit, Output);
       if ((!Histo) && !Predic) 
 	UPDATE_MODEL(symb, symb_pred);
@@ -561,7 +561,7 @@ Cimage        Output;            /* String of codewords */
     for (i = 1; i < size; i++, ptri++) {
       if (Predic)
 	symb_pred = symb - 1;
-      symb = symb_ind(nint(*ptri));
+      symb = symb_ind(floor(*ptri + .5));
       ENCODE_SYMBOL(symb, symb_pred, &low, &high, &nbit, Output);
 
       if (teststop == 1)

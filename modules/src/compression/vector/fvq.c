@@ -70,7 +70,7 @@ typedef float   bufmse[MAX_ADAP][MAX_CB];
 typedef int     bufind[MAX_ADAP];
 
 static double   var, energy;      /* Variance and energy of image */
-static int      height, width;    /* Height and width of vectors */
+static long     height, width;    /* Height and width of vectors */
 static float    targrate_dr[50];  /* Target rates for dist-rate curve */
 static int      max_count_dr;     /* Number of points for dist-rate curve */
 static long     effnbit;          /* Total number of bits stored in compress */
@@ -110,7 +110,7 @@ Fimage          image;          /* Input image */
     mwerror(FATAL, 2, "Bad number (<= 4) of row in CodeBook1!\n");
 
   sizeb = codebook1->ncol;
-  height = nint(codebook1->gray[(codebook1->nrow - 2) * sizeb]);
+  height = floor(codebook1->gray[(codebook1->nrow - 2) * sizeb] + .5);
   if (((float) height != codebook1->gray[(codebook1->nrow - 2) * sizeb]) || (height <= 0))
     mwerror(WARNING, 0, "Bad value for height of vectors in CodeBook1!\n");
   if (sizeb % height != 0)
@@ -204,11 +204,13 @@ Fimage          image;          /* Input image */
     if (codebook1->nrow <= 6) 
       mwerror(FATAL, 2, "Bad number (<= 6) of row in CodeBook1!\n");
 
-    testsize = (float) nint(codebook1->gray[(codebook1->nrow - 6) * sizeb]);
+    testsize = (float) floor(codebook1->gray[(codebook1->nrow - 6) *
+					     sizeb] + .5);
     if ((codebook1->gray[(codebook1->nrow - 6) * sizeb] != testsize) || (testsize < 1.0)) 
       mwerror(FATAL, 2, "Bad final size in CodeBook1!\n");
 
-    testsize = (float) nint(codebook1->gray[(codebook1->nrow - 5) * sizeb]);
+    testsize = (float) floor(codebook1->gray[(codebook1->nrow - 5) *
+					     sizeb] + .5);
     if ((codebook1->gray[(codebook1->nrow - 5) * sizeb] != testsize) || (testsize < 1.0)) 
       mwerror(FATAL, 2, "Bad initial size in CodeBook1!\n");
 
@@ -216,11 +218,13 @@ Fimage          image;          /* Input image */
       if (codebook2->nrow <= 6) 
 	mwerror(FATAL, 2, "Bad number (<= 6) of row in CodeBook2!\n");
 
-      testsize = (float) nint(codebook2->gray[(codebook2->nrow - 6) * sizeb]);
+      testsize = (float) floor(codebook2->gray[(codebook2->nrow - 6) *
+					       sizeb] + .5);
       if ((codebook2->gray[(codebook2->nrow - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(FATAL, 0, "Bad final size in CodeBook2!\n");
 
-      testsize = (float) nint(codebook2->gray[(codebook2->nrow - 5) * sizeb]);
+      testsize = (float) floor(codebook2->gray[(codebook2->nrow - 5) *
+					       sizeb] + .5);
       if ((codebook2->gray[(codebook2->nrow - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(WARNING, 0, "Bad initial size in CodeBook2!\n");
     }
@@ -229,11 +233,13 @@ Fimage          image;          /* Input image */
       if (codebook3->nrow <= 6) 
 	mwerror(FATAL, 2, "Bad number (<= 6) of row in CodeBook3!\n");
 
-      testsize = (float) nint(codebook3->gray[(codebook3->nrow - 6) * sizeb]);
+      testsize = (float) floor(codebook3->gray[(codebook3->nrow - 6) *
+					       sizeb] + .5);
       if ((codebook3->gray[(codebook3->nrow - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(FATAL, 0, "Bad final size in CodeBook3!\n");
 
-      testsize = (float) nint(codebook3->gray[(codebook3->nrow - 5) * sizeb]);
+      testsize = (float) floor(codebook3->gray[(codebook3->nrow - 5) *
+					       sizeb] + .5);
       if ((codebook3->gray[(codebook3->nrow - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(WARNING, 0, "Bad initial size in CodeBook3!\n");
     }
@@ -242,11 +248,13 @@ Fimage          image;          /* Input image */
       if (codebook4->nrow <= 6) 
 	mwerror(FATAL, 2, "Bad number (<= 6) of row in CodeBook4!\n");
 
-      testsize = (float) nint(codebook4->gray[(codebook4->nrow - 6) * sizeb]);
+      testsize = (float) floor(codebook4->gray[(codebook4->nrow - 6) *
+					       sizeb] + .5);
       if ((codebook4->gray[(codebook4->nrow - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(FATAL, 0, "Bad final size in CodeBook4!\n");
 
-      testsize = (float) nint(codebook4->gray[(codebook4->nrow - 5) * sizeb]);
+      testsize = (float) floor(codebook4->gray[(codebook4->nrow - 5) *
+					       sizeb] + .5);
       if ((codebook4->gray[(codebook4->nrow - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(WARNING, 0, "Bad initial size in CodeBook4!\n");
     }
@@ -255,11 +263,13 @@ Fimage          image;          /* Input image */
       if (rescodebook1->nrow <= 6) 
 	mwerror(FATAL, 2, "Bad number (<= 6) of row in ResCodeBook1!\n");
 
-      testsize = (float) nint(rescodebook1->gray[(rescodebook1->nrow - 6) * sizeb]);
+      testsize = (float) floor(rescodebook1->gray[(rescodebook1->nrow
+						   - 6) * sizeb] + .5);
       if ((rescodebook1->gray[(rescodebook1->nrow - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(FATAL, 2, "Bad final size in ResCodeBook1!\n");
 
-      testsize = (float) nint(rescodebook1->gray[(rescodebook1->nrow - 5) * sizeb]);
+      testsize = (float) floor(rescodebook1->gray[(rescodebook1->nrow
+						   - 5) * sizeb] + .5);
       if ((rescodebook1->gray[(rescodebook1->nrow - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(FATAL, 2, "Bad initial size in ResCodeBook1!\n");
     }
@@ -268,11 +278,13 @@ Fimage          image;          /* Input image */
       if (rescodebook2->nrow <= 6) 
 	mwerror(FATAL, 2, "Bad number (<= 6) of row in ResCodeBook2!\n");
 
-      testsize = (float) nint(rescodebook2->gray[(rescodebook2->nrow - 6) * sizeb]);
+      testsize = (float) floor(rescodebook2->gray[(rescodebook2->nrow
+						   - 6) * sizeb] + .5);
       if ((rescodebook2->gray[(rescodebook2->nrow - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(FATAL, 0, "Bad final size in ResCodeBook2!\n");
 
-      testsize = (float) nint(rescodebook2->gray[(rescodebook2->nrow - 5) * sizeb]);
+      testsize = (float) floor(rescodebook2->gray[(rescodebook2->nrow
+						   - 5) * sizeb] + .5);
       if ((rescodebook2->gray[(rescodebook2->nrow - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(WARNING, 0, "Bad initial size in ResCodeBook2!\n");
     }
@@ -281,11 +293,13 @@ Fimage          image;          /* Input image */
       if (rescodebook3->nrow <= 6) 
 	mwerror(FATAL, 2, "Bad number (<= 6) of row in ResCodeBook3!\n");
 
-      testsize = (float) nint(rescodebook3->gray[(rescodebook3->nrow - 6) * sizeb]);
+      testsize = (float) floor(rescodebook3->gray[(rescodebook3->nrow
+						   - 6) * sizeb] + .5);
       if ((rescodebook3->gray[(rescodebook3->nrow - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(FATAL, 0, "Bad final size in ResCodeBook3!\n");
 
-      testsize = (float) nint(rescodebook3->gray[(rescodebook3->nrow - 5) * sizeb]);
+      testsize = (float) floor(rescodebook3->gray[(rescodebook3->nrow
+						   - 5) * sizeb] + .5);
       if ((rescodebook3->gray[(rescodebook3->nrow - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(WARNING, 0, "Bad initial size in ResCodeBook3!\n");
     }
@@ -294,11 +308,13 @@ Fimage          image;          /* Input image */
       if (rescodebook4->nrow <= 6) 
 	mwerror(FATAL, 2, "Bad number (<= 6) of row in ResCodeBook4!\n");
 
-      testsize = (float) nint(rescodebook4->gray[(rescodebook4->nrow - 6) * sizeb]);
+      testsize = (float) floor(rescodebook4->gray[(rescodebook4->nrow
+						   - 6) * sizeb] + .5);
       if ((rescodebook4->gray[(rescodebook4->nrow - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(FATAL, 0, "Bad final size in ResCodeBook4!\n");
 
-      testsize = (float) nint(rescodebook4->gray[(rescodebook4->nrow - 5) * sizeb]);
+      testsize = (float) floor(rescodebook4->gray[(rescodebook4->nrow
+						   - 5) * sizeb] + .5);
       if ((rescodebook4->gray[(rescodebook4->nrow - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(WARNING, 0, "Bad initial size in ResCodeBook4!\n");
     }
@@ -307,11 +323,15 @@ Fimage          image;          /* Input image */
       if (resrescodebook1->nrow <= 6) 
 	mwerror(FATAL, 2, "Bad number (<= 6) of row in ResResCodeBook1!\n");
 
-      testsize = (float) nint(resrescodebook1->gray[(resrescodebook1->nrow - 6) * sizeb]);
+      testsize = (float)
+      floor(resrescodebook1->gray[(resrescodebook1->nrow - 6) * sizeb]
+	    + .5);
       if ((resrescodebook1->gray[(resrescodebook1->nrow - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(FATAL, 2, "Bad final size in ResResCodeBook1!\n");
 
-      testsize = (float) nint(resrescodebook1->gray[(resrescodebook1->nrow - 5) * sizeb]);
+      testsize = (float)
+      floor(resrescodebook1->gray[(resrescodebook1->nrow - 5) * sizeb]
+	    + .5);
       if ((resrescodebook1->gray[(resrescodebook1->nrow - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(FATAL, 2, "Bad initial size in ResResCodeBook1!\n");
     }
@@ -320,11 +340,15 @@ Fimage          image;          /* Input image */
       if (resrescodebook2->nrow <= 6) 
 	mwerror(FATAL, 2, "Bad number (<= 6) of row in ResResCodeBook2!\n");
 
-      testsize = (float) nint(resrescodebook2->gray[(resrescodebook2->nrow - 6) * sizeb]);
+      testsize = (float)
+	   floor(resrescodebook2->gray[(resrescodebook2->nrow - 6) * sizeb]
+		 + .5);
       if ((resrescodebook2->gray[(resrescodebook2->nrow - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(FATAL, 0, "Bad final size in ResResCodeBook2!\n");
 
-      testsize = (float) nint(resrescodebook2->gray[(resrescodebook2->nrow - 5) * sizeb]);
+      testsize = (float)
+      floor(resrescodebook2->gray[(resrescodebook2->nrow - 5) * sizeb]
+	    + .5);
       if ((resrescodebook2->gray[(resrescodebook2->nrow - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 	mwerror(WARNING, 0, "Bad initial size in ResResCodeBook2!\n");
     }
@@ -863,10 +887,10 @@ int             recfac;
   if (recfac > 0)
     if (recfl)
       for (x = 0; x < size; x++, ptrse++)
-	*ptrse = (float) ((int) nint(*ptrse) / recfac);
+	*ptrse = (float) ((int) floor(*ptrse + .5) / recfac);
     else
       for (x = 0; x < size; x++, ptrse++)
-	*ptrse = (float) ((int) nint(*ptrse) % recfac);
+	*ptrse = (float) ((int) floor(*ptrse + .5) % recfac);
     
 }
 
@@ -986,12 +1010,14 @@ count_cb(codebook)
 Fimage     codebook;
 
 {
-  int      size, sizei, sizef;
+  long      size, sizei, sizef;
   int      n;
 
   if (codebook) {
-    sizei = nint(codebook->gray[(codebook->nrow - 5) * codebook->ncol]);
-    sizef = nint(codebook->gray[(codebook->nrow - 6) * codebook->ncol]);
+    sizei = floor(codebook->gray[(codebook->nrow - 5) *
+				 codebook->ncol] + .5);
+    sizef = floor(codebook->gray[(codebook->nrow - 6) *
+				 codebook->ncol] + .5);
     n = 2;
     size = 1;
     while (size <= sizei)
@@ -1016,13 +1042,15 @@ Fimage     codebook, cb;
 int        n;
 
 {
-  int      size, sizei, sizef;
+  long      size, sizei, sizef;
   long     xshift;
   long     x, xi, xf;
   int      n1;
   
-  sizei = nint(codebook->gray[(codebook->nrow - 5) * codebook->ncol]);
-  sizef = nint(codebook->gray[(codebook->nrow - 6) * codebook->ncol]);
+  sizei = floor(codebook->gray[(codebook->nrow - 5) * codebook->ncol]
+		+ .5);
+  sizef = floor(codebook->gray[(codebook->nrow - 6) * codebook->ncol]
+		+ .5);
 	       
   if (n == 0) {
     xi = sizef;

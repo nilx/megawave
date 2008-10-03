@@ -76,12 +76,14 @@ count_cb(codebook)
 Fimage     codebook;
 
 {
-  int      size, sizei, sizef;
+  long      size, sizei, sizef;
   int      n;
 
   if (codebook) {
-    sizei = nint(codebook->gray[(codebook->nrow - 5) * codebook->ncol]);
-    sizef = nint(codebook->gray[(codebook->nrow - 6) * codebook->ncol]);
+    sizei = floor(codebook->gray[(codebook->nrow - 5) *
+				 codebook->ncol] + .5);
+    sizef = floor(codebook->gray[(codebook->nrow - 6) *
+				 codebook->ncol] + .5);
     n = 2;
     size = 1;
     while (size <= sizei)
@@ -295,10 +297,14 @@ Wtrans2d   *Output1;            /* Sequence of generated codebooks */
 	  if (sizec <= 4)
 	    testres = 0;
 	  if (MultiCB) {
-	    testsize = (float) nint(ResCodeBook->images[J2][0]->gray[(sizec - 6) * sizeb]);
+	    testsize = (float)
+	  floor(ResCodeBook->images[J2][0]->gray[(sizec - 6) * sizeb]
+		+ .5);
 	    if ((ResCodeBook->images[J2][0]->gray[(sizec - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 	      testres = 0;
-	    testsize = (float) nint(ResCodeBook->images[J2][0]->gray[(sizec - 5) * sizeb]);
+	    testsize = (float)
+	  floor(ResCodeBook->images[J2][0]->gray[(sizec - 5) * sizeb]
+		+ .5);
 	    if ((ResCodeBook->images[J2][0]->gray[(sizec - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 	      testres = 0;
 	  }
@@ -313,10 +319,14 @@ Wtrans2d   *Output1;            /* Sequence of generated codebooks */
 	  if (sizec <= 4)
 	    testres = 0;
 	  if (MultiCB) {
-	    testsize = (float) nint(ResResCodeBook->images[J2][0]->gray[(sizec - 6) * sizeb]);
+	    testsize = (float)
+	  floor(ResResCodeBook->images[J2][0]->gray[(sizec - 6) *
+						    sizeb] + .5);
 	    if ((ResResCodeBook->images[J2][0]->gray[(sizec - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 	      testres = 0;
-	    testsize = (float) nint(ResResCodeBook->images[J2][0]->gray[(sizec - 5) * sizeb]);
+	    testsize = (float)
+	  floor(ResResCodeBook->images[J2][0]->gray[(sizec - 5) *
+						    sizeb] + .5);
 	    if ((ResResCodeBook->images[J2][0]->gray[(sizec - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 	      testres = 0;
 	  }
@@ -413,10 +423,14 @@ Wtrans2d   *Output1;            /* Sequence of generated codebooks */
 	    if (sizec <= 4)
 	      testres = 0;
 	    if (MultiCB) {
-	      testsize = (float) nint(ResCodeBook->images[J][i]->gray[(sizec - 6) * sizeb]);
+	      testsize = (float)
+		   floor(ResCodeBook->images[J][i]->gray[(sizec - 6) * sizeb]
+			 + .5);
 	      if ((ResCodeBook->images[J][i]->gray[(sizec - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 		testres = 0;
-	      testsize = (float) nint(ResCodeBook->images[J][i]->gray[(sizec - 5) * sizeb]);
+	      testsize = (float)
+		   floor(ResCodeBook->images[J][i]->gray[(sizec - 5) * sizeb]
+			 + .5);
 	      if ((ResCodeBook->images[J][i]->gray[(sizec - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 		testres = 0;
 	    }
@@ -431,10 +445,14 @@ Wtrans2d   *Output1;            /* Sequence of generated codebooks */
 	    if (sizec <= 4)
 	      testres = 0;
 	    if (MultiCB) {
-	      testsize = (float) nint(ResResCodeBook->images[J][i]->gray[(sizec - 6) * sizeb]);
+	      testsize = (float)
+		   floor(ResResCodeBook->images[J][i]->gray[(sizec - 6) *
+							    sizeb] + .5);
 	      if ((ResResCodeBook->images[J][i]->gray[(sizec - 6) * sizeb] != testsize) || (testsize < 1.0)) 
 		testres = 0;
-	      testsize = (float) nint(ResResCodeBook->images[J][i]->gray[(sizec - 5) * sizeb]);
+	      testsize = (float)
+		   floor(ResResCodeBook->images[J][i]->gray[(sizec - 5) *
+							    sizeb] + .5);
 	      if ((ResResCodeBook->images[J][i]->gray[(sizec - 5) * sizeb] != testsize) || (testsize < 1.0)) 
 		testres = 0;
 	    }

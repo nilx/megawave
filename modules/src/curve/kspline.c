@@ -58,7 +58,7 @@ void compute_spline(S,P,X,N,C,M,NPC,Step)
   int a,i,j;
   float t;   /* time in the discretization of the spline */
   float x,y; /* Real (x,y) coordinates */
-  int xx,yy,xx0,yy0; /* Quantized (x,y) coordinates */
+  long xx,yy,xx0,yy0; /* Quantized (x,y) coordinates */
   Point_curve pc,newp,oldp;
   float d,e,s,v;
 
@@ -99,8 +99,8 @@ void compute_spline(S,P,X,N,C,M,NPC,Step)
 		}
 	    }
 	  k++;
-	  xx = nint((double) x);
-	  yy = nint((double) y);
+	  xx = floor((double) x + .5);
+	  yy = floor((double) y + .5);
 	  mwdebug("\tSpline point #%d computed: (%f,%f) quantized to (%d,%d)\n",k,x,y,xx,yy);
 
 	  if ((k==1) || ((xx != xx0) || (yy != yy0)))

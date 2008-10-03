@@ -23,7 +23,7 @@ extern Cimage erosion();
 extern Fcurves fkzrt();
 extern void fkcenter();
 
-#define INT(x) (nint(x))
+#define INT(x) (floor(x + 5))
 #define BLACK 0
 #define WHITE 255
 
@@ -84,7 +84,7 @@ Fcurves  the_shape;
   Point_fcurve  pixel;
   Fcurve        curve;
   float         x,y,xf,yf,cs,sn,theta,theta_min;
-  int           xx,yy,i,dx,dy,k,l,prod,prod_min;
+  long           xx,yy,i,dx,dy,k,l,prod,prod_min;
   
   prod_min = 100000;
   

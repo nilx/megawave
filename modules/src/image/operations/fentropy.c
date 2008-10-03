@@ -44,7 +44,7 @@ double entropy(input)
   entr = 0.0;
   for (i=0;i<input->size;i++)
     if(p = (input->values[i] / sum))
-      entr += p * log2(p);
+	 entr += p * ((double)log(p)/log(2.));
 
   mwdebug("entropy : size = %d, sum = %f,  E = %f\n",
 	  input->size,sum,-entr);

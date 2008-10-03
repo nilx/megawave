@@ -159,7 +159,7 @@ int          predict;
     {
       cum_freq[0][nsymbol] = 0;
       for (z = nsymbol; z > 0; z--) {
-	freq[0][z] = nint(histo->values[z-1]);
+	freq[0][z] = floor(histo->values[z-1] + .5);
 	cum_freq[0][z-1] = cum_freq[0][z] + freq[0][z];
       }
       freq[0][0] = 0;

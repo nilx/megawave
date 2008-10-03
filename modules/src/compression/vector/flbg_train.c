@@ -140,13 +140,15 @@ Fimage     codebook;
 int        n;
 
 {
-  int      size, sizei, sizef;
+  long      size, sizei, sizef;
   long     xshift;
   long     x, xi, xf;
   int      n1;
   
-  sizei = nint(codebook->gray[(codebook->nrow - 5) * codebook->ncol]);
-  sizef = nint(codebook->gray[(codebook->nrow - 6) * codebook->ncol]);
+  sizei = floor(codebook->gray[(codebook->nrow - 5) * codebook->ncol]
+		+ .5);
+  sizef = floor(codebook->gray[(codebook->nrow - 6) * codebook->ncol]
+		+ .5);
 
   if (((float) sizei == codebook->gray[(codebook->nrow - 5) * codebook->ncol]) || ((float) sizef == codebook->gray[(codebook->nrow - 6) * codebook->ncol])) {
 

@@ -59,19 +59,19 @@ int      **Distance;
   Point_fcurve  p;
   Fcurve        c;
   float         d1,d2,d3,d4,xg,yg,xmin,ymin,xmax,ymax,radius,distf;
-  int           size,surf,diametre,distance,disti,*pdist;
-  int           i,j,nb,dx,dy,XG,YG;
+  long           size,surf,diametre,distance,disti,*pdist;
+  long           i,j,nb,dx,dy,XG,YG;
   double        x,y;
   
   fkbox(cs,&xmin,&ymin,&xmax,&ymax,NULL,NULL);
   
-  dx = nint(xmax-xmin) + 1;
-  dy = nint(ymax-ymin) + 1;
+  dx = floor(xmax-xmin + .5) + 1;
+  dy = floor(ymax-ymin + .5) + 1;
   
   fkcenter(cs,&xg,&yg);
   
-  XG = nint(xg);
-  YG = nint(yg);
+  XG = floor(xg + .5);
+  YG = floor(yg + .5);
   
   surf = size_fcurves(cs);
   
@@ -86,7 +86,7 @@ int      **Distance;
   if ((d4>=d1)&&(d4>=d2)&&(d4>=d3)) radius=d4;
   
   radius = (float)sqrt((double)radius);
-  diametre=nint(radius);
+  diametre=floor(radius + .5);
   
   
   if((*Distance=(int *)malloc((diametre+1)*sizeof(int)))==NULL) 
@@ -130,7 +130,7 @@ int    *treshold;
     
   for(i=0;i<=NPARAM;i++){
     s=(float)i*thick;
-    treshold[i]=nint(s);
+    treshold[i]=floor(s + .5);
   }
   
   for(i=0;i<NPARAM;i++)

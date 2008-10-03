@@ -380,7 +380,7 @@ Cimage infsup(Niter,deginf,degsup,average,image,fmovie,output)
 	  mwdebug("Averaging...\n");
 	  for (ptr1=image->gray, ptr2=image_save->gray, j=0; 
 	       j<size; ptr1++,ptr2++,j++)
-	    *ptr1 = nint(((double) *ptr1 + *ptr2)/2.0);
+	    *ptr1 = floor(((double) *ptr1 + *ptr2)/2.0 + .5);
 	  mw_copy_cimage(image,image_save);
 	}
     }
