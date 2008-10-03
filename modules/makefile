@@ -5,7 +5,7 @@
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
 BASEDIR	= ..
-COMMONDIR	= $(BASEDIR)/kernel/common
+COMMONDIR	= $(BASEDIR)/common
 include $(COMMONDIR)/makefile
 
 #
