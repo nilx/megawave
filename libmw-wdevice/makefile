@@ -86,9 +86,7 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(AUTOHDR)
 	$(RM) $(LIB)
-	$(RM) $(API)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing

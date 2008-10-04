@@ -16,18 +16,16 @@ include $(COMMONDIR)/makefile
 default	: lib api modules
 all	: lib api modules doc test
 clean	: clean-bin clean-doc
-clean	: distclean-bin distclean-doc
+distclean	: distclean-bin distclean-doc
 
 
 # PREBUILD AND UTILS
 #
 
 .PHONY	: prebuild
-prebuild	: api dep man
-#prebuild	: autohdr api dep man
+prebuild	: autohdr api dep man
 
-.PHONY	: $(AUTOHDR)
-#.PHONY	: autohdr
+.PHONY	: autohdr
 #autohdr	: $(AUTOHDR)
 
 .PHONY	: dep
@@ -48,6 +46,9 @@ BINHDR	= $(BINSRC:.c=.h)
 AUTOHDR	= $(LIBHDR) $(BINHDR)
 LIBOBJ	= $(LIBSRC:.c=.o)
 BINOBJ	= $(BINSRC:.c=.o)
+
+# no need for cproto and makedepend
+.PHONY	: $(AUTOHDR:.h=.d)
 
 MWPLIGHT	= $(BASEDIR)/mwplight/mwplight
 LIBMW	= $(BASEDIR)/libmw/libmw.so
@@ -81,11 +82,11 @@ $(LIBMW_MODULES)	: $(LIBOBJ)
 
 .PHONY	: api
 api 	: $(API)
-$(API) 	: $(LIBSRC)
+$(API) 	: $(LIBHDR)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
 	$(ECHO) -e "$(addprefix \n#include , $(APIINC))\n" >> $@
-	$(CPROTO) $(CPROTO_FLAGS) $(filter %.c, $^) >> $@
+	$(CAT) $^ >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
 
 # RULES
@@ -100,8 +101,13 @@ $(API) 	: $(LIBSRC)
 %.exec.o	: %.exec.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
+#ifdef STATIC
+#%.exec	: %.exec.c $(LIBMW) $(LIBMW_WDEVICE) $(LIBMW_MODULES)
+#	$(CC) $(CCFLAGS) -static -I../libmw -I. -I../libmw-wdevice -L../libmw -o $@ $^
+#else
 %.exec	: %.exec.o $(LIBMW) $(LIBMW_WDEVICE) $(LIBMW_MODULES)
 	$(LD) $(LDFLAGS) -lmw-wdevice -lmw-modules -o $@ $<
+#endif
 
 .PHONY	: clean-bin
 clean-bin :
@@ -115,7 +121,6 @@ clean-bin :
 distclean-bin : clean-bin
 	$(RM) $(LIBMW_MODULES)
 	$(RM) $(MODULES)
-	$(RM) $(API)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
