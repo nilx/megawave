@@ -21,7 +21,7 @@ double perimeter(in,min,max)
      double *min,*max;
 {
   int i,d;
-  double per,s,*p;
+  double per, s, *p, d1, d2;
 
   if (min) *min=0.;
   if (max) *max=0.;
@@ -31,7 +31,9 @@ double perimeter(in,min,max)
   d = in->dim;
   if (d<2) mwerror(FATAL,1,"Not a curve: dim < 2\n");
   for (i=0;i<in->size-1;i++,p+=d) {
-    s = hypot(*p-*(p+d),*(p+1)-*(p+d+1));
+    d1 = *p - *(p + d);
+    d2 = *(p + 1) - *(p + d + 1);
+    s = sqrt(d1 * d1 + d2 * d2);
     per += s;
     if (min && (i==0 || s<*min)) *min=s;
     if (max && s>*max) *max=s;

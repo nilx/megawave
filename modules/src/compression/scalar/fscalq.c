@@ -33,6 +33,7 @@ usage = {
  
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include  "mw.h"
 
@@ -493,7 +494,8 @@ double     *ratear;             /* Arithmetic coding rate */
       printf("Step width : %.6f\n", stepsize);
 
     if (center)
-      test = 1.0 + rint(max / stepsize) - rint(min / stepsize);
+      test = 1.0 + floor(max / stepsize + .5) 
+	   - floor(min / stepsize + .5);
     else
       {
 	test = floor((max - min) / stepsize) + 1.0;
@@ -501,7 +503,7 @@ double     *ratear;             /* Arithmetic coding rate */
 	ashift = sshift + stepsize / 2.0; 
       }
 
-    hsize = (int) rint(test);
+    hsize = (int) floor(test + .5);
     if (hsize > MAX_NSTEP)
       mwerror(FATAL, 2, "StepSize is to small => nstep is too large!\n");
 
@@ -524,8 +526,8 @@ double     *ratear;             /* Arithmetic coding rate */
 
 	if (hsize > 1) {
 	  stepsize = (max - min) / (float) (hsize - 1.0);
-	  testmin = rint(min / stepsize) - 0.5;
-	  testmax = rint(max / stepsize) + 0.5;
+	  testmin = floor(min / stepsize + .5) - 0.5;
+	  testmax = floor(max / stepsize + .5) + 0.5;
 	  stepsize = max / testmax;
 	  if (testmin * stepsize > min)
 	    stepsize = min / testmin;
@@ -567,13 +569,14 @@ double     *ratear;             /* Arithmetic coding rate */
   /*--- Quantization of image ---*/
 
   if (center) {
-    minstep = (long) rint(min/stepsize);
+    minstep = (long) floor(min/stepsize + .5);
     if ((minstep < - MAX_MINSTEP) || (minstep > MAX_MINSTEP))
       mwerror(FATAL, 3, "Bad value for minstep!\n");
     if (!printsnr)
-      printf("Lowest / highest steps : %d / %d\n", minstep, (int) rint(max/stepsize));
+      printf("Lowest / highest steps : %d / %d\n", minstep, 
+	     (int) floor(max/stepsize + .5));
     for(i=0;i<isize;i++) {
-      step = (int) rint(image->gray[i] / stepsize);
+      step = (int) floor(image->gray[i] / stepsize + .5);
       result->gray[i] = (float) step * stepsize;
       step -= minstep;
       if ((step<0)||(step>=hsize)) {

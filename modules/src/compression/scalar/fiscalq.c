@@ -25,6 +25,7 @@ usage = {
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include  "mw.h"
 
@@ -329,13 +330,13 @@ double     *rate;               /* Bit rate */
   if (nstep > 1)
     if (center) {
       for(i=0;i<isize;i++) {
-	step = (int) rint(symbol->gray[i]) + minstep;
+	step = (int) floor(symbol->gray[i] + .5) + minstep;
 	result->gray[i] = (float) step * stepsize;
       }
     } else
       {
 	for(i=0;i<isize;i++)  {
-	  step = (int) rint(symbol->gray[i]);
+	  step = (int) floor(symbol->gray[i] + .5);
 	  result->gray[i] = step * stepsize + ashift;
 	}
       }

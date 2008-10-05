@@ -110,8 +110,8 @@ void fkprintfig(in,d,e_flag,s_flag,m,r)
 	printf(FIG_CLOSED_POLYGON(100,n));
       else printf(FIG_NONCLOSED_POLYGON(100,n));
       for (p=c->first;p;p=p->next) {
-	nx = (int) rint ( zoom_x * (p->x - shift_x) );
-	ny = (int) rint ( zoom_y * (p->y - shift_y) );
+	nx = (int) floor(zoom_x * (p->x - shift_x) + .5);
+	ny = (int) floor(zoom_y * (p->y - shift_y) + .5);
 	printf("%d %d ",nx,ny);
       }
       printf("\n");
@@ -121,8 +121,8 @@ void fkprintfig(in,d,e_flag,s_flag,m,r)
 
       /* POINTS */
       for (p=c->first;p;p=p->next) {
-	nx = (int) rint ( zoom_x * (p->x - shift_x) );
-	ny = (int) rint ( zoom_y * (p->y - shift_y) );
+	nx = (int) floor(zoom_x * (p->x - shift_x) + .5);
+	ny = (int) floor(zoom_y * (p->y - shift_y) + .5);
 	printf(FIG_DISC(101,nx,ny,radius));
       }
 
@@ -132,13 +132,13 @@ void fkprintfig(in,d,e_flag,s_flag,m,r)
 
       /* EXTREMAL POINTS */
       p=c->first;
-      nx = (int) rint ( zoom_x * (p->x - shift_x) );
-      ny = (int) rint ( zoom_y * (p->y - shift_y) );
+      nx = (int) floor(zoom_x * (p->x - shift_x) + .5);
+      ny = (int) floor(zoom_y * (p->y - shift_y) + .5);
       printf(FIG_DISC(102,nx,ny,radius*4));
 
       while (p->next) p=p->next;
-      nx = (int) rint ( zoom_x * (p->x - shift_x) );
-      ny = (int) rint ( zoom_y * (p->y - shift_y) );
+      nx = (int) floor(zoom_x * (p->x - shift_x) + .5);
+      ny = (int) floor(zoom_y * (p->y - shift_y) + .5);
       printf(FIG_DISC(102,nx,ny,radius*4));
 
     }

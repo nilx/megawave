@@ -530,7 +530,9 @@ Tiling* newTiling(ntheta,p,p_inf,M)
 
 
   /* Initial size for segs Flists = expected number of segments at each tile */
-  max_size = (int)rint(max(((double)*M)/sqrt((double)(nx*ny+ntheta*nq)),1.0));
+  max_size = (int) floor(max(((double) *M) 
+			     / sqrt((double) (nx * ny + ntheta * nq)), 1.0)
+			 + .5);
 
   /* Initialize all tiles */
   *M=0;
@@ -544,10 +546,15 @@ Tiling* newTiling(ntheta,p,p_inf,M)
 	     (i.e. inside the image domain) */
 	  isvalid=0;
 	  for(i=0;i<4;i++)
-	    if (hypot(T[ie].x[ix+dx[i]],T[ie].y[iy+dy[i]])<=1.0) {
+	  { 
+	    double x, y;
+	    x = T[ie].x[ix + dx[i]];
+	    y = T[ie].y[iy + dy[i]];
+	    if (sqrt(x * x + y * y) <= 1.0) {
 	      isvalid = 1;
 	      break;
 	    }
+	  }
 	  TIsValid(T,ie,ix,iy) = isvalid;
 	} else { /* ie == EXTERIOR_TILING */
 	  if ((IdentifyOppositeTiles==1) && (iy==(T[ie].ny-1)))
@@ -734,7 +741,7 @@ void polar_coords(seg,R,Xcenter,Ycenter,rho,phi)
      phi = oriented angle in [0,2pi] from e1 to P-C
   */
   px = P[0]/P[2]-Xcenter;  py = P[1]/P[2]-Ycenter;
-  *rho = hypot(px,py)/R;
+  *rho = sqrt(px * px + py * py) / R;
   *phi = atan2(py,px);
 
   if ((*phi)<0.0)
@@ -917,7 +924,9 @@ int TAddSegment(Tilings,i,S,j,R,Xcenter,Ycenter)
   T = Tilings[i];
 
   /* compute angular precision of this segment ... */
-  length = hypot(SX0(S,j)-SX1(S,j),SY0(S,j)-SY1(S,j));
+  dx = SX0(S, j) - SX1(S, j);
+  dy = SY0(S, j) - SY1(S, j);
+  length = sqrt(dx * dx + dy * dy);
   ie     = EXTERIOR_TILING;
   dtheta = T[ie].x[1]-T[ie].x[0];
   /* ... if it is too coarse do not add segment */
@@ -1192,7 +1201,8 @@ int    *maskedVPs;
      N = Segments->size;
 
   /* Radius and center of circumscribed circle containing image domain */
-     R = hypot((double)imagein->nrow,(double)imagein->ncol)/2.0; 
+     R = sqrt((double) imagein->nrow * (double)imagein->nrow
+	      + (double) imagein->ncol * (double)imagein->ncol) / 2.0; 
      X0 = (double)imagein->ncol/2.0;
      Y0 = (double)imagein->nrow/2.0;
   /* Establish series of n_pl dyadic angular precision levels
@@ -1223,7 +1233,7 @@ int    *maskedVPs;
      /*** For each angular precision level ... ***/
      for(i=0; i<n_pl; i++) {
        /* Number of orientations */
-       ntheta = (int)rint(pow(2.0,(double)(min_pl+i)));
+       ntheta = (int) floor(pow(2.0, (double) (min_pl + i)) + .5);
        if (verbose) fprintf(stderr,
 	       "\nBuilding data structure for angular precision = pi/%d\n",
 	       ntheta);	       

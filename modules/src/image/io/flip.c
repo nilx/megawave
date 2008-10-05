@@ -16,6 +16,7 @@
  v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
+#include <string.h>
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
@@ -80,7 +81,11 @@ void recompute()
 
 void redisplay()
 {
-  char str[80];
+  /* 
+   * FIXME: oversized str, but this is not safe, snprintf *is*
+   * required
+   */
+  char str[512];
 
   if (num==1)
     WLoadBitMapColorImage(win,image1->red,image1->green,image1->blue,nx,ny);
@@ -89,16 +94,19 @@ void redisplay()
   WRestoreImageWindow(win,0,0,nx,ny);
   switch(disp) {
   case 1:
-    snprintf(str,80,"current image: %s",(num==1?u1->name:u2->name)); 
+    sprintf(str,"current image: %s",(num==1?u1->name:u2->name)); 
+    str[80] = '\0';
     WDrawString(win,0,10,str);
     break;
   case 2:
-    snprintf(str,80,"interpolation method: %s",ordername[order]);
+    sprintf(str,"interpolation method: %s",ordername[order]);
+    str[80] = '\0';
     WDrawString(win,0,10,str);
     break;
   case 3:
-    snprintf(str,80,"currently displayed window: [%f,%f]x[%f,%f]",
+    sprintf(str,"currently displayed window: [%f,%f]x[%f,%f]",
 	     X1,X2,Y1,Y2); 
+    str[80] = '\0';
     WDrawString(win,0,10,str);
     break;
   }
@@ -251,7 +259,7 @@ void flip(in1,in2,z,o)
      float *z;
      int *o;
 {
-  char str[80];
+  char str[512];
 
   /* Initializations */
   nx = (int)(*z*(float)in1->ncol);
@@ -267,7 +275,8 @@ void flip(in1,in2,z,o)
   for (order=0;ordervalue[order]!=*o && order<ordernum;order++);
   if (order==ordernum) mwerror(FATAL,1,"Unrecognized interpolation order.");
 
-  snprintf(str,80,"flip %s and %s",u1->name,u2->name);
+  sprintf(str,"flip %s and %s",u1->name,u2->name);
+  str[80] = '\0';
   if (!(win=(Wframe *)mw_get_window(NULL,nx,ny,50,50,str)))
     mwerror(INTERNAL,1,"NULL window returned by mw_get_window\n");
 

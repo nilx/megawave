@@ -73,7 +73,7 @@ void vpsegplot(image,allsegs,vpoints,vsegs,n,crv,lines)
      char   *lines;
 {
   int i,j,k, m, seg_idx, *ismember;
-  double R,X0,Y0;
+  double R,X0,Y0,dx,dy;
   float *csegs;
   int    nsegs;
   float x0,x1;
@@ -82,7 +82,8 @@ void vpsegplot(image,allsegs,vpoints,vsegs,n,crv,lines)
   double xbar, ybar, vp_xbar, vp_ybar, fact, target_length;
   
   /* Radius and center of circumscribed circle containing image domain */
-     R = hypot((double)image->nrow,(double)image->ncol)/2.0; 
+     R = sqrt((double) image->nrow * (double) image->nrow
+	      + (double)image->ncol * (double) image->ncol) / 2.0; 
      X0 = (double)image->ncol/2.0;
      Y0 = (double)image->nrow/2.0;
 
@@ -142,7 +143,9 @@ void vpsegplot(image,allsegs,vpoints,vsegs,n,crv,lines)
 	 vp_ybar += vpoints->values[vdim*n+j+1]+.5;
        }
        vp_xbar *= 0.25; vp_ybar *= 0.25;
-       target_length = hypot(vp_xbar-X0,vp_ybar-Y0);
+       dx = vp_xbar - X0;
+       dy = vp_ybar - Y0;
+       target_length = sqrt(dx * dx + dy * dy);
        target_length = 2.0*R*(1.0+target_length/R);
      }
      } else crv->size--;
@@ -161,7 +164,9 @@ void vpsegplot(image,allsegs,vpoints,vsegs,n,crv,lines)
 	 y1 = SegListY1(allsegs,(int)(csegs[i]))+.5;
 	 xbar = (x0+x1)/2.0;
 	 ybar = (y0+y1)/2.0;
-	 fact = target_length/hypot(x1-x0,y1-y0);
+	 dx = x1 - x0;
+	 dy = y1 - y0;
+	 fact = target_length / sqrt(dx * dx + dy * dy);
 	 crv->list[i]->values[0] = fact*(x0-xbar)+xbar;
 	 crv->list[i]->values[1] = fact*(y0-ybar)+ybar;
 	 crv->list[i]->values[2] = fact*(x1-xbar)+xbar;

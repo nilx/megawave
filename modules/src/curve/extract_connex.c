@@ -74,10 +74,7 @@ int  nbforme;
 
 {
   start += ou;
-  /* Does not exist on Sun 4.x 
-     memmove(start+1,start,nbforme-ou);
-  */
-  bcopy(start,start+1,nbforme-ou);
+  memmove(start+1,start,nbforme-ou);
 }
 
 /* Allocate the array that associates the points to the shapes */

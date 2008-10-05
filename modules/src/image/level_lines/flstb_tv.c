@@ -44,12 +44,15 @@ float perimeter(pCurve, iHeight, iWidth)
   point_t *pPoint, point, pointNext;
   int i;
   double dPerimeter = 0;
+  double dx, dy;
 
   pPoint = (point_t*) pCurve->values;
   for(i = 0; i+1 < pCurve->size; i++, pPoint++)
-    dPerimeter += hypot((double)(pPoint[1].x - pPoint->x),
-			(double)(pPoint[1].y - pPoint->y));
-
+  {
+    dx = pPoint[1].x - pPoint->x;
+    dy = pPoint[1].y - pPoint->y;
+    dPerimeter += sqrt(dx * dx + dy * dy);
+  }
   /* For open curves, close it by the boundary of the image */
   pointNext = *pPoint;
   while(pointNext.x != pCurve->values[0] || pointNext.y != pCurve->values[1]) {

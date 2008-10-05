@@ -40,8 +40,8 @@ char   *i_flag;
   ny = in_re->nrow;
   zoom = (i_flag?1./(*z):*z);
   if (zoom<=0.) mwerror(FATAL,1,"Zoom factor must be positive.\n");
-  nxz = (int)rint((double)nx*(double)zoom);
-  nyz = (int)rint((double)ny*(double)zoom);
+  nxz = (int) floor((double)nx*(double)zoom + .5);
+  nyz = (int) floor((double)ny*(double)zoom + .5);
   z2 = zoom*zoom;
   
   /* ALLOCATE AND INITIALIZE IMAGES */

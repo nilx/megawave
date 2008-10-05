@@ -417,6 +417,7 @@ static int get_next_point_length(fcrv, xI0, yI0, iFirst, iLast, d, type)
 {
   int i, i_last;
   float x, y, xP, yP, s, t;
+  double dx, dy;
   float splust;
 
   s=0.0f;
@@ -428,7 +429,9 @@ static int get_next_point_length(fcrv, xI0, yI0, iFirst, iLast, d, type)
   do {
     x=_(fcrv,i,0);
     y=_(fcrv,i,1);
-    t=(float)hypot((double)(x-xP),(double)(y-yP));
+    dx = x - xP;
+    dy = y - yP;
+    t = (float) sqrt(dx * dx + dy * dy);
     splust=s+t; 
     if (splust < d) {
       s=splust;

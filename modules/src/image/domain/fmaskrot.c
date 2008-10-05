@@ -26,7 +26,7 @@ Fimage fmaskrot(in,out,bg,s)
      float *bg,*s;
 {
   int nx,ny,x,y,adr;
-  double cx,cy,r,d;
+  double cx,cy,r,d,dx,dy;
 
   nx = in->ncol;
   ny = in->nrow;
@@ -39,7 +39,9 @@ Fimage fmaskrot(in,out,bg,s)
 
   for (x=nx;x--;) for (y=ny;y--;) {
     adr = y*nx+x;
-    d = hypot((double)x-cx,(double)y-cy);
+    dx = x - cx;
+    dy = y - cy;
+    d = sqrt(dx * dx + dy * dy);
     if (d>=r) out->gray[adr] = *bg;
     else if (d<=r-*s) out->gray[adr] = in->gray[adr];
     else out->gray[adr] = (*bg*(*s-(float)(r-d)) + 

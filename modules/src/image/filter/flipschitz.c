@@ -103,7 +103,8 @@ Fimage flipschitz(in,lip,out,r,s,n,i)
   for (p=shape->first,k=0;p;p=p->next,k++);
   delta = (float *)malloc(k*sizeof(float));
   for (p=shape->first,k=0;p;p=p->next,k++) 
-    delta[k] = lip*(float)hypot((double)p->y,(double)p->x);
+    delta[k] = lip * sqrt((double) p->y * (double) p->y
+			  + (double)p->x * (double) p->x);
 
   out = mw_change_fimage(out,in->nrow,in->ncol);
   if (!out) mwerror(FATAL,1,"Not enough memory.");

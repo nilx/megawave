@@ -1005,7 +1005,7 @@ Dlists gcsf(in,out,gam,first,last,eps,area,n,r,v,iter,conv)
   int       i,j,ncc,MAX_PTS,MAX_CC,npts,maxsize,collapsed;
   double    a,are,remaining,newlast,rad,eps2,omega,t,step;
   double    x,y,ox,oy,r2,r2max,*per,maxper;
-  double    xmin,xmax,ymin,ymax;
+  double    xmin,xmax,ymin,ymax,dx,dy;
 
   if (*n<0) mwerror(FATAL,1,"n must be positive\n");
 
@@ -1043,7 +1043,9 @@ Dlists gcsf(in,out,gam,first,last,eps,area,n,r,v,iter,conv)
       }
       j++;
     }
-    rad = hypot(xmax-xmin,ymax-ymin);
+    dx = xmax - xmin;
+    dy = ymax - ymin;
+    rad = sqrt(dx * dx + dy * dy);
     mwdebug("rad = %f\n",rad);
   }
   else rad = *r;

@@ -22,6 +22,7 @@ void fkeepphase(in,mod,out)
 {
   Fimage re,im,rho;
   int adr;
+  double dx,dy;
   double r;
   
   re = mw_new_fimage();
@@ -31,7 +32,9 @@ void fkeepphase(in,mod,out)
   fft2d(in,NULL,re,im,NULL);
   fft2dpol(mod,NULL,rho,NULL,NULL);
   for (adr=in->ncol*in->nrow;adr--;) {
-    r = hypot((double)im->gray[adr],(double)re->gray[adr]);
+    dx = im->gray[adr];
+    dy = re->gray[adr];
+    r = sqrt(dx * dx + dy * dy);
     if (r!=0.) {
       re->gray[adr] *= rho->gray[adr]/r;
       im->gray[adr] *= rho->gray[adr]/r;

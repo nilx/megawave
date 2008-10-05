@@ -587,7 +587,7 @@ Point_curve    *p;               /* Table of points for memory
       if (x1 < x2) {
 	for (x = x1 + 1; x <= x2; x++) {
 	  z = m * x + c;
-	  y = (int) rint(z);
+	  y = (int) floor(z + .5);
 	  if (y != ptr_point->y) {
 	    ptr_point->next = ptr_point + 1;
 	    ptr_point++;
@@ -605,7 +605,7 @@ Point_curve    *p;               /* Table of points for memory
 	{
 	  for (x = x1 - 1; x >= x2; x--) {
 	    z = m * x + c;
-	    y = (int) rint(z);
+	    y = (int) floor(z + .5);
 	    if (y != ptr_point->y) {
 	      ptr_point->next = ptr_point + 1;
 	      ptr_point++;
@@ -627,7 +627,7 @@ Point_curve    *p;               /* Table of points for memory
 	if (y1 < y2) {
 	  for (y = y1 + 1; y <= y2; y++) {
 	    z = m * y + c;
-	    x = (int) rint(z);
+	    x = (int) floor(z + .5);
 	    if (x != ptr_point->x) {
 	      ptr_point->next = ptr_point + 1;
 	      ptr_point++;
@@ -645,7 +645,7 @@ Point_curve    *p;               /* Table of points for memory
 	  {
 	    for (y = y1 - 1; y >= y2; y--) {
 	      z = m * y + c;
-	      x = (int) rint(z);
+	      x = (int) floor(z + .5);
 	      if (x != ptr_point->x) {
 		ptr_point->next = ptr_point + 1;
 		ptr_point++;

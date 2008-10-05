@@ -34,6 +34,7 @@ Fimage in,gradx,grady,gradn,gradp;
 {
   int nx,ny,x,y,adr;
   float normx,normy,cx,cy,xx,yy;
+  double dx,dy;
   Fimage re,im;
 
   nx = in->ncol;
@@ -98,10 +99,11 @@ Fimage in,gradx,grady,gradn,gradp;
   if (gradn)
     for (adr=nx*ny;adr--;)
       if (gradx->gray[adr]!=0.0 || grady->gray[adr]!=0.0)
-	gradn->gray[adr] = 
-	  (float)hypot( (double)grady->gray[adr],
-			(double)gradx->gray[adr]);
-
+      {
+	dx = gradx->gray[adr];
+	dy = grady->gray[adr];
+	gradn->gray[adr] = (float) sqrt(dx * dx + dy * dy);
+      }
   mw_delete_fimage(re);
   mw_delete_fimage(im);
 }

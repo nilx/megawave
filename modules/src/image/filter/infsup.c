@@ -389,7 +389,7 @@ Cimage infsup(Niter,deginf,degsup,average,image,fmovie,output)
 
   /* -------------- Free buffers ------------ */
   
-  cfree(G);
+  free(G);
   if (image_save) mw_delete_cimage(image_save);
   mw_delete_cimage(image_work);
 

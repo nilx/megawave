@@ -38,7 +38,8 @@ void fft2dpol(in_re, in_im, out1, out2, i_flag)
   int    i;
   float  rho,theta;
   Fimage drho_flag,dtheta_flag;
-  
+  double dx,dy;
+
   if ((!out1) && (!out2)) 
     mwerror(USAGE,1,"At least one output needed\n");
   
@@ -52,7 +53,9 @@ void fft2dpol(in_re, in_im, out1, out2, i_flag)
   
   /*** Convert result to polar coordinates ***/
   for (i=out1->nrow*out1->ncol; i-- ; ) {
-    rho   = (float)hypot((double)out2->gray[i],(double)out1->gray[i]);
+    dx = out2->gray[i];
+    dy = out1->gray[i];
+    rho   = (float) sqrt(dx * dx + dy * dy);
     theta = (float)atan2((double)out2->gray[i],(double)out1->gray[i]);
     out1->gray[i] = rho;
     out2->gray[i] = theta;

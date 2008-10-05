@@ -53,7 +53,7 @@ void param(c,size)
      double *c;
      int size;
 {
-  double length,cur,norm;
+  double length,cur,norm,x,y;
   int k,i;
 
   for (k=0;k<size;k++) {
@@ -61,11 +61,17 @@ void param(c,size)
   }
   length = 0.;
   for (k=0;k<size-1;k++) 
-    length += hypot(yt[k+1]-yt[k],xt[k+1]-xt[k]);
+  {
+    x = xt[k + 1] - xt[k];
+    x = yt[k + 1] - yt[k];
+    length += sqrt(x * x + y * y);
+  }
   length /= (double)(size-1);
   cur = 0.; i = 1;
   for (k=0;k<size-1;k++) {
-    cur +=  (norm=hypot(yt[k+1]-yt[k],xt[k+1]-xt[k]));
+    x = xt[k + 1] - xt[k];
+    y = yt[k + 1] - yt[k];
+    cur += (norm = sqrt(x * x + y * y));
     while (cur>=(double)i*length && i<size-1) {
       c[2*i  ] = xt[k+1] + (xt[k]-xt[k+1])*((cur-(double)i*length)/norm);
       c[2*i+1] = yt[k+1] + (yt[k]-yt[k+1])*((cur-(double)i*length)/norm);
@@ -225,7 +231,7 @@ Dlists mac_snakes(u,in,niter,step,power,v,V)
 	/* energy */
 	dx[k] = in->list[j]->values[2*k+2]-in->list[j]->values[2*k  ];
 	dy[k] = in->list[j]->values[2*k+3]-in->list[j]->values[2*k+1];
-	dn[k] = hypot(dy[k],dx[k]);
+	dn[k] = sqrt(dx[k] * dx[k] + dy[k] * dy[k]);
 	if (dn[k]==0.) dn[k]=1.0e-20;
 	s = (-uy[k]*dx[k]+ux[k]*dy[k])/dn[k];
 	gdgh(s,&g,dg+k,h+k);

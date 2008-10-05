@@ -72,8 +72,8 @@ char open;
 
   /* contrast[] */
   for (i=0;i<n;i++) {
-    ix = (int)rint((double)c->values[i*2])-1;
-    iy = (int)rint((double)c->values[i*2+1])-1;
+    ix = (int) floor(c->values[i * 2] + .5) - 1;
+    iy = (int) floor(c->values[i * 2 + 1] + .5) - 1;
     if (ix>=0 && iy>=0 && ix<NormOfDu->ncol && iy<NormOfDu->nrow) 
       contrast[i] = NormOfDu->gray[NormOfDu->ncol*iy+ix];
     else contrast[i] = 0.;

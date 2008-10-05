@@ -78,8 +78,8 @@ float *length;
       ox = x; oy = y;
     }
     
-    ix = (int)rint((double)x)-1;
-    iy = (int)rint((double)y)-1;
+    ix = (int) floor((double) x + .5) - 1;
+    iy = (int) floor((double) y + .5) - 1;
     if (ix>=0 && iy>=0 && ix<NormOfDu->ncol && iy<NormOfDu->nrow) {
       mu = NormOfDu->gray[NormOfDu->ncol*iy+ix];
       if (mu<minmu) minmu=mu;

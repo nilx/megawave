@@ -150,7 +150,8 @@ Flists crv;
   nx = u->ncol;
   ny = u->nrow;
   /* maximal length for a line */
-  n = (int)ceil(hypot((double)nx,(double)ny))+1;
+  n = (int) ceil(sqrt((double) nx * (double) nx 
+		      + (double) ny * (double) ny)) + 1;
 
   /*** compute angle map of u ***/
   angle = ll_angle(u,*g);

@@ -150,16 +150,15 @@ void approximation(filter,tree,pfilter)
        if(count==0)
 	 mwerror(FATAL, 1, "size of filter should be larger than size of pfilter !\n");
        
-       if(l2>=0)
-	 l2=sqrtf(l2/count);
+       if( l2 < 0)
+	 l2 = (float) -sqrt(- (double) l2 / count);
        else
-	 l2=-sqrtf(-l2/count);
+	 l2 = (float) sqrt((double) l2 / count);
        
        for(kx_tree=0;kx_tree<incr_x_tree;kx_tree++)
 	 for(ky_tree=0;ky_tree<incr_y_tree;ky_tree++)
 	   _(pfilter,kx+kx_tree,ky+ky_tree)=l2;
        }
-
    }
 
   mw_delete_fsignal(order); 

@@ -60,7 +60,8 @@ void radialkernel(kernel,rad)
   for (x=-nx/2;x<(nx+1)/2;x++)
     for (y=-ny/2;y<(ny+1)/2;y++) {
       adr = (y<0?ny+y:y)*nx+(x<0?nx+x:x);
-      dist = (int)rint(rad->scale*sqrt(cx*(double)(x*x)+cy*(double)(y*y)));
+      dist = (int) floor(rad->scale * sqrt(cx * (double) (x * x)
+					   + cy * (double) (y * y)) + .5);
       if (dist>=rad->size) kernel->gray[adr] = 0.;
       else kernel->gray[adr] = rad->values[dist];
     }

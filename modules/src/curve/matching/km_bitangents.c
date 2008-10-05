@@ -63,9 +63,17 @@ static float halfplane(x1, y1, x2, y2, x, y)
      float x1,y1,x2,y2,x,y;
 {
   float u, v;
+  double dx, dy;
   u=(x2-x1)*(y2-y);
   v=(x2-x)*(y2-y1);
-  if ((u-v)*(u-v)<qEPSDIST6) return(0); else return((u-v)/hypot(x2-x1,y2-y1));
+  if ((u-v)*(u-v)<qEPSDIST6) 
+     return(0); 
+  else 
+  {
+     dx = x2 - x1;
+     dy = y2 - y1;
+     return (u-v) / sqrt(dx * dx + dy * dy);
+  }
 }
 
 

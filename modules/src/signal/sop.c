@@ -64,7 +64,9 @@ void sop(B,out,A,a,plus,minus,times,divide,dist,norm,inf,sup,less,greater,equal)
     else if (times)   res = left * B->values[i];
     else if (divide)  res = left / B->values[i];
     else if (dist)    res = ABS(left - B->values[i]);
-    else if (norm)    res = (float)hypot((double)left,(double)(B->values[i]));
+    else if (norm)    res = sqrt((double) left * (double) left
+				 + (double) (B->values[i]) 
+				 * (double)(B->values[i]));
     else if (inf)     res = (left < B->values[i] ? left : B->values[i]);
     else if (sup)     res = (left > B->values[i] ? left : B->values[i]);
     else if (less)    res = (left < B->values[i] ? 1.0 : 0.0);

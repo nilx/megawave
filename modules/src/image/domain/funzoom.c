@@ -289,8 +289,8 @@ Fimage funzoom(in,out,z,o,tx,ty)
     mwerror(USAGE,0,"spline space order should be in [0..5]\n");
 
   nx = in->ncol; ny = in->nrow;
-  nsx = (int)rint((double)nx/(double)(*z));
-  nsy = (int)rint((double)ny/(double)(*z));
+  nsx = (int) floor((double) nx / (double) (*z) + .5);
+  nsy = (int) floor((double) ny / (double) (*z) + .5);
   out = mw_change_fimage(out,nsy,nsx);
   
   tmp = mw_change_fimage(NULL,ny,nsx);

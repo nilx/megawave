@@ -145,8 +145,8 @@ Fimage NormofDu;
     if (i>0) per += sqrt((double)(x-ox)*(x-ox)+(y-oy)*(y-oy));
     ox = x; oy = y;
     
-    ix = (int)rint((double)x)-1;
-    iy = (int)rint((double)y)-1;
+    ix = (int) floor((double) x + .5) - 1;
+    iy = (int) floor((double) y + .5) - 1;
     if (ix>=0 && iy>=0 && ix<NormofDu->ncol && iy<NormofDu->nrow) {
       mu = NormofDu->gray[NormofDu->ncol*iy+ix];
       if (mu<minmu) {
@@ -164,7 +164,10 @@ Fimage NormofDu;
 float dist2(p,q)
 float *p,*q;
 {
-  return((float) hypot((double)(*p-*q),(double)(*(p+1)-*(q+1))));
+  double x, y;
+  x = *p - *q;
+  y = *(p + 1) - *(q + 1);
+  return (float) sqrt(x * x + y * y);
 }
 
 
@@ -312,7 +315,7 @@ Fimage NormofDu;
 {
   Shape s;
   Mydata sdata;
-  int ncol,nrow,x,y,ox,oy,i,k;
+  int ncol,nrow,x,y,ox,oy,i,k,tmp;
   float *tabvalues,value;
   
   ncol = NormofDu->ncol;
@@ -328,11 +331,15 @@ Fimage NormofDu;
   /*remove root boundary points from histogram (unless shape is absolut root)*/
   if(local_root->boundary){
     tabvalues = local_root->boundary->values;
-    ox = MIN(ncol-1,MAX(0,(int) rint(tabvalues[0])-1));  
-    oy = MIN(nrow-1,MAX(0,(int) rint(tabvalues[1])-1));
+    tmp = (int) floor(tabvalues[0] + .5);
+    ox = MIN(ncol - 1, MAX(0, tmp - 1));
+    tmp = (int) floor(tabvalues[1] + .5);
+    oy = MIN(nrow - 1, MAX(0, tmp - 1));
     for(i=0;i<local_root->boundary->size;i++){
-      x = MIN(ncol-1,MAX(0,(int) rint(tabvalues[2*i])-1));  
-      y = MIN(nrow-1,MAX(0,(int) rint(tabvalues[2*i+1])-1));
+      tmp = (int) floor(tabvalues[2 * i] + .5);
+      x = MIN(ncol - 1, MAX(0, tmp - 1));  
+      tmp = (int) floor(tabvalues[2 * i + 1] + .5);
+      y = MIN(nrow - 1, MAX(0, tmp - 1));
       if(x!= ox || y!=oy){
 	ox = x; oy = y;
 	value = NormofDu->gray[x+ncol*y]/local_histo->scale;

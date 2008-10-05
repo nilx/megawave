@@ -110,7 +110,8 @@ double   *sx,*sy;
   
   for (c=cs->first; c; c=c->next) 
     for (p=c->first; p; p=p->next)  
-      if ( (h=hypot((double)p->x,(double)p->y)) != 0.0) {
+      if ( (h=sqrt((double) p->x * (double) p->x
+		   + (double) p->y * (double) p->y)) != 0.0) {
 	*sx += (double)p->x/h;
 	*sy += (double)p->y/h;
       }

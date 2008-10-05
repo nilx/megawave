@@ -16,7 +16,8 @@ usage = {
         };
 */
 
-#include<math.h>
+#include <stdlib.h>
+#include <math.h>
 #include "mw.h" 
 
 
@@ -226,6 +227,7 @@ static int get_next_point_length(fcrv, xI0, yI0, iFirst, iLast, d, type)
 {
   int i, i_last;
   float x, y, xP, yP, s, t;
+  double dx, dy;
   float splust;
 
   s=0.0f;
@@ -237,7 +239,9 @@ static int get_next_point_length(fcrv, xI0, yI0, iFirst, iLast, d, type)
   do {
     x=_(fcrv,i,0);
     y=_(fcrv,i,1);
-    t=(float)hypot((double)(x-xP),(double)(y-yP));
+    dx = x - xP;
+    dy = y - yP;
+    t = (float) sqrt(dx * dx + dy * dy);
     splust=s+t; 
     if (splust < d) {
       s=splust;
@@ -285,11 +289,14 @@ float xR1,yR1,xR2,yR2;
   float x0,y0,L0,vux,vuy,disc;
   struct NormDataSIconcat *my_data;
   int iNtotal, iPtotal;
+  double dx, dy;
 
   my_data=(struct NormDataSIconcat*)malloc(sizeof(struct NormDataSIconcat));
   x0=(xR1+xR2)/2;
   y0=(yR1+yR2)/2;
-  L0=(float)hypot(xR2-xR1,yR2-yR1);
+  dx = xR2 - xR1;
+  dy = yR2 - yR1;
+  L0 = (float) sqrt(dx * dx + dy * dy);
   
   vux=(xR2-xR1)/L0;
   vuy=(yR2-yR1)/L0;

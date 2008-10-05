@@ -65,7 +65,8 @@ void fft2dview(type,h_flag,in,out,i_flag,d)
   case 3: fft2d(    tmp,NULL,NULL,tmp ,i_flag); break;
   case 4: fft2dpol( tmp,NULL,tmp ,NULL,i_flag); 
     for (i=n*p; i--; ) 
-      tmp->gray[i] = (float)log1p((double)tmp->gray[i]);
+      /* FIXME: replaced log1p(x) by log (1. + x), bad precision */
+      tmp->gray[i] = (float) log(1. + (double) tmp->gray[i]);
     break;
     
   default: mwerror(FATAL,1,"Unrecognized argument value : type.");

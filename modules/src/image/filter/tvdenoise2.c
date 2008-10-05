@@ -88,7 +88,7 @@ double energy_evol(px,py,ref,u,lambda,s)
     for (x=0;x<nx;x++,adr++) {
       gx = ((x<nx-1)?(u[adr+1 ]-u[adr]):0.);
       gy = ((y<ny-1)?(u[adr+nx]-u[adr]):0.);
-      norm = hypot(gy,gx);
+      norm = sqrt(gy * gy + gx * gx);
       E += lambda*norm;
       norm = 1.+2.*s*norm/lambda;
       px[adr] = (px[adr]-s*gx)/norm;

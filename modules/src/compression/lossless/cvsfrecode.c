@@ -15,6 +15,7 @@ usage = {
  v1.2: upgrade for new kernel (L.Moisan)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
 

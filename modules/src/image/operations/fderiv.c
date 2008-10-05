@@ -53,6 +53,7 @@ void fderiv(in,curv,anti,canny,laplacian,gradx,grady,gradn,gradp,MinGrad,nsize)
   int y,nx,ny;
   register int x,xm,x1,Ym,Y0,Y1;
   float c1,d1,l0,ax,ay,axy,an,l1,l2,l34;
+  /* fixme: x86 architecture can't keep all these values as registers... */
   register float a11,amm,am1,a1m,a00,a01,a10,a0m,am0;
 
   nx = in->ncol;
@@ -164,7 +165,8 @@ void fderiv(in,curv,anti,canny,laplacian,gradx,grady,gradn,gradp,MinGrad,nsize)
 ( IRAC2*(amm+am1+a1m+a11) + (a0m+am0+a10+a01) - RAC8P4*a00 ) / RAC8P4;
 
       if (gradn || canny || curv || anti) {
-	an = (float)hypot((double)ax,(double)ay);
+	an = sqrt((double) ax * (double) ax
+		  + (double) ay * (double) ay);
 	if (gradn) gradn->gray[x+Y0] = an;
 	if ((an > *MinGrad) && (canny || curv || anti)) {
 	  ax /= an; ay /= an;

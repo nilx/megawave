@@ -1550,12 +1550,12 @@ int x;
 	    fpivots[(npivots-1)*4+2]=gray2;break;
 	  default:prerror("Probleme de direction");break;
 	  }
-	gx1=(int)(rint(2*geodPoints[n/2].ps[0].y));
-	gy1=(int)(rint(2*geodPoints[n/2].ps[0].x));
+	gx1 = (int) floor(2 * geodPoints[n / 2].ps[0].y + .5);
+	gy1 = (int) floor(2 * geodPoints[n / 2].ps[0].x + .5);
 	for (pi = 1; pi < geodPoints[n/2].pn; pi++)
 	  {
-	    gx2=(int)(rint(2*geodPoints[n/2].ps[pi].y));
-	    gy2=(int)(rint(2*geodPoints[n/2].ps[pi].x));
+	    gx2 = (int) floor(2 * geodPoints[n / 2].ps[pi].y + .5);
+	    gy2 = (int) floor(2 * geodPoints[n / 2].ps[pi].x + .5);
 	    drawgeod(gx1,gy1,gx2,gy2,gray1,gray2,pi-1);
 	    gx1=gx2;gy1=gy2;
 	  }
@@ -1565,7 +1565,8 @@ int x;
 	   want to avoid conflicts between gray values */
 	for (pi = 0; pi < geodPoints[n/2].pn; pi++)
 	  {
-	    pos=(int)(rint(geodPoints[n/2].ps[pi].x-0.5))*col_number+(int)(rint(geodPoints[n/2].ps[pi].y-0.5));
+	    pos = (int) floor(geodPoints[n / 2].ps[pi].x)
+		 * col_number + (int) floor(geodPoints[n / 2].ps[pi].y);
 	    ptrpiv=pivots+8*pi;
 	    npi1=0;
 	    while (*ptrpiv!=1) {npi1++;ptrpiv++;}

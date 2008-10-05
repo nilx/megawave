@@ -148,10 +148,10 @@ void draw_framed(xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax,i)
     if (tya>txa) txa=tya;
     if (tyb<txb) txb=tyb;
     if (txa<txb) {
-      xb = xa + (int)rint(txb*dx);
-      yb = ya + (int)rint(txb*dy);
-      xa +=     (int)rint(txa*dx);
-      ya +=     (int)rint(txa*dy);
+      xb = xa + (int) floor(txb * dx + .5);
+      yb = ya + (int) floor(txb * dy + .5);
+      xa +=     (int) floor(txa * dx + .5);
+      ya +=     (int) floor(txa * dy + .5);
       if (xa>=xmin && xa<=xmax && ya>=ymin && ya<=ymax &&
 	  xb>=xmin && xb<=xmax && yb>=ymin && yb<=ymax) {
 	mw_draw_ccimage(image,xa,ya,xb,yb,r,g,b);
@@ -299,7 +299,7 @@ void plot_curves()
 	if (s_flag) y = Y1+(int)((double)(Y2-Y1)*(v-sy1)/(sy2-sy1));
 	else        y = Y2+(int)((double)(Y1-Y2)*(v-sy1)/(sy2-sy1));
 	if (y>=Y1 && y<=Y2) {
-	  snprintf(str,STRSIZE,"%g",trunc(v,truncref));
+	  sprintf(str,"%g",trunc(v,truncref));
 	  i = strlen(str);
 	  if (i>size_strleft) size_strleft=i;
 	}
@@ -327,7 +327,7 @@ void plot_curves()
 	  case 2: mw_draw_ccimage(image,X2+1,y,X2+7,y,255,0,0);
 	  case 1: mw_draw_ccimage(image,X1-7,y,X1-1,y,255,0,0);
 	  }
-	  snprintf(str,STRSIZE,"%g",trunc(v,truncref));
+	  sprintf(str,"%g",trunc(v,truncref));
 	  ccputstring(image,X1-7-FONTWIDTH*strlen(str),y-FONTHEIGHT/2,
 		      &fgcolor,&bgcolor,NULL,str);
 	}
@@ -353,7 +353,7 @@ void plot_curves()
 	  case 2: mw_draw_ccimage(image,x,Y1-7,x,Y1-1,255,0,0);
 	  case 1: mw_draw_ccimage(image,x,Y2+1,x,Y2+7,255,0,0);
 	  }
-	  snprintf(str,STRSIZE,"%g",trunc(v,truncref));
+	  sprintf(str,"%g",trunc(v,truncref));
 	  ccputstring(image,x-strlen(str)*FONTWIDTH/2,Y2+7,
 		      &fgcolor,&bgcolor,NULL,str);
 	}

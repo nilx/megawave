@@ -61,7 +61,9 @@ void fop(B,out,A,a,plus,minus,times,divide,dist,norm,inf,sup,less,greater,equal)
     else if (times)   res = left * B->gray[i];
     else if (divide)  res = left / B->gray[i];
     else if (dist)    res = ABS(left - B->gray[i]);
-    else if (norm)    res = (float)hypot((double)left,(double)(B->gray[i]));
+    else if (norm)    res = sqrt((double) left * (double) left
+				 + (double) (B->gray[i])
+				 * (double) (B->gray[i]));
     else if (inf)     res = (left < B->gray[i] ? left : B->gray[i]);
     else if (sup)     res = (left > B->gray[i] ? left : B->gray[i]);
     else if (less)    res = (left < B->gray[i] ? 1.0 : 0.0);

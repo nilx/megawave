@@ -23,8 +23,14 @@
 extern Fsignal sgauss();
 
 /* distance between two points */
-#define DIST(p,q)  (hypot((double)(*(p)-*(q)),(double)(*((p)+1)-*((q)+1))))
+static double dist(const float *p, const float *q)
+{
+     double x, y;
+     x = (double) (*p - *q);
+     y = (double) (*(p + 1) - *(q + 1));
 
+     return sqrt(x * x + y * y);
+}
 
 void fksample(in,out,t)
      Flist in,out;
@@ -36,7 +42,7 @@ void fksample(in,out,t)
 
   /* compute global perimeter */
   for (i=1,per=0.;i<in->size;i++) 
-    per += DIST(in->values+i*2-2,in->values+i*2);
+    per += dist(in->values+i*2 - 2, in->values + i * 2);
   
   max = (int)(per/(double)t);
   step = per/(double)max;
@@ -46,7 +52,7 @@ void fksample(in,out,t)
   j = 1;
   cur = 0.;
   for (i=1;i<in->size;i++) {
-    d = DIST(in->values+i*2-2,in->values+i*2);
+    d = dist(in->values + i * 2 - 2, in->values + i * 2);
     if (cur+d>step) {
       n = (int)((cur+d)/step);
       for (k=0;k<n;k++) {
@@ -59,7 +65,7 @@ void fksample(in,out,t)
     } 
     cur += d;
   }
-  if (DIST(out->values+j*2-2,out->values)>step*0.1) {
+  if (dist(out->values + j * 2 - 2, out->values) > step * 0.1) {
     out->values[j*2-2] = out->values[0];
     out->values[j*2-1] = out->values[1];
   } else {
