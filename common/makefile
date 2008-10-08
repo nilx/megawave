@@ -19,6 +19,7 @@ ECHO	= /bin/echo
 
 CC	= /usr/bin/gcc
 LD	= /usr/bin/gcc
+AR	= /usr/bin/ar
 MAKEDEP	= /usr/bin/gcc -MM
 CPROTO	= /usr/bin/cproto
 GENGETOPT	= /usr/bin/gengetopt
@@ -91,9 +92,6 @@ CFLAGS_NOWARN	= -fPIC $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
 LDFLAGS	= -fPIC $(LDDEBUG) $(CPROF)				\
           $(addprefix -L, $(LPATH)) $(addprefix -l, $(LIBS))
 
-
-
-
 # TOOLS OPTIONS
 
 LINT_FLAGS	= -posixlib -weak -ansi89limits
@@ -115,7 +113,7 @@ CPROTO_FLAGS	= $(addprefix -I, $(IPATH)) -q
 	    $(MV) $@.$$$$ $@;
 
 # std C compilation
-%.o : %.c %.d
+%.o : %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # make a C prototype header

@@ -30,7 +30,7 @@ AUTOHDR	= $(SRC:.c=.h)
 HDR	= $(AUTOHDR) $(CMDLINE:.c=.h)				\
 	$(SRCDIR)/mwplight-defs.h $(SRCDIR)/mwplight-config.h
 OBJ	= $(SRC:.c=.o) $(CMDLINE:.c=.o)
-DEP	= $(SRC:.c=.d)
+#DEP	= $(SRC:.c=.d)
 
 BINNAME	= mwplight
 
@@ -39,7 +39,7 @@ BINNAME	= mwplight
 #
 
 .PHONY	: prebuild
-prebuild	: autohdr cmdline dep man
+prebuild	: autohdr cmdline man #dep
 
 .PHONY	: cmdline
 cmdline	: $(CMDLINE)
@@ -47,8 +47,8 @@ cmdline	: $(CMDLINE)
 .PHONY	: autohdr
 autohdr	: $(AUTOHDR)
 
-.PHONY	: dep
-dep	: $(DEP)
+#.PHONY	: dep
+#dep	: $(DEP)
 
 #
 # BUILD
@@ -85,21 +85,22 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(AUTOHDR)
 	$(RM) $(SRCDIR)/*.ggo
 	$(RM) $(BINNAME)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
--include $(DEP)
+#-include $(DEP)
 
 #
 # TEST
 #
 
-TEST_MODULES	= $(shell find $(BASEDIR)/src -type f -name *.c)
-TEST_ENV	= MWPLIGHT=./$(BINNAME) \
-	MODULES="$(TEST_MODULES)" 	\
+TEST_MODULES	= $(shell find $(BASEDIR)/modules/src -type f -name *.c)
+TEST_ENV	= MWPLIGHT=$(BINNAME) 	\
+	MODULES="$(TEST_MODULES)" 			\
+	LIBMWDIR=../libmw				\
+	LIBMW_WDEVICEDIR=../libmw-wdevice		\
 	TESTDIR=test
 
 # TODO: test_interface
@@ -131,6 +132,17 @@ MANHTML	= $(MAN).html
 .PHONY	: man
 man	: $(MAN) $(MANHTML)
 
+
+.PHONY	: clean-doc
+clean-doc	:
+#	$(RM) $(DOXDIR)/html/*.md5 $(DOXDIR)/html/*.dot
+#	$(RRM) $(DOXDIR)/latex
+
+.PHONY	: distclean-doc
+distclean-doc	: clean-doc
+	$(RM) $(MAN) $(MANHTML)
+
+
 # .PHONY	: srcdoc
 # srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
 # $(DOXDIR)/html/index.html	: $(SRC) $(HDR)
@@ -148,14 +160,4 @@ man	: $(MAN) $(MANHTML)
 # $(DOXDIR)/srcdoc.pdf : $(DOXDIR)/latex/refman.tex
 # 	$(MAKE) -C $(DOXDIR)/latex refman.pdf
 # 	mv $(DOXDIR)/latex/refman.pdf $(DOXDIR)/srcdoc.pdf
-
-
-.PHONY	: clean-doc
-clean-doc	:
-#	$(RM) $(DOXDIR)/html/*.md5 $(DOXDIR)/html/*.dot
-#	$(RRM) $(DOXDIR)/latex
-
-.PHONY	: distclean-doc
-distclean-doc	: clean-doc
-	$(RM) $(MAN) $(MANHTML)
 

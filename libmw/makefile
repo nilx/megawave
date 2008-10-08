@@ -107,15 +107,13 @@ SRC	:= $(addprefix $(SRCDIR)/, \
 AUTOHDR	= $(SRC:.c=.h)
 HDR	= $(AUTOHDR) $(addprefix $(SRCDIR)/,	\
 	tiff.h strtoul.h ppmr_io.h pm.h tiffio.h \
-	wpanel-defs.h libwp-defs.h)
+	wpanel-defs.h libmw-defs.h)
 OBJ	= $(SRC:.c=.o)
-DEP	= $(SRC:.c=.d)
+#DEP	= $(SRC:.c=.d)
 
 LIBNAME	= mw
-LIBMW	= lib$(LIBNAME).so
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
-APIINC	= <stdio.h>
 
 IPATH	+= $(BASEDIR)/libmw-wdevice
 
@@ -126,31 +124,36 @@ CWARN	+= -Wno-float-equal
 #
 
 .PHONY	: prebuild
-prebuild	: autohdr dep man
+prebuild	: autohdr man #dep
 
 .PHONY	: autohdr
 autohdr	: $(AUTOHDR)
 
-.PHONY	: dep
-dep	: $(DEP)
+#.PHONY	: dep
+#dep	: $(DEP)
 
 #
 # BIN
 #
 
 .PHONY	: lib
-lib 	: $(LIBMW)
-$(LIBMW) 	: $(OBJ)
+lib 	: lib$(LIBNAME).so lib$(LIBNAME).a
+lib$(LIBNAME).so 	: $(OBJ)
 	$(LD) -shared $(LDFLAGS) -o $@ $^
+lib$(LIBNAME).a 	: $(OBJ)
+	$(AR) ru $@ $^
+
+foo	:
+	echo $(HDR)
 
 .PHONY	: api
 api 	: $(API)
-$(API) 	: $(SRC) $(SRCDIR)/wpanel-defs.h $(SRCDIR)/libmw-defs.h
+$(API) 	: $(AUTOHDR) $(addprefix $(SRCDIR)/, wpanel-defs.h libmw-defs.h)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
-	$(ECHO) -e "$(addprefix \n#include , $(APIINC))\n" >> $@
-	$(CAT) $(filter %.h, $^) >> $@
-	$(CPROTO) $(CPROTO_FLAGS) $(filter %.c, $^) >> $@
+	$(ECHO) -e "\n#include <stdio.h> /* for FILE */\n" >> $@
+	$(CAT) $(filter %-defs.h, $^) >> $@
+	$(CAT) $(filter-out %-defs.h, $^) >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
 
 .PHONY	: lint
@@ -174,11 +177,12 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(LIBMW)
+	$(RM) lib$(LINNAME).a
+	$(RM) lib$(LINNAME).so
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
--include $(DEP)
+#-include $(DEP)
 
 
 #
@@ -199,6 +203,15 @@ MANHTML	= $(DOCDIR)/lib$(LIBNAME).man
 .PHONY	: man
 man	: $(MAN) $(MANHTML)
 
+.PHONY	: clean-doc
+clean-doc	:
+#	$(RM) $(DOXDIR)/html/*.md5 $(DOXDIR)/html/*.dot
+#	$(RRM) $(DOXDIR)/latex
+
+.PHONY	: distclean-doc
+distclean-doc	: clean-doc
+	$(RM) $(MAN) $(MANHTML)
+
 # .PHONY	: srcdoc
 # srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
 # $(DOXDIR)/html/index.html	: $(SRC) $(HDR)
@@ -216,13 +229,4 @@ man	: $(MAN) $(MANHTML)
 # $(DOXDIR)/srcdoc.pdf : $(DOXDIR)/latex/refman.tex
 # 	$(MAKE) -C $(DOXDIR)/latex refman.pdf
 # 	mv $(DOXDIR)/latex/refman.pdf $(DOXDIR)/srcdoc.pdf
-
-.PHONY	: clean-doc
-clean-doc	:
-#	$(RM) $(DOXDIR)/html/*.md5 $(DOXDIR)/html/*.dot
-#	$(RRM) $(DOXDIR)/latex
-
-.PHONY	: distclean-doc
-distclean-doc	: clean-doc
-	$(RM) $(MAN) $(MANHTML)
 

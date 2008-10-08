@@ -2,11 +2,11 @@ COMPILATION OF THE MEGAWAVE KERNEL LIBRARY
 
 # basic
 
-* compile the library shared object
-  The result is `libmw.so`.
+* compile the library shared and static objects
+  The result is `./libmw.so` and `./libmw.a`.
     make lib
 * compile the library api header
-  The result is `libmw.h`.
+  The result is `./mw.h`.
     make lib
 * cleanup the compilation headers, objects, ...
     make clean

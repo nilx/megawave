@@ -28,7 +28,6 @@ OBJ	= $(SRC:.c=.o)
 DEP	= $(SRC:.c=.d)
 
 LIBNAME	= mw-wdevice
-LIB	= lib$(LIBNAME).so
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
@@ -37,31 +36,33 @@ APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 #
 
 .PHONY	: prebuild
-prebuild	: autohdr dep man
+prebuild	: autohdr man #dep
 
 .PHONY	: autohdr
 autohdr	: $(AUTOHDR)
 	echo $(AUTOHDR)
 
-.PHONY	: dep
-dep	: $(DEP)
+#.PHONY	: dep
+#dep	: $(DEP)
 
 #
 # BIN
 #
 
 .PHONY	: lib
-lib 	: $(LIB)
-$(LIB) 	: $(OBJ)
+lib 	: lib$(LIBNAME).so lib$(LIBNAME).a
+lib$(LIBNAME).so 	: $(OBJ)
 	$(LD) -shared $(LDFLAGS) -o $@ $^
+lib$(LIBNAME).a 	: $(OBJ)
+	$(AR) ru $@ $^
 
 .PHONY	: api
 api 	: $(API)
-$(API) 	: $(SRC) $(SRCDIR)/wdevice-defs.h $(SRCDIR)/wdevice-config.h
+$(API) 	: $(HDR)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
-	$(CAT) $(filter %.h, $^) >> $@
-	$(CPROTO) $(CPROTO_FLAGS) $(filter %.c, $^) >> $@
+	$(CAT) $(filter %-defs.h, $^) >> $@
+	$(CAT) $(filter-out %-defs.h, $^) >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
 
 
@@ -86,11 +87,12 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(LIB)
+	$(RM) lib$(LIBNAME).a
+	$(RM) lib$(LIBNAME).so
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
--include $(DEP)
+#-include $(DEP)
 
 
 #
@@ -111,6 +113,15 @@ MANHTML	= $(MAN).html
 .PHONY	: man
 man	: $(MAN) $(MANHTML)
 
+.PHONY	: clean-doc
+clean-doc	:
+#	$(RM) $(DOXDIR)/html/*.md5 $(DOXDIR)/html/*.dot
+#	$(RRM) $(DOXDIR)/latex
+
+.PHONY	: distclean-doc
+distclean-doc	: clean-doc
+	$(RM) $(MAN) $(MANHTML)
+
 # .PHONY	: srcdoc
 # srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
 # $(DOXDIR)/html/index.html	: $(SRC) $(HDR)
@@ -128,13 +139,3 @@ man	: $(MAN) $(MANHTML)
 # $(DOXDIR)/srcdoc.pdf : $(DOXDIR)/latex/refman.tex
 # 	$(MAKE) -C $(DOXDIR)/latex refman.pdf
 # 	mv $(DOXDIR)/latex/refman.pdf $(DOXDIR)/srcdoc.pdf
-
-.PHONY	: clean-doc
-clean-doc	:
-#	$(RM) $(DOXDIR)/html/*.md5 $(DOXDIR)/html/*.dot
-#	$(RRM) $(DOXDIR)/latex
-
-.PHONY	: distclean-doc
-distclean-doc	: clean-doc
-	$(RM) $(MAN) $(MANHTML)
-

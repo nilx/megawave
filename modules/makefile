@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 #
-# makefile for megawave 3, mwplight section
+# makefile for the megawave modules
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
@@ -23,13 +23,13 @@ distclean	: distclean-bin distclean-doc
 #
 
 .PHONY	: prebuild
-prebuild	: autohdr api dep man
+prebuild	: autohdr api man #dep
 
 .PHONY	: autohdr
-#autohdr	: $(AUTOHDR)
+autohdr	: $(AUTOHDR)
 
-.PHONY	: dep
-dep	: $(DEP)
+#.PHONY	: dep
+#dep	: $(DEP)
 
 #
 # BIN
@@ -48,37 +48,45 @@ LIBOBJ	= $(LIBSRC:.c=.o)
 BINOBJ	= $(BINSRC:.c=.o)
 
 # no need for cproto and makedepend
-.PHONY	: $(AUTOHDR:.h=.d)
-
-MWPLIGHT	= $(BASEDIR)/mwplight/mwplight
-LIBMW	= $(BASEDIR)/libmw/libmw.so
-LIBMW_WDEVICE	= $(BASEDIR)/libmw-wdevice/libmw-wdevice.so
+#.PHONY	: $(AUTOHDR:.h=.d)
 
 MODULES	= $(BINOBJ:.o=)
 
+BUILDDIR = build
+
 LIBNAME	= mw-modules
-LIBMW_MODULES	= lib$(LIBNAME).so
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 APIINC	= <mw.h>
 
+LIBMW_MODULES	= lib$(LIBNAME)
+LIBMW	= $(BASEDIR)/libmw/libmw
+LIBMW_WDEVICE	= $(BASEDIR)/libmw-wdevice/libmw-wdevice
+MWPLIGHT	= $(BASEDIR)/mwplight/mwplight
 
-LIBS 	+= m tiff X11 mw
+
+LIBS 	+= m tiff X11
 LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 
 $(MWPLIGHT)	:
-	$(MAKE) -C $(BASEDIR)/mwplight $(notdir $@)
+	$(MAKE) -C $(BASEDIR)/mwplight
 $(LIBMW)	:
-	$(MAKE) -C $(BASEDIR)/libmw $(notdir $@)
+	$(MAKE) -C $(BASEDIR)/libmw
 
 .PHONY	: modules
 modules	: $(MODULES)
+	$(MKDIR) $(BUILDDIR)
+	for MODNAME in $(MODULES); do	\
+		cp $$MODNAME $(BUILDDIR)/`basename $$MODNAME .exec`; \
+	done;
 
 .PHONY	: lib
-lib 	: $(LIBMW_MODULES)
-$(LIBMW_MODULES)	: $(LIBOBJ)
+lib 	: lib$(LIBNAME).so lib$(LIBNAME).a
+lib$(LIBNAME).so 	: $(LIBOBJ)
 	$(LD) -shared $(LDFLAGS) -o $@ $^
+lib$(LIBNAME).a 	: $(LIBOBJ)
+	$(AR) ru $@ $^
 
 .PHONY	: api
 api 	: $(API)
@@ -101,13 +109,8 @@ $(API) 	: $(LIBHDR)
 %.exec.o	: %.exec.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
-#ifdef STATIC
-#%.exec	: %.exec.c $(LIBMW) $(LIBMW_WDEVICE) $(LIBMW_MODULES)
-#	$(CC) $(CCFLAGS) -static -I../libmw -I. -I../libmw-wdevice -L../libmw -o $@ $^
-#else
-%.exec	: %.exec.o $(LIBMW) $(LIBMW_WDEVICE) $(LIBMW_MODULES)
-	$(LD) $(LDFLAGS) -lmw-wdevice -lmw-modules -o $@ $<
-#endif
+%.exec	: %.exec.o $(LIBMW).so $(LIBMW_WDEVICE).so $(LIBMW_MODULES).so
+	$(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
 
 .PHONY	: clean-bin
 clean-bin :
@@ -119,12 +122,14 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(LIBMW_MODULES)
 	$(RM) $(MODULES)
+	$(RM) lib$(LIBNAME).a
+	$(RM) lib$(LIBNAME).so
+	$(RRM) $(BUILDDIR)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
--include $(DEP)
+#-include $(DEP)
 
 #
 # TEST
@@ -136,11 +141,13 @@ LIBPATH	= ./:$(BASEDIR)/libmw:$(BASEDIR)/libmw-wdevice
 
 .PHONY	: test
 test	: $(MODULES)
+	$(RRM) $(TESTMODDIR)
 	$(MKDIR) $(TESTMODDIR)
 	cp $(MODULES) $(TESTMODDIR)
 	mmv "$(TESTMODDIR)/*.exec" "$(TESTMODDIR)/#1"
 	env MODDIR=$(TESTMODDIR)			\
 		DATA=$(BASEDIR)/data			\
+		BASEDIR=$(BASEDIR)			\
 		SAMPLES=$(BASEDIR)/data/PUBLIC		\
 		PATH=$$PATH:$(TESTMODDIR)		\
 	  LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(LIBPATH)	\

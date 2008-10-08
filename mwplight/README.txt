@@ -15,7 +15,7 @@ COMPILATION OF THE MEGAWAVE LIGHT COMPILER
 # other targets
 
 * compile the manpage
-  The result is `./mwplight.man` and `./mwplight.man.html`.
+  The result is `./doc/mwplight.man` and `./doc/mwplight.man.html`.
     make man
 * beautify the source code
     make beautify

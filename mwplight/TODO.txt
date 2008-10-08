@@ -3,3 +3,4 @@
 * add indent
 * drop the non-ANSI #includes
 * use the real headers instead of test/include
+* no more lib version, lib=src, mwplight only produces the executable
