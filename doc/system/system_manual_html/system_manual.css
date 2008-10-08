@@ -1,0 +1,127 @@
+
+body	{
+	color: #000000; 
+	background-color: #ffffff; 
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 13px;
+	width: 60em; 
+	margin: auto;
+	text-align: justify;
+	}
+
+h1	{ 
+	font-size:1.4em; 
+	border: #CCCCFF solid; 
+	border-width: 1px 0; 
+	padding: .5em 2em; 
+	margin: 2em 0 0 0;
+	}
+h2 	{ 
+	font-size:1.2em; 
+	padding: 0 1em;
+	}
+h3 	{ 
+	font-size: 1em; 
+	padding: 0 1em;
+	}
+
+a 	{
+	color:#1E4869; 
+	text-decoration: none;
+	}
+a:hover { 
+	background:#EEEEEE;
+	}
+
+p 	{ 
+	padding: 0 1em;
+	}
+abbr 	{ 
+	border: 0; 
+	}
+table 	{
+	text-align: left; 
+	width: 100%; 
+	}
+
+ul, ol 	{ 
+	padding: 0 1em 0 2em;
+	}
+
+pre 	{
+        padding: 1em 1em 0 1em;
+        margin: 0 0 0 1em;
+        background: #EEEEEE;
+        border-left: #AAAAAA 3px solid; 
+	}
+
+hr 	{
+	color: #EEEEEE;
+	border: 0;
+	height: 1px;
+  	width: 80%; 
+	}
+
+img 	{
+	border: 0; 
+	}
+
+.navigation {
+	font-size: 150%;
+	font-weight: bold;
+	float: left; 
+	}
+
+// original hevea style //
+
+.li-itemize {
+	margin: 1ex 0ex; 
+	}
+.li-enumerate{
+	margin: 1ex 0ex;
+	}
+.toc	{
+	list-style: none; 
+	}
+.thefootnotes {
+	text-align: left;
+	margin: 0ex; 
+	}
+.dt-thefootnotes {
+	margin: 0em;
+	}
+.dd-thefootnotes {
+	margin: 0em 0em 0em 2em; 
+	}
+.footnoterule {
+	margin: 1em auto 1em 0px;
+	width: 50%; 
+	}
+.caption {
+	padding-left: 2ex; 
+	padding-right: 2ex; 
+	margin-left: auto; 
+	margin-right: auto; 
+	}
+.center	{
+	text-align: center;
+	margin-left: auto;
+	margin-right:auto; 
+	}
+div table {
+	margin-left: inherit;
+    	margin-right: inherit; 
+	}
+pre	{
+	text-align: left;
+	margin-left: 0ex;
+	margin-right: auto; 
+	}
+blockquote {
+	margin-left: 4ex;
+	margin-right: 4ex;
+	text-align: left; 
+	}
+td p	{
+	margin: 0px; 
+	}

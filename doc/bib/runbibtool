@@ -1,0 +1,52 @@
+#!/bin/sh
+
+Usage()
+
+{
+ echo "runbibtool [-e] "
+ echo "           -e : edit bib file and copy it to $MEGAWAVE/doc"
+}
+
+in=public
+inb=${in}.bib
+
+edit=0
+while [ "$1" != "" ]
+do
+  case "$1" in
+    -e) edit=1
+            ;;
+
+    *)     Usage
+           ;;
+  esac
+  shift
+done
+
+
+if [ ! -f $inb ]; then
+ echo "file $inb not found !"
+fi
+
+cp -p $inb ${inb}_old
+
+# Passage 8bits -> 7 bits
+bibtool -r iso2tex -r bibtool.rsc -i $inb -o ${in}_1.bib
+
+# Generation de cles avec initiales des prenoms
+
+#bibtool -K  ${in}_1.bib -o ${in}_2.bib
+bibtool -k  ${in}_1.bib -o ${in}_2.bib
+
+#bibtool ${in}_1.bib -o ${in}_2.bib
+
+mv -f ${in}_2.bib $inb
+
+if [ $edit -ne 1 ]; then
+ exit 0
+fi
+
+cp -f $inb $MEGAWAVE2/doc/.
+
+emacs -font 9x15 -geometry 90x50 $inb&
+

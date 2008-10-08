@@ -1,0 +1,394 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+            "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+
+<META http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<META name="GENERATOR" content="hevea 1.10">
+<LINK rel="stylesheet" type="text/css" href="system_manual.css">
+<TITLE>Signals</TITLE>
+</HEAD>
+<BODY >
+<A HREF="system_manual004.html"><abbr title="previous chapter" class="navigation">&larr;</abbr></A>
+<A HREF="index.html"><abbr title="table of contents" class="navigation">&uarr;</abbr></A>
+<A HREF="system_manual006.html"><abbr title="next chapter" class="navigation">&rarr;</abbr></A>
+<HR>
+<H1 CLASS="chapter"><A NAME="htoc41">Chapter&#XA0;4</A>&#XA0;&#XA0;Signals</H1><UL>
+<LI><A HREF="system_manual005.html#toc12">Float signals</A>
+</LI></UL>
+<P>
+<A NAME="signals"></A>
+</P><P>We call signal<A NAME="@default47"></A> a one-dimensional sequence of scalars. 
+Signals may be used to represent various kind of physical data (such
+as sound) , as well as mathematical data (e.g. impulse response of filters, 
+vectors, &#X2026;).</P><P>Notice that at this time, only signals of floating points values are
+implemented.</P><H2 CLASS="section"><A NAME="toc12"></A><A NAME="htoc42">4.1</A>&#XA0;&#XA0;Float signals</H2><P><A NAME="signals_float-signals"></A>
+
+<A NAME="@default48"></A></P><P>The <EM>Float Signals</EM> memory type is used to represent one-dimensional 
+sequences of floating points values.</P><H3 CLASS="subsection"><A NAME="htoc43">4.1.1</A>&#XA0;&#XA0;The structure Fsignal</H3><P>
+<A NAME="signals_float-signals_structure"></A></P><P>Beginners should only focus on the first two fields of this structure:
+</P><PRE CLASS="verbatim">typedef struct fsignal {
+  int size;        /* Number of samples */
+  float *values;   /* The samples */
+
+  float scale;     /* Scale of the signal */
+  float shift;     /* shifting of the signal with respect to zero */
+  float gain;      /* Gain of the signal given by the digitalization process */
+  float sgrate;    /* Sampling rate given by the digitalization process */
+  int bpsample;    /* Number of bits per sample for audio drivers */
+
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the image */
+  
+  /* Defines the signifiant part of the signal : */
+  int firstp;     /* index of the first point not aff. by left side effect */
+  int lastp;      /* index of the last point not aff. by right side effect */
+  float param;    /* distance between two succesive uncorrelated points */
+
+} *Fsignal;
+</PRE><P>The field <CODE>size</CODE> gives the number of samples loaded in the signal.
+Do not change by yourself the content of this field: the size of the signal
+has to be modified using functions of the library only 
+(see section&#XA0;<A HREF="#signals_float-signals_function">4.1.3</A> page&#XA0;<A HREF="#signals_float-signals_function">??</A>).</P><P>The field <CODE>values</CODE> is an array which gives the value of each sample:
+if <CODE>signal</CODE> is a variable of <TT>Fsignal</TT> type, <CODE>signal-&gt;values[0]</CODE>
+is the first sample of the signal, <CODE>signal-&gt;values[1]</CODE> the second,
+and so one up to the last sample <CODE>signal-&gt;values[signal-&gt;size-1]</CODE>.</P><H3 CLASS="subsection"><A NAME="htoc44">4.1.2</A>&#XA0;&#XA0;Related file (external) types</H3><P>
+<A NAME="signals_float-file_type"></A></P><P>The list of the available formats is the following:
+</P><OL CLASS="enumerate" type=1><LI CLASS="li-enumerate">
+<CODE>"A_FSIGNAL"</CODE><A NAME="@default49"></A> 
+MegaWave2 Data Ascii format with a <CODE>def fsignal</CODE> area.
+This area includes the value of the different fields of the object, as
+<CODE>comments, scale, shift, ...</CODE> and at the end the samples of the signal.
+Since this format uses Ascii encoding, you may read or modify the file just by
+editing it using a text editor.
+It can also be plotted using the standard tool <TT>gnuplot</TT>.</LI><LI CLASS="li-enumerate"><CODE>"WAVE_PCM"</CODE><A NAME="@default50"></A> 
+Microsoft&#X2019;s RIFF WAVE sound file format with PCM encoding.
+Use this format to perform sound<A NAME="@default51"></A> and 
+speech<A NAME="@default52"></A> processing with MegaWave2.
+Stereo inputs are converted to mono when loaded into a <TT>Fsignal</TT>.
+Since this format performs bit-encoding, on any output <TT>Fsignal</TT> variables
+you should set the field <CODE>bpsample</CODE> to the number of bits you want the
+data to be saved. Default value is 8 &#XD7; <CODE>sizeof(float)</CODE> (on most
+architectures 32), because this matches the size of the samples in the
+<TT>Fsignal</TT> structure. 
+However, this value leads to strange results on some audio drivers. 
+If you plan to send the
+signal on a audio driver<A NAME="@default53"></A>, 
+recommended numbers of bits are 16 (signed word) 
+or 8 (signed char). Take care to format your data to fit the corresponding 
+range before playing the file ([&#X2212;32768,+32767] for signed word and 
+[&#X2212;128,+127] for signed char) or you will not get the expected sound.
+Another important field to get the right result is <CODE>sgrate</CODE>, where you
+have to set the sample rate in Hz that is, the number of samples per second.</LI></OL><H3 CLASS="subsection"><A NAME="htoc45">4.1.3</A>&#XA0;&#XA0;Functions Summary</H3><P>
+<A NAME="signals_float-signals_function"></A></P><P>The following is a description of all the functions related to 
+the <TT>Fsignal</TT> type. The list is in alphabetical order.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_alloc_fsignal</FONT></B> - Allocate the array of values</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Fsignal mw_alloc_fsignal(signal,n)</P><P>Fsignal signal;</P><P>int n;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function allocates the array <CODE>values</CODE> of a <TT>Fsignal</TT> structure previously created using <CODE>mw_new_fsignal</CODE>. The size of the signal is given by 
+<CODE>n</CODE>, it corresponds to the number of samples.</P><P>Values can be addressed after this call, if the allocation successed. There is
+no default values.</P><P>Do not use this function if <CODE>signal</CODE> has already an allocated array: use
+the function <CODE>mw_change_fsignal</CODE> instead.</P><P>The function <CODE>mw_alloc_fsignal</CODE> returns <TT>NULL</TT> if not enough memory is available to allocate the array. Your code should check this return value to 
+send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">Fsignal signal=NULL; /* Internal use: no Input neither Output of module */
+int i;
+
+/* Create a signal with 1000 samples */
+if  ( ((signal = mw_new_fsignal()) == NULL) ||
+      (mw_alloc_fsignal(signal,1000) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Set the sample #i to the value i */
+for (i=0;i&lt;signal-&gt;size;i++) signal-&gt;values[i] = i;
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_change_fsignal</FONT></B> - Change the size of the array of values</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Fsignal mw_change_fsignal(signal, n)</P><P>Fsignal signal;</P><P>int n;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function changes the memory allocation of the array <CODE>values</CODE> of a <TT>Fsignal</TT> structure, even if no previously memory allocation was done.
+The new size of the signal is given by <CODE>n</CODE>, it corresponds to the number of samples.</P><P>The function <CODE>mw_change_fsignal</CODE> can also create the structure if the input <CODE>signal = NULL</CODE>.
+Therefore, this function can replace both <CODE>mw_new_fsignal</CODE> and
+<CODE>mw_alloc_fsignal</CODE>. It is the recommended function to set signal 
+size of input/output modules. Since the function can set the 
+address of <CODE>signal</CODE>, the variable must be set to the return value of 
+the function (See example below).</P><P>The function <CODE>mw_change_fsignal</CODE> returns <TT>NULL</TT> if not enough memory is available to allocate the array. 
+Your code should check this return value to 
+send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">Fsignal u; 
+
+/* Usage when &lt;u&gt; IS NOT an output of the module (and has not been
+   previously allocated): the function returns a new structure's address
+*/
+u = mw_change_fsignal(NULL, 1000);
+
+/* Usage when &lt;u&gt; IS an output of the module (or has been previously
+   allocated): DO NOT change the structure's address
+*/
+u = mw_change_fsignal(u, 1000);
+
+if (u == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_clear_fsignal</FONT></B> - Clear all values</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_clear_fsignal(signal, v)</P><P>Fsignal signal;</P><P>float v;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function fills the fsignal <CODE>signal</CODE> with the value given by <I>v</I>:
+all samples will have the value <I>v</I>. </P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">Fsignal signal; /* Output of module */
+
+signal = mw_change_fsignal(signal, 1000);
+if (signal == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+/* Set all samples to 0.0 */
+mw_clear_fsignal(signal,0.0);
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_copy_fsignal_header</FONT></B> - Copy the header of a signal into another one</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_copy_fsignal_header(in, out)</P><P>Fsignal in,out;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function copies the header of the signal <CODE>in</CODE> into the header of the signal <CODE>out</CODE>, but the size-related fields. The size of the two signals may be different
+(this includes the case where size of <CODE>out</CODE> is null).</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Fsignal G; /* Needed Input */
+Fsignal F; /* Optional Output */
+
+  if (F) 
+    {
+    printf("F option is active: copy header of G into F\n");
+    mw_copy_fsignal_header(G, F);
+     }
+  else  printf("F option is not active\n");
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_copy_fsignal</FONT></B> - Copy a signal into another one</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_copy_fsignal(in, out)</P><P>Fsignal in,out;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function copies the header and the content of the array <CODE>values</CODE> of the signal <CODE>in</CODE> into the corresponding fields of the signal <CODE>out</CODE>.
+The size of the two signals must be the same (this implies the <CODE>out</CODE> signal to
+be allocated).</P><P>The speed of this function depends to the C library implementation, but it is
+usually very fast (trying to do faster is a waste of time).</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Fsignal G; /* Needed Input */
+Fsignal F; /* Optional Output */
+
+  if (F) {
+    printf("F option is active: copy G in F\n");
+    if ((F = mw_change_fsignal(F, G-&gt;size)) == NULL)
+        mwerror(FATAL,1,"Not enough memory.\n");
+    else mw_copy_fsignal(G, F);
+   }
+  else  printf("F option is not active\n");
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_copy_fsignal_values</FONT></B> - Copy the values of a signal into another one</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_copy_fsignal_values(in, out)</P><P>Fsignal in,out;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function copies the content of the array <CODE>values</CODE> of the signal <CODE>in</CODE> into the array <CODE>values</CODE> of the signal <CODE>out</CODE>.
+The size of the two signals must be the same (this implies the <CODE>out</CODE> signal to
+be allocated).</P><P>The speed of this function depends to the C library implementation, but it is
+usually very fast (trying to do faster is a waste of time).</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Fsignal G; /* Needed Input */
+Fsignal F; /* Optional Output */
+
+  if (F) {
+    printf("F option is active: copy G in F\n");
+    if ((F = mw_change_fsignal(F, G-&gt;size)) == NULL)
+        mwerror(FATAL,1,"Not enough memory.\n");
+    else mw_copy_fsignal_values(G, F);
+   }
+  else  printf("F option is not active\n");
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_delete_fsignal</FONT></B> - Deallocate the signal</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_delete_fsignal(signal)</P><P>Fsignal signal;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function deallocates the array <CODE>values</CODE> of a <TT>Fsignal</TT> structure previously allocated using <CODE>mw_alloc_fsignal</CODE> or <CODE>mw_change_fsignal</CODE>, and the structure itself. </P><P>You should set <CODE>signal = NULL</CODE> after this call since the address pointed
+by <CODE>signal</CODE> is no longer valid.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">Fsignal signal=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((signal = mw_new_fsignal()) == NULL) ||
+      (mw_alloc_fsignal(signal,1000) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+.
+.
+mw_delete_fsignal(signal);
+signal = NULL;
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_new_fsignal</FONT></B> - Create a new Fsignal</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Fsignal mw_new_fsignal();
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function creates a new <TT>Fsignal</TT> structure with an empty array <CODE>values</CODE>.
+No samples can be addressed at this time.
+The array <CODE>values</CODE> should be allocated using the function <CODE>mw_alloc_fsignal</CODE> or <CODE>mw_change_fsignal</CODE>.</P><P>Do not use this function for input/output of modules, since the MegaWave2
+Compiler already created the structure for you if you need it (see volume one: &#X201C;MegaWave2 user manual&#X201D;). Use instead the function <CODE>mw_change_fsignal</CODE>.
+Do not forget to deallocate the internal structures before the end
+of the module.</P><P>The function <CODE>mw_new_fsignal</CODE> returns <TT>NULL</TT> if not enough memory is available to create the structure. Your code should check this value to send an
+error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">Fsignal signal=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((signal = mw_new_fsignal()) == NULL) ||
+      (mw_alloc_fsignal(signal,1000) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+</PRE><HR>
+<A HREF="system_manual004.html"><abbr title="previous chapter" class="navigation">&larr;</abbr></A>
+<A HREF="index.html"><abbr title="table of contents" class="navigation">&uarr;</abbr></A>
+<A HREF="system_manual006.html"><abbr title="next chapter" class="navigation">&rarr;</abbr></A>
+</BODY>
+</HTML>

@@ -1,0 +1,175 @@
+\Name{mw\_change\_curve}{Define the curve structure, if not defined}
+\Summary{
+Curve mw\_change\_curve(curve)
+
+Curve curve;
+}
+\Description
+This function returns a Curve structure if the input \verb+curve = NULL+.
+It is provided despite the \verb+mw_new_curve+ function for
+global coherence with other memory types.
+
+The function \verb+mw_change_curve+ returns \Null\ if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal curve structures before the end
+of the module, except if they are part of an input or output chain.
+
+\Next
+\Example
+\begin{verbatim}
+/* Define a curve with 10 points which is the straight line (0,0)-(9,9) */
+
+Curve curve=NULL; /* Internal use: no Input neither Output of module */
+Point_curve newp,oldp=NULL;
+int i;
+
+curve = mw_change_curve(curve);
+if (curve == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+...
+\end{verbatim}
+(End of this example as for the \verb+mw_new_curve+ function).
+
+
+\newpage %......................................
+
+
+\Name{mw\_copy\_curve}{Copy a curve into another one}
+\Summary{
+Curve mw\_copy\_curve(in,out)
+
+Curve in, out;
+}
+\Description
+This function duplicates the points contained in \verb+in+.
+The result is put in \verb+out+, which may not be a predefined structure : in case 
+of \verb+out=NULL+, the \verb+out+ structure is allocated.
+
+The function \verb+mw_copy_curve+ returns \Null\ if not enough memory is available to perform
+the copy, or \verb+out+ elsewhere.
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+
+Curve in; /* Predefined curve */
+Curve out=NULL; 
+
+out=mw_copy_curve(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_curve}{Deallocate a curve}
+\Summary{
+void mw\_delete\_curve(curve)
+
+Curve curve;
+}
+\Description
+This function deallocates all the memory allocated by the curve variable that is, all the points belonging to this chain and the \curve structure itself.
+You should set \verb+curve = NULL+ after this call since the address pointed
+by \verb+curve+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+/* Remove the first curve of an existing curve set (curves) */
+
+Curves curves;/* Existing curve set (e.g. Input of module) */
+Curve curve;  /* Internal use */
+
+curve = curves->first;
+curves->first=curves->next;
+curves->next->previous = NULL;
+mw_delete_curve(curve);
+curve = NULL;
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_length\_curve}{Return the number of points of a curve}
+\Summary{
+unsigned int mw\_length\_curve(cv);
+
+Curve cv;
+}
+\Description
+This function return the number of points contained in the given
+curve \verb+cv+. It returns $0$ if the structure is empty.
+
+\Next
+\Example
+\begin{verbatim}
+
+Curve curve; /* Internal use: no Input neither Output of module */
+Point_curve newp,oldp=NULL;
+int i;
+
+curve = mw_new_curve();
+if (curve == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Define a curve with 5 points */
+for (i=1;i<=5;i++)
+{
+ newp = mw_new_point_curve();
+ if (newp == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+ if (i=0) curve->first = newp;
+ newp->x = newp->y = i;
+ newp->previous = oldp;
+ if (oldp) oldp->next = newp;
+ oldp=newp;
+} 
+
+/* The length is 5 */
+printf("Length=%d\n",mw_length_curve(curve));
+
+\end{verbatim}
+\newpage %......................................
+
+\Name{mw\_new\_curve}{Create a new curve}
+\Summary{
+Curve mw\_new\_curve();
+}
+\Description
+This function creates a new \curve structure.
+It returns \Null\ if not enough memory is available to create the structure.
+Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.
+
+\Next
+\Example
+\begin{verbatim}
+/* Define a curve with 10 points which is the straight line (0,0)-(9,9) */
+
+Curve curve; /* Internal use: no Input neither Output of module */
+Point_curve newp,oldp=NULL;
+int i;
+
+curve = mw_new_curve();
+if (curve == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+for (i=0;i<10;i++)
+{
+ newp = mw_new_point_curve();
+ if (newp == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+ if (i=0) curve->first = newp;
+ newp->x = newp->y = i;
+ newp->previous = oldp;
+ if (oldp) oldp->next = newp;
+ oldp=newp;
+} 
+\end{verbatim}
+\newpage %......................................
+

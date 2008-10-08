@@ -1,0 +1,166 @@
+\Name{mw\_alloc\_shapes}{Allocate the fields of a \shapes\ structure}
+\Summary{
+Shapes mw\_alloc\_shapes(shs, nrow, ncol, value)
+
+Shapes shs;
+
+int nrow, ncol;
+
+float value;     /* gray level value of the root */
+}
+
+\Description
+This function takes as argument a \shapes\ structure and returns it
+after having allocated all necessary fields. The input \verb+nrow+ and 
+\verb+ncol+ are the dimensions of the image. 
+The field \verb+the_shapes+ is allocated to contain
+\verb+nrow+$\times$\verb+ncol+$+1$ shapes, which is the maximal number of 
+shapes extracted by the FLST (see module \verb+flst+). 
+In fact, only one shape is put, the root of the tree, supposed to be 
+extracted at gray level \verb+value+. 
+The field \verb+smallest_shape+ is also allocated and
+initialized, each pixel having as smallest shape the root.
+
+The function returns \verb+shs+, or \Null\ if not enough memory is available
+to do the allocation.
+
+\Next
+\Example
+\begin{verbatim}
+
+Shapes shs;
+Fimage image; /* Assume image is allocated */
+
+/*
+  Define the structure
+*/
+shs = mw_new_shapes();
+if (!shs) mwerror(FATAL,1,"Not enough memory to define the shapes !\n");
+
+/* 
+  At that time, the structure exists but fields are empty : alloc them
+  to handle the Fimage image.
+*/
+if (!mw_alloc_shapes(shs, image->nrow, image->ncol, image->gray[0]))
+  mwerror(FATAL,1,"Not enough memory to alloc the shapes !\n");
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_change\_shapes}{(Re)alloc the fields of a \shapes\ structure}
+\Summary{
+Shapes mw\_change\_shapes(shs, nrow, ncol, value)
+
+Shapes shs;
+
+int nrow, ncol;
+
+float value;     /* gray level value of the root */
+}
+
+\Description
+If the input pointer \verb+shs+ is \Null, create a new
+structure, otherwise delete the currently allocated fields 
+(if any) and call \verb+mw_alloc_shapes()+.
+
+The function returns the new structure or \verb+shs+, or \Null\ if not enough 
+memory is available to do the allocation.
+
+\Next
+\Example
+\begin{verbatim}
+
+Shapes shs=NULL;
+Fimage image; /* Assume image is allocated */
+
+/*
+  Define the structure and alloc the field to handle the Fimage image.
+*/
+shs = mw_change_shapes(shs, image->nrow, image->ncol, image->gray[0]);
+if (!shs) mwerror(FATAL,1,"Not enough memory to alloc the shapes !\n");
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_shapes}{Delete a \shapes\ structure}
+\Summary{
+void mw\_delete\_shapes(shs)
+
+Shapes shs;
+
+}
+
+\Description
+This function frees the allocated fields and the
+structure itself. 
+After this call, the memory pointed to by \verb+shs+ must
+not be accessed any longer.
+Warning : in the contrary to \verb+mw_delete_shape()+, the memory of the 
+user-defined field \verb+data+ is not freed.
+If this field has been allocated, you should free it before calling
+\verb+mw_delete_shapes()+.
+
+
+\Next
+\Example
+\begin{verbatim}
+
+Shapes shs=NULL;
+Fimage image; /* Assume image is allocated */
+
+/*
+  Define the structure and alloc the field to handle the Fimage image.
+*/
+shs = mw_change_shapes(shs, image->nrow, image->ncol, image->gray[0]);
+if (!shs) mwerror(FATAL,1,"Not enough memory to alloc the shapes !\n");
+
+/*
+  ... (do the computation) ...
+*/
+
+/* 
+  Delete the shapes
+*/
+if (!shs->data) free(shs->data);
+mw_delete_shapes(shs);
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_new\_shapes}{Create a \shapes\ structure}
+\Summary{
+Shapes mw\_new\_shapes()
+
+}
+\Description
+This function creates a new \shapes\ structure. The fields are initialized
+to $0$ or \Null value.
+The function returns the address of the new structure, or
+\Null\ if not enough memory is available.
+
+\Next
+\Example
+\begin{verbatim}
+
+Shapes shs;
+
+/*
+  Define the structure
+*/
+shs = mw_new_shapes();
+if (!shs) mwerror(FATAL,1,"Not enough memory to define the shapes !\n");
+
+/* 
+  At that time, the structure exists but is empty.
+*/
+\end{verbatim}
+
+\newpage %......................................
+
+

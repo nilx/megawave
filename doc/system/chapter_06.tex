@@ -1,0 +1,606 @@
+%
+% Part 6 of the MegaWave2 Guide #2
+% Geometrical structures :  Curves, Polygons and lists
+
+
+The family of curves, polygons and lists objects are mainly used to handle geometrical
+processes, as mathematical morphology algorithms, shape analysis, snakes, \ldots
+
+In MegaWave2, a {\em curve}\index{curve} (section~\ref{curves-polygons_curve}) is a set of 
+points\index{set of points|see{curve}} in the plane that is, a set of $(x,y)$ coordinates. 
+Although there is no such explicit condition in the system library, most modules assume that 
+this set is really a curve, meaning that points are adjacent for the $4$ or $8$-connectivity,
+and that the dimension of the set is less than $2$. For a two-dimensional set of points,
+to avoid memory blowup, consider the segment structure (Section~\ref{hsegment}).
+A curve is implemented as a chain of points:
+the curve begins with a first point, from which we can go to the next 
+point, and so one up to the last point. 
+There is no condition set about the geometry of the curve (e.g. the curve can
+cut itself) but your algorithm may want to put some. 
+There is no an a priori rule to interpolate the curve between two adjacent points
+in the chain, in the case where they are not adjacent in the plane. Your algorithm may
+have to process such interpolation.
+
+You may want to handle a {\em set of curves} (it can be for example the result of an edge detector applied to an image). 
+Such object is also provided in MegaWave2 (section~\ref{curves-polygons_curves}) and it is implemented as a chain of curves.
+
+What we call {\em polygon}\index{polygon} (section~\ref{curves-polygons_polygon}) is basically a closed curve that is, a chain of $(x,y)$ coordinates where the point next the last point is assumed to be the first point. 
+But one can associate to a polygon a list of real parameters.
+It can be, for example, only one value which gives the gray level of the
+constant region delimited by the closed curve. 
+The meaning of the parameters is not pre-defined, so you can used it freely
+in your algorithms. 
+
+You may also want to handle a {\em set of polygons} (it can be for example the result of a region-segmentation algorithm applied to an image).
+This object, explained in section~\ref{curves-polygons_polygons}, is of course
+implemented as a chain of polygons.
+
+All of the objects we have enumerated can record integer or real coordinates 
+(for some 
+applications, you may need real coordinates - e.g. when you compute a P.D.E. 
+to evolve a curve -). 
+In the following, we give a full description of the objects for which 
+coordinates are integers.
+By putting a \verb+F+ (floating-point precision) or \verb+D+ (double) at the beginning
+of the {\em curve} and {\em polygon} object's name, you get the corresponding 
+object with real coordinates 
+fields (see section~\ref{curves-polygons_real} for a short description).
+
+We shall begin our description by the basic object used by curves and polygons: the point.
+
+%-----------------------------------------------
+\section{Point of a planar curve}
+%-----------------------------------------------
+
+
+\label{curves-polygons_point}
+\def\point{{\tt Point\_curve}}
+\index{structure!\point}
+
+A \point\index{point} is nothing more than two coordinates $(x,y)$ which can be linked
+to a previous and to a next \point, in order to constitute a curve.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Point\_curve}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_point_structure}
+
+This is the C definition of the structure:
+{\small
+\begin{verbatim}
+typedef struct point_curve {
+  int x,y; /* Coordinates of the point */
+
+  /* For use in Curve only */
+  struct point_curve *previous; /*Pointer to the previous point (may be NULL)*/
+  struct point_curve *next; /* Pointer to the next point (may be NULL) */
+} *Point_curve;
+\end{verbatim}
+}
+
+The first two fields \verb+x+ and \verb+y+ are the coordinates $(x,y)$ of
+the point in the plane. 
+Since the \verb+Curve+ and the \verb+Polygon+ structures are defined as
+a chain of \point, there are two pointers \verb+previous+ and \verb+next+ associated to each point.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_point-file_type}
+
+Not available: at this time, the \point\ object cannot be used as input/output variables of modules.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_point_function}
+
+The following is a description of all the functions related to 
+the \point\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_06_point_curve.tex}
+
+%-----------------------------------------------
+\section{Planar curve}
+%-----------------------------------------------
+
+
+\label{curves-polygons_curve}
+\def\curve{{\tt Curve}}
+\index{structure!\curve}
+
+You may want to use the \curve\ memory type each type you need to 
+constitute a chain of $(x,y)$ coordinates.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Curve}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_curve_structure}
+
+If \verb+curve+ is of \curve\ memory type, then \verb+curve->first+ is
+of \point memory type and it is the first point of the curve; 
+\verb+curve->first->next+ is the second point, etc.
+The end of the curve occurs when the \verb+next+ field of a point is
+\Null.
+
+{\small
+\begin{verbatim}
+typedef struct curve {
+  Point_curve first; /* Pointer to the first point of the curve */
+
+  /* For use in Curves only */
+  struct curve *previous; /* Pointer to the previous curve (may be NULL) */
+  struct curve *next; /* Pointer to the next curve (may be NULL) */
+} *Curve;
+\end{verbatim}
+}
+
+You may notice that the \curve type includes also the fields
+\verb+previous+ and \verb+next+, as the \point type. This is because
+curves can be linked together to define a set of curves (See~\ref{curves-polygons_curve_function} page~\pageref{curves-polygons_curve_function}).
+If the curve is not part of a set, those pointers must be \Null.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_curve-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item \verb+"MW2_CURVE"+\index{file format!MW2\_CURVE} MegaWave2 binary format.
+\end{enumerate}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_curve_function}
+
+The following is a description of all the functions related to 
+the \curve\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_06_curve.tex}
+
+%-----------------------------------------------
+\section{Set of planar curves}
+%-----------------------------------------------
+
+
+\label{curves-polygons_curves}
+\def\curves{{\tt Curves}}
+\index{structure!\curves}
+
+The \curves\ memory type is used when you want to handle several curves
+into only one variable. 
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Curves}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_curves_structure}
+
+This is the C definition of the structure:
+{\small
+\begin{verbatim}
+typedef struct curves {
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the set */
+  Curve first;    /* Pointer to the first curve */
+} *Curves;
+\end{verbatim}
+}
+
+If \verb+curves+ is of \curves\ memory type, then \verb+curves->first+ is
+of \curve\ memory type and it is the first curve of the set; 
+therefore, \verb+curves->first->first+ is the first point of the first
+curve.
+\verb+curves->first->next+ is the second curve, etc.
+The end of the set occurs when the \verb+next+ field of a curve is
+\Null.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_curves-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item \verb+"MW2_CURVES"+\index{file format!MW2\_CURVES} MegaWave2 binary format.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_curves_function}
+
+The following is a description of all the functions related to 
+the \curves\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_06_curves.tex}
+
+%-----------------------------------------------
+\section{Polygon, a variant of curve}
+%-----------------------------------------------
+
+
+\label{curves-polygons_polygon}
+
+\def\polygon{{\tt Polygon}}
+\index{structure!\polygon}
+
+You should use the \polygon\ memory type when you need to constitute a 
+chain of $(x,y)$ coordinates with some global properties.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Polygon}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_polygon_structure}
+
+The first two fields of the structure register the global properties,
+assumed to be represented as an array of channels; each channel is
+a real number. 
+The meaning of each channel has to be defined by the user; the number
+of channels can be selected using the function \verb+mw_alloc_polygon+
+or \verb+mw_change_polygon+ (see below).
+
+The next fields of the structure are similar to those in the \curve memory 
+type.
+
+{\small
+\begin{verbatim}
+typedef struct polygon {
+  int nb_channels;  /* Number of channels */
+  float *channel;  /* Tab to the channel */
+                   /* The number of elements is given by nb_channels */
+  Point_curve first; /* Pointer to the first point of the curve */
+
+  /* For use in Polygons only */
+  struct polygon *previous; /* Pointer to the previous poly. (may be NULL) */
+  struct polygon *next; /* Pointer to the next poly. (may be NULL) */
+} *Polygon;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_polygon-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item \verb+"A_POLY"+\index{file format!A\_POLY} MegaWave2 Data Ascii format with a \verb+def Polygon+ 
+area. 
+If a file of this format has several \verb+def Polygon+ areas, only the first one is meaningful for the \polygon\ object.
+Since this format uses Ascii coding, you may read or modify the file just by
+editing it using a text editor.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_polygon_function}
+
+The following is a description of all the functions related to 
+the \polygon\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_06_polygon.tex}
+
+%-----------------------------------------------
+\section{Set of polygons}
+%-----------------------------------------------
+
+
+\label{curves-polygons_polygons}
+\def\polygons{{\tt Polygons}}
+\index{structure!\polygons}
+
+The \polygons\ memory type is used when you want to handle several polygons
+into only one variable. 
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Polygons}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_polygons_structure}
+
+This is the C definition of the structure:
+{\small
+\begin{verbatim}
+typedef struct polygons {
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the set */
+  Polygon first;    /* Pointer to the first polygon */
+} *Polygons;
+\end{verbatim}
+}
+
+If \verb+polygons+ is of \polygons\ memory type, then \verb+polygons->first+ is
+of \polygon\ memory type and it is the first polygon of the set; 
+therefore, \verb+polygons->first->first+ is the first point of the first
+polygon.
+\verb+polygons->first->next+ is the second polygon, etc.
+The end of the set occurs when the \verb+next+ field of a polygon is
+\Null.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_polygons-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item \verb+"A_POLY"+\index{file format!A\_POLY} 
+ MegaWave2 Data Ascii format with as many \verb+def Polygon+ areas as the number of polygons recorded.
+Since this format uses Ascii coding, you may read or modify the file just by
+editing it using a text editor.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_polygons_function}
+
+The following is a description of all the functions related to 
+the \verb+Polygons+\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_06_polygons.tex}
+
+%-----------------------------------------------
+\section{Points, Curves and Polygons with real coordinates}
+%-----------------------------------------------
+
+
+\label{curves-polygons_real}
+
+\def\fpoint{{\tt Point\_fcurve}}
+\def\fcurve{{\tt Fcurve}}
+\def\fcurves{{\tt Fcurves}}
+\def\fpolygon{{\tt Fpolygon}}
+\def\fpolygons{{\tt Fpolygons}}
+
+\def\dpoint{{\tt Point\_dcurve}}
+\def\dcurve{{\tt Dcurve}}
+\def\dcurves{{\tt Dcurves}}
+
+Until now, all of the objects we have described in the
+section~\ref{curves-polygons} record the coordinates as integers.
+Use the following objects if you need coordinates of floating point
+values:
+\fpoint\index{structure!\point_fcurve@\fpoint}, \fcurve\index{structure!\fcurve}, \fcurves\index{structure!\fcurves},
+\fpolygon\index{structure!\fpolygon}, \fpolygons\index{structure!\fpolygons}.
+If you need higher precision, use the following objects (coordinates
+are recorded as double): \dpoint\index{structure!\point_dcurve@\dpoint}, \dcurve\index{structure!\dcurve}, 
+\dcurves\index{structure!\dcurves}.
+
+We will not give the full description of these objects and of their related
+functions since it is equivalent to the former description, just keep in
+mind to translate the words {\em curve} to {\em fcurve} or {\em dcurve} and {\em polygon}
+to {\em fpolygon}, both in the type names (the first letter being upper-case) and in the function 
+names.
+
+And, of course, do not forget that the coordinates are now real.
+The C definition of the structure \fpoint\ is the following:
+{\small
+\begin{verbatim}
+typedef struct point_fcurve {
+  float x,y; /* Coordinates of the point */
+
+  /* For use in Fcurve only */
+  struct point_fcurve *previous; /*Pointer to the previous point (may be NULL)*/
+  struct point_fcurve *next; /* Pointer to the next point (may be NULL) */
+} *Point_fcurve;
+\end{verbatim}
+}
+The C definition of the structure \dpoint\ is the following:
+{\small
+\begin{verbatim}
+typedef struct point_dcurve {
+  double x,y; /* Coordinates of the point */
+
+  /* For use in Dcurve only */
+  struct point_dcurve *previous; /*Pointer to the previous point (may be NULL)*/
+  struct point_dcurve *next; /* Pointer to the next point (may be NULL) */
+} *Point_dcurve;
+\end{verbatim}
+}
+
+%-----------------------------------------------
+\section{Lists of $n$-tuple reals}
+%-----------------------------------------------
+
+
+
+\def\flist{{\tt Flist}}
+\def\flists{{\tt Flists}}
+\def\dlist{{\tt Dlist}}
+\def\dlists{{\tt Dlists}}
+
+Some algorithms dealing with curves can be made more efficient if image coordinates
+are not recorded as a chain of points $(x,y)$, but as part of an array\index{array of points|see{list}}.
+In such case, use one of the \flist, \flists, \dlist, \dlists\ objects above.
+These types can more generally be used to handle any list\index{list} of $n$-tuple reals, the
+case of points in the plane corresponding to $n=2$.
+As for curves, \dlist\ and \dlists\ are the counterpart of \flist\ and \flists\ :
+the only difference between them is that values are of type double instead of float.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Flist}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_flist}
+
+In a variable of \flist\index{structure!\flist}\ memory type, data such as coordinates are
+recorded in the array named \verb+values+.
+We call {\em dimension} (field named \verb+dim+) the number of
+components per elements the array is composed, while the field
+named \verb+size+ gives the number of elements.
+When a \flist\ is used as a \fcurve, the dimension is $2$ (number of coordinates
+in the plane) and the size is the number of points.
+
+The field \verb+data+ can be used to record any additional information
+(when no information is available, it is set to \verb+NULL+).
+The size of the space pointed by \verb+data+ is set in \verb+data_size+.
+
+{\small
+\begin{verbatim}
+typedef struct flist {
+  int size;          /* size (number of elements) */
+  int max_size;      /* currently allocated size (maximum number of elements) */ 
+  int dim;           /* dimension (number of components per element) */
+  float *values;     /* values = size * dim array
+                          nth element = values[n*dim+i], i=0..dim-1 */
+  int data_size;     /* size of data[] in bytes */
+  void* data;        /* User defined field (saved). A pointer to something */
+} *Flist;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_flist-file_type}
+
+The list of the available native formats is the following:
+\begin{enumerate}
+\item \verb+"MW2_FLIST"+\index{file format!MW2\_FLIST} MegaWave2 binary format.
+\end{enumerate}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_flist_function}
+
+The following is a description of all the functions related to 
+the \flist\ type. The list is in alphabetical order.
+Notice that these functions do not manage the \verb+data+ field.
+
+\newpage %......................................
+
+
+\input{chapter_06_flist.tex}
+
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Flists}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_flists}
+
+A \flists\index{structure!\flists}\ structure is an array of \flist\ not necessary of the same size.
+As for the  \flist\ structure, the \flists\ structure contains a \verb+data+ 
+field that can be used to record any additional information
+(when no information is available, it is set to \verb+NULL+).
+The size of the space pointed by \verb+data+ is set in \verb+data_size+.
+
+{\small
+\begin{verbatim}
+typedef struct flists {
+  char cmt[mw_cmtsize];     /* Comments */
+  char name[mw_namesize];   /* Name */
+  int size;          /* size (number of lists) */
+  int max_size;      /* currently allocated size (maximum number of lists) */
+  Flist *list;       /* array of Flist */
+  int data_size;     /* size of data[] in bytes */
+  void* data;        /* User defined field (saved). A pointer to something */
+} *Flists;
+
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_flists-file_type}
+
+The list of the available native formats is the following:
+\begin{enumerate}
+\item \verb+"MW2_FLISTS"+\index{file format!MW2\_FLISTS} MegaWave2 binary format.
+\end{enumerate}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_flists_function}
+
+The following is a description of all the functions related to 
+the \flists\ type. The list is in alphabetical order.
+Notice that these functions do not manage the \verb+data+ field.
+
+\newpage %......................................
+
+\input{chapter_06_flists.tex}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structures Dlist and Dlists}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_dlist-dlists}
+
+As for curves, \dlist\index{structure!\dlist}\ and \dlists\index{structure!\dlists}\ are the counterpart 
+of \flist\ and \flists\ :
+the only difference between them is that values are of type double instead of float.
+Since you can easily imagine how it works, we will not document the functions
+associated to \dlist\ and \dlists. Just change the letter \verb+f+ to \verb+d+.
+
+
+{\small
+\begin{verbatim}
+typedef struct dlist {
+
+  int size;          /* size (number of elements) */
+  int max_size;      /* currently allocated size (number of ELEMENTS) */
+  int dim;           /* dimension (number of components per element) */
+
+  double *values;    /* values = size * dim array
+                          nth element = values[n*dim+i], i=0..dim-1 */
+
+  int data_size;     /* size of data[] in bytes */
+  void* data;        /* User defined field (saved). A pointer to something */
+
+} *Dlist;
+\end{verbatim}
+}
+
+{\small
+\begin{verbatim}
+typedef struct dlists {
+
+  char cmt[mw_cmtsize];     /* Comments */
+  char name[mw_namesize];   /* Name */
+
+  int size;          /* size (number of elements) */
+  int max_size;      /* currently allocated size (number of ELEMENTS) */
+
+  Dlist *list;       /* array of Dlist */
+
+  int data_size;     /* size of data[] in bytes */
+  void* data;        /* User defined field (saved). A pointer to something */
+
+} *Dlists;
+
+\end{verbatim}
+}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{curves-polygons_dlist-dlists-file_type}
+
+Here is the list of available native formats associated to \dlist\ internal type :
+\begin{enumerate}
+\item \verb+"MW2_DLIST"+\index{file format!MW2\_DLIST} MegaWave2 binary format.
+\end{enumerate}
+
+The list of available native formats associated to \dlists\ internal type is
+\begin{enumerate}
+\item \verb+"MW2_DLISTS"+\index{file format!MW2\_DLISTS} MegaWave2 binary format.
+\end{enumerate}

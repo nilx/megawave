@@ -1,0 +1,335 @@
+\Name{mw\_alloc\_wpack2d}{Allocate the arrays of the decomposition}
+\Summary{
+Wpack2d mw\_alloc\_wpack2d(pack, tree, signal1, signal2, start\_nrow, start\_ncol)
+
+Wpack2d pack;
+
+Cimage tree;
+
+Fsignal signal1;
+
+Fsignal signal2;
+
+int start\_nrow;
+
+int start\_ncol;
+}
+\Description
+This function allocates images array and fills fields of \verb+pack+ to fit inputs 
+(tree and the signals), assuming the \verb+pack+ structure has been created with \verb+mw_new_wpack2d+ first. 
+It creates images in cells that will receive wavelet packet coefficients. Other cells are filled with \Null\
+pointers. When modifying wavelet packet coefficients, you should check if  a
+cell is \Null\ or not before you try to use it because a \Null\ cell means there
+should be no image there.  To get an example, see module \verb+wp2doperate.c+.
+
+
+Here is the description of the different arguments :
+\begin{itemize}
+\item \verb+pack+ : It provides the address of the output
+  \verb+Wpack2d+, its fields \verb+name+ and \verb+cmt+ are not modified.
+\item \verb+tree+ : It provides the tree of the \verb+Wpack2d+.
+\item \verb+signal1+ : It provides the impulse response of h filter.
+\item \verb+signal2+ : If not \Null, it provides the impulse response of
+  $\tilde{h}$ filter (for bi-orthogonal wavelet packets). If \Null, \verb+signal1+ plays the role of 
+  $\tilde{h}$ filter (this corresponds to orthogonal wavelet packets). 
+\item \verb+start_nrow+ : Number of columns of the image on which wavelet packet transform is computed.
+\item \verb+start_ncol+ : Number of rows of the image on which wavelet packet transform is computed.
+\end{itemize}
+
+The function returns \Null\ if not enough memory is available to allocate one of the fields. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Wpack2d pack=NULL; /* Internal use: no Input neither Output of module */
+
+if (!(pack=mw_new_wpack2d()) ||
+!(mw_alloc_wpack2d(pack, tree, Ri, Ri_biortho, A->nrow, A->ncol)))
+   mwerror(FATAL,-1,"Not enough memory\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_change\_wpack2d}{Changes the memory allocation of a Wpack2d}
+\Summary{
+Wpack2d mw\_change\_wpack2d(pack, tree, signal1, signal2, start\_nrow, start\_ncol)
+
+Wpack2d pack;
+
+Cimage tree;
+
+Fsignal signal1;
+
+Fsignal signal2;
+
+int start\_nrow;
+
+int start\_ncol;
+}
+\Description
+
+This function is made to change the memory allocation of a {\em Wpack2d}.
+It changes the tree, the impulse responses and the allocation of 
+images fields according to the input values. 
+
+The structure address is not changed (if not \Null) and both name and
+comments are kept. Any pointer on the structure will still be usable.
+
+Here is the description of the different arguments :
+\begin{itemize}
+\item \verb+pack+ : If not \Null, it provides the address of the output
+  \verb+Wpack2d+, its fields \verb+name+ and \verb+cmt+ are not modified. 
+  If \Null\ a new \verb+Wpack2d+ is created and memory is allocated.
+\item \verb+tree+ : It provides the tree of the \verb+Wpack2d+.
+\item \verb+signal1+ : It provides the impulse response of the h filter.
+\item \verb+signal2+ : If not \Null, it provides the impulse response of
+   $\tilde{h}$ filter (for bi-orthogonal wavelet packets). If \Null, \verb+signal1+
+ plays the role of $\tilde{h}$ (this corresponds to orthogonal wavelet packets). 
+\item \verb+start_nrow+ : Number of columns of the image on which wavelet packet transform is computed.
+\item \verb+start_ncol+ : Number of rows of the image on which wavelet packet transform is computed.
+\end{itemize}
+
+The function returns \Null\ if not enough memory is available to allocate one of the fields. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Wpack2d pack;
+Cimage tree;
+Fsignal h,htilde;
+Fimage A;
+
+/* Usage when <pack> IS NOT an output of the module(and has not been
+   previously allocated): the function returns a new structure's address
+*/
+pack=mw_change_wpack2d(NULL, tree, h, htilde, A->nrow,A->ncol);
+
+/* Usage when <pack> IS an output of the module (or has been previously
+   allocated): DO NOT change the structure's address
+*/
+pack=mw_change_wpack2d(pack, tree, h, htilde, A->nrow,A->ncol);
+
+if(!pack) mwerror(FATAL, 1, "Not enough memory.\n")
+
+\end{verbatim}
+
+
+\newpage %......................................
+
+\Name{mw\_checktree\_wpack2d}{Check a quad-tree}
+\Summary{
+int mw\_checktree\_wpack2d(tree)
+     
+Cimage tree;
+}
+\Description
+
+This function checks if the input image \verb+tree+ can be considered
+as a tree (quad-tree) for a wavelet packet decomposition.
+If the image is a tree, the function returns its maximum level of decomposition.
+If not, a fatal error is generated and a corresponding error message is issued.
+
+\Next
+\Example
+\begin{verbatim}
+Wpack2d pack;
+Cimage tree; /* input image (must be previously filled) */
+
+pack= mw_new_wpack2d();
+if (!pack) mwerror(FATAL,1,"Not enough memory.\n");
+  
+/* Checks tree and computes the maximum decomposition level */   
+pack->level = mw_checktree_wpack2d(tree);
+
+\end{verbatim}
+
+
+\newpage %......................................
+
+\Name{mw\_clear\_wpack2d}{Clear all wavelet packet coefficients}
+\Summary{
+void mw\_clear\_wpack2d(pack,v)
+
+Wpack2d pack;
+
+float v;
+}
+\Description
+This function clears all wavelet packet coefficients of \verb+pack+
+by uniformly setting the value \verb+v+ in all images (most of time you will 
+use $v=0$).
+
+\Next
+\Example
+\begin{verbatim}
+Wpack2d pack; /* Input pack (previously filled) */
+
+ /* Clear all wavelet packet coefficients in <pack> */
+ mw_clear_wpack2d(pack, 0.0);
+\end{verbatim}
+
+
+\newpage %......................................
+
+\Name{mw\_copy\_wpack2d}{Copy a wavelet packet decomposition}
+\Summary{
+void mw\_copy\_wpack2d(in,out,new\_tree\_size)
+
+Wpack2d in;
+
+Wpack2d out;
+
+int new\_tree\_size;
+}
+\Description
+This function copies the wavelet packet \verb+in+ into another \verb+out+,
+by copying wavelet packet coefficients and other fields so that \verb+out+ contains
+a valid wavelet packet decomposition which corresponds to the decomposition of
+the same image in the same basis.
+
+The structure \verb+out+ must have been created using \verb+mw_new_wpack2d+ before
+the copy, but \verb+mw_copy_wpack2d+ will make any required size modification or allocation.
+
+Here is the description of the different arguments :
+\begin{itemize}
+\item \verb+in+ : Input \verb+Wpack2d+. It must contain a wavelet packet decomposition.  
+\item \verb+out+ : Ouput \verb+Wpack2d+, with a valid address.
+\item \verb+new_tree_size+ : 
+\begin{itemize}
+\item If \verb+new_tree_size+ is smaller than \verb+in->tree->ncol+, \verb+in+ is
+  just copied into \verb+out+.
+\item if \verb+new_tree_size+ is larger than \verb+in->tree->ncol+, \verb+new_tree_size+
+  must be a power of $2$. In this case, \verb+out+ corresponds to
+  the same wavelet packet decomposition as \verb+in+, BUT \verb+out->tree->ncol+
+  equals \verb+new_tree_size+. Of course, \verb+out+ is correct : all the modifications
+  requested by this size change are performed. For an exemple, see 
+  module \verb+wp2dchangepack+.
+\end{itemize}
+\end{itemize}
+
+\Next
+\Example
+\begin{verbatim}
+Wpack2d old_pack; /* Input pack (previously filled) */
+Wpack2d pack;
+
+ pack=mw_new_wpack2d();
+ if (!pack) mwerror(FATAL,-1,"Not enough memory\n");
+ mw_copy_wpack2d(old_pack,pack,0);
+\end{verbatim}
+
+
+\newpage %......................................
+
+\Name{mw\_delete\_wpack2d}{Delete a wavelet packet decomposition}
+\Summary{
+void mw\_delete\_wpack2d(pack)
+
+Wpack2d pack;
+}
+\Description
+\verb+mw_delete_wpack2d+ releases all the memory previously
+allocated for the \verb+Wpack2d+. Notice that all substructures
+like images and signals are also freed.
+
+The behavior of \verb+previous+ and \verb+next+ fields needs to be
+explained. To help user to manage \verb+Wpack2d+ movies,
+\verb+mw_delete_wpack2d+ keeps consistency in the \verb+Wpack2d+ movie.
+If four \verb+Wpack2d+ are linked this way 
+\begin{verbatim}
+  A <-> B <-> C <-> D
+\end{verbatim}
+and if \verb+mw_delete_wpack2d+ is used to delete C, one obtains :  
+\begin{verbatim}
+  A <-> B <-> D
+\end{verbatim}
+
+After a call to \verb+mw_delete_wpack2d+ any access to the deleted
+\verb+Wpack2d+ will cause unpredictable errors. You should set the
+deleted \verb+Wpack2d+ to \Null.
+
+\Next
+\Example
+\begin{verbatim}
+Wpack2d pack; /* Previously allocated wavelet packet */
+
+mw_delete_wpack2d(pack);
+pack=NULL;
+\end{verbatim}
+
+
+\newpage %......................................
+
+\Name{mw\_new\_wpack2d}{Create a new Wpack2d}
+\Summary{
+Wpack2d mw\_new\_wpack2d();
+}
+\Description
+This function creates a new \wpackdd structure with empty image array
+(every fields are set to default). Image array and other fields directly
+related to decomposition still need to be allocated using
+\verb+mw_alloc_wpack2d+, before they can be used.
+
+You don't need this function for input/output of modules, since the MegaWave2
+Compiler already created the structure for you if you need it (see \volI). 
+This function is used to create internal variables.
+Do not forget to deallocate the internal structures before the end
+of the module.
+
+The function \verb+mw_new_wpack2d+ returns \Null\ if not enough memory is available 
+to create the structure. Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Wpack2d pack=NULL; /* Internal use: no Input neither Output of module */
+
+if (!(pack=mw_new_wpack2d()) ||
+!(mw_alloc_wpack2d(pack, tree, Ri, Ri_biortho, A->nrow, A->ncol)))
+   mwerror(FATAL,-1,"Not enough memory\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_prune\_wpack2d}{Prune the tree of a wavelet packet decomposition}
+\Summary{
+void mw\_prune\_wpack2d(in, out, tree)
+
+Wpack2d in;
+
+Wpack2d out;
+
+Cimage tree;
+}
+
+\Description
+This function should only be called when the wavelet packet decomposition
+contained in \verb+in+ corresponds to the tree defined by \verb+tree+, but is coded
+by a \verb+Cimage+ whose size is larger than the size of \verb+tree+, 
+such as in the case where the \verb+Cimage+ \verb+in->tree+ describes the same quad-tree 
+than \verb+tree+.
+
+In such a case, if \verb+tree->ncol+ is smaller than  \verb+in->tree->ncol+, the
+output corresponds to the same wavelet packet decomposition as \verb+in+ but
+\verb+out->tree+ contains \verb+tree+. The \verb+Wpack2d+ \verb+out+ is correct :
+ all the modifications requested by this size change are performed. 
+For an example, see module \verb+wp2dchangepack+.
+
+\Next
+\Example
+
+\begin{verbatim}
+Wpack2d pack1;
+Wpack2d pack2;
+Cimage tree1;
+Cimage tree2;
+
+mw_copy_wpack2d(pack1,pack2,tree2->ncol);
+mw_prune_wpack2d(pack2,pack1,tree1);
+\end{verbatim}
+
+\newpage %......................................
+

@@ -1,0 +1,751 @@
+%
+% Part 4 of the MegaWave2 Guide #1
+%   Module's header
+%
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Syntax}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{header_syntax}
+
+Any module begins with a MegaWave2 header\index{header!module}.
+Such header is a set of statements enclosed between 
+\verb+/* mwcommand+\index{mwcommand} and \verb+*/+.
+
+There are some restrictions :
+\begin{itemize}
+\item no C code nor C preprocessor instructions (\verb+#include+, 
+\verb+#define+, \ldots) must be present before the MegaWave2 header,
+\item no C comments inside the MegaWave2 header.
+\end{itemize}
+
+The following sections describes the statements which are used in 
+the MegaWave2 header.
+
+Needed statements\index{needed statement} are :
+\begin{itemize}
+\item \verb+name+,
+\item \verb+author+,
+\item \verb+function+,
+\item \verb+usage+,
+\item \verb+version+.
+
+\end{itemize}
+
+Optional statements\index{optional statement} are :
+\begin{itemize}
+\item \verb+labo+,
+\item \verb+group+.
+\end{itemize}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Name Statement}
+\index{name}
+
+{\bf Syntax :} \verb+name = {+{\em C\_name}\verb+};+
+
+{\bf Description :} gives the name of the C module and the name of the 
+run-time command; {\em C\_name}  must follow the C identifier syntax.
+The file name of the module must be the same, but it is followed by the extension \verb+.c+.
+
+{\bf Example :} \verb+name = {bigtest};+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Author Statement}
+\index{author}
+
+{\bf Syntax :} \verb+author = { "+{\em author name}\verb+, + {\em author 
+name} \verb+, ... "};+
+
+{\bf Description :} sets the list of author names; each author name 
+must be separated by a comma.
+These list (not the author name) is enclosed between quotes; it is
+used to insert copyright in the run-time command and in the
+module documentation.
+
+{\bf Example :} \verb+author = {"A.Turing, J. Von Neumann"};+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Function Statement}
+\index{function}
+
+{\bf Syntax :} \verb+function = { "+{\em sentence}\verb+"};+
+
+{\bf Description :} Explains shortly the function of the module; 
+this statement contains one string enclosed between quote.
+It is used every time a short help is requested.
+
+{\bf Example :} \verb+function = { "Return 1 if a MegaWave2 module is useful, 0 elsewhere" };+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Labo Statement}
+\index{labo}
+
+{\bf Syntax :} \verb+labo = { "+{\em Laboratory name and address }\verb+"};+
+
+{\bf Description :} sets the name of the laboratory (or firm) from which the authors
+are issued, followed by the address. 
+This statement contains one string enclosed between quote.
+Several laboratories may be put in the same string.
+This string is used to insert copyright in the run-time command and in the
+module documentation.
+
+{\bf Example :} \verb+labo = { "Babbage Inc. 2001 W 99th St. NY New York 10021, USA"};+
+
+This statement is an optional statement. 
+If not set, a default laboratory is used for the copyright
+(the one from which MegaWave2 is issued).
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Group Statement}
+\index{group}
+
+{\bf Syntax :} \verb+group = { "+ {\em group name} \verb+"};+
+
+{\bf Description :} sets the group name in which the module belongs; 
+a group is a word that follows UNIX file naming syntax (including an
+optional path).
+
+{\bf Example :} \verb+group = {"autoref/tests"};+
+Here, \verb+tests+ is a subgroup included in the main group \verb+autoref+.
+
+This statement is an optional statement.
+If not set, the default group is given by the location of the module file
+into the directory \verb+$MY_MEGAWAVE2/src+.
+If set, it must match this location.
+Since MegaWave2 versions 2.x, use of this statement is no more recommended.
+It is still available for backward compatibility only.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Version Statement}
+\index{version}
+
+{\bf Syntax :} \verb+version = { "+ {\em version } \verb+"};+
+
+{\bf Description :} sets the version of the module.
+Each time you modify the module file you should increment this number.
+
+{\bf Example :} \verb+version = { "1.00"};+
+
+Since MegaWave2 versions 2.x, this statement is no more optional.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Usage Statement}
+\index{usage}
+
+{\bf Syntax :} \verb+usage = { + {\em usage specification list} \verb+};+
+
+{\bf Description :} describes the module interface for a call by the run-time command.
+An usage specification is made by an argument declaration followed by space and a quoted string; 
+the quoted string is a description of the corresponding argument.
+The usage specifications are separated by a comma.
+Therefore, an extended description of the syntax may be:
+\begin{verbatim}
+usage = { arg_1 "string_1",
+          arg_2 "string_2",
+              ...
+          arg_n "string_n"
+        };
+\end{verbatim}
+
+There are five types of argument declaration:
+\begin{enumerate}
+\item {\bf options}\index{usage!option}\index{option|see{usage}} : 
+they are optional parameters, which are selected by
+putting in the command line a \verb+-+ followed by any printable character
+(but \verb+?+). These character defines the option.
+Unix uses such options for its commands, as the option \verb+-a+ (list all entries) of the command \verb+ls+.
+Options are always placed before needed arguments.
+
+\item {\bf needed arguments }\index{usage!needed argument} : they are needed parameters, as the Unix
+command \verb+write+ has a needed arguments (which is a user name).
+Any module must define at least one needed argument.
+
+\item {\bf optional arguments}\index{usage!optional argument} : it is a list of parameters which is used entirely or is not used at all (you cannot use some of the arguments of this list and don't use the others);
+this list is put between \verb+{+ and \verb+}+ and is always placed after needed arguments.
+
+\item {\bf variable argument}\index{usage!variable argument} : this argument corresponds to a list of undefined length, the module loops on all arguments of the list;
+ it is always placed after needed arguments;
+You cannot define for the same module optional and variable arguments.
+
+\item {\bf unused arguments}\index{usage!unused argument} : this list describes the parameters of the module function which are not used as arguments in the command mode.
+This list should be put at the end of the declaration.
+\end{enumerate}
+
+The corresponding C variables (which are defined in the module function) 
+can be of scalar type (\verb+short+, \verb+int+, \verb+long+, \verb+unsigned short+, \verb+unsigned int+, \verb+unsigned long+, \verb+float+, \verb+double+) 
+or of MegaWave2 type (a pointer to a structure, see the Volume two: ``MegaWave2 System Library'' for a list of all available MegaWave2 types).
+
+The common description for the usage specification is the following: 
+{\em H name} \verb+->+ or \verb+<-+ {\em C name}. 
+The right arrow \verb+->+ describes an input flow and the left arrow
+ \verb+<-+ describes an output flow. 
+
+The word {\em H name} contains the name of the argument which is
+used by Human being (e.g. used in the help, in the documentation)
+The word {\em C name} contains the name of the C variable used 
+in the module body.
+One can choice to give to  {\em H name}  and  {\em C name} the same word.
+ 
+
+\def\Tid{{\tt H\_id}}
+\def\Cid{{\tt C\_id}}
+\def\ACid{{\tt *C\_id}}
+\def\Val{{\tt Val}}
+\def\Min{{\tt Min}}
+\def\Max{{\tt Max}}
+
+\def\Liste#1{ \bigskip 
+                {\bf #1 } 
+              \par
+            }
+
+\def\Rarrow{$-\!>$}
+\def\Larrow{$<\!-$}
+\def\ENULL{$=$ {\tt NULL}}
+\def\DNULL{$\not =$ {\tt NULL}}
+
+The syntax for each type of argument declaration is described in the 
+next sections~\ref{header_options} to~\ref{header_unused-arg}.
+We write by \Tid\ any word of type {\em H name} and by
+\Cid\ any word of type {\em C name}.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Options}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{header_options}
+\index{usage!option}
+
+\Liste{'c'\Rarrow\Cid} (where 'c' is a character) defines a flag option (i.e. an option without value); \Cid\ is a C variable of type pointer to a scalar (e.g. char *). 
+The flag has been set by the user if and only if \Cid\ \DNULL.
+
+\Liste{'c':\Tid\  \Rarrow \Cid} (where 'c' is a character) defines an option with input value.
+The flag has been set by the user if and only if \Cid\ \DNULL.
+If \Cid\ \DNULL, the value of the option is given by \ACid.
+\Cid\ is a C variable of type pointer to a scalar (e.g. \verb+char *+),
+in this case its value is defined in the command line by writting the
+number (or character) on the terminal,
+or a C variable of MegaWave2 type (e.g. \verb+Cmovie+),
+in this case its value is given by writting the file name on the terminal.
+
+\Liste{'c':[\Tid\  = \Val]\Rarrow \Cid}
+defines an option with default input value.
+This case is similar to the former, but when the option is not set by the user
+then \ACid $=$ \Val\ that is, one can never have \Cid\ \ENULL.
+MegaWave2 types are not allowed.
+\Val\ must be a constant of same type than \Cid.
+Warning: no implicit conversions are made (e.g. if \Cid\ is of type \verb+float+, \Val\ $=1.0$ is allowed but not \Val\ $=1$).
+
+\Liste{'c':\Tid\   \Rarrow \Cid\  [\Min,\Max]}
+defines an option with input value and with interval checking 
+(an error is send if the input value does not fit into the given interval [\Min,\Max]).
+MegaWave2 types are not allowed.
+\Min\ and \Max\ must be constant of same type than \Cid\ with \Max\ $>$ \Min.
+
+\Liste{'c':[\Tid\  = \Val] \Rarrow \Cid\  [\Min,\Max]}
+defines an option with default input value and with interval checking.
+
+\Liste{'c':\Tid\  \Larrow \Cid} 
+(where 'c' is a character) defines an option with output value.
+The flag has been set by the user if and only if \Cid\ \DNULL.
+If \Cid\ \DNULL, MegaWave2 writes the output value at the end of the module
+from the content of \ACid.
+\Cid\ is a C variable of type pointer to a scalar (e.g. \verb+char *+)
+or a C variable of MegaWave2 type (e.g. \verb+Cmovie+).
+In this last case and if \Cid\ \DNULL, you must allocate the
+structure to the right size using functions of the system library,
+before doing any computation with this variable (see Volume two: ``MegaWave2 System Library'').
+
+Restriction: \Cid\ cannot be a function (return value of the module), 
+whereas this is allowed with needed arguments (see section~\ref{header_needed-arg}).
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Needed arguments}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{header_needed-arg}
+\index{usage!needed argument}
+\index{argument|see{usage}}
+
+\Liste{\Tid\  \Rarrow \Cid} 
+defines a needed argument with input value.
+\Cid\ is a C variable of scalar type (e.g. \verb+char+),
+in this case its value is defined in the command line by writting the
+number (or character) on the terminal,
+or a C variable of MegaWave2 type (e.g. \verb+Cmovie+),
+in this case its value is given by writting the file name on the terminal.
+In the body of the module function, you are sure to be able to access
+to the content of this variable.
+Do not perform any deallocation on it, since MegaWave2 may try to access it
+after the end of the module.
+
+\Liste{\Tid\  \Rarrow \Cid [\Min,\Max]} 
+defines a needed argument with input value and with interval checking 
+(an error is send if the input value does not fit into the given interval [\Min,\Max]).
+MegaWave2 types are not allowed.
+\Min\ and \Max\ must be constant of same type than \Cid\ with \Max\ $>$ \Min.
+
+\Liste{\Tid\  \Larrow \Cid}
+defines a needed argument with output value.
+\Cid\ is a C variable of type pointer to a scalar (e.g. \verb+char *+)
+or a C variable of MegaWave2 type (e.g. \verb+Cmovie+).
+It can be also the return of the module (e.g. \Tid\ \Larrow \verb+fentropy+
+if \verb+fentropy+ is the module function which returns a value of the same type than \Cid),
+although this form is not always recommanded when the return value is a
+MegaWave2 object (since the structure has to be allocated at each call to
+the module). 
+The pointer \Cid\ can never be \verb+NULL+ (MegaWave2 allocates space for the
+value, if needed).
+If \Cid\ is of MegaWave2 type, you must allocate the
+structure to the right size using functions of the system library,
+before doing any computation with this variable (see Volume two: ``MegaWave2 System Library'').
+MegaWave2 writes the output value at the end of the module
+from the content of \ACid.
+
+Caution: when \Cid\ is a pointer to a scalar, there is no number (nor character) to write in the command line, and therefore these needed argument is virtual
+(it does not appear in the usage print).
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Optional arguments}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{header_optional-arg}
+\index{usage!optional argument}
+
+The definition of optional arguments and needed arguments differs only
+in the fact that the first are enclosed into \verb+{+ and \verb+}+.
+In addition, optional arguments must be defined after needed arguments.
+When they are several optional arguments, they are linked in the sense
+that the selection of the first leads the need of the selection of the others.
+
+\Liste{\Tid\  \Rarrow \Cid} 
+defines an optional argument with input value.
+\Cid\ is a C variable of type pointer to a scalar (e.g. \verb+char *+),
+or a C variable of MegaWave2 type (e.g. \verb+Cmovie+).
+If \Cid\ \ENULL, then the argument has not been selected.
+
+\Liste{\Tid\  \Rarrow \Cid\  [\Min,\Max]} 
+defines an optional argument with input value and with interval checking 
+(an error is send if the input value does not fit into the given interval [\Min,\Max]).
+MegaWave2 types are not allowed.
+\Min\ and \Max\ must be constant of same type than \Cid\ with \Max\ $>$ \Min.
+
+\Liste{[\Tid\  = \Val] \Rarrow \Cid} 
+defines an optional argument with default input value.
+When the argument is not set by the user then \ACid $=$ \Val\ that is, one 
+can never have \Cid\ \ENULL.
+MegaWave2 types are not allowed.
+\Val\ must be a constant of same type than \Cid.
+Warning: no implicit conversions are made (e.g. if \Cid\ is of type \verb+float+, \Val\ $=1.0$ is allowed but not \Val\ $=1$).
+
+\Liste{[\Tid\  = \Val\ ] \Rarrow \Cid\  [\Min,\Max]} 
+defines an optional argument with input value and with interval checking 
+(an error is send if the input value does not fit into the given interval [\Min,\Max]).
+MegaWave2 types are not allowed.
+\Min\ and \Max\ must be constant of same type than \Cid\ with \Max\ $>$ \Min.
+
+\Liste{\Tid\  \Larrow \Cid}
+defines an optional argument with output value.
+The argument has been given by the user if and only if \Cid\ \DNULL.
+If \Cid\ \DNULL, MegaWave2 writes the output value at the end of the module
+from the content of \ACid.
+\Cid\ is a C variable of MegaWave2 type only (e.g. \verb+Cmovie+).
+If \Cid\ \DNULL, you must allocate the
+structure to the right size using functions of the system library,
+before doing any computation with this variable (see Volume two: ``MegaWave2 System Library'').
+
+Restriction: \Cid\ cannot be a function (return value of the module), 
+whereas this is allowed with needed arguments (see section~\ref{header_needed-arg}).
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Variable arguments}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{header_variable-arg}
+\index{usage!variable argument}
+
+\Liste{\ldots \Rarrow \Cid} 
+defines variable arguments with input values.
+\Cid\ is a C variable of type pointer to a scalar (e.g. \verb+char *+),
+in this case its successive values are defined in the command line by writting the numbers (or characters) on the terminal,
+or a C variable of MegaWave2 type (e.g. \verb+Cmovie+),
+in this case its successive values are given by writting the file names on the terminal.
+The module function is call as many time as the number of variable parameters given in the command line.
+If no variable parameters are given, the module function is called only once
+with  \Cid\ \ENULL.
+
+\Liste{\ldots \Rarrow \Cid\  [\Min,\Max]}
+defines variable arguments with input values and with interval checking 
+(an error is send if one input value does not fit into the given interval [\Min,\Max]).
+MegaWave2 types are not allowed.
+\Min\ and \Max\ must be constant of same type than \Cid\ with \Max\ $>$ \Min.
+
+\Liste{\ldots \Larrow \Cid} 
+defines variable arguments with output values.
+\Cid\ is a C variable of MegaWave2 type only (e.g. \verb+Cmovie+): its successive values will be put in the files whose names are written on the terminal.
+The module function is call as many time as the number of variable parameters given in the command line.
+If no variable parameters are given, the module function is called only once
+with  \Cid\ \ENULL.
+
+Restriction: \Cid\ cannot be a function (return value of the module), 
+whereas this is allowed with needed arguments (see section~\ref{header_needed-arg}).
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Unused arguments}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{header_unused-arg}
+\index{usage!unused argument} 
+
+\Liste{{\tt notused} \Rarrow \Cid} 
+defines an argument which is not used in the command line mode.
+We have always \Cid\ \ENULL\ when the module function is called
+in the command line mode.
+Therefore, a value \DNULL\ means a call from the library.
+\Cid\ is a C variable of type pointer to a scalar (e.g. {\tt char *}),
+or a C variable of MegaWave2 type (e.g. \verb+Cmovie+).
+
+Remarks: 
+\begin{itemize}
+\item The notation \Rarrow\ does not mean here that the argument is an input argument.
+\item The word {\bf \verb+notused+} being a keyword, you cannot use it elsewhere.
+\item Unused arguments should be put at the end of the usage declaration.
+\end{itemize}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Examples of headers}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{header_examples}
+
+We give in the following the source of several modules, which were written in 
+order to show the various possibilities of the header's syntax.
+All of these modules are available with the public distribution, in the
+directory \verb+$MEGAWAVE2/src/demo+.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Use of options}
+\label{header_examples_options}
+
+\index{module!example!demohead1}
+The module \verb+demohead1+ demonstrates all the different kinds of options.
+It uses also two needed arguments, one in input (a scalar with interval 
+checking) and one in output (a MegaWave2 type).
+
+Notice that the output variable (a \verb+Cimage+) is not a parameter of
+the module function: it is notified to the mother procedure using the
+return value of the module.
+This form is not recommended since it leads to allocate memory for the
+\verb+Cimage+ at each call to the module.
+The recommended form is to put the variable as a regular parameter of
+the module function, so the variable is allocated by a call to \verb+mw_change_cimage(output,nrow,ncol)+ only if no previously memory allocation was done. 
+
+{\small
+\begin{verbatim} 
+/*----------------------------- MegaWave Module -----------------------------*/
+/* mwcommand
+  name = {demohead1};
+  version = {"1.0"};
+  author = {"Jacques Froment"};
+  function = {"Demo of MegaWave2 header - #1 : options -"};
+  usage = {
+  'a'->flg                   
+     "Flag -option-",
+  'B':cimage_input_opt -> B
+     "Input MegaWave2 type (cimage) -option-", 
+  'c':[c_opt=1.0] -> c
+     "Input scalar (float) with default value -option-",
+  'd':d_opt -> d          [-10,10] 
+     "Input scalar (integer) with boundary -option-",
+  'e':[e_opt=0.0] -> e    [0.0,1e20] 
+     "Input scalar (double) with default value and boundary -option-",
+  'F':f_opt <- F
+     "Output MegaWave2 type (cimage) -option-",
+
+  float_input -> input    [-1.0,1.0]
+     "Input scalar (float) with boundary -needed argument-",
+
+  cimage_output<-demohead1      
+     "Output MegaWave2 type (cimage) -needed argument-"
+           };
+*/
+/*---------------------------------------------------------------------------*/
+
+#include <stdio.h>
+
+/* Include always the MegaWave2 Library */
+#include "mw.h"
+
+Cimage demohead1(flg,B,c,d,e,F,input)
+
+char *flg;   /* Or int *flg, ... */
+Cimage B;    /* You don't need *B since Cimage is of MegaWave2 type (pointer)*/
+float *c;    /* You need *c since float is a scalar (not a pointer) */
+int *d;      /* You need *d since int is a scalar (not a pointer) */
+double *e;   /* You need *e since double is a scalar (not a pointer) */
+Cimage F;    /* You don't need *F since Cimage is of MegaWave2 type */
+float input; /* You don't need any pointer since it's a needed input */
+
+
+{
+  Cimage output;  /* return of the module */
+  
+  if (flg) printf("flg flag active\n"); else printf("flg flag not active\n");
+
+  /* B may be NULL */
+  if (B) 
+    {
+      printf("Optional input B image selected\n"); 
+      /* Here you can access to the content of the image B
+         ...
+       */
+    }
+  else 
+    {
+      printf("No B image selected\n");
+      /* Do not access to B */
+    }
+
+
+  /* c cannot be NULL since *c has a default value */
+  printf("*c = %f\n",*c);
+
+
+  /* d may be NULL */
+  if (d) printf("*d = %d\n",*d); else printf("No d value\n");
+    
+  /* e cannot be NULL since *e has a default value */
+  printf("*e = %lf\n",*e);
+
+  /* F may be NULL */
+  if (F)
+    {
+      printf("Optional output F image selected\n");
+      /* Here you can compute the image F, after dimensioning.  
+      */      
+      F = mw_change_cimage(F,10,10); /* for a size of (10,10) */
+      if (F == NULL) mwerror(FATAL,1,"Not enough memory\n");
+      /*
+         ...
+      */
+    }
+  else printf("No optional output F selected\n");
+
+  /* Needed scalar argument is not a pointer */
+  printf("input = %f\n",input);
+
+  /* We need to create the structure and to allocate the output image */
+  /* - In this example the size is (1,1) */  
+  output = mw_change_cimage(NULL,1,1);
+  if (output == NULL) mwerror(FATAL,1,"Not enough memory\n");
+
+  /* Here you can compute the image output 
+     ...
+  */  
+
+  return(output);
+}
+\end{verbatim} %-------------------------------------------------------------------
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Use of optional arguments}
+\label{header_examples_optarg}
+
+\index{module!example!demohead2}
+With the module \verb+demohead2+, we show the use of optional arguments.
+This module defines also a needed output argument (a scalar).
+
+{\small
+\begin{verbatim} 
+/*----------------------------- MegaWave Module -----------------------------*/
+/* mwcommand
+  name = {demohead2};
+  version = {"1.0"};
+  author = {"Jacques Froment"};
+  function = {"Demo of MegaWave2 header - #2 : optional arguments -"};
+  usage = {
+
+  output0 <- out0    
+     "Output scalar (int) -needed argument-",
+
+     {
+     [input0=1]  -> in0 [-5,5]
+       "Input scalar (int) with default value and boundary - optional argument -",
+     input1 -> in1 
+       "Input scalar (float) - optional argument -",
+     output1 <- out1
+       "Output MegaWave2 type (cimage) - optional argument -"
+     }
+           };
+*/
+/*---------------------------------------------------------------------------*/
+
+#include <stdio.h>
+
+/* Include always the MegaWave2 Library */
+#include "mw.h"
+
+void demohead2(out0,in0,in1,out1)
+
+int *out0;    /* You need a pointer since it's an output */
+int *in0;     /* You need a pointer since it's an optional argument */
+float *in1;   /* You need a pointer since it's an optional argument */
+Cimage out1;  /* out1 is already a pointer since it's of MegaWave2 type */
+
+{
+  /* out0 cannot be NULL */
+  *out0 = 3;
+
+  /* in0 cannot be NULL */
+  printf("*in0 = %d\n",*in0);
+
+  /* in1 may be NULL */
+  if (in1) printf("*in1 = %f\n",*in1); else printf("No in1 value\n");
+
+  /* out1 may be NULL */
+  if (out1) 
+    {
+      /* Here you can compute out1, after dimensionning */
+      out1 = mw_change_cimage(out1,10,10); /* for a size of (10,10) */
+      if (out1 == NULL) mwerror(FATAL,1,"Not enough memory\n");
+      /*
+         ...
+      */
+    }
+  else printf("No optional output image out1\n");
+
+}
+\end{verbatim} %-------------------------------------------------------------------
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Use of variable and unused arguments}
+\label{header_examples_var-unused}
+
+\index{module!example!demohead3}
+The module \verb+demohead3+ shows the use of variable arguments.
+It includes also one unused argument, \verb+Win+, which is a pointer to a 
+scalar.
+The type of this argument should be \verb+Wframe+, a pointer to a window structure
+(See the Volume two: ``MegaWave2 System Library'' about the Wdevice library).
+But \verb+Wframe+ is not a MegaWave2 object, therefore this type cannot be
+used in the header. By casting the variable in the call to \verb+demohead3+, one can define \verb+Win+ as a pointer to any scalar.
+
+Notice that the variable \verb+Output+ is of type \verb+Cimage *+; it is therefore
+a pointer of pointer.
+Why ? this is not requested by the MegaWave2 header, but by the last instruction \\
+\verb+*Output = Input;+ \\
+This instruction changes the address pointed out by \verb+*Output+.
+If \verb+Output+ was of type \verb+Cimage+, the instruction \\
+\verb+Output = Input;+ \\
+would change the address inside the module function only, not outside.
+With \verb+Output+ of type \verb+Cimage+,  the only solution is to copy the
+content of \verb+Input+ into \verb+Output+ (using the function \verb+mw_copy_cimage()+).
+
+{\small
+\begin{verbatim} 
+/*----------------------------- MegaWave Module -----------------------------*/
+/* mwcommand
+  name = {demohead3};
+  version = {"1.0"};
+  author = {"Jacques Froment"};
+  function = {"Demo of MegaWave2 header - #3: variable and notused arguments -"};
+  usage = {
+    A->Input            "Input (could be a cimage)",
+    ...<-Output         "Output (copy of the input)",
+    notused -> Win      "Window (internal use only)" 
+          };
+*/
+/*---------------------------------------------------------------------------*/
+
+#include <stdio.h>
+
+/* Include always the MegaWave2 Library */
+#include "mw.h"
+
+/* Include the window since we use windows facility */
+#include "window.h" 
+
+void demohead3(Input,Output,Win)
+
+Cimage Input;
+Cimage *Output;  /* Here we define *Output since the function changes the  */
+                 /* pointer value (we set bellow *Output = Input)          */
+
+char *Win;       /* Should be "Wframe *Win" for a MegaWave2 window         */
+                 /* BUG: We cannot use other type than scalar or MegaWave2 */
+                 /* Don't forget to cast before the function call          */
+{
+  if (Win != NULL)
+    {
+      printf("Library call: passing Window ptr\n");
+      /*
+         ...
+      */
+    }
+  else printf("Command call: no Window ptr\n");
+
+  if (*Output == NULL) printf("No output requested !\n");
+  else 
+    *Output = Input;  
+}
+\end{verbatim} 
+}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{System's options}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{header_optsys}
+
+The options defined in the header's module (see section~\ref{header_options})
+are called {\em user's options}\index{user's option} since they are defined by the user.
+You may notice that one letter only is used to select a user's option in
+the command line.
+
+In addition to user's options, there exist other options called 
+system's options\index{system's option} since they are defined by MegaWave2 and always available.
+System's options use more than one letter, therefore no confusion can be
+made.
+
+Here is the list of all available system's options:
+
+{\bf \verb+-debug+}\index{system's option!-debug}
+actives the debugging mode that is, the print of the function \verb+mwdebug+
+(see the Volume two for a description of this function).
+
+{\bf \verb+-fsum+}\index{system's option!-fsum}
+prints the module's function summary as given in the Volume three: ``MegaWave2 User's Modules Library'', and exits. 
+This recalls the user the parameters needed to call the module from
+another module.
+
+{\bf \verb+-ftype "file type"+}\index{system's option!-ftype}
+allows to overwrite the default file type for the MegaWave2 outputs\index{file format}.
+By default, MegaWave2 selects the same file type than the one of the
+inputs (if the internal input type matches the internal output type)
+or the file type which it considers to be the ``most common''.
+Using this option, you force MegaWave2 to write files having the
+type given in the string (file types are given in the Volume two: 
+``MegaWave2 System Library'' ).
+Do not use this option in case of several outputs with incompatible types. 
+On some file types, option(s) may be added. Option mark is ':'.
+For example, JFIFC:80 means JPEG/JFIFC\index{file format!JFIFC} file format with the 
+option 80 (quality factor).
+
+{\bf \verb+-help+}\index{system's option!-help}
+prints a short help for the module and exits.
+
+{\bf \verb+-proto+}\index{system's option!-proto}
+prints the module's function prototype as to be included in a C source file, and
+exits.
+
+{\bf \verb+-verbose+}\index{system's option!-verbose}
+active the verbose mode that is, the print of all functions writting on
+the standard output \verb+STDOUT+ or on the standard error \verb+STDERR+.
+Indeed, these outputs may be redirected using the shell variables
+\verb+MW_STDOUT+\index{environment variable!MW\_STDOUT} and 
+\verb+MW_STDERR+ \index{environment variable!MW\_STDERR}
+(see section~\ref{install_user_set-up} page~\pageref{install_user_set-up}).
+The verbose switch allows to suppress the redirection for only the 
+current module.
+
+{\bf \verb+-vers+}\index{system's option!-vers}
+prints the module's version\index{version} number and exits.

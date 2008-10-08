@@ -1,0 +1,103 @@
+%
+% Part 7 of the MegaWave2 Guide #1
+%   Documentation
+%
+
+\index{documentation}
+{\bf Warning : } in MegaWave2 versions 2.x, the \verb+doc+ directory structure has 
+changed\index{directory tree!doc}.
+Now put the documentation you write (the \verb+.tex+ files) into the 
+\verb+$MEGAWAVE2/doc/src/+ directory (administrator) or \verb+$MY_MEGAWAVE2/doc/src/+ 
+(plain user) directory, without creating subdirectories for the groups : the \verb+.tex+ 
+files of all modules of all groups belong to the same directory.
+The \verb+$MEGAWAVE2/doc/obj/+ and  \verb+$MY_MEGAWAVE2/doc/obj/+ directories contain files
+that are automatically generated (such as \verb+.doc+ and \verb+.dvi+ files). Do not put
+your \verb+.tex+ files here, they may be destroyed by the system !
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Document a module}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{document_module}
+
+\index{documentation!module}
+Each module you write must be documented.
+MegaWave2 helps you as much as possible in this unattractive task:
+when you compile a module, a document skeleton is generated in the directory
+\verb+$MEGAWAVE2/doc/obj/+ (or \verb+$MY_MEGAWAVE2/doc/obj/+).
+It takes the name of the module and the extension \verb+.doc+.
+This file documents in the \LaTeX\index{LaTeX} language about everything that could be
+automatically done, as the synopsis of the run-time command, the summary of
+the module function, the release number and the copyright for the authors and
+laboratories.
+
+(Un)Fortunately, there will always be a part of the documentation which cannot
+be automatically generated: the mathematical description of the algorithm.
+This part is the {\em Description} field of the documentation.
+Therefore, the author of a new module must write this content in a file
+into the \verb+$MEGAWAVE2/doc/src/+ (administrator only) or 
+\verb+$MY_MEGAWAVE2/doc/src/+ (plain user) directory.
+Give this file the name of the module with the extension \verb+.tex+.
+As the file will be inserted by MegaWave2 into the whole documentation, you must 
+write the text using a subset of the \LaTeX\ language.
+In particular, don't use any commands about the style or the presentation
+(as \verb+\begin{document}+, \verb+\documentstyle+, \verb+\newpage+, \verb+\section+, \ldots).
+
+You can get a lot of examples of such documents by seeking the files into
+subdirectories of \verb+$MEGAWAVE2/doc/src+.
+
+Since MegaWave2 V 2.21, the system uses bibliographic\index{bibliography} databases where all citations\index{citation}
+are recorded. As this allows cross-references, it is now possible to get all modules associated to
+a given article. In order to fulfill the new requirements, citations have to be set
+in the \verb+.tex+ file using the standard \verb+\cite+ \LaTeX\ command,
+and the corresponding references have to be given in the bibliographic database (.bib file), NO MORE in the \verb+.tex+ file.
+Beware, do not collapse citations : use e.g. \verb+\cite{key1}\cite{key2}+ instead of \verb+\cite{key1,key2}+.
+References for private modules have to be put in \verb+$MY_MEGAWAVE2/doc/private.bib+\index{private.bib}
+while references for public modules are in \verb+$MEGAWAVE2/doc/public.bib+\index{public.bib}.
+Of course, only references for private modules not in \verb+public.bib+ have to be in \verb+private.bib+.
+See the system macro {\tt mwmodbibtex} for more information about the bibliographic database.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Document a macro}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{document_macro}
+
+\index{documentation!macro}
+The documentation of a macro follows the same rules as the ones for modules.
+Therefore, for each new user's macro, you must write a description file 
+\verb+$MEGAWAVE2/doc/src/MACRO.tex+ (for a public macro, administrator only), or 
+\verb+$MY_MEGAWAVE2/doc/src/MACRO.tex+ (for a private macro), \verb+MACRO+ being 
+the name of the macro located in a subdirectory of \verb+$MEGAWAVE2/src/+ (or of
+\verb+$MY_MEGAWAVE2/src/+).
+In this file, you put in \LaTeX\ the part which corresponds to the {\em Description} field of 
+the documentation.
+
+The difference between macros and modules is that macros do not need really need a compilation,
+and therefore you may call a specific command to generate the document skeleton 
+\newline
+\verb+$MEGAWAVE2/doc/obj/MACRO.doc+ (or \verb+$MY_MEGAWAVE2/doc/obj/MACRO.doc+),
+which is the macro \verb+cmw2macro+ (see section~\ref{sysmacros_summary}).
+Since MegaWave2 Versions 2.x, \verb+cmw2+ will also perform this task if its argument
+is a user's macro.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Print the documentation}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{document_print}
+
+\index{documentation!print}
+Once the document skeleton of a module or macro is generated, and the description file is
+written, you can compile the document skeleton by calling the macro \verb+mwdoclatex+
+\index{system's macro!mwdoclatex} (see section~\ref{sysmacros_summary}).
+Of course this needs to have the \LaTeX\index{LaTeX} environment installed on your system.
+You get a \verb+DVI+ file which can be printed on various devices using commands of the standard TeXware distribution.
+
+If you want to print the documentation of all modules and user's macros instead of only one,
+use the macro \verb+mwmakedoc+\index{system's macro!mwmakedoc}. 
+This will actually create an updated sample of the Volume Three of the MegaWave2 guides (``MegaWave2 User's Modules Library'').
+
+In the document skeleton of each module (not available for macros), a field named 
+``See Also'' lists all the modules calling the module or called by the module: 
+this is a dependencies list. In order to update this
+list, you need to compile each module which the option \verb+-dep+ and you need to
+run the macro \verb+mwdep+\index{system's macro!mwdep} before the macros \verb+mwdoclatex+ and \verb+mwmakedoc+.

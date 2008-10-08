@@ -1,0 +1,59 @@
+% head.inc.tex
+%
+% LaTeX header for the megawave manuals
+%
+% author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+
+\usepackage{makeidx}
+\usepackage[pdftex]{hyperref}
+\hypersetup{
+    colorlinks,%
+    citecolor=black,%
+    filecolor=black,%
+    linkcolor=black,%
+    urlcolor=black
+}
+\usepackage[a4paper, height=24cm, width=16cm, 
+            hmarginratio=1:1, vmarginratio=1:1]{geometry}
+\usepackage{fancyhdr}
+% TODO : customize the headers
+
+\makeindex
+
+% addresses
+\def\httpcmla{http://www.cmla.ens-cachan.fr/}
+\def\httpmw{http://megawave.cmla.ens-cachan.fr/}
+\def\emailmw{megawave@cmla.ens-cachan.fr}
+
+% copyright information
+\def\copyinfo{
+copyright \copyright\ \today\ CMLA, Ecole Normale Sup\'erieure de Cachan\\
+61 avenue du Pr\'esident Wilson, 94235 Cachan cedex, France\\
+all rights reserved\\
+\url{\httpmw}
+}
+
+% titles
+\def\titleI{MegaWave2 user manual}
+\def\titleII{MegaWave2 system library}
+\def\titleIII{MegaWave2 user modules library}
+
+\def\volI{volume one: ``\titleI''}
+\def\volII{volume two: ``\titleII''}
+\def\volIII{volume three: ``\titleIII''}
+
+% shortcuts
+\def\NULL{\texttt{NULL}}
+
+% meta-info
+\def\myversion{version 3.01}
+
+\title{\mytitle}
+\author{\myauthor}
+
+\hypersetup{
+    pdftitle={\mytitle},
+    pdfauthor={\myauthor},
+    pdfsubject={\mytitle},
+    pdfkeywords={\mykeywords},
+}

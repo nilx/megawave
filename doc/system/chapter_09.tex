@@ -1,0 +1,149 @@
+%
+% Part 9 of the MegaWave2 Guide #2
+%   Miscellaneous Features
+%
+
+You will find in this section some utilities which may help you to write your modules. 
+Contrary to the former sections, some functions described here are not about a memory 
+format. 
+
+%-----------------------------------------------
+\section{Global System Variables}
+%-----------------------------------------------
+
+
+\label{misc_glob-sys-var}
+
+At any time in a module, you can access to the following external variables\index{external variable}.
+Those variables are for reading only, do not change their values !
+Notice that you don't have to define those variables in your module, the
+definitions are done into the include file \verb+mw.h+.
+
+\begin{itemize}
+\item \verb+char *mwname+\index{external variable!mwname} :
+This variable contains the name of the current module.
+
+\item \verb+char *mwgroup+\index{external variable!mwgroup} :
+This variable contains the group name of the current module, as for example \verb+"common/signal"+ which means that the current module belongs to the subgroup \verb+signal+ which is part of the main group \verb+common+.
+
+\item \verb+int mwerrcnt+\index{external variable!mwerrcnt} :
+Give the number of time the function \verb+mwerror+ has be called with the
+argument \verb+ERROR+ (see section~\ref{misc_function} page~\pageref{misc_function}).
+Since \verb+ERROR+ is not a fatal event, the user has the possibility to terminate the algorithm by checking \verb+mwerrcnt+, if too many errors have been
+encountered.
+
+\item \verb+int mwrunmode+\index{external variable!mwrunmode} :
+The value of this variable indicates in which context the module is executed.
+\begin{itemize}
+\item If set to $1$, the module is called in the run-time mode;
+\item if set to $2$, the module is called by the window-oriented interpreter (XMegaWave2).
+\end{itemize}
+
+
+\end{itemize}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Conversion between memory types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+
+\label{conv_memory_types}
+
+The System Library contains functions to convert memory types\index{convert memory types}. 
+However do not expect to find a function to convert structures
+which are very dissimilar, as \verb+Curves+ and \verb+Cimage+.
+If the meaning one can give of a conversion is not evident or not unique,
+a conversion procedure has to be implemented as a module rather than 
+as a system function.
+
+Conversion function summaries follow the following rule :
+\verb+out = (Y) mw_x_to_y(in,old)+ where \verb+x+ is the internal C type of the
+input \verb+in+, \verb+y+ the internal C type of the requested output 
+\verb+out+ (letters in lowercase) and \verb+Y+ the cast to the output 
+(internal C type of \verb+out+ with first letter in uppercase).
+In the last argument \verb+old+ you may put the name of a variable of type \verb+Y+ :
+in such a case, the memory allocation will be reused for \verb+out+ (the pointer
+\verb+old+ will have the same address than \verb+out+). This is especially useful
+when converting lot of images with same size, to avoid memory blowup. 
+If you do not want to use this possibility, just put \verb+NULL+ as the last argument :
+memory for \verb+out+ will be allocated.
+
+In addition to the various \verb+mw_x_to_y()+ undocumented conversion 
+functions, there exists an ``all-purpose'' conversion function called 
+\verb+mw_conv_internal_type()+ and documented next page.
+
+\newpage
+
+\Name{mw\_conv\_internal\_type}{Convert any possible internal type to another one}
+\Summary{
+void *mw\_conv\_internal\_type(mwstruct,typein,typeout)
+
+void *mwstruct; /* Any type of MegaWave2 structure */
+
+char *typein;   /* Type of the input <mwstruct> */
+
+char *typeout;  /* Type of the output structure */
+}
+
+\Description
+This function may be used instead of the \verb+mw_x_to_y()+ various functions 
+to convert any possible internal type \verb+a+ to \verb+b+, even if the 
+\verb+mw_a_to_b()+ function does not exist : the system creates 
+\verb+mw_conv_internal_type()+ by analyzing existing \verb+mw_x_to_y()+ 
+functions, by finding the shortest path between two internal types, say
+\verb+a+ and \verb+b+, and by calling appropriate \verb+mw_x_to_y()+ functions
+(for example, \verb+mw_a_to_c()+ and  \verb+mw_c_to_b()+ if those functions exist).
+
+The input \verb+mwstruct+ is a variable of internal C type given by the
+string \verb+typein+ (use lower letters only). 
+The output of the function is a variable of internal C type given by the 
+string \verb+typeout+, or \verb+NULL+ if the conversion is impossible.
+
+Do not forget to cast the output to the right type.
+
+\Next
+\Example
+\begin{verbatim}
+Ccimage in;  
+Cimage out1;
+Fimage out2;
+
+/* The line */
+out1 = (Cimage) mw_conv_internal_type(in,"ccimage","cimage");
+/* is equivalent to */
+out1 = (Cimage) mw_ccimage_to_cimage(in);
+
+if (out1==NULL) mwerror(FATAL,1,"Cannot convert Ccimage to Cimage !\n");
+
+/* But to convert a Ccimage to a Fimage you shall use */
+out2 = (Fimage) mw_conv_internal_type(in,"ccimage","fimage");
+/* Since the following function does not exist at this time */
+out2 = (Fimage) mw_ccimage_to_fimage(in);
+
+if (out2==NULL) mwerror(FATAL,1,"Cannot convert Ccimage to Fimage !\n");
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Miscellaneous System Functions}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+
+\label{misc_function}
+
+The following is a description of some miscellaneous system functions 
+which may be of interest for the user.
+The list is in alphabetical order.
+
+The most usefull are \verb+mwerror+ and \verb+mwdebug+. 
+Please notice that you need to process any error (especially memory allocation failure) by displaying an error message using \verb+mwerror+, and by doing
+appropriate statement.
+
+Some other functions are about dynamic memory allocation\index{dynamic memory allocation}. 
+They are important, since you are discouraged to use static memory allocation (as \verb+double data[10000]+), but you may skip their description if you are
+familiar with the standard C dynamic memory functions.
+
+\newpage %......................................
+
+\input{chapter_09_misc.tex}

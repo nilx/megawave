@@ -1,0 +1,285 @@
+%
+% Part 3 of the MegaWave2 Guide #2
+%   Movies
+%
+
+A movie\index{movie} is a succession of images. In MegaWave2, it is implemented as a
+chain of images: you may notice that all types of images have the 
+fields \verb+previous+ and \verb+next+(see section~\ref{images}). 
+Normally set to \Null, these fields point to the previous image and
+to the next image respectively, when the image is part of a movie.
+The first image of the movie has a \Null \verb+previous+ field and the
+last image of the movie has a \Null \verb+next+ field.
+
+A movie structure is basically a pointer to the first image.
+For each image structure corresponds a movie structure.
+
+%-----------------------------------------------
+\section{Char movies}
+%-----------------------------------------------
+
+
+\label{movies_char-movies}
+\def\cmovie{{\tt Cmovie }}
+\index{structure!\cmovie}
+
+
+The {\em Char Movie} memory type corresponds to movies where each images
+are of the \cimage memory type. 
+The use of this memory type is strongly recommended, since other movies types
+waste a lot of memory and computational time.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Cmovie}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_char-movies_structure}
+
+ Beginners should only focus on the field \verb+first+ of this structure:
+if \verb+movie+ is of \cmovie type, then \verb+movie->first+ is of \cimage
+type and it is the first image of the movie; \verb+movie->first->next+ is
+the second image, etc.
+
+{\small
+\begin{verbatim}
+typedef struct cmovie {
+  float scale;     /* Scale (time-domain) of the movie (should be 1) */
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the image */
+  Cimage first;    /* Pointer to the first image */
+} *Cmovie;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_char-file_type}
+
+The way MegaWave2 records movies is the following:
+each image is recorded in a separate file, using one of the external types available for the corresponding type Cimage (see section~\ref{images_char-file_type} for more information).
+Let suppose that the external name of the movie object is \verb+movie+.
+Then, MegaWave2 creates a MegaWave2 Data Ascii file named \verb+movie+ with a \verb+def Cmovie+ area.
+In this area is listed the name of the image files, following the order given by the sequence of images.
+By changing the order of two file names, you change the order of the images in the sequence (i.e. the name of
+the file is not meaningful by itself, for example the image file name \verb+movie_002+ may not be the second
+image of the sequence).
+There is no limitation for the number of images, up to the available memory.
+
+Note: there is an old format, which is still recognized for backward compatibility. 
+Is this old format, the file name \verb+movie+ is empty and the name of each image file is meaningful
+(e.g. \verb+movie_002+ is always the second image of the sequence).
+In that case, no more than $999$ images per movie can be recorded.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_char-movies_function}
+
+The following is a description of all the functions related to 
+the \verb+Cmovie+ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_03_cmovie.tex}
+
+%-----------------------------------------------
+\section{Color Char movies}
+%-----------------------------------------------
+
+
+\label{movies_color-char-movies}
+\def\ccmovie{{\tt Ccmovie }}
+\index{structure!\ccmovie}
+
+The {\em Color Char Movie} memory type corresponds to movies where each images
+are of the \ccimage memory type. 
+Use this memory type each time you have to process color movies.
+As in the Char Movies case, the use of this format instead of the corresponding floating point format (\verb+Cfmovie+) is strongly recommended.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Ccmovie}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_color-char-movies_structure}
+
+ Beginners should focus on the field \verb+first+ only of this structure:
+if \verb+movie+ is of \ccmovie type, then \verb+movie->first+ is of \ccimage
+type and it is the first image of the movie; \verb+movie->first->next+ is
+the second image, etc.
+
+{\small
+\begin{verbatim}
+typedef struct ccmovie {
+  float scale;     /* Scale (time-domain) of the movie (should be 1) */
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the image */
+  Ccimage first;    /* Pointer to the first image */
+} *Ccmovie;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_color-char-file_type}
+
+The way MegaWave2 records movies is the following:
+each image is recorded in a separate file, using one of the external types available for the corresponding type Ccimage (see section~\ref{images_color-file_type} for more information).
+Let suppose that the external name of the movie object is \verb+movie+.
+Then, MegaWave2 creates a MegaWave2 Data Ascii file named \verb+movie+ with a \verb+def CCmovie+ area.
+In this area is listed the name of the image files, following the order given by the sequence of images.
+By changing the order of two file names, you change the order of the images in the sequence (i.e. the name of
+the file is not meaningful by itself, for example the image file name \verb+movie_002+ may not be the second
+image of the sequence).
+There is no limitation for the number of images, up to the available memory.
+
+Note: there is an old format, which is still recognized for backward compatibility. 
+Is this old format, the file name \verb+movie+ is empty and the name of each image file is meaningful
+(e.g. \verb+movie_002+ is always the second image of the sequence).
+In that case, no more than $999$ images per movie can be recorded.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_color-char-movies_function}
+
+The following is a description of all the functions related to 
+the \verb+Ccmovie+ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_03_ccmovie.tex}
+
+%-----------------------------------------------
+\section{Float movies}
+%-----------------------------------------------
+
+
+\label{movies_float-movies}
+\def\fmovie{{\tt Fmovie }}
+\index{structure!\fmovie}
+
+The {\em Float Movie} memory type corresponds to movies where each images
+are of the \fimage memory type. 
+The use of this memory type is discouraged, since it wastes a lot of memory and computational time.
+Use it when you must process data using floating point arithmetic, and when 
+you cannot lose precision by converting the output to integer values.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Fmovie}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_float-movies_structure}
+
+ Beginners should focus on the field \verb+first+ only of this structure:
+if \verb+movie+ is of \fmovie type, then \verb+movie->first+ is of \fimage
+type and it is the first image of the movie; \verb+movie->first->next+ is
+the second image, etc.
+
+{\small
+\begin{verbatim}
+typedef struct fmovie {
+  float scale;     /* Scale (time-domain) of the movie (should be 1) */
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the image */
+  Fimage first;    /* Pointer to the first image */
+} *Fmovie;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_float-file_type}
+
+The way MegaWave2 records movies is the following:
+each image is recorded in a separate file, using one of the external types available for the corresponding type Fimage (see section~\ref{images_float-file_type} for more information).
+Let suppose that the external name of the movie object is \verb+movie+.
+Then, MegaWave2 creates a MegaWave2 Data Ascii file named \verb+movie+ with a \verb+def Fmovie+ area.
+In this area is listed the name of the image files, following the order given by the sequence of images.
+By changing the order of two file names, you change the order of the images in the sequence (i.e. the name of
+the file is not meaningful by itself, for example the image file name \verb+movie_002+ may not be the second
+image of the sequence).
+There is no limitation for the number of images, up to the available memory.
+
+Note: there is an old format, which is still recognized for backward compatibility. 
+Is this old format, the file name \verb+movie+ is empty and the name of each image file is meaningful
+(e.g. \verb+movie_002+ is always the second image of the sequence).
+In that case, no more than $999$ images per movie can be recorded.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_float-movies_function}
+
+The following is a description of all the functions related to 
+the \verb+Fmovie+ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_03_fmovie.tex}
+
+%-----------------------------------------------
+\section{Color Float movies}
+%-----------------------------------------------
+
+
+\label{movies_color-float-movies}
+\def\cfmovie{{\tt Cfmovie }}
+\index{structure!\cfmovie}
+
+The {\em Color Float Movie} memory type corresponds to movies where each images are of the \cfimage memory type. 
+The use of this memory type is discouraged, since it wastes a lot of memory and computational time.
+Use it when you must process data using floating point arithmetic, and when 
+you cannot lose precision by converting the output to integer values.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Cfmovie}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_color-float-movies_structure}
+
+ Beginners should focus on the field \verb+first+ only of this structure:
+if \verb+movie+ is of \cfmovie type, then \verb+movie->first+ is of \cfimage
+type and it is the first image of the movie; \verb+movie->first->next+ is
+the second image, etc.
+
+{\small
+\begin{verbatim}
+typedef struct cfmovie {
+  float scale;     /* Scale (time-domain) of the movie (should be 1) */
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the image */
+  Cfimage first;    /* Pointer to the first image */
+} *Cfmovie;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_color-float-file_type}
+
+The way MegaWave2 records movies is the following:
+each image is recorded in a separate file, using one of the external types available for the corresponding type Cfimage (see section~\ref{images_color-float-file_type} for more information).
+Let suppose that the external name of the movie object is \verb+movie+.
+Then, MegaWave2 creates a MegaWave2 Data Ascii file named \verb+movie+ with a \verb+def Cfmovie+ area.
+In this area is listed the name of the image files, following the order given by the sequence of images.
+By changing the order of two file names, you change the order of the images in the sequence (i.e. the name of
+the file is not meaningful by itself, for example the image file name \verb+movie_002+ may not be the second
+image of the sequence).
+There is no limitation for the number of images, up to the available memory.
+
+Note: there is an old format, which is still recognized for backward compatibility. 
+Is this old format, the file name \verb+movie+ is empty and the name of each image file is meaningful
+(e.g. \verb+movie_002+ is always the second image of the sequence).
+In that case, no more than $999$ images per movie can be recorded.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{movies_color-float-movies_function}
+
+The following is a description of all the functions related to 
+the \verb+Cfmovie+ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_03_cfmovie.tex}

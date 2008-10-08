@@ -1,0 +1,432 @@
+\Name{mw\_alloc\_ccimage}{Allocate the RGB planes}
+\Summary{
+Ccimage mw\_alloc\_ccimage(image,nrow,ncol)
+
+Ccimage image;
+
+int nrow, ncol;
+}
+\Description
+This function allocates the RGB planes of a \ccimage structure previously
+created using \verb+mw_new_ccimage+. The size of the image is given by 
+\verb+nrow+ (number of rows or maximum range of $y$ plus one) and \verb+ncol+
+(number of columns or maximum range of $x$ plus one).
+Pixels can be addressed after this call, if the allocation successed. There is
+no default value for the pixels.
+
+Do not use this function if \verb+image+ has already an allocated plane: use
+the function \verb+mw_change_ccimage+ instead.
+
+The function \verb+mw_alloc_ccimage+ returns \Null\ if not enough memory is available to allocate the RGB planes. Your code should check this return value to 
+send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Ccimage image=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((image = mw_new_ccimage()) == NULL) ||
+      (mw_alloc_ccimage(image,256,256) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Set pixel (0,1) to white */
+image_>red[256] = image->green[256] = image->blue[256] = 255;
+\end{verbatim}
+
+\newpage %......................................\Name{mw\_change\_ccimage}{Change the size of the RGB planes}
+\Summary{
+Ccimage mw\_change\_ccimage(image, nrow, ncol)
+
+Ccimage image;
+
+int nrow, ncol;
+}
+\Description
+This function changes the memory allocation of the RGB planes of a \ccimage
+structure, even if no previously memory allocation was done.
+The new size of the image is given by \verb+nrow+ (number of rows or maximum 
+range of $y$ plus one) and \verb+ncol+ (number of columns or maximum range of 
+$x$ plus one). 
+
+It can also create the structure if the input \verb+image = NULL+.
+Therefore, this function can replace both \verb+mw_new_ccimage+ and
+\verb+mw_alloc_ccimage+. It is the recommended function to set image 
+dimension of input/output modules. 
+Since the function can set the address of \verb+image+, the variable must be set to the return value of the function (See example below).
+
+The function \verb+mw_change_ccimage+ returns \Null\ if not enough memory is available to allocate the RGB planes. Your code should check this return value to 
+send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+
+Cimage Output; /* Output of module */
+
+Output = mw_change_ccimage(Output, 256, 256);
+if (Output == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_clear\_ccimage}{Clear the RGB planes}
+\Summary{
+void mw\_clear\_ccimage(image, r,g,b)
+
+Ccimage image;
+
+unsigned char r,g,b;
+}
+\Description
+This function fills the ccimage \verb+image+ with the color given by 
+the triplet \verb+r,g,b+: all pixels will have this RGB value.
+
+The speed of this function depends to the C library implementation, but it is
+usually very fast (trying to do faster is a waste of time).
+
+\Next
+\Example
+\begin{verbatim}
+Ccimage image; /* Output of module */
+
+image = mw_change_ccimage(image, 100, 100);
+if (image == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+/* Set all pixels to blue */
+mw_clear_ccimage(image,0,0,255);
+
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_copy\_ccimage}{Copy the pixel values of color image into another one}
+\Summary{
+void mw\_copy\_ccimage(in, out)
+
+Ccimage  in,out;
+}
+\Description
+This function copies the content of the RGB planes of the image \verb+in+ into 
+the RGB planes of the image \verb+out+.
+The size of the two RGB planes must be the same.
+
+The speed of this function depends to the C library implementation, but it is
+usually very fast (trying to do faster is a waste of time).
+
+\Next
+\Example
+\begin{verbatim}
+
+Ccimage G; /* Needed Input */
+Ccimage F; /* Optional Output */
+
+  if (F) {
+    printf("F option is active: copy G in F\n");
+    if ((F = mw_change_ccimage(F, G->nrow, G->ncol)) == NULL)
+     mwerror(FATAL,1,"Not enough memory.\n");
+    else mw_copy_ccimage(G, F);
+   }
+  else  printf("F option is not active\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_delete\_ccimage}{Deallocate the RGB planes}
+\Summary{
+void mw\_delete\_ccimage(image)
+
+Ccimage image;
+}
+\Description
+This function deallocates the RGB planes of a \ccimage structure previously
+allocated using \verb+mw_alloc_ccimage+ or \verb+mw_change_ccimage+, and the
+structure itself. 
+
+You should set \verb+image = NULL+ after this call since the address pointed
+by \verb+image+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+Ccimage image=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((image = mw_new_ccimage()) == NULL) ||
+      (mw_alloc_ccimage(image,256,256) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+.
+.
+mw_delete_ccimage(image);
+image = NULL;
+
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_draw\_ccimage}{Draw a line}
+\Summary{
+void mw\_draw\_ccimage(image, a0, b0, a1, b1, r, g, b)
+
+Ccimage image;
+
+int a0,b0,a1,b1;
+
+unsigned char r,g,b;
+}
+\Description
+This function draws in \verb+image+ a connected line between the pixel $(a0,b0)$ and the pixel $(a1,b1)$. The color of the line is defined by the triplet \verb+r,g,b+.
+
+\Next
+\Example
+\begin{verbatim}
+Ccimage image; /* Output of module */
+
+image = mw_change_ccimage(image, 100, 100);
+if (image == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+/* Set all pixels to white */
+mw_clear_ccimage(image,255,255,255);
+/* Draw a red diagonal line */
+mw_draw_ccimage(image,0,0,99,99,255,0,0);
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_getdot\_ccimage}{Return the RGB value}
+\Summary{
+void mw\_getdot\_ccimage(image, x, y, r, g, b)
+
+Ccimage image;
+
+int x,y;
+
+unsigned char *r,*g,*b;
+}
+\Description
+This function returns the RGB value of the given \verb+image+ for the pixel $(x,y)$ (column $\# x$ and row $\# y$).
+The RGB value consists of the triplet \verb+*r,*g,*b+: \verb+*r+ (a number between $0$ and $255$) gives you the proportion of red, \verb+*g+ the proportion of green and \verb+*b+ the proportion of blue.
+
+Notice that a call to this function is a slow (but easy and secure) way to 
+read a pixel value.
+See section~\ref{images} page~\pageref{images} for how to read pixels fast.
+
+\Next
+\Example
+\begin{verbatim}
+Ccimage image; /* Needed Input of module */
+int x,y;       /* Needed Inputs of module */
+unsigned char r,g,b;  /* Internal use */
+
+if ((x < image->ncol) && (y < image->nrow))
+  {	
+    mw_getdot_ccimage(image,x,y,&r,&g,&b);
+    printf("image(%d,%d) = %d,%d,%d\n",x,y,(int)r,(int)g,(int)b);
+  }
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_newtab\_blue\_ccimage}{Create a bi-dimensional tab for the blue pixels of a Ccimage}
+\Summary{
+unsigned char ** mw\_newtab\_blue\_ccimage(image)
+
+Ccimage image;
+}
+\Description
+This function creates a new bi-dimensional tab which allows an easy and fast
+access to the pixels' blue level.
+This tab is actually an one-dimensional tab of pointers, so that each pointer 
+points to the beginning of a line in the blue plane of the given image.
+
+This function must be called after the blue plane has been allocated,
+using for example one of the functions \verb+mw_new_ccimage+, 
+\verb+mw_alloc_ccimage+ or \verb+mw_change_ccimage+. 
+After that, if the blue plane allocation is changed
+(by e.g. \verb+mw_change_ccimage+ or \verb+mw_delete_ccimage+), the tab is
+no longer valid and must be deleted using \verb+free(tab)+.
+
+Ones the tab has been correctly created, is it possible to read or to
+write the blue value of the pixel $(x,y)$ ($x$ being an index for column and $y$
+for row) using \verb+tab[y][x]+.
+
+Red and green pixels' value can be accessed with such a tab using 
+the corresponding functions \\
+\verb+mw_newtab_red_ccimage+ and \verb+mw_newtab_green_ccimage+.
+
+\Next
+\Example
+\begin{verbatim}
+Ccimage image; /* Needed Input of module (RGB planes already allocated and filled) */
+int x,y;      /* Needed Input of module */
+unsigned char **red,**green,**blue;
+
+red =  mw_newtab_red_ccimage(image);
+if (red==NULL) mwerror(FATAL,1,"Not enough memory\n");
+green =  mw_newtab_green_ccimage(image);
+if (green==NULL) mwerror(FATAL,1,"Not enough memory\n");
+blue =  mw_newtab_blue_ccimage(image);
+if (blue==NULL) mwerror(FATAL,1,"Not enough memory\n");
+
+/* Put gray color in the pixel (x,y) */
+if ((x < image->ncol) && (y < image->nrow)) 
+        red[y][x] = green[y][x] = blue[y][x] = 127;
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+free(blue); free(green); free(red);
+\end{verbatim}
+
+\newpage %......................................\Name{mw\_newtab\_green\_ccimage}{Create a bi-dimensional tab for the green pixels of a Ccimage}
+\Summary{
+unsigned char ** mw\_newtab\_green\_ccimage(image)
+
+Ccimage image;
+}
+\Description
+This function creates a new bi-dimensional tab which allows an easy and fast
+access to the pixels' green level.
+This tab is actually an one-dimensional tab of pointers, so that each pointer 
+points to the beginning of a line in the green plane of the given image.
+
+This function must be called after the green plane has been allocated,
+using for example one of the functions \verb+mw_new_ccimage+, 
+\verb+mw_alloc_ccimage+ or \verb+mw_change_ccimage+. 
+After that, if the green plane allocation is changed
+(by e.g. \verb+mw_change_ccimage+ or \verb+mw_delete_ccimage+), the tab is
+no longer valid and must be deleted using \verb+free(tab)+.
+
+Ones the tab has been correctly created, is it possible to read or to
+write the green value of the pixel $(x,y)$ ($x$ being an index for column and $y$
+for row) using \verb+tab[y][x]+.
+
+Red and blue pixels' value can be accessed with such a tab using 
+the corresponding functions \\
+\verb+mw_newtab_red_ccimage+ and \verb+mw_newtab_blue_ccimage+.
+
+\Next
+\Example
+\begin{verbatim}
+Ccimage image; /* Needed Input of module (RGB planes already allocated and filled) */
+int x,y;      /* Needed Input of module */
+unsigned char **red,**green,**blue;
+
+red =  mw_newtab_red_ccimage(image);
+if (red==NULL) mwerror(FATAL,1,"Not enough memory\n");
+green =  mw_newtab_green_ccimage(image);
+if (green==NULL) mwerror(FATAL,1,"Not enough memory\n");
+blue =  mw_newtab_blue_ccimage(image);
+if (blue==NULL) mwerror(FATAL,1,"Not enough memory\n");
+
+/* Put gray color in the pixel (x,y) */
+if ((x < image->ncol) && (y < image->nrow)) 
+        red[y][x] = green[y][x] = blue[y][x] = 127;
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+free(blue); free(green); free(red);
+\end{verbatim}
+
+\newpage %......................................\Name{mw\_newtab\_red\_ccimage}{Create a bi-dimensional tab for the red pixels of a Ccimage}
+\Summary{
+unsigned char ** mw\_newtab\_red\_ccimage(image)
+
+Ccimage image;
+}
+\Description
+This function creates a new bi-dimensional tab which allows an easy and fast
+access to the pixels' red level.
+This tab is actually an one-dimensional tab of pointers, so that each pointer 
+points to the beginning of a line in the red plane of the given image.
+
+This function must be called after the red plane has been allocated,
+using for example one of the functions \verb+mw_new_ccimage+, 
+\verb+mw_alloc_ccimage+ or \verb+mw_change_ccimage+. 
+After that, if the red plane allocation is changed
+(by e.g. \verb+mw_change_ccimage+ or \verb+mw_delete_ccimage+), the tab is
+no longer valid and must be deleted using \verb+free(tab)+.
+
+Ones the tab has been correctly created, is it possible to read or to
+write the red value of the pixel $(x,y)$ ($x$ being an index for column and $y$
+for row) using \verb+tab[y][x]+.
+
+Green and blue pixels' value can be accessed with such a tab using 
+the corresponding functions \\
+\verb+mw_newtab_green_ccimage+ and \verb+mw_newtab_blue_ccimage+.
+
+\Next
+\Example
+\begin{verbatim}
+Ccimage image; /* Needed Input of module (RGB planes already allocated and filled) */
+int x,y;      /* Needed Input of module */
+unsigned char **red,**green,**blue;
+
+red =  mw_newtab_red_ccimage(image);
+if (red==NULL) mwerror(FATAL,1,"Not enough memory\n");
+green =  mw_newtab_green_ccimage(image);
+if (green==NULL) mwerror(FATAL,1,"Not enough memory\n");
+blue =  mw_newtab_blue_ccimage(image);
+if (blue==NULL) mwerror(FATAL,1,"Not enough memory\n");
+
+/* Put gray color in the pixel (x,y) */
+if ((x < image->ncol) && (y < image->nrow)) 
+        red[y][x] = green[y][x] = blue[y][x] = 127;
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+free(blue); free(green); free(red);
+\end{verbatim}
+
+\newpage %......................................\Name{mw\_new\_ccimage}{Create a new Ccimage}
+\Summary{
+Ccimage mw\_new\_ccimage();
+}
+\Description
+This function creates a new \ccimage structure with empty RGB planes.
+No pixels can be addressed at this time.
+The RGB planes may be allocated using the function \verb+mw_alloc_ccimage+ or
+\verb+mw_change_ccimage+.
+
+Do not use this function for input/output of modules, since the MegaWave2
+Compiler already created the structure for you if you need it (see \volI). Use instead the function \verb+mw_change_ccimage+.
+Do not forget to deallocate the internal structures before the end
+of the module.
+
+The function \verb+mw_new_ccimage+ returns \Null\ if not enough memory is available to create the structure. Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Ccimage image=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((image = mw_new_ccimage()) == NULL) ||
+      (mw_alloc_ccimage(image,256,256) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+
+\newpage %......................................\Name{mw\_plot\_ccimage}{Set the RGB value}
+\Summary{
+void mw\_plot\_ccimage(image, x, y, r, g, b)
+
+Ccimage image;
+
+int x,y;
+
+unsigned char r,g,b;
+}
+\Description
+This function set the RGB value of the given \verb+image+ for the pixel $(x,y)$ (column $\# x$ and row $\# y$) to be the triplet \verb+r,g,b+:
+\verb+r+ (a number between $0$ and $255$) gives you the proportion of red, \verb+g+ the proportion of green and \verb+b+ the proportion of blue.
+
+Notice that a call to this function is a slow (but easy and secure) way to 
+write a pixel value.
+See section~\ref{images} page~\pageref{images} for how to write pixels fast.
+
+\Next
+\Example
+\begin{verbatim}
+Ccimage image; /* Needed Input of module */
+int x,y;      /* Needed Inputs of module */
+
+/* Put green color in the pixel (x,y) */
+if ((x < image->ncol) && (y < image->nrow))
+        mw_plot_ccimage(image,x,y,0,255,0);
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+\end{verbatim}
+
+\newpage %......................................

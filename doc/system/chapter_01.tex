@@ -1,0 +1,132 @@
+%
+% Part 1 of the MegaWave2 Guide #2
+%   Introduction
+%
+
+%-----------------------------------------------
+\section{What you will find in this guide}
+%-----------------------------------------------
+
+\label{intro_guide}
+
+When you implement an algorithm in MegaWave2, you write a code in C language 
+in what we call a module (see \volI). Your algorithm processes some objects
+which represent your data. So you need to know how to create an object\index{object} of
+the type you want, how to access to it, how to remove it, etc.
+
+This present guide will detail all the available MegaWave2 objects and most
+related functions\index{function} which are part of the System Library 
+(Sections~\ref{images} to~\ref{rawdata}).
+In addition, you will find the description of other functions which may
+be called by the user in the module - such as error handling functions -
+(Section~\ref{miscellaneous}).
+There is also a description of the Wdevice Library, a toolbox for the
+window interface (Section~\ref{wdevice}).
+
+This guide is a reference manual : it would be boring to read it from the
+beginning to the end. If you are new with MegaWave2, you should entirely read this
+introduction were basic principles are explained, and all introductions of 
+the next main sections, to get an idea about the various objects you may use.
+Afterward, when you will be searching for a particular structure or function, consult 
+the contents page~\pageref{contents} or the index page~\pageref{index}.
+
+
+%-----------------------------------------------
+\section{The MegaWave2 memory (internal) types}
+%-----------------------------------------------
+
+\label{intro_memory-types}
+
+\index{memory type |see{structure}}
+\index{internal type |see{structure}}
+\index{C type |see{structure}}
+
+\index{structure}
+
+MegaWave2 objects such as images, movies, signals, curves, \ldots, are 
+represented in the module code as {\em pointers to a structure}.
+The type of the structure defines the object you want to process, as
+\verb+struct fimage+ for an image of Floating points values (the pointer of
+this structure is of type \verb+Fimage+).
+
+Each structure has particular fields, as \verb+gray+ for a \verb+Fimage+ which
+represents the gray levels plane. They are described in the section presenting
+the structure (Section~\ref{images_float-images_structure} page~\pageref{images_float-images_structure} for \verb+Fimage+).
+
+Some fields are common to most structures, they are:
+\begin{itemize}
+\item \verb+cmt+ : string of maximum size \verb+mw_cmtsize+ where to put the comment associated to the object. 
+For input objects and at the beginning of the
+module statement, this field contains the comment field of the corresponding file object (if the file type provides a comment field). 
+For output objects and at the end of the module statement, this field contains the name of the module plus the comments of the input objects, if any.
+This default output value can be overwritten by setting a value to \verb+cmt+.
+\item \verb+name+ : string of maximum size \verb+mw_namesize+ where to put the name of this object. For input objects, this field contains the file name of the corresponding file object. 
+The default output value is ``?''. 
+It can be overwritten.
+\end{itemize}
+
+You can of course access to any field in order to read its content. But be carefull
+when you want to overwrite the content of a field: some fields have to be
+updated by the system library only (e.g. the dimension fields \verb+nrow+ and
+\verb+ncol+ of image objects).
+
+Some structures may contain undocumented fields: they are used internally by 
+the system library and users should not access to them, especially for writing.
+
+Some conversions between memory types are available as functions of the System Library,
+see Section~\ref{conv_memory_types} of this guide for a list of the most current conversion 
+functions.
+
+
+%-------------------------------------------------
+\section{File (external) types or file formats}
+%-------------------------------------------------
+
+\label{intro_file-types}
+
+\subsection{Generalities}
+
+\index{external type|see{file format}}
+\index{file type|see{file format}}
+\index{file format}
+
+When a module's command finishes, the output objects (of memory types) have to be saved on disk for future use.
+For example, they can be the input of another module's command.
+Data may be saved on disk also (or read from disk) when the module is run
+into an interpreter such as XMegaWave2, although in this case modules communicate with memory type structures.
+
+This shows that external type objects are needed; they are files written in a predefined format.
+MegaWave2 can use some well-known formats available in the public domain, especially to carry the different image memory types.
+When no satisfying standard is available to match a given memory type, a specific format is used.
+Notice that, whereas there is only one memory type associated to an object, an object of a given memory type may be represented on disk with various file types.
+
+Conversions between some formats are available: you may load an object written
+in a file type which is different from the regular one used for the memory type of your object. Depending on the case, you may however lose precision in your data
+(in that case, a warning message is send).
+For output ojects, MegaWave2 chooses a default file type to write the data.
+You can modify this choice using the system option \verb+-ftype+ (see \volI).
+
+A short description of the file types is given in the next sections about the different memory types.
+
+\subsection{Search path convention}
+
+\index{search path}
+When a module is called in the command line mode, MegaWave2 searches the file names of the input objects in different directories, following the order:
+\begin{enumerate}
+\item the current directory of the shell, i.e. ``\verb+.+'';
+\item the module's group directory of \verb+$MY_MEGAWAVE2/data+;
+\item \verb+$MY_MEGAWAVE2/data+ and its subdirectories;
+\item the module's group directory of \verb+$MEGAWAVE2/data+;
+\item \verb+$MEGAWAVE2/data+ and its subdirectories.
+\end{enumerate}
+Notice that this search path convention has changed from MegaWave2 versions 1.x to versions 2.x and
+from versions 2.x to versions 3.x.
+
+The output objects are always written in the current directory of the shell.
+{\em Beware :
+ if you give the same name as the one of an existing file, the content of the previous file will be overwritten 
+(there is no confirmation message).}
+
+
+
+

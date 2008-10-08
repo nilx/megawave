@@ -1,0 +1,244 @@
+\Name{mw\_change\_flists}{Define and allocate a \flists\ structure}
+\Summary{
+Flists mw\_change\_flists(ls,max\_size,size)
+
+Flist ls;
+
+int max\_size,size;
+}
+\Description
+This function changes the memory allocation of the \verb+list+ array
+of a \flists\ structure, even if no previously memory allocation was done.
+The new size (number of lists) of the structure is given by \verb+size+,
+and the size to allocate (maximal number of lists) by \verb+max_size+.
+
+It can also create the structure if the input \verb+ls = NULL+.
+Therefore, this function can replace both \verb+mw_new_flists+ and
+\verb+mw_realloc_flists+. 
+Since the function can set the address of \verb+ls+, the variable must be set 
+to the return value of the function (See example below).
+
+The function \verb+mw_change_flists+ returns \Null\ if not enough memory is 
+available to allocate the structure or the \verb+list+ array, and an error 
+message is issued. 
+Your code should check this return value to eventually send a fatal error 
+message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+
+Flists ls;
+
+/* 
+   Allocate ls to handle at most 10 lists, the current number of
+   lists being 0 (no list).
+*/
+ls = mw_change_flists(NULL,10,0);
+if (!ls) mwerror(FATAL,1,"Not enough memory to continue !\n");
+
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_copy\_flists}{Copy the lists contained in a \flists\ structure}
+\Summary{
+Flists mw\_copy\_flists(in,out)
+
+Flists in,out;
+}
+\Description
+This function copies the \verb+list+ array and \verb+data+ field 
+of the \flists\ structure \verb+in+ into \verb+out+ : 
+each list contained in \verb+in+ are duplicated. 
+The duplicated \flists\ \verb+out+ is allocated to at least
+the current size of \verb+in+. 
+
+Since the function can set the address of \verb+out+, the variable must be set 
+to the return value of the function (See example below).
+
+The function \verb+mw_copy_flists+ returns \Null\ if not enough memory is 
+available to allocate the structure or the \verb+list+ array, and an error 
+message is issued. 
+Your code should check this return value to eventually send a fatal error 
+message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+
+Flists in,out=NULL;
+
+/* 
+   Allocate ls to handle at most 10 lists, the current number of
+   lists being 3.
+*/
+ls = mw_change_flists(NULL,10,3);
+if (!ls) mwerror(FATAL,1,"Not enough memory to continue !\n");
+
+
+/* ... (Here fill the lists) ... */
+
+/*
+ Copy in into out. Allocated size for out is 3 lists.
+*/
+out=mw_copy_flists(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory to copy the lists !\n");
+
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_flists}{Delete the lists and the \flists\ structure}
+\Summary{
+void mw\_delete\_flists(ls)
+
+Flist ls;
+}
+\Description
+This function deletes the lists contained in the \verb+list+ array,
+and the structure \flists\ itself.
+Warning : the memory of the user-defined field \verb+data+ is not freed.
+If this field has been allocated, you should free it before calling
+\verb+mw_delete_flists+.
+
+\Next
+\Example
+\begin{verbatim}
+
+Flist ls;
+int i;
+
+/*
+    ... (Assume ls has been previoulsy allocated)...
+*/
+
+/* 
+  Free the lists, including data field. 
+*/
+for (i=ls->size;i--;) if (ls->list[i]->data) free(ls->list[i]->data);
+if (ls->data) free(ls->data);
+mw_delete_flists(ls);
+
+
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_enlarge\_flists}{Enlarge the number of lists a \flists\ may contain}
+\Summary{
+Flists mw\_enlarge\_flist(ls)
+
+Flist ls;
+}
+\Description
+This function performs a memory reallocation on the array
+\verb+ls->list+ to increase the number of lists that can be recorded.
+The enlargement factor is fixed by the constant \verb+MW_LIST_ENLARGE_FACTOR+
+defined in the include file \verb+list.h+.
+This function is useful when one does not know by advance the number
+of lists, and when one wish to avoid multiple reallocations.
+
+If not enough memory is available to perform the reallocation, an error
+message is issued and the function returns \verb+NULL+.
+Otherwise, the function returns \verb+ls+.
+
+
+\Next
+\Example
+\begin{verbatim}
+
+
+/* Fill a flists with lists until the user enters 'Q'.
+*/
+
+Flist ls; 
+Flist l;
+char c;
+
+ls = mw_change_flists(NULL,10,0);
+if (ls==NULL) mwerror(FATAL,1,"Not enough memory to continue !\n");
+do {
+  if (ls->size == ls->max_size) 
+    if (mw_enlarge_flists(ls)==NULL)
+      mwerror(FATAL,1,"Not enough memory to continue !\n");
+  l = mw_change_flist(NULL,10,10,2);
+  if (l==NULL) mwerror(FATAL,1,"Not enough memory to continue !\n");
+  mw_clear_flist(l,1.0)
+  ls->list[ls->size++] = l;
+  scanf("%c",&c);
+    } while (c!='Q');
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_new\_flists}{Create a \flists\ structure}
+\Summary{
+Flists mw\_new\_flists()
+
+}
+\Description
+This function creates a new \flists\ structure. The fields are initialized
+to $0$ or \Null value.
+The function returns the address of the new structure, or
+\Null\ if not enough memory is available.
+
+\Next
+\Example
+\begin{verbatim}
+
+Flists ls;
+
+/*
+  Define the structure
+*/
+ls = mw_new_flists();
+if (!ls) mwerror(FATAL,1,"Not enough memory to define the lists !\n");
+
+/* 
+  At that time, the FLists is empty (no lists).
+*/
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_realloc\_flists}{Realloc the list array of the \flists}
+\Summary{
+Flists mw\_realloc\_flists(ls,n)
+
+Flists ls;
+
+int n;
+}
+\Description
+This function performs a memory reallocation on the array
+\verb+ls->list+ so that at most $n$ lists can be recorded.
+
+If not enough memory is available to perform the reallocation, an error
+message is issued and the function returns \Null.
+Otherwise, the function returns \verb+ls+.
+
+\Next
+\Example
+\begin{verbatim}
+Flists ls;
+
+/*
+   Allocate ls to handle 10 lists.
+*/
+
+ls = mw_new_flists();
+if (!ls) mwerror(FATAL,1,"Not enough memory to continue !\n");
+ls = mw_realloc_flists(ls,10);
+if (!ls) mwerror(FATAL,1,"Not enough memory to continue !\n");
+
+\end{verbatim}
+
+\newpage %......................................
+
+

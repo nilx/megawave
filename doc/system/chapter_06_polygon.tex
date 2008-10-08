@@ -1,0 +1,178 @@
+\Name{mw\_alloc\_polygon}{Allocate the channels array}
+\Summary{
+Polygon mw\_alloc\_polygon(polygon,nc)
+
+Polygon polygon;
+
+int nc;
+}
+\Description
+This function allocates the channels array of a \polygon structure previously
+created using \verb+mw_new_polygon+. The size of the array is given by 
+\verb+nc+, it is the number of different channels.
+A channel corresponds to a real parameter associated to the polygon. 
+The meaning of such channel has to be defined by the user. 
+For example, \verb+polygon->channel[0]+ may be the gray level of the polygon.
+
+Do not use this function if \verb+polygon+ has already an allocated channels array: use the function \verb+mw_change_polygon+ instead.
+
+The function \verb+mw_alloc_polygon+ returns \Null\ if not enough memory is available to allocate the structure or the channels array. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+See the example of the function \verb+mw_new_polygon+.
+
+\newpage %......................................
+
+\Name{mw\_change\_polygon}{Change the number of channels}
+\Summary{
+Polygon mw\_change\_polygon(polygon,nc)
+
+Polygon polygon;
+
+int nc;
+}
+
+\Description
+This function changes the memory allocation for the channels array of
+a \polygon structure, even if no previously memory allocation was done. 
+
+The number of channels is given by \verb+nc+; a channel corresponds to
+a real parameter associated to the polygon. The meaning of such channel
+has to be defined by the user. For example, \verb+polygon->channel[0]+ may be the gray level of the polygon.
+
+This function can also create the structure if the input \verb+polygon = NULL+.
+Therefore, this function can replace both \verb+mw_new_polygon+ and
+\verb+mw_alloc_polygon+. 
+It is the recommended function to set the number of channels for polygons which are input/output of a module.
+Since the function can set the address of \verb+polygon+, the variable must be set to the return value of the function (See example below).
+
+The function \verb+mw_change_polygon+ returns \Null\ if not enough memory is available to allocate the structure or the channels array. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Polygon polygon; /* Input of module */
+
+polygon = mw_change_polygon(polygon,1);
+if (polygon == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+polygon->channel[0] = 255.0;
+...
+\end{verbatim}
+(End of this example as for the \verb+mw_new_polygon+ function).
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_polygon}{Deallocate a polygon}
+\Summary{
+void mw\_delete\_polygon(polygon)
+
+Polygon polygon;
+}
+\Description
+This function deallocates all the memory allocated by the polygon variable that is, all the points belonging to this chain, the channels array (if needed) and the \polygon structure itself.
+You should set \verb+polygon = NULL+ after this call since the address pointed
+by \verb+polygon+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+/* Remove the first polygon of an existing polygon set (polygons) */
+
+Polygons polygons;/* Existing polygons set (e.g. Input of module) */
+Polygon polygon;  /* Internal use */
+
+polygon = polygons->first;
+polygons->first=polygons->next;
+polygons->next->previous = NULL;
+mw_delete_polygon(polygon);
+polygon = NULL;
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_length\_polygon}{Return the number of points of a polygon}
+\Summary{
+unsigned int mw\_length\_polygon(poly);
+
+Polygon poly;
+}
+\Description
+This function return the number of points contained in the given
+polygon \verb+poly+. It returns $0$ if the structure is empty.
+
+\Next
+\Example
+\begin{verbatim}
+
+Polygon polygon; /* Internal use: no Input neither Output of module */
+point_curve newp,oldp=NULL;
+int i;
+
+polygon = mw_new_polygon();
+if (polygon == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Define a polygon with 5 points */
+for (i=1;i<=5;i++)
+{
+ newp = mw_new_point_curve();
+ if (newp == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+ if (i=0) polygon->first = newp;
+ newp->x = newp->y = i;
+ newp->previous = oldp;
+ if (oldp) oldp->next = newp;
+ oldp=newp;
+} 
+
+/* The length is 5 */
+printf("Length=%d\n",mw_length_polygon(polygon));
+
+\end{verbatim}
+\newpage %......................................
+
+\Name{mw\_new\_polygon}{Create a new polygon}
+\Summary{
+Polygon mw\_new\_polygon();
+}
+\Description
+This function creates a new \polygon structure with an empty channels array.
+It returns \Null\ if not enough memory is available to create the structure.
+Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output polygons set.
+
+\Next
+\Example
+\begin{verbatim}
+/* Define a polygon with 10 points which is the straight line (0,0)-(9,9) */
+
+Polygon polygon; /* Internal use: no Input neither Output of module */
+Point_curve newp,oldp=NULL;
+int i;
+
+polygon = mw_new_polygon();
+if ((polygon == NULL) || (mw_alloc_polygon(polygon,1) == NULL))
+    mwerror(FATAL,1,"Not enough memory.\n");
+polygon->channel[0] = 255.0;
+
+for (i=0;i<10;i++)
+{
+ newp = mw_new_point_curve();
+ if (newp == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+ if (i=0) polygon->first = newp;
+ newp->x = newp->y = i;
+ newp->previous = oldp;
+ if (oldp) oldp->next = newp;
+ oldp=newp;
+} 
+\end{verbatim}
+\newpage %......................................
+

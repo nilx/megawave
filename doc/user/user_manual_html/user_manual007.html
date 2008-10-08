@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+            "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+
+<META http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<META name="GENERATOR" content="hevea 1.10">
+<LINK rel="stylesheet" type="text/css" href="user_manual.css">
+<TITLE>User&#X2019;s macros</TITLE>
+</HEAD>
+<BODY >
+<A HREF="user_manual006.html"><abbr title="previous chapter" class="navigation">&larr;</abbr></A>
+<A HREF="index.html"><abbr title="table of contents" class="navigation">&uarr;</abbr></A>
+<A HREF="user_manual008.html"><abbr title="next chapter" class="navigation">&rarr;</abbr></A>
+<HR>
+<H1 CLASS="chapter"><A NAME="htoc48">Chapter&#XA0;6</A>&#XA0;&#XA0;User&#X2019;s macros</H1><UL>
+<LI><A HREF="user_manual007.html#toc25">Header of a Macro</A>
+</LI><LI><A HREF="user_manual007.html#toc26">How to use user&#X2019;s macros</A>
+</LI></UL>
+<P>
+<A NAME="usermacros"></A>
+</P><P>You have been already introduced to the macros by the 
+section&#XA0;<A HREF="user_manual002.html#intro_macros">1.8</A>.
+An user&#X2019;s macro<A NAME="@default227"></A> is a Bourne shell<A NAME="@default228"></A> script which uses a normalized header,
+and which calls a sequence of commands, such as MegaWave2 modules.</P><P>Since system&#X2019;s macros use the header of the user&#X2019;s macro to perform
+some operations, as to make the documentation of the macro
+(see section&#XA0;<A HREF="user_manual008.html#document_macro">7.2</A>), you have to correctly fill the header 
+when you write a new macro.</P><P>In order to easily recognize a user&#X2019;s macro from a user&#X2019;s module
+(they are located in the same source directory), we use capital letters to 
+name macros (at least for the first letter) and lower letters to name modules.
+We recommand you to follow this convention.</P><H2 CLASS="section"><A NAME="toc25"></A><A NAME="htoc49">6.1</A>&#XA0;&#XA0;Header of a Macro</H2><P>
+<A NAME="usermacros_header"></A></P><P>Each macro must have an header<A NAME="@default229"></A> which consists of variables to be filled.
+Falling to define most of these variables leads malfunctions when calling 
+some systems&#X2019;s macros.</P><P>In the following is the list of the variables to define
+</P><UL CLASS="itemize"><LI CLASS="li-itemize">
+<CODE>_Prog</CODE>: Name of the macro.
+</LI><LI CLASS="li-itemize"><CODE>_Group</CODE>: Group where belongs the macro.
+</LI><LI CLASS="li-itemize"><CODE>_Func</CODE>: Short description of the function performed by the macro.
+</LI><LI CLASS="li-itemize"><CODE>_Vers</CODE>: Version number of the macro.
+</LI><LI CLASS="li-itemize"><CODE>_Date</CODE>: Year of the creation or last change.
+</LI><LI CLASS="li-itemize"><CODE>_Auth</CODE>: Name of the author.
+</LI><LI CLASS="li-itemize"><CODE>_Usage</CODE>: Usage line, following Unix command conventions (do not
+mention the program name).
+</LI><LI CLASS="li-itemize"><CODE>_Labo</CODE>: Name and address of the institution, when it is not
+the CMLA.
+</LI></UL><P>You can get examples of such headers by reading the source of some systems&#X2019;s 
+macros (which share the same header conventions) or of some public user&#X2019;s
+macros given in the distribution.</P><H2 CLASS="section"><A NAME="toc26"></A><A NAME="htoc50">6.2</A>&#XA0;&#XA0;How to use user&#X2019;s macros</H2><P>
+<A NAME="usermacros_howto"></A></P><P>An user&#X2019;s macro being a Bourne shell<A NAME="@default230"></A> script, you don&#X2019;t really need to compile 
+it before to call it. But in order to be able to call it from any location,
+a link has to be created in a directory recorded in the path variable
+(which is <CODE>$MEGAWAVE2/shell</CODE> if you are the administrator,
+<CODE>$MY_MEGAWAVE2/shell</CODE> otherwise). In addition to that, the documentation 
+must also be generated. Therefore, you should compile a user&#X2019;s macro as
+if it was a module, using <CODE>cmw2</CODE><A NAME="@default231"></A>.</P><HR>
+<A HREF="user_manual006.html"><abbr title="previous chapter" class="navigation">&larr;</abbr></A>
+<A HREF="index.html"><abbr title="table of contents" class="navigation">&uarr;</abbr></A>
+<A HREF="user_manual008.html"><abbr title="next chapter" class="navigation">&rarr;</abbr></A>
+</BODY>
+</HTML>

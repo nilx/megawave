@@ -1,0 +1,282 @@
+\Name{mw\_alloc\_biortho\_wtrans1d}{Allocate the arrays of the decomposition}
+\Summary{
+void *mw\_alloc\_biortho\_wtrans1d(wtrans,level,size)
+
+Wtrans1d wtrans;
+
+int level; 
+
+int size;    
+
+}
+\Description
+This function allocates the arrays \verb+A+ and \verb+D+ of a \wtransud structure previously created using \verb+mw_new_wtrans1d+, in order to receive
+an biorthonormal wavelet representation (one voice per octave, decimation along the time axis).
+Each signal \verb+A[l][v]+ and \verb+D[l][v]+ for $l=0 \ldots \mbox{{\tt nlevel}}$, $v=0 \ldots \mbox{{\tt nvoice}}-1$ ($(l,v) \not = (0,0)$) is created and
+allocated to the right size.
+Previously allocations are deleted, if any.
+
+The number of levels for the decomposition is given by \verb+level+ and the
+size of the original signal is given by \verb+size+.
+
+The arrays \verb+A+ and \verb+D+ can be addressed after this call, if the allocation successed. There is no default values for the signals.
+The \verb+type+ field of the \wtransud structure is set to \verb+mw_biorthogonal+.
+
+The function \verb+mw_alloc_biortho_wtrans1d+ returns \Null\ if not enough memory is available to allocate one of the signals. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Notice that, if the wavelet transform is an output of a MegaWave2 module, the structure has been already created by the compiler if needed (see \volI): do not perform additional call to \verb+mw_new_wtrans1d+ (see example below).
+
+\Next
+\Example
+\begin{verbatim}
+Wtrans1d Output; /* optional Output of the module */
+Fsignal Signal;  /* needed Input of the module: original signal */
+int J;           /* internal use */
+
+if (Output) 
+{
+  /* Output requested : allocate Output for 8 levels of decomposition */
+  if(mw_alloc_biortho_wtrans1d(Output, 8, Signal->size)==NULL)
+    mwerror(FATAL,1,"Not enough memory.\n");
+  
+  Output->A[0][0] = Signal;
+  for (J = 1; J <= 8; J++)
+  {
+     .
+     . (Computation of the voice #J)
+     .
+  }
+}
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_alloc\_continuous\_wtrans1d}{Allocate the arrays of the decomposition}
+\Summary{
+void *mw\_alloc\_continuous\_wtrans1d(wtrans,level,voice,size,complex)
+
+Wtrans1d wtrans;
+
+int level; 
+
+int voice;
+
+int size;    
+
+int complex;
+
+}
+\Description
+This function allocates the arrays \verb+D+ of a \wtransud structure previously created using \verb+mw_new_wtrans1d+, in order to receive
+an continuous wavelet representation (several voices per octave, no decimation along the time axis, wavelet with complex or real values).
+The arrays \verb+DP+ are allocated if \verb+complex+ is set to $1$.
+Each signal \verb+D[l][v]+ (and \verb+DP[l][v]+ in the complex case) for $l=0 \ldots \mbox{{\tt nlevel}}$, $v=0 \ldots \mbox{{\tt nvoice}}-1$ ($(l,v) \not = (0,0)$) is created and
+allocated to the right size.
+Previously allocations are deleted, if any.
+Notice that, at this time, there is no function to allocate a continuous wavelet transform recording the low-pass signals (\verb+A+ and \verb+AP+).
+
+The number of levels for the decomposition is given by \verb+level+, the number of voice per octave is given by \verb+voice+ and the size of the original signal is given by \verb+size+.
+
+The arrays \verb+D+ and \verb+DP+ can be addressed after this call, if the allocation successed. There is no default values for the signals.
+The \verb+type+ field of the \wtransud structure is set to \verb+mw_continuous+.
+
+The function \verb+mw_alloc_continuous_wtrans1d+ returns \Null\ if not enough memory is available to allocate one of the signals. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Notice that, if the wavelet transform is an output of a MegaWave2 module, the structure has been already created by the compiler if needed (see \volI): do not perform additional call to \verb+mw_new_wtrans1d+ (see example below).
+
+\Next
+\Example
+\begin{verbatim}
+Wtrans1d Output; /* optional Output of the module */
+Fsignal Signal;  /* needed Input of the module: original signal */
+int J;           /* internal use */
+
+if (Output) 
+{
+  /* Output requested : allocate Output for 8 levels of decomposition
+                        and 10 voices per octave, complex wavelet.
+   */
+  if(mw_alloc_continuous_wtrans1d(Output, 8, 10, Signal->size,1)==NULL)
+    mwerror(FATAL,1,"Not enough memory.\n");
+  
+  for (J = 1; J <= 8; J++)
+  {
+     .
+     . (Computation of the voice #J)
+     .
+  }
+}
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_alloc\_dyadic\_wtrans1d}{Allocate the arrays of the decomposition}
+\Summary{
+void *mw\_alloc\_dyadic\_wtrans1d(wtrans,level,size)
+
+Wtrans1d wtrans;
+
+int level; 
+
+int size;    
+
+}
+\Description
+This function allocates the arrays \verb+A+ and \verb+D+ of a \wtransud structure previously created using \verb+mw_new_wtrans1d+, in order to receive
+an dyadic wavelet representation (one voice per octave, no decimation along the time axis).
+Each signal \verb+A[l][v]+ and \verb+D[l][v]+ for $l=0 \ldots \mbox{{\tt nlevel}}$, $v=0 \ldots \mbox{{\tt nvoice}}-1$ ($(l,v) \not = (0,0)$) is created and
+allocated to the right size.
+Previously allocations are deleted, if any.
+
+The number of levels for the decomposition is given by \verb+level+ and the
+size of the original signal is given by \verb+size+.
+
+The arrays \verb+A+ and \verb+D+ can be addressed after this call, if the allocation successed. There is no default values for the signals.
+The \verb+type+ field of the \wtransud structure is set to \verb+mw_dyadic+.
+
+The function \verb+mw_alloc_dyadic_wtrans1d+ returns \Null\ if not enough memory is available to allocate one of the signals. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Notice that, if the wavelet transform is an output of a MegaWave2 module, the structure has been already created by the compiler if needed (see \volI): do not perform additional call to \verb+mw_new_wtrans1d+ (see example below).
+
+\Next
+\Example
+\begin{verbatim}
+Wtrans1d Output; /* optional Output of the module */
+Fsignal Signal;  /* needed Input of the module: original signal */
+int J;           /* internal use */
+
+if (Output) 
+{
+  /* Output requested : allocate Output for 8 levels of decomposition */
+  if(mw_alloc_dyadic_wtrans1d(Output, 8, Signal->size)==NULL)
+    mwerror(FATAL,1,"Not enough memory.\n");
+  
+  Output->A[0][0] = Signal;
+  for (J = 1; J <= 8; J++)
+  {
+     .
+     . (Computation of the voice #J)
+     .
+  }
+}
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_alloc\_ortho\_wtrans1d}{Allocate the arrays of the decomposition}
+\Summary{
+void *mw\_alloc\_ortho\_wtrans1d(wtrans,level,size)
+
+Wtrans1d wtrans;
+
+int level; 
+
+int size;    
+
+}
+\Description
+This function allocates the arrays \verb+A+ and \verb+D+ of a \wtransud structure previously created using \verb+mw_new_wtrans1d+, in order to receive
+an orthonormal wavelet representation (one voice per octave, decimation along the time axis).
+Each signal \verb+A[l][v]+ and \verb+D[l][v]+ for $l=0 \ldots \mbox{{\tt nlevel}}$, $v=0 \ldots \mbox{{\tt nvoice}}-1$ ($(l,v) \not = (0,0)$) is created and
+allocated to the right size.
+Previously allocations are deleted, if any.
+
+The number of levels for the decomposition is given by \verb+level+ and the
+size of the original signal is given by \verb+size+.
+
+The arrays \verb+A+ and \verb+D+ can be addressed after this call, if the allocation successed. There is no default values for the signals.
+The \verb+type+ field of the \wtransud structure is set to \verb+mw_orthogonal+.
+
+The function \verb+mw_alloc_ortho_wtrans1d+ returns \Null\ if not enough memory is available to allocate one of the signals. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Notice that, if the wavelet transform is an output of a MegaWave2 module, the structure has been already created by the compiler if needed (see \volI): do not perform additional call to \verb+mw_new_wtrans1d+ (see example below).
+
+\Next
+\Example
+\begin{verbatim}
+Wtrans1d Output; /* optional Output of the module */
+Fsignal Signal;  /* needed Input of the module: original signal */
+int J;           /* internal use */
+
+if (Output) 
+{
+  /* Output requested : allocate Output for 8 levels of decomposition */
+  if(mw_alloc_ortho_wtrans1d(Output, 8, Signal->size)==NULL)
+    mwerror(FATAL,1,"Not enough memory.\n");
+  
+  Output->A[0][0] = Signal;
+  for (J = 1; J <= 8; J++)
+  {
+     .
+     . (Computation of the voice #J)
+     .
+  }
+}
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_delete\_wtrans1d}{Deallocate the wavelet transform space}
+\Summary{
+void mw\_delete\_wtrans1d(wtrans)
+
+Wtrans1d wtrans;
+}
+\Description
+This function deallocates the memory used by the wavelet transform space \verb+wtrans+ that is, all the memory used by the arrays of signals \verb+A+, \verb+AP+, \verb+D+, \verb+DP+ (if any), and the structure itself. 
+
+You should set \verb+wtrans = NULL+ after this call since the address pointed
+by \verb+wtrans+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+Wtrans1d wtrans=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((wtrans = mw_new_wtrans1d()) == NULL) ||  
+       (mw_alloc_ortho_wtrans1d(wtrans, 8, 1024)==NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+.
+.
+mw_delete_wtrans1d(wtrans);
+wtrans = NULL;
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_new\_wtrans1d}{Create a new Wtrans1d}
+\Summary{
+Wtrans1d mw\_new\_wtrans1d();
+}
+\Description
+This function creates a new \wtransud structure with empty arrays of signals \verb+A+, \verb+AP+, \verb+D+, \verb+DP+.
+No signal can be addressed at this time.
+The arrays of signals should  be allocated using one of the functions \verb+mw_alloc_X_wtrans1d+ where \verb+X+ depends of the type of the transformation.
+
+You don't need this function for input/output of modules, since the MegaWave2
+Compiler already created the structure for you if you need it (see \volI). 
+This function is used to create internal variables.
+Do not forget to deallocate the internal structures before the end
+of the module.
+
+The function \verb+mw_new_wtrans1d+ returns \Null\ if not enough memory is available to create the structure. Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Wtrans1d wtrans=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((wtrans = mw_new_wtrans1d()) == NULL) ||  
+       (mw_alloc_continuous_wtrans1d(wtrans, 8, 10, 1024)) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+

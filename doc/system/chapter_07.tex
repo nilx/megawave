@@ -1,0 +1,659 @@
+%
+% Part 7 of the MegaWave2 Guide #2
+%   Morphological structures
+%
+
+This section describes the various morphological structures used to represent
+images. We call morphological representation\index{morphological representation}
+ any complete decomposition which
+is invariant by (local or global) contrast changes. More precisely, 
+if $\cal R$ is the representation operator and $c$ a contrast change function
+\index{contrast change} (that is, any non-decreasing real function), the contrast change
+ invariance 
+corresponds to the property ${\cal R}(c(u)) = c({\cal R}(u))$ for every image $u$.
+Exemples of such representations are based by level sets\index{level set}, level lines and connected
+components of level sets.
+
+\def\shape{{\tt Shape}}
+\def\shapes{{\tt Shapes}}
+
+We begin our description with the \shape\index{shape} and \shapes\ structures. These are not
+the first developed in MegaWave2, but they are going to play an increasing role :
+they allow to handle level sets and connected components of level sets in a tree
+structure very useful to develop morphological shape-based applications.
+In addition, computation of these structures can be performed in a way faster
+than the traditional level set decomposition, using the Fast Level Set
+Transform\index{Fast Level Set Transform} ({\em FLST}\index{FLST|see{Fast Level Set Transform}} in short).
+The FLST has been created by Pascal Monasse during its PhD thesis.
+The following description of the \shape\ and \shapes\ structures has been
+written with his help.
+ 
+%-----------------------------------------------
+\section{Shape}
+%-----------------------------------------------
+
+
+\label{shape}
+
+A \shape\index{structure!\shape} is a set of pixels based on a level set of an
+image. It can be a level set itself, one of its connected component,
+or a shape as defined by the FLST (see module \verb+flst+) that is,
+in short, a connected component of a level set with filled holes.
+Notice that a \shape\ has no reference to the image in which it is extracted,
+so a \shape\ can be constructed from scratch, without an initial image.
+
+The basic fields are:
+\begin{itemize}
+\item \verb+inferior_type+: a nonzero value indicates that the \shape\
+corresponds to a lower level set\index{level set!lower} of level $\lambda$ ($\{x : u(x) \leq \lambda\}$\footnote{we denote by $x$ a point in the image $u$.} or 
+$\{x : u(x) < \lambda\}$, those sets being noted in short by
+$[u \leq \lambda]$ and $[u<\lambda]$),
+while a zero value indicates an upper level set\index{level set!upper} ($[u\geq \lambda]$ or $[u>\lambda]$).
+\item \verb+value+: the gray level $\lambda$ of the level set.
+\item \verb+area+: the area, i.e., the number of pixels of the shape.
+\item \verb+pixels+: an array of pixel coordinates containing \verb+area+
+elements.
+\item \verb+boundary+: a \flist\ of dimension two containing the
+vertices of a polygonal representation of the boundary.
+\item \verb+open+: a nonzero value indicates that the \shape\ meets
+the border of the image. The name of this field comes from the fact that if
+the boundary is a curve, it is an open curve.
+\end{itemize}
+Moreover, there is an additional field \verb+removed+ indicating if the
+shape is to be taken into account. This field is interesting only in the case
+where the shape is part of a structure.
+
+A shape is supposed to be included in a tree structure driven by
+inclusion. This is the case for example when the shapes are all lower (or all
+upper) level sets: in this case the tree has no ramification, since the level
+sets are monotone for inclusion. There is a true tree structure when they are
+{\em connected components} of lower (or upper) level sets. This is also true
+for the shapes in the sense of the FLST.
+
+In the vocabulary of graphs, the edges of the tree adjacent to the shape are
+stored in the fields \verb+parent+, \verb+child+ and
+\verb+next_sibling+. The \verb+child+ field corresponds actually to the
+first child of the shape. The other ones can be recovered by following the
+pointers \verb+next_sibling+. For example, to call the function \verb+foo+
+successively with the children of shape \verb+s+ as argument, we would write
+the following code snippet:\par
+\verb+for(c = s->child; c != NULL; c=c->next_sibling) foo(c);+
+
+The parent contains the shape while the shape contains its children. Functions
+for accessing these three fields are given: they take into account that
+some shapes may be ignored, as indicated by the field \verb+removed+.
+
+It is dangerous to remove the root of the tree by setting its \verb+removed+
+field: many functions rely on the fact that we have a root.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Shape}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{shape_structure}
+
+The meaning of the different fields is explained above. There are two
+additional fields, \verb+data+ and \verb+data_size+, whose content is left
+to the choice of the user. \verb+data+ is supposed to point to a memory
+extent of (at least) \verb+data_size+ bytes, if this value is
+positive. Failure in this assumption may lead to a memory corruption in
+I/O operations. 
+
+{\small
+\begin{verbatim}
+typedef struct shape
+{
+  char inferior_type; /* Indicates if it is extracted from a superior 
+                         or inferior level set */
+  float value; /* Limiting gray-level of the level set */
+  char open; /* Indicates if the shape meets the border of the image */
+  int area; /* Area of the shape = area of the cc of level set 
+                                 + areas of the holes */
+  char removed; /* Indicates whether the shape exists or not */
+
+  Point_plane pixels; /* The array of pixels contained in the shape */
+
+  Flist boundary; /* The boundary curve defining the shape */
+
+  /* Data to include it in a tree. It has a parent (the smallest containing 
+     shape), children (the largest contained shapes, whose first is pChild 
+     and the others are its siblings), and siblings (the other children of 
+     its parent) */
+  struct shape *parent, *next_sibling, *child;
+
+  int data_size;     /* size of data[] in bytes */
+  void* data;        /* User defined field (saved). A pointer to something */
+
+} *Shape;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{shape-file_type}
+
+\begin{enumerate}
+\item \verb+"MW2_SHAPE"+\index{file format!MW2\_SHAPE} MegaWave2 binary format.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{shape_function}
+
+The following is a description of all the functions related to 
+the \shape\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_07_shape.tex}
+
+%-----------------------------------------------
+\section{Shapes}
+%-----------------------------------------------
+
+
+\label{shapes}
+
+A \shapes\index{structure!\shapes} structure is a collection of shapes extracted from an image. 
+The fields \verb+nrow+ and \verb+ncol+ are the dimensions of the image. 
+The field \verb+interpolation+ is the convention used to extract level
+lines. Currently, the valid values are 0 (module \verb+flst+) and 1 (module
+\verb+flst_bilinear+).
+
+The elements are stored consecutively in the array \verb+the_shapes+ of size
+\verb+nb_shapes+. By convention, the shape at index 0 is the root of the
+tree.
+
+The field \verb+smallest_shape+ is an array of size
+\verb+nrow+$\times$\verb+ncol+ giving for each pixel the smallest shape in
+the tree that contains it. By going upward in the tree, it is possible to know
+all the shapes containing a given pixel.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Shapes}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{shapes_structure}
+
+The meaning of the fields is explained above. The fields \verb+data_size+
+and \verb+data+ are left to the user.
+{\small
+\begin{verbatim}
+typedef struct shapes
+{
+  char cmt[mw_cmtsize];   /* Comments */
+  char name[mw_namesize]; /* Name of the set */
+  int nrow;               /* Number of rows (dy) of the image */
+  int ncol;               /* Number of columns (dx) of the image */
+  int interpolation;      /* Interpolation used for the level lines:
+                             0=nearest neighbor, 1=bilinear */
+  Shape the_shapes; /* Array of the shapes.
+                       The root of the tree is at index 0 */
+ 
+  int nb_shapes; /* The number of shapes (the size of the array the_shapes) */
+ 
+  /* Link between pixels and shapes */
+  Shape *smallest_shape; /* An image giving for each pixel
+                            the smallest shape containing it */
+ 
+  int data_size;     /* size of data[] in bytes */
+  void* data;        /* User defined field (saved). A pointer to something */
+ 
+} *Shapes;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{shapes-file_type}
+
+\begin{enumerate}
+\item \verb+"MW2_SHAPES"+\index{file format!MW2\_SHAPE} MegaWave2 binary format.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{shapes_function}
+
+The following is a description of all the functions related to 
+the \shapes\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_07_shapes.tex}
+
+%-----------------------------------------------
+\section{Point with a type field}
+%-----------------------------------------------
+
+
+\label{point_type}
+\def\pt{{\tt Point\_type}}
+\def\mline{{\tt Morpho\_line}}
+\def\fmline{{\tt Fmorpho\_line}}
+
+The \pt\index{structure!\point_type@\pt} structure is complementary to the \point\ structure (See Section~\ref{curves-polygons_point}): it
+is used to record the type of the point, a valuable information in morphological shape-based algorithms.
+While the \point\ structure was mainly defined to be used as part of a \curve\ structure, the \pt\ structure
+is related to the \mline\ structure (See Section~\ref{morpho_line}).
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Point\_type}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{point_type-structure}
+
+This is the C definition of the structure:
+{\small
+\begin{verbatim}
+typedef struct point_type {
+  unsigned char type; /* Type of the point, e.g. (exact meaning can vary; See modules)
+                         0 : regular point;
+                         1 : point in the image's border;
+                         2 : T-junction;
+                         3 : Tau-junction;
+                         4 : X-junction;
+                         5 : Y-junction.
+                         */
+  struct point_type *previous; /* Pointer to the previous point (may be NULL) */
+  struct point_type *next; /* Pointer to the next point (may be NULL) */
+} *Point_type;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{point_type-file_type}
+
+Not available: at this time, the \pt\ object cannot be used as input/output variables of modules.
+It can be saved as part of a \mline\ or \fmline\ structure.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{point_type-function}
+
+The following is a description of all the functions related to 
+the \pt\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_07_point_type.tex}
+
+%-----------------------------------------------
+\section{Horizontal segment}
+%-----------------------------------------------
+
+
+\label{hsegment}
+
+\def\hsegment{{\tt Hsegment}}
+\def\mset{{\tt Morpho\_set}}
+
+\index{set of points|see{segment}}
+
+The \hsegment\ structure is useful for describing all pixels belonging to a (connected or non-connected)
+set, without taking the border into consideration.
+An horizontal segment is given by a left and a right point. 
+If the shape of the set is more height than width, you should rather use vertical segments
+(not yet defined).
+The morpho set defined in Section~\ref{morpho_set} makes the use
+of the \hsegment\ structure\index{segment!horizontal}, which defines an horizontal segment.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Hsegment}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{hsegment-structure}
+
+This is the C definition of the structure \hsegment:
+\index{structure!\hsegment@\hsegment} 
+{\small
+\begin{verbatim}
+typedef struct hsegment {
+  int xstart; /* Left x-coordinate of the segment */
+  int xend;   /* Right x-coordinate of the segment */
+  int y;      /* y-coordinate of the segment */
+  struct hsegment *previous; /* Pointer to the previous segment (may be NULL) */
+  struct hsegment *next;     /* Pointer to the next segment (may be NULL) */
+} *Hsegment;
+
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{hsegment-file_type}
+
+Not available: at this time, the \hsegment\ object cannot be used as input/output variables of modules.
+It can be saved as part of a \mset\ structure.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{hsegment-function}
+
+The following is a description of all the functions related to 
+the \hsegment\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_07_hsegment.tex}
+
+
+%-----------------------------------------------
+\section{Morpho set}
+%-----------------------------------------------
+
+
+\label{morpho_set}
+
+We call morpho set \index{morpho set} any connected component of set of the form
+$\{x : \lambda_1 \leq u(x) \leq \lambda_2\}$, this set being noted in short by
+$[\lambda_1 \leq u \leq \lambda_2]$. Notice that for $\lambda_1=-\infty$ we get
+a lower level set\index{level set!lower} and for $\lambda_2=+\infty$ an upper level 
+set\index{level set!upper}. In the case $\lambda_1 = \lambda_2$ the morpho set
+will be called iso set\index{iso set}.
+The structure \mset\index{structure!\morpho_set@\mset} can be used to handle such
+morpho set. A \mset\ is given by a list of horizontal segments (See Section~\ref{hsegment}),
+where levels $\lambda_1$ and $\lambda_2$ are recorded. Some additional information can
+be recorded, such as the neighbor morpho sets. 
+Please notice that some fields are likely to change in the future.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Morpho\_set}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{mset-structure}
+
+This is the C definition of the structure \mset:
+\index{structure!\morpho_set@\mset} 
+{\small
+\begin{verbatim}
+typedef struct morpho_set {
+  unsigned int num;      /* Morpho set number (range in the Morpho_sets struct.) */
+  Hsegment first_segment; /* Pointer to the first segment of the morpho set */
+  Hsegment last_segment;  /* Pointer to the last segment of the morpho set */  
+  float minvalue;        /* Minimum gray level value of this set */
+  float maxvalue;        /* Maximum gray level value of this set */
+  unsigned char stated;  /* 1 if this m.s. has already been stated, 0 otherwise */
+  int area;              /* Area of the set (number of pixels belonging to this set) */
+  struct morpho_sets *neighbor; /* Pointer to a chain of neighbor morpho sets (may be NULL)*/
+} *Morpho_set;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{mset-file_type}
+
+\begin{enumerate}
+\item \verb+"MW2_MORPHO_SET"+\index{file format!MW2\_MORPHO\_SET} MegaWave2 binary format.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{mset-function}
+
+The following is a description of all the functions related to 
+the \mset\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_07_morpho_set.tex}
+
+%-----------------------------------------------
+\section{Chain of morpho sets}
+%-----------------------------------------------
+
+
+\label{morpho_sets}
+\def\msets{{\tt Morpho\_sets}}
+\def\mimage{{\tt Mimage}}
+
+The \msets\index{structure!\morpho_sets@\msets} structure is useful to record a set (or chain) of 
+morpho sets. This structure is used by the \mimage\ structure (See Section~\ref{mimage}) to 
+handle all the morpho sets an image contains.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Morpho\_sets}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{msets-structure}
+
+This is the C definition of the structure \msets:
+\index{structure!\morpho_sets@\msets} 
+{\small
+\begin{verbatim}
+typedef struct morpho_sets {
+  Morpho_set morphoset;         /* Pointer to the current morpho set */
+  struct morpho_sets *previous; /* Pointer to the previous morpho sets of the chain */
+  struct morpho_sets *next;     /* Pointer to the next morpho sets of the chain */
+  /* For use in Mimage only */
+  struct morpho_line *morpholine;  /* Pointer to the associated morpho line */
+} *Morpho_sets;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{msets-file_type}
+
+\begin{enumerate}
+\item \verb+"MW2_MORPHO_SETS"+\index{file format!MW2\_MORPHO\_SETS} MegaWave2 binary format.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{msets-function}
+
+The following is a description of all the functions related to 
+the \msets\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+% === A POURSUIVRE ===
+\input{chapter_07_morpho_sets.tex}
+
+%-----------------------------------------------
+\section{Morpho line}
+%-----------------------------------------------
+
+
+\label{morpho_line}
+\def\mline{{\tt Morpho\_line}}
+
+A morpho line \index{morpho line} is the border of a morpho set.
+Assuming a right choice of grid and point connectivity so that a Jordan's theorem 
+follows, a morpho line is a closed curve dividing the grid in two connected components : 
+the interior of the morpho set and the exterior one. Actually, because an image has a finite
+support, a morpho line may also intersects the image border : in such case, the
+curve remains open. There is another restriction to the Jordan's theorem : most
+of modules using morpho lines (such as \verb+ml_extract+) consider the 4-connectivity only in
+the square grid, so the border may cut the connected component to several pieces and the 
+corresponding morpho lines may be self-intersecting.
+Notice that if the morpho set is a level set, the corresponding border is a
+level line\index{level line}. And if the morpho set is an iso set, its border is
+an iso line\index{iso line}.
+
+The structure \mline\index{structure!\morpho_line@\mline} can be used to handle such
+morpho line. First a \mline\ is a curve, so the \point\ structure is used to record it
+(field \verb+first_point+). There are additional fields, to give information on the
+line (type of the points, closed or open curve) and to allow the reconstruction of the
+morpho set (\verb+minvalue+, \verb+maxvalue+).
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Morpho\_line}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{mline-structure}
+
+This is the C definition of the structure \mline:
+\index{structure!\morpho_line@\mline} 
+{\small
+\begin{verbatim}
+typedef struct morpho_line {
+  Point_curve first_point;/* Pointer to the first point of the morpho_line curve */
+  Point_type first_type;  /* Pointer to the first Point_type */
+  float minvalue;         /* Minimum gray level value of this morpho line */
+  float maxvalue;         /* Maximum gray level value of this morpho line */
+  unsigned char open;     /* 0 if the morpho line is closed, opened otherwise */
+  float data;             /* User-defined data field (saved) */
+  void *pdata;            /* User-defined data field : pointer to something (not saved) */
+   
+  /* For use in Mimage only */
+  struct morpho_sets *morphosets;/* Pointer to the associated morpho sets */
+  unsigned int num;              /* Morpho line number (range in the chain) */
+  struct morpho_line *previous;  /* Pointer to the previous m.l. (may be NULL) */
+  struct morpho_line *next;      /* Pointer to the next m.l. (may be NULL) */
+} *Morpho_line;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{mline-file_type}
+
+\begin{enumerate}
+\item \verb+"MW2_MORPHO_LINE"+\index{file format!MW2\_MORPHO\_LINE} MegaWave2 binary format.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{mline-function}
+
+The following is a description of all the functions related to 
+the \mline\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_07_morpho_line.tex}
+
+%-----------------------------------------------
+\section{Morpho line in the continuous plane} 
+%-----------------------------------------------
+
+
+\label{fmorpho_line}
+\def\fmline{{\tt Fmorpho\_line}}
+
+The structure \fmline\ \index{structure!\fmorpho_line@\fmline} is used to
+handle morpho lines in the continuous plane.
+Indeed, if the morpho lines obtained from digital images contain discrete
+(integer) coordinates, one may want to process the morpho lines using
+continuous operators, such as geometric smoothing. The resulting morpho
+lines are no more made by discrete coordinates.
+In a \fmline, the points are recorded using the \fpoint\ structure (See
+Section~\ref{curves-polygons_real}).
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Fmorpho\_line}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{fmline-structure}
+
+This is the C definition of the structure \fmline:
+\index{structure!\fmorpho_line@\fmline} 
+{\small
+\begin{verbatim}
+typedef struct fmorpho_line {
+  Point_fcurve first_point;/* Pointer to the first point of the fmorpho_line curve */
+  Point_type first_type;   /* Pointer to the first Point_type */
+  float minvalue;          /* Minimum gray level value of this morpho line */
+  float maxvalue;          /* Maximum gray level value of this morpho line */
+  unsigned char open;      /* 0 if the morpho line is closed, opened otherwise */
+  float data;             /* User-defined data field (saved) */
+  void *pdata;            /* User-defined data field : pointer to something (not saved) */
+ 
+  /* For use in Mimage only */
+  struct fmorpho_line *previous; /* Pointer to the previous m.l. (may be NULL) */
+  struct fmorpho_line *next;     /* Pointer to the next m.l. (may be NULL) */
+} *Fmorpho_line;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{fmline-file_type}
+
+\begin{enumerate}
+\item \verb+"MW2_FMORPHO_LINE"+\index{file format!MW2\_FMORPHO\_LINE} MegaWave2 binary format.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{fmline-function}
+
+We won't waste space to describe functions related to the \fmline\ structure : they
+are the same than those related to \mline, except that the name ``morpho\_line'' has
+to be changed to ``fmorpho\_line''.
+
+%-----------------------------------------------
+\section{Morphological image}
+%-----------------------------------------------
+
+
+\label{mimage}
+
+A morphological image\index{morphological image} may record in a structure called \mimage\ all morpho sets
+and morpho lines the image contains. It is therefore potentially a very redundant
+(and very huge) structure, but this plenty of information may be useful to perform 
+morphological operations. Of course, not all fields need to be set as the same time,
+for example a \mimage\ may contain the level lines only. But from this (complete) 
+information, all other fields may be computed.
+
+The \mimage\ structure has been created before the \shapes\ structure was developed
+(See Section~\ref{shapes}).
+It does not use the tree structure associated to FLST-based algorithms.
+For this reason, the \shapes\ object should be preferred to the \mimage\ one for
+future developments.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Mimage}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{mimage-structure}
+
+This is the C definition of the structure \mimage:
+\index{structure!\mimage@\mimage} 
+{\small
+\begin{verbatim}
+typedef struct mimage {
+  char cmt[mw_cmtsize];   /* Comments */
+  char name[mw_namesize]; /* Name of the set */
+  int nrow;               /* Number of rows (dy) */
+  int ncol;               /* Number of columns (dx) */
+  float minvalue;         /* Minimal Gray level value in the image */
+  float maxvalue;         /* Maximal Gray level value in the image */
+  Morpho_line first_ml;   /* Pointer to the first morpho line in the discrete grid */
+  Fmorpho_line first_fml; /* Pointer to the first morpho line in the continuous plane */
+  Morpho_sets first_ms;   /* Pointer to the first morpho sets in the discrete grid */
+} *Mimage;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{mimage-file_type}
+
+\begin{enumerate}
+\item \verb+"MW2_MIMAGE"+\index{file format!MW2\_MIMAGE} MegaWave2 binary format.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{mimage-function}
+
+The following is a description of all the functions related to 
+the \mimage\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_07_mimage.tex}

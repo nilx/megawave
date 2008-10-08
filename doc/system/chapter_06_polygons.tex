@@ -1,0 +1,130 @@
+\Name{mw\_change\_polygons}{Define the polygons structure, if not defined}
+\Summary{
+Polygons mw\_change\_polygons(polygons)
+
+Polygons polygons;
+}
+\Description
+This function returns a Polygons structure if the input \verb+polygons = NULL+.
+It is provided despite the \verb+mw_new_polygons+ function for
+global coherence with other memory types.
+
+The function \verb+mw_change_polygons+ returns \Null\ if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal polygons structures before the end
+of the module.
+
+\Next
+\Example
+\begin{verbatim}
+/* Define a polygons set to be two pre-defined polygons  */
+
+Polygons polygons=NULL;   /* Internal use: no Input neither Output of module */
+Polygon polygon1,polygon2;  /* Pre-defined polygons (e.g. inputs of module) */
+
+polygons = mw_change_polygons(polygons);
+if (polygons == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+...
+\end{verbatim}
+(End of this example as for the \verb+mw_new_polygons+ function).
+
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_polygons}{Deallocate a polygons set}
+\Summary{
+void mw\_delete\_polygons(polygons)
+
+Polygons polygons;
+}
+\Description
+This function deallocates all the memory allocated by the polygons variable
+that is, all the points belonging to all polygons into this set, all channels arrays (if any), all \polygon structures and the \polygons structure itself.
+You should set \verb+polygons = NULL+ after this call since the address pointed
+by \verb+polygons+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+Polygons polygons=NULL;   /* Internal use: no Input neither Output of module */
+
+polygons = mw_new_polygons();
+if (polygons == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+.
+.
+.
+mw_delete_polygons(polygons);
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_length\_polygons}{Return the number of polygons into a polygons structure}
+\Summary{
+unsigned int mw\_length\_polygons(polys);
+
+Polygons polys;
+}
+\Description
+This function returns the number of polygons contained in the given
+\verb+polys+. It returns $0$ if the structure is empty.
+
+\Next
+\Example
+\begin{verbatim}
+/* Define a polygons set to be two pre-defined polygons  */
+
+Polygons polygons=NULL;   /* Internal use: no Input neither Output of module */
+Polygon polygon1,polygon2;  /* Pre-defined polygons (e.g. inputs of module) */
+
+polygons = mw_new_polygons();
+if (polygons == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+polygons->first=polygon1;
+polygon1->previous = polygon2->next = NULL;
+polygon1->next = polygon2;
+polygon2->previous = polygon1;
+
+/* The length would be 2 */
+printf("Length=%d\n",mw_length_polygons(polygons));
+
+\end{verbatim}
+\newpage %......................................
+
+\Name{mw\_new\_polygons}{Create a new polygons}
+\Summary{
+Polygons mw\_new\_polygons();
+}
+\Description
+This function creates a new \polygons structure.
+It returns \Null\ if not enough memory is available to create the structure.
+Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module.
+
+\Next
+\Example
+\begin{verbatim}
+/* Define a polygons set to be two pre-defined polygons  */
+
+Polygons polygons=NULL;   /* Internal use: no Input neither Output of module */
+Polygon polygon1,polygon2;  /* Pre-defined polygons (e.g. inputs of module) */
+
+polygons = mw_new_polygons();
+if (polygons == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+polygons->first=polygon1;
+polygon1->previous = polygon2->next = NULL;
+polygon1->next = polygon2;
+polygon2->previous = polygon1;
+\end{verbatim}
+\newpage %......................................
+

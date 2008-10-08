@@ -1,0 +1,705 @@
+%
+% Part 3 of the MegaWave2 Guide #1
+%   Getting started
+%
+
+This section shows you how to write a MegaWave2 module, by explaining several examples.
+If you want to run existing modules only, please refer to the Volume three: ``MegaWave2 User's Modules Library'' to learn more about the different modules.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{A simple module}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{start_simple}
+
+\index{module!example!fadd1}
+Let us suppose that you want to write an algorithm which adds the content of
+two monochrome images\index{image}, that is to say it adds pixel by pixel the gray level values.
+
+The first question you should ask yourself is ``what should be the input and the output of this algorithm ?''.
+Obviously you need two images for the input and the output will be another image, which will support the result of the addition.
+If you refer to the Volume two: ``MegaWave2 System Library'', you will see
+that monochrome images may be implemented by two MegaWave2 objects: the
+memory type \verb+Cimage+\index{Cimage} and the memory type \verb+Fimage+\index{Fimage}.
+The first one uses small integers for the gray levels (unsigned char) while the second one uses floating point representation.
+Let us say that your algorithm will make additions using the floating point representation: this is the less restrictive choice since integers are reals (and reals are not integers !) and the addition of two integers may exceed the capacity of the unsigned char representation ($255$).
+
+Other important questions are ``what name should I give to the module ?'', ``what group should it belong to?''.
+Due to the limitation of some standard link editors and archives, we recommend
+you choose short names (with no more than 11 characters).
+One uses to begin the name with a letter which recalls the memory type of the input: here it will be \verb+f+ since we use \verb+Fimage+.
+The remainder should be chosen in order to recall the algorithm, here \verb+add1+ for example (the letter \verb+1+ means that variants will be presented).
+You may also want to put the module in a group, let us say \verb+demo+.
+
+At this point, we have all the information to write the MegaWave2 header\index{header!module} (please
+have a look at the listing page~\pageref{listing_fadd1}):
+\begin{itemize}
+\item the line \verb+/* mwcommand+\index{mwcommand} tells the MegaWave2 compiler that you begin the header. 
+It is enclosed by comments (\verb+/*+ \ldots \verb+*/+) since standard C compilers must be able to compile a module.
+\item the line \verb+name = {fadd1};+\index{name} defines the name of the module to be \verb+fadd1+.
+Although this event is not reported as an error, this name must coincide with the name of the module file and with the name of the main function of the module.
+\item the line \verb+author = {"My name"};+\index{author} gives the name of the author(s). It will be used for copyrights.
+\item the line \verb+labo = {"My labo with the address"}+\index{labo} reports the laboratory(ies) where the author(s) belong(s). It will be used for copyrights (this definition is optional. If not set, native laboratory is assumed).
+\item the line \verb+version = {"1.0"};+\index{version} indicates the version number of the algorithm (this definition is optional).
+\item the line \verb+function = {"Adds the ... "};+\index{function} explains (very) shortly the algorithm.
+\item Last, the more important field is the usage. Here,
+\begin{itemize}
+\item \verb+fimage1->A+ means that \verb+A+ is an input parameter of the function \verb+fadd1+ (whose type ---here \verb+Fimage+--- is given by the C declaration). 
+The word \verb+fimage1+ is the one which will appear in the help and in the documentation (instead of the C word \verb+A+).
+The string following this declaration explains shortly the meaning of this argument.
+\item \verb+fimage2->B+ means that \verb+B+ is also an input parameter of the function.
+\item \verb+result<-C+ means that \verb+C+ is an output parameter of the function.
+\end{itemize}
+\end{itemize}
+To be in concordance with this header, you must edit the module in a file
+called \verb+fadd1.c+ into the directory \verb+$MY_MEGAWAVE2/src/examples+.
+This module is actually given with the standard distribution and it is located in
+ \verb+$MEGAWAVE2/src/examples+. 
+So you can avoid editing it by copying it on your home location \verb+$MY_MEGAWAVE2/src/examples+.
+
+After the MegaWave2 header comes the regular C body.
+You must first include the needed standard C files (here \verb+stdio.h+)
+followed by the MegaWave2 include file (\verb+mw.h+).
+
+The declaration of the main function\index{main function} (\verb+fadd1+) must list all the parameters (and no others) put in the \verb+usage+ part of the header:
+you recognize the three parameters \verb+A,B,C+.
+The body of this function uses several functions of the system library (all functions of the system library begin with the prefix \verb+mw+).
+Please see the Volume two: ``MegaWave2 System Library'' to get explanations about all these functions.
+
+The instructions
+\begin{verbatim}
+ if((A->nrow != B->nrow) || (A->ncol != B->ncol))
+    mwerror(FATAL, 1, "The input images have not the same size!\n");
+\end{verbatim}
+\index{function!mwerror}
+check that the sizes of the two input images \verb+A+ and \verb+B+ are the same,
+that is, that they have the same number of rows and columns.
+If not, a fatal error is sent\index{function!mwerror!FATAL}, which terminates the module.
+
+The line
+\begin{verbatim}
+  if ((C = mw_change_fimage(C,A->nrow,A->ncol)) == NULL)
+    mwerror(FATAL, 1, "Not enough memory !\n");  
+\end{verbatim}
+\index{function!mw\_change\_fimage}
+allocates memory for the output image \verb+C+, if \verb+C+ does not have enough
+memory to record a size of (\verb+A->nrow,A->ncol+).
+Indeed, when you write a module, you don't know in which context the module may be executed:
+It can be run in the command mode, in which case no memory is allocated for \verb+C+ (but the C structure by itself) or it can be run as a function in memory
+(e.g. call from another module, from an interpreter, \ldots) in which case 
+\verb+C+ may have been previously allocated.
+
+The loop
+\begin{verbatim}
+ for (x=0;x<A->ncol;x++) for (y=0;y<A->nrow;y++)
+    {
+      a = mw_getdot_fimage(A,x,y);
+      b = mw_getdot_fimage(B,x,y);
+      mw_plot_fimage(C,x,y,a+b);
+    }
+\end{verbatim}
+is the main part of the algorithm: 
+for each pixel $(x,y)$, we get in \verb+a+ the gray level of the image \verb+A+
+and in \verb+b+ the gray level of the image \verb+B+\index{pixel}
+\index{function!mw\_getdot\_fimage}.
+The last instruction makes the addition \verb-a+b- and put the result in the
+image \verb+C+\index{function!mw\_plot\_fimage}.
+
+We show in the following the whole listing of the simple module called \verb+fadd1+:
+{\small
+\label{listing_fadd1}
+\begin{verbatim}
+/*--------------------------- MegaWave2 module -----------------------------*/
+/* mwcommand
+ name = {fadd1};
+ author = {"My name"};
+ labo = {"My labo with the address"};
+ version = {"1.0"};
+ function = {"Adds the pixel's gray-levels of two fimages (for demo #1)"};
+ usage = {
+   fimage1->A 
+      "Input fimage #1", 
+   fimage2->B
+      "Input fimage #2", 
+   result<-C
+      "Output image"
+};
+*/
+/*--------------------------------------------------------------------------*/
+
+#include <stdio.h>
+#include  "mw.h"
+
+void fadd1(A,B,C)
+
+Fimage  A,B,C;
+
+{ int x,y;
+  float a,b;
+
+  if((A->nrow != B->nrow) || (A->ncol != B->ncol))
+    mwerror(FATAL, 1, "The input images have not the same size!\n");
+
+  if ((C = mw_change_fimage(C,A->nrow,A->ncol)) == NULL)
+    mwerror(FATAL, 1, "Not enough memory !\n");  
+
+  for (x=0;x<A->ncol;x++) for (y=0;y<A->nrow;y++)
+    {
+      a = mw_getdot_fimage(A,x,y);
+      b = mw_getdot_fimage(B,x,y);
+      mw_plot_fimage(C,x,y,a+b);
+    }
+}
+
+\end{verbatim}
+}
+
+You are now ready to compile\index{compiler} the module: type under your favorite shell the command: \\
+\verb+cmw2 fadd1+ \\
+\index{system's macro!cmw2}
+This assumes that you have a standard C compiler called \verb+cc+.
+If your prefer to use the GNU C compiler, type the command:\\
+\verb+cmw2 -gnu fadd1+ \\
+You should get something like the following prints:
+{\small
+\begin{verbatim}
+cmw2 fadd1 
+ 
+>>> Welcome on the MegaWave2 Compiler V1.18 <<<
+ 
+  Phase 1 : MegaWave2 preprocessor
+fadd1.c :
+done.
+  Phase 2 : production of sources and objects
+          production of document squeleton (doc/demo/fadd1.doc)
+          production of arguments analyser object
+          production of module object
+          add objects to MegaWave2 user library
+          production of interface with MegaWave2 interpretor source
+          production of interface with MegaWave2 library object
+  Phase 3 : production of MegaWave command
+          linking MegaWave2 command "fadd1" on hp
+     (New command added... Type rehash)
+
+\end{verbatim}
+}
+
+A lot of errors may occur during this compilation if your installation is not ready.
+In that case, please check the installation (see section~\ref{install}).
+
+If you didn't get any errors, type \verb+rehash+ if you are using a C-shell and execute the module in
+the command mode by typing \verb+fadd1+ first without parameters.
+You should get something like:
+{
+\small
+\begin{verbatim}
+-------------------------------------------------------------------------------
+\\     //  Adds the pixel's gray-levels of two fimages (for demo #1).
+ \\   //   
+  fadd1    Copyright (C)1998 Jacques Froment. 
+ //   \\   MegaWave2 : J.Froment (C)1988-98 CEREMADE, Univ. Paris-Dauphine
+//V 1.0\\  and (C)1998-2002 CMLA, ENS Cachan, 94235 Cachan cedex, France.
+-------------------------------------------------------------------------------
+
+error : missing 'fimage1'
+
+usage : fadd1 fimage1 fimage2 result
+
+        fimage1 :       Input fimage #1
+        fimage2 :       Input fimage #2
+        result :        Output image
+
+\end{verbatim}
+}
+This print recalls you the syntax of the command.
+Since you run the module in the command mode, the parameters associated to a MegaWave2 type (\verb+fimage1 fimage2 result+) refer to file names.
+If you have some favorite image files available, use them for the two requested inputs
+\verb+fimage1 fimage2+.
+If not (or if MegaWave2 cannot read those file formats), type the line: \\
+\verb+fadd1 fimage cimage result+\\
+How MegaWave2 does access to the files \verb+fimage+ and \verb+cimage+ ?
+If a file is not found in the given path and name (here \verb+./fimage+ and \verb+./cimage+), MegaWave2 tries to resolve the name by reading the directories \verb+$MY_MEGAWAVE2/data+
+and \verb+$MEGAWAVE2/data+ and their subdirectories.
+For each MegaWave2 internal type, we put in those directories examples of external types.
+The name of the file corresponds to the name of the internal type: for example, the file \\
+\verb+$MEGAWAVE2/data/PUBLIC/cimage+ contains a monochrome  image where the gray levels were recorded using the unsigned char representation, that is the representation of the \verb+Cimage+ internal type.
+You can display this image on your screen by calling the following public module: \\
+\verb+cview cimage+\\
+
+You may have noticed that we called \verb+fadd1+ with a parameter (\verb+cimage+) which does not match the requested internal type for the C variable \verb+B+ (a \verb+Fimage+).
+It doesn't matter since the MegaWave2 library makes the right conversion\index{conversion}.
+It is also possible to convert a Fimage into a Cimage although is this case information may
+be lost.
+Of course some conversions are not supported (e.g. you cannot call \verb+fadd1+ with a signal as parameter).
+Please refer to Volume two: ``MegaWave2 System Library'' to learn more about that.
+
+After the command \verb+fadd1 fimage cimage result+ has been run, you should get on disk
+the new file \verb+./result+ which records the contents of the C variable \verb+C+.
+You can display it on the screen by typing: \\
+\verb+cview result+\\
+You may get a warning message like \\
+\verb+MegaWave warning (cview) : 27757 Gray levels were out of [0,255].+\\
+This is because \verb+cview+ takes a \verb+Cimage+ as the input, so the gray levels of
+\verb+result+ out of $255$ have been thresholded.
+
+Because \verb+C+ is a \verb+Fimage+, the file \verb+./result+ has a compatible format 
+with the floating point representation.
+By default, MegaWave2 uses the same format as the format of the input \verb+fimage+
+but you can choice the format you want by using the option \verb+-ftype+\index{file format}.
+Indeed, there are some options in addition to the options you can define in the usage.
+Such options are called {\bf system's options}\index{system's option} and one can distinguish them from
+{\bf user's options}\index{user's option} since they use more than one letter
+(see section~\ref{header_optsys} page~\pageref{header_optsys} for more details).
+For example, \verb+fadd1 -ftype IMG fimage cimage result2+ creates a file
+\verb+result2+ which has the external format \verb+IMG+.
+This file format uses the unsigned char representation, therefore you get this warning
+during the execution of \verb+fadd1+: \\
+\verb+MegaWave warning (fadd1) : 27757 Gray levels were out of [0,255].+\\
+But now if you call \verb+cview result2+, no more warning appears since thresholding has
+been done by \verb+fadd1+.
+
+If you want to print the output image on a PostScript printer\index{PostScript}, you should use
+the external format \verb+PS+ instead of \verb+IMG+: the file \verb+result2+
+will contain the image following PostScript format, so you can print it 
+using the command \verb+lp result2+ (on most Unix systems). 
+If you don't want to print \verb+result2+ alone, e.g. if you want to include this
+file as an image in a \LaTeX\index{LaTeX} document, you should use the \verb+EPSF+ format 
+instead of \verb+PS+.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Some optimizations}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{start_optim}
+
+\index{module!example!fadd2}
+\index{optimization}
+The main part of the algorithm in \verb+fadd1+ uses standard MegaWave2 functions
+to access to the pixels\index{pixel}.
+Since fast pixel access is critical for image processing, we give in this section two alternatives to speed the execution of the module.
+You may find more tips in the Volume two: ``MegaWave2 System Library'', 
+at this time keep just in mind that this kind of optimization can be adapted 
+to other memory types such signals or movies.
+
+The first alternative is given by the module \verb+fadd2+.
+Here is the listing:
+{\small
+\label{listing_fadd2}
+\begin{verbatim}
+/*--------------------------- MegaWave2 module -----------------------------*/
+/* mwcommand
+ name = {fadd2};
+ author = {"Jacques Froment"};
+ version = {"1.0"};
+ function = {"Adds the pixel's gray-levels of two fimages (for demo #2)"};
+ usage = {
+   fimage1->A 
+      "Input fimage #1", 
+   fimage2->B
+      "Input fimage #2", 
+   result<-C
+      "Output image"
+};
+*/
+/*--------------------------------------------------------------------------*/
+
+#include <stdio.h>
+#include  "mw.h"
+
+#define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
+
+void fadd2(A,B,C)
+
+Fimage  A,B,C;
+
+{ int x,y;
+
+  if((A->nrow != B->nrow) || (A->ncol != B->ncol))
+    mwerror(FATAL, 1, "The input images have not the same size!\n");
+
+  if ((C = mw_change_fimage(C,A->nrow,A->ncol)) == NULL)
+    mwerror(FATAL, 1, "Not enough memory !\n");  
+
+  for (x=0;x<A->ncol;x++) for (y=0;y<A->nrow;y++)
+    _(C,x,y) = _(A,x,y) + _(B,x,y);
+}
+\end{verbatim}
+}
+This module does not really optimize the speed of the execution (the saving is small) but it makes the listing more readable for people:
+once you have defined the C macro \verb+_(a,i,j)+, you can access to the pixel
+$(x,y)$ on an image \verb+I+ by writing \verb+_(I,x,y)+ only\index{pixel}.
+But be aware that some checking are deconnected in this way: do not exceed the
+maximum range for $(x,y)$.
+
+\medskip
+
+\index{module!example!fadd3}
+The second alternative is given by the module \verb+fadd3+.
+This one really improves the speed of the execution.
+But and unlike the former example, it cannot be used in all algorithms: the
+pixel cannot be addressed in random order.
+The image has to be read (or written) in the ``natural'' order that is,
+from up to down and left to right.
+Here is the listing:\index{pointer}
+{\small
+\label{listing_fadd3}
+\begin{verbatim}
+/*--------------------------- MegaWave2 module -----------------------------*/
+/* mwcommand
+ name = {fadd3};
+ author = {"Jacques Froment"};
+ version = {"1.0"};
+ function = {"Adds the pixel's gray-levels of two fimages (demo #3)"};
+ usage = {
+   fimage1->A 
+      "Input fimage #1", 
+   fimage2->B
+      "Input fimage #2", 
+   result<-C
+      "Output image"
+};
+*/
+/*--------------------------------------------------------------------------*/
+
+#include <stdio.h>
+#include  "mw.h"
+
+void fadd3(A,B,C)
+
+Fimage  A,B,C;
+
+{
+  register float *ptr1,*ptr2,*ptr3;
+  register int i;
+
+  if((A->nrow != B->nrow) || (A->ncol != B->ncol))
+    mwerror(FATAL, 1, "The input images have not the same size!\n");
+
+  if ((C = mw_change_fimage(C,A->nrow,A->ncol)) == NULL)
+    mwerror(FATAL, 1, "Not enough memory !\n");  
+
+  for (ptr1=A->gray, ptr2=B->gray, ptr3=C->gray, i=0;
+       i < A->nrow*A->ncol; ptr1++, ptr2++, ptr3++, i++)
+    *ptr3 = *ptr1 + *ptr2;
+}
+\end{verbatim}
+}
+
+\medskip
+
+\index{module!example!fadd4}
+The third alternative is given by the module \verb+fadd4+.
+The speed of the execution for this module is not so fast that the
+one for the previous module \verb+fadd3+, but this last method can
+be used in any algorithms, even if the pixels are not scanned
+in the ``natural'' order.
+This method consists to allocate, using a MegaWave2 function, a
+bi-dimensional tab which is actually an one-dimensional tab of 
+pointers, and each pointer points to the beginning of a image's
+line\index{function!mw\_newtab\_gray\_fimage}. 
+Here is the listing:
+{\small
+\label{listing_fadd4}
+\begin{verbatim}
+/*--------------------------- MegaWave2 module -----------------------------*/
+/* mwcommand
+ name = {fadd4};
+ author = {"Jacques Froment"};
+ version = {"1.0"};
+ function = {"Adds the pixel's gray-levels of two fimages (for demo #4)"};
+ usage = {
+   fimage1->A 
+      "Input fimage #1", 
+   fimage2->B
+      "Input fimage #2", 
+   result<-C
+      "Output image"
+};
+*/
+/*--------------------------------------------------------------------------*/
+
+#include <stdio.h>
+#include  "mw.h"
+
+void fadd4(A,B,C)
+
+Fimage  A,B,C;
+
+{ int x,y;
+  float **TA,**TB,**TC;
+
+  if((A->nrow != B->nrow) || (A->ncol != B->ncol))
+    mwerror(FATAL, 1, "The input images have not the same size!\n");
+
+  if ((C = mw_change_fimage(C,A->nrow,A->ncol)) == NULL)
+    mwerror(FATAL, 1, "Not enough memory !\n");  
+
+  if ( ((TA = mw_newtab_gray_fimage(A)) == NULL) ||
+       ((TB = mw_newtab_gray_fimage(B)) == NULL) ||
+       ((TC = mw_newtab_gray_fimage(C)) == NULL) )
+    mwerror(FATAL, 1, "Not enough memory !\n");  
+
+  for (x=0;x<A->ncol;x++) for (y=0;y<A->nrow;y++)
+    TC[y][x] = TA[y][x] + TB[y][x];
+
+  free(TC);
+  free(TB);
+  free(TA); 
+}
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{A little more complex extension}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{start_ext}
+
+
+\index{module!example!fadd}
+We give in this section a little more complex extension to our algorithm,
+in order to show the easy way in which two modules can communicate.
+This will also gives examples of the use of options in the usage.
+
+You have seen in section~\ref{start_simple} that the addition of two floating point images 
+may be source of errors when the resulting image has to be converted to the unsigned char 
+representation (which may be necessary, for example, when the image has to be displayed).
+You may want to control the conversion into the addition module\index{conversion}.
+Let us suppose that you want to put an optional thresholding of the output image, which may be preceded by a normalization of the gray levels into a given interval $[\mbox{min},\mbox{max}]$.
+
+You have to add in the new module inputs for the boundaries of the interval, and input
+for a flag to say whether or not you want the normalization. 
+You have therefore to familiarize yourself with the options.
+
+There is a general rule about the input/output optional parameters\index{optional parameter} of the module function:
+they have to be pointers\index{pointer}. 
+If the pointer is \verb+NULL+ it means that the parameter has not been selected,
+if the address is not equal to \verb+NULL+ it points to an allocated space which may be a scalar or a C structure (in case of MegaWave2 memory type).
+Because all MegaWave2 memory types\index{structure} (e.g. \verb+Cimage+, \verb+Fimage+, \ldots) are pointers to a structure, there is no difference in the type between an optional parameter and a needed parameter.
+On the contrary, if the input/output optional parameter is a scalar, say a \verb+float+,
+it has to be defined has a pointer to a float (\verb+float *+).
+
+A flag\index{flag} is nothing more than a pointer to any scalar, e.g. a \verb+char *+.
+In the following version of our module, called \verb+fadd+, the flag \verb+norm+ 
+indicates if the normalization has to be computed (see the listing page~\pageref{listing_fadd}) : 
+\begin{verbatim}
+'n'->norm "Normalize pixel values into [min,max]"+
+\end{verbatim}
+The letter \verb+'n'+ means that, in the command mode, the flag is set when the module
+is called with the user option \verb+-n+.
+
+The other options are about the boundaries, let have a look to the first one:
+\begin{verbatim}
+'m':min->m0 "Force minimal pixel value",
+\end{verbatim}
+There is here an additional term, \verb+min+, which says that the option needs a value
+when it is selected. 
+This value is put into the C variable addressed by \verb+m0+.
+The word \verb+min+ is the one which will appear in the help and in the documentation,
+instead of the name of the C variable (you can choice the same name).
+The string following this declaration explains the meaning of the option.
+Everything is similar for the second boundary option:
+\begin{verbatim}
+'M':max->m1  "Force maximal pixel value",
+\end{verbatim}
+
+You have of course to update the declaration of the module function, in order to
+add the options:
+\begin{verbatim}
+void fadd(A,B,C,norm,m0,m1)
+
+Fimage  A,B,C;
+char *norm;
+float *m0,*m1;
+\end{verbatim}
+
+When the \verb+-n+ option is not selected, it should be possible to give only one boundary of the interval $[\mbox{min},\mbox{max}]$.
+Indeed, the threshold may be done only in one side.
+But when the user ask for the normalization, both \verb+-m+ and \verb+-M+ options must
+be selected.
+So you need to check that somewhere.
+It is not possible to put this information in the header (we could do that but the header's grammar would be horrible), but you can add the verification in the beginning of the function:
+\begin{verbatim}
+  if (norm && (!m0 || !m1)) mwerror(USAGE,0,
+            "Normalization needs selection of [min,max] values\n");
+\end{verbatim}
+We call the function \verb+mwerror+\index{function!mwerror} with the argument 
+\verb+USAGE+\index{function!mwerror!USAGE} 
+to tell MegaWave2 that this error is about the usage.
+
+The normalization and thresholding process is called by the last line:
+\begin{verbatim}
+  if (m0 || m1) fthre(C,C,norm,m0,m1);
+\end{verbatim}
+Where is the function \verb+fthre+ defined ?
+Since it is not a function of the system library (it doesn't begin with \verb+mw+),
+and because this function is not defined in the module, it should be the main function
+of another module.
+We could have put the computations into \verb+fadd+, but by creating another module we
+offer the possibility to directly use the command \verb+fthre+ in other contexts.
+In addition, other modules may want to make normalization or thresholding so the code
+will not be duplicated.
+Such a (well-known) ``philosophy of overlapped black boxes'' saves space and time, it is
+one of the important aspect of MegaWave2:
+if your mathematical algorithm may be decomposed into several independant algorithms, write one module per algorithm.
+
+Now we rapidly study the module \verb+fthre+.
+You should refer to the listing page~\pageref{listing_fthre}.
+The header of \verb+fthre+ is copied from the one of \verb+fadd+, but there is
+only one input image instead of two.
+Please notice that the output image (the C variable \verb+B+) is a priori not the same
+as the input image \verb+A+.
+This allows to call \verb+fthre+ from a module which needs to keep the original image.
+But you can force \verb+fthre+ to use the same variable for the input and the output,
+by calling it with twice the same variable: that is what we do in \verb+fadd+.
+In this way, you save memory since the instruction\index{function!mw\_change\_fimage}
+\begin{verbatim}
+  if ((B = mw_change_fimage(B,A->nrow,A->ncol)) == NULL)
+    mwerror(FATAL, 1, "Not enough memory !\n");  
+\end{verbatim}
+won't allocate any memory (\verb+A+ $=$ \verb+B+ and therefore \verb+B+ has the gray
+plane already allocated for the requested size).
+
+Here is the listing of the addition module \verb+fadd+.
+It is a public module put into the group \verb+common/float_image+:
+{\small
+\label{listing_fadd}
+\begin{verbatim}
+/*--------------------------- MegaWave2 module  -----------------------------*/
+/* mwcommand
+ name = {fadd};
+ author = {"Jacques Froment"};
+ version = {"1.0"};
+ function = {"Adds the pixel's gray-levels of two fimages"};
+ usage = {
+ 'n'->norm "Normalize pixel values into [min,max]",
+ 'm':min->m0 "Force minimal pixel value",
+ 'M':max->m1  "Force maximal pixel value",
+ fimage1->A 
+   "Input fimage #1", 
+ fimage2->B
+   "Input fimage #2", 
+ result<-C
+      "Output image"
+};
+*/
+/*--------------------------------------------------------------------------*/
+
+#include <stdio.h>
+#include  "mw.h"
+
+void fadd(A,B,C,norm,m0,m1)
+
+Fimage  A,B,C;
+char *norm;
+float *m0,*m1;
+
+{
+  register float *ptr1,*ptr2,*ptr3;
+  register int i;
+
+  if (norm && (!m0 || !m1)) mwerror(USAGE,0,
+            "Normalization needs selection of [min,max] values\n");
+
+  if((A->nrow != B->nrow) || (A->ncol != B->ncol))
+    mwerror(FATAL, 1, "The input images have not the same size!\n");
+
+  if ((C = mw_change_fimage(C,A->nrow,A->ncol)) == NULL)
+    mwerror(FATAL, 1, "Not enough memory !\n");  
+
+  for (ptr1=A->gray, ptr2=B->gray, ptr3=C->gray, i=0;
+       i < A->nrow*A->ncol; ptr1++, ptr2++, ptr3++, i++)
+    *ptr3 = *ptr1 + *ptr2;
+
+  if (m0 || m1) fthre(C,C,norm,m0,m1);
+}
+
+\end{verbatim}
+}
+
+Here is the listing of the threshold module \verb+fthre+.
+It is a public module put into the group \verb+common/float_image+:
+{\small
+\label{listing_fthre}
+\begin{verbatim}
+/*--------------------------- MegaWave2 module -----------------------------*/
+/* mwcommand
+ name = {fthre};
+ author = {"Jacques Froment"};
+ version = {"1.0"};
+ function = {"Threshold the pixel's gray-levels of a fimage"};
+ usage = {
+ 'n'->norm    "Normalize pixel values into [min,max]",
+ 'm':min->m0  "Force minimal pixel value",
+ 'M':max->m1  "Force maximal pixel value",
+ fimage->A    "Input fimage", 
+ result<-B    "Output image"
+};
+*/
+/*--------------------------------------------------------------------------*/
+
+#include <stdio.h>
+#include <math.h>
+#include  "mw.h"
+
+void fthre(A,B,norm,m0,m1)
+
+Fimage  A,B;
+char *norm;
+float *m0,*m1;
+
+{
+  register float *ptr;
+  register int i;
+  float min,max,a,b;
+  
+  if (!m0 && !m1) mwerror(USAGE,0,"At least min or max pixel value requested\n");
+  if (norm && (!m0 || !m1)) mwerror(USAGE,0,"Normalization needs selection of [min,max] values\n");
+  if (m0 && m1 && (*m1 <= *m0)) mwerror(USAGE,0,"Illegal values of [min,max]\n");
+
+  if ((B = mw_change_fimage(B,A->nrow,A->ncol)) == NULL)
+    mwerror(FATAL, 1, "Not enough memory !\n");  
+  
+  mw_copy_fimage(A,B);  /* Copy pixel values of A into B */
+
+  if (norm)  /* Normalization */
+    {
+      min=1e20; max=-min;
+      for (ptr=B->gray, i=0;  i < B->nrow*B->ncol; ptr++, i++) 
+        {
+          if (*ptr < min) min=*ptr;
+          if (*ptr > max) max=*ptr;
+        }
+      if (fabs((double) max-min) <= 1e-20)
+        mwerror(FATAL,1,"Cannot normalize: constant input image\n");
+      a = (*m1-*m0)/(max-min);
+      b = *m0 - a * min;
+      for (ptr=B->gray, i=0;  i < B->nrow*B->ncol; ptr++, i++) 
+        *ptr = a * *ptr + b;
+    }
+
+  /* Thresholding */
+  if (m0) for (ptr=B->gray, i=0;  i < B->nrow*B->ncol; ptr++, i++)
+    if (*ptr < *m0) *ptr=*m0;
+  if (m1) for (ptr=B->gray, i=0;  i < B->nrow*B->ncol; ptr++, i++)
+    if (*ptr > *m1) *ptr=*m1;
+}
+
+\end{verbatim}
+}
+
+In order to make a run-time executable for the module \verb+fadd+, you have
+to take the following precaution:
+when you want to compile\index{compiler} a module \verb+X+ (here \verb+fadd+) which call the function of 
+another module 
+\verb+Y+ (here \verb+fthre+), be sure to compile \verb+Y+ before \verb+X+.
+If you don't, you may get this kind of message during the compilation of \verb+X+:
+\begin{verbatim}
+  Phase 3 : production of MegaWave command
+          linking MegaWave2 command "X" on hp
+/bin/ld: Unsatisfied symbols:
+   Y (code)
+          Error : exit.
+\end{verbatim}
+There is an eviler possibility: if you change the content of the module \verb+Y+, think
+to recompile \verb+X+ after \verb+Y+ (no message will be displayed if you forget that).
+Therefore, a good habit is to recompile all your modules from time to time
+(use the macro \verb+cmw2_all+\index{system's macro!cmw2\_all} for that).
+You may also use the Unix {\em make} utility.

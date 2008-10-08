@@ -1,0 +1,53 @@
+%
+% Part 8 of the MegaWave2 Guide #2
+%   Raw data
+%
+
+When none of the previous structures matches your need, or when you want to
+write or to read files in a format which is not recognized by MegaWave2, use
+the raw data\index{raw data} type : this internal type allows you to load/save 
+any kind of data from/to disk.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{The structure Rawdata}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+
+\def\rawdata{{\tt Rawdata}}
+\index{structure!\rawdata}
+\label{rawdata_structure}
+
+The \rawdata\ structure is nothing else than an array of bytes (\verb+data+ field). The
+size of the array is set in the \verb+size+ field.
+
+{\small
+\begin{verbatim}
+typedef struct rawdata {
+  int size;               /* Number of samples */
+  unsigned char *data;    /* data field */
+} *Rawdata;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{rawdata-file_type}
+
+There is no file types associated to the \rawdata\ structure : when the content of a \rawdata\ 
+variable is written into a file, the content of the file is exactly the content of the \verb+data+
+field. There is no header added. Consequently, file of any format can be loaded into a \rawdata\
+variable. If this file contains a header (as most of MegaWave2 file formats), the header will
+be loaded into the \verb+data+ field together with the data themselves.
+Of course, there cannot be any conversion format associated to \rawdata.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{rawdata_function}
+
+The following is a description of all the functions related to 
+the \rawdata\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_08_rawdata.tex}

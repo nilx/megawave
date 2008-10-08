@@ -1,0 +1,172 @@
+\Name{mw\_alloc\_rawdata}{Allocate the data array of a \rawdata\ structure}
+\Summary{
+Rawdata mw\_alloc\_rawdata(rd,size)
+
+Rawdata rd;
+
+int size;
+}
+\Description
+This function allocates the \verb+data+ array of a \rawdata structure previously created using \verb+mw_new_rawdata+. The size of the data is given by 
+\verb+size+, it corresponds to the number of bytes.
+
+Values can be addressed after this call, if the allocation successed. There is
+no default values.
+
+Do not use this function if \verb+rd+ has already an allocated array: use
+the function \verb+mw_change_rawdata+ instead.
+
+The function \verb+mw_alloc_rawdata+ returns \Null\ if not enough memory is available to allocate the array. Your code should check this return value to 
+send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Rawdata rd=NULL; /* Internal use: no Input neither Output of module */
+int i;
+
+/* Create a rawdata of 1000 bytes */
+if  ( ((rd = mw_new_rawdata()) == NULL) ||
+      (mw_alloc_rawdata(rd,1000) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Set the byte #i to the value i mod 256 */
+for (i=0;i<rd->size;i++) rd->data[i] = i % 256;
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_change\_rawdata}{Change the size of the data  array of a \rawdata\ structure}
+\Summary{
+Rawdata mw\_change\_rawdata(rd, newsize)
+
+Rawdata rd;
+
+int newsize;
+}
+\Description
+This function changes the memory allocation of the \verb+data+ array of a \rawdata\ structure, even if no previously memory allocation was done.
+The new size of the array is given by \verb+newsize+, it corresponds to the number 
+of allocated bytes.
+
+The function \verb+mw_change_rawdata+ can also create the structure if the input \verb+rd = NULL+.
+Therefore, this function can replace both \verb+mw_new_rawdata+ and
+\verb+mw_alloc_rawdata+. It is the recommended function to allocate \rawdata\ variables
+used as input/output of modules. Since the function can set the 
+address of \verb+rd+, the variable must be set to the return value of 
+the function (See example below).
+
+The function \verb+mw_change_rawdata+ returns \Null\ if not enough memory is available to allocate the array. 
+Your code should check this return value to 
+send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+
+Rawdata Output; /* Output of module */
+
+/* Set the size of the array to be 1000 bytes */
+Output = mw_change_rawdata(Output, 1000);
+if (Output == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_copy\_rawdata}{Copy the data of a \rawdata+ structure into another one}
+\Summary{
+void mw\_copy\_rawdata(in, out)
+
+Rawdata in,out;
+}
+\Description
+This function copies the content of the array \verb+data+ of the \rawdata+ structure \verb+in+ into the array \verb+data+ of \verb+out+.
+The variable \verb+out+ must be an allocated \rawdata\ structure of same
+size than \verb+in+.
+
+The speed of this function depends to the C library implementation, but it is
+usually very fast (trying to do faster is a waste of time).
+
+\Next
+\Example
+\begin{verbatim}
+
+Rawdata G; /* Needed Input */
+Rawdata F; /* Optional Output */
+
+  if (F) {
+    printf("F option is active: copy G in F\n");
+    if ((F = mw_change_rawdata(F, G->size)) == NULL)
+        mwerror(FATAL,1,"Not enough memory.\n");
+    else mw_copy_rawdata(G, F);
+   }
+  else  printf("F option is not active\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_delete\_rawdata}{Deallocate the data array of a \rawdata\ structure}
+\Summary{
+void mw\_delete\_rawdata(rd)
+
+Rawdata rd;
+}
+\Description
+This function deallocates the array \verb+values+ of a \rawdata\ structure previously allocated using\\
+ \verb+mw_alloc_rawdata+ or \verb+mw_change_rawdata+, and the structure itself. 
+
+You should set \verb+rd = NULL+ after this call since the address pointed
+by \verb+rd+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+Rawdata rd=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((rd = mw_new_rawdata()) == NULL) ||
+      (mw_alloc_rawdata(rd,1000) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+/* .
+   .
+   (statement)
+   .
+   .
+*/
+mw_delete_rawdata(rd);
+rd = NULL;
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_new\_rawdata}{Create a new \rawdata\ structure}
+\Summary{
+Rawdata mw\_new\_rawdata();
+}
+\Description
+This function creates a new \rawdata\ structure with an empty \verb+data+ array and
+\verb+size+ field set to $0$.
+No data can be addressed at this time.
+The \verb+data+ should  be allocated using the function \verb+mw_alloc_rawdata+ or \verb+mw_change_rawdata+.
+
+Do not use this function for input/output of modules, since the MegaWave2
+Compiler already created the structure for you if you need it (see \volI). Use instead the function \verb+mw_change_rawdata+.
+Do not forget to deallocate the internal structures before the end
+of the module.
+
+The function \verb+mw_new_rawdata+ returns \Null\ if not enough memory is available to create the structure. Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Rawdata rd=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((rd = mw_new_rawdata()) == NULL) ||
+      (mw_alloc_rawdata(rd,1000) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+

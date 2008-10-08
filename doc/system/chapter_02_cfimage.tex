@@ -1,0 +1,429 @@
+\Name{mw\_alloc\_cfimage}{Allocate the RGB planes}
+\Summary{
+Cfimage mw\_alloc\_cfimage(image,nrow,ncol)
+
+Cfimage image;
+
+int nrow, ncol;
+}
+\Description
+This function allocates the RGB planes of a \cfimage structure previously
+created using \verb+mw_new_cfimage+. The size of the image is given by 
+\verb+nrow+ (number of rows or maximum range of $y$ plus one) and \verb+ncol+
+(number of columns or maximum range of $x$ plus one).
+Pixels can be addressed after this call, if the allocation successed. There is
+no default value for the pixels.
+
+Do not use this function if \verb+image+ has already an allocated plane: use
+the function \verb+mw_change_cfimage+ instead.
+
+The function \verb+mw_alloc_cfimage+ returns \Null\ if not enough memory is available to allocate the RGB planes. Your code should check this return value to 
+send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Cfimage image=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((image = mw_new_cfimage()) == NULL) ||
+      (mw_alloc_cfimage(image,256,256) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Set pixel (0,1) to (0.0,0.0,0.0) */
+image_>red[256] = image->green[256] = image->blue[256] = 0.0;
+\end{verbatim}
+
+\newpage %......................................\Name{mw\_change\_cfimage}{Change the size of the RGB planes}
+\Summary{
+Cfimage mw\_change\_cfimage(image, nrow, ncol)
+
+Cfimage image;
+
+int nrow, ncol;
+}
+\Description
+This function changes the memory allocation of the RGB planes of a \cfimage
+structure, even if no previously memory allocation was done.
+The new size of the image is given by \verb+nrow+ (number of rows or maximum 
+range of $y$ plus one) and \verb+ncol+ (number of columns or maximum range of 
+$x$ plus one). 
+
+It can also create the structure if the input \verb+image = NULL+.
+Therefore, this function can replace both \verb+mw_new_cfimage+ and
+\verb+mw_alloc_cfimage+. It is the recommended function to set image 
+dimension of input/output modules. 
+Since the function can set the address of \verb+image+, the variable must be set to the return value of the function (See example below).
+
+The function \verb+mw_change_cfimage+ returns \Null\ if not enough memory is available to allocate the RGB planes. Your code should check this return value to 
+send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+
+Cimage Output; /* Output of module */
+
+Output = mw_change_cfimage(Output, 256, 256);
+if (Output == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_clear\_cfimage}{Clear the RGB planes}
+\Summary{
+void mw\_clear\_cfimage(image, r,g,b)
+
+Cfimage image;
+
+float r,g,b;
+}
+\Description
+This function fills the cfimage \verb+image+ with the color given by 
+the triplet \verb+r,g,b+: all pixels will have this RGB value.
+
+\Next
+\Example
+\begin{verbatim}
+Cfimage image; /* Output of module */
+
+image = mw_change_cfimage(image, 100, 100);
+if (image == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+/* Set all pixels to (0.0,0.0,1.0) */
+mw_clear_cfimage(image,0.0,0.0,1.0);
+
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_copy\_cfimage}{Copy the pixel values of color image into another one}
+\Summary{
+void mw\_copy\_cfimage(in, out)
+
+Cfimage  in,out;
+}
+\Description
+This function copies the content of the RGB planes of the image \verb+in+ into 
+the RGB planes of the image \verb+out+.
+The size of the two RGB planes must be the same.
+
+The speed of this function depends to the C library implementation, but it is
+usually very fast (trying to do faster is a waste of time).
+
+\Next
+\Example
+\begin{verbatim}
+
+Cfimage G; /* Needed Input */
+Cfimage F; /* Optional Output */
+
+  if (F) {
+    printf("F option is active: copy G in F\n");
+    if ((F = mw_change_cfimage(F, G->nrow, G->ncol)) == NULL)
+	mwerror(FATAL,1,"Not enough memory.\n");
+    else mw_copy_cfimage(G, F);
+   }
+  else  printf("F option is not active\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_delete\_cfimage}{Deallocate the RGB planes}
+\Summary{
+void mw\_delete\_cfimage(image)
+
+Cfimage image;
+}
+\Description
+This function deallocates the RGB planes of a \cfimage structure previously
+allocated using \verb+mw_alloc_cfimage+ or \verb+mw_change_cfimage+, and the
+structure itself. 
+
+You should set \verb+image = NULL+ after this call since the address pointed
+by \verb+image+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+Cfimage image=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((image = mw_new_cfimage()) == NULL) ||
+      (mw_alloc_cfimage(image,256,256) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+.
+.
+mw_delete_cfimage(image);
+image = NULL;
+
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_draw\_cfimage}{Draw a line}
+\Summary{
+void mw\_draw\_cfimage(image, a0, b0, a1, b1, r, g, b)
+
+Cfimage image;
+
+int a0,b0,a1,b1;
+
+float r,g,b;
+}
+\Description
+This function draws in \verb+image+ a connected line between the pixel $(a0,b0)$ and the pixel $(a1,b1)$. The color of the line is defined by the triplet \verb+r,g,b+.
+
+\Next
+\Example
+\begin{verbatim}
+Cfimage image; /* Output of module */
+
+image = mw_change_cfimage(image, 100, 100);
+if (image == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+/* Set all pixels to (0.0,0.0,0.0) */
+mw_clear_cfimage(image,0.0,0.0,0.0);
+/* Draw a diagonal line with color (1.0,0.0,0.0) */
+mw_draw_cfimage(image,0,0,99,99,1.0,0.0,0.0);
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_getdot\_cfimage}{Return the RGB value}
+\Summary{
+void mw\_getdot\_cfimage(image, x, y, r, g, b)
+
+Cfimage image;
+
+int x,y;
+
+float *r,*g,*b;
+}
+\Description
+This function returns the RGB value of the given \verb+image+ for the pixel $(x,y)$ (column $\# x$ and row $\# y$).
+The RGB value consists of the triplet \verb+*r,*g,*b+: \verb+*r+ (any floating point number) gives you the proportion of red, \verb+*g+ the proportion of green and \verb+*b+ the proportion of blue.
+
+Notice that a call to this function is a slow (but easy and secure) way to 
+read a pixel value.
+See section~\ref{images} page~\pageref{images} for how to read pixels fast.
+
+\Next
+\Example
+\begin{verbatim}
+Cfimage image; /* Needed Input of module */
+int x,y;       /* Needed Inputs of module */
+float r,g,b;   /* Internal use */
+
+if ((x < image->ncol) && (y < image->nrow))
+  {	
+    mw_getdot_cfimage(image,x,y,&r,&g,&b);
+    printf("image(%d,%d) = %d,%d,%d\n",x,y,r,g,b);
+  }
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_newtab\_blue\_cfimage}{Create a bi-dimensional tab for the blue pixels of a Cfimage}
+\Summary{
+float ** mw\_newtab\_blue\_cfimage(image)
+
+Cfimage image;
+}
+\Description
+This function creates a new bi-dimensional tab which allows an easy and fast
+access to the pixels' blue level.
+This tab is actually an one-dimensional tab of pointers, so that each pointer 
+points to the beginning of a line in the blue plane of the given image.
+
+This function must be called after the blue plane has been allocated,
+using for example one of the functions \verb+mw_new_cfimage+, 
+\verb+mw_alloc_cfimage+ or \verb+mw_change_cfimage+. 
+After that, if the blue plane allocation is changed
+(by e.g. \verb+mw_change_cfimage+ or \verb+mw_delete_cfimage+), the tab is
+no longer valid and must be deleted using \verb+free(tab)+.
+
+Ones the tab has been correctly created, is it possible to read or to
+write the blue value of the pixel $(x,y)$ ($x$ being an index for column and $y$
+for row) using \verb+tab[y][x]+.
+
+Red and green pixels' value can be accessed with such a tab using 
+the corresponding functions \\
+\verb+mw_newtab_red_cfimage+ and \verb+mw_newtab_green_cfimage+.
+
+\Next
+\Example
+\begin{verbatim}
+Cfimage image; /* Needed Input of module (RGB planes already allocated and filled) */
+int x,y;      /* Needed Input of module */
+float **red,**green,**blue;
+
+red =  mw_newtab_red_cfimage(image);
+if (red==NULL) mwerror(FATAL,1,"Not enough memory\n");
+green =  mw_newtab_green_cfimage(image);
+if (green==NULL) mwerror(FATAL,1,"Not enough memory\n");
+blue =  mw_newtab_blue_cfimage(image);
+if (blue==NULL) mwerror(FATAL,1,"Not enough memory\n");
+
+/* Put black color in the pixel (x,y) */
+if ((x < image->ncol) && (y < image->nrow)) 
+        red[y][x] = green[y][x] = blue[y][x] = 0.0;
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+free(blue); free(green); free(red);
+\end{verbatim}
+
+\newpage %......................................\Name{mw\_newtab\_green\_cfimage}{Create a bi-dimensional tab for the green pixels of a Cfimage}
+\Summary{
+float ** mw\_newtab\_green\_cfimage(image)
+
+Cfimage image;
+}
+\Description
+This function creates a new bi-dimensional tab which allows an easy and fast
+access to the pixels' green level.
+This tab is actually an one-dimensional tab of pointers, so that each pointer 
+points to the beginning of a line in the green plane of the given image.
+
+This function must be called after the green plane has been allocated,
+using for example one of the functions \verb+mw_new_cfimage+, 
+\verb+mw_alloc_cfimage+ or \verb+mw_change_cfimage+. 
+After that, if the green plane allocation is changed
+(by e.g. \verb+mw_change_cfimage+ or \verb+mw_delete_cfimage+), the tab is
+no longer valid and must be deleted using \verb+free(tab)+.
+
+Ones the tab has been correctly created, is it possible to read or to
+write the green value of the pixel $(x,y)$ ($x$ being an index for column and $y$
+for row) using \verb+tab[y][x]+.
+
+Red and blue pixels' value can be accessed with such a tab using 
+the corresponding functions \\
+\verb+mw_newtab_red_cfimage+ and \verb+mw_newtab_blue_cfimage+.
+
+\Next
+\Example
+\begin{verbatim}
+Cfimage image; /* Needed Input of module (RGB planes already allocated and filled) */
+int x,y;      /* Needed Input of module */
+float **red,**green,**blue;
+
+red =  mw_newtab_red_cfimage(image);
+if (red==NULL) mwerror(FATAL,1,"Not enough memory\n");
+green =  mw_newtab_green_cfimage(image);
+if (green==NULL) mwerror(FATAL,1,"Not enough memory\n");
+blue =  mw_newtab_blue_cfimage(image);
+if (blue==NULL) mwerror(FATAL,1,"Not enough memory\n");
+
+/* Put black color in the pixel (x,y) */
+if ((x < image->ncol) && (y < image->nrow)) 
+        red[y][x] = green[y][x] = blue[y][x] = 0.0;
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+free(blue); free(green); free(red);
+\end{verbatim}
+
+\newpage %......................................\Name{mw\_newtab\_red\_cfimage}{Create a bi-dimensional tab for the red pixels of a Cfimage}
+\Summary{
+float ** mw\_newtab\_red\_cfimage(image)
+
+Cfimage image;
+}
+\Description
+This function creates a new bi-dimensional tab which allows an easy and fast
+access to the pixels' red level.
+This tab is actually an one-dimensional tab of pointers, so that each pointer 
+points to the beginning of a line in the red plane of the given image.
+
+This function must be called after the red plane has been allocated,
+using for example one of the functions \verb+mw_new_cfimage+, 
+\verb+mw_alloc_cfimage+ or \verb+mw_change_cfimage+. 
+After that, if the red plane allocation is changed
+(by e.g. \verb+mw_change_cfimage+ or \verb+mw_delete_cfimage+), the tab is
+no longer valid and must be deleted using \verb+free(tab)+.
+
+Ones the tab has been correctly created, is it possible to read or to
+write the red value of the pixel $(x,y)$ ($x$ being an index for column and $y$
+for row) using \verb+tab[y][x]+.
+
+Green and blue pixels' value can be accessed with such a tab using 
+the corresponding functions \\
+\verb+mw_newtab_green_cfimage+ and \verb+mw_newtab_blue_cfimage+.
+
+\Next
+\Example
+\begin{verbatim}
+Cfimage image; /* Needed Input of module (RGB planes already allocated and filled) */
+int x,y;      /* Needed Input of module */
+float **red,**green,**blue;
+
+red =  mw_newtab_red_cfimage(image);
+if (red==NULL) mwerror(FATAL,1,"Not enough memory\n");
+green =  mw_newtab_green_cfimage(image);
+if (green==NULL) mwerror(FATAL,1,"Not enough memory\n");
+blue =  mw_newtab_blue_cfimage(image);
+if (blue==NULL) mwerror(FATAL,1,"Not enough memory\n");
+
+/* Put black color in the pixel (x,y) */
+if ((x < image->ncol) && (y < image->nrow)) 
+        red[y][x] = green[y][x] = blue[y][x] = 0.0;
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+free(blue); free(green); free(red);
+\end{verbatim}
+
+\newpage %......................................\Name{mw\_new\_cfimage}{Create a new Cfimage}
+\Summary{
+Cfimage mw\_new\_cfimage();
+}
+\Description
+This function creates a new \cfimage structure with empty RGB planes.
+No pixels can be addressed at this time.
+The RGB planes may be allocated using the function \verb+mw_alloc_cfimage+ or
+\verb+mw_change_cfimage+.
+
+Do not use this function for input/output of modules, since the MegaWave2
+Compiler already created the structure for you if you need it (see \volI). Use instead the function \verb+mw_change_cfimage+.
+Do not forget to deallocate the internal structures before the end
+of the module.
+
+The function \verb+mw_new_cfimage+ returns \Null\ if not enough memory is available to create the structure. Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Cfimage image=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((image = mw_new_cfimage()) == NULL) ||
+      (mw_alloc_cfimage(image,256,256) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_plot\_cfimage}{Set the RGB value}
+\Summary{
+void mw\_plot\_cfimage(image, x, y, r, g, b)
+
+Cfimage image;
+
+int x,y;
+
+float r,g,b;
+}
+\Description
+This function set the RGB value of the given \verb+image+ for the pixel $(x,y)$ (column $\# x$ and row $\# y$) to be the triplet \verb+r,g,b+:
+\verb+r+ (a floating point number) gives you the proportion of red, \verb+g+ the proportion of green and \verb+b+ the proportion of blue.
+
+Notice that a call to this function is a slow (but easy and secure) way to 
+write a pixel value.
+See section~\ref{images} page~\pageref{images} for how to write pixels fast.
+
+\Next
+\Example
+\begin{verbatim}
+Cfimage image; /* Needed Input of module */
+int x,y;      /* Needed Inputs of module */
+
+/* Put color (0.0,0.0,0.0) in the pixel (x,y) */
+if ((x < image->ncol) && (y < image->nrow))
+        mw_plot_cfimage(image,x,y,0.0,0.0,0.0);
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+\end{verbatim}
+
+\newpage %......................................

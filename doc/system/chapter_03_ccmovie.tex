@@ -1,0 +1,105 @@
+\Name{mw\_change\_ccmovie}{Define the movie structure, if not defined}
+\Summary{
+Ccmovie mw\_change\_ccmovie(movie)
+
+Ccmovie movie;
+}
+\Description
+This function returns a movie structure if the input \verb+movie = NULL+.
+It is provided despite the \verb+mw_new_ccmovie+ function for
+global coherence with other memory types.
+
+The function \verb+mw_change_ccmovie+ returns \Null\ if not enough memory is available to define the structure. Your code should check this return value to 
+send an error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module.
+
+Images have to be allocated using the appropriate functions (See the example
+below).
+
+\Next
+\Example
+\begin{verbatim}
+
+Ccmovie movie=NULL; /* Internal use: no Input neither Output of module */
+
+movie = mw_change_ccmovie(movie);
+if (movie == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+...
+\end{verbatim}
+(End of this example as for the \verb+mw_new_ccmovie+ function).
+\newpage %......................................
+
+
+\Name{mw\_delete\_ccmovie}{Deallocate all the movie}
+\Summary{
+void mw\_delete\_ccmovie(movie)
+
+Ccmovie movie;
+}
+\Description
+This function deallocates all the memory used by a \ccmovie structure:
+it deallocates the color planes of all images, the image structures and
+the movie structure itself.
+
+You should set \verb+movie = NULL+ after this call since the address pointed
+by \verb+movie+ is no longer valid.
+
+\Next
+\Example
+See the example of the \verb+mw_new_ccmovie+ function: when a memory allocation
+fails for \verb+mw_change_ccimage+, all the previously memory allocations are
+freed by the call to \verb+mw_delete_ccmovie(movie)+.
+
+\newpage %......................................
+
+
+\Name{mw\_new\_ccmovie}{Create a new Ccmovie}
+\Summary{
+Ccmovie mw\_new\_ccmovie();
+}
+\Description
+This function creates a new \ccmovie structure.
+It returns \Null\ if not enough memory is available to create the structure.
+Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module.
+
+Images have to be allocated using the appropriate functions (See the example
+below).
+
+\Next
+\Example
+\begin{verbatim}
+/* Create a movie with 10 images of size (100,100) */
+
+Ccmovie movie;  /* Internal use: no Input neither Output of module */
+Ccimage image,image_prev; /* Internal use */
+
+movie = mw_new_ccmovie();
+if (movie == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+for (l=1;l<=10;l++)
+ {
+   if ((image = mw_change_ccimage(NULL,100,100)) == NULL)
+    {
+      mw_delete_ccmovie(movie);
+      mwerror(FATAL,1,"Not enough memory.");
+    }
+    if (l == 1) movie->first = image;
+    else
+      {
+        image_prev->next = image;
+        image->previous = image_prev;
+       }
+     image_prev = image;
+ }
+\end{verbatim}
+\newpage %......................................
+

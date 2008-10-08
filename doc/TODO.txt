@@ -1,0 +1,10 @@
+TODOLIST FOR THE MEGAWAVE USER AND SYSTEM MANUALS
+
+# GLOBAL
+
+* replace the pstricks graphics by png (svg?) graphics
+* refactor the environments (Name, Summary, ...)
+* proofread the manuals
+* customize the headers using hancyhdr
+* licence CC-BY ?
+* use \part{}

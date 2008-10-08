@@ -1,0 +1,208 @@
+\Name{mw\_change\_morpho\_sets}{Define a morpho sets, if not already defined}
+\Summary{
+Morpho\_sets mw\_change\_morpho\_sets(mss)
+
+Morpho\_sets mss;
+}
+\Description
+This function returns a \msets\ structure if the input \verb+mss = NULL+.
+It is provided despite the \\
+\verb+mw_new_morpho_sets()+ function for
+global coherence with other memory types.
+
+The function \verb+mw_change_morpho_sets+ returns \Null\ if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.
+
+\Next
+\Example
+\begin{verbatim}
+Morpho_sets mss=NULL; /* Internal use: no Input neither Output of module */
+Hsegment seg;
+Morpho_set ms;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_change_morpho_sets(mss))) mwerror(FATAL,1,"Not enough memory.\n");
+seg->xstart=0; 
+seg->xend=200;
+seg->y=10;
+
+ms->first_segment=seg;
+ms->minvalue=0.0;
+ms->maxvalue = 1.0;
+ms->area=201;
+
+mss->morphoset=ms;
+
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_copy\_morpho\_sets}{Copy a morpho sets into another one}
+\Summary{
+Morpho\_sets mw\_copy\_morpho\_sets(in,out)
+
+Morpho\_sets in, out;
+}
+\Description
+This function copies the \msets\ \verb+in+ into \verb+out+.
+The \mset\ pointed by the \verb+in->morphoset+ field is not only copied, but
+also all the chain starting from \verb+in+.
+The neighbor \msets\ pointed by each \mset\ are also copied.
+The result is put in \verb+out+, which may not be a predefined structure : in case 
+of \verb+out=NULL+, the \verb+out+ structure is allocated.
+
+The function \verb+mw_copy_morpho_sets+ returns \Null\ if not enough memory is available to perform
+the copy, or \verb+out+ elsewhere.
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+
+Morpho_sets in; /* Predefined morpho_sets */
+Morpho_sets out=NULL; 
+
+out=mw_copy_morpho_sets(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_morpho\_sets}{Deallocate a morpho sets}
+\Summary{
+void mw\_delete\_morpho\_sets(mss)
+
+Morpho\_sets mss;
+}
+\Description
+This function frees the \mset\ \verb+mss->morphoset+, all the
+chain starting from \verb+mss+ and it deallocates the \msets\ \verb+mss+ structure.
+You should sets \verb+mss = NULL+ after this call since the address pointed
+by \verb+mss+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+
+Morpho_sets mss; /* Internal use: no Input neither Output of module */
+Hsegment seg;
+Morpho_set ms;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_new_morpho_sets())) mwerror(FATAL,1,"Not enough memory.\n");
+seg->xstart=0; 
+seg->xend=200;
+seg->y=10;
+
+ms->first_segment=seg; ms->minvalue=0.0; ms->maxvalue = 1.0; ms->area=201;
+mss->morphoset=ms;
+
+/* .
+   .
+   (statement)
+   .
+   .
+*/
+
+/* Deallocate the morpho_sets mss ; ms and seg will be also deallocated. */
+mw_delete_morpho_set(mss);
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_length\_morpho\_sets}{Return the number of morpho sets a Morpho\_sets structure contains}
+\Summary{
+unsigned int mw\_length\_morpho\_sets(mss)
+
+Morpho\_sets mss;
+}
+\Description
+This function returns the number of morpho sets the \msets\ structure \verb+mss+ contains,
+starting the chain from the current position given by \verb+mss+.
+It returns $0$ if the structure is empty or undefined.
+
+\Next
+\Example
+\begin{verbatim}
+
+Morpho_sets mss; /* Internal use: no Input neither Output of module */
+Hsegment seg;
+Morpho_set ms;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_new_morpho_sets())) mwerror(FATAL,1,"Not enough memory.\n");
+seg->xstart=0; 
+seg->xend=200;
+seg->y=10;
+
+ms->first_segment=seg; ms->minvalue=0.0; ms->maxvalue = 1.0; ms->area=201;
+mss->morphoset=ms;
+
+/* This will print 1 */
+printf("%d",mw_length_morpho_sets(mss));
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_new\_morpho\_sets}{Create a new morpho sets}
+\Summary{
+Morpho\_sets mw\_new\_morpho\_sets()
+
+}
+\Description
+This function returns a new \msets\ structure, or \Null\ if not enough 
+memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the 
+\Null\ case, and do appropriate statement.
+
+The new structure is created with fields set to $0$ or \Null.
+
+\Next
+\Example
+\begin{verbatim}
+
+Morpho_sets mss; /* Internal use: no Input neither Output of module */
+Hsegment seg;
+Morpho_set ms;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_new_morpho_sets())) mwerror(FATAL,1,"Not enough memory.\n");
+seg->xstart=0; 
+seg->xend=200;
+seg->y=10;
+
+ms->first_segment=seg;
+ms->minvalue=0.0;
+ms->maxvalue = 1.0;
+ms->area=201;
+
+mss->morphoset=ms;
+
+\end{verbatim}
+
+\newpage %......................................
+
+

@@ -1,0 +1,363 @@
+\Name{mw\_alloc\_cimage}{Allocate the gray plane}
+\Summary{
+Cimage mw\_alloc\_cimage(image,nrow,ncol)
+
+Cimage image;
+
+int nrow, ncol;
+}
+\Description
+This function allocates the gray plane of a \cimage structure previously
+created using \verb+mw_new_cimage+. The size of the image is given by 
+\verb+nrow+ (number of rows or maximum range of $y$ plus one) and \verb+ncol+
+(number of columns or maximum range of $x$ plus one).
+Pixels can be addressed after this call, if the allocation successed. There is
+no default value for the pixels.
+
+Do not use this function if \verb+image+ has already an allocated plane: use
+the function \verb+mw_change_cimage+ instead.
+
+The function \verb+mw_alloc_cimage+ returns \Null\ if not enough memory is available to allocate the gray plane. Your code should check this return value to 
+send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Cimage image=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((image = mw_new_cimage()) == NULL) ||
+      (mw_alloc_cimage(image,256,256) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Set pixel (0,1) to white */
+image->gray[256] = 255;
+
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_change\_cimage}{Change the size of the gray plane}
+\Summary{
+Cimage mw\_change\_cimage(image, nrow, ncol)
+
+Cimage image;
+
+int nrow, ncol;
+}
+\Description
+This function changes the memory allocation of the gray plane of a \cimage
+structure, even if no previously memory allocation was done.
+The new size of the image is given by \verb+nrow+ (number of rows or maximum 
+range of $y$ plus one) and \verb+ncol+ (number of columns or maximum range of 
+$x$ plus one). 
+
+It can also create the structure if the input \verb+image = NULL+.
+Therefore, this function can replace both \verb+mw_new_cimage+ and
+\verb+mw_alloc_cimage+. It is the recommended function to set image 
+dimension of input/output modules. Since the function can set the 
+address of \verb+image+, the variable must be set to the return value of 
+the function (See example below).
+
+The function \verb+mw_change_cimage+ returns \Null\ if not enough memory is available to allocate the gray plane. Your code should check this return value to 
+send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Cimage u; 
+
+/* Usage when <u> IS NOT an output of the module (and has not been
+   previously allocated): the function returns a new structure's address
+*/
+u = mw_change_cimage(NULL, 256, 256);
+
+/* Usage when <u> IS an output of the module (or has been previously
+   allocated): DO NOT change the structure's address
+*/
+u = mw_change_cimage(u, 256, 256);
+
+if (u == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+
+\newpage %......................................
+
+\Name{mw\_clear\_cimage}{Clear the gray plane}
+\Summary{
+void mw\_clear\_cimage(image, v)
+
+Cimage image;
+
+unsigned char v;
+}
+\Description
+This function fills the cimage \verb+image+ with the gray value given by $v$:
+all pixels will have the gray level $v$. 
+
+The speed of this function depends to the C library implementation, but it is
+usually very fast (trying to do faster is a waste of time).
+
+\Next
+\Example
+\begin{verbatim}
+Cimage image; /* Output of module */
+
+image = mw_change_cimage(image, 100, 100);
+if (image == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+/* Set all pixels to white */
+mw_clear_cimage(image,255);
+
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_copy\_cimage}{Copy the pixel values of an image into another one}
+\Summary{
+void mw\_copy\_cimage(in, out)
+
+Cimage in,out;
+}
+\Description
+This function copies the content of the gray plane of the image \verb+in+ into 
+the gray plane of the image \verb+out+.
+The size of the two gray planes must be the same.
+
+The speed of this function depends to the C library implementation, but it is
+usually very fast (trying to do faster is a waste of time).
+
+\Next
+\Example
+\begin{verbatim}
+
+Cimage G; /* Needed Input */
+Cimage F; /* Optional Output */
+
+  if (F) {
+    printf("F option is active: copy G in F\n");
+    if ((F = mw_change_cimage(F, G->nrow, G->ncol)) == NULL)
+	mwerror(FATAL,1,"Not enough memory.\n");
+    else mw_copy_cimage(G, F);
+   }
+  else  printf("F option is not active\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_delete\_cimage}{Deallocate the gray plane}
+\Summary{
+void mw\_delete\_cimage(image)
+
+Cimage image;
+}
+\Description
+This function deallocates the gray plane of a \cimage structure previously
+allocated using \verb+mw_alloc_cimage+ or \verb+mw_change_cimage+, and the
+structure itself. 
+
+You should set \verb+image = NULL+ after this call since the address pointed
+by \verb+image+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+Cimage image=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((image = mw_new_cimage()) == NULL) ||
+      (mw_alloc_cimage(image,256,256) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+.
+.
+mw_delete_cimage(image);
+image = NULL;
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_draw\_cimage}{Draw a line}
+\Summary{
+void mw\_draw\_cimage(image, a0, b0, a1, b1, c)
+
+Cimage image;
+
+int a0,b0,a1,b1;
+unsigned char c;
+}
+\Description
+This function draws in \verb+image+ a connected line of gray level $c$ between the pixel $(a0,b0)$ and the pixel $(a1,b1)$.
+
+\Next
+\Example
+\begin{verbatim}
+Cimage image; /* Output of module */
+
+image = mw_change_cimage(image, 100, 100);
+if (image == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+/* Set all pixels to white */
+mw_clear_cimage(image,255);
+/* Draw a black diagonal line */
+mw_draw_cimage(image,0,0,99,99,0);
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_getdot\_cimage}{Return the gray level value}
+\Summary{
+unsigned char mw\_getdot\_cimage(image, x, y)
+
+Cimage image;
+
+int x,y;
+}
+\Description
+This function returns the gray level value (a number between $0$ - black - and $255$ - white -) of the given \verb+image+ for the pixel $(x,y)$ (column $\# x$ and row $\# y$).
+
+Notice that a call to this function is a slow (but easy and secure) way to 
+read a pixel value. See section~\ref{images} page~\pageref{images} for how to read pixels fast.
+
+\Next
+\Example
+\begin{verbatim}
+Cimage image; /* Needed Input of module */
+int x,y;      /* Needed Inputs of module */
+
+if ((x < image->ncol) && (y < image->nrow))
+	printf("image(%d,%d) = %d\n",x,y,mw_getdot_cimage(image,x,y));
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_isitbinary\_cimage}{Check if the image is binary}
+\Summary{
+unsigned char mw\_isitbinary\_cimage(image)
+
+Cimage image;
+
+}
+\Description
+This function returns $0$ if \verb+image+ is not a binary image, a value $> 0$
+if it is one. In that case, the returned value corresponds to the maxima 
+value that is, to the only one value $\neq 0$.
+Image with two gray levels only but with the minimal value $> 0$ is not 
+considered by this function as binary.
+
+\Next
+\Example
+\begin{verbatim}
+Cimage image; /* Needed Input of module */
+unsigned char white;
+
+if ((white=mw_isitbinary_cimage(image)) > 0)
+ printf("Binary image with white set to %d\n",(int) white);
+else 	
+ printf("Not a binary image\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_newtab\_gray\_cimage}{Create a bi-dimensional tab for the pixels of a Cimage}
+\Summary{
+unsigned char ** mw\_newtab\_gray\_cimage(image)
+
+Cimage image;
+}
+\Description
+This function creates a new bi-dimensional tab which allows an easy and fast
+access to the pixels' gray level.
+This tab is actually an one-dimensional tab of pointers, so that each pointer 
+points to the beginning of a line in the gray plane of the given image.
+
+This function must be called after the gray plane has been allocated,
+using for example one of the functions \verb+mw_new_cimage+, 
+\verb+mw_alloc_cimage+ or \verb+mw_change_cimage+. 
+After that, if the gray plane allocation is changed
+(by e.g. \verb+mw_change_cimage+ or \verb+mw_delete_cimage+), the tab is
+no longer valid and must be deleted using \verb+free(tab)+.
+
+Ones the tab has been correctly created, is it possible to read or to
+write the value of the pixel $(x,y)$ ($x$ being an index for column and $y$
+for row) using \verb+tab[y][x]+.
+
+\Next
+\Example
+\begin{verbatim}
+Cimage image; /* Needed Input of module (gray plane already allocated and filled) */
+int x,y;      /* Needed Input of module */
+unsigned char **tab;
+
+tab =  mw_newtab_gray_cimage(image);
+if (tab==NULL) mwerror(FATAL,1,"Not enough memory\n");
+
+/* Put white color in the pixel (x,y) */
+if ((x < image->ncol) && (y < image->nrow)) tab[y][x] = 255;
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+free(tab);
+
+\end{verbatim}
+
+\newpage %......................................\Name{mw\_new\_cimage}{Create a new Cimage}
+\Summary{
+Cimage mw\_new\_cimage();
+}
+\Description
+This function creates a new \cimage structure with an empty gray plane.
+No pixels can be addressed at this time.
+The gray plane may be allocated using the function \verb+mw_alloc_cimage+ or
+\verb+mw_change_cimage+.
+
+Do not use this function for input/output of modules, since the MegaWave2
+Compiler already created the structure for you if you need it (see \volI). Use instead the function \verb+mw_change_cimage+.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output movie.
+
+The function \verb+mw_new_cimage+ returns \Null\ if not enough memory is available to create the structure. Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Cimage image=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((image = mw_new_cimage()) == NULL) ||
+      (mw_alloc_cimage(image,256,256) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_plot\_cimage}{Set the gray level value}
+\Summary{
+void mw\_plot\_cimage(image, x, y, v)
+
+Cimage image;
+
+int x,y;
+
+unsigned char v;
+}
+\Description
+This function set the gray level value of the given \verb+image+ for the pixel $(x,y)$ (column $\# x$ and row $\# y$) to be \verb+v+  (a number between $0$ - black - and $255$ - white -).
+
+Notice that a call to this function is a slow (but easy and secure) way to 
+write a pixel value.
+See section~\ref{images} page~\pageref{images} for how to write pixels fast.
+
+\Next
+\Example
+\begin{verbatim}
+Cimage image; /* Needed Input of module */
+int x,y;      /* Needed Inputs of module */
+
+/* Put white color in the pixel (x,y) */
+if ((x < image->ncol) && (y < image->nrow))
+        mw_plot_cimage(image,x,y,255);
+else mwerror(ERROR,1,"Out of bounds !\n");
+
+\end{verbatim}
+\newpage %......................................
+

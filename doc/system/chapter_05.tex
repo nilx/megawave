@@ -1,0 +1,393 @@
+%
+% Part 5 of the MegaWave2 Guide #2
+%   Wavelets and wavelet packets
+%
+
+The wavelet\index{wavelet} memory types are used to represent the result of a wavelet 
+transform applied to some data. 
+The data can be a signal, in this case the operation is called a one-dimensional wavelet tranform, or it can be an image. 
+In that case, the operation is called a two-dimensional wavelet transform.
+Operations on data of higher dimension are not supported at this time.
+
+A wavelet transform\index{wavelet transform} is a time-scale operator: it adds therefore one dimension 
+to the data (the scale).
+The meaning of the wavelet coefficients recorded into a wavelet-type variable depends to the choice of the discretization.
+The finest one is known as the {\em continuous wavelet transform}\index{continuous wavelet transform}: several
+voices per octave can be computed for the scale. 
+The {\em orthogonal (or biorthogonal) wavelet transform}\index{orthogonal wavelet transform}
+\index{biorthogonal wavelet transform} allows to decompose
+the data into an orthogonal (or biorthogonal) basis: a wavelet coefficient
+corresponds to a scalar product. In this case, only one voice per octave
+is computed and a decimation is achieved on the time (or space) domain.
+The {\em dyadic wavelet transform}\index{dyadic wavelet transform} computes also only one voice per octave, but
+without decimation along the time axis. It corresponds to a decomposition into wavelets
+which generate a {\em frame}\index{frame}. It is often used to obtain a translation-invariant representation, 
+from which the {\em wavelet maxima representation}\index{wavelet maxima representation} can be deduced.
+
+A natural extension to wavelet decomposition is the wavelet packet\index{wavelet packet} representation,
+that offers a better localization in the frequency space.
+Wavelet packets are popular for at least two reasons: 
+\begin{itemize} 
+\item they provide a sparse representation of many texture;
+\item they are generally well localized in the Fourier domain. 
+\end{itemize}
+
+%-----------------------------------------------
+\section{One-dimensional wavelet}
+%-----------------------------------------------
+
+
+\label{wavelets_wtrans1d}
+
+The {\em One-dimensional wavelet}\index{one-dimensional wavelet} memory type is used to represent the result
+of a wavelet transform applied to a signal.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Wtrans1d}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{wavelets_wtrans1d_structure}
+
+\def\wtransud{{\tt Wtrans1d }}
+\index{structure!\wtrand1d@\wtransud}
+
+The C structure is the following:
+{\small
+\begin{verbatim}
+typedef struct wtrans1d {
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the wtrans1d */
+
+  int type;  /* Type of the wtrans1d performed */
+  int edges; /* Type of the edges statments */
+  char filter_name[mw_namesize][mw_max_nfilter_1d];   /* Filters used */
+  int size; /* Size of the original signal */
+
+  int nlevel;   /* Number of levels (octave) for this decomposition */
+  int nvoice;   /* Number of voices per octave for this decomposition */
+  int complex;  /* 1 if the wavelet is complex that is, if P[][] is used */
+  int nfilter;  /* Number of filters used to compute the decomposition */
+
+  Fsignal A[mw_max_nlevel+1][mw_max_nvoice]; /* Average or low-pass signals */
+  Fsignal AP[mw_max_nlevel+1][mw_max_nvoice];/* Phase of the average */
+  Fsignal D[mw_max_nlevel+1][mw_max_nvoice]; /* Detail or wavelet coefficients*/
+  Fsignal DP[mw_max_nlevel+1][mw_max_nvoice];/* Phase of the Detail */
+
+} *Wtrans1d;
+\end{verbatim}
+}
+
+The first two fields of this structure is well known by the reader.
+The field \verb+type+ records the type of the wavelet transform used.
+Its value can be:
+\begin{itemize}
+\item \verb+mw_orthogonal+ : orthogonal wavelet transform;
+\item \verb+mw_biorthogonal+ : biorthogonal wavelet transform;
+\item \verb+mw_dyadic+ : dyadic wavelet transform;
+\item \verb+mw_continuous+ : continuous wavelet transform.
+\end{itemize}
+
+The field \verb+edges+ gives the type of the edges statment used to compute
+the transformation. Indeed, since it is implemented as a bank of convolution
+products, errors occur near the borders if no special statment is performed.
+This field can have the following values:
+\begin{itemize}
+\item \verb+mw_edges_zeropad+ : the signal is zero-padded (no special statment);
+\item \verb+mw_edges_periodic+ : the signal is made periodic;
+\item \verb+mw_edges_mirror+ : the signal is padded by mirror effect (avoid first-order discontinuities);
+\item \verb+mw_edges_wadapted+ : special border functions are added to the wavelets (wavelets on the interval).
+\end{itemize}
+
+The field \verb+filter_name+ is an array of strings, where the names of the filters used for the decomposition are put. 
+The number of filters is put into the field \verb+nfilter+.
+This number and the meaning of each filter depend to the wavelet type.
+
+The field \verb+size+ contains the size of the original signal, which is put
+into \verb+average[0][0]+ (see below).
+The field \verb+nlevel+ is the number of levels used in this decomposition; it corresponds to the number of octaves; \verb+nvoice+ is the number of voices per octave.
+The field \verb+complex+ is set to $1$ when the wavelet used has complex values, $0$ elsewhere.
+
+The result of the wavelet decomposition is put into two two-dimensional arrays of signals called \verb+A+ and \verb+D+:
+\verb+A[l][v]+ for $l=0 \ldots \mbox{{\tt nlevel}}$ and for
+$v=0 \ldots \mbox{nvoice}-1$ is the low-pass signal at the octave $l$ and at the voice $v$, that is the signal at the scale $2^{(l+v/\mbox{{\tt nvoice}})}$.
+The signal \verb+A[0][0]+ is the original signal, \verb+A[0][1]+ is the
+smoothed signal at the scale  $2^{\frac{1}{\mbox{{\tt nvoice}}}}$, etc.
+\verb+D[l][v]+ for $l=0 \ldots \mbox{{\tt nlevel}}$ and for
+$v=0 \ldots \mbox{{\tt nvoice}}-1$ is the band-pass (or detail) signal at the octave $l$ and at the voice $v$, that is the wavelet coefficients signal at the scale $2^{(l+v/\mbox{{\tt nvoice}})}$.
+The signal \verb+D[0][0]+ is unused.
+
+When the wavelet is complex, the fields \verb+A+ and \verb+D+ represent the
+modulus values only; the phase values is put in the fields \verb+AP+ and
+\verb+DP+.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{wavelets_wtrans1d-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item \verb+"A_WTRANS1D"+\index{file format!A\_WTRANS1D} MegaWave2 Data Ascii format with a \verb+def Wtrans1d+ area.
+This area includes the value of the different fields of the object, as
+\verb+comments, type, edges, ...+. 
+The values of the wavelet coefficients are not recorded in this file, but in 
+a set of \verb+Fimage+ objects.
+Let be \verb+wavelet+ the name of the object. 
+The names of these image files are, for \verb+<j>+ the level number (octave)
+and \verb+<v>+ the voice number,
+\begin{itemize} 
+\item \verb+wavelet_<j>_A.wtrans1d+ Average field of the object (voice $0$);
+\item \verb+wavelet_<j>.<v>_A.wtrans1d+ Average field of the object (voice $> 0$);
+\item \verb+wavelet_<j>_AP.wtrans1d+ Phase of the Average field of the object (voice $0$);
+\item \verb+wavelet_<j>.<v>_AP.wtrans1d+ Phase of the Average field of the object (voice $> 0$);
+\item \verb+wavelet_<j>_D.wtrans1d+ Detail field of the object (voice $0$);
+\item \verb+wavelet_<j>.<v>_D.wtrans1d+ Detail field of the object (voice $> 0$);
+\item \verb+wavelet_<j>_DP.wtrans1d+ Phase of the Detail field of the object (voice $0$);
+\item \verb+wavelet_<j>.<v>_DP.wtrans1d+ Phase of the Detail field of the object (voice $> 0$).
+\end{itemize}
+Notice that, regarding to the type of the wavelet transform, only a subset of those files may be generated.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{wavelets_wtrans1d_function}
+
+The following is a description of all the functions related to 
+the \verb+Wtrans1d+ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_05_wtrans1d.tex}
+
+%-----------------------------------------------
+\section{Two-dimensional wavelet}
+%-----------------------------------------------
+
+
+\label{wavelets_wtrans2d}
+
+The {\em Two-dimensional wavelet}\index{two-dimensional wavelet}  memory type is used to represent the result
+of a wavelet transform applied to an image.
+Notice that, at this time, the structure does not allow to record more than
+one voice per octave for the decomposition.
+Consequently, the continuous wavelet transform is not available in the 2D case.
+The wavelet is also assumed to be of real values (complex case not supported).
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Wtrans2d}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{wavelets_wtrans2d_structure}
+
+\def\wtransdd{{\tt Wtrans2d }}
+\index{structure!\wtrans2d@\wtransdd}
+
+The C structure is the following:
+{\small
+\begin{verbatim}
+typedef struct wtrans2d {
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the wtrans2d */
+
+  int type;  /* Type of the wtrans2d performed */
+  int edges; /* Type of the edges statments */
+  char filter_name[mw_namesize][mw_max_nfilter_2d];   /* Filters used */
+
+  int nrow;
+  int ncol;     /* Size of the original image */
+  int nlevel;   /* Number of levels (octave) for this decomposition */
+  int norient;  /* Number of orientations for this decomposition */
+  int nfilter;  /* Number of filters used to compute the decomposition */
+
+  Fimage images[mw_max_nlevel+1][mw_max_norient+1]; /* Wavelet decomposition space */
+
+} *Wtrans2d;
+\end{verbatim}
+}
+
+The first two fields of this structure is well known by the reader.
+The field \verb+type+ records the type of the wavelet transform used.
+Its value can be:
+\begin{itemize}
+\item \verb+mw_orthogonal+ : orthogonal wavelet transform;
+\item \verb+mw_biorthogonal+ : biorthogonal wavelet transform;
+\item \verb+mw_dyadic+ : dyadic wavelet transform.
+\end{itemize}
+
+The field \verb+edges+ gives the type of the edges statment used to compute
+the transformation. Indeed, since it is implemented as a bank of convolution
+products, errors occur near the borders if no special statment is performed.
+This field can have the following values:
+\begin{itemize}
+\item \verb+mw_edges_zeropad+ : the image is zero-padded (no special statment);
+\item \verb+mw_edges_periodic+ : the image is made periodic;
+\item \verb+mw_edges_mirror+ : the image is padded by mirror effect (avoid first-order discontinuities);
+\item \verb+mw_edges_wadapted+ : special border functions are added to the wavelets (wavelets on the rectangle).
+\end{itemize}
+
+The field \verb+filter_name+ is an array of strings, where the names of the filters used for the decomposition are put. 
+The number of filters is put into the field \verb+nfilter+.
+This number and the meaning of each filter depend to the wavelet type.
+
+The fields \verb+nrow+ (number of rows) and \verb+ncol+ (number of columns) contain the size of the original image, which is put into \verb+images[0][0]+ (see below).
+The field \verb+nlevel+ is the number of levels used in this decomposition; it corresponds to the number of octaves.
+
+The field \verb+norient+ gives the number of orientations used for the decomposition;
+usually (but the user may modify that) the first orientation (index $r=0$ in the array \verb+images[][r]+) corresponds to the coarse image at the given resolution (low-pass image or smooth image);
+the second orientation (index $r=1$) corresponds to the detail image (wavelet coefficients) along the y direction (horizontal details);
+the third orientation (index $r=2$) corresponds to the detail image (wavelet coefficients) along the x direction (vertical details);
+in the orthonormal and biorthonormal cases, there is another direction (index $r=3$) which corresponds to the detail image (wavelet coefficients) along the diagonal direction (cross details).
+
+The result of the wavelet decomposition is put into one two-dimensional arrays of images called \verb+images+:
+\verb+images[l][r]+ for $l=1 \ldots \mbox{{\tt nlevel}}$ and for
+$r=0 \ldots \mbox{{\tt norient}}$ is the coarse or the detail image at the octave $l$ and at the orientation $r$.
+
+Notice that the images \verb+images[0][r]+ are unused except for $r=0$.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{wavelets_wtrans2d-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item \verb+"A_WTRANS2D"+\index{file format!A\_WTRANS2D} MegaWave2 Data Ascii format with a \verb+def Wtrans2d+ area.
+This area includes the value of the different fields of the object, as
+\verb+comments, type, edges, ...+. 
+The values of the wavelet coefficients are not recorded in this file, but in 
+a set of \verb+Fimage+ objects.
+Let be \verb+wavelet+ the name of the object. 
+The names of these image files are, for \verb+<j>+ the level number (octave)
+and \verb+<r>+ the orientation number,
+\begin{itemize} 
+\item \verb+wavelet_<j>_S.wtrans2d+ Average image of the object (\verb+<r>+ $= 0$);
+\item \verb+wavelet_<j>_D<r>.wtrans2d+ Detail image of the object (\verb+<r>+ $> 0$).
+\end{itemize}
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{wavelets_wtrans2d_function}
+
+The following is a description of all the functions related to 
+the \verb+Wtrans2d+ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_05_wtrans2d.tex}
+
+%-----------------------------------------------
+\section{Two-dimensional wavelet packets}
+%-----------------------------------------------
+
+
+\label{wavelets_wpack2d}
+
+The {\em Two-dimensional wavelet packages}\index{two-dimensional wavelet packages}  memory type is used to represent the result
+of a wavelet packets transform applied to a gray-levels image.
+The wavelet packet basis is described by a quad-tree\index{quad-tree}
+(for simplicity, we will just say a tree\index{tree|see{quad-tree}}) and a signal (or a pair of signals for biorthogonal wavelet packets). 
+The wavelet packet transform of a \verb+Fimage+ contains the coordinates of the image in the wavelet packet basis
+(if the size of this image is not a power of $2$, some redundancy might be introduced).
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Wpack2d}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{wavelets_wpack2d_structure}
+
+\def\wpackdd{{\tt Wpack2d }}
+\index{structure!\wpack2d@\wpackdd}
+
+The C structure is the following:
+{\small
+\begin{verbatim}
+typedef struct wpack2d {
+  char cmt[mw_cmtsize];    /* Comments */
+  char name[mw_namesize]; /* Name of the wpack2d */
+
+  Fsignal signal1;    /* Impulse response of the filter 'h'*/
+  Fsignal signal2;    /* Imp. resp. of the dual filter, for biortho. wavelet packet*/
+  int level;          /* Decomposition level (calculated) */
+  Cimage tree;        /* Decomposition tree */
+  Fimage *images;     /* Array for output images (containing the wavelet packet coefficients) */
+ 
+  int img_array_size; /* Number of elements in *images */
+   
+  int img_ncol; /*number of colums in the image before the decomposition*/
+  int img_nrow; /*number of rows in the image before the decomposition*/
+
+  struct wpack2d *previous; /* Pointer to the previous wpack2d (may be NULL) */ 
+  struct wpack2d *next;     /* Pointer to the previous wpack2d (may be NULL) */
+} *Wpack2d;
+\end{verbatim}
+}
+
+The fields of this structure should not be modified manually, but trough
+functions of the system library only.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{wavelets_wpack2d-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item \verb+"A_WPACK2D"+\index{file format!A\_WPACK2D} MegaWave2 Data Ascii format with a \verb+def Wpack2d+ area.
+This area contains the following lines
+\begin{verbatim}
+    name
+    comments
+    signal1 file name
+    signal2 file name
+    tree file name
+    original image number of columns
+    original image number of rows
+    previous Fpack file name
+    next Fpack file name
+
+    image 1 file name
+    image 2 file name
+    (...)
+    image n file name
+\end{verbatim}
+Let us detail an example. We have a \verb+Wpack2d+
+named {\em my\_pack} with a description ''this is my comment''. 
+It uses a signal saved in a file named {\em da04.ir} and a tree saved in a file named
+{\em wavelet1}. There are 4 images in the decomposition.  We have neither
+previous \verb+Wpack2d+  nor next \verb+Wpack2d+. 
+The content of the corresponding \verb+A_WPACK2D+ file will be
+\begin{verbatim}
+%
+MegaWave2 - DATA ASCII file -
+%
+def Wpack2d
+
+name : my_pack
+comment : this is my comment
+signal1 : da04.ir
+signal2 : da04.ir
+tree : wavelet1
+img_ncol : 512
+img_nrow : 512
+previous : null
+next : null
+
+my_pack0_0
+my_pack1_0
+my_pack0_1
+my_pack1_1
+\end{verbatim}
+
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{wavelets_wpack2d_function}
+
+The following is a description of all the functions related to 
+the \verb+Wpack2d+ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_05_wpack2d.tex}

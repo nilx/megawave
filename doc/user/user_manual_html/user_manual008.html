@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+            "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+
+<META http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<META name="GENERATOR" content="hevea 1.10">
+<LINK rel="stylesheet" type="text/css" href="user_manual.css">
+<TITLE>Documentation</TITLE>
+</HEAD>
+<BODY >
+<A HREF="user_manual007.html"><abbr title="previous chapter" class="navigation">&larr;</abbr></A>
+<A HREF="index.html"><abbr title="table of contents" class="navigation">&uarr;</abbr></A>
+<A HREF="user_manual009.html"><abbr title="next chapter" class="navigation">&rarr;</abbr></A>
+<HR>
+<H1 CLASS="chapter"><A NAME="htoc51">Chapter&#XA0;7</A>&#XA0;&#XA0;Documentation</H1><UL>
+<LI><A HREF="user_manual008.html#toc27">Document a module</A>
+</LI><LI><A HREF="user_manual008.html#toc28">Document a macro</A>
+</LI><LI><A HREF="user_manual008.html#toc29">Print the documentation</A>
+</LI></UL>
+<P>
+<A NAME="document"></A>
+</P><P><A NAME="@default232"></A>
+<B>Warning : </B> in MegaWave2 versions 2.x, the <CODE>doc</CODE> directory structure has 
+changed<A NAME="@default233"></A>.
+Now put the documentation you write (the <CODE>.tex</CODE> files) into the 
+<CODE>$MEGAWAVE2/doc/src/</CODE> directory (administrator) or <CODE>$MY_MEGAWAVE2/doc/src/</CODE> 
+(plain user) directory, without creating subdirectories for the groups : the <CODE>.tex</CODE> 
+files of all modules of all groups belong to the same directory.
+The <CODE>$MEGAWAVE2/doc/obj/</CODE> and <CODE>$MY_MEGAWAVE2/doc/obj/</CODE> directories contain files
+that are automatically generated (such as <CODE>.doc</CODE> and <CODE>.dvi</CODE> files). Do not put
+your <CODE>.tex</CODE> files here, they may be destroyed by the system !</P><H2 CLASS="section"><A NAME="toc27"></A><A NAME="htoc52">7.1</A>&#XA0;&#XA0;Document a module</H2><P>
+<A NAME="document_module"></A></P><P><A NAME="@default234"></A>
+Each module you write must be documented.
+MegaWave2 helps you as much as possible in this unattractive task:
+when you compile a module, a document skeleton is generated in the directory
+<CODE>$MEGAWAVE2/doc/obj/</CODE> (or <CODE>$MY_MEGAWAVE2/doc/obj/</CODE>).
+It takes the name of the module and the extension <CODE>.doc</CODE>.
+This file documents in the L<sup>A</sup>T<sub>E</sub>X<A NAME="@default235"></A> language about everything that could be
+automatically done, as the synopsis of the run-time command, the summary of
+the module function, the release number and the copyright for the authors and
+laboratories.</P><P>(Un)Fortunately, there will always be a part of the documentation which cannot
+be automatically generated: the mathematical description of the algorithm.
+This part is the <EM>Description</EM> field of the documentation.
+Therefore, the author of a new module must write this content in a file
+into the <CODE>$MEGAWAVE2/doc/src/</CODE> (administrator only) or 
+<CODE>$MY_MEGAWAVE2/doc/src/</CODE> (plain user) directory.
+Give this file the name of the module with the extension <CODE>.tex</CODE>.
+As the file will be inserted by MegaWave2 into the whole documentation, you must 
+write the text using a subset of the L<sup>A</sup>T<sub>E</sub>X language.
+In particular, don&#X2019;t use any commands about the style or the presentation
+(as <CODE>\begin{document}</CODE>, <CODE>\documentstyle</CODE>, <CODE>\newpage</CODE>, <CODE>\section</CODE>, &#X2026;).</P><P>You can get a lot of examples of such documents by seeking the files into
+subdirectories of <CODE>$MEGAWAVE2/doc/src</CODE>.</P><P>Since MegaWave2 V 2.21, the system uses bibliographic<A NAME="@default236"></A> databases where all citations<A NAME="@default237"></A>
+are recorded. As this allows cross-references, it is now possible to get all modules associated to
+a given article. In order to fulfill the new requirements, citations have to be set
+in the <CODE>.tex</CODE> file using the standard <CODE>\cite</CODE> L<sup>A</sup>T<sub>E</sub>X command,
+and the corresponding references have to be given in the bibliographic database (.bib file), NO MORE in the <CODE>.tex</CODE> file.
+Beware, do not collapse citations : use e.g. <CODE>\cite{key1}\cite{key2}</CODE> instead of <CODE>\cite{key1,key2}</CODE>.
+References for private modules have to be put in <CODE>$MY_MEGAWAVE2/doc/private.bib</CODE><A NAME="@default238"></A>
+while references for public modules are in <CODE>$MEGAWAVE2/doc/public.bib</CODE><A NAME="@default239"></A>.
+Of course, only references for private modules not in <CODE>public.bib</CODE> have to be in <CODE>private.bib</CODE>.
+See the system macro <TT>mwmodbibtex</TT> for more information about the bibliographic database.</P><H2 CLASS="section"><A NAME="toc28"></A><A NAME="htoc53">7.2</A>&#XA0;&#XA0;Document a macro</H2><P>
+<A NAME="document_macro"></A></P><P><A NAME="@default240"></A>
+The documentation of a macro follows the same rules as the ones for modules.
+Therefore, for each new user&#X2019;s macro, you must write a description file 
+<CODE>$MEGAWAVE2/doc/src/MACRO.tex</CODE> (for a public macro, administrator only), or 
+<CODE>$MY_MEGAWAVE2/doc/src/MACRO.tex</CODE> (for a private macro), <CODE>MACRO</CODE> being 
+the name of the macro located in a subdirectory of <CODE>$MEGAWAVE2/src/</CODE> (or of
+<CODE>$MY_MEGAWAVE2/src/</CODE>).
+In this file, you put in L<sup>A</sup>T<sub>E</sub>X the part which corresponds to the <EM>Description</EM> field of 
+the documentation.</P><P>The difference between macros and modules is that macros do not need really need a compilation,
+and therefore you may call a specific command to generate the document skeleton<BR>
+<CODE>$MEGAWAVE2/doc/obj/MACRO.doc</CODE> (or <CODE>$MY_MEGAWAVE2/doc/obj/MACRO.doc</CODE>),
+which is the macro <CODE>cmw2macro</CODE> (see section&#XA0;<A HREF="user_manual006.html#sysmacros_summary">5.1</A>).
+Since MegaWave2 Versions 2.x, <CODE>cmw2</CODE> will also perform this task if its argument
+is a user&#X2019;s macro.</P><H2 CLASS="section"><A NAME="toc29"></A><A NAME="htoc54">7.3</A>&#XA0;&#XA0;Print the documentation</H2><P>
+<A NAME="document_print"></A></P><P><A NAME="@default241"></A>
+Once the document skeleton of a module or macro is generated, and the description file is
+written, you can compile the document skeleton by calling the macro <CODE>mwdoclatex</CODE>
+<A NAME="@default242"></A> (see section&#XA0;<A HREF="user_manual006.html#sysmacros_summary">5.1</A>).
+Of course this needs to have the L<sup>A</sup>T<sub>E</sub>X<A NAME="@default243"></A> environment installed on your system.
+You get a <CODE>DVI</CODE> file which can be printed on various devices using commands of the standard TeXware distribution.</P><P>If you want to print the documentation of all modules and user&#X2019;s macros instead of only one,
+use the macro <CODE>mwmakedoc</CODE><A NAME="@default244"></A>. 
+This will actually create an updated sample of the Volume Three of the MegaWave2 guides (&#X201C;MegaWave2 User&#X2019;s Modules Library&#X201D;).</P><P>In the document skeleton of each module (not available for macros), a field named 
+&#X201C;See Also&#X201D; lists all the modules calling the module or called by the module: 
+this is a dependencies list. In order to update this
+list, you need to compile each module which the option <CODE>-dep</CODE> and you need to
+run the macro <CODE>mwdep</CODE><A NAME="@default245"></A> before the macros <CODE>mwdoclatex</CODE> and <CODE>mwmakedoc</CODE>.
+
+</P><HR>
+<A HREF="user_manual007.html"><abbr title="previous chapter" class="navigation">&larr;</abbr></A>
+<A HREF="index.html"><abbr title="table of contents" class="navigation">&uarr;</abbr></A>
+<A HREF="user_manual009.html"><abbr title="next chapter" class="navigation">&rarr;</abbr></A>
+</BODY>
+</HTML>

@@ -1,0 +1,309 @@
+\Name{mwcalloc}{Dynamic memory allocation}
+\Summary{
+void *mwcalloc (nelem, elsize)
+
+unsigned  nelem, elsize;
+}
+\Description
+This function allocates space for an array of \verb+nelem+ elements,
+each of size \verb+elsize+ bytes, and initializes the space to zeros.
+
+This function returns a pointer to space suitably aligned (after possible pointer coercion) for storage of any type of object. 
+Do not forget to cast the return value to the right type of your variable
+(see example below).
+If not enough memory is available to allocate the array, the function returns \Null.
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Each space allocated by \verb+mwcalloc+ must be deallocated using \verb+mwcfree+ before exiting the module.
+
+Notice that in the MegaWave2 modules, the standard C function \verb+calloc+ is
+redefined to be \verb+mwcalloc+. 
+Therefore, if you use \verb+calloc+ in your code you actually call \verb+mwcalloc+.
+
+\Next
+\Example
+\begin{verbatim}
+float *data=NULL; /* Internal use: no Input neither Output of module */
+
+/* Allocates space for 1000 samples of float values */
+if  ( (data = (float *) mwcalloc (1000, sizeof(float))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Set the sample #i to the value i */
+for (i=0;i<1000;i++) data[i] = i;
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mwcfree}{Dynamic memory deallocation}
+\Summary{
+void mwcfree (ptr)
+
+char *ptr;
+}
+\Description
+This function deallocates the space pointed to by 
+\verb+ptr+ and which has previously been allocated by \verb+mwcalloc+. It does 
+nothing if \verb+ptr+ = \Null.
+
+You should set \verb+ptr+ to \Null after this call since the address pointed to by \verb+ptr+ is no longer valid.
+
+Notice that in the MegaWave2 modules, the standard C function \verb+cfree+ is
+redefined to be \verb+mwcfree+. 
+Therefore, if you use \verb+cfree+ in your code you actually call \verb+mwcfree+.
+
+\Next
+\Example
+\begin{verbatim}
+float *data=NULL; /* Internal use: no Input neither Output of module */
+
+/* Allocates space for 1000 samples of float values */
+if  ( (data = (float *) mwcalloc (1000, sizeof(float))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+. (statement)
+.
+/* End of statement: deallocation of the array */
+mwcfree((char *) data);
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mwdebug}{print if debug}
+\Summary{
+void mwdebug(format, \ldots);
+
+char *format;
+
+}
+\Description
+This function prints its arguments in \ldots under control of the format in \verb+format+, exactly in the same manner that the standard C function \verb+printf+ does. 
+The string \verb+<dbg>+ is added to the beginning of the line.
+
+The print is active only when the module has been called with the debugging option on.
+
+\Next
+\Example
+\begin{verbatim}
+Fimage image; 
+int x,y;
+
+for (x=0;x<image->ncol;x++) for (y=0;y<image->nrow;y++)
+{
+  mwdebug("processing pixel (%d,%d)...\n",x,y);
+  .
+  . (statement)
+  .
+}
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mwerror}{print an error message}
+\Summary{
+void mwerror(type, exit\_code, format, \ldots);
+
+int type;
+
+int exit\_code;
+
+char *format;
+
+}
+\Description
+This function prints its arguments in \ldots under control of the format in \verb+format+ on the standard error output, in the same manner that the standard C function \verb+fprintf(stdout,format,...)+ does. 
+
+A message is added to the print, and an action may be performed, according to the value in \verb+type+ :
+\begin{itemize}
+\item \verb+WARNING+ :
+the additional message is \verb+MegaWave warning (+{\em mwname}\verb+) : + (following is the requested print);
+
+\item \verb+ERROR+ :
+the additional message is \verb+MegaWave error (+{\em mwname}\verb+) : +  (following is the requested print), and
+the variable \verb+mwerrcnt+ is incremented.
+
+\item \verb+FATAL+ :
+the additional message is \verb+MegaWave fatal (+{\em mwname}\verb+) : +  (following is the requested print), and a call to \verb+mwexit(exit_code)+ is performed.
+
+\item \verb+INTERNAL+ :
+the additional message is \verb+MegaWave internal (+{\em mwname}\verb+) : + (following is the requested print), and a call to \verb+mwexit(exit_code)+ is performed.
+Use it when such error normally never may occur. 
+Then, such event points out a fault of the algorithm and the code should be fixed.
+One uses to add in the beginning of the print the text \verb+[X]+ where \verb+X+ is the name of the function where the error has been found, in order to make easier the debugging process (see example below).
+
+\item \verb+USAGE+ : 
+after the requested print, is printing the usage of the module.
+Use it when the input values you get in your module function does not correspond to what the usage requests.
+\end{itemize}
+
+
+\Next
+\Example
+\begin{verbatim}
+/* Compute some norm of any fimage */
+static float fnorm(image) 
+Fimage image; 
+
+{ float norm;  /* result of the computation */
+  .
+  .  (statement)
+  .
+  if (norm < 0.0)
+   mwerror(INTERNAL,1,"[fnorm] Negative norm value computed ! (norm=%f)",norm);
+  else return(norm);
+}
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mwexit}{Module termination}
+\Summary{
+void mwexit (status)
+
+int status;
+}
+\Description
+This function causes normal program termination of a MegaWave2 module.
+The variable \verb+status+ indicates the status of the module when the
+termination occurred; value $0$ means successful termination, other values are user-dependent.
+
+Notice that in the MegaWave2 modules, the standard C function \verb+exit+ is
+redefined to be \verb+mwexit+. 
+Therefore, if you use \verb+exit+ in your code you actually call \verb+mwexit+.
+
+\Next
+\Example
+\begin{verbatim}
+Fimage image; /* Output of module */
+
+/* Try several times an allocation of a fimage of size 256x256 */
+while (mw_alloc_fimage(image,256,256) == NULL)
+  {
+     mwerror(ERROR,1,"Not enough memory !\n");
+     if (mwerrcnt > 10) mwexit(-1);
+     sleep(2);  /* Wait 2 seconds */
+  }
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mwfree}{Dynamic memory deallocation}
+\Summary{
+void mwfree (ptr)
+
+char *ptr;
+}
+\Description
+This function deallocates the space pointed to by 
+\verb+ptr+ and which has previously been allocated by \verb+mwmalloc+. It does 
+nothing if \verb+ptr+ = \Null.
+
+You should set \verb+ptr+ to \Null after this call since the address pointed to by \verb+ptr+ is no longer valid.
+
+Notice that in the MegaWave2 modules, the standard C function \verb+free+ is
+redefined to be \verb+mwfree+. 
+Therefore, if you use \verb+free+ in your code you actually call \verb+mwfree+.
+
+\Next
+\Example
+\begin{verbatim}
+float *data=NULL; /* Internal use: no Input neither Output of module */
+
+/* Allocates space for 1000 samples of float values */
+if  ( (data = (float *) mwmalloc (1000*sizeof(float))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+. (statement)
+.
+/* End of statement: deallocation of the array */
+mwfree((char *) data);
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mwmalloc}{Dynamic memory allocation}
+\Summary{
+void  *mwmalloc (size)
+
+size\_t size;
+}
+\Description
+This function allocates space for a block of at least size bytes, but does not initialize the space.
+
+This function returns a pointer to space suitably aligned (after possible pointer coercion) for storage of any type of object. 
+Do not forget to cast the return value to the right type of your variable
+(see example below).
+If not enough memory is available to allocate the array, the function returns \Null. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Each space allocated by \verb+mwmalloc+ must be deallocated using \verb+mwfree+ before exiting the module.
+
+Notice that in the MegaWave2 modules, the standard C function \verb+malloc+ is
+redefined to be \verb+mwmalloc+. 
+Therefore, if you use \verb+malloc+ in your code you actually call \verb+mwmalloc+.
+
+\Next
+\Example
+\begin{verbatim}
+long *data=NULL; /* Internal use: no Input neither Output of module */
+
+/* Allocates space for 5000 samples of long values */
+if  ( (data = (long *) mwmalloc (5000*sizeof(long))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Set the sample #i to the value i */
+for (i=0;i<5000;i++) data[i] = i;
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mwrealloc}{Dynamic memory re-allocation}
+\Summary{
+void  *mwrealloc(ptr, size)
+
+char *ptr;
+unsigned size;
+}
+\Description
+This function changes the size of the block pointed to by \verb+ptr+ to
+\verb+size+ bytes and returns a pointer to the (possibly moved) block.  
+Existing contents are unchanged up to the lesser of the new and old sizes.  
+If \verb+ptr+ is a \Null pointer, \verb+mwrealloc+ behaves like 
+\verb+mwmalloc+ for the specified size.  
+If \verb+size+ is zero and \verb+ptr+ is not a \Null pointer, the object it points to is freed and \Null is returned.
+
+If not enough memory is available to allocate the array, the function returns \Null. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Do not forget to cast the return value to the right type of your variable, and to cast the type of the input pointer \verb+ptr+ to be \verb+char *+ (see example below).
+
+Each space allocated by \verb+mwrealloc+ must be deallocated using \verb+mwfree+ before exiting the module.
+
+Notice that in the MegaWave2 modules, the standard C function \verb+realloc+ is
+redefined to be \verb+mwrealloc+. 
+Therefore, if you use \verb+realloc+ in your code you actually call \verb+mwrealloc+.
+
+\Next
+\Example
+\begin{verbatim}
+long *ldata=NULL;   /* Internal use: no Input neither Output of module */
+double *ddata=NULL;
+
+/* Allocates space for 5000 samples of long values */
+if  ( (ldata = (long *) mwmalloc (5000*sizeof(long))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+.
+.
+/* Re-allocates space for 2000 samples of double values, using space allocated
+   for ldata 
+*/
+if  ( (ddata = (double *) mwrealloc ((char *) ldata, 2000*sizeof(double))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Warning : do not use anymore the array ldata ! */
+\end{verbatim}
+
+\newpage %......................................
+
+

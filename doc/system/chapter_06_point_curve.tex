@@ -1,0 +1,142 @@
+\Name{mw\_change\_point\_curve}{Define the point\_curve structure, if not defined}
+\Summary{
+Point\_curve mw\_change\_point\_curve(point)
+
+Point\_curve point;
+}
+\Description
+This function returns a Point\_curve structure if the input \verb+point = NULL+.
+It is provided despite the \verb+mw_new_point_curve+ function for
+global coherence with other memory types.
+
+The function \verb+mw_change_point_curve+ returns \Null\ if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.
+
+\Next
+\Example
+\begin{verbatim}
+
+Point_curve point=NULL; /* Internal use: no Input neither Output of module */
+
+/* Define the point (5,1) of the plane */
+
+point = mw_change_point_curve(point);
+if (point == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+point->x = 5;
+point->y = 1;
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_copy\_point\_curve}{Copy all points starting from the given one}
+\Summary{
+Point\_curve mw\_copy\_point\_curve(in,out)
+
+Point\_curve in, out;
+}
+\Description
+This function copies the current point and the next points contained in the chain 
+defined at the starting point \verb+in+. The result is put in \verb+out+, which
+may not be a predefined structure : in case of \verb+out=NULL+, the \verb+out+
+structure is allocated.
+
+The function \verb+mw_copy_point_curve+ returns \Null\ if not enough memory is available to perform
+the copy, or \verb+out+ elsewhere.
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+
+Point_curve in; /* Predefined point */
+Point_curve out=NULL; 
+
+out=mw_copy_point_curve(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_point\_curve}{Deallocate the point\_curve structure}
+\Summary{
+void mw\_delete\_point\_curve(point)
+
+Point\_curve point;
+}
+\Description
+This function deallocates the \point\ structures starting from
+the given \verb+point+, including this point itself.
+You should set \verb+point = NULL+ after this call since the address pointed
+by \verb+point+ is no longer valid.
+Warning : to deallocate only a point and not all the next points of a 
+chain, just use \verb+free(point)+.
+
+\Next
+\Example
+\begin{verbatim}
+/* Remove the first point of an existing curve */
+
+Curve curve;  /* Existing curve (e.g. Input of module) */
+Point_curve point;  /* Internal use */
+
+point = curve->first;
+curve->first=point->next;
+point->next->previous = NULL;
+free(point);
+point = NULL;
+
+/* Remove all points of an existing curve */
+
+mw_delete_point_curve(curve->first);
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_new\_point\_curve}{Create a new point\_curve structure}
+\Summary{
+Point\_curve mw\_new\_point\_curve();
+}
+\Description
+This function creates a new \point\ structure.
+It returns \Null\ if not enough memory is available to create the structure.
+Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal point structures before the end
+of the module, except if they are part of an input or output curve.
+
+\Next
+\Example
+\begin{verbatim}
+/* Insert the point (0,0) at the end of an existing curve */
+
+Curve curve;  /* Existing curve (e.g. Input of module) */
+Point_curve point,p;  /* Internal use: no Input neither Output of module */
+
+/* Define the point (0,0) */
+point = mw_new_point_curve();
+if (point == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+point->x = point->y = 0;
+point->next = NULL;
+
+/* Find the last point of the curve */
+p = curve->first; while (p->next) p=p->next;
+
+/* Insert the point */
+p->next = point;
+point->previous = p;
+
+/* Do not deallocate point or curve will become inconsistent */ 
+\end{verbatim}
+\newpage %......................................
+

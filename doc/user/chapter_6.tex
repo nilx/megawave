@@ -1,0 +1,63 @@
+%
+% Part 6 of the MegaWave2 Guide #1
+%   User's Macros
+%
+
+You have been already introduced to the macros by the 
+section~\ref{intro_macros}.
+An user's macro\index{user's macro} is a Bourne shell\index{Bourne shell} script which uses a normalized header,
+and which calls a sequence of commands, such as MegaWave2 modules.
+
+Since system's macros use the header of the user's macro to perform
+some operations, as to make the documentation of the macro
+(see section~\ref{document_macro}), you have to correctly fill the header 
+when you write a new macro.
+
+In order to easily recognize a user's macro from a user's module
+(they are located in the same source directory), we use capital letters to 
+name macros (at least for the first letter) and lower letters to name modules.
+We recommand you to follow this convention.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Header of a Macro}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{usermacros_header}
+
+Each macro must have an header\index{header!macro} which consists of variables to be filled.
+Falling to define most of these variables leads malfunctions when calling 
+some systems's macros.
+
+In the following is the list of the variables to define
+\begin{itemize}
+\item \verb+_Prog+: Name of the macro.
+\item \verb+_Group+: Group where belongs the macro.
+\item \verb+_Func+: Short description of the function performed by the macro.
+\item \verb+_Vers+: Version number of the macro.
+\item \verb+_Date+: Year of the creation or last change.
+\item \verb+_Auth+: Name of the author.
+\item \verb+_Usage+: Usage line, following Unix command conventions (do not
+mention the program name).
+\item \verb+_Labo+: Name and address of the institution, when it is not
+the CMLA.
+\end{itemize}
+
+You can get examples of such headers by reading the source of some systems's 
+macros (which share the same header conventions) or of some public user's
+macros given in the distribution.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{How to use user's macros}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{usermacros_howto}
+
+An user's macro being a Bourne shell\index{Bourne shell} script, you don't really need to compile 
+it before to call it. But in order to be able to call it from any location,
+a link has to be created in a directory recorded in the path variable
+(which is \verb+$MEGAWAVE2/shell+ if you are the administrator,
+\verb+$MY_MEGAWAVE2/shell+ otherwise). In addition to that, the documentation 
+must also be generated. Therefore, you should compile a user's macro as
+if it was a module, using \verb+cmw2+\index{system's macro!cmw2}.
+
+
+
+

@@ -1,0 +1,114 @@
+%
+% Part 4 of the MegaWave2 Guide #2
+%   Signals
+%
+
+We call signal\index{signal} a one-dimensional sequence of scalars. 
+Signals may be used to represent various kind of physical data (such
+as sound) , as well as mathematical data (e.g. impulse response of filters, 
+vectors, \ldots).
+
+Notice that at this time, only signals of floating points values are
+implemented.
+
+%-----------------------------------------------
+\section{Float signals}
+%-----------------------------------------------
+
+
+\label{signals_float-signals}
+\def\fsignal{{\tt Fsignal}}
+\index{structure!\fsignal}
+
+The {\em Float Signals} memory type is used to represent one-dimensional 
+sequences of floating points values.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Fsignal}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{signals_float-signals_structure}
+
+
+ Beginners should only focus on the first two fields of this structure:
+{\small
+\begin{verbatim}
+typedef struct fsignal {
+  int size;        /* Number of samples */
+  float *values;   /* The samples */
+
+  float scale;     /* Scale of the signal */
+  float shift;     /* shifting of the signal with respect to zero */
+  float gain;      /* Gain of the signal given by the digitalization process */
+  float sgrate;    /* Sampling rate given by the digitalization process */
+  int bpsample;    /* Number of bits per sample for audio drivers */
+
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the image */
+  
+  /* Defines the signifiant part of the signal : */
+  int firstp;     /* index of the first point not aff. by left side effect */
+  int lastp;      /* index of the last point not aff. by right side effect */
+  float param;    /* distance between two succesive uncorrelated points */
+
+} *Fsignal;
+\end{verbatim}
+}
+
+The field \verb+size+ gives the number of samples loaded in the signal.
+Do not change by yourself the content of this field: the size of the signal
+has to be modified using functions of the library only 
+(see section~\ref{signals_float-signals_function} page~\pageref{signals_float-signals_function}).
+
+The field \verb+values+ is an array which gives the value of each sample:
+if \verb+signal+ is a variable of \fsignal\ type, \verb+signal->values[0]+
+is the first sample of the signal, \verb+signal->values[1]+ the second,
+and so one up to the last sample  \verb+signal->values[signal->size-1]+.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{signals_float-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item \verb+"A_FSIGNAL"+\index{file format!A\_FSIGNAL} 
+MegaWave2 Data Ascii format with a \verb+def fsignal+ area.
+This area includes the value of the different fields of the object, as
+\verb+comments, scale, shift, ...+ and at the end the samples of the signal.
+Since this format uses Ascii encoding, you may read or modify the file just by
+editing it using a text editor.
+It can also be plotted using the standard tool {\tt gnuplot}.
+
+\item \verb+"WAVE_PCM"+\index{file format!WAVE\_PCM}  
+Microsoft's RIFF WAVE sound file format with PCM encoding.
+Use this format to perform sound\index{sound processing} and 
+speech\index{speech processing} processing with MegaWave2.
+Stereo inputs are converted to mono when loaded into a \fsignal.
+Since this format performs bit-encoding, on any output \fsignal\ variables
+you should set the field \verb+bpsample+ to the number of bits you want the
+data to be saved. Default value is $8 \times $\verb+sizeof(float)+ (on most
+architectures $32$), because this matches the size of the samples in the
+\fsignal\ structure. 
+However, this value leads to strange results on some audio drivers. 
+If you plan to send the
+signal on a audio driver\index{audio}, 
+recommended numbers of bits are $16$ (signed word) 
+or $8$ (signed char). Take care to format your data to fit the corresponding 
+range before playing the file ($[-32768,+32767]$ for signed word and 
+$[-128,+127]$ for signed char) or you will not get the expected sound.
+Another important field to get the right result is \verb+sgrate+, where you
+have to set the sample rate in Hz that is, the number of samples per second.
+
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{signals_float-signals_function}
+
+The following is a description of all the functions related to 
+the \fsignal\ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_04_fsignal.tex}

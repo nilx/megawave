@@ -1,0 +1,53 @@
+%
+% Part 10 of the MegaWave2 Guide #2
+%   Wdevice and window facilities
+%
+
+The Wdevice library\index{Wdevice library} provides an interface to the window manager\index{window manager}: 
+it helps the user to write modules which have to access to the window manager resources, as the screen, the mouse, etc.
+It not only replaces some painful operations which require a lot of code (such opening a window, mapping the content of an image into a window, etc.) to a simple call to one function, but it provides also an interface which is independant to the type of the window system: the calls to the Wdevice functions remain the same even if the window system changes (and the result should be the same).
+
+This library is independant to the MegaWave2 System Library although some modules cannot be linked
+without it : it is added when needed during the link process of a MegaWave2 command.
+Of course, one Wdevice library per window system is needed. 
+At this time, there exists a Wdevice library for the X Window System\index{X Window System} Version 11
+(X11) only.
+In the past, one could find a Wdevice library for the Suntools\index{Suntools} System but, because of the 
+renunciation of Suntools from Sun MicroSystem, this library is no longer maintained 
+(and no longer distributed).
+
+On can found in the system library some packages that use functions defined by Wdevice to perform
+more high-levels tasks, such as Wpanel :
+The Wpanel\index{Wpanel} (Panel\index{panel|see{Wpanel}} display facilities) is a small package that allows to 
+handle buttons and bars. It is not documented yet, and will probably change quite much in the future. For the time 
+being, it is used only in the module \verb+llview.c+.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{wdevice_function}
+
+The following is a description of the Wdevice library functions 
+which may be called by the user. 
+The list is in alphabetical order.
+
+You may notice that each function name begins with the letter \verb+W+.
+
+% @@@@@@@@@@ a retirer apres completion de la doc @@@@@@@@@
+Warning: the functions summary is not documented yet. 
+If you need to access to the screen into a MegaWave2 module (e.g. to draw some figure, etc.) please read the code of the following public MegaWave2 modules, and take inspiration from those:
+\begin{itemize}
+\item \verb+view_demo.c+;
+\item \verb+cview.c+;
+\item \verb+ccview.c+;
+\item \verb+cmview.c+;
+\item \verb+splot.c+;
+\item \verb+readpoly.c+.
+\end{itemize}
+Nevertheless, and because those MegaWave2 modules already exist, you are not likely to really need to learn about the Wdevice library.
+% @@@@@@@@@@ a retirer apres completion de la doc @@@@@@@@@
+
+
+\newpage %......................................
+
+%\input{chapter_10_wdevice.tex}

@@ -1,0 +1,216 @@
+\Name{mw\_alloc\_biortho\_wtrans2d}{Allocate the arrays of the decomposition}
+\Summary{
+void *mw\_alloc\_biortho\_wtrans2d(wtrans,level,nrow,ncol)
+
+Wtrans2d wtrans;
+
+int level; 
+
+int nrow,ncol;   
+}
+\Description
+This function allocates the array \verb+images+ of a \wtransdd structure previously created using \verb+mw_new_wtrans2d+, in order to receive
+an biorthonormal wavelet representation (spatial decimation, \verb+norient+ $=3$).
+Each image \verb+images[l][r]+ for $l=1 \ldots \mbox{{\tt nlevel}}$, $r=0 \ldots \mbox{{\tt norient}}$ is created and allocated to the right size.
+Previously allocations are deleted, if any.
+
+The number of levels for the decomposition is given by \verb+level+ and the
+size of the original image is given by \verb+nrow+ (number of rows), \verb+ncol+ (number of columns).
+
+The array \verb+images+ can be addressed after this call, if the allocation successed. There is no default values for the images.
+The \verb+type+ field of the \wtransdd structure is set to \verb+mw_biorthogonal+.
+
+The function \verb+mw_alloc_biortho_wtrans2d+ returns \Null\ if not enough memory is available to allocate one of the images. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Notice that, if the wavelet transform is an output of a MegaWave2 module, the structure has been already created by the compiler if needed (see \volI): do not perform additional call to \verb+mw_new_wtrans2d+ (see example below).
+
+\Next
+\Example
+\begin{verbatim}
+Wtrans2d Output; /* optional Output of the module */
+Fimage Image;    /* needed Input of the module: original image */
+int J;           /* internal use */
+
+if (Output) 
+{
+  /* Output requested : allocate Output for 8 levels of decomposition */
+  if(mw_alloc_biortho_wtrans2d(Output, 8, Image->nrow, Image->ncol)==NULL)
+    mwerror(FATAL,1,"Not enough memory.\n");
+  
+  Output->images[0][0] = Image;
+  for (J = 1; J <= 8; J++)
+  {
+     .
+     . (Computation of the voice #J)
+     .
+  }
+}
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_alloc\_dyadic\_wtrans2d}{Allocate the arrays of the decomposition}
+\Summary{
+void *mw\_alloc\_dyadic\_wtrans2d(wtrans,level,nrow,ncol)
+
+Wtrans2d wtrans;
+
+int level; 
+
+int nrow,ncol;   
+}
+\Description
+This function allocates the array \verb+images+ of a \wtransdd structure previously created using \verb+mw_new_wtrans2d+, in order to receive
+an dyadic wavelet representation (no spatial decimation, \verb+norient+ $=2$).
+Each image \verb+images[l][r]+ for $l=1 \ldots \mbox{{\tt nlevel}}$, $r=0 \ldots \mbox{{\tt norient}}$ is created and allocated to the right size.
+Previously allocations are deleted, if any.
+
+The number of levels for the decomposition is given by \verb+level+ and the
+size of the original image is given by \verb+nrow+ (number of rows), \verb+ncol+ (number of columns).
+
+The array \verb+images+ can be addressed after this call, if the allocation successed. There is no default values for the images.
+The \verb+type+ field of the \wtransdd structure is set to \verb+mw_dyadic+.
+
+The function \verb+mw_alloc_dyadic_wtrans2d+ returns \Null\ if not enough memory is available to allocate one of the images. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Notice that, if the wavelet transform is an output of a MegaWave2 module, the structure has been already created by the compiler if needed (see \volI): do not perform additional call to \verb+mw_new_wtrans2d+ (see example below).
+
+\Next
+\Example
+\begin{verbatim}
+Wtrans2d Output; /* optional Output of the module */
+Fimage Image;    /* needed Input of the module: original image */
+int J;           /* internal use */
+
+if (Output) 
+{
+  /* Output requested : allocate Output for 8 levels of decomposition */
+  if(mw_alloc_dyadic_wtrans2d(Output, 8, Image->nrow, Image->ncol)==NULL)
+    mwerror(FATAL,1,"Not enough memory.\n");
+  
+  Output->images[0][0] = Image;
+  for (J = 1; J <= 8; J++)
+  {
+     .
+     . (Computation of the voice #J)
+     .
+  }
+}
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_alloc\_ortho\_wtrans2d}{Allocate the arrays of the decomposition}
+\Summary{
+void *mw\_alloc\_ortho\_wtrans2d(wtrans,level,nrow,ncol)
+
+Wtrans2d wtrans;
+
+int level; 
+
+int nrow,ncol;   
+}
+\Description
+This function allocates the array \verb+images+ of a \wtransdd structure previously created using \verb+mw_new_wtrans2d+, in order to receive
+an orthonormal wavelet representation (spatial decimation, \verb+norient+ $=3$).
+Each image \verb+images[l][r]+ for $l=1 \ldots \mbox{{\tt nlevel}}$, $r=0 \ldots \mbox{{\tt norient}}$ is created and allocated to the right size.
+Previously allocations are deleted, if any.
+
+The number of levels for the decomposition is given by \verb+level+ and the
+size of the original image is given by \verb+nrow+ (number of rows), \verb+ncol+ (number of columns).
+
+The array \verb+images+ can be addressed after this call, if the allocation successed. There is no default values for the images.
+The \verb+type+ field of the \wtransdd structure is set to \verb+mw_orthogonal+.
+
+The function \verb+mw_alloc_ortho_wtrans2d+ returns \Null\ if not enough memory is available to allocate one of the images. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Notice that, if the wavelet transform is an output of a MegaWave2 module, the structure has been already created by the compiler if needed (see \volI): do not perform additional call to \verb+mw_new_wtrans2d+ (see example below).
+
+\Next
+\Example
+\begin{verbatim}
+Wtrans2d Output; /* optional Output of the module */
+Fimage Image;    /* needed Input of the module: original image */
+int J;           /* internal use */
+
+if (Output) 
+{
+  /* Output requested : allocate Output for 8 levels of decomposition */
+  if(mw_alloc_ortho_wtrans2d(Output, 8, Image->nrow, Image->ncol)==NULL)
+    mwerror(FATAL,1,"Not enough memory.\n");
+  
+  Output->images[0][0] = Image;
+  for (J = 1; J <= 8; J++)
+  {
+     .
+     . (Computation of the voice #J)
+     .
+  }
+}
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_delete\_wtrans2d}{Deallocate the wavelet transform space}
+\Summary{
+void mw\_delete\_wtrans2d(wtrans)
+
+Wtrans2d wtrans;
+}
+\Description
+This function deallocates the memory used by the wavelet transform space \verb+wtrans+ that is, all the memory used by the array of images \verb+images+ (if any), and the structure itself. 
+
+You should set \verb+wtrans = NULL+ after this call since the address pointed
+by \verb+wtrans+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+Wtrans2d wtrans=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((wtrans = mw_new_wtrans2d()) == NULL) ||  
+       (mw_alloc_ortho_wtrans2d(wtrans, 6, 512, 512)==NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+.
+.
+mw_delete_wtrans2d(wtrans);
+wtrans = NULL;
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_new\_wtrans2d}{Create a new Wtrans2d}
+\Summary{
+Wtrans2d mw\_new\_wtrans2d();
+}
+\Description
+This function creates a new \wtransdd structure with empty array of images \verb+images+.
+No image can be addressed at this time.
+The array of images should  be allocated using one of the functions \verb+mw_alloc_X_wtrans2d+ where \verb+X+ depends of the type of the transformation.
+
+You don't need this function for input/output of modules, since the MegaWave2
+Compiler already created the structure for you if you need it (see \volI). 
+This function is used to create internal variables.
+Do not forget to deallocate the internal structures before the end
+of the module.
+
+The function \verb+mw_new_wtrans2d+ returns \Null\ if not enough memory is available to create the structure. Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Wtrans2d wtrans=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((wtrans = mw_new_wtrans2d()) == NULL) ||  
+       (mw_alloc_dyadic_wtrans2d(wtrans, 6, 512, 512)) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+

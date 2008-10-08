@@ -1,0 +1,69 @@
+% user_manual.tex
+%
+% LaTeX main file for the megawave user manual
+%
+% author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+
+\documentclass[a4paper, 12pt]{book}
+
+%\usepackage{draftwatermark}
+%\SetWatermarkText{DRAFT VERSION}
+%\SetWatermarkScale{2}
+
+\def\myvolume{volume one}
+\def\mytitle{megawave user manual}
+\def\myauthor{Jacques Froment}
+\def\mykeywords{megawave, image processing}
+
+\input{../common/head.inc.tex}
+
+\begin{document}
+
+\input{../common/body.inc.tex}
+
+\tableofcontents
+\newpage
+
+\chapter{Introduction}
+\label{intro}
+\input{chapter_1.tex}
+\newpage
+
+\chapter{Installation}
+\label{install}
+\input{chapter_2.tex}
+\newpage
+
+\chapter{Getting started}
+\label{start}
+\input{chapter_3.tex}
+\newpage
+
+\chapter{Module's header}
+\label{header}
+\input{chapter_4.tex}
+\newpage
+
+\chapter{System's macros}
+\label{sysmacros}
+\input{chapter_5.tex}
+\newpage
+
+\chapter{User's macros}
+\label{usermacros}
+\input{chapter_6.tex}
+\newpage
+
+\chapter{Documentation}
+\label{document}
+\input{chapter_7.tex}
+\newpage
+
+\chapter{Annex}
+\label{annex}
+\input{chapter_8.tex}
+\newpage
+
+\printindex
+
+\end{document}

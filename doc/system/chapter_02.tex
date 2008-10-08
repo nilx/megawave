@@ -1,0 +1,451 @@
+% Part 2 of the MegaWave2 Guide #2
+%   Images
+%
+
+All image\index{image} structures share the following important fields:
+\begin{itemize}
+\item \verb+nrow,ncol+ : define the size of the image, by the number of
+rows and the number of columns (not to be overwritten by user).
+Notice that the range over the $x$ axis is $0 \ldots \verb+ncol+ -1$ and that
+the range over the $y$ axis is $0 \ldots \verb+nrow+ -1$.
+\item \verb+previous, next+ : pointers to the previous and the next image. These fields are used only when the image is part of a movie.
+\end{itemize}
+
+Each image structure has also one or several fields to record the pixel values.
+When the image is monochrome, there is only one field called \verb+gray+.
+Color images use three fields called \verb+red+, \verb+green+ and \verb+blue+.
+The C type of these array fields depends to the image object: they can be pointers to \verb+unsigned char+ values or pointers to \verb+floating points+ values.
+
+You can put values in those arrays, at the expressed condition that you respect
+the C type of the field and that you do not exceed the maximum value of the 
+index, given by $\mbox{ncol} \times \mbox{nrow} - 1$.
+For example, \verb!image->gray[y*image->ncol+x]! is the gray level of the pixel of coordinates $(x,y)$ that is, the column $\#x$ and the row $\#y$.
+Ranges are $0 \ldots nrow -1$ for $y$ and $0 \ldots ncol -1$ for $x$.
+
+You can shorten this expression in your modules using C macro, for example:
+{\small
+\begin{verbatim}
+#define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)] )
+\end{verbatim}
+}
+allows you to access to the pixel $(x,y)$ by writing \verb!_(image,x,y)!.
+
+Tip to speed your modules: images are built from left to right and up to down.
+If you can write your algorithm to access to the pixel following this natural order,
+you can speed it considerably using the following scheme. In this example, one 
+copies each pixel of the cimage M into the fimage B only if the pixel of M is not
+equal to zero:
+{\small
+\begin{verbatim}
+  Cimage M;    /* Input of the module */
+  Fimage *B;   /* Output of the module */
+
+  register float *ptrB;
+  register unsigned char *ptrM;
+  register int i;
+
+  for (i=0, ptrB = (*B)->gray, ptrM = M->gray;
+               i< M->ncol*M->nrow;
+               i++, ptrB++, ptrM++)
+            if (*ptrM) *ptrB = (float) *ptrM;
+\end{verbatim}
+}
+If you scan the pixels in a random order, you may rather define a bi-dimensional
+tab \verb+A+ so that \verb+A[l][c]+ points to the pixel's value \verb+(c,l)+.
+See the functions \verb+mw_newtab_cimage()+, \verb+mw_newtab_fimage()+, \ldots
+
+%-----------------------------------------------
+\section{Char Images}
+%-----------------------------------------------
+
+\label{images_char-images}
+
+Use preferably the {\em Char Images} memory type each time you can write an algorithm which directly computes the gray level as an integer between $0$ (black) and $255$ (white) : such discrete scheme will be more accurate, faster and will require far less memory than a continuous scheme (i.e. with floating points computations).
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Cimage}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_char-images_structure}
+
+\def\cimage{{\tt Cimage }}
+\index{structure!\cimage}
+
+ Beginners should only focus on the first three fields of this structure. 
+You should also consider the fields \verb+previous+ and \verb+next+ if your
+image is part of a movie.
+Some fields are not used this time, such \verb+firstcol+ \ldots \verb+lastrow+,
+but future modules may access to them.
+
+{\small
+\begin{verbatim}
+typedef struct cimage {
+  int nrow;        /* Number of rows (dy) */
+  int ncol;        /* Number of columns (dx) */
+  unsigned char *gray;     /* The Gray level plane (may be NULL) */
+
+  float scale;     /* Scale of the picture (should be 1 for original pict.) */
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the image */
+  
+  /* Defines the signifiant part of the picture : */
+  int firstcol;    /* index of the first col not affected by left side effect*/
+  int lastcol;     /* index of the last col not affected by right side effect*/
+  int firstrow;    /* index of the first row not aff. by upper side effect */  
+  int lastrow;     /* index of the last row not aff. by lower side effect */  
+
+  /* For use in Movies only */
+  struct cimage *previous; /* Pointer to the previous image (may be NULL) */
+  struct cimage *next; /* Pointer to the next image (may be NULL) */
+
+} *Cimage;
+\end{verbatim}
+}
+
+
+Do not change by yourself the content of \verb+nrow+ and \verb+ncol+: the size
+of the image has to be modified using functions of the library only (see section~\ref{images_char-images_function} page~\pageref{images_char-images_function}).
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_char-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item \verb+"IMG"+\index{file format!IMG} Original format defined by the defunct software PCVision (from ImageAction), and widely used by MegaWave1.
+This format carries the comments field (\verb+cmt+) of the memory object.
+\item \verb+"TIFF"+\index{file format!TIFF} Tag Image Format with one 8-bits plane (unsigned char gray levels).
+This format carries the comments field (\verb+cmt+) of the memory object.
+It has been developed by Sam Leffler and Silicon Graphics, Inc.
+To use this format, you need the TIFF library (libtiff). See the Volume One, section 
+``Installation''. Output objects are created without compression.
+\item \verb+"PGMA"+\index{file format!PGMA} PGM (portable graymap file format) in Ascii version.
+\item \verb+"PGMR"+\index{file format!PGMR} PGM (portable graymap file format) in Rawbits version.
+\item \verb+"PM_C"+\index{file format!PM\_C} PM format with one 8-bits plane (unsigned char gray levels).
+This format carries the comments field (\verb+cmt+) of the memory object.
+It has been developed by the University of Pennsylvania, USA.
+\item \verb+"GIF"+\index{file format!GIF} GIF87 (Graphics Interchange Format) 8-bits per pixel, non interlaced.
+This format has been developed by CompuServe Incorporated.
+\item \verb+"BMP"+\index{file format!BMP}  Microsoft BMP 8-bits per pixel.
+Output objects are created using Windows BMP format. Compression methods are not implemented.
+\item \verb+"JFIF"+\index{file format!JFIF} JPEG/JFIF format with one 8-bits plane (unsigned char gray levels).
+This format carries the comments field (\verb+cmt+) of the memory object.
+It has been developed by the Independent JPEG Group's software.
+To use this format, you need the JPEG library (libjpeg). See the Volume One, section 
+``Installation''. 
+The compression ratio is defined by the quality factor, which is an integer between 1 (worse) and 100 (best).
+Default quality factor is 100. To change this value, add it as an option to the JFIF type.
+For example, JFIF:50 means JFIF file type with quality factor 50.
+Whatever the quality factor, output objects are created with loosely compression.
+\item \verb+"PS"+\index{file format!PS} PostScript (level 1) format, {\em for output objects only}.
+This format has been developed by Adobe Systems Incorporated.
+\item \verb+"EPSF"+\index{file format!EPSF} Encapsulated PostScript (level 1) format, {\em for output objects only}.
+Same as PS format but more suitable when used with some softwares that recognize encapsulated comments, such as \LaTeX.
+\item \verb+"INR"+\index{file format!INR} Original format defined by the software Inrimage (from INRIA). This is a very old version, implemented for
+backward-compatibility with MegaWave1, and it should not be used anymore.
+\item \verb+"MTI"+\index{file format!MTI} Original format defined by the software MultImage (from 2AI), and used by MegaWave1. Quite exotic now.
+\item \verb+"BIN"+\index{file format!BIN} This is the ``universal'' image format for 8-bits gray levels images.
+It records one byte per pixel, without header.
+Since it does not contain any header, the image file must be a square (i.e. the number of columns and the number of lines must be the same).
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_char-images_function}
+
+The following is a description of all the functions related to 
+the \verb+Cimage+ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_02_cimage.tex}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Color Char Images}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+
+\label{images_color-char-images}
+
+Use the {\em Color Char Images} memory type each time you want to process 
+color images. As in the Char Images case, the use of this format instead of the
+corresponding floating point format (\verb+Cfimage+) is strongly recommended.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Ccimage}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_color-char-images_structure}
+
+\def\ccimage{{\tt Ccimage }}
+\index{structure!\ccimage}
+
+ Beginners should focus on the first five fields only of this structure. 
+You should also consider the fields \verb+previous+ and \verb+next+ if your
+image is part of a movie.
+Some fields are not used at this time, such \verb+firstcol+ \ldots \verb+lastrow+, but future modules may access to them.
+
+{\small
+\begin{verbatim}
+typedef struct ccimage {
+  int nrow;        /* Number of rows (dy) */
+  int ncol;        /* Number of columns (dx) */
+
+  unsigned char *red;     /* The red level plane (may be NULL) */
+  unsigned char *green;   /* The green level plane (may be NULL) */
+  unsigned char *blue;    /* The blue level plane (may be NULL) */
+
+  float scale;     /* Scale of the picture (should be 1 for original pict.) */
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the image */
+  
+  /* Defines the signifiant part of the picture : */
+  int firstcol;    /* index of the first col not affected by left side effect*/
+  int lastcol;     /* index of the last col not affected by right side effect*/
+  int firstrow;    /* index of the first row not aff. by upper side effect */  
+  int lastrow;     /* index of the last row not aff. by lower side effect */  
+
+  /* For use in Movies only */
+  struct ccimage *previous; /* Pointer to the previous image (may be NULL) */
+  struct ccimage *next; /* Pointer to the next image (may be NULL) */
+
+} *Ccimage;
+
+\end{verbatim}
+}
+
+Do not change by yourself the content of \verb+nrow+ and \verb+ncol+: the size
+of the image has to be modified using functions of the library only (see section~\ref{images_color-char-images_function} page~\pageref{images_color-char-images_function}).
+
+You can put \verb+unsigned char+ values in the arrays \verb+red+, \verb+green+,
+\verb+blue+  at the expressed condition that you do not exceed the maximum value of the index,
+given by $\mbox{ncol} \times \mbox{nrow} - 1$.
+
+Actually, everything works as for the \cimage structure (see section~\ref{images_char-images_structure} page~\pageref{images_char-images_structure}) but you
+have to deal with three planes instead of only one.
+That is the proportion between each RGB component that will give you the
+color. Notice that you can get more than $16$ millions of different colors
+($2^{3 \times 8}$ exactly), so you need appropriate device to see or print
+such image with fidelity.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_color-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item \verb+"TIFFC"+\index{file format!TIFFC}  Tag Image Format with three 8-bits color planes (24 bits color).
+This format carries the comments field (\verb+cmt+) of the memory object. 
+It has been developed by Sam Leffler and Silicon Graphics, Inc.
+To use this format, you need the TIFF library (libtiff). See the Volume One, section 
+``Installation''.
+Output objects are created without compression.
+\item \verb+"PMC_C"+\index{file format!PMC\_C} 
+PM format with three 8-bits planes (24 bits color).
+This format carries the comments field (\verb+cmt+) of the memory object.
+It has been developed by the University of Pennsylvania, USA.
+\item \verb+"BMPC"+\index{file format!BMPC}  Microsoft BMP 24-bits per pixel.
+Output objects are created using Windows BMP format. Compression methods are not implemented.
+\item \verb+"PPM"+\index{file format!PPM}  Portable pixmap format (24 bits color).
+Only the "raw" PPM format is supported, the "plain" (ascii) one
+being definitely too wasteful of space to record color images.
+\item \verb+"JFIFC"+\index{file format!JFIFC}\index{JPEG|see{file format:JFIF,JFIFC}}
+JPEG/JFIF format with three 8-bits planes (24 bits color).
+This format carries the comments field (\verb+cmt+) of the memory object.
+It has been developed by the Independent JPEG Group's software.
+To use this format, you need the JPEG library (libjpeg). See the Volume One, section 
+``Installation''. 
+The compression ratio is defined by the quality factor, which is an integer between 1 (worse) and 100 (best).
+Default quality factor is 100. To change this value, add it as an option to the JFIFC type.
+For example, JFIFC:50 means JFIFC file type with quality factor 50.
+Whatever the quality factor, output objects are created with loosely compression.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_color-char-images_function}
+
+The following is a description of all the functions related to 
+the \verb+Ccimage+ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_02_ccimage.tex}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Float Images}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+
+\label{images_float-images}
+\def\fimage{{\tt Fimage }}
+\index{structure!\fimage}
+
+You may want to use this format when your algorithm process image computations
+using floating point arithmetic (continuous scheme). 
+You may also use this format to represent any kind of two-dimensional real data (such as matrix).
+
+Notice that you may lose precision when you use such format as the input
+of another module which requires integer representation (\cimage type), e.g.
+printing or displaying devices.
+In the other side, a module which accepts \fimage type as the input will also
+work without degradation if you put a \cimage type instead.
+It is so better to use, if possible, \cimage type for output variables and \fimage type for input.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Fimage}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_float-images_structure}
+
+ This memory type is exactly the same as \cimage (See section~\ref{images_char-images_structure} page~\pageref{images_char-images_structure}): the only difference is about the \verb+gray+ field which is a pointer to floating points values.
+
+Consequently, there is no formal correspondance between a gray level value
+and a visual gray level (e.g. $255.0$ may not represent ``white'').
+
+{\small
+\begin{verbatim}
+typedef struct fimage {
+  int nrow;        /* Number of rows (dy) */
+  int ncol;        /* Number of columns (dx) */
+  float *gray;     /* The Gray level plane (may be NULL) */
+
+  float scale;     /* Scale of the picture (should be 1 for original pict.) */
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the image */
+  
+  /* Defines the signifiant part of the picture : */
+  int firstcol;    /* index of the first col not affected by left side effect*/
+  int lastcol;     /* index of the last col not affected by right side effect*/
+  int firstrow;    /* index of the first row not aff. by upper side effect */  
+  int lastrow;     /* index of the last row not aff. by lower side effect */  
+
+} *Fimage;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_float-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item \verb+"RIM"+\index{file format!RIM} 
+Original format defined by MegaWave1. 
+It is close to the IMG format, but it uses a 32-bits plane in order to record floating point values.
+This format carries the comments field (\verb+cmt+) of the memory object.
+\item \verb+"PM_F"+\index{file format!PM\_F}  
+PM format with one 32-bits plane (floating point gray levels).
+This format carries the comments field (\verb+cmt+) of the memory object.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_float-images_function}
+
+The following is a description of all the functions related to 
+the \verb+Fimage+ type. The list is in alphabetical order.
+
+\newpage %......................................
+
+\input{chapter_02_fimage.tex}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Color Float Images}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+
+\label{images_color-float-images}
+
+You may want to use this format when you need to process color images with
+floating point precision (continuous scheme). 
+Please notice that this format wastes a lot of memory and computational
+time. 
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{The structure Cfimage}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_color-float-images_structure}
+
+\def\cfimage{{\tt Cfimage }}
+\index{structure!\cfimage}
+
+ This memory type is not exactly the same as \ccimage (See section~\ref{images_color-char-images_structure} page~\pageref{images_color-char-images_structure}): the difference is not
+only about the RGB fields which are pointers to floating points values and not to unsigned
+char, but also about the {\em color model}. A color model\index{color model} is a specification of a 
+3D-coordinate system and a subspace within that system where each color is represented by
+a single point. 
+Whatever the color model, a cfimage is alway made by three planes called \verb+red+, 
+\verb+green+ and \verb+blue+. The significance of those planes is given by the value
+of the \verb+model+ field. The first plane \verb+red+ matches the first letter of
+the model's name (e.g. R for RGB model, H for HSI model), the second plane \verb+green+ 
+matches the second letter of the model's name (e.g. G for RGB model, S for HSI model),
+and the third plane \verb+blue+ matches the third letter (e.g. B for RGB model, I for HSI 
+model).
+
+The implemented color models are 
+\begin{itemize}
+\item {\tt MODEL\_RGB} \index{color model!RGB}Cartesian coordinate system Red, Green, Blue. 
+\item {\tt MODEL\_YUV} \index{color model!YUV} YUV coordinate system (CCIR 601-1).
+\item {\tt MODEL\_HSI} \index{color model!HSI} HSI coordinate system (H is Hue, S is Saturation and I is Intensity
+or luminance). 
+\item {\tt MODEL\_HSV} \index{color model!HSV} HSV coordinate system (H is Hue, S is Saturation and V is Value).
+\end{itemize}
+
+Be aware that a MegaWave2 module which takes a cfimage in input performs a statement
+likely to work for one color model only. One should checks the value of the \verb+model+ 
+field before any statement.
+
+{\small
+\begin{verbatim}
+typedef struct cfimage {
+  int nrow;        /* Number of rows (dy) */
+  int ncol;        /* Number of columns (dx) */
+  int model;       /* Model of the colorimetric system */
+
+  float *red;      /* The Red plane if model=MODEL_RGB (may be NULL) or Y/H   */
+  float *green;    /* The Green plane if model=MODEL_RGB (may be NULL) or U/S */
+  float *blue;     /* The Blue plane if model=MODEL_RGB (may be NULL) or V/I  */
+
+  float scale;     /* Scale of the picture (should be 1 for original pict.) */
+  char cmt[mw_cmtsize]; /* Comments */
+  char name[mw_namesize]; /* Name of the image */
+  
+  /* Defines the signifiant part of the picture : */
+  int firstcol;    /* index of the first col not affected by left side effect*/
+  int lastcol;     /* index of the last col not affected by right side effect*/
+  int firstrow;    /* index of the first row not aff. by upper side effect */  
+  int lastrow;     /* index of the last row not aff. by lower side effect */  
+
+} *Cfimage;
+\end{verbatim}
+}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Related file (external) types}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_color-float-file_type}
+
+The list of the available formats is the following:
+\begin{enumerate}
+\item[PMC\_F]\index{file format!PMC\_F} 
+PM format with three 8-bits planes, each plane being of float values.
+This format carries the comments field (\verb+cmt+) of the memory object.
+It has been developed by the University of Pennsylvania, USA.
+An extension has been performed to record the \verb+model+ value.
+In the case of RGB model, the format is exactly the same as the original.
+\end{enumerate}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Functions Summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{images_color-float-images_function}
+
+The following is a description of all the functions related to 
+the \verb+Cfimage+ type. The list is in alphabetical order.
+Conversion between memory models are not implemented as functions of
+the system library, but as modules (see \volIII). 
+
+\newpage %......................................
+
+\input{chapter_02_cfimage.tex}

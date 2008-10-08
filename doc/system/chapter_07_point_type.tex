@@ -1,0 +1,148 @@
+\Name{mw\_change\_point\_type}{Define the point\_type structure, if not defined}
+\Summary{
+Point\_type mw\_change\_point\_type(pt)
+
+Point\_type pt;
+}
+\Description
+This function returns a \pt\ structure if the input \verb+pt = NULL+.
+It is provided despite the \\
+\verb+mw_new_point_type()+ function for
+global coherence with other memory types.
+
+The function \verb+mw_change_point_type+ returns \Null\ if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.
+
+\Next
+\Example
+\begin{verbatim}
+
+Point_type pt=NULL; /* Internal use: no Input neither Output of module */
+
+/* Define a point type as image border */
+
+pt = mw_change_point_type(pt);
+if (pt == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+pt->type = 1; /* image border */
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_copy\_point\_type}{Copy all point types starting from the given one}
+\Summary{
+Point\_type mw\_copy\_point\_type(in,out)
+
+Point\_type in, out;
+}
+\Description
+This function copies the current point type and the next point types contained in the chain defined at the starting point type \verb+in+. 
+The result is put in \verb+out+, which
+may not be a predefined structure : in case of \verb+out=NULL+, the \verb+out+
+structure is allocated.
+
+The function \verb+mw_copy_point_type+ returns \Null\ if not enough memory is available to perform
+the copy, or \verb+out+ elsewhere.
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+
+Point_type in; /* Predefined point */
+Point_type out=NULL; 
+
+out=mw_copy_point_type(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_point\_type}{Deallocate the point\_type structure}
+\Summary{
+void mw\_delete\_point\_type(pt)
+
+Point\_type pt;
+}
+\Description
+This function deallocates the \pt\ structures starting from
+the given \verb+pt+, including this point itself.
+You should set \verb+pt = NULL+ after this call since the address pointed
+by \verb+pt+ is no longer valid.
+To deallocate a point only and not all the next points of the
+chain, just use \verb+free(pt)+.
+
+\Next
+\Example
+\begin{verbatim}
+/* Remove the first point_type of an existing morpho_line */
+
+Morpho_line ll; /* Existing morpho_line (e.g. Input of module) */
+Point_type pt;  /* Internal use */
+
+pt = ll->first_type;
+ll->first_type=pt->next;
+pt->next->previous = NULL;
+free(pt);
+pt = NULL;
+
+/* Remove all point_type of an existing morpho_line */
+
+mw_delete_point_type(ll->first_type);
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_new\_point\_type}{Create a new point\_type structure}
+\Summary{
+Point\_type mw\_new\_point\_type();
+}
+\Description
+This function creates a new \pt\ structure.
+It returns \Null\ if not enough memory is available to create the structure.
+Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal point structures before the end
+of the module, except if they are part of an input or output curve.
+
+\Next
+\Example
+\begin{verbatim}
+/* Insert the point (0,0) with type 1 at the end of an existing morpho_line */
+
+Morpho_line ll;  /* Existing morpho_line (e.g. Input of module) */
+Point_curve point,p;  /* Internal use: no Input neither Output of module */
+Point_type pt,t;
+
+/* Define the point (0,0) with type 1 */
+point = mw_new_point_curve();
+if (point == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+pt = mw_new_point_type();
+if (pt == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+point->x = point->y = 0;
+pt->type=1;
+
+/* Find the last point of the morpho_line */
+p = ll->first_point; t = ll->first_type; 
+while (p->next) {p=p->next; t=t->next;}
+
+/* Insert the point */
+p->next = point;
+t->next = pt;
+point->previous = p;
+pt->previous = t;
+
+/* Do not deallocate point_curve and point_type or morpho_line will become inconsistent */ 
+\end{verbatim}
+\newpage %......................................
+

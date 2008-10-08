@@ -1,0 +1,448 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+            "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+
+<META http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<META name="GENERATOR" content="hevea 1.10">
+<LINK rel="stylesheet" type="text/css" href="system_manual.css">
+<TITLE>Miscellaneous Features</TITLE>
+</HEAD>
+<BODY >
+<A HREF="system_manual009.html"><abbr title="previous chapter" class="navigation">&larr;</abbr></A>
+<A HREF="index.html"><abbr title="table of contents" class="navigation">&uarr;</abbr></A>
+<A HREF="system_manual011.html"><abbr title="next chapter" class="navigation">&rarr;</abbr></A>
+<HR>
+<H1 CLASS="chapter"><A NAME="htoc131">Chapter&#XA0;9</A>&#XA0;&#XA0;Miscellaneous Features</H1><UL>
+<LI><A HREF="system_manual010.html#toc35">Global System Variables</A>
+</LI><LI><A HREF="system_manual010.html#toc36">Conversion between memory types</A>
+</LI><LI><A HREF="system_manual010.html#toc37">Miscellaneous System Functions</A>
+</LI></UL>
+<P>
+<A NAME="miscellaneous"></A>
+</P><P>You will find in this section some utilities which may help you to write your modules. 
+Contrary to the former sections, some functions described here are not about a memory 
+format. </P><H2 CLASS="section"><A NAME="toc35"></A><A NAME="htoc132">9.1</A>&#XA0;&#XA0;Global System Variables</H2><P><A NAME="misc_glob-sys-var"></A></P><P>At any time in a module, you can access to the following external variables<A NAME="@default145"></A>.
+Those variables are for reading only, do not change their values !
+Notice that you don&#X2019;t have to define those variables in your module, the
+definitions are done into the include file <CODE>mw.h</CODE>.</P><UL CLASS="itemize"><LI CLASS="li-itemize">
+<CODE>char *mwname</CODE><A NAME="@default146"></A> :
+This variable contains the name of the current module.</LI><LI CLASS="li-itemize"><CODE>char *mwgroup</CODE><A NAME="@default147"></A> :
+This variable contains the group name of the current module, as for example <CODE>"common/signal"</CODE> which means that the current module belongs to the subgroup <CODE>signal</CODE> which is part of the main group <CODE>common</CODE>.</LI><LI CLASS="li-itemize"><CODE>int mwerrcnt</CODE><A NAME="@default148"></A> :
+Give the number of time the function <CODE>mwerror</CODE> has be called with the
+argument <CODE>ERROR</CODE> (see section&#XA0;<A HREF="#misc_function">9.3</A> page&#XA0;<A HREF="#misc_function">??</A>).
+Since <CODE>ERROR</CODE> is not a fatal event, the user has the possibility to terminate the algorithm by checking <CODE>mwerrcnt</CODE>, if too many errors have been
+encountered.</LI><LI CLASS="li-itemize"><CODE>int mwrunmode</CODE><A NAME="@default149"></A> :
+The value of this variable indicates in which context the module is executed.
+<UL CLASS="itemize"><LI CLASS="li-itemize">
+If set to 1, the module is called in the run-time mode;
+</LI><LI CLASS="li-itemize">if set to 2, the module is called by the window-oriented interpreter (XMegaWave2).
+</LI></UL></LI></UL><H2 CLASS="section"><A NAME="toc36"></A><A NAME="htoc133">9.2</A>&#XA0;&#XA0;Conversion between memory types</H2><P><A NAME="conv_memory_types"></A></P><P>The System Library contains functions to convert memory types<A NAME="@default150"></A>. 
+However do not expect to find a function to convert structures
+which are very dissimilar, as <CODE>Curves</CODE> and <CODE>Cimage</CODE>.
+If the meaning one can give of a conversion is not evident or not unique,
+a conversion procedure has to be implemented as a module rather than 
+as a system function.</P><P>Conversion function summaries follow the following rule :
+<CODE>out = (Y) mw_x_to_y(in,old)</CODE> where <CODE>x</CODE> is the internal C type of the
+input <CODE>in</CODE>, <CODE>y</CODE> the internal C type of the requested output 
+<CODE>out</CODE> (letters in lowercase) and <CODE>Y</CODE> the cast to the output 
+(internal C type of <CODE>out</CODE> with first letter in uppercase).
+In the last argument <CODE>old</CODE> you may put the name of a variable of type <CODE>Y</CODE> :
+in such a case, the memory allocation will be reused for <CODE>out</CODE> (the pointer
+<CODE>old</CODE> will have the same address than <CODE>out</CODE>). This is especially useful
+when converting lot of images with same size, to avoid memory blowup. 
+If you do not want to use this possibility, just put <CODE>NULL</CODE> as the last argument :
+memory for <CODE>out</CODE> will be allocated.</P><P>In addition to the various <CODE>mw_x_to_y()</CODE> undocumented conversion 
+functions, there exists an &#X201C;all-purpose&#X201D; conversion function called 
+<CODE>mw_conv_internal_type()</CODE> and documented next page.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_conv_internal_type</FONT></B> - Convert any possible internal type to another one</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void *mw_conv_internal_type(mwstruct,typein,typeout)</P><P>void *mwstruct; /* Any type of MegaWave2 structure */</P><P>char *typein; /* Type of the input &lt;mwstruct&gt; */</P><P>char *typeout; /* Type of the output structure */
+</P><P><BR>
+<BR>
+<BR>
+</P><P>
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function may be used instead of the <CODE>mw_x_to_y()</CODE> various functions 
+to convert any possible internal type <CODE>a</CODE> to <CODE>b</CODE>, even if the 
+<CODE>mw_a_to_b()</CODE> function does not exist : the system creates 
+<CODE>mw_conv_internal_type()</CODE> by analyzing existing <CODE>mw_x_to_y()</CODE> 
+functions, by finding the shortest path between two internal types, say
+<CODE>a</CODE> and <CODE>b</CODE>, and by calling appropriate <CODE>mw_x_to_y()</CODE> functions
+(for example, <CODE>mw_a_to_c()</CODE> and <CODE>mw_c_to_b()</CODE> if those functions exist).</P><P>The input <CODE>mwstruct</CODE> is a variable of internal C type given by the
+string <CODE>typein</CODE> (use lower letters only). 
+The output of the function is a variable of internal C type given by the 
+string <CODE>typeout</CODE>, or <CODE>NULL</CODE> if the conversion is impossible.</P><P>Do not forget to cast the output to the right type.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">Ccimage in;  
+Cimage out1;
+Fimage out2;
+
+/* The line */
+out1 = (Cimage) mw_conv_internal_type(in,"ccimage","cimage");
+/* is equivalent to */
+out1 = (Cimage) mw_ccimage_to_cimage(in);
+
+if (out1==NULL) mwerror(FATAL,1,"Cannot convert Ccimage to Cimage !\n");
+
+/* But to convert a Ccimage to a Fimage you shall use */
+out2 = (Fimage) mw_conv_internal_type(in,"ccimage","fimage");
+/* Since the following function does not exist at this time */
+out2 = (Fimage) mw_ccimage_to_fimage(in);
+
+if (out2==NULL) mwerror(FATAL,1,"Cannot convert Ccimage to Fimage !\n");
+
+</PRE><H2 CLASS="section"><A NAME="toc37"></A><A NAME="htoc134">9.3</A>&#XA0;&#XA0;Miscellaneous System Functions</H2><P><A NAME="misc_function"></A></P><P>The following is a description of some miscellaneous system functions 
+which may be of interest for the user.
+The list is in alphabetical order.</P><P>The most usefull are <CODE>mwerror</CODE> and <CODE>mwdebug</CODE>. 
+Please notice that you need to process any error (especially memory allocation failure) by displaying an error message using <CODE>mwerror</CODE>, and by doing
+appropriate statement.</P><P>Some other functions are about dynamic memory allocation<A NAME="@default151"></A>. 
+They are important, since you are discouraged to use static memory allocation (as <CODE>double data[10000]</CODE>), but you may skip their description if you are
+familiar with the standard C dynamic memory functions.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mwcalloc</FONT></B> - Dynamic memory allocation</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void *mwcalloc (nelem, elsize)</P><P>unsigned nelem, elsize;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function allocates space for an array of <CODE>nelem</CODE> elements,
+each of size <CODE>elsize</CODE> bytes, and initializes the space to zeros.</P><P>This function returns a pointer to space suitably aligned (after possible pointer coercion) for storage of any type of object. 
+Do not forget to cast the return value to the right type of your variable
+(see example below).
+If not enough memory is available to allocate the array, the function returns <TT>NULL</TT>.
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P>Each space allocated by <CODE>mwcalloc</CODE> must be deallocated using <CODE>mwcfree</CODE> before exiting the module.</P><P>Notice that in the MegaWave2 modules, the standard C function <CODE>calloc</CODE> is
+redefined to be <CODE>mwcalloc</CODE>. 
+Therefore, if you use <CODE>calloc</CODE> in your code you actually call <CODE>mwcalloc</CODE>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">float *data=NULL; /* Internal use: no Input neither Output of module */
+
+/* Allocates space for 1000 samples of float values */
+if  ( (data = (float *) mwcalloc (1000, sizeof(float))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Set the sample #i to the value i */
+for (i=0;i&lt;1000;i++) data[i] = i;
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mwcfree</FONT></B> - Dynamic memory deallocation</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mwcfree (ptr)</P><P>char *ptr;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function deallocates the space pointed to by 
+<CODE>ptr</CODE> and which has previously been allocated by <CODE>mwcalloc</CODE>. It does 
+nothing if <CODE>ptr</CODE> = <TT>NULL</TT>.</P><P>You should set <CODE>ptr</CODE> to <TT>NULL</TT>after this call since the address pointed to by <CODE>ptr</CODE> is no longer valid.</P><P>Notice that in the MegaWave2 modules, the standard C function <CODE>cfree</CODE> is
+redefined to be <CODE>mwcfree</CODE>. 
+Therefore, if you use <CODE>cfree</CODE> in your code you actually call <CODE>mwcfree</CODE>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">float *data=NULL; /* Internal use: no Input neither Output of module */
+
+/* Allocates space for 1000 samples of float values */
+if  ( (data = (float *) mwcalloc (1000, sizeof(float))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+. (statement)
+.
+/* End of statement: deallocation of the array */
+mwcfree((char *) data);
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mwdebug</FONT></B> - print if debug</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mwdebug(format, &#X2026;);</P><P>char *format;</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function prints its arguments in &#X2026;under control of the format in <CODE>format</CODE>, exactly in the same manner that the standard C function <CODE>printf</CODE> does. 
+The string <CODE>&lt;dbg&gt;</CODE> is added to the beginning of the line.</P><P>The print is active only when the module has been called with the debugging option on.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">Fimage image; 
+int x,y;
+
+for (x=0;x&lt;image-&gt;ncol;x++) for (y=0;y&lt;image-&gt;nrow;y++)
+{
+  mwdebug("processing pixel (%d,%d)...\n",x,y);
+  .
+  . (statement)
+  .
+}
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mwerror</FONT></B> - print an error message</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mwerror(type, exit_code, format, &#X2026;);</P><P>int type;</P><P>int exit_code;</P><P>char *format;</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function prints its arguments in &#X2026;under control of the format in <CODE>format</CODE> on the standard error output, in the same manner that the standard C function <CODE>fprintf(stdout,format,...)</CODE> does. </P><P>A message is added to the print, and an action may be performed, according to the value in <CODE>type</CODE> :
+</P><UL CLASS="itemize"><LI CLASS="li-itemize">
+<CODE>WARNING</CODE> :
+the additional message is <CODE>MegaWave warning (</CODE><EM>mwname</EM><CODE>) : </CODE> (following is the requested print);</LI><LI CLASS="li-itemize"><CODE>ERROR</CODE> :
+the additional message is <CODE>MegaWave error (</CODE><EM>mwname</EM><CODE>) : </CODE> (following is the requested print), and
+the variable <CODE>mwerrcnt</CODE> is incremented.</LI><LI CLASS="li-itemize"><CODE>FATAL</CODE> :
+the additional message is <CODE>MegaWave fatal (</CODE><EM>mwname</EM><CODE>) : </CODE> (following is the requested print), and a call to <CODE>mwexit(exit_code)</CODE> is performed.</LI><LI CLASS="li-itemize"><CODE>INTERNAL</CODE> :
+the additional message is <CODE>MegaWave internal (</CODE><EM>mwname</EM><CODE>) : </CODE> (following is the requested print), and a call to <CODE>mwexit(exit_code)</CODE> is performed.
+Use it when such error normally never may occur. 
+Then, such event points out a fault of the algorithm and the code should be fixed.
+One uses to add in the beginning of the print the text <CODE>[X]</CODE> where <CODE>X</CODE> is the name of the function where the error has been found, in order to make easier the debugging process (see example below).</LI><LI CLASS="li-itemize"><CODE>USAGE</CODE> : 
+after the requested print, is printing the usage of the module.
+Use it when the input values you get in your module function does not correspond to what the usage requests.
+</LI></UL><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">/* Compute some norm of any fimage */
+static float fnorm(image) 
+Fimage image; 
+
+{ float norm;  /* result of the computation */
+  .
+  .  (statement)
+  .
+  if (norm &lt; 0.0)
+   mwerror(INTERNAL,1,"[fnorm] Negative norm value computed ! (norm=%f)",norm);
+  else return(norm);
+}
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mwexit</FONT></B> - Module termination</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mwexit (status)</P><P>int status;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function causes normal program termination of a MegaWave2 module.
+The variable <CODE>status</CODE> indicates the status of the module when the
+termination occurred; value 0 means successful termination, other values are user-dependent.</P><P>Notice that in the MegaWave2 modules, the standard C function <CODE>exit</CODE> is
+redefined to be <CODE>mwexit</CODE>. 
+Therefore, if you use <CODE>exit</CODE> in your code you actually call <CODE>mwexit</CODE>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">Fimage image; /* Output of module */
+
+/* Try several times an allocation of a fimage of size 256x256 */
+while (mw_alloc_fimage(image,256,256) == NULL)
+  {
+     mwerror(ERROR,1,"Not enough memory !\n");
+     if (mwerrcnt &gt; 10) mwexit(-1);
+     sleep(2);  /* Wait 2 seconds */
+  }
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mwfree</FONT></B> - Dynamic memory deallocation</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mwfree (ptr)</P><P>char *ptr;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function deallocates the space pointed to by 
+<CODE>ptr</CODE> and which has previously been allocated by <CODE>mwmalloc</CODE>. It does 
+nothing if <CODE>ptr</CODE> = <TT>NULL</TT>.</P><P>You should set <CODE>ptr</CODE> to <TT>NULL</TT>after this call since the address pointed to by <CODE>ptr</CODE> is no longer valid.</P><P>Notice that in the MegaWave2 modules, the standard C function <CODE>free</CODE> is
+redefined to be <CODE>mwfree</CODE>. 
+Therefore, if you use <CODE>free</CODE> in your code you actually call <CODE>mwfree</CODE>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">float *data=NULL; /* Internal use: no Input neither Output of module */
+
+/* Allocates space for 1000 samples of float values */
+if  ( (data = (float *) mwmalloc (1000*sizeof(float))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+. (statement)
+.
+/* End of statement: deallocation of the array */
+mwfree((char *) data);
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mwmalloc</FONT></B> - Dynamic memory allocation</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void *mwmalloc (size)</P><P>size_t size;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function allocates space for a block of at least size bytes, but does not initialize the space.</P><P>This function returns a pointer to space suitably aligned (after possible pointer coercion) for storage of any type of object. 
+Do not forget to cast the return value to the right type of your variable
+(see example below).
+If not enough memory is available to allocate the array, the function returns <TT>NULL</TT>. 
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P>Each space allocated by <CODE>mwmalloc</CODE> must be deallocated using <CODE>mwfree</CODE> before exiting the module.</P><P>Notice that in the MegaWave2 modules, the standard C function <CODE>malloc</CODE> is
+redefined to be <CODE>mwmalloc</CODE>. 
+Therefore, if you use <CODE>malloc</CODE> in your code you actually call <CODE>mwmalloc</CODE>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">long *data=NULL; /* Internal use: no Input neither Output of module */
+
+/* Allocates space for 5000 samples of long values */
+if  ( (data = (long *) mwmalloc (5000*sizeof(long))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Set the sample #i to the value i */
+for (i=0;i&lt;5000;i++) data[i] = i;
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mwrealloc</FONT></B> - Dynamic memory re-allocation</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void *mwrealloc(ptr, size)</P><P>char *ptr;
+unsigned size;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function changes the size of the block pointed to by <CODE>ptr</CODE> to
+<CODE>size</CODE> bytes and returns a pointer to the (possibly moved) block. 
+Existing contents are unchanged up to the lesser of the new and old sizes. 
+If <CODE>ptr</CODE> is a <TT>NULL</TT>pointer, <CODE>mwrealloc</CODE> behaves like 
+<CODE>mwmalloc</CODE> for the specified size. 
+If <CODE>size</CODE> is zero and <CODE>ptr</CODE> is not a <TT>NULL</TT>pointer, the object it points to is freed and <TT>NULL</TT>is returned.</P><P>If not enough memory is available to allocate the array, the function returns <TT>NULL</TT>. 
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P>Do not forget to cast the return value to the right type of your variable, and to cast the type of the input pointer <CODE>ptr</CODE> to be <CODE>char *</CODE> (see example below).</P><P>Each space allocated by <CODE>mwrealloc</CODE> must be deallocated using <CODE>mwfree</CODE> before exiting the module.</P><P>Notice that in the MegaWave2 modules, the standard C function <CODE>realloc</CODE> is
+redefined to be <CODE>mwrealloc</CODE>. 
+Therefore, if you use <CODE>realloc</CODE> in your code you actually call <CODE>mwrealloc</CODE>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">long *ldata=NULL;   /* Internal use: no Input neither Output of module */
+double *ddata=NULL;
+
+/* Allocates space for 5000 samples of long values */
+if  ( (ldata = (long *) mwmalloc (5000*sizeof(long))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+.
+.
+/* Re-allocates space for 2000 samples of double values, using space allocated
+   for ldata 
+*/
+if  ( (ddata = (double *) mwrealloc ((char *) ldata, 2000*sizeof(double))) == NULL )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Warning : do not use anymore the array ldata ! */
+</PRE><HR>
+<A HREF="system_manual009.html"><abbr title="previous chapter" class="navigation">&larr;</abbr></A>
+<A HREF="index.html"><abbr title="table of contents" class="navigation">&uarr;</abbr></A>
+<A HREF="system_manual011.html"><abbr title="next chapter" class="navigation">&rarr;</abbr></A>
+</BODY>
+</HTML>

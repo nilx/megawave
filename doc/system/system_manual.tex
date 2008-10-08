@@ -1,0 +1,79 @@
+% system_manual.tex
+%
+% LaTeX main file for the megawave system manual
+%
+% author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+
+\documentclass[a4paper, 12pt]{book}
+
+%\usepackage{draftwatermark}
+%\SetWatermarkText{DRAFT VERSION}
+%\SetWatermarkScale{2}
+
+\def\myvolume{volume two}
+\def\mytitle{megawave system manual}
+\def\myauthor{Jacques Froment}
+\def\mykeywords{megawave, image processing}
+
+\input{../common/head.inc.tex}
+
+\begin{document}
+
+\input{../common/body.inc.tex}
+
+\tableofcontents
+\newpage
+
+\chapter{Introduction}
+\label{intro}
+\input{chapter_01.tex}
+\newpage
+
+\chapter{Images}
+\label{images}
+\input{chapter_02.tex}
+\newpage
+
+\chapter{Movies}
+\label{movies}
+\input{chapter_03.tex}
+\newpage
+
+\chapter{Signals}
+\label{signals}
+\input{chapter_04.tex}
+\newpage
+
+\chapter{Wavelets}
+\label{wavelets}
+\input{chapter_05.tex}
+\newpage
+
+\chapter{Geometrical structures : Point, Curves, Polygons and Lists}
+\label{curves-polygons}
+\input{chapter_06.tex}
+\newpage
+
+\chapter{Level sets and morphological structures}
+\label{morpho}
+\input{chapter_07.tex}
+\newpage
+
+\chapter{Unstructured material or raw data}
+\label{rawdata}
+\input{chapter_08.tex}
+\newpage
+
+\chapter{Miscellaneous Features}
+\label{miscellaneous}
+\input{chapter_09.tex}
+\newpage
+
+\chapter{Wdevice Library and window facilities}
+\label{wdevice}
+\input{chapter_10.tex}
+\newpage
+
+\printindex
+
+\end{document}

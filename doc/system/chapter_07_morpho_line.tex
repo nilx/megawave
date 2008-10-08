@@ -1,0 +1,182 @@
+\Name{mw\_change\_morpho\_line}{Define a morpho line, if not already defined}
+\Summary{
+Morpho\_line mw\_change\_morpho\_line(ml)
+
+Morpho\_line ml;
+}
+\Description
+This function returns a \mline\ structure if the input \verb+ml = NULL+.
+It is provided despite the \\
+\verb+mw_new_morpho_line()+ function for
+global coherence with other memory types.
+
+The function \verb+mw_change_morpho_line+ returns \Null\ if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.
+
+\Next
+\Example
+\begin{verbatim}
+
+/* Copy the curve of a morpho line into another morpho line */
+Morpho_line in,out=NULL;
+
+out=mw_change_morpho_line(out);
+if (!out) mwerror(FATAL,1,"Not enough memory !\n");
+out->open = in->open;
+if ( ((out->first_point = mw_new_point_curve()) == NULL) ||
+     ((out->first_type = mw_new_point_type()) == NULL) )
+   mwerror(FATAL, 1,"Not enough memory !\n");
+mw_copy_point_curve(in->first_point,out->first_point);
+mw_copy_point_type(in->first_type,out->first_type);
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_copy\_morpho\_line}{Copy a morpho line into another one}
+\Summary{
+Morpho\_line mw\_copy\_morpho\_line(in,out)
+
+Morpho\_line in, out;
+}
+\Description
+This function copies the \mline\ \verb+in+ into \verb+out+.
+All fields are copied but the following : \verb+pdata+, \verb+morphosets+,
+\verb+num+, \verb+previous+ and \verb+next+.
+The result is put in \verb+out+, which may not be a predefined structure : in case 
+of \verb+out=NULL+, the \verb+out+ structure is allocated.
+
+The function \verb+mw_copy_morpho_line+ returns \Null\ if not enough memory is available to perform
+the copy, or \verb+out+ elsewhere.
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+
+Morpho_line in; /* Predefined morpho_line */
+Morpho_line out=NULL; 
+
+out=mw_copy_morpho_line(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_morpho\_line}{Deallocate a morpho line}
+\Summary{
+void mw\_delete\_morpho\_line(ml)
+
+Morpho\_line ml;
+}
+\Description
+This function deallocates the \mline\ \verb+ml+ structure, including the
+curve (\point) and the chain of types (\pt). Other pointers are
+not deallicated.
+You should line \verb+ml = NULL+ after this call since the address pointed
+by \verb+ml+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+
+Morpho_line ml; /* Internal use: no Input neither Output of module */
+Point_curve pt;
+
+/* Define a morpho line containing the point (0,0) only */
+
+if (!(pt=mw_new_point_curve()) ||
+    !(ml=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+pt->x=pt->y=0;
+ml->first_point=pt;
+
+/* .
+   .
+   (statement)
+   .
+   .
+*/
+
+/* Deallocate the morpho_line */
+mw_delete_morpho_line(ml);
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_length\_morpho\_line}{Return the number of points a morpho line contains}
+\Summary{
+unsigned int mw\_length\_morpho\_line(ml)
+
+Morpho\_line ml;
+}
+\Description
+This function returns the number of points contained in the input
+\verb+ml+.
+It returns $0$ if the structure is empty or undefined.
+If the field \verb+first_type+ is not \Null, the number of points
+defined by this field must equal the number of points in the curve.
+
+\Next
+\Example
+\begin{verbatim}
+
+Morpho_line ml; /* Internal use: no Input neither Output of module */
+Point_curve pt;
+
+/* Define a morpho line containing the point (0,0) only */
+
+if (!(pt=mw_new_point_curve()) ||
+    !(ml=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+pt->x=pt->y=0;
+ml->first_point=pt;
+
+/* This will print 1 */
+printf("%d",mw_length_morpho_line(ml));
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_new\_morpho\_line}{Create a new morpho line}
+\Summary{
+Morpho\_line mw\_new\_morpho\_line()
+
+}
+\Description
+This function returns a new \mline\ structure, or \Null\ if not enough 
+memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the 
+\Null\ case, and do appropriate statement.
+
+The new structure is created with fields set to $0$ or \Null.
+
+\Next
+\Example
+\begin{verbatim}
+
+/* Copy the curve of a morpho line into another morpho line */
+Morpho_line in,out;
+
+out=mw_new_morpho_line();
+if (!out) mwerror(FATAL,1,"Not enough memory !\n");
+out->open = in->open;
+if ( ((out->first_point = mw_new_point_curve()) == NULL) ||
+     ((out->first_type = mw_new_point_type()) == NULL) )
+   mwerror(FATAL, 1,"Not enough memory !\n");
+mw_copy_point_curve(in->first_point,out->first_point);
+mw_copy_point_type(in->first_type,out->first_type);
+
+\end{verbatim}
+
+\newpage %......................................
+
+

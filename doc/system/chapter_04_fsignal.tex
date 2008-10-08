@@ -1,0 +1,258 @@
+\Name{mw\_alloc\_fsignal}{Allocate the array of values}
+\Summary{
+Fsignal mw\_alloc\_fsignal(signal,n)
+
+Fsignal signal;
+
+int n;
+}
+\Description
+This function allocates the array \verb+values+ of a \fsignal\ structure previously created using \verb+mw_new_fsignal+. The size of the signal is given by 
+\verb+n+, it corresponds to the number of samples.
+
+Values can be addressed after this call, if the allocation successed. There is
+no default values.
+
+Do not use this function if \verb+signal+ has already an allocated array: use
+the function \verb+mw_change_fsignal+ instead.
+
+The function \verb+mw_alloc_fsignal+ returns \Null\ if not enough memory is available to allocate the array. Your code should check this return value to 
+send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Fsignal signal=NULL; /* Internal use: no Input neither Output of module */
+int i;
+
+/* Create a signal with 1000 samples */
+if  ( ((signal = mw_new_fsignal()) == NULL) ||
+      (mw_alloc_fsignal(signal,1000) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+
+/* Set the sample #i to the value i */
+for (i=0;i<signal->size;i++) signal->values[i] = i;
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_change\_fsignal}{Change the size of the array of values}
+\Summary{
+Fsignal mw\_change\_fsignal(signal, n)
+
+Fsignal signal;
+
+int n;
+}
+\Description
+This function changes the memory allocation of the array \verb+values+ of a \fsignal\ structure, even if no previously memory allocation was done.
+The new size of the signal is given by \verb+n+, it corresponds to the number of samples.
+
+The function \verb+mw_change_fsignal+ can also create the structure if the input \verb+signal = NULL+.
+Therefore, this function can replace both \verb+mw_new_fsignal+ and
+\verb+mw_alloc_fsignal+. It is the recommended function to set signal 
+size of input/output modules. Since the function can set the 
+address of \verb+signal+, the variable must be set to the return value of 
+the function (See example below).
+
+The function \verb+mw_change_fsignal+ returns \Null\ if not enough memory is available to allocate the array. 
+Your code should check this return value to 
+send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Fsignal u; 
+
+/* Usage when <u> IS NOT an output of the module (and has not been
+   previously allocated): the function returns a new structure's address
+*/
+u = mw_change_fsignal(NULL, 1000);
+
+/* Usage when <u> IS an output of the module (or has been previously
+   allocated): DO NOT change the structure's address
+*/
+u = mw_change_fsignal(u, 1000);
+
+if (u == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_clear\_fsignal}{Clear all values}
+\Summary{
+void mw\_clear\_fsignal(signal, v)
+
+Fsignal signal;
+
+float v;
+}
+\Description
+This function fills the fsignal \verb+signal+ with the value given by $v$:
+all samples will have the value $v$. 
+
+\Next
+\Example
+\begin{verbatim}
+Fsignal signal; /* Output of module */
+
+signal = mw_change_fsignal(signal, 1000);
+if (signal == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+/* Set all samples to 0.0 */
+mw_clear_fsignal(signal,0.0);
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_copy\_fsignal\_header}{Copy the header of a signal into another one}
+\Summary{
+void mw\_copy\_fsignal\_header(in, out)
+
+Fsignal in,out;
+}
+\Description
+This function copies the header of the signal \verb+in+ into the header of the signal \verb+out+, but the size-related fields. The size of the two signals may be different
+(this includes the case where size of \verb+out+ is null).
+
+\Next
+\Example
+\begin{verbatim}
+
+Fsignal G; /* Needed Input */
+Fsignal F; /* Optional Output */
+
+  if (F) 
+    {
+    printf("F option is active: copy header of G into F\n");
+    mw_copy_fsignal_header(G, F);
+     }
+  else  printf("F option is not active\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_copy\_fsignal}{Copy a signal into another one}
+\Summary{
+void mw\_copy\_fsignal(in, out)
+
+Fsignal in,out;
+}
+\Description
+This function copies the header and the content of the array \verb+values+ of the signal \verb+in+ into the corresponding fields of the signal \verb+out+.
+The size of the two signals must be the same (this implies the \verb+out+ signal to
+be allocated).
+
+The speed of this function depends to the C library implementation, but it is
+usually very fast (trying to do faster is a waste of time).
+
+\Next
+\Example
+\begin{verbatim}
+
+Fsignal G; /* Needed Input */
+Fsignal F; /* Optional Output */
+
+  if (F) {
+    printf("F option is active: copy G in F\n");
+    if ((F = mw_change_fsignal(F, G->size)) == NULL)
+        mwerror(FATAL,1,"Not enough memory.\n");
+    else mw_copy_fsignal(G, F);
+   }
+  else  printf("F option is not active\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_copy\_fsignal\_values}{Copy the values of a signal into another one}
+\Summary{
+void mw\_copy\_fsignal\_values(in, out)
+
+Fsignal in,out;
+}
+\Description
+This function copies the content of the array \verb+values+ of the signal \verb+in+ into the array \verb+values+ of the signal \verb+out+.
+The size of the two signals must be the same (this implies the \verb+out+ signal to
+be allocated).
+
+The speed of this function depends to the C library implementation, but it is
+usually very fast (trying to do faster is a waste of time).
+
+\Next
+\Example
+\begin{verbatim}
+
+Fsignal G; /* Needed Input */
+Fsignal F; /* Optional Output */
+
+  if (F) {
+    printf("F option is active: copy G in F\n");
+    if ((F = mw_change_fsignal(F, G->size)) == NULL)
+        mwerror(FATAL,1,"Not enough memory.\n");
+    else mw_copy_fsignal_values(G, F);
+   }
+  else  printf("F option is not active\n");
+\end{verbatim}
+
+\newpage %......................................
+
+\Name{mw\_delete\_fsignal}{Deallocate the signal}
+\Summary{
+void mw\_delete\_fsignal(signal)
+
+Fsignal signal;
+}
+\Description
+This function deallocates the array \verb+values+ of a \fsignal\ structure previously allocated using \verb+mw_alloc_fsignal+ or \verb+mw_change_fsignal+, and the structure itself. 
+
+You should set \verb+signal = NULL+ after this call since the address pointed
+by \verb+signal+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+Fsignal signal=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((signal = mw_new_fsignal()) == NULL) ||
+      (mw_alloc_fsignal(signal,1000) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+.
+.
+.
+mw_delete_fsignal(signal);
+signal = NULL;
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_new\_fsignal}{Create a new Fsignal}
+\Summary{
+Fsignal mw\_new\_fsignal();
+}
+\Description
+This function creates a new \fsignal\ structure with an empty array \verb+values+.
+No samples can be addressed at this time.
+The array \verb+values+ should  be allocated using the function \verb+mw_alloc_fsignal+ or \verb+mw_change_fsignal+.
+
+Do not use this function for input/output of modules, since the MegaWave2
+Compiler already created the structure for you if you need it (see \volI). Use instead the function \verb+mw_change_fsignal+.
+Do not forget to deallocate the internal structures before the end
+of the module.
+
+The function \verb+mw_new_fsignal+ returns \Null\ if not enough memory is available to create the structure. Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+Fsignal signal=NULL; /* Internal use: no Input neither Output of module */
+
+if  ( ((signal = mw_new_fsignal()) == NULL) ||
+      (mw_alloc_fsignal(signal,1000) == NULL) )
+    mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+

@@ -1,0 +1,364 @@
+%
+% Part 1 of the MegaWave2 Guide #1
+%   Introduction
+%
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{What is MegaWave2}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{intro_what-is}
+
+MegaWave2\index{MegaWave2} is a software environment designed to help people
+to write algorithms on signal processing and image analysis.
+The user is assumed to be a non-computer scientist, 
+in particular he is likely to be a mathematician 
+(notice however that a good knowledge of the C language is assumed).
+
+This means that the programmer should focus his mind on the algorithm only and not on pure computer problems (such as how to read an image, how to display a movie on the screen, how to select a curve with the mouse, how to manage an object library,\ldots)
+
+The solution adopted by MegaWave2 is the concept of modules\index{module}, that is, of black boxes where the algorithms are described as C functions, without any assumption about the context in which the modules may be executed.
+It is the task of the MegaWave2 compiler (basically a MegaWave2 preprocessor\index{preprocessor} followed by a standard C compiler) to make from a module a run-time command, a function of a library or a function to be run under a window-oriented interpreter.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Motivations and history}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{intro_historic}
+
+MegaWave2 has been basically created to help researchers in writing algorithms in the domain of signal processing and 
+image analysis.
+MegaWave2 allows a diffusion of the scientific information along all members of Jean-Michel Morel's research team (and also between
+members of other teams): a module written to experiment a process may be used by somebody else several 
+months later.
+MegaWave2 was born in 1993 at the CEREMADE\index{CEREMADE}, a mathematical laboratory of the Paris-IX Dauphine University,
+France, inside a research group in image processing conducted by Jean-Michel Morel.
+It succeeded to MegaWave\index{MegaWave|see{MegaWave1}} (renamed MegaWave1\index{MegaWave1}) which essentially was a set of C files related to
+the wavelet transform \footnote{Actually, MegaWave1 was a quite different system since it did not have any specific 
+pre-processor.The advantages of MegaWave1 were the simplicity and the documentation, which was written in french and 
+therefore which did not misuse the Shakespeare language. Strong protests from our U.S. partners have urged us to change 
+that !}.
+Notice that in MegaWave2, if the wavelet part still exists, it only represents a small piece of all
+the mathematical methods for image analysis that can be found. 
+Since the move of the Morel's team in 1999, MegaWave2 is no longer directed by the CEREMADE but by the CMLA\index{CMLA} (Centre de Math\'ematiques et de 
+Leurs Applications), CNRS UMR-8536, at the Ecole Normale Sup\'erieure de Cachan, Cachan, France.
+
+We decided to put MegaWave2 in the public domain in 1994 (under some restrictions with version 1.x), since some 
+algorithms may be worthy of interest for people working in the field of signal processing and image analysis.
+The source of each algorithm is given, and therefore each researcher in the world can check it and understand it more deeply than he could do by reading the published article.
+Thus, we experiment a new kind of scientific publication: the ``soft-publication''\index{soft-publication}.
+The main scientific interest of soft-publication in image processing is to offer {\em reproducible research}\index{reproducible research}
+\footnote{The reproducible research paradigm is exposed in the report\\
+{\em http://www-stat.stanford.edu/\~{}donoho/Reports/1995/wavelab.pdf}.}.
+
+Moreover, we put together with the modules the whole MegaWave2 environment, so people can write new modules which may use 
+(or not) our algorithms.
+Thus we hope to help the scientific community, by encouraging (in the limit of our capacities) the communication and the 
+emergence of new ideas.
+
+Please notice that, because we could not check MegaWave2 on all possible computer architectures and systems, there is only 
+a limited number of computers on which you may run the software without encountering difficulties. 
+But even if your computer is not compatible with the ones we have, you still can read the algorithms by reading the sources of
+the modules and even better, since MegaWave2 version 2.x, you may adapt the system so that it can run on your computer.
+
+Last, please be indulgent with this software (which is not perfect - far from that - and which is still in development).
+It has been written essentially by mathematicians (and not by computer scientists), using the short time left after 
+teaching and research activities.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Authors and acknowledgements}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{intro_authors}
+
+As MegaWave1, MegaWave2 has been created by {\em Jacques Froment}, but with the help of a greater number of people.
+New developments in MegaWave2 are still directed by {\em Jacques Froment}, with the help since 1998 of {\em Lionel Moisan}
+who is in charge of collecting and updating public modules and user's macros. 
+
+Our thanks go first to {\em Jean-Michel Morel}, without whom nothing would have been possible.
+
+It is hardly possible to cite here all the people who participated in MegaWave2 by writing new modules, or 
+simply by giving valuable advices. 
+Here is the list of people who wrote modules included in the public MegaWave2 package Version 3.01, released in
+June 2007 :
+
+{\em 
+Andr\'es Almansa,
+Chiaa Babya,
+Toni Buades,
+Fr\'ed\'eric Cao,
+Vicent Caselles,
+Antonin Chambolle,
+Guillaume Charpiat,
+Thierry Cohignac,
+Bartomeu Coll,
+Jean-Pierre D'Al\`es,
+Fran\c{c}oise Dibos,
+Vincent Feuvrier,
+Jacques Froment,
+Fr\'ed\'eric Guichard,
+Yann Guyonvarc'h,
+Yan Jinhai,
+Claire Jonchery,
+Georges Koepfler,
+Sa\"{\i}d Ladjal,
+Kamal Lakhiari,
+Jos\'e-Luis Lisani,
+Simon Masnou,
+Lionel Moisan,
+Pascal Monasse,
+Pablo Muse,
+Denis Pasquignon,
+Florent Ranchin,
+Amandine Robin,
+Olivia Sanchez,
+Catalina Sbert,
+Fr\'ed\'eric Sur.
+}
+
+Special thanks {\em Claire Moisan} who revised the text of the guides. 
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+\section{Main changes between MegaWave2 versions 1.x, versions 2.x and versions 3.x}
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+\label{intro_main_changes}
+
+This guide is intended to be the User's Guide of MegaWave2 versions 2.x\index{version!2.x} and 3.x\index{version!3.x} and it 
+should not be used with former versions 1.x\index{version!1.x} (check the version number with \verb+mwvers+). 
+For those of you who were familiar with MegaWave2 versions 1.x, I give below a short list of the most important changes
+between versions 1.x and version 2.00. 
+To get an updated list of all changes\index{changes}, please read the file \verb+CHANGES+ in the distribution
+package.
+
+\begin{itemize}
+\item The {\em Registration\index{registration} procedure} to get a free {\em license} does no longer exists : with versions 2.x 
+you do not have any registration form to send.
+\item The {\em sources of MegaWave2 kernel} (preprocessor and libraries) are given. Therefore, you are now able to
+modify the kernel, for example to adapt it on a new machine architecture.
+\item In return, the kernel binaries are no longer distributed : the local MegaWave2 administrator has
+to compile the kernel by himself.
+\item MegaWave2 has been adapted for {\em Linux}\index{Linux} on i386.
+\item Effort has been done to offer more modules with associated demos, and former modules have been fully checked (some of them may see their name changed).
+The \verb+src+ directory has been deeply reorganized.
+\item The \verb+doc+ directory structure has changed : see Section~\ref{document}.
+\item The \verb+data+ directory structure has changed, together with the search path convention.
+In short, a PUBLIC subdirectory has been created where all public data not specifically associated 
+to some modules have to be put. To resolve an input filename, a module now searches inside all 
+subdirectories of data (See Volume 2 ``MegaWave2 System Library'').
+\end{itemize}
+
+
+The main change between versions 2.x and versions 3.x is about the MegaWave2 preprocessor\index{preprocessor}, which decodes the modules source files.
+In versions 2.x the 'traditional' preprocessor\index{preprocessor!traditional} includes a complete C parser and lexical analyzer generator. 
+This preprocessor handles correctly C preprocessor directives (that begin with the pound sign \#, as {\tt \#define} or {\tt \#include}). 
+By reading system include files, the 'traditional' preprocessor can decode modules that use objects defined in these include files (such as a type 
+name defined by {\tt typedef}). However, the C parser assumes a ANSI or K\&R standard C grammar whereas on Linux system, include files do not
+always strictly follow these standards (indeed, the GNU C compiler provides several language features not found in standard C).
+As a result of, on some glibc versions of Linux the MegaWave2 'traditional' preprocessor fails in decoding include files and outputs a parsing error.
+After several years of workarounds, it appeared impossible to adapt the 'traditional' preprocessor to the GNU C language and therefore
+a new MegaWave2 preprocessor was developed.
+
+The versions 3.x include the new MegaWave2 'light' preprocessor\index{preprocessor!light}. The adjective 'light' refers to the fact that this 
+preprocessor does not try to implement all standard C features : it reads and decodes what is essential in the modules source files, and nothing more.
+In particular, C preprocessor directives are no more decoded and therefore parsing errors on system include files are avoided.
+Of course, the 'light' preprocessor has a serious drawback : since the tree of the C code is incomplete, it may fail on some unusual features.
+For example, as {\tt \#define} directives are no more decoded, the line {\tt \#define real float} will not be read and if you use a parameter of type
+{\tt real} in the main function, a parse error will be generated (since types of parameters are essential for the main function only, you may use 
+a parameter of type {\tt real} in all other functions). Such limitations may be seen very restrictive, however it appears that over the 310 modules
+of the last version 2.31, only one of them had to be modified to fulfill the new conditions.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Contents of the MegaWave2 guides}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{intro_all-guides}
+
+There are four guides about MegaWave2. 
+Here are their contents:
+
+\begin{itemize}
+\item {\bf Volume 1 : ``MegaWave2 User's Guide''}. 
+This is the present guide.
+It introduces the user to the MegaWave2 philosophy and environment, it explains
+the software installation and gives the directions for use.
+\item {\bf  Volume 2: ``MegaWave2 System Library''}.
+It is a reference manual on the functions of the system library. 
+It also details all the available MegaWave2 objects.
+Users who do not need to write modules may skip it.
+\item {\bf  Volume 3: ``MegaWave2 User's Modules Library''}.
+It is a reference manual on the public modules.
+This manual is automatically generated by the MegaWave2 compiler to reflect
+the current modules library. 
+You can get an updated version of this volume at any time.
+It is essential for all users.
+\item {\bf Volume 4: ``XMegaWave2 User's Guide''}.
+(Not yet available).
+It is a guide for the XMegaWave extension to MegaWave2, called XMegaWave2\index{XMegaWave2}, which is a Windowed-oriented 
+interface and interpreter. At this time, the MegaWave2 distribution package does not include the XMegaWave extension.
+\end{itemize}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{What you will find in this guide}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{intro_guide}
+
+The section~\ref{intro} gives you an overall idea about the software.
+In Section~\ref{install} you will learn how to install it and how to install the environment of each user.
+The section~\ref{start} guides you to write and compile your first MegaWave2 module.
+Next sections give references about the header's module (section~\ref{header}) and the system macros (section~\ref{sysmacros}).
+The section~\ref{document} explains how to write the documentation attached to  a module.
+In the last section~\ref{annex} you will find the instructions to register your copy of MegaWave2 and some miscellaneous references.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{The MegaWave2 philosophy: basic principles}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{intro_philo}
+
+The aim of MegaWave2 is to make the coding of signal and image-oriented algorithms easier.
+An algorithm is implemented as a function (or a set of functions) written in C language; such a function (or set of functions) is called a {\bf module}\index{module}.
+
+The programmer does not write a complete program: what a module becomes is the matter of the {\bf MegaWave2 compiler}\index{compiler}. 
+This compiler adds input/output code to generate a run-time command: the {\bf module's command}. The module can then be called under the shell as Unix commands (and in a compatible mode with the MegaWave1 software). 
+But the MegaWave2 compiler can also add interface to a window-oriented interpreter (XMegaWave2\index{XMegaWave2}); the module is then included in the interpreter as a new function.
+The MegaWave2 compiler does even more; see Section~\ref{intro_compiler} page~\pageref{intro_compiler} for details.
+
+What does a module's source looks like ? you can refer to Section~\ref{start} for a first example of a module.
+In short, the source of a module is a file (its name is the module name followed by the \verb+.c+ extension) which contains pure C instructions.
+It begins with a header\index{header!module} put into comments (\verb+/* ... */+), so the C compiler ignores it (see Section~\ref{header} for a description of the header).
+But the MegaWave2 preprocessor\index{preprocessor} decodes this header. 
+Informations are defined about the module, so are the author's name, the version number, etc. 
+More important are the informations about the {\bf usage}, that is, about the {\bf input/output objects} (or {\bf input/output variables}) of the module. 
+This usage may say that a given variable (for example a \verb+float+) is an optional input
+with default value $1.0$, and that another variable (for example an image with gray levels stored as {\sf float} numbers) is an output.
+
+After the header comes the regular C body, where functions are defined.
+One function must always be present, it is the {\bf main function}\index{main function} of the module and it must have the same name as the module. 
+When we refer to input/output objects of the module, we think about the parameters 
+of this main function. 
+Only the main function is global (i.e. can be accessed from other modules), all other functions are local.
+
+In the module's skeleton below, the main function is \verb+module+ and the input/output objects are \verb+obj1,obj2,...+:
+{\small
+\begin{verbatim}
+/*------------------ MegaWave2 Module ----------------*/
+/* mwcommand
+.
+. [header, including usage of obj1,obj2,...]
+.
+*/
+/*----------------------------------------------------*/
+
+internal_function(a1,a2,....)
+.
+. [definition of this function]
+.
+
+module(obj1,obj2,....)
+{
+  .
+  .
+  internal_function(b1,b2,...);
+  .
+  .
+}
+\end{verbatim}
+}
+
+A module can access to the main function of any other module, following these rules:
+\begin{itemize}
+\item They are {\bf public modules}\index{public modules}. Such modules are available for all users; they are located in the MegaWave2 system directory (for example \verb+$MEGAWAVE2+). 
+It is the responsibility of the MegaWave2 administrator to manage this set of modules (see Section~\ref{install_system}).
+\item They are {\bf private modules}\index{private modules}. 
+All MegaWave2 users coding new modules generate their own private modules (located in the directory \verb+$MY_MEGAWAVE2+).
+A module cannot access to another private module {\em from another user}.
+Therefore, if somebody has written a module of some interest for others, the MegaWave2 administrator should make it public.
+\end{itemize}
+
+A module belongs to a {\bf group}\index{group}.
+A group puts together all modules dealing about the same subject.
+For example, you can imagine a group \verb+fourier+ where all the algorithms about the Fourier transform are put.
+But you may want to distinguish between Fourier applied on one-dimensional signals and Fourier applied on images.
+So you can define {\bf subgroups} of the group \verb+fourier+, as for example \verb+signal+ and \verb+image+: you get two groups named \verb+fourier/signal+ and \verb+fourier/image+.
+
+How are the groups defined ? You define a group by creating a directory corresponding to the name of the group
+into the existing directory \verb+$MEGAWAVE2/src+ (or \verb+$MY_MEGAWAVE2/src+).
+In our former example you must create \verb+$MEGAWAVE2/src/fourier/signal+ and  
+\\ \verb+$MEGAWAVE2/src/fourier/image+.
+The source of the modules (with \verb+.c+ extension) has to be put into those directories.
+With MegaWave2 versions 1.x, in addition you had to specify in the header of each module the name 
+of the group (see Section~\ref{header}): \verb+group={"fourier/signal"}+ for all modules in the directory \verb+$MEGAWAVE2/src/fourier/signal+ and  \verb+group={"fourier/image"}+ for all modules in 
+the directory \verb+$MEGAWAVE2/src/fourier/image+.
+This is no longer required in MegaWave2 versions 2.x. 
+
+What is the meaning of the input/output objects\index{object} ? 
+First, they are variables of C type. 
+All scalar types are allowed, such as \verb+char+, \verb+int+, \verb+long+, \verb+float+, \ldots
+More sophisticated types are available. 
+They are called {\bf MegaWave2 memory}\index{memory type|see{structure}} (or 
+{\bf internal}\index{internal type|see{structure}}) {\bf types}, 
+and they are always pointers to a {\bf structure}\index{structure}.
+The structure defines the object to be processed by the module.
+For example, the memory type \verb+Cimage+ represents monochrome images with gray levels of (unsigned) Char values.
+The memory type \verb+Curve+ represents a discrete curve in the plane, etc.
+See the Volume two ``MegaWave2 System Library'' for a description of all available MegaWave2 memory types.
+
+How do these objects live outside a module ? They are C variables until the process finishes : a module which calls another module just gives the objects as parameters of the function; into the XMegaWave2 interpreter, all commands reside in memory and therefore objects remain C variables until they are removed.
+When the process finishes (e.g. at the end of a module's command), the output objects have to be saved on disk as a file.
+The same problem occurs when a process begins: input objects have to be read from files.
+The format of the file depends on the memory type, we call it the {\bf MegaWave2 file}\index{file type|see{file format}} 
+(or {\bf external})\index{external type|see{file format}} {\bf type}.
+Whereas there is only one memory type associated to an object, a memory type may be represented on disk with many different file types.
+This is because MegaWave2 recognizes several standard file formats\index{file format}, especially for the images. 
+Also see Volume two for a description of all available MegaWave2 file types.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{MegaWave2 Macros}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{intro_macros}
+
+A MegaWave2 {\bf macro}\index{macro} is a Bourne shell\index{Bourne shell} script with a normalized header.
+It can call a set of MegaWave2 modules (in command mode), in order to repeat a sequence of actions automatically.
+It can also be a {\bf system's macro}\index{system's macro} which is an utility to manage MegaWave2.
+
+For example, the macro \verb+cmw2+\index{system's macro!cmw2} calls the MegaWave2 Compiler, the macro 
+\verb+mwdoclatex+\index{system's macro!mwdoclatex} compiles the documentation of a module using \LaTeX\index{LaTeX},
+\ldots.
+Please refer to Section~\ref{sysmacros} for a list of all available system's macros.
+You can get an updated list of these macros by running \verb+mwsysmaclist+\index{system's macro!mwsysmaclist} or
+\verb+mwdoc s+\index{system's macro!mwdoc} from the command line.
+
+Notice that you can create your own macros (called {\bf user's macros})\index{user's macro}.
+You may want, for example, to put in a macro a sequence of calls to some
+modules you frequently use.
+In the first versions of MegaWave2, the user's macros were put into the directory 
+\verb+$MY_MEGAWAVE2/shell+. 
+Since the version 1.04 of the software, user's macros are managed in the same way as modules.
+There are {\bf public user's macros} as well as {\bf private user's macros}.
+The public user's macros are put into the same directories as the sources of the public modules, 
+that is subdirectories of \verb+$MEGAWAVE2/src+, while private user's macros are in the
+subdirectories of \verb+$MY_MEGAWAVE2/src+.
+Please refer to Section~\ref{usermacros} to learn more about user's macros.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{The MegaWave2 Compiler}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{intro_compiler}
+
+The MegaWave2 Compiler\index{compiler} is activated by the macro \verb+cmw2+\index{system's macro!cmw2} 
+(see description Section~\ref{sysmacros_summary}). 
+Let us suppose that you are in the directory \verb+$MY_MEGAWAVE2/src/test+ (i.e. the group is \verb+test+) and that you call \verb+cmw2 mod+ (i.e. the module is \verb+mod+, coded in the file \verb+mod.c+).
+If no error occurs, \verb+cmw2 mod+ processes the following items:
+\begin{itemize}
+\item A file object is created which contains the code of the module for the architecture of the machine; this object is added to a user library called \verb+libmymw.a+.
+\item If \verb+cmw2+ has been called with the \verb+-X+ option (which means: prepare this module for XMegaWave2), an object is created which makes an interface between the module function and XMegaWave2; this object is added to a user library called \verb+libmyxmw.a+.
+\item A document skeleton is created in the directory \verb+MY_MEGAWAVE2/doc/obj+, which has the name \verb+mod.doc+. 
+This document will be included into the volume 3 of the MegaWave2 guides; it explains the use of the module (syntax of the command, synopsis of the function, input/output objects, \ldots).
+\item A command is generated and compiled for the architecture of the machine.
+The executable allows to run the module as a Unix command. 
+The input/output variables of the module are read or written using files, keyboard or screen.
+The command is compiled using standard C libraries and the following libraries:
+\verb+mymw+, \verb+sysmw+, \verb+W_X11R4+, \verb+mw+, \verb+tiff+ or \verb+notiff+. 
+They allow the module to access to functions of the System Library, of all the public modules, 
+of all your private modules and of the Wdevice facilities (window toolkit). 
+If there are shared libraries for your machine architecture, you will save a lot of disk space.
+\end{itemize}

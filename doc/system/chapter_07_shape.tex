@@ -1,0 +1,175 @@
+\Name{mw\_change\_shape}{Create a \shape\ structure if necessary}
+\Summary{
+Shape mw\_change\_shape(sh)
+
+Shape sh;
+}
+\Description
+This function creates a \shape\ structure if \verb+sh+ is not
+already defined. 
+The fields are initialized to $0$ or \Null value.
+The function returns the address of the structure, or
+\Null\ if not enough memory is available.
+
+\Next
+\Example
+\begin{verbatim}
+
+Shape sh=NULL;
+
+/*
+  Define the structure
+*/
+sh = mw_change_shape(sh);
+if (!sh) mwerror(FATAL,1,"Not enough memory to define the shape !\n");
+
+/* 
+  At that time, the shape is empty.
+*/
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_shape}{Free the memory allocated for a \shape\ structure}
+\Summary{
+void mw\_delete\_shape(sh)
+
+Shape sh;
+}
+\Description
+This function deletes the \verb+pixels+ array, the \verb+boundary+ \flist,
+the \verb+data+ array (if needed), and the structure itself.
+
+\Next
+\Example
+\begin{verbatim}
+
+
+Shape sh;
+
+/*
+  Define the structure
+*/
+sh = mw_new_shape();
+if (!sh) mwerror(FATAL,1,"Not enough memory to define the shape !\n");
+
+/*
+    ...(computation of the shape)...
+*/
+
+/* 
+  Free the shape, including data field. 
+*/
+mw_delete_shape(sh);
+
+\end{verbatim}
+
+\newpage %......................................
+\Name{mw\_get\_first\_child\_shape}{Return the first child of a shape in the tree}
+\Summary{
+Shape mw\_get\_first\_child\_shape(sh)
+
+Shape sh;
+}
+\Description
+This function returns the first child of the shape \verb+sh+, skipping
+removed shapes (field \verb+removed+). This is equivalent to
+\verb+sh->child+ if this shape is not removed.
+
+\newpage %......................................
+
+
+\Name{mw\_get\_next\_sibling\_shape}{Return the next sibling of a shape in the
+tree}
+\Summary{
+Shape mw\_get\_next\_sibling\_shape(sh)
+
+Shape sh;
+}
+\Description
+This function returns the next sibling (shape sharing the same parent) of
+the shape \verb+sh+, skipping removed shapes (field \verb+removed+). This
+is equivalent to \verb+sh->next_sibling+ if this shape is not removed.
+
+\newpage %......................................
+
+
+\Name{mw\_get\_not\_removed\_shape}{Return the first shape not removed in subtree}
+\Summary{
+Shape mw\_get\_not\_removed\_shape(sh)
+
+Shape sh;
+}
+\Description
+This function returns \verb+sh+ if this shape is not removed (field
+\verb+removed+), else it is equivalent to \verb+mw_get_first_child(sh)+ that
+is, it returns the first child, skipping removed shapes.
+
+\newpage %......................................
+
+
+\Name{mw\_get\_parent\_shape}{Return the parent of the shape in the tree}
+\Summary{
+Shape mw\_get\_parent\_shape(sh)
+
+Shape sh;
+}
+\Description
+This function returns the parent of
+the shape \verb+sh+, skipping removed shapes (field \verb+removed+). This
+is equivalent to \verb+sh->parent+ if this shape is not removed.
+
+
+\newpage %......................................
+
+
+\Name{mw\_get\_smallest\_shape}{Return the smallest shape containing a given pixel}
+\Summary{
+Shape mw\_get\_smallest\_shape(shs,x,y)
+
+Shapes shs;
+int x,y;
+
+}
+
+\Description
+This function returns the smallest shape containing the pixel at position
+$(x,y)$, ignoring removed shapes (field \verb+removed+). This is equivalent
+to \verb!shs->smallest_shape[y*shs->ncol+x]! provided this shape is not
+removed.
+
+\newpage %......................................
+
+
+\Name{mw\_new\_shape}{Create a \shape\ structure}
+\Summary{
+Shape mw\_new\_shape()
+
+}
+\Description
+This function creates a new \shape\ structure. The fields are initialized
+to $0$ or \Null value.
+The function returns the address of the new structure, or
+\Null\ if not enough memory is available.
+
+\Next
+\Example
+\begin{verbatim}
+
+Shape sh;
+
+/*
+  Define the structure
+*/
+sh = mw_new_shape();
+if (!sh) mwerror(FATAL,1,"Not enough memory to define the shape !\n");
+
+/* 
+  At that time, the shape is empty.
+*/
+\end{verbatim}
+
+\newpage %......................................
+
+

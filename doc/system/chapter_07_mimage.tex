@@ -1,0 +1,297 @@
+\Name{mw\_change\_mimage}{Define a morphological image, if not already defined}
+\Summary{
+Mimage mw\_change\_mimage(mi)
+
+Mimage mi;
+}
+\Description
+This function returns a \mimage\ structure if the input \verb+mi = NULL+.
+It is provided despite the \\
+\verb+mw_new_mimage()+ function for
+global coherence with other memory types.
+
+The function \verb+mw_change_mimage+ returns \Null\ if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.
+
+\Next
+\Example
+\begin{verbatim}
+/* Copy the morpho lines only of a morphological image into another morphological image */
+
+Mimage in,out=NULL;
+
+out=mw_change_mimage(out);
+if (!out) mwerror(FATAL,1,"Not enough memory !\n");
+out->nrow = in->nrow;
+out->ncol = in->ncol;
+out->minvalue=in->minvalue;
+out->maxvalue=in->maxvalue;
+if (in->firstml) 
+  {
+    out->firstml=mw_copy_morpho_line(in->firstml, out->firstml);
+    if (!out->firstml) mwerror(FATAL, 1,"Not enough memory !\n");
+  }
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_copy\_mimage}{Copy a morphological image into another one}
+\Summary{
+Mimage mw\_copy\_mimage(in,out)
+
+Mimage in, out;
+}
+\Description
+This function copies the \mimage\ \verb+in+ into \verb+out+.
+All fields are copied, including the chains of \msets, \mline\ and \fmline.
+The result is put in \verb+out+, which may not be a predefined structure : in case 
+of \verb+out=NULL+, the \verb+out+ structure is allocated.
+
+The function \verb+mw_copy_mimage+ returns \Null\ if not enough memory is available to perform
+the copy, or \verb+out+ elsewhere.
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+\Next
+\Example
+\begin{verbatim}
+
+mimage in; /* Predefined mimage */
+mimage out=NULL; 
+
+out=mw_copy_mimage(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory.\n");
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_mimage}{Deallocate a morphological image}
+\Summary{
+void mw\_delete\_mimage(mi)
+
+mimage mi;
+}
+\Description
+This function deallocates the \mimage\ \verb+mi+ structure, including the
+chains of \msets, \mline\ and \fmline.
+You should line \verb+mi = NULL+ after this call since the address pointed
+by \verb+mi+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+
+Mimage mi; /* Internal use: no Input neither Output of module */
+
+Morpho_line ml; 
+Point_curve pt;
+Fmorpho_line fml; 
+Point_fcurve fpt;
+Morpho_sets mss;
+Hsegment seg;
+Morpho_set ms;
+
+
+/* Define a morpho line containing the point (0,0) only */
+
+if (!(pt=mw_new_point_curve()) ||
+    !(ml=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+pt->x=pt->y=0;
+ml->first_point=pt;
+
+/* Define a fmorpho line containing the point (0.5,0.5) only */
+
+if (!(fpt=mw_new_point_fcurve()) ||
+    !(fml=mw_new_fmorpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+fpt->x=fpt->y=0.5;
+fml->first_point=fpt;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_new_morpho_sets())) mwerror(FATAL,1,"Not enough memory.\n");
+seg->xstart=0; 
+seg->xend=200;
+seg->y=10;
+ms->first_segment=seg; ms->minvalue=0.0; ms->maxvalue = 1.0; ms->area=201;
+mss->morphoset=ms;
+
+/* Define a morphological image made by one morpho line, one fmorpho line and
+   one morpho sets.
+*/
+
+if (!(mi=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+mi->first_ml=ml;
+mi->first_fml=fml;
+mi->first_ms=ms;
+
+/* .
+   .
+   (statement)
+   .
+   .
+*/
+
+
+/* Deallocate the mimage, including ml, fml and ms */
+mw_delete_mimage(mi);
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_length\_fml\_mimage}{Return the number of morpho lines a morphological image contains}
+\Summary{
+unsigned int mw\_length\_fml\_mimage(mi)
+
+Mimage mi;
+}
+\Description
+This function returns the number of fmorpho lines contained in the input
+\verb+mi+.
+It returns $0$ if the structure is empty or undefined.
+
+\Next
+\Example
+See example page~\pageref{length_ml-example}.
+
+\newpage %......................................
+
+
+\Name{mw\_length\_ml\_mimage}{Return the number of morpho lines a morphological image contains}
+\Summary{
+unsigned int mw\_length\_ml\_mimage(mi)
+
+Mimage mi;
+}
+\Description
+This function returns the number of morpho lines contained in the input
+\verb+mi+.
+It returns $0$ if the structure is empty or undefined.
+
+\Next
+\Example
+\label{length_ml-example}
+\begin{verbatim}
+
+
+Mimage mi; /* Internal use: no Input neither Output of module */
+
+Morpho_line ml; 
+Point_curve pt;
+Fmorpho_line fml; 
+Point_fcurve fpt;
+Morpho_sets mss;
+Hsegment seg;
+Morpho_set ms;
+
+
+/* Define a morpho line containing the point (0,0) only */
+
+if (!(pt=mw_new_point_curve()) ||
+    !(ml=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+pt->x=pt->y=0;
+ml->first_point=pt;
+
+/* Define a fmorpho line containing the point (0.5,0.5) only */
+
+if (!(fpt=mw_new_point_fcurve()) ||
+    !(fml=mw_new_fmorpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+fpt->x=fpt->y=0.5;
+fml->first_point=fpt;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_new_morpho_sets())) mwerror(FATAL,1,"Not enough memory.\n");
+seg->xstart=0; 
+seg->xend=200;
+seg->y=10;
+ms->first_segment=seg; ms->minvalue=0.0; ms->maxvalue = 1.0; ms->area=201;
+mss->morphoset=ms;
+
+/* Define a morphological image made by one morpho line, one fmorpho line and
+   one morpho sets.
+*/
+
+if (!(mi=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+mi->first_ml=ml;
+mi->first_fml=fml;
+mi->first_ms=ms;
+
+
+/* This will print 1 */
+printf("%d",mw_length_ml_mimage(mi));
+/* This will print 1 */
+printf("%d",mw_length_fml_mimage(mi));
+/* This will print 1 */
+printf("%d",mw_length_ms_mimage(mi));
+
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_length\_ms\_mimage}{Return the number of morpho sets a morphological image contains}
+\Summary{
+unsigned int mw\_length\_ms\_mimage(mi)
+
+Mimage mi;
+}
+\Description
+This function returns the number of morpho sets contained in the input
+\verb+mi+.
+It returns $0$ if the structure is empty or undefined.
+
+\Next
+\Example
+See example page~\pageref{length_ml-example}.
+
+\newpage %......................................
+
+
+\Name{mw\_new\_mimage}{Create a new morphological image}
+\Summary{
+Mimage mw\_new\_mimage()
+
+}
+\Description
+This function returns a new \mimage\ structure, or \Null\ if not enough 
+memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the 
+\Null\ case, and do appropriate statement.
+
+The new structure is created with fields set to $0$ or \Null.
+
+\Next
+\Example
+\begin{verbatim}
+/* Copy the morpho lines only of a morphological image into another morphological image */
+
+Mimage in,out;
+
+out=mw_new_mimage();
+if (!out) mwerror(FATAL,1,"Not enough memory !\n");
+out->nrow = in->nrow;
+out->ncol = in->ncol;
+out->minvalue=in->minvalue;
+out->maxvalue=in->maxvalue;
+if (in->firstml) 
+  {
+    out->firstml=mw_copy_morpho_line(in->firstml, out->firstml);
+    if (!out->firstml) mwerror(FATAL, 1,"Not enough memory !\n");
+  }
+\end{verbatim}
+
+\newpage %......................................
+
+

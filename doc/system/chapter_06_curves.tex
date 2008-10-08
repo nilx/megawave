@@ -1,0 +1,144 @@
+\Name{mw\_change\_curves}{Define the curves structure, if not defined}
+\Summary{
+Curves mw\_change\_curves(curves)
+
+Curves curves;
+}
+\Description
+This function returns a Curves structure if the input \verb+curves = NULL+.
+It is provided despite the \verb+mw_new_curves+ function for
+global coherence with other memory types.
+
+The function \verb+mw_change_curves+ returns \Null\ if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal curves structures before the end
+of the module.
+
+\Next
+\Example
+\begin{verbatim}
+/* Define a curves set to be two pre-defined curves  */
+
+Curves curves=NULL;   /* Internal use: no Input neither Output of module */
+Curve curve1,curve2;  /* Pre-defined curves (e.g. inputs of module) */
+
+curves = mw_change_curves(curves);
+if (curves == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+...
+\end{verbatim}
+(End of this example as for the \verb+mw_new_curves+ function).
+
+
+\newpage %......................................
+
+
+\Name{mw\_delete\_curves}{Deallocate a curves set}
+\Summary{
+void mw\_delete\_curves(curves)
+
+Curves curves;
+}
+\Description
+This function deallocates all the memory allocated by the curves variable
+that is, all the points belonging to all curves into this set, all \curve structures and the \curves structure itself.
+You should set \verb+curves = NULL+ after this call since the address pointed
+by \verb+curves+ is no longer valid.
+
+\Next
+\Example
+\begin{verbatim}
+Curves curves=NULL;   /* Internal use: no Input neither Output of module */
+
+curves = mw_new_curves();
+if (curves == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+.
+.
+.
+mw_delete_curves(curves);
+\end{verbatim}
+
+\newpage %......................................
+
+
+\Name{mw\_length\_curves}{Return the number of curves into a curves structure}
+\Summary{
+unsigned int mw\_length\_curves(cvs);
+
+Curves cvs;
+}
+\Description
+This function returns the number of curves contained in the given
+\verb+cvs+. It returns $0$ if the structure is empty.
+
+\Next
+\Example
+\begin{verbatim}
+/* Define a curves set to be two pre-defined curves  */
+
+Curves curves=NULL;   /* Internal use: no Input neither Output of module */
+Curve curve1,curve2;  /* Pre-defined curves (e.g. inputs of module) */
+
+curves = mw_new_curves();
+if (curves == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+curves->first=curve1;
+curve1->previous = curve2->next = NULL;
+curve1->next = curve2;
+curve2->previous = curve1;
+
+/* The length would be 2 */
+printf("Length=%d\n",mw_length_curves(curves));
+
+\end{verbatim}
+\newpage %......................................
+
+\Name{mw\_new\_curves}{Create a new curves}
+\Summary{
+Curves mw\_new\_curves();
+}
+\Description
+This function creates a new \curves structure.
+It returns \Null\ if not enough memory is available to create the structure.
+Your code should check this value to send an
+error message in the \Null\ case, and do appropriate statement.
+
+Since the MegaWave2 compiler allocates structures for input and output 
+objects (see \volI), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module.
+
+\Next
+\Example
+\begin{verbatim}
+/* Define a curves set to be two pre-defined curves  */
+
+Curves curves=NULL;   /* Internal use: no Input neither Output of module */
+Curve curve1,curve2;  /* Pre-defined curves (e.g. inputs of module) */
+
+curves = mw_new_curves();
+if (curves == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+
+curves->first=curve1;
+curve1->previous = curve2->next = NULL;
+curve1->next = curve2;
+curve2->previous = curve1;
+\end{verbatim}
+\newpage %......................................
+
+\Name{mw\_npoints\_curves}{Return the total number of points a curves structure contains}
+\Summary{
+unsigned int mw\_npoints\_curves(cvs);
+
+Curves cvs;
+}
+\Description
+This function returns the total number of points contained in the given
+\verb+cvs+, that is the sum of \verb+mw_length_curve(cv)+ for all
+curves \verb+cv+ contained in \verb+cvs+.
+The function returns $0$ if the structure is empty.
+
+\newpage %......................................
+

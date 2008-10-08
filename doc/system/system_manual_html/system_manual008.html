@@ -1,0 +1,2096 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+            "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+
+<META http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<META name="GENERATOR" content="hevea 1.10">
+<LINK rel="stylesheet" type="text/css" href="system_manual.css">
+<TITLE>Level sets and morphological structures</TITLE>
+</HEAD>
+<BODY >
+<A HREF="system_manual007.html"><abbr title="previous chapter" class="navigation">&larr;</abbr></A>
+<A HREF="index.html"><abbr title="table of contents" class="navigation">&uarr;</abbr></A>
+<A HREF="system_manual009.html"><abbr title="next chapter" class="navigation">&rarr;</abbr></A>
+<HR>
+<H1 CLASS="chapter"><A NAME="htoc90">Chapter&#XA0;7</A>&#XA0;&#XA0;Level sets and morphological structures</H1><UL>
+<LI><A HREF="system_manual008.html#toc23">Shape</A>
+</LI><LI><A HREF="system_manual008.html#toc24">Shapes</A>
+</LI><LI><A HREF="system_manual008.html#toc25">Point with a type field</A>
+</LI><LI><A HREF="system_manual008.html#toc26">Horizontal segment</A>
+</LI><LI><A HREF="system_manual008.html#toc27">Morpho set</A>
+</LI><LI><A HREF="system_manual008.html#toc28">Chain of morpho sets</A>
+</LI><LI><A HREF="system_manual008.html#toc29">Morpho line</A>
+</LI><LI><A HREF="system_manual008.html#toc30">Morpho line in the continuous plane</A>
+</LI><LI><A HREF="system_manual008.html#toc31">Morphological image</A>
+</LI></UL>
+<P>
+<A NAME="morpho"></A>
+</P><P>This section describes the various morphological structures used to represent
+images. We call morphological representation<A NAME="@default105"></A>
+any complete decomposition which
+is invariant by (local or global) contrast changes. More precisely, 
+if  <FONT COLOR=red><I>R</I></FONT> is the representation operator and <I>c</I> a contrast change function
+<A NAME="@default106"></A> (that is, any non-decreasing real function), the contrast change
+invariance 
+corresponds to the property  <FONT COLOR=red><I>R</I></FONT>(<I>c</I>(<I>u</I>)) = <I>c</I>( <FONT COLOR=red><I>R</I></FONT>(<I>u</I>)) for every image <I>u</I>.
+Exemples of such representations are based by level sets<A NAME="@default107"></A>, level lines and connected
+components of level sets.</P><P>We begin our description with the <TT>Shape</TT><A NAME="@default108"></A> and <TT>Shapes</TT> structures. These are not
+the first developed in MegaWave2, but they are going to play an increasing role :
+they allow to handle level sets and connected components of level sets in a tree
+structure very useful to develop morphological shape-based applications.
+In addition, computation of these structures can be performed in a way faster
+than the traditional level set decomposition, using the Fast Level Set
+Transform<A NAME="@default109"></A> (<EM>FLST</EM><A NAME="@default110"></A> in short).
+The FLST has been created by Pascal Monasse during its PhD thesis.
+The following description of the <TT>Shape</TT> and <TT>Shapes</TT> structures has been
+written with his help.</P><H2 CLASS="section"><A NAME="toc23"></A><A NAME="htoc91">7.1</A>&#XA0;&#XA0;Shape</H2><P><A NAME="shape"></A></P><P>A <TT>Shape</TT><A NAME="@default111"></A> is a set of pixels based on a level set of an
+image. It can be a level set itself, one of its connected component,
+or a shape as defined by the FLST (see module <CODE>flst</CODE>) that is,
+in short, a connected component of a level set with filled holes.
+Notice that a <TT>Shape</TT> has no reference to the image in which it is extracted,
+so a <TT>Shape</TT> can be constructed from scratch, without an initial image.</P><P>The basic fields are:
+</P><UL CLASS="itemize"><LI CLASS="li-itemize">
+<CODE>inferior_type</CODE>: a nonzero value indicates that the <TT>Shape</TT>
+corresponds to a lower level set<A NAME="@default112"></A> of level &#X3BB; ({<I>x</I> : <I>u</I>(<I>x</I>) &#X2264; &#X3BB;}<SUP><A NAME="text1" HREF="#note1">1</A></SUP> or 
+{<I>x</I> : <I>u</I>(<I>x</I>) &lt; &#X3BB;}, those sets being noted in short by
+[<I>u</I> &#X2264; &#X3BB;] and [<I>u</I>&lt;&#X3BB;]),
+while a zero value indicates an upper level set<A NAME="@default113"></A> ([<I>u</I>&#X2265; &#X3BB;] or [<I>u</I>&gt;&#X3BB;]).
+</LI><LI CLASS="li-itemize"><CODE>value</CODE>: the gray level &#X3BB; of the level set.
+</LI><LI CLASS="li-itemize"><CODE>area</CODE>: the area, i.e., the number of pixels of the shape.
+</LI><LI CLASS="li-itemize"><CODE>pixels</CODE>: an array of pixel coordinates containing <CODE>area</CODE>
+elements.
+</LI><LI CLASS="li-itemize"><CODE>boundary</CODE>: a <TT>Flist</TT> of dimension two containing the
+vertices of a polygonal representation of the boundary.
+</LI><LI CLASS="li-itemize"><CODE>open</CODE>: a nonzero value indicates that the <TT>Shape</TT> meets
+the border of the image. The name of this field comes from the fact that if
+the boundary is a curve, it is an open curve.
+</LI></UL><P>
+Moreover, there is an additional field <CODE>removed</CODE> indicating if the
+shape is to be taken into account. This field is interesting only in the case
+where the shape is part of a structure.</P><P>A shape is supposed to be included in a tree structure driven by
+inclusion. This is the case for example when the shapes are all lower (or all
+upper) level sets: in this case the tree has no ramification, since the level
+sets are monotone for inclusion. There is a true tree structure when they are
+<EM>connected components</EM> of lower (or upper) level sets. This is also true
+for the shapes in the sense of the FLST.</P><P>In the vocabulary of graphs, the edges of the tree adjacent to the shape are
+stored in the fields <CODE>parent</CODE>, <CODE>child</CODE> and
+<CODE>next_sibling</CODE>. The <CODE>child</CODE> field corresponds actually to the
+first child of the shape. The other ones can be recovered by following the
+pointers <CODE>next_sibling</CODE>. For example, to call the function <CODE>foo</CODE>
+successively with the children of shape <CODE>s</CODE> as argument, we would write
+the following code snippet:</P><P><CODE>for(c = s-&gt;child; c != NULL; c=c-&gt;next_sibling) foo(c);</CODE></P><P>The parent contains the shape while the shape contains its children. Functions
+for accessing these three fields are given: they take into account that
+some shapes may be ignored, as indicated by the field <CODE>removed</CODE>.</P><P>It is dangerous to remove the root of the tree by setting its <CODE>removed</CODE>
+field: many functions rely on the fact that we have a root.</P><H3 CLASS="subsection"><A NAME="htoc92">7.1.1</A>&#XA0;&#XA0;The structure Shape</H3><P>
+<A NAME="shape_structure"></A></P><P>The meaning of the different fields is explained above. There are two
+additional fields, <CODE>data</CODE> and <CODE>data_size</CODE>, whose content is left
+to the choice of the user. <CODE>data</CODE> is supposed to point to a memory
+extent of (at least) <CODE>data_size</CODE> bytes, if this value is
+positive. Failure in this assumption may lead to a memory corruption in
+I/O operations. </P><PRE CLASS="verbatim">typedef struct shape
+{
+  char inferior_type; /* Indicates if it is extracted from a superior 
+                         or inferior level set */
+  float value; /* Limiting gray-level of the level set */
+  char open; /* Indicates if the shape meets the border of the image */
+  int area; /* Area of the shape = area of the cc of level set 
+                                 + areas of the holes */
+  char removed; /* Indicates whether the shape exists or not */
+
+  Point_plane pixels; /* The array of pixels contained in the shape */
+
+  Flist boundary; /* The boundary curve defining the shape */
+
+  /* Data to include it in a tree. It has a parent (the smallest containing 
+     shape), children (the largest contained shapes, whose first is pChild 
+     and the others are its siblings), and siblings (the other children of 
+     its parent) */
+  struct shape *parent, *next_sibling, *child;
+
+  int data_size;     /* size of data[] in bytes */
+  void* data;        /* User defined field (saved). A pointer to something */
+
+} *Shape;
+</PRE><H3 CLASS="subsection"><A NAME="htoc93">7.1.2</A>&#XA0;&#XA0;Related file (external) types</H3><P>
+<A NAME="shape-file_type"></A></P><OL CLASS="enumerate" type=1><LI CLASS="li-enumerate">
+<CODE>"MW2_SHAPE"</CODE><A NAME="@default114"></A> MegaWave2 binary format.
+</LI></OL><H3 CLASS="subsection"><A NAME="htoc94">7.1.3</A>&#XA0;&#XA0;Functions Summary</H3><P>
+<A NAME="shape_function"></A></P><P>The following is a description of all the functions related to 
+the <TT>Shape</TT> type. The list is in alphabetical order.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_change_shape</FONT></B> - Create a <TT>Shape</TT> structure if necessary</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Shape mw_change_shape(sh)</P><P>Shape sh;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function creates a <TT>Shape</TT> structure if <CODE>sh</CODE> is not
+already defined. 
+The fields are initialized to 0 or <TT>NULL</TT>value.
+The function returns the address of the structure, or
+<TT>NULL</TT> if not enough memory is available.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Shape sh=NULL;
+
+/*
+  Define the structure
+*/
+sh = mw_change_shape(sh);
+if (!sh) mwerror(FATAL,1,"Not enough memory to define the shape !\n");
+
+/* 
+  At that time, the shape is empty.
+*/
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_delete_shape</FONT></B> - Free the memory allocated for a <TT>Shape</TT> structure</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_delete_shape(sh)</P><P>Shape sh;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function deletes the <CODE>pixels</CODE> array, the <CODE>boundary</CODE> <TT>Flist</TT>,
+the <CODE>data</CODE> array (if needed), and the structure itself.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+
+Shape sh;
+
+/*
+  Define the structure
+*/
+sh = mw_new_shape();
+if (!sh) mwerror(FATAL,1,"Not enough memory to define the shape !\n");
+
+/*
+    ...(computation of the shape)...
+*/
+
+/* 
+  Free the shape, including data field. 
+*/
+mw_delete_shape(sh);
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_get_first_child_shape</FONT></B> - Return the first child of a shape in the tree</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Shape mw_get_first_child_shape(sh)</P><P>Shape sh;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns the first child of the shape <CODE>sh</CODE>, skipping
+removed shapes (field <CODE>removed</CODE>). This is equivalent to
+<CODE>sh-&gt;child</CODE> if this shape is not removed.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_get_next_sibling_shape</FONT></B> - Return the next sibling of a shape in the
+tree</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Shape mw_get_next_sibling_shape(sh)</P><P>Shape sh;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns the next sibling (shape sharing the same parent) of
+the shape <CODE>sh</CODE>, skipping removed shapes (field <CODE>removed</CODE>). This
+is equivalent to <CODE>sh-&gt;next_sibling</CODE> if this shape is not removed.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_get_not_removed_shape</FONT></B> - Return the first shape not removed in subtree</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Shape mw_get_not_removed_shape(sh)</P><P>Shape sh;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns <CODE>sh</CODE> if this shape is not removed (field
+<CODE>removed</CODE>), else it is equivalent to <CODE>mw_get_first_child(sh)</CODE> that
+is, it returns the first child, skipping removed shapes.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_get_parent_shape</FONT></B> - Return the parent of the shape in the tree</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Shape mw_get_parent_shape(sh)</P><P>Shape sh;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns the parent of
+the shape <CODE>sh</CODE>, skipping removed shapes (field <CODE>removed</CODE>). This
+is equivalent to <CODE>sh-&gt;parent</CODE> if this shape is not removed.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_get_smallest_shape</FONT></B> - Return the smallest shape containing a given pixel</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Shape mw_get_smallest_shape(shs,x,y)</P><P>Shapes shs;
+int x,y;</P><P><BR>
+<BR>
+<BR>
+</P><P>
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns the smallest shape containing the pixel at position
+(<I>x</I>,<I>y</I>), ignoring removed shapes (field <CODE>removed</CODE>). This is equivalent
+to <CODE>shs-&gt;smallest_shape[y*shs-&gt;ncol+x]</CODE> provided this shape is not
+removed.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_new_shape</FONT></B> - Create a <TT>Shape</TT> structure</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Shape mw_new_shape()</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function creates a new <TT>Shape</TT> structure. The fields are initialized
+to 0 or <TT>NULL</TT>value.
+The function returns the address of the new structure, or
+<TT>NULL</TT> if not enough memory is available.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Shape sh;
+
+/*
+  Define the structure
+*/
+sh = mw_new_shape();
+if (!sh) mwerror(FATAL,1,"Not enough memory to define the shape !\n");
+
+/* 
+  At that time, the shape is empty.
+*/
+</PRE><H2 CLASS="section"><A NAME="toc24"></A><A NAME="htoc95">7.2</A>&#XA0;&#XA0;Shapes</H2><P><A NAME="shapes"></A></P><P>A <TT>Shapes</TT><A NAME="@default115"></A> structure is a collection of shapes extracted from an image. 
+The fields <CODE>nrow</CODE> and <CODE>ncol</CODE> are the dimensions of the image. 
+The field <CODE>interpolation</CODE> is the convention used to extract level
+lines. Currently, the valid values are 0 (module <CODE>flst</CODE>) and 1 (module
+<CODE>flst_bilinear</CODE>).</P><P>The elements are stored consecutively in the array <CODE>the_shapes</CODE> of size
+<CODE>nb_shapes</CODE>. By convention, the shape at index 0 is the root of the
+tree.</P><P>The field <CODE>smallest_shape</CODE> is an array of size
+<CODE>nrow</CODE>&#XD7;<CODE>ncol</CODE> giving for each pixel the smallest shape in
+the tree that contains it. By going upward in the tree, it is possible to know
+all the shapes containing a given pixel.</P><H3 CLASS="subsection"><A NAME="htoc96">7.2.1</A>&#XA0;&#XA0;The structure Shapes</H3><P>
+<A NAME="shapes_structure"></A></P><P>The meaning of the fields is explained above. The fields <CODE>data_size</CODE>
+and <CODE>data</CODE> are left to the user.
+</P><PRE CLASS="verbatim">typedef struct shapes
+{
+  char cmt[mw_cmtsize];   /* Comments */
+  char name[mw_namesize]; /* Name of the set */
+  int nrow;               /* Number of rows (dy) of the image */
+  int ncol;               /* Number of columns (dx) of the image */
+  int interpolation;      /* Interpolation used for the level lines:
+                             0=nearest neighbor, 1=bilinear */
+  Shape the_shapes; /* Array of the shapes.
+                       The root of the tree is at index 0 */
+ 
+  int nb_shapes; /* The number of shapes (the size of the array the_shapes) */
+ 
+  /* Link between pixels and shapes */
+  Shape *smallest_shape; /* An image giving for each pixel
+                            the smallest shape containing it */
+ 
+  int data_size;     /* size of data[] in bytes */
+  void* data;        /* User defined field (saved). A pointer to something */
+ 
+} *Shapes;
+</PRE><H3 CLASS="subsection"><A NAME="htoc97">7.2.2</A>&#XA0;&#XA0;Related file (external) types</H3><P>
+<A NAME="shapes-file_type"></A></P><OL CLASS="enumerate" type=1><LI CLASS="li-enumerate">
+<CODE>"MW2_SHAPES"</CODE><A NAME="@default116"></A> MegaWave2 binary format.
+</LI></OL><H3 CLASS="subsection"><A NAME="htoc98">7.2.3</A>&#XA0;&#XA0;Functions Summary</H3><P>
+<A NAME="shapes_function"></A></P><P>The following is a description of all the functions related to 
+the <TT>Shapes</TT> type. The list is in alphabetical order.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_alloc_shapes</FONT></B> - Allocate the fields of a <TT>Shapes</TT> structure</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Shapes mw_alloc_shapes(shs, nrow, ncol, value)</P><P>Shapes shs;</P><P>int nrow, ncol;</P><P>float value; /* gray level value of the root */
+</P><P><BR>
+<BR>
+<BR>
+</P><P>
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function takes as argument a <TT>Shapes</TT> structure and returns it
+after having allocated all necessary fields. The input <CODE>nrow</CODE> and 
+<CODE>ncol</CODE> are the dimensions of the image. 
+The field <CODE>the_shapes</CODE> is allocated to contain
+<CODE>nrow</CODE>&#XD7;<CODE>ncol</CODE>+1 shapes, which is the maximal number of 
+shapes extracted by the FLST (see module <CODE>flst</CODE>). 
+In fact, only one shape is put, the root of the tree, supposed to be 
+extracted at gray level <CODE>value</CODE>. 
+The field <CODE>smallest_shape</CODE> is also allocated and
+initialized, each pixel having as smallest shape the root.</P><P>The function returns <CODE>shs</CODE>, or <TT>NULL</TT> if not enough memory is available
+to do the allocation.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Shapes shs;
+Fimage image; /* Assume image is allocated */
+
+/*
+  Define the structure
+*/
+shs = mw_new_shapes();
+if (!shs) mwerror(FATAL,1,"Not enough memory to define the shapes !\n");
+
+/* 
+  At that time, the structure exists but fields are empty : alloc them
+  to handle the Fimage image.
+*/
+if (!mw_alloc_shapes(shs, image-&gt;nrow, image-&gt;ncol, image-&gt;gray[0]))
+  mwerror(FATAL,1,"Not enough memory to alloc the shapes !\n");
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_change_shapes</FONT></B> - (Re)alloc the fields of a <TT>Shapes</TT> structure</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Shapes mw_change_shapes(shs, nrow, ncol, value)</P><P>Shapes shs;</P><P>int nrow, ncol;</P><P>float value; /* gray level value of the root */
+</P><P><BR>
+<BR>
+<BR>
+</P><P>
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+If the input pointer <CODE>shs</CODE> is <TT>NULL</TT>, create a new
+structure, otherwise delete the currently allocated fields 
+(if any) and call <CODE>mw_alloc_shapes()</CODE>.</P><P>The function returns the new structure or <CODE>shs</CODE>, or <TT>NULL</TT> if not enough 
+memory is available to do the allocation.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Shapes shs=NULL;
+Fimage image; /* Assume image is allocated */
+
+/*
+  Define the structure and alloc the field to handle the Fimage image.
+*/
+shs = mw_change_shapes(shs, image-&gt;nrow, image-&gt;ncol, image-&gt;gray[0]);
+if (!shs) mwerror(FATAL,1,"Not enough memory to alloc the shapes !\n");
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_delete_shapes</FONT></B> - Delete a <TT>Shapes</TT> structure</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_delete_shapes(shs)</P><P>Shapes shs;</P><P><BR>
+<BR>
+<BR>
+</P><P>
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function frees the allocated fields and the
+structure itself. 
+After this call, the memory pointed to by <CODE>shs</CODE> must
+not be accessed any longer.
+Warning : in the contrary to <CODE>mw_delete_shape()</CODE>, the memory of the 
+user-defined field <CODE>data</CODE> is not freed.
+If this field has been allocated, you should free it before calling
+<CODE>mw_delete_shapes()</CODE>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Shapes shs=NULL;
+Fimage image; /* Assume image is allocated */
+
+/*
+  Define the structure and alloc the field to handle the Fimage image.
+*/
+shs = mw_change_shapes(shs, image-&gt;nrow, image-&gt;ncol, image-&gt;gray[0]);
+if (!shs) mwerror(FATAL,1,"Not enough memory to alloc the shapes !\n");
+
+/*
+  ... (do the computation) ...
+*/
+
+/* 
+  Delete the shapes
+*/
+if (!shs-&gt;data) free(shs-&gt;data);
+mw_delete_shapes(shs);
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_new_shapes</FONT></B> - Create a <TT>Shapes</TT> structure</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Shapes mw_new_shapes()</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function creates a new <TT>Shapes</TT> structure. The fields are initialized
+to 0 or <TT>NULL</TT>value.
+The function returns the address of the new structure, or
+<TT>NULL</TT> if not enough memory is available.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Shapes shs;
+
+/*
+  Define the structure
+*/
+shs = mw_new_shapes();
+if (!shs) mwerror(FATAL,1,"Not enough memory to define the shapes !\n");
+
+/* 
+  At that time, the structure exists but is empty.
+*/
+</PRE><H2 CLASS="section"><A NAME="toc25"></A><A NAME="htoc99">7.3</A>&#XA0;&#XA0;Point with a type field</H2><P><A NAME="point_type"></A>
+
+
+</P><P>The <TT>Point_type</TT><A NAME="@default117"></A> structure is complementary to the <TT>Point_curve</TT> structure (See Section&#XA0;<A HREF="system_manual007.html#curves-polygons_point">6.1</A>): it
+is used to record the type of the point, a valuable information in morphological shape-based algorithms.
+While the <TT>Point_curve</TT> structure was mainly defined to be used as part of a <TT>Curve</TT> structure, the <TT>Point_type</TT> structure
+is related to the <TT>Morpho_line</TT> structure (See Section&#XA0;<A HREF="#morpho_line">7.7</A>).</P><H3 CLASS="subsection"><A NAME="htoc100">7.3.1</A>&#XA0;&#XA0;The structure Point_type</H3><P>
+<A NAME="point_type-structure"></A></P><P>This is the C definition of the structure:
+</P><PRE CLASS="verbatim">typedef struct point_type {
+  unsigned char type; /* Type of the point, e.g. (exact meaning can vary; See modules)
+                         0 : regular point;
+                         1 : point in the image's border;
+                         2 : T-junction;
+                         3 : Tau-junction;
+                         4 : X-junction;
+                         5 : Y-junction.
+                         */
+  struct point_type *previous; /* Pointer to the previous point (may be NULL) */
+  struct point_type *next; /* Pointer to the next point (may be NULL) */
+} *Point_type;
+</PRE><H3 CLASS="subsection"><A NAME="htoc101">7.3.2</A>&#XA0;&#XA0;Related file (external) types</H3><P>
+<A NAME="point_type-file_type"></A></P><P>Not available: at this time, the <TT>Point_type</TT> object cannot be used as input/output variables of modules.
+It can be saved as part of a <TT>Morpho_line</TT> or <TT>Fmorpho_line</TT> structure.</P><H3 CLASS="subsection"><A NAME="htoc102">7.3.3</A>&#XA0;&#XA0;Functions Summary</H3><P>
+<A NAME="point_type-function"></A></P><P>The following is a description of all the functions related to 
+the <TT>Point_type</TT> type. The list is in alphabetical order.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_change_point_type</FONT></B> - Define the point_type structure, if not defined</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Point_type mw_change_point_type(pt)</P><P>Point_type pt;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns a <TT>Point_type</TT> structure if the input <CODE>pt = NULL</CODE>.
+It is provided despite the<BR>
+<CODE>mw_new_point_type()</CODE> function for
+global coherence with other memory types.</P><P>The function <CODE>mw_change_point_type</CODE> returns <TT>NULL</TT> if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P>Since the MegaWave2 compiler allocates structures for input and output 
+objects (see volume one: &#X201C;MegaWave2 user manual&#X201D;), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Point_type pt=NULL; /* Internal use: no Input neither Output of module */
+
+/* Define a point type as image border */
+
+pt = mw_change_point_type(pt);
+if (pt == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+pt-&gt;type = 1; /* image border */
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_copy_point_type</FONT></B> - Copy all point types starting from the given one</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Point_type mw_copy_point_type(in,out)</P><P>Point_type in, out;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function copies the current point type and the next point types contained in the chain defined at the starting point type <CODE>in</CODE>. 
+The result is put in <CODE>out</CODE>, which
+may not be a predefined structure : in case of <CODE>out=NULL</CODE>, the <CODE>out</CODE>
+structure is allocated.</P><P>The function <CODE>mw_copy_point_type</CODE> returns <TT>NULL</TT> if not enough memory is available to perform
+the copy, or <CODE>out</CODE> elsewhere.
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Point_type in; /* Predefined point */
+Point_type out=NULL; 
+
+out=mw_copy_point_type(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory.\n");
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_delete_point_type</FONT></B> - Deallocate the point_type structure</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_delete_point_type(pt)</P><P>Point_type pt;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function deallocates the <TT>Point_type</TT> structures starting from
+the given <CODE>pt</CODE>, including this point itself.
+You should set <CODE>pt = NULL</CODE> after this call since the address pointed
+by <CODE>pt</CODE> is no longer valid.
+To deallocate a point only and not all the next points of the
+chain, just use <CODE>free(pt)</CODE>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">/* Remove the first point_type of an existing morpho_line */
+
+Morpho_line ll; /* Existing morpho_line (e.g. Input of module) */
+Point_type pt;  /* Internal use */
+
+pt = ll-&gt;first_type;
+ll-&gt;first_type=pt-&gt;next;
+pt-&gt;next-&gt;previous = NULL;
+free(pt);
+pt = NULL;
+
+/* Remove all point_type of an existing morpho_line */
+
+mw_delete_point_type(ll-&gt;first_type);
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_new_point_type</FONT></B> - Create a new point_type structure</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Point_type mw_new_point_type();
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function creates a new <TT>Point_type</TT> structure.
+It returns <TT>NULL</TT> if not enough memory is available to create the structure.
+Your code should check this value to send an
+error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P>Since the MegaWave2 compiler allocates structures for input and output 
+objects (see volume one: &#X201C;MegaWave2 user manual&#X201D;), this function is normally used only for internal objects.
+Do not forget to deallocate the internal point structures before the end
+of the module, except if they are part of an input or output curve.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">/* Insert the point (0,0) with type 1 at the end of an existing morpho_line */
+
+Morpho_line ll;  /* Existing morpho_line (e.g. Input of module) */
+Point_curve point,p;  /* Internal use: no Input neither Output of module */
+Point_type pt,t;
+
+/* Define the point (0,0) with type 1 */
+point = mw_new_point_curve();
+if (point == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+pt = mw_new_point_type();
+if (pt == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+point-&gt;x = point-&gt;y = 0;
+pt-&gt;type=1;
+
+/* Find the last point of the morpho_line */
+p = ll-&gt;first_point; t = ll-&gt;first_type; 
+while (p-&gt;next) {p=p-&gt;next; t=t-&gt;next;}
+
+/* Insert the point */
+p-&gt;next = point;
+t-&gt;next = pt;
+point-&gt;previous = p;
+pt-&gt;previous = t;
+
+/* Do not deallocate point_curve and point_type or morpho_line will become inconsistent */ 
+</PRE><H2 CLASS="section"><A NAME="toc26"></A><A NAME="htoc103">7.4</A>&#XA0;&#XA0;Horizontal segment</H2><P><A NAME="hsegment"></A></P><P><A NAME="@default118"></A></P><P>The <TT>Hsegment</TT> structure is useful for describing all pixels belonging to a (connected or non-connected)
+set, without taking the border into consideration.
+An horizontal segment is given by a left and a right point. 
+If the shape of the set is more height than width, you should rather use vertical segments
+(not yet defined).
+The morpho set defined in Section&#XA0;<A HREF="#morpho_set">7.5</A> makes the use
+of the <TT>Hsegment</TT> structure<A NAME="@default119"></A>, which defines an horizontal segment.</P><H3 CLASS="subsection"><A NAME="htoc104">7.4.1</A>&#XA0;&#XA0;The structure Hsegment</H3><P>
+<A NAME="hsegment-structure"></A></P><P>This is the C definition of the structure <TT>Hsegment</TT>:
+<A NAME="@default120"></A> 
+</P><PRE CLASS="verbatim">typedef struct hsegment {
+  int xstart; /* Left x-coordinate of the segment */
+  int xend;   /* Right x-coordinate of the segment */
+  int y;      /* y-coordinate of the segment */
+  struct hsegment *previous; /* Pointer to the previous segment (may be NULL) */
+  struct hsegment *next;     /* Pointer to the next segment (may be NULL) */
+} *Hsegment;
+
+</PRE><H3 CLASS="subsection"><A NAME="htoc105">7.4.2</A>&#XA0;&#XA0;Related file (external) types</H3><P>
+<A NAME="hsegment-file_type"></A></P><P>Not available: at this time, the <TT>Hsegment</TT> object cannot be used as input/output variables of modules.
+It can be saved as part of a <TT>Morpho_set</TT> structure.</P><H3 CLASS="subsection"><A NAME="htoc106">7.4.3</A>&#XA0;&#XA0;Functions Summary</H3><P>
+<A NAME="hsegment-function"></A></P><P>The following is a description of all the functions related to 
+the <TT>Hsegment</TT> type. The list is in alphabetical order.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_change_hsegment</FONT></B> - Define the hsegment structure, if not defined</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Hsegment mw_change_hsegment(seg)</P><P>Hsegment seg;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns a <TT>Hsegment</TT> structure if the input <CODE>seg = NULL</CODE>.
+It is provided despite the<BR>
+<CODE>mw_new_hsegment()</CODE> function for
+global coherence with other memory types.</P><P>The function <CODE>mw_change_hsegment</CODE> returns <TT>NULL</TT> if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P>Since the MegaWave2 compiler allocates structures for input and output 
+objects (see volume one: &#X201C;MegaWave2 user manual&#X201D;), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Hsegment seg=NULL; /* Internal use: no Input neither Output of module */
+
+/* Define the horizontal segment (0,10)-(200,10) */
+
+seg = mw_change_hsegment(seg);
+if (seg == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_delete_hsegment</FONT></B> - Deallocate a chain of horizontal segments</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_delete_hsegment(seg)</P><P>Hsegment seg;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function deallocates the chain of horizontal segments starting
+from <CODE>seg</CODE>. Previous segments are not deallocated.
+You should set <CODE>seg = NULL</CODE> after this call since the address pointed
+by <CODE>seg</CODE> is no longer valid.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">Hsegment seg0,newseg,oldseg; 
+int i;
+
+/* Create a chain of 10 horizontal segments, starting from seg0 */
+
+if (!(seg0=mw_new_hsegment())) mwerror(FATAL,1,"Not enough memory.\n");
+seg0-&gt;xstart=0; seg0-&gt;xend=200; seg0-&gt;y=1;
+oldseg=seg0;
+for (i=2; i&lt;=10; i++)
+{
+  if (!(newseg=mw_new_hsegment())) mwerror(FATAL,1,"Not enough memory.\n");
+  newseg-&gt;xstart=0; newseg-&gt;xend=200; newseg-&gt;y=i;
+  newseg-&gt;previous=oldseg;
+  oldseg-&gt;next=newseg;
+  oldseg=newseg;
+}
+
+/* .
+   .
+   (statement)
+   .
+   .
+*/
+
+/* Deallocate the chain of segments */
+mw_delete_hsegment(seg0);
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_new_hsegment</FONT></B> - Create a new hsegment structure</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Hsegment mw_new_hsegment()</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns a new <TT>Hsegment</TT> structure, or <TT>NULL</TT> if not enough 
+memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the 
+<TT>NULL</TT> case, and do appropriate statement.</P><P>The new structure is created with fields set to 0 or <TT>NULL</TT>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Hsegment seg; /* Internal use: no Input neither Output of module */
+
+/* Define the horizontal segment (0,10)-(200,10) */
+
+if (!(seg=mw_new_hsegment())) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+</PRE><H2 CLASS="section"><A NAME="toc27"></A><A NAME="htoc107">7.5</A>&#XA0;&#XA0;Morpho set</H2><P><A NAME="morpho_set"></A></P><P>We call morpho set <A NAME="@default121"></A> any connected component of set of the form
+{<I>x</I> : &#X3BB;<SUB>1</SUB> &#X2264; <I>u</I>(<I>x</I>) &#X2264; &#X3BB;<SUB>2</SUB>}, this set being noted in short by
+[&#X3BB;<SUB>1</SUB> &#X2264; <I>u</I> &#X2264; &#X3BB;<SUB>2</SUB>]. Notice that for &#X3BB;<SUB>1</SUB>=&#X2212;&#X221E; we get
+a lower level set<A NAME="@default122"></A> and for &#X3BB;<SUB>2</SUB>=+&#X221E; an upper level 
+set<A NAME="@default123"></A>. In the case &#X3BB;<SUB>1</SUB> = &#X3BB;<SUB>2</SUB> the morpho set
+will be called iso set<A NAME="@default124"></A>.
+The structure <TT>Morpho_set</TT><A NAME="@default125"></A> can be used to handle such
+morpho set. A <TT>Morpho_set</TT> is given by a list of horizontal segments (See Section&#XA0;<A HREF="#hsegment">7.4</A>),
+where levels &#X3BB;<SUB>1</SUB> and &#X3BB;<SUB>2</SUB> are recorded. Some additional information can
+be recorded, such as the neighbor morpho sets. 
+Please notice that some fields are likely to change in the future.</P><H3 CLASS="subsection"><A NAME="htoc108">7.5.1</A>&#XA0;&#XA0;The structure Morpho_set</H3><P>
+<A NAME="mset-structure"></A></P><P>This is the C definition of the structure <TT>Morpho_set</TT>:
+<A NAME="@default126"></A> 
+</P><PRE CLASS="verbatim">typedef struct morpho_set {
+  unsigned int num;      /* Morpho set number (range in the Morpho_sets struct.) */
+  Hsegment first_segment; /* Pointer to the first segment of the morpho set */
+  Hsegment last_segment;  /* Pointer to the last segment of the morpho set */  
+  float minvalue;        /* Minimum gray level value of this set */
+  float maxvalue;        /* Maximum gray level value of this set */
+  unsigned char stated;  /* 1 if this m.s. has already been stated, 0 otherwise */
+  int area;              /* Area of the set (number of pixels belonging to this set) */
+  struct morpho_sets *neighbor; /* Pointer to a chain of neighbor morpho sets (may be NULL)*/
+} *Morpho_set;
+</PRE><H3 CLASS="subsection"><A NAME="htoc109">7.5.2</A>&#XA0;&#XA0;Related file (external) types</H3><P>
+<A NAME="mset-file_type"></A></P><OL CLASS="enumerate" type=1><LI CLASS="li-enumerate">
+<CODE>"MW2_MORPHO_SET"</CODE><A NAME="@default127"></A> MegaWave2 binary format.
+</LI></OL><H3 CLASS="subsection"><A NAME="htoc110">7.5.3</A>&#XA0;&#XA0;Functions Summary</H3><P>
+<A NAME="mset-function"></A></P><P>The following is a description of all the functions related to 
+the <TT>Morpho_set</TT> type. The list is in alphabetical order.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_change_morpho_set</FONT></B> - Define a morpho set, if not already defined</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Morpho_set mw_change_morpho_set(ms)</P><P>Morpho_set ms;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns a <TT>Morpho_set</TT> structure if the input <CODE>ms = NULL</CODE>.
+It is provided despite the<BR>
+<CODE>mw_new_morpho_set()</CODE> function for
+global coherence with other memory types.</P><P>The function <CODE>mw_change_morpho_set</CODE> returns <TT>NULL</TT> if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P>Since the MegaWave2 compiler allocates structures for input and output 
+objects (see volume one: &#X201C;MegaWave2 user manual&#X201D;), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_set ms=NULL; /* Internal use: no Input neither Output of module */
+Hsegment seg=NULL;
+
+/* Define a morpho set containing one segment only */
+
+if (!(seg=mw_change_hsegment(seg)) ||
+    !(ms=mw_change_morpho_set(ms))) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+
+ms-&gt;first_segment=seg;
+ms-&gt;minvalue=0.0;
+ms-&gt;maxvalue = 1.0;
+ms-&gt;area=201;
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_copy_morpho_set</FONT></B> - Copy a morpho set into another one</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Morpho_set mw_copy_morpho_set(in,out)</P><P>Morpho_set in, out;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function copies the <TT>Morpho_set</TT> <CODE>in</CODE> into <CODE>out</CODE>.
+The chain of segments are also duplicated.
+The result is put in <CODE>out</CODE>, which may not be a predefined structure : in case 
+of <CODE>out=NULL</CODE>, the <CODE>out</CODE> structure is allocated.</P><P>The function <CODE>mw_copy_morpho_set</CODE> returns <TT>NULL</TT> if not enough memory is available to perform
+the copy, or <CODE>out</CODE> elsewhere.
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_set in; /* Predefined morpho_set */
+Morpho_set out=NULL; 
+
+out=mw_copy_morpho_set(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory.\n");
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_delete_morpho_set</FONT></B> - Deallocate a morpho set</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_delete_morpho_set(ms)</P><P>Morpho_set ms;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function deallocates the <TT>Morpho_set</TT> <CODE>ms</CODE>, including the
+chain of horizontal segments.
+You should set <CODE>ms = NULL</CODE> after this call since the address pointed
+by <CODE>ms</CODE> is no longer valid.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_set ms; /* Internal use: no Input neither Output of module */
+Hsegment seg;
+
+/* Define a morpho set containing one segment only */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set())) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+
+ms-&gt;first_segment=seg;
+ms-&gt;minvalue=0.0;
+ms-&gt;maxvalue = 1.0;
+ms-&gt;area=201;
+
+/* .
+   .
+   (statement)
+   .
+   .
+*/
+
+/* Deallocate the morpho_set */
+mw_delete_morpho_set(ms);
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_length_morpho_set</FONT></B> - Return the number of segments a morpho set contains</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+unsigned int mw_length_morpho_set(ms)</P><P>Morpho_set ms;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns the number of segments contained in the input
+<CODE>ms</CODE>.
+It returns 0 if the structure is empty or undefined.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_set ms=NULL; /* Internal use: no Input neither Output of module */
+Hsegment seg=NULL;
+
+/* Define a morpho set containing one segment only */
+
+if (!(seg=mw_change_hsegment(seg)) ||
+    !(ms=mw_change_morpho_set(ms))) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+
+ms-&gt;first_segment=seg;
+ms-&gt;minvalue=0.0;
+ms-&gt;maxvalue = 1.0;
+ms-&gt;area=201;
+
+/* This will print 1 */
+printf("%d",mw_length_morpho_set(ms));
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_new_morpho_set</FONT></B> - Create a new morpho set</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Morpho_set mw_new_morpho_set()</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns a new <TT>Morpho_set</TT> structure, or <TT>NULL</TT> if not enough 
+memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the 
+<TT>NULL</TT> case, and do appropriate statement.</P><P>The new structure is created with fields set to 0 or <TT>NULL</TT>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_set ms; /* Internal use: no Input neither Output of module */
+Hsegment seg;
+
+/* Define a morpho set containing one segment only */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set())) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+
+ms-&gt;first_segment=seg;
+ms-&gt;minvalue=0.0;
+ms-&gt;maxvalue = 1.0;
+ms-&gt;area=201;
+</PRE><H2 CLASS="section"><A NAME="toc28"></A><A NAME="htoc111">7.6</A>&#XA0;&#XA0;Chain of morpho sets</H2><P><A NAME="morpho_sets"></A>
+
+</P><P>The <TT>Morpho_sets</TT><A NAME="@default128"></A> structure is useful to record a set (or chain) of 
+morpho sets. This structure is used by the <TT>Mimage</TT> structure (See Section&#XA0;<A HREF="#mimage">7.9</A>) to 
+handle all the morpho sets an image contains.</P><H3 CLASS="subsection"><A NAME="htoc112">7.6.1</A>&#XA0;&#XA0;The structure Morpho_sets</H3><P>
+<A NAME="msets-structure"></A></P><P>This is the C definition of the structure <TT>Morpho_sets</TT>:
+<A NAME="@default129"></A> 
+</P><PRE CLASS="verbatim">typedef struct morpho_sets {
+  Morpho_set morphoset;         /* Pointer to the current morpho set */
+  struct morpho_sets *previous; /* Pointer to the previous morpho sets of the chain */
+  struct morpho_sets *next;     /* Pointer to the next morpho sets of the chain */
+  /* For use in Mimage only */
+  struct morpho_line *morpholine;  /* Pointer to the associated morpho line */
+} *Morpho_sets;
+</PRE><H3 CLASS="subsection"><A NAME="htoc113">7.6.2</A>&#XA0;&#XA0;Related file (external) types</H3><P>
+<A NAME="msets-file_type"></A></P><OL CLASS="enumerate" type=1><LI CLASS="li-enumerate">
+<CODE>"MW2_MORPHO_SETS"</CODE><A NAME="@default130"></A> MegaWave2 binary format.
+</LI></OL><H3 CLASS="subsection"><A NAME="htoc114">7.6.3</A>&#XA0;&#XA0;Functions Summary</H3><P>
+<A NAME="msets-function"></A></P><P>The following is a description of all the functions related to 
+the <TT>Morpho_sets</TT> type. The list is in alphabetical order.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_change_morpho_sets</FONT></B> - Define a morpho sets, if not already defined</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Morpho_sets mw_change_morpho_sets(mss)</P><P>Morpho_sets mss;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns a <TT>Morpho_sets</TT> structure if the input <CODE>mss = NULL</CODE>.
+It is provided despite the<BR>
+<CODE>mw_new_morpho_sets()</CODE> function for
+global coherence with other memory types.</P><P>The function <CODE>mw_change_morpho_sets</CODE> returns <TT>NULL</TT> if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P>Since the MegaWave2 compiler allocates structures for input and output 
+objects (see volume one: &#X201C;MegaWave2 user manual&#X201D;), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">Morpho_sets mss=NULL; /* Internal use: no Input neither Output of module */
+Hsegment seg;
+Morpho_set ms;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_change_morpho_sets(mss))) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+
+ms-&gt;first_segment=seg;
+ms-&gt;minvalue=0.0;
+ms-&gt;maxvalue = 1.0;
+ms-&gt;area=201;
+
+mss-&gt;morphoset=ms;
+
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_copy_morpho_sets</FONT></B> - Copy a morpho sets into another one</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Morpho_sets mw_copy_morpho_sets(in,out)</P><P>Morpho_sets in, out;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function copies the <TT>Morpho_sets</TT> <CODE>in</CODE> into <CODE>out</CODE>.
+The <TT>Morpho_set</TT> pointed by the <CODE>in-&gt;morphoset</CODE> field is not only copied, but
+also all the chain starting from <CODE>in</CODE>.
+The neighbor <TT>Morpho_sets</TT> pointed by each <TT>Morpho_set</TT> are also copied.
+The result is put in <CODE>out</CODE>, which may not be a predefined structure : in case 
+of <CODE>out=NULL</CODE>, the <CODE>out</CODE> structure is allocated.</P><P>The function <CODE>mw_copy_morpho_sets</CODE> returns <TT>NULL</TT> if not enough memory is available to perform
+the copy, or <CODE>out</CODE> elsewhere.
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_sets in; /* Predefined morpho_sets */
+Morpho_sets out=NULL; 
+
+out=mw_copy_morpho_sets(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory.\n");
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_delete_morpho_sets</FONT></B> - Deallocate a morpho sets</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_delete_morpho_sets(mss)</P><P>Morpho_sets mss;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function frees the <TT>Morpho_set</TT> <CODE>mss-&gt;morphoset</CODE>, all the
+chain starting from <CODE>mss</CODE> and it deallocates the <TT>Morpho_sets</TT> <CODE>mss</CODE> structure.
+You should sets <CODE>mss = NULL</CODE> after this call since the address pointed
+by <CODE>mss</CODE> is no longer valid.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_sets mss; /* Internal use: no Input neither Output of module */
+Hsegment seg;
+Morpho_set ms;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_new_morpho_sets())) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+
+ms-&gt;first_segment=seg; ms-&gt;minvalue=0.0; ms-&gt;maxvalue = 1.0; ms-&gt;area=201;
+mss-&gt;morphoset=ms;
+
+/* .
+   .
+   (statement)
+   .
+   .
+*/
+
+/* Deallocate the morpho_sets mss ; ms and seg will be also deallocated. */
+mw_delete_morpho_set(mss);
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_length_morpho_sets</FONT></B> - Return the number of morpho sets a Morpho_sets structure contains</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+unsigned int mw_length_morpho_sets(mss)</P><P>Morpho_sets mss;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns the number of morpho sets the <TT>Morpho_sets</TT> structure <CODE>mss</CODE> contains,
+starting the chain from the current position given by <CODE>mss</CODE>.
+It returns 0 if the structure is empty or undefined.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_sets mss; /* Internal use: no Input neither Output of module */
+Hsegment seg;
+Morpho_set ms;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_new_morpho_sets())) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+
+ms-&gt;first_segment=seg; ms-&gt;minvalue=0.0; ms-&gt;maxvalue = 1.0; ms-&gt;area=201;
+mss-&gt;morphoset=ms;
+
+/* This will print 1 */
+printf("%d",mw_length_morpho_sets(mss));
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_new_morpho_sets</FONT></B> - Create a new morpho sets</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Morpho_sets mw_new_morpho_sets()</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns a new <TT>Morpho_sets</TT> structure, or <TT>NULL</TT> if not enough 
+memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the 
+<TT>NULL</TT> case, and do appropriate statement.</P><P>The new structure is created with fields set to 0 or <TT>NULL</TT>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_sets mss; /* Internal use: no Input neither Output of module */
+Hsegment seg;
+Morpho_set ms;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_new_morpho_sets())) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+
+ms-&gt;first_segment=seg;
+ms-&gt;minvalue=0.0;
+ms-&gt;maxvalue = 1.0;
+ms-&gt;area=201;
+
+mss-&gt;morphoset=ms;
+
+</PRE><H2 CLASS="section"><A NAME="toc29"></A><A NAME="htoc115">7.7</A>&#XA0;&#XA0;Morpho line</H2><P><A NAME="morpho_line"></A>
+</P><P>A morpho line <A NAME="@default131"></A> is the border of a morpho set.
+Assuming a right choice of grid and point connectivity so that a Jordan&#X2019;s theorem 
+follows, a morpho line is a closed curve dividing the grid in two connected components : 
+the interior of the morpho set and the exterior one. Actually, because an image has a finite
+support, a morpho line may also intersects the image border : in such case, the
+curve remains open. There is another restriction to the Jordan&#X2019;s theorem : most
+of modules using morpho lines (such as <CODE>ml_extract</CODE>) consider the 4-connectivity only in
+the square grid, so the border may cut the connected component to several pieces and the 
+corresponding morpho lines may be self-intersecting.
+Notice that if the morpho set is a level set, the corresponding border is a
+level line<A NAME="@default132"></A>. And if the morpho set is an iso set, its border is
+an iso line<A NAME="@default133"></A>.</P><P>The structure <TT>Morpho_line</TT><A NAME="@default134"></A> can be used to handle such
+morpho line. First a <TT>Morpho_line</TT> is a curve, so the <TT>Point_curve</TT> structure is used to record it
+(field <CODE>first_point</CODE>). There are additional fields, to give information on the
+line (type of the points, closed or open curve) and to allow the reconstruction of the
+morpho set (<CODE>minvalue</CODE>, <CODE>maxvalue</CODE>).</P><H3 CLASS="subsection"><A NAME="htoc116">7.7.1</A>&#XA0;&#XA0;The structure Morpho_line</H3><P>
+<A NAME="mline-structure"></A></P><P>This is the C definition of the structure <TT>Morpho_line</TT>:
+<A NAME="@default135"></A> 
+</P><PRE CLASS="verbatim">typedef struct morpho_line {
+  Point_curve first_point;/* Pointer to the first point of the morpho_line curve */
+  Point_type first_type;  /* Pointer to the first Point_type */
+  float minvalue;         /* Minimum gray level value of this morpho line */
+  float maxvalue;         /* Maximum gray level value of this morpho line */
+  unsigned char open;     /* 0 if the morpho line is closed, opened otherwise */
+  float data;             /* User-defined data field (saved) */
+  void *pdata;            /* User-defined data field : pointer to something (not saved) */
+   
+  /* For use in Mimage only */
+  struct morpho_sets *morphosets;/* Pointer to the associated morpho sets */
+  unsigned int num;              /* Morpho line number (range in the chain) */
+  struct morpho_line *previous;  /* Pointer to the previous m.l. (may be NULL) */
+  struct morpho_line *next;      /* Pointer to the next m.l. (may be NULL) */
+} *Morpho_line;
+</PRE><H3 CLASS="subsection"><A NAME="htoc117">7.7.2</A>&#XA0;&#XA0;Related file (external) types</H3><P>
+<A NAME="mline-file_type"></A></P><OL CLASS="enumerate" type=1><LI CLASS="li-enumerate">
+<CODE>"MW2_MORPHO_LINE"</CODE><A NAME="@default136"></A> MegaWave2 binary format.
+</LI></OL><H3 CLASS="subsection"><A NAME="htoc118">7.7.3</A>&#XA0;&#XA0;Functions Summary</H3><P>
+<A NAME="mline-function"></A></P><P>The following is a description of all the functions related to 
+the <TT>Morpho_line</TT> type. The list is in alphabetical order.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_change_morpho_line</FONT></B> - Define a morpho line, if not already defined</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Morpho_line mw_change_morpho_line(ml)</P><P>Morpho_line ml;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns a <TT>Morpho_line</TT> structure if the input <CODE>ml = NULL</CODE>.
+It is provided despite the<BR>
+<CODE>mw_new_morpho_line()</CODE> function for
+global coherence with other memory types.</P><P>The function <CODE>mw_change_morpho_line</CODE> returns <TT>NULL</TT> if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P>Since the MegaWave2 compiler allocates structures for input and output 
+objects (see volume one: &#X201C;MegaWave2 user manual&#X201D;), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+/* Copy the curve of a morpho line into another morpho line */
+Morpho_line in,out=NULL;
+
+out=mw_change_morpho_line(out);
+if (!out) mwerror(FATAL,1,"Not enough memory !\n");
+out-&gt;open = in-&gt;open;
+if ( ((out-&gt;first_point = mw_new_point_curve()) == NULL) ||
+     ((out-&gt;first_type = mw_new_point_type()) == NULL) )
+   mwerror(FATAL, 1,"Not enough memory !\n");
+mw_copy_point_curve(in-&gt;first_point,out-&gt;first_point);
+mw_copy_point_type(in-&gt;first_type,out-&gt;first_type);
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_copy_morpho_line</FONT></B> - Copy a morpho line into another one</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Morpho_line mw_copy_morpho_line(in,out)</P><P>Morpho_line in, out;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function copies the <TT>Morpho_line</TT> <CODE>in</CODE> into <CODE>out</CODE>.
+All fields are copied but the following : <CODE>pdata</CODE>, <CODE>morphosets</CODE>,
+<CODE>num</CODE>, <CODE>previous</CODE> and <CODE>next</CODE>.
+The result is put in <CODE>out</CODE>, which may not be a predefined structure : in case 
+of <CODE>out=NULL</CODE>, the <CODE>out</CODE> structure is allocated.</P><P>The function <CODE>mw_copy_morpho_line</CODE> returns <TT>NULL</TT> if not enough memory is available to perform
+the copy, or <CODE>out</CODE> elsewhere.
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_line in; /* Predefined morpho_line */
+Morpho_line out=NULL; 
+
+out=mw_copy_morpho_line(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory.\n");
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_delete_morpho_line</FONT></B> - Deallocate a morpho line</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_delete_morpho_line(ml)</P><P>Morpho_line ml;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function deallocates the <TT>Morpho_line</TT> <CODE>ml</CODE> structure, including the
+curve (<TT>Point_curve</TT>) and the chain of types (<TT>Point_type</TT>). Other pointers are
+not deallicated.
+You should line <CODE>ml = NULL</CODE> after this call since the address pointed
+by <CODE>ml</CODE> is no longer valid.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_line ml; /* Internal use: no Input neither Output of module */
+Point_curve pt;
+
+/* Define a morpho line containing the point (0,0) only */
+
+if (!(pt=mw_new_point_curve()) ||
+    !(ml=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+pt-&gt;x=pt-&gt;y=0;
+ml-&gt;first_point=pt;
+
+/* .
+   .
+   (statement)
+   .
+   .
+*/
+
+/* Deallocate the morpho_line */
+mw_delete_morpho_line(ml);
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_length_morpho_line</FONT></B> - Return the number of points a morpho line contains</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+unsigned int mw_length_morpho_line(ml)</P><P>Morpho_line ml;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns the number of points contained in the input
+<CODE>ml</CODE>.
+It returns 0 if the structure is empty or undefined.
+If the field <CODE>first_type</CODE> is not <TT>NULL</TT>, the number of points
+defined by this field must equal the number of points in the curve.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Morpho_line ml; /* Internal use: no Input neither Output of module */
+Point_curve pt;
+
+/* Define a morpho line containing the point (0,0) only */
+
+if (!(pt=mw_new_point_curve()) ||
+    !(ml=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+pt-&gt;x=pt-&gt;y=0;
+ml-&gt;first_point=pt;
+
+/* This will print 1 */
+printf("%d",mw_length_morpho_line(ml));
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_new_morpho_line</FONT></B> - Create a new morpho line</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Morpho_line mw_new_morpho_line()</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns a new <TT>Morpho_line</TT> structure, or <TT>NULL</TT> if not enough 
+memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the 
+<TT>NULL</TT> case, and do appropriate statement.</P><P>The new structure is created with fields set to 0 or <TT>NULL</TT>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+/* Copy the curve of a morpho line into another morpho line */
+Morpho_line in,out;
+
+out=mw_new_morpho_line();
+if (!out) mwerror(FATAL,1,"Not enough memory !\n");
+out-&gt;open = in-&gt;open;
+if ( ((out-&gt;first_point = mw_new_point_curve()) == NULL) ||
+     ((out-&gt;first_type = mw_new_point_type()) == NULL) )
+   mwerror(FATAL, 1,"Not enough memory !\n");
+mw_copy_point_curve(in-&gt;first_point,out-&gt;first_point);
+mw_copy_point_type(in-&gt;first_type,out-&gt;first_type);
+
+</PRE><H2 CLASS="section"><A NAME="toc30"></A><A NAME="htoc119">7.8</A>&#XA0;&#XA0;Morpho line in the continuous plane</H2><P><A NAME="fmorpho_line"></A>
+</P><P>The structure <TT>Fmorpho_line</TT> <A NAME="@default137"></A> is used to
+handle morpho lines in the continuous plane.
+Indeed, if the morpho lines obtained from digital images contain discrete
+(integer) coordinates, one may want to process the morpho lines using
+continuous operators, such as geometric smoothing. The resulting morpho
+lines are no more made by discrete coordinates.
+In a <TT>Fmorpho_line</TT>, the points are recorded using the <TT>Point_fcurve</TT> structure (See
+Section&#XA0;<A HREF="system_manual007.html#curves-polygons_real">6.6</A>).</P><H3 CLASS="subsection"><A NAME="htoc120">7.8.1</A>&#XA0;&#XA0;The structure Fmorpho_line</H3><P>
+<A NAME="fmline-structure"></A></P><P>This is the C definition of the structure <TT>Fmorpho_line</TT>:
+<A NAME="@default138"></A> 
+</P><PRE CLASS="verbatim">typedef struct fmorpho_line {
+  Point_fcurve first_point;/* Pointer to the first point of the fmorpho_line curve */
+  Point_type first_type;   /* Pointer to the first Point_type */
+  float minvalue;          /* Minimum gray level value of this morpho line */
+  float maxvalue;          /* Maximum gray level value of this morpho line */
+  unsigned char open;      /* 0 if the morpho line is closed, opened otherwise */
+  float data;             /* User-defined data field (saved) */
+  void *pdata;            /* User-defined data field : pointer to something (not saved) */
+ 
+  /* For use in Mimage only */
+  struct fmorpho_line *previous; /* Pointer to the previous m.l. (may be NULL) */
+  struct fmorpho_line *next;     /* Pointer to the next m.l. (may be NULL) */
+} *Fmorpho_line;
+</PRE><H3 CLASS="subsection"><A NAME="htoc121">7.8.2</A>&#XA0;&#XA0;Related file (external) types</H3><P>
+<A NAME="fmline-file_type"></A></P><OL CLASS="enumerate" type=1><LI CLASS="li-enumerate">
+<CODE>"MW2_FMORPHO_LINE"</CODE><A NAME="@default139"></A> MegaWave2 binary format.
+</LI></OL><H3 CLASS="subsection"><A NAME="htoc122">7.8.3</A>&#XA0;&#XA0;Functions Summary</H3><P>
+<A NAME="fmline-function"></A></P><P>We won&#X2019;t waste space to describe functions related to the <TT>Fmorpho_line</TT> structure : they
+are the same than those related to <TT>Morpho_line</TT>, except that the name &#X201C;morpho_line&#X201D; has
+to be changed to &#X201C;fmorpho_line&#X201D;.</P><H2 CLASS="section"><A NAME="toc31"></A><A NAME="htoc123">7.9</A>&#XA0;&#XA0;Morphological image</H2><P><A NAME="mimage"></A></P><P>A morphological image<A NAME="@default140"></A> may record in a structure called <TT>Mimage</TT> all morpho sets
+and morpho lines the image contains. It is therefore potentially a very redundant
+(and very huge) structure, but this plenty of information may be useful to perform 
+morphological operations. Of course, not all fields need to be set as the same time,
+for example a <TT>Mimage</TT> may contain the level lines only. But from this (complete) 
+information, all other fields may be computed.</P><P>The <TT>Mimage</TT> structure has been created before the <TT>Shapes</TT> structure was developed
+(See Section&#XA0;<A HREF="#shapes">7.2</A>).
+It does not use the tree structure associated to FLST-based algorithms.
+For this reason, the <TT>Shapes</TT> object should be preferred to the <TT>Mimage</TT> one for
+future developments.</P><H3 CLASS="subsection"><A NAME="htoc124">7.9.1</A>&#XA0;&#XA0;The structure Mimage</H3><P>
+<A NAME="mimage-structure"></A></P><P>This is the C definition of the structure <TT>Mimage</TT>:
+<A NAME="@default141"></A> 
+</P><PRE CLASS="verbatim">typedef struct mimage {
+  char cmt[mw_cmtsize];   /* Comments */
+  char name[mw_namesize]; /* Name of the set */
+  int nrow;               /* Number of rows (dy) */
+  int ncol;               /* Number of columns (dx) */
+  float minvalue;         /* Minimal Gray level value in the image */
+  float maxvalue;         /* Maximal Gray level value in the image */
+  Morpho_line first_ml;   /* Pointer to the first morpho line in the discrete grid */
+  Fmorpho_line first_fml; /* Pointer to the first morpho line in the continuous plane */
+  Morpho_sets first_ms;   /* Pointer to the first morpho sets in the discrete grid */
+} *Mimage;
+</PRE><H3 CLASS="subsection"><A NAME="htoc125">7.9.2</A>&#XA0;&#XA0;Related file (external) types</H3><P>
+<A NAME="mimage-file_type"></A></P><OL CLASS="enumerate" type=1><LI CLASS="li-enumerate">
+<CODE>"MW2_MIMAGE"</CODE><A NAME="@default142"></A> MegaWave2 binary format.
+</LI></OL><H3 CLASS="subsection"><A NAME="htoc126">7.9.3</A>&#XA0;&#XA0;Functions Summary</H3><P>
+<A NAME="mimage-function"></A></P><P>The following is a description of all the functions related to 
+the <TT>Mimage</TT> type. The list is in alphabetical order.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_change_mimage</FONT></B> - Define a morphological image, if not already defined</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Mimage mw_change_mimage(mi)</P><P>Mimage mi;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns a <TT>Mimage</TT> structure if the input <CODE>mi = NULL</CODE>.
+It is provided despite the<BR>
+<CODE>mw_new_mimage()</CODE> function for
+global coherence with other memory types.</P><P>The function <CODE>mw_change_mimage</CODE> returns <TT>NULL</TT> if not enough memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P>Since the MegaWave2 compiler allocates structures for input and output 
+objects (see volume one: &#X201C;MegaWave2 user manual&#X201D;), this function is normally used only for internal objects.
+Do not forget to deallocate the internal structures before the end
+of the module, except if they are part of an input or output chain.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">/* Copy the morpho lines only of a morphological image into another morphological image */
+
+Mimage in,out=NULL;
+
+out=mw_change_mimage(out);
+if (!out) mwerror(FATAL,1,"Not enough memory !\n");
+out-&gt;nrow = in-&gt;nrow;
+out-&gt;ncol = in-&gt;ncol;
+out-&gt;minvalue=in-&gt;minvalue;
+out-&gt;maxvalue=in-&gt;maxvalue;
+if (in-&gt;firstml) 
+  {
+    out-&gt;firstml=mw_copy_morpho_line(in-&gt;firstml, out-&gt;firstml);
+    if (!out-&gt;firstml) mwerror(FATAL, 1,"Not enough memory !\n");
+  }
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_copy_mimage</FONT></B> - Copy a morphological image into another one</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Mimage mw_copy_mimage(in,out)</P><P>Mimage in, out;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function copies the <TT>Mimage</TT> <CODE>in</CODE> into <CODE>out</CODE>.
+All fields are copied, including the chains of <TT>Morpho_sets</TT>, <TT>Morpho_line</TT> and <TT>Fmorpho_line</TT>.
+The result is put in <CODE>out</CODE>, which may not be a predefined structure : in case 
+of <CODE>out=NULL</CODE>, the <CODE>out</CODE> structure is allocated.</P><P>The function <CODE>mw_copy_mimage</CODE> returns <TT>NULL</TT> if not enough memory is available to perform
+the copy, or <CODE>out</CODE> elsewhere.
+Your code should check this return value to send an error message in the <TT>NULL</TT> case, and do appropriate statement.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+mimage in; /* Predefined mimage */
+mimage out=NULL; 
+
+out=mw_copy_mimage(in,out);
+if (!out) mwerror(FATAL,1,"Not enough memory.\n");
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_delete_mimage</FONT></B> - Deallocate a morphological image</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+void mw_delete_mimage(mi)</P><P>mimage mi;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function deallocates the <TT>Mimage</TT> <CODE>mi</CODE> structure, including the
+chains of <TT>Morpho_sets</TT>, <TT>Morpho_line</TT> and <TT>Fmorpho_line</TT>.
+You should line <CODE>mi = NULL</CODE> after this call since the address pointed
+by <CODE>mi</CODE> is no longer valid.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">
+Mimage mi; /* Internal use: no Input neither Output of module */
+
+Morpho_line ml; 
+Point_curve pt;
+Fmorpho_line fml; 
+Point_fcurve fpt;
+Morpho_sets mss;
+Hsegment seg;
+Morpho_set ms;
+
+
+/* Define a morpho line containing the point (0,0) only */
+
+if (!(pt=mw_new_point_curve()) ||
+    !(ml=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+pt-&gt;x=pt-&gt;y=0;
+ml-&gt;first_point=pt;
+
+/* Define a fmorpho line containing the point (0.5,0.5) only */
+
+if (!(fpt=mw_new_point_fcurve()) ||
+    !(fml=mw_new_fmorpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+fpt-&gt;x=fpt-&gt;y=0.5;
+fml-&gt;first_point=fpt;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_new_morpho_sets())) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+ms-&gt;first_segment=seg; ms-&gt;minvalue=0.0; ms-&gt;maxvalue = 1.0; ms-&gt;area=201;
+mss-&gt;morphoset=ms;
+
+/* Define a morphological image made by one morpho line, one fmorpho line and
+   one morpho sets.
+*/
+
+if (!(mi=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+mi-&gt;first_ml=ml;
+mi-&gt;first_fml=fml;
+mi-&gt;first_ms=ms;
+
+/* .
+   .
+   (statement)
+   .
+   .
+*/
+
+
+/* Deallocate the mimage, including ml, fml and ms */
+mw_delete_mimage(mi);
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_length_fml_mimage</FONT></B> - Return the number of morpho lines a morphological image contains</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+unsigned int mw_length_fml_mimage(mi)</P><P>Mimage mi;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns the number of fmorpho lines contained in the input
+<CODE>mi</CODE>.
+It returns 0 if the structure is empty or undefined.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+See example page&#XA0;<A HREF="#length_ml-example">??</A>.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_length_ml_mimage</FONT></B> - Return the number of morpho lines a morphological image contains</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+unsigned int mw_length_ml_mimage(mi)</P><P>Mimage mi;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns the number of morpho lines contained in the input
+<CODE>mi</CODE>.
+It returns 0 if the structure is empty or undefined.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+<A NAME="length_ml-example"></A>
+</P><PRE CLASS="verbatim">
+
+Mimage mi; /* Internal use: no Input neither Output of module */
+
+Morpho_line ml; 
+Point_curve pt;
+Fmorpho_line fml; 
+Point_fcurve fpt;
+Morpho_sets mss;
+Hsegment seg;
+Morpho_set ms;
+
+
+/* Define a morpho line containing the point (0,0) only */
+
+if (!(pt=mw_new_point_curve()) ||
+    !(ml=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+pt-&gt;x=pt-&gt;y=0;
+ml-&gt;first_point=pt;
+
+/* Define a fmorpho line containing the point (0.5,0.5) only */
+
+if (!(fpt=mw_new_point_fcurve()) ||
+    !(fml=mw_new_fmorpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+fpt-&gt;x=fpt-&gt;y=0.5;
+fml-&gt;first_point=fpt;
+
+/* Define a morpho sets containing one morpho set */
+
+if (!(seg=mw_new_hsegment()) ||
+    !(ms=mw_new_morpho_set()) ||
+    !(mss=mw_new_morpho_sets())) mwerror(FATAL,1,"Not enough memory.\n");
+seg-&gt;xstart=0; 
+seg-&gt;xend=200;
+seg-&gt;y=10;
+ms-&gt;first_segment=seg; ms-&gt;minvalue=0.0; ms-&gt;maxvalue = 1.0; ms-&gt;area=201;
+mss-&gt;morphoset=ms;
+
+/* Define a morphological image made by one morpho line, one fmorpho line and
+   one morpho sets.
+*/
+
+if (!(mi=mw_new_morpho_line())) mwerror(FATAL,1,"Not enough memory.\n");
+mi-&gt;first_ml=ml;
+mi-&gt;first_fml=fml;
+mi-&gt;first_ms=ms;
+
+
+/* This will print 1 */
+printf("%d",mw_length_ml_mimage(mi));
+/* This will print 1 */
+printf("%d",mw_length_fml_mimage(mi));
+/* This will print 1 */
+printf("%d",mw_length_ms_mimage(mi));
+
+</PRE><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_length_ms_mimage</FONT></B> - Return the number of morpho sets a morphological image contains</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+unsigned int mw_length_ms_mimage(mi)</P><P>Mimage mi;
+</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns the number of morpho sets contained in the input
+<CODE>mi</CODE>.
+It returns 0 if the structure is empty or undefined.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+See example page&#XA0;<A HREF="#length_ml-example">??</A>.</P><P>
+<B><FONT SIZE=5>Name</FONT> <BR>
+<BR>
+<FONT SIZE=4>mw_new_mimage</FONT></B> - Create a new morphological image</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Summary</B></FONT></P><P>
+Mimage mw_new_mimage()</P><P><BR>
+<BR>
+<BR>
+
+
+<FONT SIZE=5><B>Description</B></FONT></P><P><BR>
+<BR>
+<BR>
+This function returns a new <TT>Mimage</TT> structure, or <TT>NULL</TT> if not enough 
+memory is available to allocate the structure. 
+Your code should check this return value to send an error message in the 
+<TT>NULL</TT> case, and do appropriate statement.</P><P>The new structure is created with fields set to 0 or <TT>NULL</TT>.</P><P><BR>
+<BR>
+<BR>
+
+<FONT SIZE=5><B>Example</B></FONT></P><P><BR>
+<BR>
+<BR>
+</P><PRE CLASS="verbatim">/* Copy the morpho lines only of a morphological image into another morphological image */
+
+Mimage in,out;
+
+out=mw_new_mimage();
+if (!out) mwerror(FATAL,1,"Not enough memory !\n");
+out-&gt;nrow = in-&gt;nrow;
+out-&gt;ncol = in-&gt;ncol;
+out-&gt;minvalue=in-&gt;minvalue;
+out-&gt;maxvalue=in-&gt;maxvalue;
+if (in-&gt;firstml) 
+  {
+    out-&gt;firstml=mw_copy_morpho_line(in-&gt;firstml, out-&gt;firstml);
+    if (!out-&gt;firstml) mwerror(FATAL, 1,"Not enough memory !\n");
+  }
+</PRE><HR CLASS="footnoterule"><DL CLASS="thefootnotes"><DT CLASS="dt-thefootnotes">
+<A NAME="note1" HREF="#text1">1</A></DT><DD CLASS="dd-thefootnotes">we denote by <I>x</I> a point in the image <I>u</I>.
+</DD></DL>
+<HR>
+<A HREF="system_manual007.html"><abbr title="previous chapter" class="navigation">&larr;</abbr></A>
+<A HREF="index.html"><abbr title="table of contents" class="navigation">&uarr;</abbr></A>
+<A HREF="system_manual009.html"><abbr title="next chapter" class="navigation">&rarr;</abbr></A>
+</BODY>
+</HTML>

@@ -1,0 +1,1024 @@
+%
+% Part 5 of the MegaWave2 Guide #1
+%   System Macros
+%
+
+You have been already introduced to the macros by Section~\ref{intro_macros}.
+A system's macro is a Bourne Shell script which uses a normalized header.
+All system's macros are located in the directory \verb+$MEGAWAVE2/sys/shell+.
+They are used to manage MegaWave2.
+The following section explains each system's macro.
+The next section~\ref{sysmacros_list} describes a file format which is used
+by some macros to describe a list of MegaWave2 modules.
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{Macros summary}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{sysmacros_summary}
+
+The next pages describe each system's macro; the list is
+in alphabetical order.
+
+\newcommand{\Macro}[2]{
+{\Large\bf  Macro} \bigskip
+\index{system's macro!#1}
+
+{\large\bf #1} - #2
+
+\Next}
+
+\newcommand{\Usage}[1]{
+{\Large\bf Usage} \bigskip
+
+#1
+
+\Next}
+
+\newcommand{\Options}{
+{\Large\bf  Options} \bigskip
+
+}
+
+%----------------------------------------------
+\newpage
+
+\Macro{cmw2}{The MegaWave2 Compiler}
+\index{compiler}
+{\Large\bf Usage} \bigskip
+
+\verb+cmw2  [-traditional] [-gnu] [-g] [-X] [-O] [-c compiler_and_linker_option]+
+\newline
+\verb+      [-cc compiler_option] [-cl linker_option] [-Dname[=def]] [-Uname]+
+\newline
+\verb+      [-Ipathname][-v] [-w] [-Ldirectory] [-llibrary] [-dep] [-pubsyslib]+
+\newline
+\verb+      [-N] module+
+\Next
+
+\Description
+This command compiles a MegaWave2 module given by \verb+module+.
+Since version $1.41$ of this system's macro, \verb+module+ may also be a
+User's macro. In that case, \verb+cmw2macro+ is called.
+Please refer to Section~\ref{intro_compiler} page~\pageref{intro_compiler}
+to learn more about this compilation.
+The module must be located into a subdirectory of \verb+$MY_MEGAWAVE2+ (plain user)
+or of \verb+$MEGAWAVE2+ (administrator only).
+
+\Next
+\Options
+\verb+-traditional+ : Use the 'traditional' preprocessor instead of the 'light' one
+(see Section~\ref{intro_main_changes} page~\pageref{intro_main_changes}).
+
+\verb+-gnu+ : Use the Gnu C compiler \verb+gcc+ instead of the standard C compiler \verb+cc+.
+
+\verb+-g+ : Debug flag. Cause the compiler to generate additional information
+needed by the symbolic debugger.  This option is normally incompatible with optimization.
+
+\verb+-X+ : XMegaWave flag. Cause the compiler to generate an interface to include the module in the XMegaWave2 software.
+
+\verb+-O+ : Invoke the C optimizer. This option is normally incompatible with debugging.
+
+\verb+-c+ : pass the following argument \verb+compiler_and_linker_option+ to the compiler and to the linker
+(if the argument contains spaces, you can still pass it as one item by surrounding in \verb+"+quotes\verb+"+).
+
+\verb+-cc+ : pass the following argument \verb+compiler_option+ to the compiler only
+(if the argument contains spaces, you can still pass it as one item by surrounding in \verb+"+quotes\verb+"+).
+
+\verb+-cl+ : pass the following argument \verb+linker_option+ to the linker only
+(if the argument contains spaces, you can still pass it as one item by surrounding in \verb+"+quotes\verb+"+).
+
+\verb+-Dname+ : Define \verb+name+ to the preprocessor, as if by \verb+'#define'+. 
+If your compiler uses the ANSI mode, you should define the name  \verb+__STDC__+.
+
+\verb+-Uname+ : Remove any initial definition of \verb+name+ in the preprocessor. 
+
+\verb+-v+ : Verbose mode. Print messages about what command is running, together with the name of temporary files. In this mode, temporary files are not deleted so you can edit them, debug, or run the commands manually.
+
+\verb+-w+ : Suppress warning messages.
+
+\verb+-Ipathname+ : Change the algorithm used by the preprocessor for finding include files to also search in directory \verb+pathname+.
+
+\verb+-Ldirectory+ :  Change the algorithm used by the linker to search for
+the libraries.  The -L option causes the compiler to search in \verb+directory+ before searching in the default locations.
+
+\verb+-llibrary+ : Include additional library given by \verb+library+ for linking.
+
+\verb+-dep+ : Dependencies list. Cause the compiler to generate a primary dependencies list of the module. See the macro \verb+mwdep+ for more information.
+
+\verb+-pubsyslib+ : Link module with the PUBLIC system library (adm only).
+
+\verb+-N+ : Do not propose to run \verb+lint+ (a C program checker/verifier) in case of compilation error.
+
+%----------------------------------------------
+\newpage
+
+\Macro{cmw2\_all}{Compile all MegaWave2 Modules}
+{\Large\bf Usage} \bigskip
+
+\verb+cmw2_all [-traditional] [-gnu] [-clear] [-g] [-X] [-O]+
+\newline
+\verb+         [-c compiler_and_linker_option] [-cc compiler_option]+
+\newline
+\verb+         [-cl linker_option] [-Dname[=def]] [-Uname] [-Ipathname] [-w]+
+\newline
+\verb+         [-Ldirectory] [-llibrary] [-2p] [-sp] [-dep] [-pubsyslib] [-force]+
+\newline
+\verb+         [-v tracefile] [-N processid] src_directory+
+
+\Next
+
+\Description
+This command compiles all MegaWave2 modules being in the given directory \verb+src_directory+, and recursively in all subdirectories of \verb+src_directory+.
+It basically calls \verb+cmw2+ as many time as necessary. 
+The location pointed by  \verb+src_directory+ has to be a subdirectory of \verb+$MY_MEGAWAVE2+ 
+(plain user) or of \verb+$MEGAWAVE2+ (administrator only).
+\Next
+
+\Options
+
+\verb+-traditional+ : Use the 'traditional' preprocessor instead of the 'light' one
+(see Section~\ref{intro_main_changes} page~\pageref{intro_main_changes}).
+
+\verb+-gnu+ : Use the Gnu C compiler \verb+gcc+ instead of the standard C compiler \verb+cc+.
+
+\verb+-clear+ : Clear the following target directories before processing the
+compilations: \verb+bin+, \verb+lib+, \verb+obj+, \verb+mwi+ and \verb+doc/obj+ 
+(confirmation is requested).
+This option allows to clean the target directories; otherwise old modules stay
+in those directories even if the sources have been deleted (but if the system's macro
+\verb+mwrm+ was used).
+
+\verb+-sp+ : Second pass. Do not compile a module if it has been already successfully compiled. This option works only with linkers which do not set a binary containing unresolved symbols to be executable.
+
+\verb+-2p+ : Two pass. During the first pass, all the modules are compiled. 
+The second pass calls \verb+cmw2_all+ with \verb+-sp+.
+This option allows modules which depend on other modules to be successfully compiled after the second pass. This option works only with linkers which do not set a binary containing unresolved symbols to be executable.
+
+\verb+-g+ : Debug flag. Cause the compiler to generate additional information
+needed by the symbolic debugger.  This option is normally incompatible with optimization.
+
+\verb+-X+ : XMegaWave flag. Cause the compiler to generate an interface to include the modules in the XMegaWave2 software.
+
+\verb+-O+ : Invoke the C optimizer. This option is normally incompatible with debugging.
+
+\verb+-c+ : pass the following argument \verb+compiler_and_linker_option+ to the compiler and to the linker
+(if the argument contains spaces, you can still pass it as one item by surrounding in \verb+"+quotes\verb+"+).
+
+\verb+-cc+ : pass the following argument \verb+compiler_option+ to the compiler only
+(if the argument contains spaces, you can still pass it as one item by surrounding in \verb+"+quotes\verb+"+).
+
+\verb+-cl+ : pass the following argument \verb+linker_option+ to the linker only
+(if the argument contains spaces, you can still pass it as one item by surrounding in \verb+"+quotes\verb+"+).
+
+\verb+-Dname+ : Define \verb+name+ to the preprocessor, as if by \verb+'#define'+.
+If your compiler uses the ANSI mode, you should define the name  \verb+__STDC__+.
+
+\verb+-Uname+ : Remove any initial definition of \verb+name+ in the preprocessor. 
+
+\verb+-Ipathname+ : Change the algorithm used by the preprocessor for finding include files to also search in directory \verb+pathname+.
+
+\verb+-Ldirectory+ :  Change the algorithm used by the linker to search for
+the libraries.  The -L option causes the compiler to search in \verb+directory+ before searching in the default locations.
+
+\verb+-llibrary+ : Include additional library given by \verb+library+ for linking.
+
+\verb+-w+ : Suppress warning messages.
+
+\verb+-dep+ : Dependencies list. Cause the compiler to generate the primary dependencies list of each module. See the macro \verb+mwdep+ for more information.
+
+\verb+-force+ : Do not ask confirmation before removing target directories.
+
+\verb+-v tracefile+ : Verbose. Output trace of compilations in the file \verb+tracefile+ that can be viewed after the command ends.
+
+\verb+-pubsyslib+ : Link modules with the PUBLIC system library (adm only).
+
+\verb+-N processid+ : Internal use only.
+
+%----------------------------------------------
+\newpage
+
+\Macro{cmw2macro}{Compile a user's macro : make it available and generate the document skeleton}
+{\Large\bf Usage} \bigskip
+
+\verb+cmw2macro [-adm] [-ret] [-path path] [-absolute] macro+
+
+\Next
+
+\Description
+This command writes the document skeleton (the \verb+.doc+ file) 
+corresponding to the macro \verb+macro+, and it creates a symbolic
+link in \verb+$MY_MEGAWAVE2/shell+ (or in \verb+$MEGAWAVE2/shell+ if 
+the option \verb+-adm+ is selected), so that you can call these macro
+from any location. 
+You should not have to use directly this command, since it is called by
+\verb+cmw2+, \verb+mwmakedoc+ or \verb+mwdoclatex+ when needed.
+\Next
+
+\Options 
+\verb+-adm+ : search \verb+macro+ in \verb+$MEGAWAVE2+ (instead of 
+\verb+$MY_MEGAWAVE2+.
+
+\verb+-ret+ : return filename (with pathname) of the document skeleton.
+
+\verb+-path path+ : search \verb+macro+ in \verb+path+ (instead of 
+in \verb+$MY_MEGAWAVE2+).
+
+\verb+-absolute+ : create link using absolute pathname (since cmw2macro version 2.08,
+default is to create link with relative pathname).
+
+%----------------------------------------------
+\newpage
+
+\Macro{cxmw2}{The XMegaWave2 Compiler}
+\index{XMegaWave2}
+{\Large\bf Usage} \bigskip
+
+\verb+cxmw2 [-gnu] [-g] [-O] [-Dname[=def]] [-Uname] [-Ipathname] [-w] [-Ldirectory]+
+\newline
+\verb+      [-llibrary] modules_file+
+
+\Next
+
+\Description
+This command allows to compile your own version of the XMegaWave2 software.
+The version is defined by the modules you want to include in the software.
+Each module name will appear into a window panel, inside a window hierarchy
+defined by the group of the module. 
+The input of \verb+cxmw2+ is an ascii file which gives the list of the modules
+to include together with the groups hierarchy.
+Please see Section~\ref{sysmacros_list} to learn more about the format
+of this file.
+In order to be included in XMegaWave2, each module must have been compiled
+with \verb+cmw2+ using option \verb+-X+.
+
+The name of the XMegaWave2 run-time program is \verb+myxmw2+.
+\Next
+
+\Options
+\verb+-gnu+ : Use the Gnu C compiler \verb+gcc+ instead of the standard C compiler \verb+cc+.
+
+\verb+-g+ : Debug flag. Cause the compiler to generate additional information
+needed by the symbolic debugger.  This option is incompatible with optimization.
+
+\verb+-O+ : Invoke the C optimizer. This option is incompatible with debugging.
+
+\verb+-Dname+ : Define \verb+name+ to the preprocessor, as if by \verb+'#define'+.
+
+\verb+-Uname+ : Remove any initial definition of \verb+name+ in the preprocessor. 
+
+\verb+-Ipathname+ : Change the algorithm used by the preprocessor for finding include files to also search in directory \verb+pathname+.
+
+\verb+-Ldirectory+ :  Change the algorithm used by the linker to search for
+the libraries.  The -L option causes the compiler to search in \verb+directory+ before searching in the default locations.
+
+\verb+-llibrary+ : Include additional library given by \verb+library+ for linking.
+
+\verb+-w+ : Suppress warning messages.
+
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwmakedoc}{Make a new documentation for the modules (Volume 3)}
+{\Large\bf Usage} \bigskip
+
+\verb=mwmakedoc [-c] [-h] [-N] [-g group_directory] [-nobin] [+/-index] [+/-html]=
+\newline
+\verb=          mw2dir=
+\Next
+
+\Description
+This command creates the \TeX\ files corresponding to the Volume Three of the MegaWave2 guides 
+(``MegaWave2 User's Modules Library'').
+The documentation is written in order to keep consistency with the current
+MegaWave2 modules and macros put in the directory \verb+mw2dir+ 
+(e.g. \verb+$MEGAWAVE2+, \verb+$MY_MEGAWAVE2+ or a selected copy of such 
+directories).
+The \TeX\ files are written in the directory \verb+mw2dir/doc+, so you need
+write permission in this directory.
+The modules, located into \verb+mw2dir/src+, must have been compiled in order
+to fill the target directories \verb+mw2dir/bin+ and \verb+mw2dir/doc+
+(not applicable for macros).
+Each module and macro must be documented that is, a \verb+M.tex+ file must 
+be written in \verb+mw2dir/doc+ for all \verb+M+ modules and macros
+(see Section~\ref{document} for more information).
+
+In order to compile the documentation, run \LaTeX\ several times (as well as
+other commands, such as {\tt mwmodbibtex} and {\tt makeindex}) as mentioned at the end
+of the execution of this command, or set option {\tt -c}.
+
+\Next
+
+\Options
+
+\verb+-c+ : Compile the documentation (Volume 3) after \TeX\ files have been created.
+
+\verb+-h+ : Make a html (HyperText Markup Language) version of the documentation (Volume 3) using {\tt latex2html}. Need {\tt -c}. The generation of all html files may take a while.
+
+\verb+-N+ : Identify the command to be not the primary process (internal use). 
+
+\verb+-g group_directory+ : Limit the scanning of modules to the given group directory (and sub-directories).
+
+\verb+-nobin+ : Do not check consistency with the binaries (i.e. a module for which the compilation failed may be documented).
+
+\verb=+index= : Force the creation of an index for the modules. You normally do not need to set this option,
+since it is the default if the \verb+makeidx+ \LaTeX\ package is installed.
+If the option is set, you will need this package in order to run \LaTeX\ on the generated \TeX\ files.
+
+\verb=-index= : Do not create an index for the modules, even if the \verb+makeidx+ \LaTeX\ package is 
+installed.
+
+\verb=+html= : Force the addition of html code in the \TeX\ files, to make the result of \verb+latex2html+
+nicer (this command may be used to translate \LaTeX\ files to HyperText Markup Language). 
+You normally do not need to set this option, since it is the default if the \verb+html+ and
+\verb+hthtml+ \LaTeX\ packages are installed.
+If the option is set, you will need these packages in order to run \LaTeX\ on the generated \TeX\ files.
+
+\verb=-html= : Do not add html code in the \TeX\ files, even if the \verb+html+ and
+\verb+hthtml+ \LaTeX\ packages are installed.
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwarch}{Machine architecture}
+{\Large\bf Usage} \bigskip
+
+\verb+mwarch [ -s || -k ]+
+
+\Next
+
+\Description
+This command displays the architecture of the current host.
+MegaWave2 assumes that two machines with the same name returned by \verb+mwarch+ can run the same executables and can link the same objects.
+Therefore, you may have to call \verb+mwarch+ with the option \verb+-s+ if MegaWave2 supports
+several implementations (corresponding to incompatible operating systems) for the same
+machine.
+
+If \verb+mwarch+ returns ``unknown'', you cannot run your version of MegaWave2 on this architecture.
+
+\Next
+
+\Options
+
+\verb+-s+ : Add to the architecture name a suffix to identify the release of the operating system.
+
+\verb+-k+ : Give long architecture name.
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwcleandistrib}{Clean from objects and old files the MegaWave2 Distribution (adm only)}
+{\Large\bf Usage} \bigskip
+
+\verb+mwcleandistrib mw2_distrib_dir+
+
+\Next
+
+\Description
+This macro can be used to remove all unnecessary files from the MegaWave2 distribution directory
+named \verb+mw2_distrib_dir+ (recursively inside each subdirectory), in order to clean it.
+Files removed are old files generated by \verb+emacs+ (i.e. ending by \verb+~+) and objects.
+
+\Next
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwcmwcheck}{Check the MegaWave2 compiler (adm only)}
+\index{system's macro!cmw2}
+{\Large\bf Usage} \bigskip
+
+\verb+mwcmwcheck+
+
+\Next
+
+\Description
+This macro checks the MegaWave2 compiler \verb+cmw2+ by blind-compiling some standard
+modules. It is intended to check if the kernel has been correctly installed on a new
+architecture, before calling \verb+cmw2_all+.
+It should be used by the MegaWave2 administrator only, during the installation stage.
+
+In case of errors, the output of \verb+cmw2+ is displayed and the macro exists with 
+non-null error code.
+If everything goes well, you should not experiment lot of problems by compiling
+the whole modules of the standard distribution.
+
+\Next
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwdep}{Make all the secondary dependencies lists}
+{\Large\bf Usage} \bigskip
+
+\verb+mwdep [ -adm ] [-v]+
+
+\Next
+
+\Description
+This command has to be called after all modules have been compiled using the option
+\verb+-dep+ of \verb+cmw2+ or \verb+cmw2_all+, since it needs the primary dependencies lists of each module 
+\newline
+\verb+$MY_MEGAWAVE2/doc/obj/DEPENDENCIES/*.mis+). 
+From those files, \verb+mwdep+ generates in 
+\newline
+\verb+$MY_MEGAWAVE2/doc/obj/DEPENDENCIES+ the following files, one per module \verb+<M>+:
+\begin{itemize}
+\item \verb+<M>.called+ lists the modules called by \verb+<M>+;
+\item \verb+<M>.calling+ lists the modules calling \verb+<M>+;
+\item \verb+<M>.dep+ is a \TeX file which lists the modules called by \verb+<M>+ followed
+by the modules calling \verb+<M>+. 
+\end{itemize}
+
+The file \verb+<M>.dep+ is included by the documentation file to constitute the ``See Also'' field.
+Therefore, run \verb+mwdep+ before \verb+mwmakedoc+,
+\verb+mwdoclatex+ or \verb+mwdocxdvi+ if you want to get the right ``See Also'' fields in your documentation.
+
+The file \verb+<M>.calling+ is used by \verb+cmw2+ to issue a warning message when the
+module \verb+<M>+ is compiled: you should re-compile also all the modules listed in
+\verb+<M>.calling+. 
+
+Warning : because this command uses the output generated by the link editor, it is 
+linker and language-dependent. Only a subset of linkers and languages is supported
+(english is always supported; french is supported on some linkers).
+\Next
+
+\Options
+
+\verb+-adm+ :  Administrator flag. The developer's directory is \verb+$MEGAWAVE2+ instead of \verb+$MY_MEGAWAVE2+. The user must have write permission into this directory.
+
+\verb+-v+ : Verbose. Write more information on the standard output.
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwdoc}{Easy access to the documentation}
+{\Large\bf Usage} \bigskip
+
+\verb+mwdoc [<name> || M || S || F || 1 || 2 || 3]+
+
+\Next
+
+\Description
+This command offers an easy access to the documentation. Since objects doc files are in the
+DeVice Independent (DVI) file format, your system must support the DVI previewer \verb+xdvi+.
+If you call \verb+mwdoc+ without argument, it will ask you to tell him what kind of doc you
+are seeking. You may also put directly in argument the doc you want.
+
+\Next
+\Options
+\verb+<name>+ : The word \verb+<name>+ is supposed to be the name of a module or of a user's macro.
+This causes to view the doc of the correponding module or user's macro.               
+
+\verb+M+ or \verb+m+ : List all modules and user's macro with a short description.
+
+\verb+S+ or \verb+s+ : List all system's macros with a short description.
+
+\verb+F+ or \verb+f+ : List all available external (file) types with a short description. To reduce the
+list to the file types you are looking for, after the prompt specify a keyword.
+
+\verb+1+ : View the Volume 1, MegaWave2 User's Guide.
+
+\verb+2+ : View the Volume 2, MegaWave2 System Library.
+
+\verb+3+ : View the Volume 3, MegaWave2 User's Modules and Macros Library.
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwecho}{Portable echo with -n and -E options}
+{\Large\bf Usage} \bigskip
+
+\verb+mwecho [-n] [-E] ...+
+
+\Next
+
+\Description
+This command emulates a portable \verb+echo+ command with -n and -E options.
+The command \verb+mwecho -n+ replaces \verb+mwechon+ which is no more furnished.
+\Next
+
+\Options
+
+\verb+-n+ : Do not output the trailing newline.
+
+\verb+-E+ : Disable interpretation of backslash-escaped characters. 
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwinstall}{Install MegaWave2 (administrator only)}
+{\Large\bf Usage} \bigskip
+
+\verb+mwinstall [-traditional] [-static] [-public || -public=private]+
+\newline
+\verb+          [-clear] [-debug] [-level l] mw2distribution+
+
+\Next
+
+\Description
+This command is for the MegaWave2 Administrator only. Remember that the Administrator is the one
+which is supposed to install, maintain and update MegaWave2 for all users.
+This command may be called directly, but you may also use the shell \verb+Install+ in the root
+directory of \verb+mw2distribution+ where \verb+mw2distribution+ is an original MegaWave2 
+Distribution Package (\verb+$PRIVATE_MEGAWAVE2+). 
+The main steps of the installation are as follows :
+\begin{enumerate}
+\item The environment variables needed to run most macros are built, using the macro \verb+mwsetenv+.
+\item The kernel is compiled for your machine architecture, using installation shells and makefiles
+located in \verb+mw2distribution/kernel+. The kernel is composed by the Wdevice library 
+(interface with the Window System), by the System library, and by the preprocessor.
+\item The modules and user's macros are compiled for your machine architecture, using the
+macro \verb+cmw2_all+.
+\item The volume 3 of the documentation (User's Modules and Macros Library) is generated, using
+macros \verb+mwdep+ and \verb+mwmakedoc+.
+\item If the option \verb+-public+ has been selected, a list of successfully compiled modules
+and user's macros is written using the macro \verb+mwmodlist+, and modules and user's macros
+of this list are installed into the public MegaWave2 using the macro \verb+mwmodinstall+.
+\end{enumerate}
+
+The macro \verb+mwinstall+ is intended to allow an easy installation process on the very most common
+machines and configurations only. 
+It means that something goes wrong is not an unlikely event. In that case, you will have to
+correct the wrong things by yourself and to rerun the macro, eventually using the option 
+\verb+-level l+ to avoid levels already completed. Or you will have to make the installation
+``manually'' that is, by calling lower-levels macros. Such manual installation is not a bad
+idea, even if everything goes well with \verb+mwinstall+. A manual installation allows to
+customize MegaWave2 more deeply than the standard one. For example, you may want to install
+in the public MegaWave2 a subset of the private modules only. This can be easily done by editing
+the list of modules written by \verb+mwmodlist+, before calling \verb+mwmodinstall+.
+
+Be aware that, since the installation is machine-dependent, you should install MegaWave2 on each
+machine architecture for which you want to be able to use it. Of course, if for each installation
+you specify the same public MegaWave2 directory, source files will not be duplicated.
+\Next
+
+\Options
+
+\verb+-traditional+ : When compiling modules, use the 'traditional' preprocessor instead of the 'light' one
+(see Section~\ref{intro_main_changes} page~\pageref{intro_main_changes}).
+
+\verb+-static+ :  Make static kernel libraries (by default, kernel libraries are shared). Selecting
+this option may be hazardous since modules linked with static libraries are of big size. 
+You should use it after having installed the shared libraries only (do not select \verb+-clear+ or
+you will remove them), so that by default modules would be still dynamically linked. 
+To statically link a module, call \verb+cmw2 -c cc_opt+ with \verb+cc_opt+ the corresponding cc option
+(e.g. \verb+-c -static+ with \verb+gcc+).
+The advantage of a module statically linked lies in the fact that it can be executed without
+the libraries. In addition, some debuggers have strange behavior when used with dynamically linked
+modules. 
+ 
+\verb+-public+ : Install two MegaWave2, the private one for the administrator only and the second
+one for plain users. In this way, the administrator will be able to change and check modules, 
+user's or system's macros and functions of the kernel libraries without touching the public version.
+This option is obviously usefull only if several persons intensively use MegaWave2, and if you
+plan to update MegaWave2.
+
+\verb+-public=private+ : Allow other persons than the administrator to use the private MegaWave2.
+By default, the administrator is the only one supposed to use the private MegaWave2.
+
+\verb+-clear+ : Clear objects in the previous installation.
+
+\verb+-debug+ : Pass the debug option to the C compiler. By default, the C compiler is called with
+the optimization flag.
+
+\verb+-level l+ : Do not start the installation from the beginning (level 1) but from level $l$.
+This supposes that previous levels have been successfully completed. 
+In particular, the environment variables must be correctly set in the shell from which you
+call \verb+mwinstall+.
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwmodbibtex}{Run BibTeX on the MegaWave2 documentation (guide \#3) and add reference to modules}
+{\Large\bf Usage} \bigskip
+
+\verb=mwmodbibtex mw2dir=
+
+\Next
+
+\Description
+This command replaces the {\tt bibtex}\index{bibtex} command included in standard \TeX\ packages, when
+compiling the ``MegaWave2 User's Modules Library'' documentation (guide \#3) into
+the subdirectory {\tt mw2dir}/doc.
+In addition of calling {\tt bibtex} to create a bibliography file {\tt guid3.bbl}, 
+{\tt mwmodbibtex} adds to the bibliography\index{bibliography} file a list of references to modules : 
+at the end of each bibliographical reference, the list of modules making citation\index{citation} to 
+this reference is added. As a result of, the guide \#3 obtained by normally post-processing
+the file with \LaTeX\ (as written when the command {\tt mwmakedoc} ends) will contain, 
+in the bibliography section, a list of modules associated to bibliographical references.
+
+As well as {\tt bibtex}, use of {\tt mwmodbibtex} assumes at least one bibliographic database
+(.bib file) exists. The needed one is \verb+$MEGAWAVE2/doc/public.bib+\index{public.bib} which contains references
+for public modules. It is normally included in standard MegaWave2 distribution. Put references for 
+private modules in \verb+$MY_MEGAWAVE2/doc/private.bib+\index{private.bib}.
+
+In addition to standard fields one uses into public.bib and private.bib files, one may specify a WWW 
+url\index{World Wide Web} by using the special command \verb+\hturl+\index{url}, as in the following :
+\begin{verbatim}
+  note   =  "See \hturl{http://www.cmla.ens-cachan.fr/Cmla/Megawave}"
+\end{verbatim}
+By doing this, the corresponding url will become an active hyperlink\index{hyperlink} when the \LaTeX\ 
+documentation file will be processed through the {\tt latex2html} command (and no error
+will be encountered if the {\tt latex2html} package is not available).
+
+Beware : when documenting module M in M.tex, do not collapse citations.\\
+Use e.g. \verb+\cite{key1}\cite{key2}+ instead of \verb+\cite{key1,key2}+. 
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwmodinstall}{Install a new MegaWave2 public modules environment (administrator only)}
+{\Large\bf Usage} \bigskip
+
+\verb+mwmodinstall [-clear] [-tdir target_directory]+
+\newline
+\verb+              [-X file_of_xmw2_modules] file_of_modules+
+
+\Next
+
+\Description
+This command allows to copy selected modules and user's macros from the source directory 
+\verb+$PRIVATE_MEGAWAVE2+ to the target directory \verb+$PUBLIC_MEGAWAVE2+.
+It can be used by the administrator only to make some private modules available for all.
+The command copies not only the module sources, but also everything associated such as
+objects, binaries, documentation and data. 
+The content of \verb+$PRIVATE_MEGAWAVE2/data/PUBLIC+ is always entirely copied.
+
+The file \verb+file_of_modules+ lists the modules to be copied. See 
+Section~\ref{sysmacros_list} for more informations about such modules file.
+In the case where your configuration is such that \\
+\verb+$PRIVATE_MEGAWAVE2 = $PUBLIC_MEGAWAVE2+, this macro is obviously useless.
+
+Before running this command (which may take a while), run \verb+mwmodcheck+ to check
+the consistency of the modules file regarding the content of the source directory.
+This macro will tell you any modules listed in the file but not in the source directory,
+incomplete modules (e.g. without documentation attached) and, for information, modules 
+which will remain private (i.e. in the source directory but not listed in the file).
+\Next
+
+\Options
+
+\verb+-clear+ :  Clear previous modules in \verb+$PUBLIC_MEGAWAVE2+. This option should
+be used each time the administrator wants to make a complete new version of the
+public modules. 
+
+\verb+-tdir target_directory+ : Change default target directory \verb+$PUBLIC_MEGAWAVE2+ to be \\
+\verb+target_directory+.
+
+\verb+-X file_of_xmw2_modules+ : Generate a public XMegaWave2 software containing the 
+modules listed in the file \verb+file_of_xmw2_modules+.
+
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwmodlist}{List the modules and macros found in a MegaWave2 source directory}
+{\Large\bf Usage} \bigskip
+
+\verb+mwmodlist [-mfile] [-bad] [-group gdir] mw2dir+
+
+\Next
+
+\Description
+This command prints all the modules and macros found in the directory \verb+mw2dir+, 
+which has to be a MegaWave2 directory such as \verb+$MEGAWAVE2+ or \verb+$MY_MEGAWAVE2+.
+In case of a module not successfully compiled, a warning is issued.
+\Next
+
+\Options
+
+\verb+-mfile+ : print the list in the modules file format (which is compatible with 
+input of macros like \verb+mwmodinstall+). See Section~\ref{sysmacros_list} for more 
+informations about this format.
+
+\verb+-bad+ : print modules which are not successfully compiled only.
+
+\verb+-group gdir+ : restrict the list to the group and subgroups of \verb+gdir+.
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwmodsearch}{Search for modules matching words}
+{\Large\bf Usage} \bigskip
+
+\verb+mwmodsearch [-l] [-public] [-private] word_1 [word_2 ... word_n]+
+
+\Next
+
+\Description
+This command searches for modules and user's macros matching the given list of words. It is useful when you are
+seeking a specific algorithm without any idea about the module's name or even about the group's name, and
+when the short function description (as returned by {\tt mwmodlist}) is not enough to perform a search on.
+
+With {\tt mwmodsearch}, the search is performed both on the source file and on the documentation (tex file). 
+Only one matching file is enough to satisfy the search. 
+But when several words are given, all words must be found in the same file.
+
+By default, each matching lines are printed together with the name of the file. This may result to a pretty
+huge number of lines if the words are common. In such a case, use -l and try to reduce the number of matching
+modules by adding new keywords.
+
+\Next
+
+\Options
+
+\verb+-l+ : list only. Do not output matching lines, but only the list of matching modules.
+
+\verb+-public+ : restricts search to public modules and user's macros.
+
+\verb+-private+ : restricts search to private modules and user's macros.
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwnewuser}{Create the directory hierarchy for a new user}
+{\Large\bf Usage} \bigskip
+
+\verb+mwnewuser+
+
+\Next
+
+\Description
+If you are a new user, you may run this command once: it creates the directory
+\verb+$MY_MEGAWAVE2+ and all subdirectories needed by the MegaWave2 system's macros.
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwrm}{Remove module(s) or user's macro(s)}
+{\Large\bf Usage} \bigskip
+
+\verb+mwrm [-macro] M+
+
+\Next
+
+\Description
+This command searches all modules (or user's macros) named \verb+M+ and removes
+them from the system (confirmation is requested before to operate).
+By using this command instead of directly removing the source files, you make
+sure to remove all objects and references attached to the modules.
+
+Only the MegaWave2 administrator should be able to remove public modules and macros.
+Therefore make sure the \verb+$PUBLIC_MEGAWAVE2+ directory is not writable for plain
+users.
+
+\Next
+
+\Options
+
+\verb+-macro+ : Say that  \verb+M+ is a user's macro and not a module.
+You normally don't need to set this option, since the command recognizes if 
+\verb+M+ is a macro by its name, which should begin with a capital letter. 
+        
+%----------------------------------------------
+\newpage
+
+\Macro{mwrnwordmod}{Rename words inside modules}
+{\Large\bf Usage} \bigskip
+
+\verb+mwrnwordmod [-adm] [-all] [-check] [-d dir] [-f file_of_names]+
+
+\Next
+
+\Description
+Sometimes the name of a system's function, of a structure or of a
+structure field may change. In such a case, you may use this macro in order to
+automatically perform the change of name inside each modules.
+
+At the location of the macro \verb+mwrnwordmod+, you can also find the
+file \verb+mwrnwordmod.data+ : this is an Ascii file which gives the list of
+words to change, in the obvious format \verb+old_name new_name+ (one change
+per line).
+
+This list is updated to reflect the last change of names we have performed
+in the kernel.
+By default (if you do not use the \verb+-f+ option), this is this file
+which is read to perform the changes.
+The \verb+mwrnwordmod.data+ is usefull if you have written lot of modules
+and if you install a new MegaWave2 kernel, for which some function names
+or structures have changed.
+
+Warning :
+\begin{itemize}
+\item The replacement is performed using the stream editor \verb+sed+.
+Therefore, the string(s) to be searched is specified by a \verb+regex+
+(regular expression).
+\item Be aware that the content of the file is not analyzed : for example, if you
+wish to change a field named \verb+open+ to \verb+is_open+, all occurrences
+of ``open'' will be touched, including those inside comments.
+\item It is recommended to make a copy of the \verb+src+ directory before
+running this macro : if the result does not match your wish, you will be
+able to restore the old state.
+\end{itemize}
+\Next
+
+\Options
+
+\verb+-adm+ : administrator flag. Scan \verb+$MEGAWAVE2/src+ directory instead of the
+default \verb+$MY_MEGAWAVE2/src+
+
+\verb+-all+ : scan all files (not only modules, that is .c files)
+
+\verb+-check+ : check only. See files that would be changed, but change nothing.
+
+\verb+-d dir+ : scan directory \verb+dir+ instead of \verb+$MY_MEGAWAVE2/src+ or
+\verb+$MEGAWAVE2/src+.
+
+\verb+-f file_of_names+ : use this file instead of the list given by
+\verb+mwrnwordmod.data+. 
+
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwsetenv}{Set up the environment variables needed by MegaWave2 (adm only)}
+{\Large\bf Usage} \bigskip
+
+\verb+mwsetenv [-public=private || privateonly] mw2distribution+
+
+\Next
+
+\Description
+This command helps the administrator to set the environment variables needed by 
+most user's macros. See Section~\ref{install_system_set-up} to learn more about
+the environment variables.
+The directory \verb+mw2distribution+ must corresponds to an original MegaWave2 Distribution Package,
+its name will be the value set to the variable \verb+$PRIVATE_MEGAWAVE2+.
+
+As a result of, this macro write two files to be used by the administrator and two files
+for plain users (one for Bourne-compatible shells and one for C-compatible shells). 
+Those files, which may have to be customized, are to be included in the \verb+.profile+ or the 
+\verb+.cshrc+ file. The location of these files are given at the end of the macro execution.
+
+\Next
+
+\Options
+
+\verb+-privateonly+ : Select this option if there is no public MegaWave2.
+By default, this macro considers that both a public MegaWave2 and a private one has to be installed.
+
+\verb+-public=private+ : Select this option if there is no public MegaWave2 and if the installation 
+allows other persons than the administrator to use the private MegaWave2. 
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwsysmaclist}{List all system's macros}
+{\Large\bf Usage} \bigskip
+
+\verb+mwsysmaclist+
+
+\Next
+
+\Description
+This command prints all the system's macros found in the directory \verb+$MEGAWAVE2/sys/shell+.
+%----------------------------------------------
+\newpage
+
+\Macro{mwvers}{MegaWave2 Version}
+{\Large\bf Usage} \bigskip
+
+\verb+mwvers [-major || -minor || -variant]+
+
+\Next
+
+\Description
+
+This command returns the current version number of the public MegaWave2 
+software you are using. 
+Please refer to this version number when you report bugs.
+On MegaWave2 Version 1.x, this command was available on MegaWave2 system issued from the 
+distribution package only. This is no more the case.
+\Next
+
+\Options
+
+\verb+-major+ : Return the major version number only (e.g. 2 if the full version is 2.00a.12)
+
+\verb+-minor+ : Return the minor version number only (e.g. 00a if the full version is 2.00a.12)
+
+\verb+-variant+ : Return the variant version number only (e.g. 12 if the full version is 2.00a.12)
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwwhere}{Give the location of the source of a module or user's macro}
+{\Large\bf Usage} \bigskip
+
+\verb+mwwhere [-macro] [-bin] M+
+
+\Next
+
+\Description
+This command returns the path where the source of the given module or user's macro 
+\verb+M+ is found, searching first for private modules and then for public ones.
+
+\Next
+
+\Options
+
+\verb+-macro+ : Say that  \verb+M+ is a user's macro and not a module.
+You normally don't need to set this option, since the command recognizes if 
+\verb+M+ is a macro by its name, which should begin with a capital letter. 
+
+\verb+-bin+ : Return the path if the corresponding binary (executable) exists
+only. When two paths are returned with this option set, it means that one module
+is hidden (with default settings, the private module hides the public one).
+In such a case, the macro exits with value 2.
+        
+%----------------------------------------------
+\newpage
+
+\Macro{mwdoclatex}{Make the documentation of a module or of a user's macro}
+{\Large\bf Usage} \bigskip
+
+\verb+mwdoclatex [-adm] M+
+
+\Next
+
+\Description
+This command compiles a single module documentation file using \LaTeX.
+Use it instead of the macro \verb+mwmakedoc+ when you want to print 
+the documentation of only one module or user's macro (for example the one you just
+finished to write).
+If you rather want to see the documentation on the screen, use the
+macro \verb+mwdocxdvi+.
+
+Run \verb+mwdoclatex+ after \verb+cmw2+ has been called so that the document 
+skeleton \verb+M.doc+ exists.
+Make sure to have written the corresponding \TeX file (\verb+M.tex+), see Section~\ref{document}.
+
+This command calls \LaTeX\ and, as the result, you get a \verb+M.dvi+ file
+into the \verb+$MY_MEGAWAVE2/doc/obj+ directory which can be used to print the 
+documentation.
+
+\Next
+
+\Options
+
+\verb+-adm+ : Say that \verb+M+ is a public module or a public macro
+from \verb+$MEGAWAVE2+ and not from \verb+$MY_MEGAWAVE2+.
+In that case, if you are not the administrator but a plain user, and if the
+administrator didn't make this doc already, the dvi file \verb+M.dvi+ is created into \\
+\verb+$MY_MEGAWAVE2/tmp/megawave2_doc/user+.
+
+%----------------------------------------------
+\newpage
+
+\Macro{mwdocxdvi}{Display on the screen the documentation of a given module}
+{\Large\bf Usage} \bigskip
+
+\verb+mwdocxdvi [-adm] [-macro] M+
+
+\Next
+
+\Description
+This command compiles a single module documentation file using the macro
+\verb+mwdoclatex+, and then call the DVI previewer for the X Window System,
+\verb+xdvi+, to display the documentation on the screen.
+
+\Next
+
+\Options
+
+\verb+-adm+ : Say that \verb+M+ is a public module or a public macro
+from \verb+$MEGAWAVE2+ and not from \verb+$MY_MEGAWAVE2+.
+In that case, if you are not the administrator but a plain user, and if the
+administrator didn't make this doc already, the dvi file \verb+M.dvi+ is created into \\
+\verb+$MY_MEGAWAVE2/tmp/megawave2_doc/user+.
+
+\verb+-macro+ : Say that  \verb+M+ is a user's macro and not a module.
+In that case, the macro \verb+cmw2macro+ is called to generate a file
+\verb+M.doc+. You normally don't need to set this option, since the 
+command recognizes if \verb+M+ is a macro by its name, which should 
+begin with a capital letter. 
+        
+\newpage
+
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\section{List of modules}
+%+++++++++++++++++++++++++++++++++++++++++++++++
+\label{sysmacros_list}
+\index{module!list}
+
+Some system's macros (e.g. \verb+cxmw2+, \verb+mwmodinstall+) need to know a list of 
+modules you want to process together with the group hierarchy.
+MegaWave2 uses a plain ascii format to describe such a list in a file.
+You can write this file manually, or you can use the output generated by the macro
+\verb+mwmodlist+ using \verb+-mfile+ option.
+
+Each line of the file is normally filled by a module name.
+They are special symbols which change the meaning of the line (those have to be the first character of the line)
+\begin{itemize}
+\item \verb+%+ : comments. The line is ignored. 
+\item \verb+#+ : keyword. The following keywords are available:
+ \begin{itemize}
+   \item \verb+#group group_name+ : 
+        Give the group to which the next modules (or subgroups) belong. 
+        The hierarchy of the groups must be given that is, if \verb+B+ is a subgroup of the main group \verb+A+, the line \verb+#group A+ must appear and after that, the line \verb+#group A/B+.
+   \item \verb+#dir dirname+ : 
+        Change the default source directory for the modules to be \verb+dirname+ (default is \verb+$MEGAWAVE2+). Do not use this keyword for \verb+cxmw2+.
+ \end{itemize}
+\end{itemize}
+

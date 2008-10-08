@@ -1,0 +1,66 @@
+% body.inc.tex
+%
+% LaTeX common configurations for the megawave manuals
+%
+% author : Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+
+% special hevea comment : processed by hevea, to fix the \url{} issue 
+%
+%HEVEA \renewcommand{\url}[1]{#1}
+
+
+% TODO : refactor, define environments
+\def\Next{\vspace{10mm}}
+\def\Null{\texttt{NULL}}
+
+\newcommand{\Name}[2]{
+{\Large\bf  Name} \bigskip
+{\large\bf #1} - #2
+
+\Next}
+
+\newcommand{\Summary}[1]{
+{\Large\bf Summary}
+
+#1
+
+\Next}
+
+\newcommand{\Argument}[1]{
+{\Large\bf Arguments}
+
+#1
+
+\Next}
+
+\newcommand{\Description}{
+{\Large\bf Description}
+
+\Next}
+
+\newcommand{\Example}{
+{\Large\bf Example}
+
+\Next}
+
+% beginning of the document content
+
+\begin{titlepage}
+\begin{center}
+megawave software suite documentation (\myversion)\\
+\vspace{1cm}
+{\large\bf \myvolume}\\
+\vspace{2cm}
+{\huge\scshape \mytitle}\\
+\vspace{1cm}
+{\large\em edited by \myauthor}\\
+\end{center}
+\newpage
+\begin{center}
+\ \\
+\vspace{10cm}
+\copyinfo
+\end{center}
+\end{titlepage}
+
+\pagestyle{headings}
