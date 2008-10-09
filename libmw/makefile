@@ -96,7 +96,7 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         tiff_io.c       \
         \
         libmw.c         \
-        mw.c            \
+        utils.c         \
         mw_main.c       \
         mwio.c          \
         type_conv.c     \

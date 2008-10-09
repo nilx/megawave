@@ -6,7 +6,7 @@
   Panel display facilities and buttons
 
   Main changes :
-  v1.1 (JF): "mw.h" and "window.h" added (J. Froment)
+  v1.1 (JF): "utils.h" and "window.h" added (J. Froment)
   v1.2 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -25,7 +25,7 @@
 
 #include "mw-wdevice.h"
 #include "libmw-defs.h"
-#include "mw.h"
+#include "utils.h"
 #include "wpanel-defs.h"
 
 #include "window.h"

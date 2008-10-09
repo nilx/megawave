@@ -19,7 +19,7 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "mw.h"
+#include "utils.h"
 #include "pm_io.h"
 #include "tiff_io.h"
 #include "bmp_io.h"

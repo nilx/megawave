@@ -21,7 +21,7 @@
 #include <unistd.h>
 
 #include "libmw-defs.h"
-#include "mw.h"
+#include "utils.h"
 
 #include "window.h"
 

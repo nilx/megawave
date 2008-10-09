@@ -21,7 +21,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
 #include <stdio.h>
 
 #include "libmw-defs.h"
-#include "mw.h"
+#include "utils.h"
 
 #include "cimage.h"
 #include "ccimage.h"

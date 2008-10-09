@@ -22,7 +22,7 @@
 #include <unistd.h>
 
 #include "libmw-defs.h"
-#include "mw.h"
+#include "utils.h"
 
 #include "cimage_io.h"
 #include "cmovie.h"

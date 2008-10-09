@@ -14,7 +14,7 @@ CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
       94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdlib.h>
-#include "mw.h"
+#include "utils.h"
 
 int main(int argc, char ** argv, char ** envp)
 {

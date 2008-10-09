@@ -25,7 +25,7 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "mw.h"
+#include "utils.h"
 
 #include "mwio.h"
 #include "cimage.h"

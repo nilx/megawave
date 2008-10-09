@@ -1,5 +1,5 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  mw.c
+  utils.c
 
   Vers. 1.14
   (C) 1995-2005 Jacques Froment & Sylvain Parrino
@@ -29,10 +29,10 @@
 #include <setjmp.h>
 
 #include "libmw-defs.h"
-#include "mw.h"
+#include "utils.h"
 #include "mwio.h"
 
-#include "mw.h"
+#include "utils.h"
 
 #define FNULL "/dev/null"
 

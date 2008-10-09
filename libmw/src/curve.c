@@ -22,7 +22,7 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "mw.h"
+#include "utils.h"
 
 
 #include "curve.h"

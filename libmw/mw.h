@@ -2453,13 +2453,13 @@ short _mw_cimage_create_tiff(char *fname, Cimage image);
 
 #endif /* !_LIBMW_H_ */
 /*
- * mw.h
+ * utils.h
  */
 
-#ifndef _MW_H_
-#define _MW_H_
+#ifndef _UTILS_H_
+#define _UTILS_H_
 
-/* src/mw.c */
+/* src/utils.c */
 void mwexit(int n);
 void mw_exit(int n);
 void *mwmalloc(size_t size);
@@ -2485,7 +2485,7 @@ char *_mw_dtoa_(double d);
 int _mwis_open(char *s, char *rw);
 int _mwgetopt(int argc, char **argv, char *optstring);
 
-#endif /* !_MW_H_ */
+#endif /* !_UTILS_H_ */
 /*
  * mw_main.h
  */

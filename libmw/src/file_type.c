@@ -27,7 +27,7 @@
 #include <unistd.h>
 
 #include "libmw-defs.h"
-#include "mw.h"
+#include "utils.h"
 
 #include "type_conv.h"
 #include "mwio.h"
