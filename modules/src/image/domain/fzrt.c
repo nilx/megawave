@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h" /* for fproj() */
 
 void rotate(cx,cy,ca,sa,x,y,nx,ny)
      double cx,cy,ca,sa,x,y;

@@ -28,16 +28,11 @@
  v1.8 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
-
-extern Cimage clocal_zoom();
-extern Fimage flocal_zoom();
-extern void fzoom();
-extern void splot();
-extern void fline_extract();
-
+#include "mw-modules.h" /* for fthre() */
 
 static Wframe *PlotWindow=NULL;  
 

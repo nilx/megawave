@@ -22,6 +22,7 @@
  v2.3 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>

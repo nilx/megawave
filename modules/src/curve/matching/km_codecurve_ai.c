@@ -20,7 +20,8 @@ usage = {
  v1.1: corrected minor FABS bug (L.Moisan)
 ----------------------------------------------------------------------*/
 
-#include<math.h>
+#include <stdlib.h>
+#include <math.h>
 #include "mw.h" 
 
 #define FABSF(x) ((float)fabs((double)(x)))

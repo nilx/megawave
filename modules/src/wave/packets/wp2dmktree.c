@@ -20,6 +20,8 @@ usage = {
 
 
 #include "mw.h"
+#include "mw-modules.h" /* for wp2dfreqorder() */
+
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 
 /*-------------------------------------------------------------*/

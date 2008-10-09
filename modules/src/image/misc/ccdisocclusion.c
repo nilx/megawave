@@ -25,6 +25,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h" /* for disocclusion() */
 
 #define COEFF_YR 0.299
 #define COEFF_YG 0.587

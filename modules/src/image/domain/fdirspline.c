@@ -10,6 +10,8 @@
      out<-out             "output (Fimage of coefficients)"
           };
 */
+
+#include <stdlib.h>
 #include <math.h>
 #include "mw.h"
 

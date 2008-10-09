@@ -16,6 +16,7 @@
  v1.2: minor changes (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"

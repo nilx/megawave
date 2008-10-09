@@ -19,11 +19,11 @@
  v1.1 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern Cimage czoom();
+#include "mw-modules.h" /* for czoom(), fderiv() */
 
 Cimage bg;
 double *xt,*yt;

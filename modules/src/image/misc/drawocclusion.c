@@ -19,8 +19,10 @@ usage = {
 ----------------------------------------------------------------------*/
 
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h" /* for czoom() */
 
 /**********************************************************************/
 /* IMPORTANT NOTE : at the end of the labeling process, labels of each 

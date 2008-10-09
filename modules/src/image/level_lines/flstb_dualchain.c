@@ -12,8 +12,10 @@
 }; 
 */ 
 
+#include <stdlib.h>
 #include <float.h>
 #include "mw.h"
+#include "mw-modules.h" /* for flst_reconstruct(), fsaddles(), flst_pixels() */
 
 #ifndef POINT_T
 #define POINT_T

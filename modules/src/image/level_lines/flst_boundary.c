@@ -12,6 +12,7 @@
 */ 
 
 #include "mw.h"
+#include "mw-modules.h" /* for flstb_dualchain() */
 
 extern void flst_pixels();
 

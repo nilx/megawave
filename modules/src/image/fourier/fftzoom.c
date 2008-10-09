@@ -19,6 +19,7 @@
 
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 
 void fftzoom(in,out,z,i_flag)

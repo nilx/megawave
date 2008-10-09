@@ -17,6 +17,7 @@
  v1.2: changed default offset to 0.5 (L.Moisan)
 -------------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
 #include "mw.h"

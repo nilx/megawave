@@ -13,6 +13,7 @@
  v1.1: minor bug correction (P.Monasse)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <string.h>
 #include "mw.h"
 

@@ -29,10 +29,9 @@ usage = {
  v1.8 (04/2007): simplified header (LM)
 -------------------------------------------------------------------------*/
 
-#include  "mw.h"
-
-extern Cimage cextract();
-
+#include <stdlib.h>
+#include "mw.h"
+#include "mw-modules.h" /* for cextract() */
 
 Cmovie cmextract(b,in,bg,X1,Y1,T1,X2,Y2,T2,Xc,Yc,Tc,r)
      Cmovie in;

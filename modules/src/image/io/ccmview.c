@@ -27,6 +27,7 @@
 #include <string.h>
 #include "mw.h"
 #include "mw-wdevice.h"
+#include "mw-modules.h"
 
 extern void cmzoom();
 

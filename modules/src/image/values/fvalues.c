@@ -22,6 +22,7 @@
  v4.2: bug corrected in case of -m and input image of size (1,1) (JF)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h> 
 #include <stdio.h>
 #include <math.h>
 

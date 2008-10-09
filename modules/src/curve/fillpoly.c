@@ -16,6 +16,8 @@
  v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
+#include <math.h>
 #include <stdio.h>
 #include "mw.h"
 

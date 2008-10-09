@@ -24,8 +24,7 @@
 #include <stdlib.h> 
 #include <math.h>
 #include "mw.h"
-
-extern void fsepconvol();
+#include "mw-modules.h" /* for fsmooth() */
 
 #define ABS(x)       ( (x)>0?(x):-(x) )
 

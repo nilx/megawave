@@ -3,3 +3,5 @@
 * fix the gcc warnings
 * remove the extern declarations
 * include M_PI
+* safe snprintf
+* generic random

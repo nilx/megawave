@@ -21,6 +21,7 @@ usage = {
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h" /* for wp2dfreqorder() */
 
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 

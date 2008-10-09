@@ -27,6 +27,7 @@
 #include <assert.h>
 
 #include "mw.h"
+#include "mw-modules.h" /* for fop() */
 
                /* GLOBAL VARIABLES */   
                 

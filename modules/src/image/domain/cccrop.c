@@ -23,10 +23,10 @@
  v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
-
-extern Fimage fcrop();
+#include "mw-modules.h" /* for fcrop() */
 
 /* NB : calling this module with out=in is possible */
 

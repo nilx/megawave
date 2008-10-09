@@ -28,9 +28,10 @@ usage = {
       };
 */
 
-#include<math.h>
-#include<time.h>
-#include<float.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+#include <float.h>
 #include "mw.h" 
 
 extern Flists km_prematchings();

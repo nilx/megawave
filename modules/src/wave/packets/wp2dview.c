@@ -27,8 +27,10 @@ usage = {
  v1.1 (04/2006): option -p added, change arguments to optional arg (JF)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h" /* for w2dfreqreorder(), wp2ddecomp() */
 
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 

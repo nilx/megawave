@@ -15,10 +15,13 @@
 }; 
 */ 
 
+#include <stdlib.h>
 #include <assert.h>
 #include <float.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h" /* for flstb_dualchain(), flst_reconstruct(),
+			 * fsaddles(), flst_pixels() */
 
 #define EAST 0
 #define NORTH 1

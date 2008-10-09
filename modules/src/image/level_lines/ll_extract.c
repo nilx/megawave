@@ -22,7 +22,9 @@
  v1.3 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include "mw.h"
+#include "mw-modules.h" /* for flst_boundary(), flst() */
 
 extern void flst_bilinear();
 extern void flstb_quantize();

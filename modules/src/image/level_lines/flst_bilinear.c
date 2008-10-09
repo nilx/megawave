@@ -14,6 +14,7 @@
  v1.2: removed IMAGE_T macro (JF)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <float.h>
 #include <assert.h>
 #include "mw.h"

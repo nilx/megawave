@@ -21,10 +21,12 @@ usage = {
  v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <float.h>
 #include <math.h>
 #include "mw.h" 
+#include "mw-modules.h" /* for fderiv() */
 
 extern void flst();
 extern void flst_bilinear();

@@ -18,6 +18,7 @@ usage = {
 ----------------------------------------------------------------------*/
 
 #include "mw.h"
+#include "mw-modules.h" /* for wpsconvolve(), wp2dchangetree() */
 
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 

@@ -27,6 +27,8 @@ usage = {
 
 
 #include "mw.h"
+#include "mw-modules.h" /* for wp2dchecktree() */
+
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 
 /***************************************************************/

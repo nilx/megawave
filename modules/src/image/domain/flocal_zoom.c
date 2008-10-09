@@ -17,6 +17,7 @@
  v1.2: fixed bug: values of x0 and y0 (*factor-1 term) (L.Moisan)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"

@@ -21,9 +21,8 @@
 #include <stdlib.h>
 
 #include "mw.h"
-
-extern void stkwave1();
-extern void ridgrecpol();
+#include "mw-modules.h" /* for stkwave1(), ridgrecpol(),
+			 * fline_extract(), fft2d() */
 
 void ridgelet(in_re,in_im,np,out_re,out_im)
      int np;

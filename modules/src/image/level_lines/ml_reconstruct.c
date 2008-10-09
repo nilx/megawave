@@ -14,6 +14,7 @@
  v3.7: upgrade for new kernel (L.Moisan)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include "mw.h"

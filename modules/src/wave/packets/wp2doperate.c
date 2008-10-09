@@ -40,6 +40,8 @@
 #include <stdio.h>
 #include <math.h>
 #include  "mw.h"
+#include  "mw-modules.h" /* for wp2dchangetree(), wp2dchangepack(), 
+			  * wp2dmktree(), wp2ddecomp(), wp2drecomp() */
 
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 

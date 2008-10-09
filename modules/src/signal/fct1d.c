@@ -15,9 +15,11 @@
  v1.2: preserve header info for e.g. sound processing (JF) 
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include  "mw.h"
+#include  "mw-modules.h" /* for fft1d() */
 
 int is_a_power_of_two(n)
      int n;

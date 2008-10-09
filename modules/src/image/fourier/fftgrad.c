@@ -25,6 +25,7 @@ in->in
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define RADIANS_TO_DEGREES (180.0/M_PI)
 

@@ -19,7 +19,8 @@
 
 #include <stdio.h>
 #include "mw.h"
-
+#include "mw-modules.h" /* for readpoly(), fillpolys(), emptypoly()
+			 * fmask(), lsnakes() */
 
 void lsnakes_demo(u,out,Niter,Nframes,thre,force)
 

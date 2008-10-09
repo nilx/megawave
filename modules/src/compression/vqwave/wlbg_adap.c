@@ -38,8 +38,8 @@ usage = {
  v2.1 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
-
-#include  "mw.h"
+#include <math.h> 
+#include "mw.h"
 
 /*--- Megawave2 modules definition ---*/
 

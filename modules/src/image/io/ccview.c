@@ -20,9 +20,11 @@
  v1.14 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /* Param structure used to send parameters to ccview_notify() */
 
