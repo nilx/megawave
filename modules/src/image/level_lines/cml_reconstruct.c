@@ -34,8 +34,6 @@ struct closest_lline {
 #define EQUAL(A,B)       (!N_EQUAL(A,B))
 #define GET_VALUE(A)     ((v_flag==NULL)? (A)->minvalue : (A)->maxvalue)
 
-extern int mwdbg;
-
 static int ascending_order=1;
 
 /* ------------------------------------------------------------------

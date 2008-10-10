@@ -21,9 +21,7 @@ usage = {
 #include <math.h>
 #include <time.h>
 #include "mw.h"
-
-extern void fderiv();
-extern Fimage fsepconvol();
+#include "mw-modules.h" /* for fderiv(), fsepconvol() */
 
 
 #define _(A,i,j) ((A)->gray[(i)*(A)->ncol+(j)])

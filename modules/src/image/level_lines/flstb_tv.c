@@ -20,12 +20,8 @@
 #include <math.h>
 #include <assert.h>
 #include "mw.h"
-  
-extern int fsaddles();
-extern void flst_reconstruct();
-extern void flstb_dualchain();
-extern Flist flstb_boundary();
-
+#include "mw-modules.h" /* for fsaddles(), flst_reconstruct(),
+			   flstb_dualchain(), flstb_boundary() */
 
 #ifndef ABS
 #define ABS(x) ((x) >= 0 ? (x) : -(x))

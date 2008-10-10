@@ -17,11 +17,8 @@
 
 #include <stdio.h>
 #include <math.h>
-
-#include  "mw.h"
-
-extern Fsignal fvalues();
-
+#include "mw.h"
+#include "mw-modules.h" /* fvalues() */
 
 double entropy(input)
      Fsignal input;

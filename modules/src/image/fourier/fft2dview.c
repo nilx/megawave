@@ -26,12 +26,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void    fhamming();
-extern void    fft2d();
-extern void    fft2dpol();
-extern void    fview();
-
+#include "mw-modules.h" /* for fhamming(), fft2d(), fft2dpol(), fview() */
 
 void fft2dview(type,h_flag,in,out,i_flag,d)
      int     *type;

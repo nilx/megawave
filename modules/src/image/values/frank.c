@@ -18,8 +18,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-extern Fsignal fvalues();
+#include "mw-modules.h" /* for fvalues() */
 
 void frank(u,rank,g,w,c)
      Fimage u,rank;

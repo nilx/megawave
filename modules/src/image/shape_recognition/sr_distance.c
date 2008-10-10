@@ -17,11 +17,8 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern Cimage fkplot();
-extern Cimage erosion();
-extern Fcurves fkzrt();
-extern void fkcenter();
+#include "mw-modules.h" /* for fkplot(), erosion(), fkzrt(),
+			 * fkcenter() */
 
 #define INT(x) (floor(x + 5))
 #define BLACK 0

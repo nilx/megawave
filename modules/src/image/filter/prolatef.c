@@ -21,10 +21,9 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h" /* for fft2d() */
 
 #define ABS(x) ((x)>0?(x):-(x))
-
-extern void fft2d();
 
 float prolatef(s,d,n,ker,p,c)
      int s;

@@ -14,8 +14,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void fft2d(),fft2dpol();
+#include "mw-modules.h" /* for fft2d(), fft2dpol() */
 
 void fkeepphase(in,mod,out)
      Fimage in,mod,out;

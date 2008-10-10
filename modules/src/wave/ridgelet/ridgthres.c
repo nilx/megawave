@@ -20,12 +20,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-
 #include "mw.h"
-
-extern Fsignal fvalues();
-extern void ridgelet();
-extern void iridgelet();
+#include "mw-modules.h" /* for fvalues(), ridgelet(), iridgelet() */
 
 void ridgthres(in_re,in_im,np,out_re,out_im,pourcent)
   int np,pourcent;

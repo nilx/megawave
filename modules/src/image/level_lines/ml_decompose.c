@@ -19,18 +19,13 @@
 
 #include <stdio.h>
 #include <math.h>
-
 #define NDEBUG                /* comment this line out to enable assert() */
 #include <assert.h>
 #include "mw.h"
-
-extern void ml_extract();
-extern Fsignal fvalues();
+#include "mw-modules.h" /* for ml_extract(), fvalues() */
 
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))
-
-extern int mwdbg;
 
 void llcheck(mimage)
      Mimage mimage;

@@ -23,20 +23,8 @@ usage = {
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include  "mw.h"
-
-extern int mwdbg;
-
-#ifdef __STDC__
-void owave1(int *,int *,int *,int *,int *,int *,Fsignal,Wtrans1d,Fsignal,Fimage);
-void iowave1(int *,int *,int *,int *,int *,int *,Wtrans1d,Fsignal,Fsignal,Fimage);
-void smse(Fsignal, Fsignal, int *, double *, double *, double *, double *);
-#else
-void owave1();
-void iowave1();
-void smse();
-#endif
-
+#include "mw.h"
+#include "mw-modules.h" /* for owave1(), iowave1(), smse() */
 
 /* Compute the number of recursion (-j) used for the wavelet transform. 
    By the way, check the consistency of the mask M.

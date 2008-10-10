@@ -44,16 +44,9 @@ ImpulseResponse->Ri
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void ezw();
-extern void owave2();
-extern void iowave2();
-extern void biowave2();
-extern void ibiowave2();
-extern void fmse();
+#include "mw.h"
+#include "mw-modules.h" /* for ezw(), owave2(), iowave2(),
+			 * biowave2(), ibiowave2(), fmse() */
 
 /*--- Constants ---*/
 

@@ -20,8 +20,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void fcrop();
+#include "mw-modules.h" /* for fcrop() */
 
 /*------------------- GLOBAL CONSTANTS AND VARIABLES -------------------*/
 

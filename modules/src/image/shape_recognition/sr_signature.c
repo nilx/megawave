@@ -20,9 +20,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void fkcenter();
-extern void fkbox();
+#include "mw-modules.h" /* for fkcenter(), fkbox() */
 
 
 /*----- GLOBAL VARIABLE -----*/

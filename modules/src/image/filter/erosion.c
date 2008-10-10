@@ -19,14 +19,11 @@
 
 #include <stdio.h>
 #include "mw.h"
-
+#include "mw-modules.h" /* for disc() */
 
 #define ABS(x) ((x)>0?(x):(-(x)))
 #define EROSION 0
 #define DILATION 1
-
-extern Curve disc();
-
 
 /*------------- one erosion/dilation of a cimage by a shape s -------------*/
 

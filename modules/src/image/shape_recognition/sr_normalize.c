@@ -16,11 +16,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern Cimage fkplot();
-extern Fcurves fkzrt();
-extern void fkcenter();
-extern Cimage opening();
+#include "mw-modules.h" /* for fkplot(), fkzrt(), fkcenter(), opening() */
 
 /*** to interpret a Cimage ***/
 #define BLACK 0

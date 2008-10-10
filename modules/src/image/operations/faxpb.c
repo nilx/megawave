@@ -25,9 +25,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-
-extern float fmean(), fvar();
+#include "mw-modules.h" /* for fmean(), fvar() */
 
 /*** NB: Calling this module with out=in is possible ***/
 

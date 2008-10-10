@@ -24,12 +24,8 @@ usage = {
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void fiezw();
-extern void cfchgchannels();
+#include "mw.h"
+#include "mw-modules.h" /* for fiezw(), cfchgchannels() */
 
 /*--- Constants ---*/
 

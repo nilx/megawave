@@ -19,9 +19,8 @@
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
-
-extern float fquant();
+#include "mw.h"
+#include "mw-modules.h" /* for fquant() */
 
 void cfquant(A,Q,Mr,Mg,Mb,left)
      Cfimage A,Q;

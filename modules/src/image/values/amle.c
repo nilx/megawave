@@ -21,10 +21,9 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h" /* for fmse() */
 
 #define EPS 1e-4
-
-extern void fmse();
 
 /* Compute the 8 neighbour pixels of the current pixel p              */
 /* When p touches the border of the image, a mirror effect is applied */

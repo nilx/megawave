@@ -24,9 +24,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
- 
-extern Cimage msegct();
-extern void mschannel();
+#include "mw-modules.h" /* msegct(), mschannel() */
 
 Cimage segtxt(N,S,W,p,nr,in,mov)
      int    *N,*W,*nr,*S,*p;

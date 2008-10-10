@@ -26,16 +26,10 @@ usage = {
 #include <float.h>
 #include <math.h>
 #include "mw.h" 
-#include "mw-modules.h" /* for fderiv() */
-
-extern void flst();
-extern void flst_bilinear();
-extern void flstb_quantize();
-extern Flist flst_boundary();
-extern Flist flstb_boundary();
-extern int  fsaddles();
-extern Fsignal sintegral();
-extern Fsignal fhisto();
+#include "mw-modules.h" /* for fderiv(), flst(), flst_bilinear(),
+			 * flstb_quantize(), flst_boundary(),
+			 * flstb_boundary(), fsaddles(), 
+			 * sintegral(), fhisto() */
 
 #define HISTO_STEP 0.01
 

@@ -22,9 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
-
-extern Ccimage cczoom();
-
+#include "mw-modules.h" /* for cczoom() */
 
 void ccmzoom(Input, Output, x_flg, y_flg, factor, o, i_flg)
      

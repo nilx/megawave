@@ -19,10 +19,7 @@
 ----------------------------------------------------------------------*/
 
 #include "mw.h" 
-
-extern void flst();
-extern void flst_reconstruct();
-
+#include "mw-modules.h" /* for flst(), flst_reconstruct() */
  
 /* An elementary shape is a shape having a child of a different type. To keep consistency 
    between the tree and the associated image, it is forbidden to remove such a shape. This 

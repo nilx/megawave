@@ -19,9 +19,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
-
-extern Curve disc();
-
+#include "mw-modules.h" /* for disc() */
 
 /*--------------- Median of a cimage : one iteration  -------------*/
 

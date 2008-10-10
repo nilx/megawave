@@ -22,8 +22,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-extern Flist fksmooth();
+#include "mw-modules.h" /* for fksmooth() */
 
 Flists iter_fksmooth(in,out,niter,n,std,t,P)
      Flist   in;

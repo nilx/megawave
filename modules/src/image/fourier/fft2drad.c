@@ -20,9 +20,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void fft2dpol();
-
+#include "mw-modules.h" /* for fft2dpol() */
 
 /* NB : as for fft2d : 
      * calling this module with in_im=NULL is possible and means 

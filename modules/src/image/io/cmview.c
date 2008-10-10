@@ -26,8 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
-
-extern void cmzoom();
+#include "mw-modules.h" /* for cmzoom() */
 
 
 typedef struct cmview_SParam {

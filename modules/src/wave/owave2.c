@@ -28,12 +28,8 @@ usage = {
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void sconvolve();
-extern void precond2d();
+#include "mw.h"
+#include "mw-modules.h" /* for sconvolve(), precond2d() */
 
 /*--- Constants ---*/
 

@@ -39,14 +39,11 @@
 #include <string.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h" /* for ccputstring(), disc(), fcrop() */
 
 /* "plot string" module and associated constants */
 #define FONTWIDTH 7
 #define FONTHEIGHT 14
-extern Ccimage ccputstring();
-
-extern Curve disc();
-extern Fimage fcrop();
 
 #define ABS(x)   ((x)>0?(x):(-(x)))
 

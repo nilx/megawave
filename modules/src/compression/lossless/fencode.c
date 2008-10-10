@@ -12,10 +12,7 @@ usage = {
 
 #include <stdio.h>
 #include "mw.h"
-
-extern void arencode2();
-extern float fentropy();
-
+#include "mw-modules.h" /* for arencode2(), fentropy() */
 
 double fencode(U)
 

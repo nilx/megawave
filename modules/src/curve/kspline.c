@@ -22,9 +22,6 @@
 #include <stdio.h>
 #include "mw.h"
 
-extern int mwdbg;
-
-
 void init_nodes(X,j,n)   /* Init the node vector */
 
      int *X,j,n;

@@ -23,8 +23,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void fft2d();
+#include "mw-modules.h" /* for fft2d() */
 
 /*** build a Gaussian kernel with std g in Fourier domain ***/
 void gausskernel(kernel,g)

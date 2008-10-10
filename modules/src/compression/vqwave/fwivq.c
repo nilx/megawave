@@ -39,14 +39,8 @@ usage = {
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void iowave2();
-extern void ibiowave2();
-extern void fivq();
-extern void fiscalq();
+#include "mw.h"
+#include "mw-modules.h" /* for iowave2(), ibiowave2(), fivq(), fiscalq() */
 
 /*--- Constants ---*/
 

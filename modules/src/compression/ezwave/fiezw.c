@@ -23,20 +23,10 @@ QImage<-Output
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void iezw();
-extern void iowave2();
-extern void ibiowave2();
+#include "mw.h"
+#include "mw-modules.h" /* iezw(), iowave2(), ibiowave2() */
 
 /*--- Constants ---*/
-
-
-
-
-
 
 void
 fiezw(Edge_Ri, Ri2, WeightFac, Compress, Ri, Output)

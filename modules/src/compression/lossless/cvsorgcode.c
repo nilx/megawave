@@ -17,9 +17,7 @@ usage = {
 
 #include <stdio.h>
 #include "mw.h"
-
-extern void arencode2();
-extern float fentropy();
+#include "mw-modules.h" /* for arencode2(), fentropy() */
 
 
 /* Compute in (*ncol, *nrow) the size of the smallest image containing 

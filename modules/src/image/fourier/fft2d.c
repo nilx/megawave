@@ -19,8 +19,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-extern void fft1d();
+#include "mw-modules.h" /* for fft1d() */
 
 /* NB : 
      * calling this module with in_im=NULL is possible and means 

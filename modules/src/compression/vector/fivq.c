@@ -45,11 +45,8 @@ Result<-Result
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void ardecode2();
+#include "mw.h"
+#include "mw-modules.h" /* for ardecode2() */
 
 /*--- Constants ---*/
 

@@ -27,19 +27,10 @@ usage = {
 */
 
 
-/*--- Include files UNIX C ---*/
-
 #include <stdio.h>
 #include <math.h>
-
-/*--- Megawave2 library ---*/
-
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void fezw();
-extern void cfchgchannels();
+#include "mw.h"
+#include "mw-modules.h" /* for fezw(), cfchgchannels() */
 
 /*--- Constants ---*/
 

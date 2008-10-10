@@ -43,13 +43,8 @@ usage = {
 
 
 #include <math.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void wlbg_adap();
-extern void dybiowave2();
-extern void dyowave2();
+#include "mw.h"
+#include "mw-modules.h" /* for wlbg_adap(), dybiowave2(), dyowave2() */
 
 /*--- Constants ---*/
 

@@ -12,9 +12,7 @@
 */ 
 
 #include "mw.h"
-#include "mw-modules.h" /* for flstb_dualchain() */
-
-extern void flst_pixels();
+#include "mw-modules.h" /* for flstb_dualchain(), flst_pixels() */
 
 
 #define EAST  0

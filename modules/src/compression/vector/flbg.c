@@ -41,17 +41,10 @@ usage = {
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void mk_trainset();
-extern void mk_codebook();
-extern void flbg_train();
+#include "mw.h"
+#include "mw-modules.h" /* for mk_trainset(), mk_codebook(), flbg_train() */
 
 /*--- Constants ---*/
-
-
 
 static void
 VARMEAN_TS(trainset, mean, var)

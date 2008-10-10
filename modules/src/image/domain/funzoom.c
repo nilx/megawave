@@ -22,10 +22,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void finvspline();
-extern Fimage fdirspline();
-
+#include "mw-modules.h" /* for finvspline(), fdirspline() */
 
 /* NB : calling this module with out=in is possible */
 

@@ -12,8 +12,7 @@
 */
 
 #include "mw.h"
-
-extern void fextract();
+#include "mw-modules.h" /* for fextract() */
 
 void fsym2(in,out,i)
      Fimage in,out;

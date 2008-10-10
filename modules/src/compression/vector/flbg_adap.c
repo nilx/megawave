@@ -40,15 +40,10 @@
 
 
 #include <stdio.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void mk_trainset();
-extern void flbg_train();
+#include "mw.h"
+#include "mw-modules.h" /* mk_trainset(), flbg_train() */
 
 /*--- Constants ---*/
-
 
 static void
 orderf(a,b)

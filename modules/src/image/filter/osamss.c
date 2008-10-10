@@ -25,10 +25,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-extern void amss();
-extern Fsignal fvalues();
-
+#include "mw-modules.h" /* for amss(), fvalues() */
 
 void osamss(isotrop,power,Step,MinGrad,firstScale,lastScale,input,output)
 char *isotrop;		/* isotropic diffusion if Grad==0 & isotrop != NULL */

@@ -27,9 +27,7 @@
 #include <string.h>
 #include "mw.h"
 #include "mw-wdevice.h"
-#include "mw-modules.h"
-
-extern void cmzoom();
+#include "mw-modules.h" /* for cmzoom() */
 
 typedef struct ccmview_SParam {
    Ccimage image_work;

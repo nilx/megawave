@@ -21,9 +21,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-extern Fimage fcrop();
-extern Fimage funzoom();
+#include "mw-modules.h" /* for fcrop(), funzoom() */
 
 /* NB : calling this module with out=in is possible */
 

@@ -18,8 +18,7 @@
 #include <float.h>
 #include <assert.h>
 #include "mw.h"
-
-extern int fsaddles();
+#include "mw-modules.h" /* for fsaddles() */
 
 
 /* Optimization parameters. Probably should depend on image size, but these

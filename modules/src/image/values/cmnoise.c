@@ -23,9 +23,7 @@
 #include <math.h>
 #include <time.h>
 #include "mw.h"
-
-extern void cnoise();
-
+#include "mw-modules.h" /* for cnoise() */
 
 Cmovie cmnoise(in,std,p,q)
      Cmovie	in;

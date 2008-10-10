@@ -18,9 +18,7 @@ usage = {
 #include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
-
-extern void arencode2();
-extern float fentropy();
+#include "mw-modules.h" /* for arencode2(), fentropy() */
 
 
 /* Fill dirchg by Freeman algorithm. Return the minimal size of dirchg.

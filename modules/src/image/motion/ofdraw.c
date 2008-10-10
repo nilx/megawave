@@ -23,8 +23,6 @@
 #include <math.h>
 #include "mw.h"
 
-extern double floor();
-
 int dirx[8]={1,1,0,-1,-1,-1,0,1};
 int diry[8]={0,1,1,1,0,-1,-1,-1};
 

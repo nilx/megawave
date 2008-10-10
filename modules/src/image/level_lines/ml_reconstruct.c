@@ -70,8 +70,6 @@ struct fill_segment {
           &&(N_EQUAL(im[(Y)][(X)],current_level)) \
           &&(EQUAL(im[(Y)][(X)],p_level))  )
 
-extern int mwdbg;
-
 void llcheck(mimage)
 Mimage mimage;
 {

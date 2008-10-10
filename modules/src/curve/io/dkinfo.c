@@ -11,11 +11,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-extern double area();
-extern double perimeter();
-extern Dlists dsplit_convex();
-
+#include "mw-modules.h" /* for area(), perimeter(), dsplit_convex() */
 
 int is_closed(c)
      Dlist c;

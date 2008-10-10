@@ -17,10 +17,8 @@ usage = {
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-extern void cfchgchannels();
+#include "mw.h"
+#include "mw-modules.h" /* for cfchgchannels() */
 
 #define SUM(in,out) (*out = (v * *in - u * (*(in-1) + *(in+1)+ *(in-A->ncol) +  *(in+A->ncol) + *(in-1-A->ncol) + \
                  *(in-1+A->ncol) + *(in+1-A->ncol) + *(in+1+A->ncol))) / d)

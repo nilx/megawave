@@ -26,12 +26,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
-
-extern Cimage clocal_zoom();
-extern void czoom();
-extern void splot();
-extern void cline_extract();
-
+#include "mw-modules.h" /* for clocal_zoom(), czoom(), splot()
+			 * cline_extract() */
 
 static Wframe *PlotWindow=NULL;  
 

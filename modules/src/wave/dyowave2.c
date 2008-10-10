@@ -26,13 +26,8 @@ usage = {
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void owave2();
-
-
+#include "mw.h"
+#include "mw-modules.h" /* for owave2() */
 
 static void
 ALLOC_WAV(wtrans, image, numrec, stopdecim, edge)

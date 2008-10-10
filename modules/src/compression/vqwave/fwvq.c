@@ -38,20 +38,11 @@ usage = {
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h" /* for fvq(), fscalq(), owave2(), iowave2(),
+			 * biowave2(), ibiowave2(), fmse() */
 
-/*--- Megawave2 modules definition ---*/
-
-extern void fvq();
-extern void fscalq();
-extern void owave2();
-extern void iowave2();
-extern void biowave2();
-extern void ibiowave2();
-extern void fmse();
-static int count_cb();
-
-/*--- Megawave2 modules ---*/
+static int count_cb(Fimage codebook);
 
 /*--- Constants ---*/
 

@@ -40,15 +40,9 @@ usage = {
 
 #include <math.h> 
 #include "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void flbg();
-extern void flbg_adap();
+#include "mw-modules.h" /* for flbg(), flbg_adap() */
 
 /*--- Constants ---*/
-
-
 
 static void
 WSUBIMCHANGE(codebook, nlevel)

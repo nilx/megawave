@@ -16,8 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "mw.h"
-
-extern void flst_pixels();
+#include "mw-modules.h" /* for flst_pixels() */
 
 
 /* Is shape 1 inside shape 2? */

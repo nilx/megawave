@@ -16,9 +16,7 @@ usage = {
 
 #include <stdio.h>
 #include "mw.h"
-
-extern double cvsfrecode();
-extern double cvsorgcode();
+#include "mw-modules.h" /* for cvsfrecode(), cvsorgcode() */
 
 
 /* Compute in (*ncol, *nrow) the size of the smallest image containing 

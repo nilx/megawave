@@ -19,8 +19,7 @@
 #include <stdlib.h> 
 #include <stdio.h>
 #include "mw.h"
-
-extern Fsignal fvalues();
+#include "mw-modules.h" /* for fvalues() */
 
 void bicontrast(u,v,verb,r,g,out)
      Fimage u,v,out;

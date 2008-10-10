@@ -15,9 +15,7 @@
 ----------------------------------------------------------------------*/
 
 #include "mw.h" 
-
-extern void flst();
-extern void flst_reconstruct();
+#include "mw-modules.h" /* for flst(), flst_reconstruct() */
  
 /* This removes the shapes from the tree associated to pFloatImageInput 
 that are too small (threshold *pMinArea). As a consequence all the remaining 

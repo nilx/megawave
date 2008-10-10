@@ -14,8 +14,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void fkbox();
+#include "mw-modules.h" /* for fkbox() */
 
 #define BLACK 0
 #define WHITE 255

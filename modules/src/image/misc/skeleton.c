@@ -22,8 +22,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern Cimage infsup();
+#include "mw-modules.h" /* for infsup() */
 
 #define sqrt22 0.353553390593273564
 

@@ -21,8 +21,7 @@
 #include <math.h>
 #include <string.h>
 #include "mw.h"
-
-extern void flst_pixels();
+#include "mw-modules.h" /* for flst_pixels() */
 
 
 int compare_floats(p1, p2)

@@ -38,7 +38,8 @@ notused->PtrDRC
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h" /* for fillpoly() */
 
 #define mw_drcurvesize 256
 
@@ -55,11 +56,6 @@ typedef struct drcurve {
                                 * and compression ratio */
   
 } DRCurve;
-
-/*--- Megawave2 modules definition ---*/
-
-extern void fillpoly();
-
 
 /*--- Constants ---*/
 

@@ -17,11 +17,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-
-/*--- Megawave2 modules definition ---*/
-
-extern void fillpoly();
+#include "mw-modules.h" /* for fillpoly() */
 
 /*--- Constants ---*/
 

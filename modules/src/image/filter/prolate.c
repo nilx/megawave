@@ -20,8 +20,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void fft2d();
+#include "mw-modules.h" /* for fft2d() */
 
 float prolate(s,d,m,ker)
      int s;

@@ -24,13 +24,9 @@
 #include <time.h>
 #include <unistd.h> /* FIXME: unix-centric */
 #include "mw.h"
-
-extern void   fft2d();
-extern float  fmean(), fvar();
-extern void   faxpb();
+#include "mw-modules.h" /* fft2d(), fmean(), fvar(), faxpb() */
 
 #define SQR(x) ((x)*(x))
-
 
 /* NB: Calling this module with out=in is possible */
 

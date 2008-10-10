@@ -22,10 +22,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-
 #include "mw.h"
-
-extern Cimage czoom();
+#include "mw-modules.h" /* for czoom() */
 
 /* NB : calling this module with out=in is possible */
 

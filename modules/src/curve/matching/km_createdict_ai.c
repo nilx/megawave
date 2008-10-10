@@ -16,15 +16,11 @@ usage = {
 ----------------------------------------------------------------------*/
 
 
-#include<math.h>
-#include<time.h>
+#include <math.h>
+#include <time.h>
 #include "mw.h" 
-
-extern Flist km_inflexionpoints();
-extern Flist km_flatpoints();
-extern Flist km_bitangents();
-extern Flists km_codecurve_ai();
-
+#include "mw-modules.h" /* for km_inflexionpoints(), km_flatpoints(),
+			 * km_bitangents(), km_codecurve_ai() */
 
 #define _(a,i,j) ((a)->values[(i)*((a)->dim)+(j)])
 

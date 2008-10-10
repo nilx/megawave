@@ -47,12 +47,8 @@ usage = {
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void arencode2();
-extern void entropy();
+#include "mw.h"
+#include "mw-modules.h" /* arencode2(), entropy() */
 
 /*--- Constants ---*/
 

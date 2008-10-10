@@ -21,8 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
-
-extern Fimage funzoom();
+#include "mw-modules.h" /* for funzoom() */
 
 Cfimage cfunzoom(in,out,z,o,tx,ty)
      Cfimage in,out;

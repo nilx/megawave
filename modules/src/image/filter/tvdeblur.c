@@ -27,8 +27,7 @@ usage = {
 #include <stdlib.h>
 #include <math.h>
 #include "mw.h"
-
-extern float fnorm();
+#include "mw-modules.h" /* for fnorm() */
 
 #define STEP_FACTOR 0.8
 #define STEP_LIMIT 1e-20

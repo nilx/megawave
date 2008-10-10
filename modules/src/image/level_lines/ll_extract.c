@@ -24,13 +24,8 @@
 
 #include <stdlib.h>
 #include "mw.h"
-#include "mw-modules.h" /* for flst_boundary(), flst() */
-
-extern void flst_bilinear();
-extern void flstb_quantize();
-extern Flist flstb_boundary();
-extern int fsaddles();
-
+#include "mw-modules.h" /* for flst_boundary(), flst(), flst_bilinear(),
+			 * flstb_quantize(), flstb_boundary(), fsaddles() */
 
 Flists ll_extract(in,levels,offset,step,prec,area,tree,z)
      Fimage in;

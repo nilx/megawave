@@ -25,10 +25,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void sconst();
-extern Fsignal sgauss();
-
+#include "mw-modules.h" /* for sconst(), sgauss() */
 
 Fimage fsepconvol(in,out,xker,yker,width,std,b)
      Fimage in,out;

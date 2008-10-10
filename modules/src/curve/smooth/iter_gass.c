@@ -23,8 +23,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
-
-extern Dlists gass();
+#include "mw-modules.h" /* for gass() */
 
 Dlists iter_gass(in,out,scale,niter,e,s,n)
      Dlist   in;

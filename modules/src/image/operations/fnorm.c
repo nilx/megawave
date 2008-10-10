@@ -23,10 +23,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void fop();
-extern void fderiv();
-
+#include "mw-modules.h" /* fop(), fderiv() */
 
 float fnorm(in,ref,p,s,v,b,n,t)
      Fimage in,ref;

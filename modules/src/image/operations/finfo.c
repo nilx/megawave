@@ -15,9 +15,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-extern Fsignal fvalues();
-extern float fentropy(),fmean(),fnorm();
+#include "mw-modules.h" /* fvalues(), fentropy(), fmean(), fnorm() */
 
 int test_chars(s)
      Fsignal s;

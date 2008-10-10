@@ -21,9 +21,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-extern Cimage czoom();
-
+#include "mw-modules.h" /* for czoom() */
 
 void cmzoom(Input, Output, x_flg, y_flg, factor, o, i_flg)
 

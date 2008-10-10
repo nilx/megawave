@@ -15,10 +15,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-extern Mimage ml_decompose();
-extern Fimage ml_reconstruct();
-extern Mimage ll_remove();
+#include "mw-modules.h" /* for ml_decompose(), ml_reconstruct(), ll_remove() */
 
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))

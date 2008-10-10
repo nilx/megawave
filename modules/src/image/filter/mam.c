@@ -32,7 +32,6 @@
 #define MAXvitesse 10
 #define MAXvitesse2 20  /* 2*MAXvitesse */
 
-extern double pow();
 #define FPOW(x,y) ((float)pow((double)(x),(double)(y)))
 
 #define MAX(x,y) ( (x)>(y) ? (x) : (y) )

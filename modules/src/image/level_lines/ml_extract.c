@@ -25,12 +25,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
 #define NDEBUG             /* comment this line out to enable assert() */
 #include <assert.h>
 #include "mw.h"
-
-extern Cimage ml_draw();
+#include "mw-modules.h" /* for ml_draw() */
 
 #define INSIDE(A)   ((minvalue<=(A))&&((A)<=maxvalue))
 #define OUTSIDE(A)  (!INSIDE(A))

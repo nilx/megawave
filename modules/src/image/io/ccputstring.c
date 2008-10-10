@@ -22,9 +22,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include  "mw.h"
-
-extern Curve disc();
+#include "mw.h"
+#include "mw-modules.h" /* for disc() */
 
 #define FONTWIDTH 7
 #define FONTHEIGHT 14

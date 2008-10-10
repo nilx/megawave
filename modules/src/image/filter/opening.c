@@ -19,9 +19,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-extern Cimage erosion();
-
+#include "mw-modules.h" /* for erosion() */
 
 Cimage opening(u, v, r, s, n, i)
      Cimage u,v;

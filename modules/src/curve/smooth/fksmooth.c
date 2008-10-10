@@ -19,8 +19,7 @@
 
 #include <math.h>
 #include "mw.h"
-
-extern Fsignal sgauss();
+#include "mw-modules.h" /* for sgauss() */
 
 /* distance between two points */
 static double dist(const float *p, const float *q)

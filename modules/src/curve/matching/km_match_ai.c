@@ -33,8 +33,7 @@ usage = {
 #include <time.h>
 #include <float.h>
 #include "mw.h" 
-
-extern Flists km_prematchings();
+#include "mw-modules.h" /* for km_prematchings() */
 
 #define FABSF(x) ((float)fabs((double)(x)))
 

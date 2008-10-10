@@ -27,8 +27,7 @@
 #include <string.h>
 #include <math.h>
 #include "mw.h"
-
-extern void finvspline();
+#include "mw-modules.h" /* for finvspline() */
 
 
 /* NB : calling this module with out=in is possible */

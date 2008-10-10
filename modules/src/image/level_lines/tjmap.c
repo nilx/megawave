@@ -20,9 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
-
-extern int tjpoint();
-
+#include "mw-modules.h" /* for tjpoint() */
 
 /* Record the junction location */
 

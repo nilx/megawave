@@ -25,10 +25,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
 #include "mw.h"
-
-extern Dlists gcsf();
+#include "mw-modules.h" /* for gcsf() */
 
 Dlists iter_gcsf(in,out,gam,last,area,eps,n,N,v)
      Dlist   in;

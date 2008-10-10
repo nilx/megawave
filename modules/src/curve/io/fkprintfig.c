@@ -20,9 +20,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern void fkbox();
-
+#include "mw-modules.h" /* for fkbox() */
 
 /* fig 3.2 header string */
 #define FIG_HEADER \

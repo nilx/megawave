@@ -18,10 +18,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
-extern Fsignal fvalues();
-extern float smean(),snorm();
-
+#include "mw-modules.h" /* for fvalues(), smean(), snorm() */
 
 void sinfo(s)
      Fsignal s;

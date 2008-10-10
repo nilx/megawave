@@ -20,8 +20,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
-extern Fimage fzoom();
+#include "mw-modules.h" /* for fzoom() */
 
 /* NB : calling this module with out=in is possible */
 

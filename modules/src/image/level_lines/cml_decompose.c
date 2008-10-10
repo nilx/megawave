@@ -29,8 +29,6 @@ typedef struct cfsignal {
 } *Cfsignal;
 
 
-extern int mwdbg;
-
 static int ascending_order=1;
 
 /* ------------------------------------------------------------------

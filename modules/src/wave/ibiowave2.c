@@ -23,11 +23,8 @@ usage = {
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include  "mw.h"
-
-/*--- Megawave2 modules definition ---*/
-
-extern void sconvolve();
+#include "mw.h"
+#include "mw-modules.h" /* sconvolve() */
 
 /*--- Constants ---*/
 

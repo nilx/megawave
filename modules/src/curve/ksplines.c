@@ -25,8 +25,6 @@ ksplines<-splines          "B-spline curves (curves output)"
 #define min(A,B)     (((A)>(B)) ? (B) : (A))
 #define max(A,B)     (((A)>(B)) ? (A) : (B))
 
-extern int mwdbg;
-
 /* Return the maximum number of points in a set of curves */
 
 int give_max_number_of_points_in_curves(curves)

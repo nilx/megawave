@@ -23,8 +23,7 @@
 #include <string.h>
 #include <math.h>
 #include "mw.h"
-
-extern void fft1d();
+#include "mw-modules.h" /* for fft1d() */
 
 #define HORIZONTAL 0
 #define VERTICAL 1

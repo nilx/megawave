@@ -17,12 +17,10 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-
 #include "mw.h"
+#include "mw-modules.h" /* for fft1d() */
 
 #define EPS 1e-15
-
-extern void   fft1d();
 
 /* compute the scaling function */
 

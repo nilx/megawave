@@ -27,9 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
-
-extern void fcrop();
-
+#include "mw-modules.h" /* for fcrop() */
 
 /*------------------- GLOBAL VARIABLES -------------------*/
 

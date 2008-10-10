@@ -18,10 +18,8 @@
 #include <math.h>
 
 #include "mw.h"
-
-extern Fcurves extract_connex();
-extern Fcurves sr_normalize();
-extern Fimage  sr_signature();
+#include "mw-modules.h" /* for extract_connex(), sr_normalize(),
+			 * sr_signature() */
 
 
 /*** to interpret a Cimage ***/

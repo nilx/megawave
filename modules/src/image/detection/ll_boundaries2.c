@@ -30,17 +30,10 @@
 #include <float.h>
 #include <math.h>
 #include "mw.h"
-#include "mw-modules.h" /* for fderiv() */
-
-extern void flst();
-extern void flst_bilinear();
-extern void flst_reconstruct();
-extern void flstb_quantize();
-extern Flist flstb_boundary();
-extern void flst_pixels();
-extern int  fsaddles();
-extern Fsignal sintegral();
-extern Fimage fsepconvol();
+#include "mw-modules.h" /* for fderiv(), flst(), flst_bilinear(),
+			 * flst_reconstruct(), flstb_quantize(),
+			 * flstb_boundary(), flst_pixels(),
+			 * fsaddles(), sintegral(), fsepconvol() */
 
 #define ABS(x) ((x)>0?(x):-(x))
 #define MAX(a,b) ((a)>(b)?(a):(b))
