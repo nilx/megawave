@@ -1152,6 +1152,13 @@ extern int mwind;
 
 extern int mwwindelay;
 
+/*
+ * from utils.h
+ */
+
+extern int mwdbg;
+extern int help_flg;
+extern int vers_flg;
 
 #endif /* !_LIBMW_DEFS_H */
 /*
