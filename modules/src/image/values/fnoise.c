@@ -22,22 +22,14 @@
  v1.2: added processus number term in the random seed initialization (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-#include <unistd.h>
+#include <unistd.h> /* FIXME: unix-centric */
 #include "mw.h"
 
-/* for drand48() */
-#ifdef __STDC__
-#include <stdlib.h>
-#else
-extern double drand48();
-#endif
-
-
 /*** NB: Calling this module with in=out is possible ***/
-
 
 void fnoise(u,v,std,p,q,n_flag)
 Fimage	u,v;
@@ -52,7 +44,7 @@ char    *n_flag;
     mwerror(FATAL,1,"Please select exactly one of the -g, -i and -q options.");
 
   /*** Initialize random seed if necessary ***/
-  if (!n_flag) srand48( (long int) time (NULL) + (long int) getpid() );
+  if (!n_flag) srand( (unsigned int) time (NULL) + (unsigned int) getpid() );
   
   /* Allocate memory */
   v = mw_change_fimage(v,u->nrow,u->ncol);
@@ -62,8 +54,8 @@ char    *n_flag;
 
     /* Gaussian noise */
     for (i=u->ncol*u->nrow;i--;) {
-      a = drand48();
-      b = drand48();
+      a = (double) rand() / RAND_MAX;
+      b = (double) rand() / RAND_MAX;
       z = (double)(*std)*sqrt(-2.0*log(a))*cos(2.0*M_PI*b);
       v->gray[i] = u->gray[i] + (float)z;
     }
@@ -78,15 +70,17 @@ char    *n_flag;
       if (c>max) max=c;
     }
     for (i=u->ncol*u->nrow;i--;)
-      if (drand48()*100.0<*p) v->gray[i] = (float)(min+(max-min)*drand48());
+      if ((double) rand() / RAND_MAX * 100.0 < *p)
+	   v->gray[i] = (float) (min + (max - min) 
+				 * (double) rand() / RAND_MAX);
     else v->gray[i] = u->gray[i];
     
   } else {
 
     /* uniform (quantization) noise */
    for (i=u->ncol*u->nrow;i--;)
-     v->gray[i] =  u->gray[i] + *q*(float)(drand48()-0.5);
-
+     v->gray[i] =  u->gray[i] + *q 
+	  * (float) ((double) rand() / RAND_MAX - 0.5);
   }
 }
 

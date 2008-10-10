@@ -4,4 +4,4 @@
 * remove the extern declarations
 * include M_PI
 * safe snprintf
-* generic random
+* generic random (note: in glibc, ANSI rand() == POSIX random())

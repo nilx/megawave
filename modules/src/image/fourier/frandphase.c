@@ -18,19 +18,12 @@
  v1.6 (04/2007): fixed non square size bug (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-#include <unistd.h>
+#include <unistd.h> /* FIXME: unix-centric */
 #include "mw.h"
-
-#ifdef __STDC__
-#include <stdlib.h>
-#else
-extern double  drand48();
-extern void    srand48();
-extern time_t  time();
-#endif
 
 extern void   fft2d();
 extern float  fmean(), fvar();
@@ -51,7 +44,7 @@ void frandphase(in,out,i_flag)
   float  m,std;
 
   /*** Initialize random seed if necessary ***/
-  if (!i_flag) srand48( (long int) time (NULL) + (long int) getpid() );
+  if (!i_flag) srand( (unsigned int) time (NULL) + (unsigned int) getpid() );
 
   m = fmean(in);
   std = fvar(in,1,1);
@@ -75,7 +68,7 @@ void frandphase(in,out,i_flag)
 	re->gray[ad] = (float)rho;
 	im->gray[ad] = 0.0;
       } else {
-	theta = 2.0*M_PI*drand48();
+	theta = 2.0 * M_PI * (double) rand() / RAND_MAX;
 	re->gray[ad] = (float)( rho*cos( theta ) );
 	im->gray[ad] = (float)( rho*sin( theta ) );
 	ad = ((-y+ny)%ny)*ny + (-x+nx)%nx;

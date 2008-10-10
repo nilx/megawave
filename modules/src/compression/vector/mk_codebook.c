@@ -38,20 +38,20 @@ static double ran0(initseed)
   
   if (*initseed < 0 || iff == 0) {
     iff=1;
-    srand48(*initseed);
+    srand((unsigned int) *initseed);
     *initseed=1;
     for(j=0;j<97;j++)
-      dum=drand48();
+      dum = (float) ((double) rand() / RAND_MAX);
     for(j=0;j<97;j++)
-      v[j]=drand48();
-    y = drand48();
+      v[j] = (double) rand() / RAND_MAX;
+    y = (double) rand() / RAND_MAX;
   }
 
   j = y * 98.0;
   if ((j<0)||(j>97))
     mwerror(FATAL, 1, "Valeur impossible pour j : %d, (y=%.5f)", j, y);
   y = v[j]; 
-  v[j] = drand48(); 
+  v[j] = (double) rand() / RAND_MAX;
   return(y);
 }
 

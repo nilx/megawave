@@ -21,18 +21,11 @@
  v1.1: preserve header info for e.g. sound processing (JF) 
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
 #include "mw.h"
-
-/* for drand48() */
-#ifdef __STDC__
-#include <stdlib.h>
-#else
-extern double drand48();
-#endif
-
 
 /*** NB: Calling this module with in=out is possible ***/
 
@@ -48,7 +41,7 @@ Fsignal snoise(in,out,std,t,n_flag)
     mwerror(USAGE,0,"Please select exactly one of the -g and -t options.");
 
   /*** Initialize random seed if necessary ***/
-  if (!n_flag) srand48( (long int) time (NULL) );
+  if (!n_flag) srand( (unsigned int) time (NULL) );
   
   /* Allocate memory */
   out = mw_change_fsignal(out,in->size);
@@ -59,8 +52,8 @@ Fsignal snoise(in,out,std,t,n_flag)
 
     /* Gaussian noise */
     for (i=in->size;i--;) {
-      a = drand48();
-      b = drand48();
+      a = (double) rand() / RAND_MAX;
+      b = (double) rand() / RAND_MAX;
       z = (double)(*std)*sqrt(-2.0*log(a))*cos(2.0*M_PI*b);
       out->values[i] = in->values[i] + (float)z;
     }
@@ -69,7 +62,7 @@ Fsignal snoise(in,out,std,t,n_flag)
 
     /* transmission noise */
     for (i=in->size;i--;)
-      if (drand48()*100.0<*t) out->values[i] = 0.;
+      if ((double) rand() / RAND_MAX * 100.0 < *t) out->values[i] = 0.;
       else out->values[i] = in->values[i];
     
   }
