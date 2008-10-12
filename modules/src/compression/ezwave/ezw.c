@@ -1321,7 +1321,8 @@ int             *distrate;
     rate /= (double) count_total;
 
   if (printfull && !distrate)
-    printf("ZTR =%6d, IZ =%5d, RM = %.2f, ", count_ztroot, count_isolz, rate);
+    printf("ZTR =%6ld, IZ =%5ld, RM = %.2f, ", 
+	   count_ztroot, count_isolz, rate);
 }
 
 
@@ -1832,7 +1833,10 @@ int         *distrate;           /* Flag for computation of dist. rate curve */
 
     if (!distrate && printfull) {
       effrate = (double) effnbit / size; 
-      printf("Rate = %.4f, Rate AR = %.4f, PSNR = %.2f,  nsignif = %d\n", effrate, (double) effnbit / size, 10.0 * log10((double) size * MAX_GREYVAL * MAX_GREYVAL / effmse), nsignif);
+      printf("Rate = %.4f, Rate AR = %.4f, PSNR = %.2f,  nsignif = %ld\n",
+	     effrate, (double) effnbit / size, 
+	     10.0 * log10((double) size * MAX_GREYVAL * MAX_GREYVAL / effmse),
+	     nsignif);
     }
   }
   

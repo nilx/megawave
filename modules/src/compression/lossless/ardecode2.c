@@ -284,7 +284,7 @@ int              *print;
   if (!nsymb)
     DECODE_INT(&nsymbol, (long) 1 << (code_value_bits - 3));
   if (!print)
-    printf("Number of symbols : %d\n", nsymbol);
+    printf("Number of symbols : %ld\n", nsymbol);
   if (!predic) 
     DECODE_INT(predict, 1L);
   else
@@ -450,8 +450,9 @@ Fimage        Output;           /* String of codewords */
     DECODE_INT(&sizeo, (long) 1 << 30); 
 
   if (!Print) {
-    printf("Number of input 8 bits-codewords : %d (%d bits read)\n", ncwread - Input->firstcol, nbitread);
-    printf("Number of output codewords : %d\n", sizeo);
+    printf("Number of input 8 bits-codewords : %ld (%ld bits read)\n", 
+	   ncwread - Input->firstcol, nbitread);
+    printf("Number of output codewords : %ld\n", sizeo);
   }
   if (sizeo > 0) {
     *Rate = (double) nbitread / sizeo;

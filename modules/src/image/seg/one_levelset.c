@@ -161,7 +161,7 @@ void Estimation()                          /* Estimations occupation memoire */
 
   stotal=systeme+image.gx*image.gy*sizeof(float);
   total= simage + stotal;
-  printf("\nEstimation for memory occupation: %d Mbytes\n",total>>20);
+  printf("\nEstimation for memory occupation: %lu Mbytes\n", total>>20);
   return;
 }
  
@@ -1240,7 +1240,7 @@ Fimage image_org;
   for(rptr=image.tete;rptr!=NULL;rptr=rptr->Rsuiv)  
     if(*rptr->canal<=*level) number_lreg++;
   
-  printf("\n Found %ld connected regions for the levelset.",number_lreg);
+  printf("\n Found %d connected regions for the levelset.",number_lreg);
 
   if((cb)||(cu)||(fu)) {
     if((boundary=mw_change_cimage(NULL,image_org->ncol,image_org->nrow))==NULL)
@@ -1288,8 +1288,9 @@ Fimage image_org;
 	}
   /* Now at least we are tranquil (hopefully!)                     */
 
-    printf("\n Writting %ld contours, with %ld points, in MW2-polygons structure.",
-	   number_cbords,number_points);
+    printf("\n Writting %d contours, with %d points, "
+	   "in MW2-polygons structure.",
+	   number_cbords, number_points);
     pb=mw_change_fpolygons(pb);
     border2polygon(pb,number_cbords,*level);
   }

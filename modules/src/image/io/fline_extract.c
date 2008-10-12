@@ -59,7 +59,7 @@ void fline_extract(cflag, Image, Signal, Index)
 	Signal->lastp = Image->lastrow;
 	/* Signal->scale = Image->scale; */
 	Signal->scale = 1.0;
-	sprintf(Signal->cmt, "Column %d of %s", Index, Image->name);
+	sprintf(Signal->cmt, "Column %ld of %s", Index, Image->name);
     } else
       {
 	for (c = 0; c < size; c++)
@@ -68,6 +68,6 @@ void fline_extract(cflag, Image, Signal, Index)
 	Signal->lastp = Image->lastcol;
 	/* Signal->scale = Image->scale; */
 	Signal->scale = 1.0;
-	sprintf(Signal->cmt, "Line %d of %s", Index, Image->name);
+	sprintf(Signal->cmt, "Line %ld of %s", Index, Image->name);
       }
 }

@@ -1155,7 +1155,8 @@ int           *printfull;           /* Flag for information printing */
     rate /= (double) count_total;
 
   if (printfull)
-    printf("ZTR =%6d, IZ =%5d, RM = %.2f, ", count_ztroot, count_isolz, rate);
+    printf("ZTR =%6ld, IZ =%5ld, RM = %.2f, ", 
+	   count_ztroot, count_isolz, rate);
 }
 
 
@@ -1424,7 +1425,8 @@ int         *printfull;           /* Flag for information printing */
     if (printfull) {
       size = output->nrow * output->ncol;
       effrate = (double) effnbit / size; 
-      printf("Rate = %.4f, Rate AR = %.4f,  nsignif = %d\n", effrate, (double) effnbitar / size, nsignif);
+      printf("Rate = %.4f, Rate AR = %.4f,  nsignif = %ld\n", 
+	     effrate, (double) effnbitar / size, nsignif);
     }
   }
 

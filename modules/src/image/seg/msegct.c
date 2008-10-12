@@ -317,7 +317,7 @@ void Estimation()                          /* Estimations occupation memoire */
               2*nbbords  * (2*sli_bords+sli_pixels)   ;
   stotal=image.NC_REG*image.gx*image.PAS*image.gy*image.PAS*sizeof(float);
   total= simage + stotal;
-  printf("\nEstimation for memory occupation: %d Mbytes\n",total>>20);
+  printf("\nEstimation for memory occupation: %lu Mbytes\n",total>>20);
   return;
 }
  
@@ -1093,7 +1093,13 @@ void EcritComm(comm)     /* Ecrit le commentaire pour le fichier resultat,   */
 char *comm;              /*  ceci suivant les particularites de l'algorithme.*/
 {                        /* Utilisee par 'SaveIm()' et autres 'Save'         */
 
-   sprintf(comm,"2-normal segmentation (Mumford&Shah model), multichannel. Parameter:%lu, grid of %d*%d pixels. Nb. of regions: %d,frontiers: %d,tips: %d, El.en. %.4g,length %ld(G.Koepfler).",image.lambda,image.PAS,image.PAS,image.nbregions,image.nbbords,image.nbsommets,image.energie.e,image.energie.l);
+   sprintf(comm,
+	   "2-normal segmentation (Mumford&Shah model), multichannel. "
+	   "Parameter:%g, grid of %d*%d pixels. "
+	   "Nb. of regions: %lu,frontiers: %lu,tips: %lu, El.en. "
+	   "%.4g,length %ld(G.Koepfler).",
+	   image.lambda, image.PAS, image.PAS, image.nbregions, 
+	   image.nbbords, image.nbsommets, image.energie.e, image.energie.l);
 }
 
 
@@ -1395,11 +1401,12 @@ Fmovie orig_data,u;
   Initialisation(orig_data);
   for(l=1;l<image.NC_REG;l++) {
     image.chmean[l] /= (float)(image.gx*image.gy);
-    printf("\n Channel %d : weight=%.6f , mean=%.4f , energy=%.0f ",l,image.weight[l],image.chmean[l],image.chenergy[l]);
+    printf("\n Channel %lu : weight=%.6f , mean=%.4f , energy=%.0f ",
+	   l, image.weight[l], image.chmean[l], image.chenergy[l]);
   }
   printf("\nInitial state of the segmentation:");
   printf("\nElastic energie = %.4g , boundary length= %ld.",image.energie.e,image.energie.l);
-  printf("\nNumber of regions: %d. \n",image.nbregions);
+  printf("\nNumber of regions: %lu. \n", image.nbregions);
   if(lambda==NULL) 
     while(*nb_of_regions<image.nbregions) segment();
   else 

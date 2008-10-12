@@ -1660,7 +1660,9 @@ double	       *ent;
       msethres /= (float) numthres * sizev;
     if (printsnr)
       if (*printsnr == 1)
-	printf("Run length: block number = %d,  rate = %.4f, threshold mse = %.2f\n", numthres, e / (double) size, msethres);
+	printf("Run length: block number = %ld,  rate = %.4f, "
+	       "threshold mse = %.2f\n", 
+	       numthres, e / (double) size, msethres);
 
 
     /*--- Computation of entropy of quantized levels ---*/
@@ -1687,7 +1689,8 @@ double	       *ent;
     if (printsnr) 
       if (*printsnr == 1) {
 	e = *ratearc - e;
-	printf("cb1: block number = %d,  entropy = %.4f,  mse = %.2f\n", num1, e / (double) size, mse1);
+	printf("cb1: block number = %ld,  entropy = %.4f,  mse = %.2f\n", 
+	       num1, e / (double) size, mse1);
 	e = *ratearc;
       }
 
@@ -1713,7 +1716,8 @@ double	       *ent;
       if (printsnr) 
 	if (*printsnr == 1) {
 	  e = *ratearc - e;
-	  printf("cb2: block number = %d,  entropy = %.4f,  mse = %.2f\n", num2, e / (double) size, mse2);
+	  printf("cb2: block number = %ld,  entropy = %.4f,  mse = %.2f\n",
+		 num2, e / (double) size, mse2);
 	  e = *ratearc;
 	}
       mw_delete_fsignal(histo2);
@@ -1736,7 +1740,8 @@ double	       *ent;
       if (printsnr) 
 	if (*printsnr == 1) {
 	  e = *ratearc - e;      
-	  printf("cb3: block number = %d,  entropy = %.4f,  mse = %.2f\n", num3, e / (double) size, mse3);
+	  printf("cb3: block number = %ld,  entropy = %.4f,  mse = %.2f\n",
+		 num3, e / (double) size, mse3);
 	  e = *ratearc;
 	}
       mw_delete_fsignal(histo3);
@@ -1759,7 +1764,8 @@ double	       *ent;
       if (printsnr) 
 	if (*printsnr == 1) {
 	  e = *ratearc - e;      
-	  printf("cb4: block number = %d,  entropy = %.2f,  mse = %.4f\n", num4, e / (double) size, mse4);
+	  printf("cb4: block number = %ld,  entropy = %.2f,  mse = %.4f\n",
+		 num4, e / (double) size, mse4);
 	}
       mw_delete_fsignal(histo4);
     }

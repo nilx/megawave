@@ -319,7 +319,8 @@ int            *printsnr;
     }
     if (totaltest != trainset->nrow) {
       mwerror(WARNING, 0, "Something wrong with weightcell buffer!\n");
-      printf("Number of vector in tr.set : %d,  sum of weightcell : %d\n", sizet, totaltest);
+      printf("Number of vector in tr.set : %d,  sum of weightcell : %ld\n",
+	     sizet, totaltest);
     }
     rate /= (double) sizet * sizeb * log((double) 2.0);
     entropyrec += rate;
@@ -889,7 +890,8 @@ int            *multicb;         /* Generate a sequence of codebooks */
     }
     if (totaltest != trainset->nrow) {
       mwerror(WARNING, 0, "Something wrong with weightcell buffer!\n");
-      printf("Number of vector in tr.set : %d,  sum of weightcell : %d\n", trainset->nrow, totaltest);
+      printf("Number of vector in tr.set : %d,  sum of weightcell : %ld\n",
+	     trainset->nrow, totaltest);
     }
     rate /= (double) trainset->nrow * trainset->ncol * log((double) 2.0);
     rate += entropyrec;

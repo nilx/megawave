@@ -455,7 +455,8 @@ Cimage     output;            /* String of codewords */
 	  break;
 
     if ((*low < 0) || (*high > top_value)) {
-      printf("low = %d, high = %d, symbol = %d, symbol_pred = %d\n", *low, *high, symbol, symbol_pred);
+      printf("low = %ld, high = %ld, symbol = %d, symbol_pred = %d\n", 
+	     *low, *high, symbol, symbol_pred);
       teststop = 1;
       break;
     }
@@ -614,7 +615,8 @@ Cimage        Output;            /* String of codewords */
   size = ncodewords;
   if (Output) {
     if (!Print)
-      printf("Number of output 8-bits codewords %d (%d bits)\n", ncodewords, nbit);
+      printf("Number of output 8-bits codewords %ld (%ld bits)\n", 
+	     ncodewords, nbit);
 
     /*--- Compute dimensions of Output ---*/
 

@@ -73,7 +73,7 @@ void cline_extract(cflag, Image, Signal, Index, OutImage)
 	Signal->lastp = Image->lastrow;
 	/* Signal->scale = Image->scale; */
 	Signal->scale = 1.0;
-	sprintf(Signal->cmt, "Column %d of %s", Index, Image->name);
+	sprintf(Signal->cmt, "Column %ld of %s", Index, Image->name);
 
 	if (OutImage)
 	  for (l = 0; l < size; l++)
@@ -87,7 +87,7 @@ void cline_extract(cflag, Image, Signal, Index, OutImage)
 	Signal->lastp = Image->lastcol;
 	/* Signal->scale = Image->scale; */
 	Signal->scale = 1.0;
-	sprintf(Signal->cmt, "Line %d of %s", Index, Image->name);
+	sprintf(Signal->cmt, "Line %ld of %s", Index, Image->name);
 
 	if (OutImage)
 	  for (c = 0; c < size; c++)

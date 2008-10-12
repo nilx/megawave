@@ -766,27 +766,27 @@ Fimage      result, result2, result3, result4;  /* Resulting codebook */
   if (result == NULL)
     mwerror(FATAL, 1, "Not enough memory for training set\n");
 
-  printf("Size of training set 1 : %d\n", sizet);
+  printf("Size of training set 1 : %ld\n", sizet);
 
   if (result2) {
     result2 = mw_change_fimage(result2, sizet2, sizeb);
     if (result2 == NULL)
       mwerror(FATAL, 1, "Not enough memory for training set 2\n");
-    printf("Size of training set 2 : %d\n", sizet2);
+    printf("Size of training set 2 : %ld\n", sizet2);
   }
     
   if (result3) {
     result3 = mw_change_fimage(result3, sizet3, sizeb);
     if (result3 == NULL)
       mwerror(FATAL, 1, "Not enough memory for training set 3\n");
-    printf("Size of training set 3 : %d\n", sizet3);
+    printf("Size of training set 3 : %ld\n", sizet3);
   }
 
   if (result4) {
     result3 = mw_change_fimage(result4, sizet4, sizeb);
     if (result4 == NULL)
       mwerror(FATAL, 1, "Not enough memory for training set 4\n");
-    printf("Size of training set 4 : %d\n", sizet4);
+    printf("Size of training set 4 : %ld\n", sizet4);
   }
 
 

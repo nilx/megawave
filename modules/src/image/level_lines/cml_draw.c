@@ -166,11 +166,22 @@ Ccimage cml_draw(cmimage,bimage,border,movie)
 	  if(newcb==NULL) mwerror(FATAL,1,"Not enough memory.");
 	  mw_clear_ccimage(newcb,255,255,255);
 	  if (bimage != NULL) setimage(border,bimage,newcb);
-	  sprintf(newcb->cmt,"cmorpho lines of '%s' for %g <= GL <= %g",
-		  cmimage->name,mline->minvalue,mline->maxvalue);
+	  sprintf(newcb->cmt,
+		  "cmorpho lines of '%s' for "
+		  "(%g, %g, %g) <= GL <= (%g, %g, %g)",
+		  cmimage->name,
+		  mline->minvalue.red, mline->minvalue.green, 
+		  mline->minvalue.blue,
+		  mline->maxvalue.red, mline->maxvalue.green, 
+		  mline->maxvalue.blue);
 	  nm++;
-	  mwdebug("image #%d\t cmorpho lines for %g <= GL <= %g\n",
-		  nm,mline->minvalue,mline->maxvalue);
+	  mwdebug("image #%d\t cmorpho lines for "
+		  "(%g, %g, %g) <= GL <= (%g, %g, %g)\n",
+		  nm,
+		  mline->minvalue.red, mline->minvalue.green, 
+		  mline->minvalue.blue,
+		  mline->maxvalue.red, mline->maxvalue.green, 
+		  mline->maxvalue.blue);
 	  if (movie->first == NULL) movie->first=newcb;
 	  else { oldcb->next = newcb; newcb->previous = oldcb; }
 	  oldcb = newcb;
