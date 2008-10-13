@@ -116,6 +116,7 @@ static void writeMbody(FILE * mfile, FILE * sfile)
 
 void gen_lib_file(FILE * mfile, FILE * sfile)
 {
-     writeMheader(mfile);
+     /* FIXME: deactivated for easy debugging */
+     /* writeMheader(mfile); */
      writeMbody(mfile, sfile);
 }
