@@ -382,7 +382,7 @@ return(test);
 
                                  /* compute erosion			     */
                                  /* on a central element                     */
-int erosion(im,a,r)
+int image_erosion(im,a,r)
 Cimage im;
 unsigned long a;
 float r;
@@ -515,7 +515,7 @@ Cmovie output;
       
       
       if(test_a==1)  {
-	pict->gray[a] = erosion(im_final,a,rad);
+	pict->gray[a] = image_erosion(im_final,a,rad);
       }
       else
 	{

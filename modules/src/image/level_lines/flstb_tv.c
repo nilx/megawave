@@ -34,7 +34,7 @@ typedef struct {
 } point_t;
 #endif
 
-float perimeter(pCurve, iHeight, iWidth)
+float curve_perimeter(pCurve, iHeight, iWidth)
      Flist pCurve;
      int iHeight, iWidth;
 {
@@ -83,7 +83,7 @@ float perimeter(pCurve, iHeight, iWidth)
   return (float)dPerimeter;
 }
 
-float area(pCurve, iHeight, iWidth)
+float curve_area(pCurve, iHeight, iWidth)
      Flist pCurve;
      int iHeight, iWidth;
 {
@@ -162,8 +162,8 @@ void decrease_tv(tabScales, fQuantizationLevel, iQuantizationCurve, pImage,
 	pBoundary = flstb_boundary(&iQuantizationCurve, pImage, pTree, pShape,
 				   pListBoundaries->list[i], NULL, 
 				   tabtabSaddleValues);
-	fPerimeter = perimeter(pBoundary, pTree->nrow, pTree->ncol);
-	fArea = area(pBoundary, pTree->nrow, pTree->ncol);
+	fPerimeter = curve_perimeter(pBoundary, pTree->nrow, pTree->ncol);
+	fArea = curve_area(pBoundary, pTree->nrow, pTree->ncol);
 	assert((fArea>0 && fPerimeter>0) || (fArea==0 && fPerimeter>=0));
 	bNoChange = (char)(fArea == 0);
 	if(bNoChange)

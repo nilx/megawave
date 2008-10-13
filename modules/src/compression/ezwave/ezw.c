@@ -126,7 +126,7 @@ static int    count_dr;
 static int    max_count_dr;
 static DRCurve  *drc;             /* Distorsion rate curve */
 
-static long   area[MAX_NPOLYG];   /* Areas of different regions */
+static long   region_area[MAX_NPOLYG]; /* Areas of different regions */
 static long   targnbit_sa[MAX_NPOLYG]; /* Target number of bits for each 
 			           * selcected area */
 static long   effnbit_sa[MAX_NPOLYG]; /* Effective current number of bits used 
@@ -261,15 +261,15 @@ float           *psnr;           /* Target psnr for background */
   /*--- Compute area of various regions ---*/
 
   for (p = 0; p <= npolyg; p++)
-    area[p] = 0;
+    region_area[p] = 0;
 
   size = wtrans->images[1][1]->nrow * wtrans->images[1][1]->ncol;
   ptra = areamap[1][1];
   for (x = 0; x < size; x++, ptra++) 
-    area[*ptra]++;
+    region_area[*ptra]++;
 
   for (p = 0; p <= npolyg; p++)
-    area[p] *= 4;
+    region_area[p] *= 4;
 
   size = wtrans->nrow * wtrans->ncol;
 
@@ -277,13 +277,15 @@ float           *psnr;           /* Target psnr for background */
 
   if (psnr) {
     targmse = (double) size * MAX_GREYVAL * MAX_GREYVAL / pow((double) 10.0, (double) *psnr / 10.0);
-    targmse_sa[0] = (double) area[0] * MAX_GREYVAL * MAX_GREYVAL / pow((double) 10.0, (double) *psnr / 10.0);
+    targmse_sa[0] = (double) region_area[0] * MAX_GREYVAL * MAX_GREYVAL 
+	 / pow((double) 10.0, (double) *psnr / 10.0);
 
     if (selectarea) {
       ptr_polyg = selectarea->first;
       p = 1;
       while (ptr_polyg) {
-	targmse_sa[p] = (double) area[p] * MAX_GREYVAL * MAX_GREYVAL / pow((double) 10.0, (double) ptr_polyg->channel[0] / 10.0);    
+	targmse_sa[p] = (double) region_area[p] * MAX_GREYVAL * MAX_GREYVAL 
+	     / pow((double) 10.0, (double) ptr_polyg->channel[0] / 10.0);    
 	p++;
 	ptr_polyg = ptr_polyg->next;
       }
@@ -299,13 +301,14 @@ float           *psnr;           /* Target psnr for background */
 
   if (rate) {
     targnbit = (long) (*rate * (double) size);
-    targnbit_sa[0] = (long) (*rate * (double) area[0]);
+    targnbit_sa[0] = (long) (*rate * (double) region_area[0]);
 
     if (selectarea) {
       ptr_polyg = selectarea->first;
       p = 1;
       while (ptr_polyg) {
-	targnbit_sa[p] = (long) (ptr_polyg->channel[0] * (double) area[p]);    
+	targnbit_sa[p] = (long) (ptr_polyg->channel[0] 
+				 * (double) region_area[p]);    
 	p++;
 	ptr_polyg = ptr_polyg->next;
       }
@@ -314,7 +317,7 @@ float           *psnr;           /* Target psnr for background */
     {
       targnbit = NBIT_GREYVAL * size;
       for (p = 0; p <= npolyg; p++)
-	targnbit_sa[p] = NBIT_GREYVAL * area[p];
+	targnbit_sa[p] = NBIT_GREYVAL * region_area[p];
 
     }
 

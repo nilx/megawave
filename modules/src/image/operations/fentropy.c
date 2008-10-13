@@ -20,7 +20,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* fvalues() */
 
-double entropy(input)
+double signal_entropy(input)
      Fsignal input;
 {
   int i;
@@ -62,7 +62,7 @@ Fimage A;
   if (!B) mwerror(FATAL,1,"Not enough memory\n");
 
   C = fvalues(NULL,B,NULL,A);
-  e = (float) entropy(B);
+  e = (float) signal_entropy(B);
   mw_delete_fsignal(B);
   mw_delete_fsignal(C);
 
