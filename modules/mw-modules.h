@@ -2590,7 +2590,7 @@ void fsize(Fimage in);
 #define _FVAR_LIB_H_
 
 /* src/image/operations/fvar.lib.c */
-float fvar(Fimage A, int *e, int *s);
+float fvar(Fimage A, char *e, char *s);
 
 #endif /* !_FVAR_LIB_H_ */
 /*

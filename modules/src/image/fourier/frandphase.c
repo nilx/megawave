@@ -43,13 +43,13 @@ void frandphase(in,out,i_flag)
   if (!i_flag) srand( (unsigned int) time (NULL) + (unsigned int) getpid() );
 
   m = fmean(in);
-  std = fvar(in,1,1);
+  std = fvar(in, (char *) 1, (char *) 1);
 
   re = mw_new_fimage();
   im = mw_new_fimage();
 
   /*** FFT ***/
-  fft2d(in,NULL,re,im,0);
+  fft2d(in, NULL, re, im, NULL);
   nx = re->ncol;
   ny = re->nrow;
   out = mw_change_fimage(out,ny,nx);
@@ -75,7 +75,7 @@ void frandphase(in,out,i_flag)
   }
   
   /*** inverse FFT ***/
-  fft2d(re,im,out,NULL,1);
+  fft2d(re, im, out, NULL, (char *) 1);
 
   /*** impose mean and variance ***/
   faxpb(out,out,NULL,&std,NULL,&m,NULL,NULL,NULL);

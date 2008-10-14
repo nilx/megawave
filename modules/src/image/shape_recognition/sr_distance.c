@@ -119,7 +119,7 @@ Fcurves  the_shape;
     
   /*************** refining by translation **************/
   
-  fkzrt(the_shape,1.0,theta_min*180.0/M_PI,0.0,0.0);
+  fkzrt(the_shape, 1.0, theta_min * 180.0 / M_PI, 0.0, 0.0, NULL);
   
   for(k=-3;k<4;k+=2 )
     for(l=-3;l<4;l+=2) {
@@ -174,9 +174,9 @@ Fcurves Shape1,Shape2;
   /* centering */
 
   fkcenter(Shape2,&xg,&yg);
-  fkzrt(Shape2,1.0,0.0,-xg,-yg);
+  fkzrt(Shape2, 1.0, 0.0, -xg, -yg, NULL);
   fkcenter(Shape1,&xg,&yg);
-  fkzrt(Shape1,1.0,0.0,-xg,-yg);
+  fkzrt(Shape1, 1.0, 0.0, -xg, -yg, NULL);
 
 
   /*--- Product (dilated image 1)*(shape 2) ---*/

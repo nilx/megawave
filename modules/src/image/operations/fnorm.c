@@ -84,7 +84,7 @@ float fnorm(in,ref,p,s,v,b,n,t)
   if (!s) {
     if (num) sum /= (double)num; else sum=0.0;
   }
-  if (n) sum /= (double)fnorm(ref,NULL,p,s,v,b,NULL);
+  if (n) sum /= (double) fnorm(ref, NULL, p, s, v, b, NULL, NULL);
   if (t) if (sum<=*t) sum=0.0;
   if (p) sum = pow(sum,1.0/(double)(*p));
 

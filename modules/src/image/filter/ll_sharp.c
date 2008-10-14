@@ -128,7 +128,7 @@ void ll_sharp(pPercentIncreaseArea, pFloatImageInput, pFloatImageOutput)
   if((pTree = mw_new_shapes()) == NULL) 
     mwerror(FATAL, 1, "fkill_grains --> Not enough memory to allocate the tree of shapes"); 
   /* Compute the Level Sets Transform of the input image, and store the associated level lines */ 
-  flst(NULL, pFloatImageInput, pTree, (char*)1, NULL); 
+  flst(NULL, pFloatImageInput, pTree); 
  
   /* First find the shapes whose containing gradation is reduced to the shape itself */ 
   for(i = pTree->nb_shapes-1; i > 0; i--) 

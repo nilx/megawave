@@ -52,7 +52,7 @@ float prolate(s,d,m,ker)
       tmp->gray[((y-s/2+n)%n)*n+(x-s/2+n)%n] = ker->gray[y*s+x];
     
     /* take Fourier Transform */
-    fft2d(tmp,NULL,re,im,0);
+    fft2d(tmp, NULL, re, im, NULL);
     
     /* project on Fourier essential support */
     norm = 0.;
@@ -66,7 +66,7 @@ float prolate(s,d,m,ker)
     energy = sqrt(norm)/(double)n;
     
     /* take inverse Fourier Transform */
-    fft2d(re,im,tmp,NULL,1);
+    fft2d(re, im, tmp, NULL, (char *) 1);
     
     /* copy new kernel and normalize */
     norm = 0.;

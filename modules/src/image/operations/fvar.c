@@ -21,7 +21,7 @@
 
 float fvar(A,e,s)
      Fimage A;
-     int *e,*s;
+     char *e, *s;
 {
   int size;
   register float *ptr;

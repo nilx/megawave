@@ -69,7 +69,7 @@ void phichapo(N,p,outr,outi)
      phid->values[i+N]=val;
     }
 
- fft1d(phid,NULL,outr,outi);
+ fft1d(phid, NULL, outr, outi, NULL);
  mw_delete_fsignal(phid);
 }
 

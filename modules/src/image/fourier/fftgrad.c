@@ -66,7 +66,7 @@ Fimage in,gradx,grady,gradn,gradp;
   im = mw_new_fimage();
 
   /* Fourier transform */
-  fft2d(in,NULL,re,im,0);
+  fft2d(in, NULL, re, im, NULL);
 
   /*** MAIN LOOP ***/
   for (x=0;x<nx;x++)
@@ -88,7 +88,7 @@ Fimage in,gradx,grady,gradn,gradp;
     }
 
   /* inverse Fourier transform */
-  fft2d(re,im,gradx,grady,1);
+  fft2d(re, im, gradx, grady, (char *) 1);
   
   if (gradp)
     for (adr=nx*ny;adr--;)

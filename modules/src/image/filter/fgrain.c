@@ -37,7 +37,7 @@ void fgrain(pMinArea, pFloatImageInput, pFloatImageOutput)
 	    "fgrain --> Not enough memory to allocate the tree of shapes"); 
 
   /* Compute the Level Sets Transform of the input image */ 
-  flst(NULL, pFloatImageInput, pTree, NULL, NULL); 
+  flst(NULL, pFloatImageInput, pTree); 
  
   /* Kill too small grains. 
      Bound i>0 because it is forbidden to delete the root, at index 0 */ 

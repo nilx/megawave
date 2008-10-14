@@ -226,7 +226,7 @@ Fcurves cs;
     sum_xy(cs,&sx,&sy);
     alpha = -atan2(sy,sx);
 
-    fkzrt(cs,1.0,(float)alpha*180.0/M_PI,0.0,0.0);	
+    fkzrt(cs, 1.0, (float) alpha * 180.0 / M_PI, 0.0, 0.0, NULL);	
 }
 
 /*------------------------------ MAIN MODULE ------------------------------*/
@@ -239,7 +239,7 @@ Fcurves sr_normalize(in)
   float    determinant;
   
   fkcenter(in,&xg,&yg);
-  fkzrt(in,1.0,0.0,-xg,-yg);
+  fkzrt(in, 1.0, 0.0, -xg, -yg, NULL);
   
   if (Normalize_affine_step1(in,&determinant)==0){
     /* shape impossible to normalize */

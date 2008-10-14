@@ -62,7 +62,7 @@ void faxpb(in,out,a,s,b,m,k,M,N)
       mwerror(USAGE,1,"please select no more than one of -b -m -k options");
     
     if (s) 
-      gain = *s / fvar(in,1,1);
+      gain = *s / fvar(in, (char *) 1, (char *) 1);
     else gain = (a?*a:1.0);
     
     if (m) {

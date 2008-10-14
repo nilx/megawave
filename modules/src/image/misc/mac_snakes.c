@@ -165,7 +165,8 @@ Dlists mac_snakes(u,in,niter,step,power,v,V)
 {
   Fimage imux,imuy,imuxx,imuxy,imuyy;
   int nx,ny,i,j,k,kp,stop;
-  double *ux,*uy,*uxx,*uxy,*uyy,*dx,*dy,*dn,g,*dg,*h,mingrad;
+  double *ux,*uy,*uxx,*uxy,*uyy,*dx,*dy,*dn,g,*dg,*h;
+  float mingrad;
   double mx,my,zx,zy,a,b,c,d,e,length,s,tx,ty,p,energy;
   int xi,yi,nsize,size,sizemax,closed;
 

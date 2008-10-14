@@ -27,7 +27,8 @@ void dkinfo(in)
   Dlists res;
   Dlist c;
   int i;
-  double min_dist,max_dist,per,eps,ncc;
+  double min_dist,max_dist,per,eps;
+  int ncc;
 
   if (!in) return;
   if (in->size>1) {
@@ -59,12 +60,12 @@ void dkinfo(in)
 	  if (c->size>=3) printf("Algebraic Area: %g\n",area(c));
 	  eps = 1e-15;
 	  res = dsplit_convex(c,NULL,&ncc,&eps); 
-	  printf("Number of convex components (double resolution): %g\n",
+	  printf("Number of convex components (double resolution): %d\n",
 		 ncc);
 	  eps = 1e-7;
 	  res = dsplit_convex(c,res,&ncc,&eps); 
 	  mw_delete_dlists(res);
-	  printf("Number of convex components (float resolution) : %g\n",
+	  printf("Number of convex components (float resolution) : %d\n",
 		 ncc);
 	}
       }

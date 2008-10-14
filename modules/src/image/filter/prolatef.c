@@ -52,7 +52,7 @@ float prolatef(s,d,n,ker,p,c)
   do {
     
     /* take inverse Fourier Transform */
-    fft2d(ker,NULL,tmp,NULL,1);
+       fft2d(ker, NULL, tmp, NULL, (char *) 1);
 
     /* project on spatial support */
     for (x=s;x--;) {
@@ -64,7 +64,7 @@ float prolatef(s,d,n,ker,p,c)
     }
     
     /* take direct Fourier Transform */
-    fft2d(sker,NULL,ker,NULL,0);
+    fft2d(sker, NULL, ker, NULL, NULL);
 
     /* project on Fourier support */
     norm = 0.;

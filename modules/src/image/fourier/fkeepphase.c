@@ -39,7 +39,7 @@ void fkeepphase(in,mod,out)
       im->gray[adr] *= rho->gray[adr]/r;
     }
   }
-  fft2d(re,im,out,NULL,1);
+  fft2d(re, im, out, NULL, (char *) 1);
 
   mw_delete_fimage(rho);
   mw_delete_fimage(im);

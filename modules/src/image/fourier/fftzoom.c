@@ -79,6 +79,6 @@ char   *i_flag;
   }
   
   /* INVERSE FFT */
-  fft2d(out_re,out_im,out,NULL,!NULL);
+  fft2d(out_re, out_im, out, NULL, (char *) 1);
 }
 

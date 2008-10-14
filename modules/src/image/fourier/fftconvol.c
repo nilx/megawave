@@ -37,7 +37,7 @@ Fimage fftconvol(in,filter,out)
   im = mw_new_fimage();
 
   /* Fourier transform */
-  fft2d(in,NULL,re,im,0);
+  fft2d(in, NULL, re, im, NULL);
 
   /* multiplication in Fourier domain */
   for (i=nx*ny;i--;) {
@@ -49,7 +49,7 @@ Fimage fftconvol(in,filter,out)
   if (!out) mwerror(FATAL,1,"Not enough memory\n");
 
   /* inverse Fourier transform */
-  fft2d(re,im,out,NULL,1);
+  fft2d(re, im, out, NULL, (char *) 1);
 
   /* free memory */
   mw_delete_fimage(im);

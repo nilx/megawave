@@ -239,7 +239,7 @@ char *z;
   histo_step = HISTO_STEP;
   logProbaOfDu = fhisto(NormOfDu,NULL,&fzero,NULL,NULL,&histo_step,NULL,NULL);
   logProbaOfDu->values[0]=0.; /* because Du!=0 on level lines */
-  sintegral(logProbaOfDu,1,1);
+  sintegral(logProbaOfDu, (char *) 1, (char *) 1);
   for (i=0;i<logProbaOfDu->size;i++)
     logProbaOfDu->values[i] = (float)log10((double)logProbaOfDu->values[i]);
 
