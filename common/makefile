@@ -96,7 +96,7 @@ LDFLAGS	= -fPIC $(LDDEBUG) $(CPROF)				\
 
 LINT_FLAGS	= -posixlib -weak -ansi89limits
 PANDOC_FLAGS	= --standalone --reference-links --smart
-DOXYCONF	= $(DOCDIR)/doxygen.conf
+DOXYCONF	= $(COMMONDIR)/doxygen.conf
 GENGETOPT_FLAGS	= --func-name=mw_cmdline --arg-struct=mw_args_info	\
 	--no-handle-error 						\
 	--no-handle-help --no-help					\
