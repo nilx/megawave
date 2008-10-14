@@ -168,23 +168,27 @@ doc	: man
 .PHONY	: man
 man	: $(MAN) $(MANHTML)
 
-#.PHONY	: srcdoc
-#srcdoc	: $(DOXDIR)/html/index.html $(DOXDIR)/srcdoc.pdf
-#$(DOXDIR)/html/index.html	: $(SRC) $(HDR)
-#	$(MKDIR) $(DOXDIR)/html
-#	(cat $(DOXYCONF); \
-#		echo "INPUT = $(SRCDIR)"; \
-#		echo "GENERATE_HTML = YES"; \
-#		echo "HTML_OUTPUT = $(DOXDIR)/html";) | $(DOXYGEN) -
-#$(DOXDIR)/latex/refman.tex	: $(SRC) $(HDR)
-#	$(MKDIR) $(DOXDIR)/latex
-#	(cat $(DOXYCONF); \
-#		echo "INPUT = $(SRCDIR)"; \
-#		echo "GENERATE_LATEX = YES"; \
-#		echo "LATEX_OUTPUT = $(DOXDIR)/latex";) | $(DOXYGEN) -
-#$(DOXDIR)/srcdoc.pdf : $(DOXDIR)/latex/refman.tex
-#	$(MAKE) -C $(DOXDIR)/latex refman.pdf
-#	mv $(DOXDIR)/latex/refman.pdf $(DOXDIR)/srcdoc.pdf
+.PHONY	: srcdoc
+srcdoc	: $(DOCDIR)/html/index.html $(DOCDIR)/srcdoc.pdf
+$(DOCDIR)/html/index.html	: $(SRC)
+	$(MKDIR) $(DOCDIR)/html
+	(cat $(DOXYCONF); \
+		echo "INPUT         = $(SRCDIR)"; \
+		echo "FILE_PATTERNS = *.lib.c"; \
+		echo "RECURSIVE     = YES"; \
+		echo "GENERATE_HTML = YES"; \
+		echo "HTML_OUTPUT   = $(DOCDIR)/html";) | $(DOXYGEN) -
+$(DOCDIR)/latex/refman.tex	: $(SRC)
+	$(MKDIR) $(DOCDIR)/latex
+	(cat $(DOXYCONF); \
+		echo "INPUT          = $(SRCDIR)"; \
+		echo "FILE_PATTERNS = *.lib.c"; \
+		echo "RECURSIVE      = YES"; \
+		echo "GENERATE_LATEX = YES"; \
+		echo "LATEX_OUTPUT   = $(DOCDIR)/latex";) | $(DOXYGEN) -
+$(DOCDIR)/srcdoc.pdf : $(DOCDIR)/latex/refman.tex
+	$(MAKE) -C $(DOCDIR)/latex refman.pdf
+	mv $(DOCDIR)/latex/refman.pdf $(DOCDIR)/srcdoc.pdf
 
 .PHONY	: clean-doc
 clean-doc	:
@@ -192,3 +196,6 @@ clean-doc	:
 .PHONY	: distclean-doc
 distclean-doc	: clean-doc
 	$(RM) $(MAN) $(MANHTML)
+	$(RM) $(DOCDIR)/srcdoc.pdf
+	$(RRM) $(DOCDIR)/html $(DOCDIR)/latex
+
