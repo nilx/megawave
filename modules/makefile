@@ -101,8 +101,10 @@ $(API) 	: $(LIBHDR)
 
 %.lib.c	: %.c $(MWPLIGHT)
 	$(MWPLIGHT) --source $< --library $@
+	$(TOUCH) -m -d "`$(STAT) -c %y $<`" $@
 %.exec.c	: %.c $(MWPLIGHT)
 	$(MWPLIGHT) --source $< --exec $@
+	$(TOUCH) -m -d "`$(STAT) -c %y $<`" $@
 
 %.lib.o	: %.lib.c
 	$(CC) -c $(CFLAGS) -o $@ $<
