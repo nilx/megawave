@@ -24,6 +24,8 @@ MAKEDEP	= /usr/bin/gcc -MM
 CPROTO	= /usr/bin/cproto
 GENGETOPT	= /usr/bin/gengetopt
 
+TOUCH	= /usr/bin/touch
+STAT	= /usr/bin/stat
 FIND	= /usr/bin/find
 CSPLIT	= /usr/bin/csplit
 TOUCH	= /usr/bin/touch
@@ -126,6 +128,7 @@ CPROTO_FLAGS	= $(addprefix -I, $(IPATH)) -q
 			$(CAT) $@; \
 			$(ECHO) -e "\n#endif /* !$${HNAME} */";) > $@.$$$$ \
 		&& $(MV) $@.$$$$ $@
+	$(TOUCH) -m -d "`$(STAT) -c %y $<`" $@
 
 # extract the command-line description
 %.ggo	: %.c
