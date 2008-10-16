@@ -94,7 +94,7 @@ char *n_flag;
   area = 0;
   histo_distr = 0;
   for (i = 0; i < 256; i++)
-    if (h = histo_global[i]) {
+    if (0 != (h = histo_global[i])) {
       newht_global[i] = (float) area;
       area += h;
       histo_distr ++;
@@ -106,7 +106,7 @@ char *n_flag;
   for (i = 0; i < 256; i++)
     {
       j = 255 - i;
-      if (h = histo_global[j]) {
+      if (0 != (h = histo_global[j])) {
 	yd = (newht_global[j] - (float) area) / (float) size;
 	yd = ((float) *lambda1) * (1.0 - yd) + ((float) *lambda2) * (1.0 + yd);
 	yd = yd * 0.5;

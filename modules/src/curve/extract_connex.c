@@ -171,7 +171,7 @@ int     *g;
 	    DecaleStart(start,fs,nbforme);
 	    nbforme--;
 	  }
-	  if (fsd!=MAXSHAPES && fsd!=f && fsd!=fsg & fsd!=fs) {
+	  if (fsd!=MAXSHAPES && fsd!=f && fsd!=fsg && fsd!=fs) {
 	    MemeForme(tab,fsd,f,*(start+fsd),i*w+j);
 	    DecaleStart(start,fsd,nbforme);
 	    nbforme--;

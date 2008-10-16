@@ -1305,7 +1305,8 @@ Wtrans2d        Output;               /* Quantized wavelet transform (can be
 	      nadapcb[J][i] = 1;
 	      for (q = 0; q < numcb[0][J][i]; q++) {
 		if (q > 0)
-		  nstep_dr = 1 + 1 << (q+1);
+		  /* FIXME: really? op precedence? */
+		  nstep_dr = 1 + (1 << (q+1));
 		else
 		  nstep_dr = 1;
 		fscalq(Print, &smallheader, &nstep_dr, NULL, &center, NULL, Wtrans->images[J][i], Output->images[J][i], &MSE, &SNR, &Ent, &RateAr);
@@ -1583,7 +1584,8 @@ Wtrans2d        Output;               /* Quantized wavelet transform (can be
 	  if (TargRate) {
 	    nstep_dr = 1;
 	    if (indcb[0][J][i] > 0)
-	      nstep_dr = 1 + 1<<(indcb[0][J][i] + 1);
+	      /* FIXME: really? op precedence? */
+	      nstep_dr = 1 + (1 << (indcb[0][J][i] + 1));
 	  } else
 	    if (*NStep > 0)
 	      nstep_dr = *NStep >> (*NumRec - J + 1);
