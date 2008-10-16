@@ -148,9 +148,10 @@ test	: $(MODULES)
 	cp $(MODULES) $(TESTMODDIR)
 	mmv "$(TESTMODDIR)/*.exec" "$(TESTMODDIR)/#1"
 	env MODDIR=$(TESTMODDIR)			\
-		DATA=$(BASEDIR)/data			\
 		BASEDIR=$(BASEDIR)			\
+		DATA=$(BASEDIR)/data			\
 		SAMPLES=$(BASEDIR)/data/PUBLIC		\
+		SCRIPTS=$(BASEDIR)/scripts		\
 		PATH=$$PATH:$(TESTMODDIR)		\
 	  LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(LIBPATH)	\
 		/bin/sh $(TEST)
