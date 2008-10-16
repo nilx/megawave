@@ -18,6 +18,7 @@ Ccimage cccopy(Input,Output)
 {
   if (*Output == NULL) mwerror(USAGE,1,"At least one Output requested\n");
   *Output = Input;  
+  return *Output;
 }
 
 

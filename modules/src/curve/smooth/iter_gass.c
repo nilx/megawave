@@ -49,6 +49,8 @@ Dlists iter_gass(in,out,scale,niter,e,s,n)
   }
   free(aux);
   mw_delete_dlists(res);
+  
+  return out;
 }
 
     

@@ -36,7 +36,7 @@ static float TMP;
 #define   MIN3(A,B,C)       (A) < (TMP= ((B)<(C)) ? (B):(C)) ? (A) : TMP
 
 
-Final(pict,sortie)
+void Final(pict,sortie)
 
 Cimage pict;
 Cmovie sortie;

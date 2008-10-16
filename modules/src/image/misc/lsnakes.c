@@ -43,7 +43,7 @@
 
 
 /* Smooth the input image along the x and y directions. Output is image */
-smooth_image(image)
+void smooth_image(image)
 
 Fimage image;
 
@@ -84,7 +84,7 @@ Fimage image;
 
 /* Calcul of gradient */
 
-Fimage fgradient(g,d,e)
+void fgradient(g,d,e)
 
 Fimage g,d,e;
 
@@ -118,7 +118,7 @@ Fimage g,d,e;
 
 /*Determination of contours*/
 
-Fimage fsqrtmod(d,e,f)
+void fsqrtmod(d,e,f)
 
 Fimage d,e,f;
       
@@ -196,7 +196,7 @@ float A;
 
 /* Build internal coefficients Dxy, Dyx, Dx, Dy and g */
   
-build(a,g0,Dx,Dy, Dxy,Dyx,g)
+void build(a,g0,Dx,Dy, Dxy,Dyx,g)
 
 Fimage a,g0,Dx,Dy, Dxy,Dyx,g;
 
@@ -306,7 +306,7 @@ Fimage a,g0,Dx,Dy, Dxy,Dyx,g;
 
 /* Solve the system */
 
-solve(a,Dx,Dy,Dxy,Dyx,g,f,ng,iter,Niter)
+void solve(a,Dx,Dy,Dxy,Dyx,g,f,ng,iter,Niter)
 
 Fimage a,Dx,Dy,Dxy,Dyx,g,f,ng;
 int iter,Niter;
@@ -426,7 +426,7 @@ int iter,Niter;
 
 /* Binarize the fimage a, by putting 255 for gray levels >= c, 0 elsewhere */
 
-fbinarize(a,c)
+void fbinarize(a,c)
 
 Fimage a;
 float c;

@@ -60,6 +60,7 @@ Color *c1,*c2;
     default:
       mwerror(INTERNAL,1,"[cmpcolor] No color order defined for color model %d !\n",c1->model);
     }
+  return 0;
 }
 
 /* -------------------------------------------------------
@@ -191,6 +192,7 @@ int l,c;
     default:
       mwerror(INTERNAL,1,"[Inside] No color order defined for color model %d !\n",(int)im->model);
     }
+  return 0;
 }
 
 

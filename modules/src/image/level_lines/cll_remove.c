@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-check_ll(ll)
+void check_ll(ll)
 
 Cmorpho_line ll;
 

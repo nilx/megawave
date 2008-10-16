@@ -115,7 +115,7 @@ double J_alpha(u,dJ,alpha)
 
 /* Compute the projection on the constraint in the wavelet domain */
 
-Wproj(relax,WdJ,M)
+void Wproj(relax,WdJ,M)
      
 char *relax;    /* If != NULL, relax constraint on approximation space V_J.
 		   Warning : on versions < 1.4, this option was active (bug) !

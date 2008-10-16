@@ -181,6 +181,7 @@ float *channels;               /* Determine l'energie elastique initale !!   */
     image.chmean[h]+=sommeSpas2;                  /* sum of mean on grid     */
     image.chenergy[h]+=sommeSpas2*sommeSpas2;     /*  id. (total mean later) */
   }
+  return somme;
 }
 
 
@@ -1103,7 +1104,7 @@ char *comm;              /*  ceci suivant les particularites de l'algorithme.*/
 }
 
 
-make_curves(curves)
+void make_curves(curves)
 Curves curves;
 {
   REGIONPTR regptr;

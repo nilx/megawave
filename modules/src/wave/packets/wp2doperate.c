@@ -128,17 +128,15 @@ int modulo(r,n)
      
 {if(0<=r && r<n)
   return(r);
- 
- if(r<0)
+ else if (r<0)
    {while(r<0) r+=n;
    return(r);
    }
- 
- if(r>=n)
+ else
    {while(r>=n) r-=n;
    return(r);
    }
- 
+
 }
 
 /******************************************************************/

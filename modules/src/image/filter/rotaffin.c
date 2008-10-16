@@ -26,7 +26,7 @@ usage = {
 #include <math.h>
 #include "mw.h"
 
-Final(pict,sortie)
+void Final(pict,sortie)
 
 Fimage pict;
 Cmovie sortie;

@@ -65,6 +65,7 @@ Color c1,c2;
     default:
       mwerror(INTERNAL,1,"[cmpcolor] No color order defined for color model %d !\n",(int)c1.model);
     }
+  return 0;
 }
 
 

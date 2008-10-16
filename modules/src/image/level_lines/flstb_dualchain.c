@@ -171,6 +171,7 @@ Flist pBoundary;
     find_next_dual_pixel(&dualPixel, pShape, pTree, tabtabSaddleValues);
   } while(dualPixel.x != x0 || dualPixel.y != y0 ||
 	  dualPixel.cDirection != NORTH);
+  return 0;
 }
 
 /* Find an initial point (to follow the boundary) at the border of the image */
@@ -253,6 +254,7 @@ Flist pBoundary;
 	  0 < dualPixel.y && dualPixel.y < iHeight);
   pPoint[pBoundary->size  ].x = (float)dualPixel.x; /* We store the exit */
   pPoint[pBoundary->size++].y = (float)dualPixel.y;
+  return 0;
 }
 
 /* Find boundary of the shape */

@@ -27,7 +27,7 @@ typedef struct filbank {
 
 
 
-INIT_PREC(edge_ri, precleftfil, precrightfil, unprecleftfil, unprecrightfil)
+void INIT_PREC(edge_ri, precleftfil, precrightfil, unprecleftfil, unprecrightfil)
 
 Fimage edge_ri;
 Filbank *precleftfil, *precrightfil, *unprecleftfil, *unprecrightfil;

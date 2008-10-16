@@ -360,7 +360,7 @@ int *new_open;
   struct mydata *sdata, *tdata;
   int detect=0;
   
-  if (!s) return;
+  if (!s) return 0;
 
   sdata = (Mydata) s->data;
   mu = sdata->min_contrast;

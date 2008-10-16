@@ -42,4 +42,5 @@ Fimage fadd(A,B,C,min,max,a)
     if (max && v>*max) v = *max;
     C->gray[i] = v;
   }
+  return C;
 }

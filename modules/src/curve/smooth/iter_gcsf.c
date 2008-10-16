@@ -62,6 +62,8 @@ Dlists iter_gcsf(in,out,gam,last,area,eps,n,N,v)
   }
   free(aux);
   mw_delete_dlists(res);
+
+  return out;
 }
 
     

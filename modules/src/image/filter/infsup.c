@@ -179,7 +179,7 @@ float  Histogram( image,maskn,x,y,Hist)
 /* t1, t2 are the level of the median */
 /* t1=1, t2=0, process a InfSup... */
 
-ResolutionInfSup(image,A,G,t1,t2,movie,Nmask)
+void ResolutionInfSup(image,A,G,t1,t2,movie,Nmask)
      Cimage image;
      Cimage A;              /* Image Buffer */
      unsigned char *G;      /* contains the values for each mask */     

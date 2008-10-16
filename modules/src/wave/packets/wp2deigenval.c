@@ -41,6 +41,7 @@ int my_log(n)
  if(n==1) return(count);
  else 
    mwerror(FATAL, 1, "Tree size must be a power of 2!\n");
+ return count;
 }
 /***************************************************************/
 float signedSquare(input)   

@@ -204,7 +204,7 @@ float  number_iterations(power,lastScale,firstScale,Step)
 
 /*----------------- Insert of an image into the output movie ----------------*/
 
-FINAL(pict,sortie)
+void FINAL(pict,sortie)
      
      Fimage pict;
      Cmovie sortie;

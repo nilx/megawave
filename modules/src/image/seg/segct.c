@@ -1088,7 +1088,7 @@ char *comm;              /*  ceci suivant les particularites de l'algorithme.*/
 }
 
 
-make_curves(curves)
+void make_curves(curves)
 Curves curves;
 {
   REGIONPTR regptr;

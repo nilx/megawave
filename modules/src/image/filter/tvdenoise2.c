@@ -162,5 +162,7 @@ Fimage tvdenoise2(in,out,s,v,n,r,W,V)
   /* free memory */
   if (V) free(image); 
   free(u); free(py); free(px);
+
+  return out;
 }
 

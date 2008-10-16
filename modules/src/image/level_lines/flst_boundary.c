@@ -143,6 +143,7 @@ Flist pBoundary;
   /* Close the boundary */
   pPoint[pBoundary->size  ].x = dualPoint.x;
   pPoint[pBoundary->size++].y = dualPoint.y;  
+  return 0;
 }
 
 /* Find an initial point (to follow the boundary) at the border of the image */

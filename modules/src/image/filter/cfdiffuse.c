@@ -78,7 +78,7 @@ float deltat,epsilon;
 }
 
 
-inverse(D0,D1,U0,Yr,Yg,Yb,Vr,Vg,Vb,size)
+void inverse(D0,D1,U0,Yr,Yg,Yb,Vr,Vg,Vb,size)
 
 float *D0,*D1,*U0,*Yr,*Yg,*Yb,*Vr,*Vg,*Vb;
 int size;
