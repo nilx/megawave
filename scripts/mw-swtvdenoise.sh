@@ -170,7 +170,8 @@ fi
 
 #----- Run -----
 
-FilterPath="wave/ortho"
+# FIXME
+FilterPath=$DATA/"wave/ortho"
 if [ "$Edge" = "-e 3" ]; then
   F=${FilterPath}/edge/${O}
   IF="-I $F"

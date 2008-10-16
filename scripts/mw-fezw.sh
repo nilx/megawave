@@ -23,9 +23,9 @@ then
 	. .mw2_help_lg_com
 fi
 
-
-MWDATA="${MEGAWAVE2}/data"
-MY_MWDATA="${MY_MEGAWAVE2}/data"
+# FIXME
+MWDATA=$DATA
+MY_MWDATA=$DATA
 GROUP=compression/ezwave
 
 
@@ -33,9 +33,9 @@ GROUP=compression/ezwave
 RDOPT="-d"
 
 # Default wavelet filters
-WAVELETFILTER="wave/biortho/h/sd07.ir"
-WAVELETFILTER2="wave/biortho/htilde/sd09.ir"
-WAVELETOPT="-b wave/biortho/htilde/sd09.ir"
+WAVELETFILTER=$DATA/wave/biortho/h/sd07.ir
+WAVELETFILTER2=$DATA/wave/biortho/htilde/sd09.ir
+WAVELETOPT="-b $DATA/wave/biortho/htilde/sd09.ir"
 WAVELETEDGEFILTER="no filter"
 
 IMAGE=""
