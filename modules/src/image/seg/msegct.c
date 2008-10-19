@@ -818,7 +818,7 @@ SOMMETPTR som;                     /*  cnxes. d'un meme bord on reunit ces   */
 void Union2Bords(som)              /* Si som est entre deux bords exactement */
 SOMMETPTR som;                     /*  on reunit ces bords en un bord unique */
 {
-  char i;
+  int i;
   short dir_bcnxe1,dir_bcnxe2;
   SOMMETPTR sa_old;
   BORDPTR bord1,bord2,bord;

@@ -611,7 +611,7 @@ char* pIgnoreHoles;
     tabPointsInShape[iCurrentArea++].y = y;
     if(! *pIgnoreHoles) {
       cPattern = configuration(tabtabVisitedPixels, x, y);
-      iNbHoles += tabPatterns[*p8Connected][cPattern];
+      iNbHoles += tabPatterns[(int) *p8Connected][cPattern];
     }
     if(x == 0 || x == iWidth-1 || y == 0 || y == iHeight-1)
       ++ iAtBorder;
