@@ -234,6 +234,7 @@ Fimage a,g0,Dx,Dy, Dxy,Dyx,g;
 		f1=-2.0*z3;
 		f1 *= f1;
 		if((f0+f1)>0.8)
+		{
 		  if(f0>=f1)
 		    {
 		      f0=1.0;
@@ -244,7 +245,7 @@ Fimage a,g0,Dx,Dy, Dxy,Dyx,g;
 		      f0=0.0;
 		      f1=1.0;
 		    }
-		
+		}
 		z4=1.0+z9*(2.0*f0+f1);
 		_(g,i,j)=_(a,i,j)/z4;
 		z5=z9/z4;
@@ -269,6 +270,7 @@ Fimage a,g0,Dx,Dy, Dxy,Dyx,g;
 		f1=2.0*z3;
 		f1 *= f1;
 		if((f0+f1)>0.8)
+		{
 		  if(f0>=f1)
 		    {
 		      f0=1.0;
@@ -279,7 +281,7 @@ Fimage a,g0,Dx,Dy, Dxy,Dyx,g;
 		      f0=0.0;
 		      f1=1.0;
 		    }
-			
+		}
 		z4=1.0+z9*(2.0*f0+f1);
 		_(g,i,j)=_(a,i,j)/z4;
 		z5=z9/z4;

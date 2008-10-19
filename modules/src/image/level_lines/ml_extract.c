@@ -368,14 +368,16 @@ Mimage m_image;
          mwerror(USAGE,1,"Bad level values input.");
 
   if(level) 
-    if(ml_opt<=2) {
+  {
+    if(ml_opt<=2) 
+    {
       levels=mw_change_fsignal(levels,1);
       levels->size=1;
       levels->values[0]=*level;
     }
     else
       mwerror(USAGE,1,"Bad combination of -L and -o .");
-
+  }
   if(levels) {
     if( (ml_opt==4) && (levels->size % 2 != 0) )
       mwerror(USAGE,1,"Even number of values needed for ml_opt 4");

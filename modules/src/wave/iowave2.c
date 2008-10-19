@@ -511,11 +511,12 @@ Fimage      edge_ri;	      /* Impulse responses of filters for special
     /*--- Copy last point if number of lines is odd ---*/
 
     if ((K2 > A->ncol) && (prolong == 0))
+    {
       if (haar == 0)
 	A->gray[lK2 + c] = Tab->gray[ldx + dx1] / s;
       else
 	A->gray[lK2 + c] = Tab->gray[ldx + dx1] / shaar;
-
+    }
     ldx += dx;
     lK2 += A->ncol;
   }
@@ -627,11 +628,12 @@ Fimage      edge_ri;	      /* Impulse responses of filters for special
     /*--- Copy last point if number of lines is odd ---*/
 
     if ((L2 > Tab->nrow) && (prolong == 0))
+    {
       if (haar == 0)
 	Tab->gray[ldxc] = AD->gray[dx * dy1 + c] / s;      
       else
 	Tab->gray[ldxc] = AD->gray[dx * dy1 + c] / shaar;      
-
+    }
   }
 
   mw_delete_fsignal(Tabin);

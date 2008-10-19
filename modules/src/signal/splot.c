@@ -301,9 +301,11 @@ void rescale_sy()
   if (minmax(&sy1,&sy2)) return;
   d = (sy2-sy1)*0.025; 
   if (d==0.) 
+  {
     if (sy1>0.) {sy1=0.; sy2*=2.;}
     else if (sy1<0.) {sy1*=2.; sy2=0.;}
     else {sy1=-1.; sy2=1.;}
+  }
   do {
     sy1 -= d; sy2 += d; 
     d *= 2.;

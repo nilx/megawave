@@ -349,6 +349,7 @@ Cimage       compress;           /* Compressed file */
     if (center) {
       ENCODE_INT_FIMAGE(1, 1, compress);
       if (nstep > 1)
+      {
 	if (minstep >= 0) {
 	  ENCODE_INT_FIMAGE(0, 1, compress);
 	  ENCODE_INT_FIMAGE(minstep, 1 << (NBIT_MINSTEP - 1), compress);
@@ -357,6 +358,7 @@ Cimage       compress;           /* Compressed file */
 	    ENCODE_INT_FIMAGE(1, 1, compress);
 	    ENCODE_INT_FIMAGE(-minstep, 1 << (NBIT_MINSTEP - 1), compress);
 	  }
+      }
     } else
       {
 	ENCODE_INT_FIMAGE(0, 1, compress);

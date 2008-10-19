@@ -873,6 +873,7 @@ void STilesAddUnique(L,Tilings,i,ie,ix,iy,j)
     }
 #endif
     if (!ismember)
+    {
       if ((L->size == L->max_size) && (!mw_enlarge_flist(L)))
 	mwerror(FATAL,1,"Not enough memory to enlarge Flist");
       else {
@@ -882,6 +883,7 @@ void STilesAddUnique(L,Tilings,i,ie,ix,iy,j)
 	L->values[4*L->size + 3] = (float) iy;
 	L->size++;
       }
+    }
   }
 }
 
@@ -1469,11 +1471,12 @@ int    *maskedVPs;
      } /* end: if (all) ... else (MDL) ... */
 
      if (nvp3==0) /* no more (MDL-maximal) meaningful tiles */
+     {
        if (masked && !searching_masked)
 	 searching_masked = 1; /* look for masked MDL-maximal meaningful tiles */
        else
 	 break; /* stop searching */
-
+     }
      /* delete all tile-segment intersections for next iteration */
      for (j=0;j<Segments->size;j++)
        if (SIsValid(Segments,j)>0.0)

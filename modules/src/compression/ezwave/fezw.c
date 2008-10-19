@@ -336,6 +336,7 @@ char       *PtrDRC;             /* Distorsion rate curve */
   /*--- Wavelet reconstruction ---*/
 
   if (QImage)
+  {
     if (Ri2) 
       {
 	ibiowave2(&J, &Haar, &Edge, &FiltNorm, QWtrans, QImage, Ri, Ri2);
@@ -345,7 +346,7 @@ char       *PtrDRC;             /* Distorsion rate curve */
       {
 	iowave2(&J, &Haar, &Edge, &Precond, NULL, &FiltNorm, QWtrans, QImage, Ri, Edge_Ri);
       }
-  
+  }
 
   if (Wtrans) mw_delete_wtrans2d(Wtrans);
   if (QWtrans) mw_delete_wtrans2d(QWtrans);

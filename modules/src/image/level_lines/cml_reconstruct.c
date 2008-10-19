@@ -217,34 +217,40 @@ int NL,NC;
   unsigned long p;
 
   prec_line=inside;
-  for(l=0;l<NL;l++)  {
-    if(l!=0) 
+  for(l=0;l<NL;l++)  
+  {
+    if(l!=0)
+    {
       if(H1[l-1]==TRUE)
-	{inside=!prec_line;H1[l-1]=FALSE;prec_line=inside;}
-    else 
-      inside=prec_line;
-    if(inside) 
+      {
+	inside=!prec_line;H1[l-1]=FALSE;
+	prec_line=inside;
+      }
+      else 
+	inside=prec_line;
+      if(inside) 
       {
 	p =  l*image->ncol;
 	image->red[p]=level.red;
 	image->green[p]=level.green;
 	image->blue[p]=level.blue;
       }
-    for(c=1;c<NC;c++) 
+      for(c=1;c<NC;c++) 
       {
 	if(V[l][c-1]==TRUE) 
-	  {
-	    inside=!(inside);
-	    V[l][c-1]=FALSE;
-	  }
+	{
+	  inside=!(inside);
+	  V[l][c-1]=FALSE;
+	}
 	if (inside) 
-	  {
-	    p = c + l*image->ncol;
-	    image->red[p]=level.red;
-	    image->green[p]=level.green;
-	    image->blue[p]=level.blue;
-	  }
+	{
+	  p = c + l*image->ncol;
+	  image->red[p]=level.red;
+	  image->green[p]=level.green;
+	  image->blue[p]=level.blue;
+	}
       }
+    }
   }
 }
 
@@ -323,11 +329,12 @@ Cmimage m_image;
     fill_lline(V,H1,current_level,inside,image_out,NL,NC);
   }while(lline_ptr!=NULL);
   if(!inc_val)
+  {
     if(!v_flag)
       mwerror(WARNING,1,"Values of level lines not increasing.");
     else
       mwerror(WARNING,1,"Values of level lines not decreasing.");
-
+  }
   free((void*)V[0]);free((void*)H1);
   free((void*)V);
 

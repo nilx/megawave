@@ -422,17 +422,21 @@ Fimage      edge_ri;	     /* Impulse responses of filters for special
 
     /*--- Copy last point if number of lines is odd ---*/
 
-    if (prolong == 1) {
+    if (prolong == 1)
+    {
       Im1->firstrow = Tabout->firstp;
       Im1->lastrow = Tabout->lastp;
-    } else
+    }
+    else
+    {
       if (L2 > dy2)
+      {
 	if (haary == 0)
 	  Im1->gray[ldxc] = s * Im->gray[dy1 * dx + c];
 	else
 	  Im1->gray[ldxc] = shaar * Im->gray[dy1 * dx + c];
-      
-
+      }      
+    }
 
     /*--- Convolution with high-pass filter ---*/
 
@@ -556,11 +560,12 @@ int        *haar;             /* Continue decomposition with Haar wavelet
     /*--- Copy last point if number of columns is odd ---*/
 
     if ((K2 > dx2) && (prolong == 0))
+    {
      if (haarx == 0)
        Tab->gray[lK2+c] = s * wtrans->images[J-1][0]->gray[ldx+dx1];
      else
        Tab->gray[lK2+c] = shaar * wtrans->images[J-1][0]->gray[ldx+dx1];
-
+    }
     ldx += dx;
     lK2 += K2;
   }

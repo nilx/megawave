@@ -50,15 +50,19 @@ Fimage in,gradx,grady,gradn,gradp;
   else mw_clear_fimage(grady,0.0);
   
   if (gradn) 
+  {
     if (!mw_change_fimage(gradn,ny,nx))
       mwerror(FATAL,1,"Not enough Memory.\n");
-    else mw_clear_fimage(gradn,0.0);
-
-  if (gradp) 
+    else 
+      mw_clear_fimage(gradn,0.0);
+  }
+  if (gradp)
+  { 
     if (!mw_change_fimage(gradp,ny,nx))
       mwerror(FATAL,1,"Not enough Memory.\n");
-    else mw_clear_fimage(gradp,mw_not_an_argument);
-
+    else 
+      mw_clear_fimage(gradp,mw_not_an_argument);
+  }
   normx = 2.0*M_PI/(float)(nx);
   normy = 2.0*M_PI/(float)(ny);
 

@@ -271,7 +271,8 @@ Wtrans2d   *Output1;            /* Sequence of generated codebooks */
     ncol /= 2;
   }
 
-  if (!Orient) 
+  if (!Orient)
+  { 
     if (Level) {
       if (*Level == numrec)
 	i1 = 0;
@@ -364,7 +365,8 @@ Wtrans2d   *Output1;            /* Sequence of generated codebooks */
 	  printf("m.s.e. 0 = %f\n", mse);
 	}
       }
-
+  }
+  
   for (J = J2; J >= J1; J--) {
     
     printf("\nLevel %d:\n", J);

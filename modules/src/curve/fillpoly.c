@@ -61,20 +61,19 @@ Polygon         contour;             /* Contour of polygon */
 
   current_point = current_point->next;
   if (current_point != NULL) 
+  {
     if (current_point->x - c == 1) 
       dir = 1;
+    else if (current_point->x - c == - 1) 
+      dir = 3;
+    else if (current_point->y - r == 1) 
+      dir = 2;
+    else if (current_point->y - r != - 1)
+      mwerror(FATAL, 2, "Something wrong in filling morpho set (erase borders) :\nsuccessive points in morpho lines are not neighbours!\n r1 = %d, c1 = %d, r2 = %d, c2 = %d, line = %d, point = %d\n", r, c, current_point->y, current_point->x, npoints);
     else
-      if (current_point->x - c == - 1) 
-	dir = 3;
-      else
-	if (current_point->y - r == 1) 
-	  dir = 2;
-	else
-	  if (current_point->y - r != - 1)
-	    mwerror(FATAL, 2, "Something wrong in filling morpho set (erase borders) :\nsuccessive points in morpho lines are not neighbours!\n r1 = %d, c1 = %d, r2 = %d, c2 = %d, line = %d, point = %d\n", r, c, current_point->y, current_point->x, npoints);
-	  else
-	    dir = 0;
-    
+      dir = 0;
+  }
+ 
   while (current_point != NULL) {
     npoints++;
     if (current_point->x - c == 1) {
@@ -232,20 +231,19 @@ Polygon         contour;             /* Contour of polygon */
 
   current_point = current_point->next;
   if (current_point != NULL) 
+  {
     if (current_point->x - c == 1) 
       dir = 1;
+    else if (current_point->x - c == - 1) 
+      dir = 3;
+    else if (current_point->y - r == 1) 
+      dir = 2;
+    else if (current_point->y - r != - 1)
+      mwerror(FATAL, 2, "Something wrong in filling morpho set (erase borders) :\nsuccessive points in morpho lines are not neighbours!\n r1 = %d, c1 = %d, r2 = %d, c2 = %d, line = %d, point = %d\n", r, c, current_point->y, current_point->x, npoints);
     else
-      if (current_point->x - c == - 1) 
-	dir = 3;
-      else
-	if (current_point->y - r == 1) 
-	  dir = 2;
-	else
-	  if (current_point->y - r != - 1)
-	    mwerror(FATAL, 2, "Something wrong in filling morpho set (erase borders) :\nsuccessive points in morpho lines are not neighbours!\n r1 = %d, c1 = %d, r2 = %d, c2 = %d, line = %d, point = %d\n", r, c, current_point->y, current_point->x, npoints);
-	  else
-	    dir = 0;
-    
+      dir = 0;
+  }
+
   while (current_point != NULL) {
     npoints++;
     if (current_point->x - c == 1) {
@@ -437,15 +435,21 @@ Polygon         contour;             /* Contour of polygon */
       while ((r < current_point->y) && (bitmap->gray[r * ncol + c] == BG_SYMB))
 	r++;
       if (r == current_point->y) 
+      {
 	if (current_point->next) 
-	  if (((current_point->previous->x >= c) && (current_point->next->x < c)) || ((current_point->previous->x > c) && (current_point->next->x <= c))) {
+	{
+	  if (((current_point->previous->x >= c) && (current_point->next->x < c)) || ((current_point->previous->x > c) && (current_point->next->x <= c)))
+	  {
 	    dir = 0;
 	    test_found = TRUE;
-	  } else
-	    if (((current_point->previous->x <= c) && (current_point->next->x > c)) || ((current_point->previous->x < c) && (current_point->next->x >= c))) {
-	      dir = 1;
-	      test_found = TRUE;
-	    }
+	  }
+	  else if (((current_point->previous->x <= c) && (current_point->next->x > c)) || ((current_point->previous->x < c) && (current_point->next->x >= c)))
+	  {
+	    dir = 1;
+	    test_found = TRUE;
+	  }
+	}
+      }
 
       if (test_found == FALSE) {
 	c = current_point->x;
@@ -454,15 +458,21 @@ Polygon         contour;             /* Contour of polygon */
 	while ((c < current_point->x) && (bitmap->gray[r * ncol + c] == BG_SYMB))
 	  c++;
 	if (c == current_point->x) 
-	  if (current_point->next) 
-	    if (((current_point->previous->y >= r) && (current_point->next->y < r)) || ((current_point->previous->y > r) && (current_point->next->y <= r))) {
+	{
+	  if (current_point->next)
+	  { 
+	    if (((current_point->previous->y >= r) && (current_point->next->y < r)) || ((current_point->previous->y > r) && (current_point->next->y <= r)))
+	    {
 	      dir = 1;
 	      test_found = TRUE;
-	    } else
-	      if (((current_point->previous->y <= r) && (current_point->next->y > r)) || ((current_point->previous->y < r) && (current_point->next->y >= r))) {
-		dir = 0;
-		test_found = TRUE;
-	      }
+	    }
+	    else if (((current_point->previous->y <= r) && (current_point->next->y > r)) || ((current_point->previous->y < r) && (current_point->next->y >= r)))
+	    {
+	      dir = 0;
+	      test_found = TRUE;
+	    }
+	  }
+	}
       }
     }
 
@@ -583,14 +593,19 @@ Point_curve    *p;               /* Table of points for memory
   ptr_point = *cont_point;
 
   if ((dx > 0) || (dy > 0))
-    if (dx >= dy) {
+  {
+    if (dx >= dy)
+    {
       m = (double) (y2 - y1) / (x2 - x1);
       c = (double) y1 - m * (double) x1;
-      if (x1 < x2) {
-	for (x = x1 + 1; x <= x2; x++) {
+      if (x1 < x2)
+      {
+	for (x = x1 + 1; x <= x2; x++)
+	{
 	  z = m * x + c;
 	  y = (int) floor(z + .5);
-	  if (y != ptr_point->y) {
+	  if (y != ptr_point->y)
+	  {
 	    ptr_point->next = ptr_point + 1;
 	    ptr_point++;
 	    ptr_point->previous = ptr_point - 1;
@@ -603,67 +618,77 @@ Point_curve    *p;               /* Table of points for memory
 	  ptr_point->x = x;
 	  ptr_point->y = y;
 	}
-      } else
-	{
-	  for (x = x1 - 1; x >= x2; x--) {
-	    z = m * x + c;
-	    y = (int) floor(z + .5);
-	    if (y != ptr_point->y) {
-	      ptr_point->next = ptr_point + 1;
-	      ptr_point++;
-	      ptr_point->previous = ptr_point - 1;
-	      ptr_point->x = x;
-	      ptr_point->y = ptr_point->previous->y;
-	    }
-	    ptr_point->next = ptr_point + 1;
-	    ptr_point++;
-	    ptr_point->previous = ptr_point - 1;
-	    ptr_point->x = x;
-	    ptr_point->y = y;
-	  }
-	}
-    } else
-      {
-	m = (double) (x2 - x1) / (y2 - y1);
-	c = (double) x1 - m * (double) y1;
-	if (y1 < y2) {
-	  for (y = y1 + 1; y <= y2; y++) {
-	    z = m * y + c;
-	    x = (int) floor(z + .5);
-	    if (x != ptr_point->x) {
-	      ptr_point->next = ptr_point + 1;
-	      ptr_point++;
-	      ptr_point->previous = ptr_point - 1;
-	      ptr_point->x = ptr_point->previous->x;
-	      ptr_point->y = y;
-	    }
-	    ptr_point->next = ptr_point + 1;
-	    ptr_point++;
-	    ptr_point->previous = ptr_point - 1;
-	    ptr_point->x = x;
-	    ptr_point->y = y;
-	  }
-	} else
-	  {
-	    for (y = y1 - 1; y >= y2; y--) {
-	      z = m * y + c;
-	      x = (int) floor(z + .5);
-	      if (x != ptr_point->x) {
-		ptr_point->next = ptr_point + 1;
-		ptr_point++;
-		ptr_point->previous = ptr_point - 1;
-		ptr_point->x = ptr_point->previous->x;
-		ptr_point->y = y;
-	      }
-	      ptr_point->next = ptr_point + 1;
-	      ptr_point++;
-	      ptr_point->previous = ptr_point - 1;
-	      ptr_point->x = x;
-	      ptr_point->y = y;
-	    }
-	  }
       }
-
+      else
+      {
+	for (x = x1 - 1; x >= x2; x--)
+	{
+	  z = m * x + c;
+	  y = (int) floor(z + .5);
+	  if (y != ptr_point->y)
+	  {
+	    ptr_point->next = ptr_point + 1;
+	    ptr_point++;
+	    ptr_point->previous = ptr_point - 1;
+	    ptr_point->x = x;
+	    ptr_point->y = ptr_point->previous->y;
+	  }
+	  ptr_point->next = ptr_point + 1;
+	  ptr_point++;
+	  ptr_point->previous = ptr_point - 1;
+	  ptr_point->x = x;
+	  ptr_point->y = y;
+	}
+      }
+    }
+    else
+    {
+      m = (double) (x2 - x1) / (y2 - y1);
+      c = (double) x1 - m * (double) y1;
+      if (y1 < y2)
+      {
+	for (y = y1 + 1; y <= y2; y++)
+	{
+	  z = m * y + c;
+	  x = (int) floor(z + .5);
+	  if (x != ptr_point->x)
+	  {
+	    ptr_point->next = ptr_point + 1;
+	    ptr_point++;
+	    ptr_point->previous = ptr_point - 1;
+	    ptr_point->x = ptr_point->previous->x;
+	    ptr_point->y = y;
+	  }
+	  ptr_point->next = ptr_point + 1;
+	  ptr_point++;
+	  ptr_point->previous = ptr_point - 1;
+	  ptr_point->x = x;
+	  ptr_point->y = y;
+	}
+      }
+      else
+      {
+	for (y = y1 - 1; y >= y2; y--)
+	{
+	  z = m * y + c;
+	  x = (int) floor(z + .5);
+	  if (x != ptr_point->x)
+	  {
+	    ptr_point->next = ptr_point + 1;
+	    ptr_point++;
+	    ptr_point->previous = ptr_point - 1;
+	    ptr_point->x = ptr_point->previous->x;
+	    ptr_point->y = y;
+	  }
+	  ptr_point->next = ptr_point + 1;
+	  ptr_point++;
+	  ptr_point->previous = ptr_point - 1;
+	  ptr_point->x = x;
+	  ptr_point->y = y;
+	}
+      }
+    }
+  }
   ptr_point->next = NULL;
   *cont_point = ptr_point;
 }

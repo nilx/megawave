@@ -670,12 +670,12 @@ long            recfac;
   }
     
   if (rescodebook) 
-
+  {
     if (symbres || symbresres)
       BLOCK_RECONSTRUCT(i, j, rescodebook, resrescodebook, NULL, result, symbres, symbresres, NULL, recfac * sizec);
     else
       BLOCK_RECONSTRUCT(i, j, rescodebook, resrescodebook, NULL, result, symbol, NULL, NULL, recfac * sizec);
-
+  }
   if (symbol && (sizec > 1))
     symbol->firstrow += 1;
 }

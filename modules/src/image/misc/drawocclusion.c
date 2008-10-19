@@ -71,16 +71,18 @@ int a,b;
     if (transcode[a]==0)
       transcode[a]=b;
     else
+    {
+      if (b!=transcode[a])
       {
-	if (b!=transcode[a])
-	  if (b>transcode[a])
-	    mise_a_jour_transcode(transcode,b,transcode[a]);
-	  else
-	    {
-	      mise_a_jour_transcode(transcode,transcode[a],b);
-	      transcode[a]=b;
-	    }
+	if (b>transcode[a])
+	   mise_a_jour_transcode(transcode,b,transcode[a]);
+	else
+	{
+	  mise_a_jour_transcode(transcode,transcode[a],b);
+	  transcode[a]=b;
+	}
       }
+    }
   }
     
 /****************************************************************************/

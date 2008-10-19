@@ -128,10 +128,13 @@ void one_step(in,out,grad,curv,step,MinGrad,isotrop,power,no_norm)
 	    + (a11+amm) * ( -l0 + 0.5 * ( ax + ay - axy ) )
 	    + (am1+a1m) * ( -l0 + 0.5 * ( ax + ay + axy ) );
 
-	if (curv) 
-	  if (grad) curv->gray[x+Y0] = GK/grad->gray[x+Y0];
-	    else curv->gray[x+Y0] = GK/(IRAC2P2*(float)sqrt((double)an2));
-
+	if (curv)
+	{ 
+	  if (grad) 
+	    curv->gray[x+Y0] = GK/grad->gray[x+Y0];
+	  else 
+            curv->gray[x+Y0] = GK/(IRAC2P2*(float)sqrt((double)an2));
+	}
 	if (power) {
 	  /* AMSS diffusion */
 	  GK *= an2*IRAC2P2*IRAC2P2;

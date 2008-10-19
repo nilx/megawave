@@ -340,11 +340,12 @@ Mimage m_image;
     fill_level(V,H,ST,size_ST,lline2,v_flag,im,NL,NC,p_level);
   }while(lline_ptr!=NULL);
   if(!inc_val)
+  {
     if(!v_flag)
       mwerror(WARNING,1,"Values of level lines not increasing.");
     else
       mwerror(WARNING,1,"Values of level lines not decreasing.");
-
+  }
   free((void*)V[0]);free((void*)H[0]);
   free((void*)V);free((void*)H);free((void*)ST);
   free((void*)im);

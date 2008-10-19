@@ -60,45 +60,53 @@ void fderiv(in,curv,anti,canny,laplacian,gradx,grady,gradn,gradp,MinGrad,nsize)
   ny = in->nrow;
 
   if (curv) 
+  {
     if (!mw_change_fimage(curv,ny,nx))
       mwerror(FATAL,1,"Not enough Memory.\n");
     else mw_clear_fimage(curv,0.0);
-
+  }
   if (anti) 
+  {
     if (!mw_change_fimage(anti,ny,nx))
       mwerror(FATAL,1,"Not enough Memory.\n");
     else mw_clear_fimage(anti,0.0);
-
+  }
   if (canny) 
+  {
     if (!mw_change_fimage(canny,ny,nx))
       mwerror(FATAL,1,"Not enough Memory.\n");
     else mw_clear_fimage(canny,0.0);
-
+  }
   if (laplacian) 
+  {
     if (!mw_change_fimage(laplacian,ny,nx))
       mwerror(FATAL,1,"Not enough Memory.\n");
     else mw_clear_fimage(laplacian,0.0);
-
+  }
   if (gradx) 
+  {
     if (!mw_change_fimage(gradx,ny,nx))
       mwerror(FATAL,1,"Not enough Memory.\n");
     else mw_clear_fimage(gradx,0.0);
-
+  }
   if (grady) 
+  {
     if (!mw_change_fimage(grady,ny,nx))
       mwerror(FATAL,1,"Not enough Memory.\n");
     else mw_clear_fimage(grady,0.0);
-
+  }
   if (gradn) 
+  {
     if (!mw_change_fimage(gradn,ny,nx))
       mwerror(FATAL,1,"Not enough Memory.\n");
     else mw_clear_fimage(gradn,0.0);
-
+  }
   if (gradp) 
+  {
     if (!mw_change_fimage(gradp,ny,nx))
       mwerror(FATAL,1,"Not enough Memory.\n");
     else mw_clear_fimage(gradp,mw_not_an_argument);
-
+  }
   /* MAIN LOOP */
 
   for(y=0;y<ny;y++) {

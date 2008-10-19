@@ -119,17 +119,19 @@ Fimage      image, image2, image3, image4, image5, image6, image7, image8;
     *thresval1 = 3.0 * sizeb * energy;
 
   if (thresval2)
+  {
     if (*thresval2 > 0.0)
       *thresval2 *= sizeb * energy;
     else
       *thresval2 = 1.75 * sizeb * energy;
-  
+  }
   if (thresval3) 
+  {
     if (*thresval3 > 0.0)
       *thresval3 *= sizeb * energy;
     else
       *thresval3 = sizeb * energy;
-
+  }
 }
 
 

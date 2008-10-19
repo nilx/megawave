@@ -1788,8 +1788,8 @@ int         *distrate;           /* Flag for computation of dist. rate curve */
 
 	  /*--- Check parents for zerotree roots ---*/
 
-	  if (stop_test_area[*ptra] != ENDED) 
-	    if (*ptrs < ZTR_SYMB)
+	  if ((stop_test_area[*ptra] != ENDED) && (*ptrs < ZTR_SYMB))
+	    {
 	      if (j < nrec) {
 		ncol = wtrans->images[j][i]->ncol;
 		jp = j+1;
@@ -1810,15 +1810,17 @@ int         *distrate;           /* Flag for computation of dist. rate curve */
 		  mwerror(WARNING, 0, "xp too large in ZERO_TREE_ENCODE\nj = %d, jp = %d, i = %d, rp = %d, cp = %d, xp = %d, size = %d\n", j, jp, i, rp, cp, xp, wtrans->images[jp][i]->ncol * wtrans->images[jp][i]->nrow);
 		if (sigmap[jp][i][xp] > ZTR_SYMB)
 		  *ptrs = ZTR_SYMB;
-	      } else
-		{
-		  ncol = wtrans->images[j][i]->ncol;
-		  rp = x / ncol;
-		  cp = x % ncol;
-		  xp = rp * wtrans->images[nrec][0]->ncol + cp;
-		  if (sigmap[nrec][0][xp] > ZTR_SYMB)
-		    *ptrs = ZTR_SYMB; 
-		}
+	      } 
+	      else
+	      {
+		ncol = wtrans->images[j][i]->ncol;
+		rp = x / ncol;
+		cp = x % ncol;
+		xp = rp * wtrans->images[nrec][0]->ncol + cp;
+		if (sigmap[nrec][0][xp] > ZTR_SYMB)
+		  *ptrs = ZTR_SYMB; 
+	      }
+	    }
 	}
 	
       }      

@@ -443,11 +443,12 @@ int        *edge;		/* Type of edge processing (see `Edge`
     /*--- Copy last point if number of lines is odd ---*/
 
     if (K2 > A->ncol)
+    {
       if (haarx == 0)
 	A->gray[lK2 + c] = Tab->gray[ldx + dx1] / s2;
       else
 	A->gray[lK2 + c] = shaar * Tab->gray[ldx + dx1];
-
+    }
     ldx += dx;
     lK2 += A->ncol;
   }
@@ -523,11 +524,12 @@ int        *edge;	  	/* Type of edge processing (see `Edge`
     /*--- Copy last point if number of lines is odd ---*/
 
     if (L2 > Tab->nrow)
+    {
       if (haary == 0)
 	Tab->gray[ldxc] = AD->gray[dx * dy1 + c] / s2;      
       else
 	Tab->gray[ldxc] = shaar * AD->gray[dx * dy1 + c];      
-
+    }
   }
 
   mw_delete_fsignal(Tabin);

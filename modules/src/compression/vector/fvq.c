@@ -881,13 +881,14 @@ int             recfac;
   ptrse = symbex->gray;
 
   if (recfac > 0)
+  {
     if (recfl)
       for (x = 0; x < size; x++, ptrse++)
 	*ptrse = (float) ((int) floor(*ptrse + .5) / recfac);
     else
       for (x = 0; x < size; x++, ptrse++)
 	*ptrse = (float) ((int) floor(*ptrse + .5) % recfac);
-    
+  } 
 }
 
 

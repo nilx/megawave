@@ -78,16 +78,18 @@ int a,b;
     if (transcode[a]==0)
       transcode[a]=b;
     else
+    {
+      if (b!=transcode[a])
       {
-	if (b!=transcode[a])
-	  if (b>transcode[a])
-	    mise_a_jour_transcode(transcode,b,transcode[a]);
-	  else
-	    {
-	      mise_a_jour_transcode(transcode,transcode[a],b);
-	      transcode[a]=b;
-	    }
+	if (b>transcode[a])
+	   mise_a_jour_transcode(transcode,b,transcode[a]);
+	else
+	{
+	  mise_a_jour_transcode(transcode,transcode[a],b);
+	  transcode[a]=b;
+	}
       }
+    }
   }
     
 /****************************************************************************/
@@ -1280,161 +1282,277 @@ int piv; /* Current pivot number */
     /* vect=dx*(i-yf)-dy*(j-xf) is the vectorial product (careful to the orientation!!)*/
 
     if (abs(dx)>=dy) /* dx is the horizontal gap, dy the vertical gap */
+    {
+      /*epsilon=dy-abs(dx);*/
+      epsilon=-abs(dx);
+      if (dx>0)
       {
-	/*epsilon=dy-abs(dx);*/
-	epsilon=-abs(dx);
-	if (dx>0)
+	for (j=xf,i=yf;j<=xe;j++)
+	{
+	  if (j==xe)
 	  {
-	    for (j=xf,i=yf;j<=xe;j++){
-	      if (j==xe)
-		if (i!=oldi) pivots[8*(piv+1-change)]=1+change;
-		else pivots[8*(piv+1-change)+7]=1+change;
-	      if (2*(j/2)==j)
-		if (2*(i/2)!=i)
-		  {
-		    if (j==xf+1) fpivotfill(4*(piv+change),1,2,gray1,gray2);
-		    if (j==xe-1) fpivotfill(4*(piv+1-change),0,3,gray1,gray2);
-		    geodfill((i-1)/2*col_number+j/2,(i+1)/2*col_number+j/2,gray1,gray2,change);
-		  }
-		else
-		  if (vect<=0)
-		    {
-		      if (j==xf+1) fpivotfill(4*(piv+change),2,4,gray1,gray2);
-		      if (j==xe-1) fpivotfill(4*(piv+1-change),0,3,gray1,gray2);
-		      geodfill(i/2*col_number+j/2,(i+2)/2*col_number+j/2,gray1,gray2,change);
-		    }
-		  else 
-		    {
-		      if (j==xf+1) fpivotfill(4*(piv+change),1,2,gray1,gray2);
-		      if (j==xe-1) fpivotfill(4*(piv+1-change),4,0,gray1,gray2);
-		      geodfill((i-2)/2*col_number+j/2,i/2*col_number+j/2,gray1,gray2,change);
-		    }
-	      /*else
-		if (j==xe && i==ye)
-		geodfill((i-1)/2*col_number+(j+1)/2,(i+1)/2*col_number+(j-1)/2,gray1,gray2,change);*/
-	      oldi=i;
-	      epsilon+=d2y;vect-=dy;
-	      if (epsilon>=0) {i++;epsilon-=d2x;vect+=dx;}
-	      if (j==xf)
-		if (i!=oldi) pivots[8*(piv+change)+4]=2-change;
-		else pivots[8*(piv+change)+3]=2-change;}
+	    if (i!=oldi)
+	      pivots[8*(piv+1-change)]=1+change;
+	    else
+	      pivots[8*(piv+1-change)+7]=1+change;
 	  }
-	else
+	  if (2*(j/2)==j)
 	  {
-	    for (j=xf,i=yf;j>=xe;j--){
-	      if (j==xe)
-		if (i!=oldi) pivots[8*(piv+1-change)+2]=1+change;
-		else pivots[8*(piv+1-change)+3]=1+change;
-	      if (2*(j/2)==j)
-		if (2*(i/2)!=i)
-		  {
-		    if (j==xf-1) fpivotfill(4*(piv+change),3,0,gray1,gray2);
-		    if (j==xe+1) fpivotfill(4*(piv+1-change),2,1,gray1,gray2);
-		    geodfill((i+1)/2*col_number+j/2,(i-1)/2*col_number+j/2,gray1,gray2,change);
-		  }
-		else
-		  if (vect>=0) 
-		    {
-		      if (j==xf-1) fpivotfill(4*(piv+change),4,3,gray1,gray2);
-		      if (j==xe+1) fpivotfill(4*(piv+1-change),2,1,gray1,gray2);
-		      geodfill((i+2)/2*col_number+j/2,i/2*col_number+j/2,gray1,gray2,change);
-		    }
-		  else
-		    {
-		      if (j==xf-1) fpivotfill(4*(piv+change),3,0,gray1,gray2);
-		      if (j==xe+1) fpivotfill(4*(piv+1-change),1,4,gray1,gray2);
-		      geodfill(i/2*col_number+j/2,(i-2)/2*col_number+j/2,gray1,gray2,change);
-		    }
-	      /*else
-		if (j==xe && i==ye)*/ /*if (2*(i/2)!=i && (j!=xf))*/
-	      /*geodfill((i+1)/2*col_number+(j+1)/2,(i-1)/2*col_number+(j-1)/2,gray1,gray2,change);*/
-	      oldi=i;
-	      epsilon+=d2y;vect+=dy;
-	      if (epsilon>=0) {i++;epsilon+=d2x;vect+=dx;}
-	      if (j==xf)
-		if (i!=oldi) pivots[8*(piv+change)+6]=2-change;
-		else pivots[8*(piv+change)+7]=2-change;}
+	    if (2*(i/2)!=i)
+	    {
+	      if (j==xf+1)
+		fpivotfill(4*(piv+change),1,2,gray1,gray2);
+	      if (j==xe-1)
+		fpivotfill(4*(piv+1-change),0,3,gray1,gray2);
+	      geodfill((i-1)/2*col_number+j/2,(i+1)/2*col_number+j/2,
+		       gray1,gray2,change);
+	    }
+	    else
+	    {
+	      if (vect<=0)
+	      {
+		if (j==xf+1)
+		  fpivotfill(4*(piv+change),2,4,gray1,gray2);
+		if (j==xe-1)
+		  fpivotfill(4*(piv+1-change),0,3,gray1,gray2);
+		geodfill(i/2*col_number+j/2,(i+2)/2*col_number+j/2,
+			 gray1,gray2,change);
+	      }
+	      else
+	      {
+		if (j==xf+1)
+		  fpivotfill(4*(piv+change),1,2,gray1,gray2);
+		if (j==xe-1)
+		  fpivotfill(4*(piv+1-change),4,0,gray1,gray2);
+		geodfill((i-2)/2*col_number+j/2,i/2*col_number+j/2,
+			 gray1,gray2,change);
+	      }
+	    }
 	  }
+	  /*else
+	    if (j==xe && i==ye)
+	    geodfill((i-1)/2*col_number+(j+1)/2,
+	    (i+1)/2*col_number+(j-1)/2,gray1,gray2,change);*/
+	  oldi=i;
+	  epsilon+=d2y;vect-=dy;
+	  if (epsilon>=0)
+	  {
+	    i++;
+	    epsilon-=d2x;
+	    vect+=dx;
+	  }
+	  if (j==xf)
+	  {
+	    if (i!=oldi)
+	      pivots[8*(piv+change)+4]=2-change;
+	    else
+	      pivots[8*(piv+change)+3]=2-change;
+	  }
+	}
       }
-    else 
+      else /* if (dx>0) */
       {
-	/*epsilon=abs(dx)-dy;*/
-	epsilon=-dy;
-	if (dx>0)
+	for (j=xf,i=yf;j>=xe;j--)
+	{
+	  if (j==xe)
 	  {
-	    for (j=xf,i=yf;i<=ye;i++){
-	      if (i==ye)
-		if (j!=oldj) pivots[8*(piv+1-change)]=1+change;
-		else pivots[8*(piv+1-change)+1]=1+change;
-	      if (2*(i/2)==i)
-		if (2*(j/2)!=j)
-		  {
-		    if (i==yf+1) fpivotfill(4*(piv+change),2,3,gray1,gray2);
-		    if (i==ye-1) fpivotfill(4*(piv+1-change),1,0,gray1,gray2);
-		    geodfill(i/2*col_number+(j+1)/2,i/2*col_number+(j-1)/2,gray1,gray2,change);
-		  }
-		else
-		  if (vect<=0) 
-		    {
-		      if (i==yf+1) fpivotfill(4*(piv+change),2,3,gray1,gray2);
-		      if (i==ye-1) fpivotfill(4*(piv+1-change),0,4,gray1,gray2);
-		      geodfill(i/2*col_number+j/2,i/2*col_number+(j-2)/2,gray1,gray2,change);
-		    }
-		  else 
-		    {
-		      if (i==yf+1) fpivotfill(4*(piv+change),4,2,gray1,gray2);
-		      if (i==ye-1) fpivotfill(4*(piv+1-change),1,0,gray1,gray2);
-		      geodfill(i/2*col_number+(j+2)/2,i/2*col_number+j/2,gray1,gray2,change);
-		    }
-	      /*else
-		if (j==xe && i==ye)*/ /*if (2*(i/2)!=i && (i!=yf))*/
-	      /*geodfill((i-1)/2*col_number+(j+1)/2,(i+1)/2*col_number+(j-1)/2,gray1,gray2,change);*/
-	      oldj=j;
-	      vect+=dx;epsilon+=d2x;
-	      if (epsilon>=0) {j++;epsilon-=d2y;vect-=dy;}
-	      if (i==yf)
-		if (j!=oldj) pivots[8*(piv+change)+4]=2-change;
-		else pivots[8*(piv+change)+5]=2-change;}
+	    if (i!=oldi)
+	      pivots[8*(piv+1-change)+2]=1+change;
+	    else
+	      pivots[8*(piv+1-change)+3]=1+change;
 	  }
-	else
+	  if (2*(j/2)==j)
 	  {
-	    for (j=xf,i=yf;i<=ye;i++){
-	      if (i==ye)
-		if (j!=oldj) pivots[8*(piv+1-change)+2]=1+change;
-		else pivots[8*(piv+1-change)+1]=1+change;
-	      if (2*(i/2)==i)
-		if (2*(j/2)!=j)
-		  {
-		    if (i==yf+1) fpivotfill(4*(piv+change),2,3,gray1,gray2);
-		    if (i==ye-1) fpivotfill(4*(piv+1-change),1,0,gray1,gray2);
-		    geodfill(i/2*col_number+(j+1)/2,i/2*col_number+(j-1)/2,gray1,gray2,change);
-		  }
-		else
-		  if (vect>=0)
-		    {
-		      if (i==yf+1) fpivotfill(4*(piv+change),2,3,gray1,gray2);
-		      if (i==ye-1) fpivotfill(4*(piv+1-change),4,1,gray1,gray2);
-		      geodfill(i/2*col_number+(j+2)/2,i/2*col_number+j/2,gray1,gray2,change);
-		    }
-		  else 
-		    {
-		      if (i==yf+1) fpivotfill(4*(piv+change),3,4,gray1,gray2);
-		      if (i==ye-1) fpivotfill(4*(piv+1-change),1,0,gray1,gray2);
-		      geodfill(i/2*col_number+j/2,i/2*col_number+(j-2)/2,gray1,gray2,change);
-		    }
-	      /*else
-		if (j==xe && i==ye)*/ /*if (2*(i/2)!=i && (i!=yf))*/
-	      /*geodfill((i+1)/2*col_number+(j+1)/2,(i-1)/2*col_number+(j-1)/2,gray1,gray2,change);*/
-	      oldj=j;
-	      vect+=dx;epsilon-=d2x;
-	      if (epsilon>=0) {j--;epsilon-=d2y;vect+=dy;}
-	      if (i==yf)
-		if (j!=oldj) pivots[8*(piv+change)+6]=2-change;
-		else pivots[8*(piv+change)+5]=2-change;}
+	    if (2*(i/2)!=i)
+	    {
+	      if (j==xf-1)
+		fpivotfill(4*(piv+change),3,0,gray1,gray2);
+	      if (j==xe+1)
+		fpivotfill(4*(piv+1-change),2,1,gray1,gray2);
+	      geodfill((i+1)/2*col_number+j/2,(i-1)/2*col_number+j/2,
+		       gray1,gray2,change);
+	    }
+	    else
+	    {
+	      if (vect>=0)
+	      {
+		if (j==xf-1)
+		  fpivotfill(4*(piv+change),4,3,gray1,gray2);
+		if (j==xe+1)
+		  fpivotfill(4*(piv+1-change),2,1,gray1,gray2);
+		geodfill((i+2)/2*col_number+j/2,i/2*col_number+j/2,
+			 gray1,gray2,change);
+	      }
+	      else
+	      {
+		if (j==xf-1)
+		  fpivotfill(4*(piv+change),3,0,gray1,gray2);
+		if (j==xe+1)
+		  fpivotfill(4*(piv+1-change),1,4,gray1,gray2);
+		geodfill(i/2*col_number+j/2,(i-2)/2*col_number+j/2,
+			 gray1,gray2,change);
+	      }
+	    }
 	  }
+	  /*else
+	    if (j==xe && i==ye)*/ /*if (2*(i/2)!=i && (j!=xf))*/
+	  /*geodfill((i+1)/2*col_number+(j+1)/2,
+	    (i-1)/2*col_number+(j-1)/2,gray1,gray2,change);*/
+	  oldi=i;
+	  epsilon+=d2y;vect+=dy;
+	  if (epsilon>=0)
+	  {
+	    i++;
+	    epsilon+=d2x;
+	    vect+=dx;
+	  }
+	  if (j==xf)
+	  {
+	    if (i!=oldi)
+	      pivots[8*(piv+change)+6]=2-change;
+	    else
+	      pivots[8*(piv+change)+7]=2-change;
+	  }
+	}
       }
+    }
+    else /* if (abs(dx)>=dy) */
+    {
+      /*epsilon=abs(dx)-dy;*/
+      epsilon=-dy;
+      if (dx>0)
+      {
+	for (j=xf,i=yf;i<=ye;i++)
+	{
+	  if (i==ye)
+	  {
+	    if (j!=oldj)
+	      pivots[8*(piv+1-change)]=1+change;
+	    else
+	      pivots[8*(piv+1-change)+1]=1+change;
+	  }
+	  if (2*(i/2)==i)
+	  {
+	    if (2*(j/2)!=j)
+	    {
+	      if (i==yf+1)
+		fpivotfill(4*(piv+change),2,3,gray1,gray2);
+	      if (i==ye-1)
+		fpivotfill(4*(piv+1-change),1,0,gray1,gray2);
+	      geodfill(i/2*col_number+(j+1)/2,i/2*col_number+(j-1)/2,
+		       gray1,gray2,change);
+	    }
+	    else
+	    {
+	      if (vect<=0)
+	      {
+		if (i==yf+1)
+		  fpivotfill(4*(piv+change),2,3,gray1,gray2);
+		if (i==ye-1)
+		  fpivotfill(4*(piv+1-change),0,4,gray1,gray2);
+		geodfill(i/2*col_number+j/2,i/2*col_number+(j-2)/2,
+			 gray1,gray2,change);
+	      }
+	      else
+	      {
+		if (i==yf+1)
+		  fpivotfill(4*(piv+change),4,2,gray1,gray2);
+		if (i==ye-1)
+		  fpivotfill(4*(piv+1-change),1,0,gray1,gray2);
+		geodfill(i/2*col_number+(j+2)/2,i/2*col_number+j/2,
+			 gray1,gray2,change);
+	      }
+	    }
+	  }
+	  /*else
+	    if (j==xe && i==ye)*/ /*if (2*(i/2)!=i && (i!=yf))*/
+	  /*geodfill((i-1)/2*col_number+(j+1)/2,
+	    (i+1)/2*col_number+(j-1)/2,gray1,gray2,change);*/
+	  oldj=j;
+	  vect+=dx;epsilon+=d2x;
+	  if (epsilon>=0)
+	  {
+	    j++;
+	    epsilon-=d2y;
+	    vect-=dy;
+	  }
+	  if (i==yf)
+	  {
+	    if (j!=oldj)
+	      pivots[8*(piv+change)+4]=2-change;
+	    else
+	      pivots[8*(piv+change)+5]=2-change;
+	  }
+	}
+      }
+      else /* if (dx>0) */
+      {
+	for (j=xf,i=yf;i<=ye;i++)
+	{
+	  if (i==ye)
+	  {
+	    if (j!=oldj)
+	      pivots[8*(piv+1-change)+2]=1+change;
+	    else
+	      pivots[8*(piv+1-change)+1]=1+change;
+	  }
+	  if (2*(i/2)==i)
+	  {
+	    if (2*(j/2)!=j)
+	    {
+	      if (i==yf+1)
+		fpivotfill(4*(piv+change),2,3,gray1,gray2);
+	      if (i==ye-1)
+		fpivotfill(4*(piv+1-change),1,0,gray1,gray2);
+	      geodfill(i/2*col_number+(j+1)/2,i/2*col_number+(j-1)/2,
+		       gray1,gray2,change);
+	    }
+	    else
+	    {
+	      if (vect>=0)
+	      {
+		if (i==yf+1)
+		  fpivotfill(4*(piv+change),2,3,gray1,gray2);
+		if (i==ye-1)
+		  fpivotfill(4*(piv+1-change),4,1,gray1,gray2);
+		geodfill(i/2*col_number+(j+2)/2,i/2*col_number+j/2,
+			 gray1,gray2,change);
+	      }
+	      else
+	      {
+		if (i==yf+1)
+		  fpivotfill(4*(piv+change),3,4,gray1,gray2);
+		if (i==ye-1)
+		  fpivotfill(4*(piv+1-change),1,0,gray1,gray2);
+		geodfill(i/2*col_number+j/2,i/2*col_number+(j-2)/2,
+			 gray1,gray2,change);
+	      }
+	    }
+	  }
+	  /*else
+	    if (j==xe && i==ye)*/ /*if (2*(i/2)!=i && (i!=yf))*/
+	  /*geodfill((i+1)/2*col_number+(j+1)/2,
+	    (i-1)/2*col_number+(j-1)/2,gray1,gray2,change);*/
+	  oldj=j;
+	  vect+=dx;
+	  epsilon-=d2x;
+	  if (epsilon>=0)
+	  {
+	    j--;
+	    epsilon-=d2y;
+	    vect+=dy;
+	  }
+	  if (i==yf)
+	  {
+	    if (j!=oldj)
+	      pivots[8*(piv+change)+6]=2-change;
+	    else
+	      pivots[8*(piv+change)+5]=2-change;
+	  }
+	}
+      }
+    }
   }
-
 
 /***************************************************************************/
 
@@ -2434,11 +2552,19 @@ int i,j;
 	Eminold=Emin;
 	Etool1=ComputeEnergy(i,k);
 	if (Etool1>(-1))
-	  if ((Etool1<Emin)||(Emin==(-1))){
+	{
+	  if ((Etool1<Emin)||(Emin==(-1)))
+	  {
 	    Etool2=ComputeEnergy((i+k+1)%IONumber,j-k-1);
 	    if (Etool2>(-1))
-	      if (Emin>(-1)) Emin=Min(Emin,Etool1+Etool2);
-	      else Emin=Etool1+Etool2;}
+	    {
+	      if (Emin>(-1))
+		Emin=Min(Emin,Etool1+Etool2);
+	      else
+		Emin=Etool1+Etool2;
+	    }
+	  }
+	}
 	if (Eminold!=Emin) *corresp=k; 		
       }
     energy[i][(j-1)/2]=Emin;
@@ -2519,11 +2645,19 @@ IONumber-1---|----------------------
       Eminold=Emin; 
       Etool1=ComputeEnergy(0,k);
       if (Etool1>(-1))
-	if ((Etool1<Emin)||(Emin==(-1))){
+      {
+	if ((Etool1<Emin)||(Emin==(-1)))
+	{
 	  Etool2=ComputeEnergy((k+1)%IONumber,IONumber-k-2);
 	  if (Etool2>(-1))
-	    if (Emin>(-1)) Emin=Min(Emin,Etool1+Etool2);
-	    else Emin=Etool1+Etool2;}
+	  {
+	    if (Emin>(-1))
+	      Emin=Min(Emin,Etool1+Etool2);
+	    else
+	      Emin=Etool1+Etool2;
+	  }
+	}
+      }
       if (Eminold!=Emin) *corresp=k;}
 	
     if (Emin==(-1)) mwerror(FATAL,1,"Code error (please contact administrator)\n");
