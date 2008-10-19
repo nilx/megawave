@@ -92,7 +92,8 @@ Flists ll_extract(in,levels,offset,step,prec,area,tree,z)
       if (z)
       	flst_boundary(ref_tree,s,boundary);
       else 
-	flstb_boundary(prec,in,ref_tree,s,NULL,boundary,tabsaddles);
+	flstb_boundary(prec, in, ref_tree, s, NULL, 
+		       boundary, (char *) tabsaddles);
       ls->list[ls->size++] = mw_copy_flist(boundary,NULL);
     }
   }

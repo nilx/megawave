@@ -125,7 +125,9 @@ char type;
     if (zero_order) 
       flst_boundary(ref_tree,s,boundary);
     else
-      flstb_boundary(&precision1,image,ref_tree,s,NULL,boundary,tabsaddles);
+      /* FIXME: cast */
+      flstb_boundary(&precision1, image, ref_tree, s, NULL,
+		     boundary, (char *) tabsaddles);
 
     /*** compute nfa (-log10) ***/
     mu = min_contrast(boundary,&length);
@@ -203,8 +205,10 @@ char type;
       /* store boundary */
       if (zero_order)
 	flst_boundary(ref_tree,s,boundary);
-      else 
-	flstb_boundary(&precision2,image,ref_tree,s,NULL,boundary,tabsaddles);
+      else
+        /* FIXME: cast */
+        flstb_boundary(&precision2, image, ref_tree, s, NULL,
+		       boundary, (char *) tabsaddles);
       boundaries->list[boundaries->size++] = mw_copy_flist(boundary,NULL);
       printf("nfa=%f bestnfa_inf=%f bestnfa_sup=%f type=%d %d %d\n",nfa,*bestnfa_inf,bestnfa_sup,type,sdata->type,s->inferior_type);
 
@@ -243,7 +247,9 @@ float *bestnfa_inf,bestnfa_sup;
     if (zero_order) 
       flst_boundary(ref_tree,s,boundary);
     else
-      flstb_boundary(&precision1,image,ref_tree,s,NULL,boundary,tabsaddles);
+      /* FIXME: cast */
+      flstb_boundary(&precision1, image, ref_tree, s, NULL,
+		     boundary, (char *) tabsaddles);
 
     /*** compute nfa (-log10) ***/
     mu = min_contrast(boundary,&length);
@@ -272,8 +278,10 @@ float *bestnfa_inf,bestnfa_sup;
       /* store boundary */
       if (zero_order)
 	flst_boundary(ref_tree,s,boundary);
-      else 
-	flstb_boundary(&precision2,image,ref_tree,s,NULL,boundary,tabsaddles);
+      else
+        /* FIXME: cast */
+        flstb_boundary(&precision2, image, ref_tree, s, NULL,
+		       boundary, (char *) tabsaddles);
       boundaries->list[boundaries->size++] = mw_copy_flist(boundary,NULL);
       
     } else s->removed = (char)1;

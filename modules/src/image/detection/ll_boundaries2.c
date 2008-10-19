@@ -97,7 +97,9 @@ char *all;
       mwdebug("#%d shape #%d c=%.2f pc=%.4f l=%.2f PFA=%.3f\n",
 	      cs->size,i,sdata->min_contrast,sdata->p_contrast,
 	      sdata->length,sdata->nfa);  
-      flstb_boundary(prec,image,tree,s,NULL,l,tabsaddles);
+      /* FIXME: cast */
+      flstb_boundary(prec, image, tree, s, NULL,
+		     l, (char *) tabsaddles);
       cs->list[cs->size] = mw_copy_flist(l,NULL);
       
       /* store nfa as a double in the data field */
@@ -194,7 +196,9 @@ int *prec;
     data->nfa = FLT_MAX;
     data->visit = 0;
     if(i>0) {
-      flstb_boundary(prec,image,tree,s,NULL,l,tabsaddles);
+      /* FIXME: cast */
+      flstb_boundary(prec, image, tree, s, NULL,
+		     l, (char *) tabsaddles);
       data->min_contrast = min_contrast(l,&data->length,NormofDu);
       *sumsqper += data->length*data->length;
     } else data->min_contrast = 0.;
@@ -470,8 +474,9 @@ struct myglobal Global;
 	  sdata->max = 1;
 	  s->boundary = mw_new_flist();
 	  if(!s->boundary)  mwerror(FATAL,1,"Not enough memory.\n");
-	  flstb_boundary(Global.prec,Global.image,Global.Tree,s,
-			 NULL,s->boundary,Global.tabsaddles);
+          /* FIXME: cast */
+	  flstb_boundary(Global.prec, Global.image, Global.Tree, s,
+			 NULL, s->boundary, (char *) Global.tabsaddles);
 	}
       } else {
 	s->removed = (char)1;
@@ -545,8 +550,9 @@ int new_open;
 	sdata->max = (char)1;
 	s->boundary = mw_new_flist();
 	if(!s->boundary)  mwerror(FATAL,1,"Not enough memory.\n");
-	flstb_boundary(Global.prec,Global.image,Global.Tree,s,
-		       NULL,s->boundary,Global.tabsaddles);
+	/* FIXME: cast */
+	flstb_boundary(Global.prec, Global.image, Global.Tree, s,
+		       NULL, s->boundary, (char *) Global.tabsaddles);
       }
       
       if(!sdata->notmax && nfa<*bestnfa_inf) *bestnfa_inf = nfa;

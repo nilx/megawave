@@ -253,7 +253,9 @@ char *z;
       if (zero_order) 
 	flst_boundary(ref_tree,s,boundary);
       else
-	flstb_boundary(&precision1,in,ref_tree,s,NULL,boundary,tabsaddles);
+	/* FIXME: cast */
+	flstb_boundary(&precision1, in, ref_tree, s, NULL,
+		       boundary, (char *) tabsaddles);
 
       /* compute contrast and length */
       i0 = contrast_and_length(boundary,s->open);

@@ -156,12 +156,14 @@ void decrease_tv(tabScales, fQuantizationLevel, iQuantizationCurve, pImage,
 	if(pListBoundaries->list[i] == NULL) {
 	  if((pListBoundaries->list[i] = mw_new_flist()) == NULL)
 	    mwerror(FATAL, 1, "List allocation error");
+	  /* FIXME: cast */
 	  flstb_dualchain(pTree, pShape, pListBoundaries->list[i],
-			    tabtabSaddleValues);
+			  (char *) tabtabSaddleValues);
 	}
+	  /* FIXME: cast */
 	pBoundary = flstb_boundary(&iQuantizationCurve, pImage, pTree, pShape,
 				   pListBoundaries->list[i], NULL, 
-				   tabtabSaddleValues);
+				   (char *) tabtabSaddleValues);
 	fPerimeter = curve_perimeter(pBoundary, pTree->nrow, pTree->ncol);
 	fArea = curve_area(pBoundary, pTree->nrow, pTree->ncol);
 	assert((fArea>0 && fPerimeter>0) || (fArea==0 && fPerimeter>=0));
