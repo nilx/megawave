@@ -56,8 +56,7 @@ void sop(B,out,A,a,plus,minus,times,divide,dist,norm,inf,sup,less,greater,equal)
   mw_copy_fsignal_header(B,out);
   
   /* main loop */
-  i = B->size;
-  for (i;i--;) {
+  for (i = B->size; i--;) {
     left = (A?A->values[i]:*a);
     if      (plus)    res = left + B->values[i];
     else if (minus)   res = left - B->values[i];

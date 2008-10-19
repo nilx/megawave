@@ -53,8 +53,7 @@ void fop(B,out,A,a,plus,minus,times,divide,dist,norm,inf,sup,less,greater,equal)
   if (!out) mwerror(FATAL, 1, "Not enough memory.");
 
   /* main loop */
-  i = B->nrow*B->ncol;
-  for (i;i--;) {
+  for (i = B->nrow*B->ncol; i--;) {
     left = (A?A->gray[i]:*a);
     if      (plus)    res = left + B->gray[i];
     else if (minus)   res = left - B->gray[i];
