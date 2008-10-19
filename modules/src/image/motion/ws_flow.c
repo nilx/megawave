@@ -272,7 +272,7 @@ void schema_ws(threshold,eps,tau,alpha,lambda,niter)
 	if(l==0)
 	  maxresidue=residue[l];
 	else
-	  maxresidue<residue[l]? maxresidue : residue[l];
+	  maxresidue = (maxresidue > residue[l] ) ? maxresidue : residue[l];
 	/*}*/
 	if(p==0)
 	  maxresidue0=maxresidue;

@@ -304,7 +304,7 @@ double df_alpha(t,u,dJ,alpha)
   int n;
   double r,dw,dn;
 
-  r==0.;
+  r=0.;
   for (n=0;n<u->size-1;n++)
     {
       dw = dJ->values[n+1]-dJ->values[n];
