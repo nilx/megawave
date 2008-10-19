@@ -242,6 +242,8 @@ float value;
 	  pNeighborhood->otherBound = value;
 	}
 	break;
+      case INVALID:
+        return;
       }
   if(pNeighborhood->type == INVALID)
     return;
