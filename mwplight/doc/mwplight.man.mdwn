@@ -32,22 +32,22 @@ of multiple output to a single file/pipe).
 
 ## INPUT
 
--s, -\-source=filename
+-S, -\-source=filename
 :	module source file name  (default=`-')
 
 ## OUTPUT
 
 These options are optional.
 
--l, -\-library=filename
+-L, -\-library=filename
 :	library code file name
--e, -\-exec=filename
+-E, -\-exec=filename
 :	executable code file name
--d, -\-documentation=filename
+-D, -\-documentation=filename
 :	documentation file name
--i, -\-interface=filename
+-I, -\-interface=filename
 :	interface file
--n, -\-name=filename
+-N, -\-name=filename
 :	name file name
 
 ## MISCELLANEOUS
@@ -58,9 +58,9 @@ These options are optional.
 :	module group name  (default=`unknown')
 -h, -\-help
 :	print help and exit  (default=off)
--V, -\-version
+-v, -\-version
 :	print version and exit  (default=off)
--D, -\-debug
+-d, -\-debug
 :	debug flag  (default=off)
 
 # ENVIRONMENT

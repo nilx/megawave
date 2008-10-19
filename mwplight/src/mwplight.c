@@ -30,23 +30,23 @@
  * "
  *
  * section "Input"
- * option "source"         s "module source file name"    optional
+ * option "source"         S "module source file name"    optional
  *         string             typestr="filename" default="-"
  *
  * section "Outputs (optional)"
- * option "library"        l  "library code file name"    optional
+ * option "library"        L  "library code file name"    optional
  *         string              typestr="filename"
  *
- * option "executable"     e  "executable code file name" optional
+ * option "executable"     E  "executable code file name" optional
  *         string              typestr="filename"
  *
- * option "documentation"  d  "documentation file name"   optional
+ * option "documentation"  D  "documentation file name"   optional
  *         string              typestr="filename"
  *
- * option "interface"      i  "interface file"            optional
+ * option "interface"      I  "interface file"            optional
  *         string              typestr="filename"         hidden
  *
- * option "name"           n  "name file name"            optional
+ * option "name"           N  "name file name"            optional
  *         string              typestr="filename"         hidden
  *
  * section "Misc"
@@ -58,8 +58,8 @@
  *
  * text ""
  * option "help"           h  "print help and exit" flag off
- * option "version"        V  "print version and exit" flag off
- * option "debug"          D  "debug flag" flag off
+ * option "version"        v  "print version and exit" flag off
+ * option "debug"          d  "debug flag" flag off
  *
  * text "
  * Use '-' for standard input/output. Default mode is to use stdin for

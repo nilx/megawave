@@ -29,20 +29,20 @@ const char *mw_args_info_description = "This parser reads the megawave header of
 
 const char *mw_args_info_full_help[] = {
   "Input:",
-  "  -s, --source=filename         module source file name  (default=`-')",
+  "  -S, --source=filename         module source file name  (default=`-')",
   "\nOutputs (optional):",
-  "  -l, --library=filename        library code file name",
-  "  -e, --executable=filename     executable code file name",
-  "  -d, --documentation=filename  documentation file name",
-  "  -i, --interface=filename      interface file",
-  "  -n, --name=filename           name file name",
+  "  -L, --library=filename        library code file name",
+  "  -E, --executable=filename     executable code file name",
+  "  -D, --documentation=filename  documentation file name",
+  "  -I, --interface=filename      interface file",
+  "  -N, --name=filename           name file name",
   "\nMisc:",
   "  -m, --module-name=name        module name  (default=`unknown')",
   "  -g, --group-name=name         module group name  (default=`unknown')",
   "",
   "  -h, --help                    print help and exit  (default=off)",
-  "  -V, --version                 print version and exit  (default=off)",
-  "  -D, --debug                   debug flag  (default=off)",
+  "  -v, --version                 print version and exit  (default=off)",
+  "  -d, --debug                   debug flag  (default=off)",
   "\nUse '-' for standard input/output. Default mode is to use stdin for\nthe source file, and no output activated. The output order doesn't\nfollow the options order (in case of multiple output to a single\nfile/pipe).\n\nThis program is part of the megawave framework.\nSee http://megawave.cmla.ens-cachan.fr/ for details.\n(C) 2008 CMLA, ENS Cachan, 94235 Cachan cedex, France.",
     0
 };
@@ -521,94 +521,94 @@ mw_cmdline_internal (int argc, char * const *argv, struct mw_args_info *args_inf
       int option_index = 0;
 
       static struct option long_options[] = {
-        { "source",	1, NULL, 's' },
-        { "library",	1, NULL, 'l' },
-        { "executable",	1, NULL, 'e' },
-        { "documentation",	1, NULL, 'd' },
-        { "interface",	1, NULL, 'i' },
-        { "name",	1, NULL, 'n' },
+        { "source",	1, NULL, 'S' },
+        { "library",	1, NULL, 'L' },
+        { "executable",	1, NULL, 'E' },
+        { "documentation",	1, NULL, 'D' },
+        { "interface",	1, NULL, 'I' },
+        { "name",	1, NULL, 'N' },
         { "module-name",	1, NULL, 'm' },
         { "group-name",	1, NULL, 'g' },
         { "help",	0, NULL, 'h' },
-        { "version",	0, NULL, 'V' },
-        { "debug",	0, NULL, 'D' },
+        { "version",	0, NULL, 'v' },
+        { "debug",	0, NULL, 'd' },
         { NULL,	0, NULL, 0 }
       };
 
-      c = getopt_long (argc, argv, "s:l:e:d:i:n:m:g:hVD", long_options, &option_index);
+      c = getopt_long (argc, argv, "S:L:E:D:I:N:m:g:hvd", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
       switch (c)
         {
-        case 's':	/* module source file name.  */
+        case 'S':	/* module source file name.  */
         
         
           if (update_arg( (void *)&(args_info->source_arg), 
                &(args_info->source_orig), &(args_info->source_given),
               &(local_args_info.source_given), optarg, 0, "-", ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "source", 's',
+              "source", 'S',
               additional_error))
             goto failure;
         
           break;
-        case 'l':	/* library code file name.  */
+        case 'L':	/* library code file name.  */
         
         
           if (update_arg( (void *)&(args_info->library_arg), 
                &(args_info->library_orig), &(args_info->library_given),
               &(local_args_info.library_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "library", 'l',
+              "library", 'L',
               additional_error))
             goto failure;
         
           break;
-        case 'e':	/* executable code file name.  */
+        case 'E':	/* executable code file name.  */
         
         
           if (update_arg( (void *)&(args_info->executable_arg), 
                &(args_info->executable_orig), &(args_info->executable_given),
               &(local_args_info.executable_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "executable", 'e',
+              "executable", 'E',
               additional_error))
             goto failure;
         
           break;
-        case 'd':	/* documentation file name.  */
+        case 'D':	/* documentation file name.  */
         
         
           if (update_arg( (void *)&(args_info->documentation_arg), 
                &(args_info->documentation_orig), &(args_info->documentation_given),
               &(local_args_info.documentation_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "documentation", 'd',
+              "documentation", 'D',
               additional_error))
             goto failure;
         
           break;
-        case 'i':	/* interface file.  */
+        case 'I':	/* interface file.  */
         
         
           if (update_arg( (void *)&(args_info->interface_arg), 
                &(args_info->interface_orig), &(args_info->interface_given),
               &(local_args_info.interface_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "interface", 'i',
+              "interface", 'I',
               additional_error))
             goto failure;
         
           break;
-        case 'n':	/* name file name.  */
+        case 'N':	/* name file name.  */
         
         
           if (update_arg( (void *)&(args_info->name_arg), 
                &(args_info->name_orig), &(args_info->name_given),
               &(local_args_info.name_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "name", 'n',
+              "name", 'N',
               additional_error))
             goto failure;
         
@@ -647,22 +647,22 @@ mw_cmdline_internal (int argc, char * const *argv, struct mw_args_info *args_inf
             goto failure;
         
           break;
-        case 'V':	/* print version and exit.  */
+        case 'v':	/* print version and exit.  */
         
         
           if (update_arg((void *)&(args_info->version_flag), 0, &(args_info->version_given),
               &(local_args_info.version_given), optarg, 0, 0, ARG_FLAG,
-              check_ambiguity, override, 1, 0, "version", 'V',
+              check_ambiguity, override, 1, 0, "version", 'v',
               additional_error))
             goto failure;
         
           break;
-        case 'D':	/* debug flag.  */
+        case 'd':	/* debug flag.  */
         
         
           if (update_arg((void *)&(args_info->debug_flag), 0, &(args_info->debug_given),
               &(local_args_info.debug_given), optarg, 0, 0, ARG_FLAG,
-              check_ambiguity, override, 1, 0, "debug", 'D',
+              check_ambiguity, override, 1, 0, "debug", 'd',
               additional_error))
             goto failure;
         
