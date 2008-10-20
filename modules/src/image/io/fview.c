@@ -331,7 +331,8 @@ void fview(input,x0,y0,zoom,order,no_refresh,window,linear,m,M,d)
      int    *x0,*y0,*no_refresh,*order;
      float  *zoom,*m,*M,*d;
      Fimage input;
-     char   *window,*linear;
+     Wframe *window;
+     char   *linear;
 {
   Wframe *ImageWindow;
   Fimage fimage,tmp;
@@ -357,9 +358,8 @@ void fview(input,x0,y0,zoom,order,no_refresh,window,linear,m,M,d)
   else 
       fimage=input;
 
-  ImageWindow = (Wframe *)
-    mw_get_window((Wframe *) window,fimage->ncol,fimage->nrow,*x0,*y0,
-		  fimage->name);
+  ImageWindow = mw_get_window(window, fimage->ncol, fimage->nrow,
+			      *x0, *y0, fimage->name);
   if (ImageWindow == NULL)
     mwerror(INTERNAL,1,"NULL window returned by mw_get_window\n");
 

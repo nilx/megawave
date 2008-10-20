@@ -1897,7 +1897,7 @@ void freadasc(Fimage u, int *Dx, int *Dy);
 #define _FVIEW_LIB_H_
 
 /* src/image/io/fview.lib.c */
-void fview(Fimage input, int *x0, int *y0, float *zoom, int *order, int *no_refresh, char *window, char *linear, float *m, float *M, float *d);
+void fview(Fimage input, int *x0, int *y0, float *zoom, int *order, int *no_refresh, Wframe *window, char *linear, float *m, float *M, float *d);
 
 #endif /* !_FVIEW_LIB_H_ */
 /*

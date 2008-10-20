@@ -77,8 +77,7 @@ void fft2dview(type,h_flag,in,out,i_flag,d)
   if (!out_flag) {
     ImageWindow = (Wframe *)
       mw_get_window((Wframe *)NULL,out->ncol,out->nrow,x0,y0,out->name);
-    /* FIXME: cast */
-    fview(out, &x0, &y0, &zoom, &order, NULL, (char *) ImageWindow,
+    fview(out, &x0, &y0, &zoom, &order, NULL, ImageWindow,
 	  NULL, NULL, NULL, d);
     mw_delete_fimage(out);
   }
