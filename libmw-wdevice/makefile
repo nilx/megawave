@@ -51,10 +51,10 @@ autohdr	: $(AUTOHDR)
 
 .PHONY	: lib
 lib 	: lib$(LIBNAME).so lib$(LIBNAME).a
-lib$(LIBNAME).so 	: $(OBJ)
-	$(LD) -shared $(LDFLAGS) -o $@ $^
-lib$(LIBNAME).a 	: $(OBJ)
+lib$(LIBNAME).a	: $(OBJ)
 	$(AR) ru $@ $^
+lib$(LIBNAME).so	: $(OBJ)
+	$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
 
 .PHONY	: api
 api 	: $(API)

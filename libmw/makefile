@@ -138,10 +138,10 @@ autohdr	: $(AUTOHDR)
 
 .PHONY	: lib
 lib 	: lib$(LIBNAME).so lib$(LIBNAME).a
-lib$(LIBNAME).so 	: $(OBJ)
-	$(LD) -shared $(LDFLAGS) -o $@ $^
-lib$(LIBNAME).a 	: $(OBJ)
+lib$(LIBNAME).a	: $(OBJ)
 	$(AR) ru $@ $^
+lib$(LIBNAME).so	: $(OBJ)
+	$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
 
 foo	:
 	echo $(HDR)
@@ -177,8 +177,8 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) lib$(LINNAME).a
-	$(RM) lib$(LINNAME).so
+	$(RM) lib$(LIBNAME).a
+	$(RM) lib$(LIBNAME).so
 
 # include the prerequisites files
 # they will be built and re-read if they are missing

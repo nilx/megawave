@@ -70,9 +70,11 @@ LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 
 $(MWPLIGHT)	:
-	$(MAKE) -C $(BASEDIR)/mwplight
-$(LIBMW)	:
-	$(MAKE) -C $(BASEDIR)/libmw
+	$(MAKE) -C $(BASEDIR)/mwplight $(notdir $<)
+$(LIBMW).%	:
+	$(MAKE) -C $(BASEDIR)/libmw $(notdir $<)
+$(LIBMW_WDEVICE).%	:
+	$(MAKE) -C $(BASEDIR)/libmw-wdevice $(notdir $<)
 
 .PHONY	: modules
 modules	: $(MODULES)
@@ -83,10 +85,10 @@ modules	: $(MODULES)
 
 .PHONY	: lib
 lib 	: lib$(LIBNAME).so lib$(LIBNAME).a
-lib$(LIBNAME).so 	: $(LIBOBJ)
-	$(LD) -shared $(LDFLAGS) -o $@ $^
-lib$(LIBNAME).a 	: $(LIBOBJ)
+lib$(LIBNAME).a	: $(LIBOBJ)
 	$(AR) ru $@ $^
+lib$(LIBNAME).so	: $(LIBOBJ)
+	$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
 
 .PHONY	: api
 api 	: $(API)
@@ -111,8 +113,13 @@ $(API) 	: $(LIBHDR)
 %.exec.o	: %.exec.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
+ifeq	($(STATIC), 1)
+%.exec	: %.exec.o $(LIBMW).a $(LIBMW_WDEVICE).a $(LIBMW_MODULES).a
+	$(LD) $(LDFLAGS) -o $@ $^
+else
 %.exec	: %.exec.o $(LIBMW).so $(LIBMW_WDEVICE).so $(LIBMW_MODULES).so
 	$(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
+endif
 
 .PHONY	: clean-bin
 clean-bin :
@@ -141,20 +148,24 @@ TEST	= test/checkmodules.sh
 TESTMODDIR	= /mnt/tmp/mwmodules
 LIBPATH	= ./:$(BASEDIR)/libmw:$(BASEDIR)/libmw-wdevice
 
+TESTENV	= MODDIR=$(TESTMODDIR)			\
+	BASEDIR=$(BASEDIR)			\
+	DATA=$(BASEDIR)/data			\
+	SAMPLES=$(BASEDIR)/data/PUBLIC		\
+	SCRIPTS=$(BASEDIR)/scripts		\
+	PATH=$$PATH:$(TESTMODDIR)
+
+ifeq	($(STATIC), 0)
+TESTENV	+= LD_LIBRARY_PATH=$(LIBPATH)
+endif
+
 .PHONY	: test
 test	: $(MODULES)
 	$(RRM) $(TESTMODDIR)
 	$(MKDIR) $(TESTMODDIR)
 	cp $(MODULES) $(TESTMODDIR)
 	mmv "$(TESTMODDIR)/*.exec" "$(TESTMODDIR)/#1"
-	env MODDIR=$(TESTMODDIR)			\
-		BASEDIR=$(BASEDIR)			\
-		DATA=$(BASEDIR)/data			\
-		SAMPLES=$(BASEDIR)/data/PUBLIC		\
-		SCRIPTS=$(BASEDIR)/scripts		\
-		PATH=$$PATH:$(TESTMODDIR)		\
-	  LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(LIBPATH)	\
-		/bin/sh $(TEST)
+	env $(TESTENV) /bin/sh $(TEST)
 	$(RRM) $(TESTMODDIR)
 
 #

@@ -61,21 +61,24 @@ CWARN 	+= -pedantic -Werror $(CSTRICT_4_1)		\
 	-Wmissing-declarations -Wnested-externs
 endif
 
-# profiling switch
+# compilation switchs
 PROF	?= 0
+OPTI	?= 0
+DEBUG	?= 0
+STATIC	?= 0
+
+# profiling
 ifeq	($(PROF), 1)
 CMISC	+= -pg
 OPTI	= 1
 endif
 
-# optimisation switch
-OPTI	?= 0
+# optimisation
 ifeq	($(OPTI), 1)
 CMISC	+= -O2 -funroll-loops -finline-functions
 endif
 
-# debugger switch
-DEBUG	?= 0
+# debug
 ifeq	($(DEBUG), 1)
 CMISC	+= -O0 -g
 endif
@@ -88,10 +91,10 @@ LIBS	=
 
 # compiler flags
 CFLAGS	= -fPIC $(CSTD) $(CWARN) $(CMISC) $(addprefix -I, $(IPATH))
-CFLAGS_NOWARN	= -fPIC $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
+CFLAGS_NOWARN	= $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
 
 # linker flags
-LDFLAGS	= -fPIC $(LDDEBUG) $(CPROF)				\
+LDFLAGS	= $(LDDEBUG) $(CPROF)					\
           $(addprefix -L, $(LPATH)) $(addprefix -l, $(LIBS))
 
 # TOOLS OPTIONS
@@ -108,14 +111,14 @@ CPROTO_FLAGS	= $(addprefix -I, $(IPATH)) -q
 # GENERIC RULES
 
 # build a prerequisites file
-%.d : %.c %.h
+%.d	: %.c %.h
 	@set -e; $(RM) $@; \
 	    $(MAKEDEP) $(addprefix -I, $(IPATH)) $< > $@; \
 	    $(SED) 's|\($*\)\.o[ :]*|\1.o $@ : |g' $@ > $@.$$$$; \
 	    $(MV) $@.$$$$ $@;
 
 # std C compilation
-%.o : %.c
+%.o	: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # make a C prototype header
