@@ -50,7 +50,14 @@ BINOBJ	= $(BINSRC:.c=.o)
 # no need for cproto and makedepend
 #.PHONY	: $(AUTOHDR:.h=.d)
 
-MODULES	= $(BINOBJ:.o=)
+MODULES_DYNAMIC	= $(BINOBJ:.exec.o=.exec)
+MODULES_STATIC	= $(BINOBJ:.exec.o=.static)
+
+ifeq	($(STATIC), 1)
+MODULES	= $(MODULES_STATIC)
+else
+MODULES	= $(MODULES_DYNAMIC)
+endif
 
 BUILDDIR = build
 
@@ -79,9 +86,7 @@ $(LIBMW_WDEVICE).%	:
 .PHONY	: modules
 modules	: $(MODULES)
 	$(MKDIR) $(BUILDDIR)
-	for MODNAME in $(MODULES); do	\
-		cp $$MODNAME $(BUILDDIR)/`basename $$MODNAME .exec`; \
-	done;
+	$(CP) $^ $(BUILDDIR)
 
 .PHONY	: lib
 lib 	: lib$(LIBNAME).so lib$(LIBNAME).a
@@ -113,13 +118,12 @@ $(API) 	: $(LIBHDR)
 %.exec.o	: %.exec.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
-ifeq	($(STATIC), 1)
-%.exec	: %.exec.o $(LIBMW).a $(LIBMW_WDEVICE).a $(LIBMW_MODULES).a
-	$(LD) $(LDFLAGS) -o $@ $^
-else
-%.exec	: %.exec.o $(LIBMW).so $(LIBMW_WDEVICE).so $(LIBMW_MODULES).so
+%.exec	: %.exec.o $(LIBMW_MODULES).so $(LIBMW).so $(LIBMW_WDEVICE).so
 	$(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
-endif
+# order of the libraries matters
+# see http://gcc.gnu.org/ml/gcc-help/2004-04/msg00106.html
+%.static	: %.exec.o $(LIBMW_MODULES).a $(LIBMW).a $(LIBMW_WDEVICE).a
+	$(LD) $(LDFLAGS) -o $@ $^
 
 .PHONY	: clean-bin
 clean-bin :
@@ -131,7 +135,7 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(MODULES)
+	$(RM) $(MODULES_STATIC) $(MODULES_DYNAMIC)
 	$(RM) lib$(LIBNAME).a
 	$(RM) lib$(LIBNAME).so
 	$(RRM) $(BUILDDIR)
