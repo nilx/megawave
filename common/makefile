@@ -62,10 +62,17 @@ CWARN 	+= -pedantic -Werror $(CSTRICT_4_1)		\
 endif
 
 # compilation switchs
+DEBUG	?= 0
 PROF	?= 0
 OPTI	?= 0
-DEBUG	?= 0
 STATIC	?= 0
+
+# debug
+ifeq	($(DEBUG), 1)
+CMISC	+= -g
+PROF	= 0
+OPTI	= 0
+endif
 
 # profiling
 ifeq	($(PROF), 1)
@@ -75,12 +82,8 @@ endif
 
 # optimisation
 ifeq	($(OPTI), 1)
-CMISC	+= -O2 -funroll-loops -finline-functions
-endif
-
-# debug
-ifeq	($(DEBUG), 1)
-CMISC	+= -O0 -g
+CMISC	+= -O2 -funroll-loops -finline-functions	\
+	-ffunction-sections -fdata-sections
 endif
 
 # include and link paths
@@ -90,12 +93,15 @@ LPATH	= .
 LIBS	=
 
 # compiler flags
-CFLAGS	= -fPIC $(CSTD) $(CWARN) $(CMISC) $(addprefix -I, $(IPATH))
+CFLAGS	= -fPIC -ffunction-sections				\
+	$(CSTD) $(CWARN) $(CMISC) $(addprefix -I, $(IPATH))
 CFLAGS_NOWARN	= $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
 
 # linker flags
-LDFLAGS	= $(LDDEBUG) $(CPROF)					\
-          $(addprefix -L, $(LPATH)) $(addprefix -l, $(LIBS))
+# FIXME: gcc syntax
+LDFLAGS	= -Wl,--gc-sections					\
+	$(LDDEBUG) $(CPROF)					\
+	$(addprefix -L, $(LPATH)) $(addprefix -l, $(LIBS))
 
 # TOOLS OPTIONS
 
