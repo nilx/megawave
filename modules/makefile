@@ -78,7 +78,7 @@ lib 	: lib$(LIBNAME).a
 endif
 lib$(LIBNAME).a	: $(LIBOBJ)
 	@$(ECHO) '$(AR) ru $$(LIBOBJ) $^'
-	@$(AR) ru $@ $^
+	@$(AR) ru $@ $?
 lib$(LIBNAME).so	: $(LIBOBJ)
 	@$(ECHO) '$(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(LIBOBJ)'
 	@$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
