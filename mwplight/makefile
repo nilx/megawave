@@ -80,7 +80,8 @@ beautify.flag	: $(SRC) $(HDR)
 
 .PHONY	: clean-bin
 clean-bin :
-	$(RM) $(OBJ) $(DEP)
+	@$(ECHO) '$(RM) $$(OBJ)'
+	@$(RM) $(OBJ)
 	$(RM) lint-flag beautify-flag
 
 .PHONY	: distclean-bin

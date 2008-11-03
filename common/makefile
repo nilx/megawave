@@ -28,7 +28,6 @@ TOUCH	= /usr/bin/touch
 STAT	= /usr/bin/stat
 FIND	= /usr/bin/find
 CSPLIT	= /usr/bin/csplit
-TOUCH	= /usr/bin/touch
 INSTALL	= /usr/bin/install
 LINT	= /usr/bin/splint
 EXPAND	= /usr/bin/expand
@@ -90,7 +89,7 @@ endif
 IPATH	= .
 LPATH	= .
 # libraries to link with
-LIBS	=
+SHLIBS	=
 
 # compiler flags
 CFLAGS	= -fPIC -ffunction-sections				\
@@ -101,7 +100,7 @@ CFLAGS_NOWARN	= $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
 # FIXME: gcc syntax
 LDFLAGS	= -Wl,--gc-sections					\
 	$(LDDEBUG) $(CPROF)					\
-	$(addprefix -L, $(LPATH)) $(addprefix -l, $(LIBS))
+	$(addprefix -L, $(LPATH)) $(addprefix -l, $(SHLIBS))
 
 # TOOLS OPTIONS
 
@@ -137,7 +136,6 @@ CPROTO_FLAGS	= $(addprefix -I, $(IPATH)) -q
 			$(CAT) $@; \
 			$(ECHO) -e "\n#endif /* !$${HNAME} */";) > $@.$$$$ \
 		&& $(MV) $@.$$$$ $@
-	$(TOUCH) -m -d "`$(STAT) -c %y $<`" $@
 
 # extract the command-line description
 %.ggo	: %.c

@@ -32,29 +32,21 @@ API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
 #
-# PREBUILD AND UTILS
-#
-
-.PHONY	: prebuild
-prebuild	: autohdr man #dep
-
-.PHONY	: autohdr
-autohdr	: $(AUTOHDR)
-	echo $(AUTOHDR)
-
-#.PHONY	: dep
-#dep	: $(DEP)
-
-#
 # BIN
 #
 
 .PHONY	: lib
-lib 	: lib$(LIBNAME).so lib$(LIBNAME).a
+ifeq	($(STATIC), 0)
+lib 	: lib$(LIBNAME).so
+else
+lib 	: lib$(LIBNAME).a
+endif
 lib$(LIBNAME).a	: $(OBJ)
-	$(AR) ru $@ $^
+	@$(ECHO) '$(AR) ru $$(OBJ) $^'
+	@$(AR) ru $@ $^
 lib$(LIBNAME).so	: $(OBJ)
-	$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
+	@$(ECHO) '$(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
+	@$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
 
 .PHONY	: api
 api 	: $(API)
@@ -82,7 +74,8 @@ beautify.flag	: $(SRC) $(HDR)
 
 .PHONY	: clean-bin
 clean-bin :
-	$(RM) $(OBJ) $(DEP)
+	@echo '$(RM) $$(OBJ)'
+	@$(RM) $(OBJ)
 	$(RM) lint.flag beautify.flag
 
 .PHONY	: distclean-bin
@@ -93,6 +86,20 @@ distclean-bin : clean-bin
 # include the prerequisites files
 # they will be built and re-read if they are missing
 #-include $(DEP)
+
+#
+# PREBUILD AND UTILS
+#
+
+.PHONY	: prebuild
+prebuild	: autohdr man #dep
+
+.PHONY	: autohdr
+autohdr	: $(AUTOHDR)
+	echo $(AUTOHDR)
+
+#.PHONY	: dep
+#dep	: $(DEP)
 
 
 #

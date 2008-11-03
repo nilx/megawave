@@ -18,19 +18,6 @@ all	: lib api modules doc test
 clean	: clean-bin clean-doc
 distclean	: distclean-bin distclean-doc
 
-
-# PREBUILD AND UTILS
-#
-
-.PHONY	: prebuild
-prebuild	: autohdr api man #dep
-
-.PHONY	: autohdr
-autohdr	: $(AUTOHDR)
-
-#.PHONY	: dep
-#dep	: $(DEP)
-
 #
 # BIN
 #
@@ -50,14 +37,7 @@ BINOBJ	= $(BINSRC:.c=.o)
 # no need for cproto and makedepend
 #.PHONY	: $(AUTOHDR:.h=.d)
 
-MODULES_DYNAMIC	= $(BINOBJ:.exec.o=.exec)
-MODULES_STATIC	= $(BINOBJ:.exec.o=.static)
-
-ifeq	($(STATIC), 1)
-MODULES	= $(MODULES_STATIC)
-else
-MODULES	= $(MODULES_DYNAMIC)
-endif
+MODULES	= $(BINOBJ:.exec.o=.exec)
 
 BUILDDIR = build
 
@@ -72,7 +52,11 @@ LIBMW_WDEVICE	= $(BASEDIR)/libmw-wdevice/libmw-wdevice
 MWPLIGHT	= $(BASEDIR)/mwplight/mwplight
 
 
-LIBS 	+= m tiff X11
+SHLIBS	+= #c m X11 tiff
+STLIBS	=				\
+	tiff jpeg z			\
+	X11 xcb xcb-xlib dl Xau Xdmcp	\
+	m c
 LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 
@@ -85,15 +69,19 @@ $(LIBMW_WDEVICE).%	:
 
 .PHONY	: modules
 modules	: $(MODULES)
-	$(MKDIR) $(BUILDDIR)
-	$(CP) $^ $(BUILDDIR)
 
 .PHONY	: lib
-lib 	: lib$(LIBNAME).so lib$(LIBNAME).a
+ifeq	($(STATIC), 0)
+lib 	: lib$(LIBNAME).so
+else
+lib 	: lib$(LIBNAME).a
+endif
 lib$(LIBNAME).a	: $(LIBOBJ)
-	$(AR) ru $@ $^
+	@$(ECHO) '$(AR) ru $$(LIBOBJ) $^'
+	@$(AR) ru $@ $^
 lib$(LIBNAME).so	: $(LIBOBJ)
-	$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
+	@$(ECHO) '$(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(LIBOBJ)'
+	@$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
 
 .PHONY	: api
 api 	: $(API)
@@ -101,7 +89,8 @@ $(API) 	: $(LIBHDR)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
 	$(ECHO) -e "$(addprefix \n#include , $(APIINC))\n" >> $@
-	$(CAT) $^ >> $@
+	@$(ECHO) '$(CAT) $$(LIBHDR) >> $@'
+	@$(CAT) $^ >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
 
 # RULES
@@ -118,31 +107,47 @@ $(API) 	: $(LIBHDR)
 %.exec.o	: %.exec.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
+ifeq	($(STATIC), 0)
 %.exec	: %.exec.o $(LIBMW_MODULES).so $(LIBMW).so $(LIBMW_WDEVICE).so
 	$(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
+	$(CP) $@ $(BUILDDIR)/
+else
 # order of the libraries matters
 # see http://gcc.gnu.org/ml/gcc-help/2004-04/msg00106.html
-%.static	: %.exec.o $(LIBMW_MODULES).a $(LIBMW).a $(LIBMW_WDEVICE).a
+%.exec	: %.exec.o $(LIBMW_MODULES).a $(LIBMW).a $(LIBMW_WDEVICE).a \
+	$(addsuffix .a, $(addprefix /usr/lib/lib, $(STLIBS)))
 	$(LD) $(LDFLAGS) -o $@ $^
+	$(CP) $@ $(BUILDDIR)/
+endif
 
 .PHONY	: clean-bin
 clean-bin :
-	$(RM) $(LIBSRC)
-	$(RM) $(BINSRC)
-	$(RM) $(LIBOBJ)
-	$(RM) $(BINOBJ)
-	$(RM) $(DEP)
+	@echo '$(RM) $$(LIBOBJ) $$(BINOBJ)'
+	@$(RM) $(LIBOBJ) $(BINOBJ)
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(MODULES_STATIC) $(MODULES_DYNAMIC)
+	@echo '$(RM) $$(MODULES)'
+	@$(RM) $(MODULES)
 	$(RM) lib$(LIBNAME).a
 	$(RM) lib$(LIBNAME).so
-	$(RRM) $(BUILDDIR)
+	$(RM) $(BUILDDIR)/*
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
 #-include $(DEP)
+
+# PREBUILD AND UTILS
+#
+
+.PHONY	: prebuild
+prebuild	: autohdr api man #dep
+
+.PHONY	: autohdr
+autohdr	: $(AUTOHDR)
+
+#.PHONY	: dep
+#dep	: $(DEP)
 
 #
 # TEST
