@@ -5,9 +5,11 @@
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
 default :
+.SUFFIXES	:
 
 # TOOLS PATH
 
+SH	= /bin/sh
 CP	= /bin/cp -f
 RM	= /bin/rm -f
 RRM	= /bin/rm -r -f
