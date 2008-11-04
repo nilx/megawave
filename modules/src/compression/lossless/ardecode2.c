@@ -419,7 +419,10 @@ Fimage        Output;           /* String of codewords */
 	    UPDATE_MODEL(symb + 1, symb_pred);
 	  
 	  if (sizeo >= size)
+	  {
 	    REALLOCATE_OUTPUT(Output);
+	    size = Output->nrow * Output->ncol;
+	  }
 	  ptro++;
 	  *ptro = symb;
 	  sizeo++;

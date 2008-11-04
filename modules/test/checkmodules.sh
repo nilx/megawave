@@ -65,11 +65,6 @@ FAIL=0
 TMP=/tmp/megawave_checkmodules.$$.tmp
 mkdir $TMP
 
-#SHARE=/usr/share/megawave
-#DATA=$SHARE/data
-#SAMPLES=$SHARE/samples
-#SCRIPTS=$SHARE/scripts
-
 # check modules
 echo "checking megawave modules"
 
@@ -280,12 +275,11 @@ fscalq -p -n 10 $SAMPLES/images/cimage $TMP/1 > $TMP/2 \
     && pass || fail
 
 fscalq -p -n 10 -o $TMP/2 $SAMPLES/images/cimage $TMP/1 > /dev/null \
-# FIXME
-#    && fiscalq $TMP/2 $TMP/3 > /dev/null \
-#    && fdiff $TMP/1 $TMP/3 $TMP/2 \
-#    && VAL=`fnorm -p 2 $TMP/2 | cut -d"=" -f2` \
-#    && exact $VAL 0 \
-#    && pass || fail
+    && fiscalq $TMP/2 $TMP/3 > /dev/null \
+    && fdiff $TMP/1 $TMP/3 $TMP/2 \
+    && VAL=`fnorm -p 2 $TMP/2 | cut -d"=" -f2` \
+    && exact $VAL 0 \
+    && pass || fail
 
 echo
 
