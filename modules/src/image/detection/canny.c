@@ -21,7 +21,7 @@
 #include "mw.h"
 
 
-void gradient ( IN, gradx,grady,alpha )
+static void gradient ( IN, gradx,grady,alpha )
      Fimage IN;
      Fimage gradx,grady;
      float *alpha;
@@ -235,7 +235,7 @@ void gradient ( IN, gradx,grady,alpha )
 
 /*--------------------------------------------------------------------------*/
 
-void maxima ( gradx,grady,  OUT, IN )
+static void maxima ( gradx,grady,  OUT, IN )
      Fimage OUT,IN;
      Fimage gradx,grady;
 {

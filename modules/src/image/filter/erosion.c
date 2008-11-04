@@ -27,7 +27,7 @@
 
 /*------------- one erosion/dilation of a cimage by a shape s -------------*/
 
-void erodilat1(u,v,s,action)
+static void erodilat1(u,v,s,action)
      Cimage u,v;
      Curve  s;
      short  action;

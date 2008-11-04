@@ -24,7 +24,7 @@
 
 /* compute the scaling function */
 
-void phi(x,out)
+static void phi(x,out)
 double x,*out;
 {
   if (fabs(x)>EPS) *out=3./8.*pow(((sin(M_PI*x/4.))/( M_PI*x/4.)),4.);
@@ -34,7 +34,7 @@ double x,*out;
 
 /* compute the fft of phi (scaling function)*/
 
-void phichapo(N,p,outr,outi) 
+static void phichapo(N,p,outr,outi) 
      int N;
      int p;
      Fsignal outr,outi;
@@ -76,7 +76,7 @@ void phichapo(N,p,outr,outi)
 
 /* compute the low-pass filter in Fourier domain */
 
-void hchapo(N,out)
+static void hchapo(N,out)
      int N; /*nombre de valeurs échantillonnées, N est une puissance de 2*/
      Fsignal out;/*TF du filtre h*/
 {
@@ -124,7 +124,7 @@ void hchapo(N,out)
 
 
 /* compute the high-pass filter gchapo=1-hchapo*/
-void gchapo(N,out)
+static void gchapo(N,out)
      int N;
      Fsignal out;
 {
@@ -146,7 +146,7 @@ void gchapo(N,out)
 
 /* compute the details of the signal*/
 
-void detail(in,out)
+static void detail(in,out)
      Fsignal in,out;
 {
  Fsignal g;
@@ -168,7 +168,7 @@ void detail(in,out)
 
 
 /* compute the approximation of the signal*/
-void approx(in,out)
+static void approx(in,out)
      Fsignal in,out;
 {
   Fsignal h;

@@ -38,7 +38,7 @@
 /* NB : calling this module with out=in is not possible */
 
 /* extract image value (even outside image domain) */
-float v(in,x,y,bg)
+static float v(in,x,y,bg)
      Fimage in;
      int x,y;
      float bg;
@@ -51,7 +51,7 @@ float v(in,x,y,bg)
 /* c[] = values of interpolation function at ...,t-2,t-1,t,t+1,... */
 
 /* coefficients for cubic interpolant (Keys' function) */
-void keys(c,t,a)
+static void keys(c,t,a)
      float *c,t,a;
 {
   float t2,at;
@@ -65,7 +65,7 @@ void keys(c,t,a)
 }
 
 /* coefficients for cubic spline */
-void spline3(c,t)
+static void spline3(c,t)
      float *c,t;
 {
   float tmp;
@@ -78,7 +78,7 @@ void spline3(c,t)
 }
 
 /* pre-computation for spline of order >3 */
-void init_splinen(a,n)
+static void init_splinen(a,n)
      float *a;
      int n;
 {
@@ -91,7 +91,7 @@ void init_splinen(a,n)
 }
 
 /* fast integral power function */
-float ipow(x,n)
+static float ipow(x,n)
      float x;
      int n;
 {
@@ -105,7 +105,7 @@ float ipow(x,n)
 }
 
 /* coefficients for spline of order >3 */
-void splinen(c,t,a,n)
+static void splinen(c,t,a,n)
      float *c,t,*a;
      int n;
 {

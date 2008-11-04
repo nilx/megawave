@@ -19,7 +19,7 @@
 
 /***** Minimize the total variation between two arrays ****/
 
-int minimize_tv(a,b,n)
+static int minimize_tv(a,b,n)
 unsigned char *a,*b;
 int n;
 {

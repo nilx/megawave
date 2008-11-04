@@ -30,7 +30,7 @@
 
 /*--------Definition fonction de la derivee de phi epsilon-----------*/
 /*--- On Utilise phi(t)=sqrt(1+t*t)-1 ---------------*/
-float dphi(x,e)
+static float dphi(x,e)
      float x,e;
 {
   if ( x<=e)  return x/ sqrt(1+e*e) ;
@@ -41,7 +41,7 @@ float dphi(x,e)
 
 
 /*----------- Garde memoire pour le film   ------- */
-void Film_Allocate( out, n,x,y )
+static void Film_Allocate( out, n,x,y )
      Fmovie out;
      int n,x,y;
 {
@@ -73,7 +73,7 @@ void Film_Allocate( out, n,x,y )
 
 /*------Calcule d(i,j)=phi'(|gradB|)/(|gradB|)--*/
 
-void calcula_D(Orig,D,e1 )
+static void calcula_D(Orig,D,e1 )
      Fimage Orig,D;
      float e1;
 {
@@ -106,7 +106,7 @@ void calcula_D(Orig,D,e1 )
 /*----------------------------------------------*/
 
 
-void calcula_B(Orig,D,Nh,Ch,alphabr1)
+static void calcula_B(Orig,D,Nh,Ch,alphabr1)
      Fimage Orig,D;
      Fmovie Nh,Ch;
      float alphabr1;
@@ -179,7 +179,7 @@ void calcula_B(Orig,D,Nh,Ch,alphabr1)
 
 
 
-void calcula_Ch(Ch,D,Fons,Nh,alphac1,alphacr1)
+static void calcula_Ch(Ch,D,Fons,Nh,alphac1,alphacr1)
      Fimage Ch,D,Fons,Nh;
      float alphac1,alphacr1;
 {

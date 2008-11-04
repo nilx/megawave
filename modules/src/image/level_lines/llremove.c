@@ -20,7 +20,7 @@
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))
 
-void llcheck(mimage)
+static void llcheck(mimage)
      Mimage mimage;
 {  
   Point_curve point;

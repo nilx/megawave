@@ -41,7 +41,7 @@ unsigned char InfoPrint; /* Toggle to print info on the current image */
 int CurrentFrameNumber;  /* Current number of the frame */
 int FrameNumber;         /* Total number of frames */
 
-void cmview_notify_help()
+static void cmview_notify_help()
 
 {
   printf("\n\t\tHelp on line\n");
@@ -64,7 +64,7 @@ void cmview_notify_help()
 /*     > 0 if there was an event catched (but Destroy) */
 /*      -1 if the event Destroy was catched (or 'Q')   */
 
-int cmview_notify(ImageWindow,param)
+static int cmview_notify(ImageWindow,param)
 
 Wframe *ImageWindow;
 void *param;          /* Users's parameters: don't forget the cast ! */

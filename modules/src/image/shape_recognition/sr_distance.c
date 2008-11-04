@@ -26,7 +26,7 @@
 
 /* Compute the size (number of points) of a Fcurves structure */
 
-int size_fcurves(cs)
+static int size_fcurves(cs)
 Fcurves cs;
 {
   Fcurve        c;
@@ -44,7 +44,7 @@ Fcurves cs;
 
 /*** Compute the barycenter of a cimage ***/
 
-void bary_img(image,xg,yg)
+static void bary_img(image,xg,yg)
 Cimage image;
 float  *xg,*yg;
 {
@@ -73,7 +73,7 @@ float  *xg,*yg;
 
 /* compute the lowest product up to rotations */
 
-int Product_curves_rot(image,XG,YG,the_shape)
+static int Product_curves_rot(image,XG,YG,the_shape)
 Cimage   image;
 float    XG,YG;
 Fcurves  the_shape;

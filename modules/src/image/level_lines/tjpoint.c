@@ -31,7 +31,7 @@
 
 /*----- Module mscarea customised to speed up the computations -----*/
 
-void compute_area(connex8, U, M, P, nrow, ncol, a, b, x, y, l, stoparea, area)
+static void compute_area(connex8, U, M, P, nrow, ncol, a, b, x, y, l, stoparea, area)
 
 char *connex8;
 unsigned char *U,*M;
@@ -88,7 +88,7 @@ int stoparea,*area;
     }
 }
 
-int fast_mscarea(connex8, U, M, P, stoparea, a, b, x0, y0)
+static int fast_mscarea(connex8, U, M, P, stoparea, a, b, x0, y0)
 
 char *connex8;
 Cimage U;
@@ -126,7 +126,7 @@ int stoparea;
 /* compute the pixel (xmin,ymin) with minimal gray level min */
 /* and the pixel (xmax,ymax) with maximal gray level max     */
 
-int diff_neighbors(U,x,y,l,ncol,q,min,max,xmin,ymin,xmax,ymax)
+static int diff_neighbors(U,x,y,l,ncol,q,min,max,xmin,ymin,xmax,ymax)
 
 unsigned char *U;
 int x,y,l,ncol,q;
@@ -199,7 +199,7 @@ int *min,*max,*xmin,*ymin,*xmax,*ymax;
    and {x / U(x) >= mu} are significant at the junction.
 */
 
-int get_junction(connex8,U,M,P,x,y,dn,ta,q,min,max,xmin,ymin,xmax,ymax,
+static int get_junction(connex8,U,M,P,x,y,dn,ta,q,min,max,xmin,ymin,xmax,ymax,
 		 lambda,mu)
 
 char *connex8;
@@ -297,7 +297,7 @@ int *lambda,*mu;
 
 /* Record the junction location */
 
-void record_junction(J,x,y,l)
+static void record_junction(J,x,y,l)
 
 unsigned char *J;
 int x,y,l;

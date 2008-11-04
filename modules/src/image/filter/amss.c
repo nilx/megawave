@@ -61,7 +61,7 @@ usage = {
 /*         but it is faster to compute the evolution locally            */
 /*   especially if the gradient norm is not needed (no sqrt to compute) */
 /*----------------------------------------------------------------------*/
-void one_step(in,out,grad,curv,step,MinGrad,isotrop,power,no_norm)
+static void one_step(in,out,grad,curv,step,MinGrad,isotrop,power,no_norm)
      Fimage in,out,grad,curv;
      float step,MinGrad;
      char *isotrop,*power,*no_norm;
@@ -181,7 +181,7 @@ void one_step(in,out,grad,curv,step,MinGrad,isotrop,power,no_norm)
 /* -------- from scale = firstScale.                               --------*/
 /* ------------------------------------------------------------------------*/
 
-float  number_iterations(power,lastScale,firstScale,Step)
+static float  number_iterations(power,lastScale,firstScale,Step)
      
      char *power;
      float  lastScale,Step,firstScale;
@@ -207,7 +207,7 @@ float  number_iterations(power,lastScale,firstScale,Step)
 
 /*----------------- Insert of an image into the output movie ----------------*/
 
-void FINAL(pict,sortie)
+static void FINAL(pict,sortie)
      
      Fimage pict;
      Cmovie sortie;

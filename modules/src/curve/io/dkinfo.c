@@ -13,7 +13,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for area(), perimeter(), dsplit_convex() */
 
-int is_closed(c)
+static int is_closed(c)
      Dlist c;
 {
   if (c->size<2) return(0);

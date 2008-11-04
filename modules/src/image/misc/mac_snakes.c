@@ -32,7 +32,7 @@ Wframe *win;
 Dlists ref;
 
 /* the g function in the energy (energy is int g(Du.n)ds) */
-void gdgh(t,g,dg,h)
+static void gdgh(t,g,dg,h)
      double t,*g,*dg,*h;
 {
   if (t>0.) {
@@ -49,7 +49,7 @@ void gdgh(t,g,dg,h)
 }
 
 /* reparameterize a curve with respect to arclength */
-void param(c,size)
+static void param(c,size)
      double *c;
      int size;
 {
@@ -81,7 +81,7 @@ void param(c,size)
 }
 
 /* bilinear interpolation */
-double interpolate(u,x,y)
+static double interpolate(u,x,y)
      Fimage u;
      double x,y;
 {
@@ -98,7 +98,7 @@ double interpolate(u,x,y)
 }
 
 /* init video mode */
-void init_visu(u,in,zoom)
+static void init_visu(u,in,zoom)
      Fimage u;
      Dlists in;
      float zoom;
@@ -115,7 +115,7 @@ void init_visu(u,in,zoom)
 }
 
 /* refresh display */
-int visu(in,zoom,niter,energy,refresh)
+static int visu(in,zoom,niter,energy,refresh)
      Dlists in;
      float zoom;
      int niter,refresh;

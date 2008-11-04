@@ -25,7 +25,7 @@
 #include "mw.h"
 
 
-int diff(a,b)
+static int diff(a,b)
      unsigned char *a;
      unsigned char *b;
 {
@@ -37,7 +37,7 @@ int diff(a,b)
   }
 }
 
-unsigned char TheInf(image,maskn,x,y)
+static unsigned char TheInf(image,maskn,x,y)
      Cimage image;
      Fimage maskn;
      int x,y;
@@ -79,7 +79,7 @@ unsigned char TheInf(image,maskn,x,y)
   return(value);
 }
 
-unsigned char TheSup(image,maskn,x,y)
+static unsigned char TheSup(image,maskn,x,y)
      Cimage image;
      Fimage maskn;
      int x,y;
@@ -123,7 +123,7 @@ unsigned char TheSup(image,maskn,x,y)
 
 
 
-float  Histogram( image,maskn,x,y,Hist)
+static float  Histogram( image,maskn,x,y,Hist)
      Cimage image;
      Fimage maskn;
      int x,y;
@@ -179,7 +179,7 @@ float  Histogram( image,maskn,x,y,Hist)
 /* t1, t2 are the level of the median */
 /* t1=1, t2=0, process a InfSup... */
 
-void ResolutionInfSup(image,A,G,t1,t2,movie,Nmask)
+static void ResolutionInfSup(image,A,G,t1,t2,movie,Nmask)
      Cimage image;
      Cimage A;              /* Image Buffer */
      unsigned char *G;      /* contains the values for each mask */     

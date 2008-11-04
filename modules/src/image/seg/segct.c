@@ -140,7 +140,7 @@ static short TraitHVmono();
 
 
 
-void RegCanalInit(image_org,i,j,canal)
+static void RegCanalInit(image_org,i,j,canal)
                                /* Initialise les canaux associes aux regions */
 Fimage image_org;
 unsigned short i,j;
@@ -151,7 +151,7 @@ float *canal;
  }
 
 
-float SomGris(image_org,i,j)   /* Calcule la somme de gris dans le rectangle */
+static float SomGris(image_org,i,j)   /* Calcule la somme de gris dans le rectangle */
 Fimage image_org;
 unsigned short i,j;            /*  (i*PAS,j*PAS)-( (i+1)*PAS-1,(j+1)*PAS-1 ).*/
 {                              /* Determine l'energie elastique initale !!   */
@@ -165,7 +165,7 @@ unsigned short i,j;            /*  (i*PAS,j*PAS)-( (i+1)*PAS-1,(j+1)*PAS-1 ).*/
 }
 
 
-void BorCanalInit(i,j,canal)     /* Initialise les canaux associes aux bords */
+static void BorCanalInit(i,j,canal)     /* Initialise les canaux associes aux bords */
 unsigned short i,j;              /* de la region [i,j]                       */
 float canal[];                   /* Si i est pair c'est le bord du dessous,  */
 {                                /* si i est impair c'est le bord de droite  */
@@ -173,7 +173,7 @@ float canal[];                   /* Si i est pair c'est le bord du dessous,  */
 }
 
 
-void InitPixel(pixelptr,dir)        /* Met un segment de longeur 'PAS' et de */
+static void InitPixel(pixelptr,dir)        /* Met un segment de longeur 'PAS' et de */
 LI_PIXELSPTR pixelptr;              /*  direction 'dir' dans  'pixelptr'.    */
 char dir;
 {
@@ -199,7 +199,7 @@ char dir;
 #define h_right(A)       ((u_long)((u_long)(A)+1)<<1)
 #define bord_heap(B)     (((BORDPTR)(B))->heap)
 
-void
+static void
 init_heap(bord,n)
 BORDPTR bord;
 u_long n;
@@ -220,7 +220,7 @@ u_long n;
   }
 
 
-void
+static void
 update_heap(bord)
 BORDPTR bord;
 {
@@ -250,7 +250,7 @@ BORDPTR bord;
   return;
 }
 
-void
+static void
 subtract_heap(bord)
 BORDPTR bord;
 {
@@ -271,7 +271,7 @@ BORDPTR bord;
 
 /* Initilization of the intern image model */
 
-void Estimation()                          /* Estimations occupation memoire */
+static void Estimation()                          /* Estimations occupation memoire */
 {
   unsigned long  simage,stotal,total,
                  sregion,sbord,sbordcnxe,ssommet,sli_bords,sli_pixels,
@@ -310,7 +310,7 @@ void Estimation()                          /* Estimations occupation memoire */
 
 
 
-void 
+static void 
 Initialisation(image_org)       
 Fimage  image_org;     /* On cree huit blocs pour reserver de la memoire      */
 {                      /* aux regions,bords et sommets,... ; Grace a un codage*/
@@ -512,7 +512,7 @@ Fimage  image_org;     /* On cree huit blocs pour reserver de la memoire      */
 }
 
 /* free all the 'callocated' memory blocks */
-void
+static void
 Image_free(imageptr)
 MODELEPTR imageptr;
 {
@@ -530,7 +530,7 @@ MODELEPTR imageptr;
 
 /* Merging tools */
 
-void RegMerge(reg,regvois,bordcom)/* On agglutine les regions reg et regvois */
+static void RegMerge(reg,regvois,bordcom)/* On agglutine les regions reg et regvois */
 REGIONPTR reg,regvois;            /* de bord commun bordcom,dans l'espace    */
 BORDPTR bordcom;                  /* memoire de reg                          */
 {
@@ -559,7 +559,7 @@ BORDPTR bordcom;                  /* memoire de reg                          */
 }
 
 
-void ElimLiReg(regvois)             /* Elimine la region regvois de la liste */
+static void ElimLiReg(regvois)             /* Elimine la region regvois de la liste */
 REGIONPTR regvois;                  /* des regions,exit si deux regions      */
 {                                   /* Utiliser avant LiBordsUnion()         */
 
@@ -582,7 +582,7 @@ REGIONPTR regvois;                  /* des regions,exit si deux regions      */
  }
 
 
-void LiBordsUnion(reg,regvois,bordcom)/*  Fait l'union,suivant l'ordre de    */
+static void LiBordsUnion(reg,regvois,bordcom)/*  Fait l'union,suivant l'ordre de    */
 REGIONPTR reg,regvois;        /*  parcours de la frontiere de reg+regvois,de */
 BORDPTR  bordcom;             /*  la liste de bords de reg et regvois.       */
 {                             /* En eliminant l'element pointant sur bordcom */
@@ -711,7 +711,7 @@ BORDPTR  bordcom;             /*  la liste de bords de reg et regvois.       */
   /* Fin mise en place des bords                                    */
 }
 
-void ElimBordeSom(bord)           /* Elimine 'bord' des listes de bord des   */
+static void ElimBordeSom(bord)           /* Elimine 'bord' des listes de bord des   */
 BORDPTR bord;                     /*  sommets des comp. cnxes. de 'bord'     */
 {
   LI_BORDSPTR li;
@@ -742,7 +742,7 @@ BORDPTR bord;                     /*  sommets des comp. cnxes. de 'bord'     */
   }
 }
 
-void DegreSommet(som)            /* Calcule le degre du sommet 'som'         */
+static void DegreSommet(som)            /* Calcule le degre du sommet 'som'         */
 SOMMETPTR som;                   /* Suivant les cas on procede a la suite    */
 {
   unsigned short degre;
@@ -756,7 +756,7 @@ SOMMETPTR som;                   /* Suivant les cas on procede a la suite    */
   if (degre==2) Union2Bords(som);
 }
 
-void Union1Bord(som)               /* Si 'som' appartient a deux composantes */
+static void Union1Bord(som)               /* Si 'som' appartient a deux composantes */
 SOMMETPTR som;                     /*  cnxes. d'un meme bord on reunit ces   */
 {                                  /*  parties connexes                      */
   BORDPTR bord;
@@ -800,7 +800,7 @@ SOMMETPTR som;                     /*  cnxes. d'un meme bord on reunit ces   */
 
 
 
-void Union2Bords(som)              /* Si som est entre deux bords exactement */
+static void Union2Bords(som)              /* Si som est entre deux bords exactement */
 SOMMETPTR som;                     /*  on reunit ces bords en un bord unique */
 {
   int i;
@@ -902,7 +902,7 @@ SOMMETPTR som;                     /*  on reunit ces bords en un bord unique */
   subtract_heap(bord2);
 }
 
-void UnionBordCnxe(reg)  /* Reunit les bords de reg,qui font frontiere a une */
+static void UnionBordCnxe(reg)  /* Reunit les bords de reg,qui font frontiere a une */
 REGIONPTR reg;           /*  meme region voisine,                            */
 {                        /*  on obtient le comp. connexes d'un bord          */
   short i,dir_bord2;
@@ -966,7 +966,7 @@ REGIONPTR reg;           /*  meme region voisine,                            */
 }
 
 
-void Repointer(som,newbord,oldbord) /* som va pointer sur newbord et plus sur*/
+static void Repointer(som,newbord,oldbord) /* som va pointer sur newbord et plus sur*/
 SOMMETPTR som;                      /*  oldbord,si'newbord'est deja dans la  */
 BORDPTR newbord,oldbord;            /*  liste som->Lbords on elimine'oldbord'*/
 {
@@ -993,7 +993,7 @@ BORDPTR newbord,oldbord;            /*  liste som->Lbords on elimine'oldbord'*/
 }
 
 
-void ElimBordeReg(reg,bord)                /* Elimination de bord dans la */
+static void ElimBordeReg(reg,bord)                /* Elimination de bord dans la */
 REGIONPTR reg;                             /*  liste de bords de region   */
 BORDPTR bord;
 {
@@ -1010,7 +1010,7 @@ BORDPTR bord;
 
 
 
-LI_PIXELSPTR 
+static LI_PIXELSPTR 
 LiPixelsUnion(liste1,liste2)                /* Met la liste de pixels liste2 */
 LI_PIXELSPTR liste1,liste2;                 /*  derriere liste1              */
 {
@@ -1031,7 +1031,7 @@ LI_PIXELSPTR liste1,liste2;                 /*  derriere liste1              */
 /* Procedure involving the functional */
 
 
-float
+static float
 eval_lambda(bord)  /* evaluate for which vakue of lambda this border will */
 BORDPTR  bord;     /* vanish and its adjacent regions be merged           */
 {
@@ -1054,7 +1054,7 @@ BORDPTR  bord;     /* vanish and its adjacent regions be merged           */
 /* 'segmentation' PROCEDURES */
 
 
-void
+static void
 segment()
 {
   float lam;
@@ -1073,7 +1073,7 @@ segment()
 
 
 
-void EcritComm(comm)     /* Ecrit le commentaire pour le fichier resultat,   */
+static void EcritComm(comm)     /* Ecrit le commentaire pour le fichier resultat,   */
 char *comm;              /*  ceci suivant les particularites de l'algorithme.*/
 {                        /* Utilisee par 'SaveIm()' et autres 'Save'         */
 
@@ -1088,7 +1088,7 @@ char *comm;              /*  ceci suivant les particularites de l'algorithme.*/
 }
 
 
-void make_curves(curves)
+static void make_curves(curves)
 Curves curves;
 {
   REGIONPTR regptr;
@@ -1162,7 +1162,7 @@ Curves curves;
 }
 
 
-void Dess_u(boundary,u)  
+static void Dess_u(boundary,u)  
 Cimage boundary;          /* Balayage de l'image gauche/droite et haut/bas   */
 Fimage u;                 /* Determine s'il ya un bord ou non                */
 {                         /* Si oui on change de region, dans les deux cas   */
@@ -1185,7 +1185,7 @@ Fimage u;                 /* Determine s'il ya un bord ou non                */
 }
 
 
-REGIONPTR RegAdjD(reg,i,j)
+static REGIONPTR RegAdjD(reg,i,j)
 REGIONPTR reg;
 short i,j;
 {
@@ -1222,7 +1222,7 @@ short i,j;
 }
 
 
-REGIONPTR RegAdjB(reg,i,j)
+static REGIONPTR RegAdjB(reg,i,j)
 REGIONPTR reg;
 short i,j;
 {
@@ -1259,7 +1259,7 @@ short i,j;
 }
 
  
-void BlackBound(whitesheet)
+static void BlackBound(whitesheet)
 Cimage whitesheet;
 {
   short a0,b0,a1,b1,dx,dy;
@@ -1296,7 +1296,7 @@ Cimage whitesheet;
 }
 
 
-short TraitHVmono(whitesheet,a0,b0,a1,b1,c)
+static short TraitHVmono(whitesheet,a0,b0,a1,b1,c)
 Cimage whitesheet;
 short a0, b0,a1,b1;
 unsigned char c;

@@ -29,7 +29,7 @@ static int comp(i,j)
   return ((int)*((unsigned char *)i)-(int)*((unsigned char *)j));
 }
 
-int median1(u,v,s)
+static int median1(u,v,s)
      Cimage u,v;
      Curve  s;
 {

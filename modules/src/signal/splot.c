@@ -51,7 +51,7 @@ int selrect,fx1,fx2,fy1,fy2;  /* for rectangle selection */
 /*--------------------------------------------------------*/
 
 /* compute the rule (graduations) associated to a given interval */
-void getrule(a,b,ofs,step,nsub)
+static void getrule(a,b,ofs,step,nsub)
      double a,b;
      double *ofs,*step;
      int *nsub;
@@ -70,7 +70,7 @@ void getrule(a,b,ofs,step,nsub)
 }
 
 /* compute max interval [n1,n2] such that [sx1,sx2] contains x([n1,n2]) */
-void interval(n1,n2)
+static void interval(n1,n2)
      int *n1,*n2;
 {
   *n1 = (int)ceil ((sx1-(double)signal->shift)/(double)signal->scale);
@@ -79,7 +79,7 @@ void interval(n1,n2)
   if (*n2>=signal->size) *n2=signal->size-1;
 }
 
-int minmax(min,max)
+static int minmax(min,max)
      double *min,*max;
 {
   int n1,n2,i;
@@ -96,7 +96,7 @@ int minmax(min,max)
   return(0);
 }
 
-double trunc(v,ref)
+static double trunc(v,ref)
      double v,ref;
 {
   ref = v/ref; 
@@ -105,7 +105,7 @@ double trunc(v,ref)
 }
 
 /* draw a line with any coordinates (part can be out of frame) */
-void draw_framed_ccimage(u,xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax)
+static void draw_framed_ccimage(u,xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax)
      Ccimage u;
      int xa,ya,xb,yb,xmin,xmax,ymin,ymax;
      unsigned char r,g,b;
@@ -144,7 +144,7 @@ void draw_framed_ccimage(u,xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax)
 
 #define STRSIZE 15
 
-void plot_signal()
+static void plot_signal()
 {
   double xofs,xstep,yofs,ystep,v,truncref;
   int i,k,x,y,n1,n2,line,zero,x1,x2,ox,oy,fgcolor,bgcolor,max,xsub,ysub;
@@ -286,7 +286,7 @@ void plot_signal()
   }
 }
 
-void draw_selection_rectangle()
+static void draw_selection_rectangle()
 {
   mw_draw_ccimage(image,fx1,fy1,fx2,fy1,0,0,255);
   mw_draw_ccimage(image,fx2,fy1,fx2,fy2,0,0,255);
@@ -294,7 +294,7 @@ void draw_selection_rectangle()
   mw_draw_ccimage(image,fx1,fy2,fx1,fy1,0,0,255);
 }
 
-void rescale_sy()
+static void rescale_sy()
 {
   double d;
   
@@ -312,7 +312,7 @@ void rescale_sy()
   } while (sy1==sy2);
 }
 
-void init_sxy()
+static void init_sxy()
 {
   double d;
   
@@ -323,7 +323,7 @@ void init_sxy()
   rescale_sy();
 }
 
-void zoom_sx(x,y)
+static void zoom_sx(x,y)
      int x,y;
 {
   double d,m;
@@ -336,7 +336,7 @@ void zoom_sx(x,y)
   }
 }
 
-void unzoom_sxy()
+static void unzoom_sxy()
 {
   double d;
   
@@ -348,7 +348,7 @@ void unzoom_sxy()
   sy2 += d;
 }
 
-void shift_sx(p)
+static void shift_sx(p)
      double p;
 {
   p *= sx2-sx1;
@@ -356,7 +356,7 @@ void shift_sx(p)
   sx2 += p;
 }
   
-void shift_sy(p)
+static void shift_sy(p)
      double p;
 {
   p *= sy2-sy1;
@@ -364,7 +364,7 @@ void shift_sy(p)
   sy2 += p;
 }
   
-void select_region()
+static void select_region()
 {
   double tx1,tx2,ty1,ty2;
 
@@ -378,14 +378,14 @@ void select_region()
 }
 
 /*** refresh display with current image ***/
-void redisplay()
+static void redisplay()
 {
   WLoadBitMapColorImage(win,image->red,image->green,image->blue,nx,ny);
   WRestoreImageWindow(win,0,0,nx,ny);
   WFlushWindow(win);
 }
 
-void help()
+static void help()
 {
   printf("\n\t\tHelp on line\n");
   printf("\nMouse:\n");
@@ -406,7 +406,7 @@ void help()
 }
 
 /* handle display events */
-int win_notify(window,param)
+static int win_notify(window,param)
 Wframe *window;
 void *param;
 {

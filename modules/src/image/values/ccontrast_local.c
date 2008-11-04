@@ -27,7 +27,7 @@ float *newht_global;		/* new histogram */
 
 /*--------------- SOME BASIC FUNCTIONS ---------------------------*/
 
-int integer_sup(f)
+static int integer_sup(f)
 float f;
 {
   int q;
@@ -39,7 +39,7 @@ float f;
   return q;
 }
 
-int IPOWER(a, INT)			/* Integer Power */
+static int IPOWER(a, INT)			/* Integer Power */
 int a, INT;
 {
   int i;
@@ -60,7 +60,7 @@ int a, INT;
    
    fimage(point1)==fimage(point2) <=> image(point1)==image(point2)
 */
-void ccontrast_curve(image, fimage, curve, lambda1, lambda2, image_size, n_flag)
+static void ccontrast_curve(image, fimage, curve, lambda1, lambda2, image_size, n_flag)
 Cimage image;			/* original image */
 Fimage fimage;			/* image to be enhanced */
 Fcurve curve;			/* enhancing region */

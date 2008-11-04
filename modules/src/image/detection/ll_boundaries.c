@@ -53,7 +53,7 @@ Flist    boundary;
 
 /*===== Compute the minimum contrast and the length of the curve l =====*/
 
-float min_contrast(l,length)
+static float min_contrast(l,length)
 Flist l;
 float *length;
 {
@@ -90,7 +90,7 @@ float *length;
 
 /*===== compute NFA term associated to contrast mu =====*/
 
-float logH(mu)
+static float logH(mu)
 float mu;
 {
   int i;
@@ -104,7 +104,7 @@ float mu;
 
 /*===== first pass: compute # meaningful sons w/o contrast reversal =====*/
 
-void update_mydata(s,threshold,type)
+static void update_mydata(s,threshold,type)
 Shape s;
 float threshold;
 char type;
@@ -161,7 +161,7 @@ char type;
 
 /*===== second pass : compute and store maximal meaningful boundaries =====*/
 
-void add_boundary(s,threshold,bestnfa_inf,bestnfa_sup,type)
+static void add_boundary(s,threshold,bestnfa_inf,bestnfa_sup,type)
 Shape s;
 float threshold;
 float *bestnfa_inf,bestnfa_sup;
@@ -225,7 +225,7 @@ char type;
 
 /*===== simplified recursive algorithm for no or weak maximality =====*/
 
-void add_boundary_weak(s,threshold,bestnfa_inf,bestnfa_sup)
+static void add_boundary_weak(s,threshold,bestnfa_inf,bestnfa_sup)
 Shape s;
 float threshold;
 float *bestnfa_inf,bestnfa_sup;

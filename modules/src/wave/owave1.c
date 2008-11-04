@@ -150,7 +150,7 @@ long	size;		/* Size of the signal */
 
 
 
-void
+static void
 NORM_FIL(ri, edge_ri, filternorm, edge, haar_ri)
 
 	/*--- Normalisation of the coefficients of the filter impulse 
@@ -214,7 +214,7 @@ NORM_FIL(ri, edge_ri, filternorm, edge, haar_ri)
 
 
 
-void
+static void
 HAAR_WAVEL1(wtrans, haar, filternorm)
 
     Wtrans1d    wtrans;		/* Wavelet transform */
@@ -263,7 +263,7 @@ HAAR_WAVEL1(wtrans, haar, filternorm)
 
 
 
-void
+static void
 WAVEL(wtrans, J, int_ri, edge_ri, edge, inverse, haar_ri)
 
 	/*----- Computes the wavelet decomposition of S -----*/

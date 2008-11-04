@@ -41,7 +41,7 @@ double tmp;
 
 
 /*** return +1, 0 or -1, the sign of det(b-a,c-b) modulo double precision ***/
-int dir(ax,ay,bx,by,cx,cy)
+static int dir(ax,ay,bx,by,cx,cy)
      double ax,ay,bx,by,cx,cy;
 {
   double det,prec;
@@ -58,7 +58,7 @@ int dir(ax,ay,bx,by,cx,cy)
 
 /*----------------- Split a curve into convex components -----------------*/
 
-int my_split_convex(in,out,ncc)
+static int my_split_convex(in,out,ncc)
      Dlist  in;
      double **out;
      int    *ncc;
@@ -174,7 +174,7 @@ int my_split_convex(in,out,ncc)
 /*------------------------------- SAMPLING  -------------------------------*/
 
 /*** sample a curve : return next available address for out ***/
-double *sample(in,size,out,eps2)
+static double *sample(in,size,out,eps2)
      double  *in,*out;
      int     size;
      double  eps2;
@@ -239,7 +239,7 @@ double *sample(in,size,out,eps2)
 
 
 /*** signed area of a polygonal sector p-q1-q2-p ***/
-double area_pol(p,q1,q2)
+static double area_pol(p,q1,q2)
      double *p,*q1,*q2;
 {
   double area,*q;
@@ -252,7 +252,7 @@ double area_pol(p,q1,q2)
 }
 
 /*------------------------- AFFINE CONVEX EROSION -------------------------*/
-int aceros(in,size,out,area)
+static int aceros(in,size,out,area)
      double  *in,*out;
      int     size;
      double  area;
@@ -373,7 +373,7 @@ int aceros(in,size,out,area)
 
 /*----------------------- DISCRETE AFFINE EROSION  -----------------------*/
 
-void dafferos(l,area,eps2,rad,ncc)
+static void dafferos(l,area,eps2,rad,ncc)
      Dlist    l;      /* input/output curve */
      double   *area;  /* desired absolute area step (real one is returned) */
      double   eps2;   /* absolute precision squared */

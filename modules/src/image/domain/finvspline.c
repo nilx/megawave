@@ -18,7 +18,7 @@
 #include <math.h>
 #include "mw.h"
 
-double initcausal(c,n,z)
+static double initcausal(c,n,z)
      double *c;
      int n;
      double z;
@@ -38,7 +38,7 @@ double initcausal(c,n,z)
   return (sum/(1.-zk*zk));
 }
 
-double initanticausal(c,n,z)
+static double initanticausal(c,n,z)
      double *c;
      int n;
      double z;
@@ -47,7 +47,7 @@ double initanticausal(c,n,z)
 }
 
 
-void invspline1D(c,size,z,npoles)
+static void invspline1D(c,size,z,npoles)
      double *c;
      int size;
      double *z;

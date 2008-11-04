@@ -28,7 +28,7 @@
 /* Compute the 8 neighbour pixels of the current pixel p              */
 /* When p touches the border of the image, a mirror effect is applied */
 
-void neighbor(x,y,xmax,ymax,p,left,right,up,down,right_down,left_up,right_up,left_down)
+static void neighbor(x,y,xmax,ymax,p,left,right,up,down,right_down,left_up,right_up,left_down)
 
 register int x,y,xmax,ymax;
 register float *p;
@@ -126,7 +126,7 @@ float **left,**right,**up,**down,**right_down,**left_up,**right_up,**left_down;
 /* Compute the new gray value of the current point (x,y) by solving an implicit Euler scheme */
 /* of the PDE du/dt = D2u (Du/|Du|, Du/|Du|)                                                 */
 
-void compute_point(x,y,xmax,ymax,p,prev_value,ht,omega)
+static void compute_point(x,y,xmax,ymax,p,prev_value,ht,omega)
 register int x,y,xmax,ymax;
 register float *p;
 float prev_value,ht,omega;

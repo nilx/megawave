@@ -129,7 +129,7 @@ char *font[98]={
 ":7422>08000000000000008000000012204800000000000000800000000<2030"};
 
 
-int getdotfont(v,x,y)
+static int getdotfont(v,x,y)
      int v,x,y;
 {
   int adr,bit;

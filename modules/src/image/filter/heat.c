@@ -22,7 +22,7 @@
 #include "mw.h"
 
 /*--- One iteration of u<-u+s*Laplacian ---*/
-void iter(u,v,s)
+static void iter(u,v,s)
      Fimage u,v;
      float  s;
 {

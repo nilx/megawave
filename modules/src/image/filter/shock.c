@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-void iter(u,v,s)
+static void iter(u,v,s)
      Fimage u,v;
      float s;
 {

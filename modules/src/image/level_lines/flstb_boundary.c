@@ -42,7 +42,7 @@ typedef struct {
 #endif
 
 /* Return x, (x,value) being on segment joining (0,value1) and (1,value2) */
-float offset(value1, value2, value)
+static float offset(value1, value2, value)
 float value1, value2, value;
 {
   assert((value1 < value2 && value1 <= value && value <= value2) ||
@@ -52,7 +52,7 @@ float value1, value2, value;
 
 /* The code of this function is UGLY. It finds the starting direction of an
 open level line */ 
-unsigned char first_direction(pPoint, pImage)
+static unsigned char first_direction(pPoint, pImage)
 point_t* pPoint;
 Fimage pImage;
 {
@@ -68,7 +68,7 @@ Fimage pImage;
 /* Return the direction followed by the level line crossing the dual
 edgel adjacent to the dual pixels of top left corners *'pPrevious' and
 *'pPoint' */
-unsigned char direction(pPrevious, pPoint)
+static unsigned char direction(pPrevious, pPoint)
 point_t *pPrevious, *pPoint;
 {
   if(pPoint->x > pPrevious->x)
@@ -83,7 +83,7 @@ point_t *pPrevious, *pPoint;
 /* (*pX, *pY) being the coordinates of (the center of) a dual pixel,
 modify them so they are the coordinates of the entry point of the level line
 at 'value', knowing it follows direction 'cDirection' */
-void entry_point(cDirection, value, pImage, pX, pY)
+static void entry_point(cDirection, value, pImage, pX, pY)
 unsigned char cDirection;
 float value;
 Fimage pImage;
@@ -127,7 +127,7 @@ float *pX, *pY;
 and the exit point (x2, y2). The first point is stored in 'pPoint', the
 following ones in the following pointers. Return the number of discretized
 points */
-int discretize(iPrecision, pImage, pPoint, xDualPixel, yDualPixel,
+static int discretize(iPrecision, pImage, pPoint, xDualPixel, yDualPixel,
 	       x1, y1, x2, y2)
 int iPrecision;
 Fimage pImage;
@@ -394,7 +394,7 @@ float x1, y1, x2, y2;
 }
 
 /* Fill pBoundary, the level line boundary of pShape */
-void extract_line(iPrecision, pImage, pTree, pShape, pDualchain, pBoundary)
+static void extract_line(iPrecision, pImage, pTree, pShape, pDualchain, pBoundary)
 int iPrecision;
 Fimage pImage;
 Shapes pTree;

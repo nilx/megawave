@@ -24,7 +24,7 @@ usage = {
    Compute in (*mincol, *minrow) the translation point.
 */
 
-void Get_Size_Image(C,ncol,nrow,mincol,minrow)
+static void Get_Size_Image(C,ncol,nrow,mincol,minrow)
      
      Curves C;
      int *ncol, *nrow;
@@ -56,7 +56,7 @@ void Get_Size_Image(C,ncol,nrow,mincol,minrow)
    p0->next and the next non-successive point p1.
 */
 
-int Seek_Non_Multiple_Point(C,bitmap,mincol,minrow,p0,p1)
+static int Seek_Non_Multiple_Point(C,bitmap,mincol,minrow,p0,p1)
 
      Curves C;
      Cimage bitmap;
@@ -90,7 +90,7 @@ int Seek_Non_Multiple_Point(C,bitmap,mincol,minrow,p0,p1)
    If lpoint=NULL, add the points until the end of the curve.
 */
 
-void Add_Curve(O,fpoint,lpoint,bitmap,mincol,minrow)
+static void Add_Curve(O,fpoint,lpoint,bitmap,mincol,minrow)
 
      Curves O;
      Point_curve fpoint,lpoint;
@@ -134,7 +134,7 @@ void Add_Curve(O,fpoint,lpoint,bitmap,mincol,minrow)
 
 /* Split the curves in case of multiple points */
 
-Curves Split_Curves(O,C,L,bitmap,mincol,minrow)
+static Curves Split_Curves(O,C,L,bitmap,mincol,minrow)
 
 
      Curves O,C;

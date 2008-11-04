@@ -33,7 +33,7 @@
 #define INSIDE(A)   ((minvalue<=(A))&&((A)<=maxvalue))
 #define OUTSIDE(A)  (!INSIDE(A))
 
-void
+static void
 produce_HV(im,NL,NC,minvalue,maxvalue,H,V)
 float **im,minvalue,maxvalue;
 unsigned int NL,NC;
@@ -66,7 +66,7 @@ unsigned char **H, **V;
   }
 }
 
-unsigned long
+static unsigned long
 count_X(H,V,NL,NC)
 unsigned char **H,**V;
 unsigned int NL,NC;
@@ -93,7 +93,7 @@ unsigned int NL,NC;
   return(count_points);
 }
 
-Morpho_line
+static Morpho_line
 produce_lline(old_lline,minvalue,maxvalue,current_point,current_type,open)
 Morpho_line old_lline;
 float minvalue,maxvalue;
@@ -116,7 +116,7 @@ unsigned char open;
 }
 
 
-void
+static void
 follow_open_line(NL,NC,H,V,ll,cc,sum,p,t)
 unsigned int NL,NC;
 unsigned char **H,**V;
@@ -159,7 +159,7 @@ Point_type  *t;
   current_type->next=NULL;
 }
 
-void
+static void
 get_open_lines(im,NL,NC,minvalue,maxvalue,H,V,lline,p,t)
 float **im, minvalue,maxvalue;
 unsigned int NL,NC;
@@ -252,7 +252,7 @@ Point_type *t;
   *t=current_type;
 }
 
-void
+static void
 follow_closed_line(H,V,ll,cc,sum,p,t)
 unsigned char **H,**V;
 int ll,cc,sum;
@@ -291,7 +291,7 @@ Point_type *t;
     current_type->previous->next=NULL;
 }
 
-void
+static void
 get_closed_lines(im,NL,NC,minvalue,maxvalue,H,V,lline,p,t)
 float **im, minvalue,maxvalue;
 unsigned int NL,NC;

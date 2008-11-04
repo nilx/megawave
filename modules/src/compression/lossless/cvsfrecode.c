@@ -26,7 +26,7 @@ usage = {
    for the second point (which always exists) : down, up, right, left;
    for other points : straight, right, left and end_of_curve.
 */
-unsigned int Freeman(C,dirchg,npts,ncvs)
+static unsigned int Freeman(C,dirchg,npts,ncvs)
 
 Curves C;
 Fimage dirchg;

@@ -20,7 +20,7 @@
 #include <math.h>
 #include "mw.h"
 
-void bound(x,y,ca,sa,xmin,xmax,ymin,ymax)
+static void bound(x,y,ca,sa,xmin,xmax,ymin,ymax)
      int x,y;
      float ca,sa;
      int *xmin,*xmax,*ymin,*ymax;

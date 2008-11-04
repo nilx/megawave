@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-Point_fcurve new_point(p,x,y)
+static Point_fcurve new_point(p,x,y)
 Point_fcurve p;
 float x,y;
 {

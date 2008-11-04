@@ -23,7 +23,7 @@ usage = {
 
 /* Return the percent of thresholded coefficients for the given T */
 
-float getp_threshold(in,T)
+static float getp_threshold(in,T)
 
      Wtrans1d in;
      float T;
@@ -47,7 +47,7 @@ float getp_threshold(in,T)
 
 /* Do the threshold */
 
-void do_threshold(in,T,s,M)
+static void do_threshold(in,T,s,M)
 
      Wtrans1d in;
      float T;
@@ -103,7 +103,7 @@ void do_threshold(in,T,s,M)
 
 /* Return threshold bound to get P % coeff. thresholded */
 
-float get_threshold_bound(in,P)
+static float get_threshold_bound(in,P)
 
      Wtrans1d in;  /* Input wavelet transform */
      float P;

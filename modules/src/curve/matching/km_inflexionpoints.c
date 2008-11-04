@@ -23,7 +23,7 @@ static char Closed;
 static int N_Points;
 
 /* return sign of det(u,v) modulo EPS */
-int signdet(ux,uy,vx,vy)
+static int signdet(ux,uy,vx,vy)
      float ux,uy,vx,vy;
 {
   float aux;

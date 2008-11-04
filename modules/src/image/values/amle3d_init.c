@@ -21,7 +21,7 @@
 /* Compute the 4 neighbour pixels of the current pixel p              */
 /* When p touches the border of the image, a mirror effect is applied */
 
-void neighbor_4(x,y,xmax,ymax,p,left,right,up,down)
+static void neighbor_4(x,y,xmax,ymax,p,left,right,up,down)
      register int x,y,xmax,ymax;
      register float *p;
      float **left,**right,**up,**down;

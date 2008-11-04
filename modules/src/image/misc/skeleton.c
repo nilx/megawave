@@ -36,7 +36,7 @@ static float TMP;
 #define   MIN3(A,B,C)       (A) < (TMP= ((B)<(C)) ? (B):(C)) ? (A) : TMP
 
 
-void Final(pict,sortie)
+static void Final(pict,sortie)
 
 Cimage pict;
 Cmovie sortie;
@@ -78,7 +78,7 @@ for(i=0;i<taille;i++) {
                                  /* test de largeur			     */
                                  /* on a central element                     */
 
-int test_mcm(im,a)
+static int test_mcm(im,a)
 Cimage im;
 unsigned  long a;
 
@@ -218,7 +218,7 @@ return(test);
   
 }
 
-int test_thinning(im,a,l_min)
+static int test_thinning(im,a,l_min)
 Cimage im;
 unsigned  long a;
 int l_min;
@@ -318,7 +318,7 @@ return(test);
 }
 
 
-int test_carda(im,a,l_min)
+static int test_carda(im,a,l_min)
 Cimage im;
 unsigned  long a;
 int l_min;
@@ -382,7 +382,7 @@ return(test);
 
                                  /* compute erosion			     */
                                  /* on a central element                     */
-int image_erosion(im,a,r)
+static int image_erosion(im,a,r)
 Cimage im;
 unsigned long a;
 float r;

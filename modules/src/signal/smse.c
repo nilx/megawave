@@ -26,7 +26,7 @@ usage = {
 #include  "mw.h"
 
 
-void NORM_SIG(signal)
+static void NORM_SIG(signal)
      
      /*--- Normalize `signal` to 0.0 mean and 1.0 variance ---*/
      

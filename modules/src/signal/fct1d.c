@@ -21,7 +21,7 @@
 #include  "mw.h"
 #include  "mw-modules.h" /* for fft1d() */
 
-int is_a_power_of_two(n)
+static int is_a_power_of_two(n)
      int n;
 {
   if (n<1) return(0);
@@ -29,7 +29,7 @@ int is_a_power_of_two(n)
   return(n==1);
 }
 
-void realft(data,n,inverse)
+static void realft(data,n,inverse)
      Fsignal data;
      int n;
      char *inverse;

@@ -19,7 +19,7 @@
 
 /*---------- Linear Interpolation ----------*/
 
-void linear(dst,a,b,n)
+static void linear(dst,a,b,n)
 unsigned char *dst,*a,*b;
 int n;
 {

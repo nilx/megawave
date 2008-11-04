@@ -27,7 +27,7 @@ typedef struct filbank {
 
 
 
-void INIT_PREC(edge_ri, precleftfil, precrightfil, unprecleftfil, unprecrightfil)
+static void INIT_PREC(edge_ri, precleftfil, precrightfil, unprecleftfil, unprecrightfil)
 
 Fimage edge_ri;
 Filbank *precleftfil, *precrightfil, *unprecleftfil, *unprecrightfil;
@@ -72,7 +72,7 @@ for (j=0; j<N; j++)
 
 
 
-void
+static void
 PRECOND(signal, output, LeftMat, RightMat)	
 
 	/*--- (Un)preconditionning of image's edges ---*/

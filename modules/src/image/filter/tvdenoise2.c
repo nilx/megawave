@@ -30,7 +30,7 @@ unsigned char *image; /* image plane for display */
 Wframe *win;          /* display window */
 
 
-void init_display(str)
+static void init_display(str)
 char *str;
 {
   win = (Wframe *)mw_get_window(NULL,nx,ny+15,10,10,str);
@@ -43,7 +43,7 @@ char *str;
   WFlushWindow(win);
 }
 
-void display(gray,str)
+static void display(gray,str)
      double *gray;
      char *str;
 {
@@ -65,7 +65,7 @@ void display(gray,str)
 }
 
 /* compute u = ref-div(p), E=||u||^2 and update p */
-double energy_evol(px,py,ref,u,lambda,s)
+static double energy_evol(px,py,ref,u,lambda,s)
      double *px,*py,*u,lambda,s;
      float *ref;
 {

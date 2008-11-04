@@ -14,7 +14,7 @@
 
 
 /* For each shape, find its number of proper pixels */
-void compute_proper_pixels(pTree, tabNbOfProperPixels)
+static void compute_proper_pixels(pTree, tabNbOfProperPixels)
      Shapes pTree;
      int* tabNbOfProperPixels;
 {
@@ -36,7 +36,7 @@ void compute_proper_pixels(pTree, tabNbOfProperPixels)
 /* Allocate the array of pixels of each shape. Thanks to the tree structure,
 we allocate only memory for the pixels of the root, and other arrays are
 just pointers */
-void allocate_pixels(pTree, tabNbOfProperPixels)
+static void allocate_pixels(pTree, tabNbOfProperPixels)
      Shapes pTree;
      int* tabNbOfProperPixels;
 {

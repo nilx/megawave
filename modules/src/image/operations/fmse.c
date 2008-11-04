@@ -20,7 +20,7 @@
 #include <math.h>
 #include  "mw.h"
 
-void
+static void
 NORM_IMG(image)
 
 	/*--- Normalize `image` to 0.0 mean and 1.0 variance ---*/

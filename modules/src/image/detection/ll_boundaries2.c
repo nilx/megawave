@@ -69,7 +69,7 @@ struct myglobal{
 
 
 /* store meaningful boundaries */
-void store_boundaries(cs,tree,image,prec,tabsaddles,visit,all,
+static void store_boundaries(cs,tree,image,prec,tabsaddles,visit,all,
 		      NormofDu,eps2)
 Flists cs;
 Shapes tree;
@@ -122,7 +122,7 @@ char *all;
 
 /*===== Compute the minimum contrast and the length of the curve l =====*/
 
-float min_contrast(l,length,NormofDu)
+static float min_contrast(l,length,NormofDu)
 Flist l;
 float *length;
 Fimage NormofDu;
@@ -158,7 +158,7 @@ Fimage NormofDu;
   return(minmu);
 }
 
-float dist2(p,q)
+static float dist2(p,q)
 float *p,*q;
 {
   double x, y;
@@ -169,7 +169,7 @@ float *p,*q;
 
 
 /* allocate memory for boundaries data */
-void pixels_and_data(tree,NormofDu,image,prec,tabsaddles,sumsqper)
+static void pixels_and_data(tree,NormofDu,image,prec,tabsaddles,sumsqper)
 Shapes tree;
 Fimage NormofDu,image;
 float **tabsaddles,*sumsqper;
@@ -217,7 +217,7 @@ int *prec;
 }
 
 
-float image_max(image)
+static float image_max(image)
 Fimage image;
 {
   int i;
@@ -231,7 +231,7 @@ Fimage image;
 
 
 /* compute gradient histogram  in a shape */
-Fsignal shape_histo(shape,NormofDu,size,scale)
+static Fsignal shape_histo(shape,NormofDu,size,scale)
 Shape shape;
 Fimage NormofDu;
 int size;
@@ -263,7 +263,7 @@ float scale;
 }
 
 /* compute log10 of repartition function from a histogram */
-void update_repart(local_histo,local_repart)
+static void update_repart(local_histo,local_repart)
 Fsignal local_histo,local_repart;
 {
   int nbins,i;
@@ -283,7 +283,7 @@ Fsignal local_histo,local_repart;
 
 
 
-float logH(mu,local_repart)
+static float logH(mu,local_repart)
 float mu;
 Fsignal local_repart;
 {
@@ -296,7 +296,7 @@ Fsignal local_repart;
 
 
 /* compute IN PLACE the difference of two signals and take the positive part*/
-void signal_pos_diff(sig1,sig2)
+static void signal_pos_diff(sig1,sig2)
 Fsignal sig1,sig2;
 {
   int i;
@@ -307,7 +307,7 @@ Fsignal sig1,sig2;
   }
 }
 
-void update_root_histo(local_root,local_histo,NormofDu)
+static void update_root_histo(local_root,local_histo,NormofDu)
 Shape local_root;
 Fsignal local_histo;
 Fimage NormofDu;
@@ -352,7 +352,7 @@ Fimage NormofDu;
 
 
 /* compute nfa of a given shape boundary */
-int update_mydata(s,type,local_root,local_repart,Global,new_open)
+static int update_mydata(s,type,local_root,local_repart,Global,new_open)
 Shape s,local_root;
 char type;
 Fsignal local_repart;
@@ -420,7 +420,7 @@ int *new_open;
 
 /*===== second pass : compute and select maximal meaningful boundaries =====*/
 /* classical maximality,  if research is not local */
-void add_boundary(s,local_root,bestnfa_inf,bestnfa_sup,type,Global)
+static void add_boundary(s,local_root,bestnfa_inf,bestnfa_sup,type,Global)
 Shape s,local_root;
 float *bestnfa_inf,bestnfa_sup;
 char type;
@@ -508,7 +508,7 @@ struct myglobal Global;
    This is used to give a partition of the image taken as support of the local 
    contrast histograms*/
 
-void total_maximal(s,local_root,bestnfa_inf,bestnfa_sup,Global,new_open)
+static void total_maximal(s,local_root,bestnfa_inf,bestnfa_sup,Global,new_open)
 Shape s,local_root;
 float *bestnfa_inf,bestnfa_sup;
 struct myglobal Global;
@@ -567,7 +567,7 @@ int new_open;
    tree of shapes. (only keep maximal curve) 
    These boundaries cannot be scanned in further local detection */
 
-void clear_total_maximal(s,local_root,threshold)
+static void clear_total_maximal(s,local_root,threshold)
 Shape s,local_root;
 float threshold;
 {
@@ -607,7 +607,7 @@ float threshold;
   }
 }
 
-void fathom_tree(local_root,NormofDu,local_histo,local_repart,Global)
+static void fathom_tree(local_root,NormofDu,local_histo,local_repart,Global)
 Shape local_root;
 Fimage NormofDu;
 Fsignal local_histo,local_repart;

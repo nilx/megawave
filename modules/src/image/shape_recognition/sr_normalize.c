@@ -28,7 +28,7 @@
 
 /* add a point to a fcurve */
 
-void add_fpoint(c,x,y)
+static void add_fpoint(c,x,y)
 Fcurve c;
 float  x,y;
 {
@@ -47,7 +47,7 @@ float  x,y;
 
 /* put the non-white pixels of a cimage into a fcurve */
 
-Fcurve cimage_fcurve(in)
+static Fcurve cimage_fcurve(in)
 Cimage in;
 {
   int     w,h,i,j;
@@ -76,7 +76,7 @@ Cimage in;
 
 /* Compute the size of a Fcurves */
 
-int size_fcvs(cs)
+static int size_fcvs(cs)
 Fcurves cs;
 {
   Fcurve        c;
@@ -94,7 +94,7 @@ Fcurves cs;
 
 /*** sum of the directions ***/
 
-void sum_xy(cs,sx,sy)
+static void sum_xy(cs,sx,sy)
 Fcurves  cs;
 double   *sx,*sy;
 {
@@ -116,7 +116,7 @@ double   *sx,*sy;
 
 /* moments of order p,q */
 
-float moment_pq(cs,p,q)
+static float moment_pq(cs,p,q)
 Fcurves cs;
 int    p,q;
 {
@@ -140,7 +140,7 @@ int    p,q;
 
 /*** Sampling ***/
 
-Fcurves Sample(cs,close)
+static Fcurves Sample(cs,close)
 Fcurves  cs;
 float    close;
 {
@@ -171,7 +171,7 @@ float    close;
 
 /*** normalization step 1 ***/
 
-int Normalize_affine_step1(cs,determinant)
+static int Normalize_affine_step1(cs,determinant)
 Fcurves  cs;
 float    *determinant;
 {
@@ -217,7 +217,7 @@ float    *determinant;
 
 /*** normalization step 2 ***/
 
-void Normalize_affine_step2(cs)
+static void Normalize_affine_step2(cs)
 Fcurves cs;
 {
     double alpha;

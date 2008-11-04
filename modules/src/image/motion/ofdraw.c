@@ -26,7 +26,7 @@
 int dirx[8]={1,1,0,-1,-1,-1,0,1};
 int diry[8]={0,1,1,1,0,-1,-1,-1};
 
-void draw_arrow(u,x,y,angle,c)
+static void draw_arrow(u,x,y,angle,c)
      Cimage u;
      int x,y;
      double angle;

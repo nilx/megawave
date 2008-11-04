@@ -21,7 +21,7 @@
 
 
 /*** return +1, 0 or -1, the sign of det(b-a,c-b) modulo double precision ***/
-int dir(ax,ay,bx,by,cx,cy,eps)
+static int dir(ax,ay,bx,by,cx,cy,eps)
      double ax,ay,bx,by,cx,cy,eps;
 {
   double det,prec;

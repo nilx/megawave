@@ -26,7 +26,7 @@ int x0,y0,x1,y1,oldx1,oldy1,dx,dy;
 static char first_point=0;
 
 
-void DrawLinePoly(ImageWindow,a0,b0,a1,b1)
+static void DrawLinePoly(ImageWindow,a0,b0,a1,b1)
 
 
 Wframe *ImageWindow;
@@ -55,7 +55,7 @@ int a0,b0,a1,b1;
   WSetColorPencil(ImageWindow,0);
 }
 
-void List_of_Poly()
+static void List_of_Poly()
 
 {
   Polygon p;
@@ -74,7 +74,7 @@ void List_of_Poly()
 }
 
 
-void Help()
+static void Help()
 
 {
   printf("\n\t\tHelp on line\n");
@@ -92,7 +92,7 @@ void Help()
 }
 
 
-void Redraw(ImageWindow)
+static void Redraw(ImageWindow)
 
 Wframe *ImageWindow;
 
@@ -126,7 +126,7 @@ Wframe *ImageWindow;
 /*     > 0 if there was an event catched (but Destroy) */
 /*      -1 if the event Destroy was catched (or 'Q')   */
 
-int readpoly_notify(ImageWindow)
+static int readpoly_notify(ImageWindow)
 
 Wframe *ImageWindow;
 

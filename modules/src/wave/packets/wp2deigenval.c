@@ -26,7 +26,7 @@ usage = {
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 
 /***************************************************************/
-int my_log(n)
+static int my_log(n)
      int n;
 {int count=0;
  
@@ -44,14 +44,14 @@ int my_log(n)
  return count;
 }
 /***************************************************************/
-float signedSquare(input)   
+static float signedSquare(input)   
      float input;
 {if(input>0) return(input*input);
  else return(-input*input);
 }
 
 /***************************************************************/
-void normalize(pfilter)
+static void normalize(pfilter)
      /*normalizes sothat pfilter->gray[0]=1*/
      Fimage pfilter;
      
@@ -67,7 +67,7 @@ void normalize(pfilter)
 
 /***************************************************************/
 
-void inverse_filter(filter,work,limit)
+static void inverse_filter(filter,work,limit)
      /*Computes the inverse of the input filter, the result is in work*/
      /*The modulus of the inverse is truncated if larger the 1/limit */
      Fimage filter,work;
@@ -97,7 +97,7 @@ void inverse_filter(filter,work,limit)
 
 /***************************************************************/
 
-void approximation(filter,tree,pfilter)
+static void approximation(filter,tree,pfilter)
      
      Fimage filter,pfilter;
      Cimage tree;

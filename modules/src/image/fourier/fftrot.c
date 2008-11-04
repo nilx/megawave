@@ -29,7 +29,7 @@
 #define VERTICAL 1
 
 /* Perform a shear to the image. The two images can be the same */
-void yr_shear(dAmountOfShear, pFloatImageInput, pFloatImageOutput, iAxis, fDelta,PleaseDoNotCenter)
+static void yr_shear(dAmountOfShear, pFloatImageInput, pFloatImageOutput, iAxis, fDelta,PleaseDoNotCenter)
 double dAmountOfShear;
 Fimage pFloatImageInput, pFloatImageOutput;
 int iAxis, PleaseDoNotCenter;

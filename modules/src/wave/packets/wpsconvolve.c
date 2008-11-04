@@ -26,7 +26,7 @@ signal_out<-Output
 #include  "mw.h"
 
 /************************************************************/
-void barFilter(filter,modifiedFilter)
+static void barFilter(filter,modifiedFilter)
      /*switch left and right : modifiedFilter[n]=filter[-n]*/
      
      Fsignal         filter;	        /* original filter */
@@ -50,7 +50,7 @@ void barFilter(filter,modifiedFilter)
 }
 
 /**************************************************/
-void changeFilter(filter, modifiedFilter, upSample, band)
+static void changeFilter(filter, modifiedFilter, upSample, band)
      /*--- Compute the corresponding high-pass filter ---*/
      
      Fsignal         filter;	        /* original filter */
@@ -105,7 +105,7 @@ void changeFilter(filter, modifiedFilter, upSample, band)
 }
 
 /**************************************************/
-void extendInput(input, output, shift, upSample)
+static void extendInput(input, output, shift, upSample)
      
      /*--- Extends the input signal ---*/
      
@@ -185,7 +185,7 @@ void extendInput(input, output, shift, upSample)
 }
 
 /**************************************************/
-void convDown(signal, filter, result)
+static void convDown(signal, filter, result)
      
      /*--- Convolution of the input ---*/
      /*--- 'signal' with 'filter' and a downsampling ---*/
@@ -211,7 +211,7 @@ void convDown(signal, filter, result)
   
 }
 /**************************************************/
-void convUp(signal, filter, result)
+static void convUp(signal, filter, result)
      
      /*--- Convolution of the input ---*/
      /*--- 'signal' with 'filter'  ---*/

@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-void init_nodes(X,j,n)   /* Init the node vector */
+static void init_nodes(X,j,n)   /* Init the node vector */
 
      int *X,j,n;
 
@@ -42,7 +42,7 @@ void init_nodes(X,j,n)   /* Init the node vector */
 
 /* Compute the spline */
 
-void compute_spline(S,P,X,N,C,M,NPC,Step)
+static void compute_spline(S,P,X,N,C,M,NPC,Step)
      
      Curve S;    /* Spline to compute */
      Curve P;    /* Control points */

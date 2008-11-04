@@ -29,7 +29,7 @@
 #define ABS(x)       ( (x)>0?(x):-(x) )
 
 
-Fimage add_image(nx,ny,prev,next)
+static Fimage add_image(nx,ny,prev,next)
      int nx,ny;
      Fimage *prev,**next;
 {

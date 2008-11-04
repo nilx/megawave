@@ -42,7 +42,7 @@ static int ascending_order=1;
    ------------------------------------------------------------------ */
 
 
-int cmpcolor(c1,c2)
+static int cmpcolor(c1,c2)
 Color c1,c2;
 {
   if (c1.model != c2.model)
@@ -73,7 +73,7 @@ Color c1,c2;
    Check if mimage is OK
    --------------------- */
 
-void llcheck(mimage)
+static void llcheck(mimage)
 
 Cmimage mimage;
 
@@ -102,7 +102,7 @@ Cmimage mimage;
 }
 
 
-void
+static void
 draw_lline(lline_ptr,c_lline,V,H1,NL,NC)
 Cmorpho_line lline_ptr;
 struct closest_lline *c_lline;
@@ -169,7 +169,7 @@ int NL,NC;
   }
 }
 
-unsigned char
+static unsigned char
 zero_inside(c_lline)
 struct closest_lline *c_lline;
 {
@@ -205,7 +205,7 @@ struct closest_lline *c_lline;
   }
 }
 
-void
+static void
 fill_lline(V,H1,level,inside,image,NL,NC)
 unsigned char **V,*H1,inside;
 Color level;

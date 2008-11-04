@@ -41,7 +41,7 @@ Fimage aux2;
 
 
 /* compute weight * total variation and add its gradient to grad */
-double mytvgrad(u,grad,eps,p,weight)
+static double mytvgrad(u,grad,eps,p,weight)
      Fimage u,grad;
      double eps,p,weight;
 {
@@ -76,7 +76,7 @@ double mytvgrad(u,grad,eps,p,weight)
 }
 
 /* Convolution v=k*u, restricted domain for v */
-void conv1(u,k,v)
+static void conv1(u,k,v)
      Fimage u,k,v;
 {
   int kx,kx2,ky2,nx,ny,x,y,dx,dy;
@@ -102,7 +102,7 @@ void conv1(u,k,v)
 
 
 /* Convolution v=k'*u, restricted domain for u (not v !) */
-void conv2(u,k,v)
+static void conv2(u,k,v)
      Fimage u,k,v;
 {
   int kx,kx2,ky2,nx,ny,x,y,dx,dy,dxmax,dymax;
@@ -130,7 +130,7 @@ void conv2(u,k,v)
 
 
 /* Compute energy F(u) = int (K*u-u_0)^2 and its gradient */
-double fidelity_term_grad(u,k,u0,grad)
+static double fidelity_term_grad(u,k,u0,grad)
      Fimage u,k,u0,grad;
 {
   int adr;

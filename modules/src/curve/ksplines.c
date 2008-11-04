@@ -27,7 +27,7 @@ ksplines<-splines          "B-spline curves (curves output)"
 
 /* Return the maximum number of points in a set of curves */
 
-int give_max_number_of_points_in_curves(curves)
+static int give_max_number_of_points_in_curves(curves)
 
 Curves curves;
 
@@ -42,7 +42,7 @@ Curves curves;
 }
 
 
-void init_nodes(X,j,n)   /* Init the node vector */
+static void init_nodes(X,j,n)   /* Init the node vector */
      
      int *X,j,n;
      
@@ -62,7 +62,7 @@ void init_nodes(X,j,n)   /* Init the node vector */
 
 /* Compute the spline */
 
-void compute_spline(S,P,X,N,C,M,NPC,Step)
+static void compute_spline(S,P,X,N,C,M,NPC,Step)
      
      Curve S;    /* Spline to compute */
      Curve P;    /* Control points */

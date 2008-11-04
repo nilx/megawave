@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-void remove_ll(mimage,ll)
+static void remove_ll(mimage,ll)
      Mimage mimage;
      Morpho_line ll;
 {

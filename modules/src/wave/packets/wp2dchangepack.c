@@ -27,7 +27,7 @@ usage = {
 /* the result is in pack->images[img11] , pack->images[img12], */
 /* pack->images[img21], pack->images[img22]                       */
 
-void ondel(pack,img11,img12,img21,img22,futur_level)
+static void ondel(pack,img11,img12,img21,img22,futur_level)
 
      Wpack2d pack; /* the initial image corresponds to the index  img11*/
      int img11;  /* index of the low in x -low in y image */
@@ -167,7 +167,7 @@ void ondel(pack,img11,img12,img21,img22,futur_level)
 /* pack->images[img21], pack->images[img22]                       */
 /* the result is in pack->images[img11] */
 
-void iondel(pack, img11, img12, img21,img22,futur_level)
+static void iondel(pack, img11, img12, img21,img22,futur_level)
      
      Wpack2d pack; /* the initial image corresponds to the index  img11*/
      int img11;  /* index of the low in x -low in y image */

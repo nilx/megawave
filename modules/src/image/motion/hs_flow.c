@@ -40,7 +40,7 @@ long  adrxyz,adrxyz2,adrxy;
 
  
 
-void ALLOCATE(out,nb_image)
+static void ALLOCATE(out,nb_image)
      Fmovie out;
      int nb_image;
 {
@@ -70,7 +70,7 @@ void ALLOCATE(out,nb_image)
 /* computes gray level derivatives E(x,y,t) 
    (following the scheme proposed by Horn and Schunck)*/
 
-void CALC_EDERIV()
+static void CALC_EDERIV()
 {   
   int i,j,l,r;
   register float a010,a000,a110,a100,a011,a001,a111,a101;
@@ -108,7 +108,7 @@ void CALC_EDERIV()
 
 /* rentree du schema iteratif pour calculer le flot optique */
 
-void SCHEMA_ITER(niter,alpha)
+static void SCHEMA_ITER(niter,alpha)
      int niter;
      float *alpha;
 {
@@ -231,7 +231,7 @@ void SCHEMA_ITER(niter,alpha)
 
 /* computes sens */
 
-int SENS(adr,numero_image)
+static int SENS(adr,numero_image)
      int adr,numero_image;
 {
   int sens;

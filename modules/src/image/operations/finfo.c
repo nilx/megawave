@@ -17,7 +17,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* fvalues(), fentropy(), fmean(), fnorm() */
 
-int test_chars(s)
+static int test_chars(s)
      Fsignal s;
 {
   int ok,i,c;

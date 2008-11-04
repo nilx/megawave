@@ -71,7 +71,7 @@ static int primes[SIZE_PRIME] = {2,3,5,7,11,13,17,19,23,29
 /* Compute the complexity per element of the FFT of a signal with size n 
    that is the sum of the "prime factors of n minus 1" */
 
-int comp(n)
+static int comp(n)
      int n;
 {
   int c,i;

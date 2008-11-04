@@ -37,7 +37,7 @@ static int ascending_order=1;
    ------------------------------------------------------------------ */
 
 
-int cmpcolor(c1,c2)
+static int cmpcolor(c1,c2)
 Color *c1,*c2;
 {
   if (c1->model != c2->model)
@@ -67,7 +67,7 @@ Color *c1,*c2;
    Get and sort all the colors of a cfimage (like fvalues)
    ------------------------------------------------------- */
 
-Cfsignal cfvalues(image)
+static Cfsignal cfvalues(image)
 
 Cfimage image;
 
@@ -122,7 +122,7 @@ Cfimage image;
    Check if mimage is OK
    --------------------- */
 
-void llcheck(mimage)
+static void llcheck(mimage)
 
 Cmimage mimage;
 
@@ -160,7 +160,7 @@ Cmimage mimage;
    Return 1 if the color value im(c,l) is in [minvalue, maxvalue], 0 elsewhere
    --------------------------------------------------------------------------- */
 
-int Inside(im,minvalue,maxvalue,l,c)
+static int Inside(im,minvalue,maxvalue,l,c)
 
 Cfimage im;
 Color minvalue,maxvalue;
@@ -196,7 +196,7 @@ int l,c;
 }
 
 
-void
+static void
 produce_HV(im,NL,NC,minvalue,maxvalue,H,V)
 Cfimage im;
 Color minvalue,maxvalue;
@@ -235,7 +235,7 @@ unsigned char **H, **V;
   }
 }
 
-unsigned long
+static unsigned long
 count_X(H,V,NL,NC)
 unsigned char **H,**V;
 unsigned int NL,NC;
@@ -261,7 +261,7 @@ unsigned int NL,NC;
   return(count_points);
 }
 
-Cmorpho_line produce_lline(minvalue,maxvalue,open)
+static Cmorpho_line produce_lline(minvalue,maxvalue,open)
 
 Color minvalue,maxvalue;
 unsigned char open;
@@ -277,7 +277,7 @@ unsigned char open;
 }
 
 
-void
+static void
 follow_open_line(NL,NC,H,V,ll,cc,sum,lline)
 unsigned int NL,NC;
 unsigned char **H,**V;
@@ -328,7 +328,7 @@ Cmorpho_line lline;
   p1->x=(cc<0)? 0:((cc==NC-1)? NC:cc+1);
 }
 
-void get_open_lines(im,NL,NC,minvalue,maxvalue,H,V,lline,L,Nll,Nllrm)
+static void get_open_lines(im,NL,NC,minvalue,maxvalue,H,V,lline,L,Nll,Nllrm)
 
 Cfimage im;
 Color minvalue,maxvalue;
@@ -468,7 +468,7 @@ int *Nll,*Nllrm;
     }
 }
 
-void
+static void
 follow_closed_line(H,V,ll,cc,sum,lline)
 unsigned char **H,**V;
 int ll,cc,sum;
@@ -506,7 +506,7 @@ Cmorpho_line lline;
   } /* end while */
 }
 
-void get_closed_lines(im,NL,NC,minvalue,maxvalue,H,V,lline,L,Nll,Nllrm)
+static void get_closed_lines(im,NL,NC,minvalue,maxvalue,H,V,lline,L,Nll,Nllrm)
 
 Cfimage im;
 Color minvalue,maxvalue;
@@ -571,7 +571,7 @@ int *Nll,*Nllrm;
 /*                                                       where i=0,1,...      */
 /******************************************************************************/
 
-void cml_extract(levels,opt,L,image_org,m_image)
+static void cml_extract(levels,opt,L,image_org,m_image)
 Cfsignal levels;
 int *opt;
 int L;

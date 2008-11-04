@@ -25,7 +25,7 @@ usage = {
    Compute in (*mincol, *minrow) the translation point.
 */
 
-void Get_Size_Org(C,ncol,nrow,mincol,minrow)
+static void Get_Size_Org(C,ncol,nrow,mincol,minrow)
 
      Curves C;
      int *ncol, *nrow;
@@ -57,7 +57,7 @@ void Get_Size_Org(C,ncol,nrow,mincol,minrow)
    Return the number of symbols needed (2 if no duplicated points, > 2 else)
 */
 
-int Fill_Bitmap_With_Origins(bitmap,C,mincol,minrow)
+static int Fill_Bitmap_With_Origins(bitmap,C,mincol,minrow)
      
      Fimage bitmap;
      Curves C;
@@ -84,7 +84,7 @@ int Fill_Bitmap_With_Origins(bitmap,C,mincol,minrow)
    from the content of bitmap.
 */
 
-void Fill_Distance(distance,bitmap,npxs)
+static void Fill_Distance(distance,bitmap,npxs)
 
      Fimage distance;
      Fimage bitmap;

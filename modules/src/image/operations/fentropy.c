@@ -20,7 +20,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* fvalues() */
 
-double signal_entropy(input)
+static double signal_entropy(input)
      Fsignal input;
 {
   int i;

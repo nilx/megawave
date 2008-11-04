@@ -122,7 +122,7 @@ for(i = 1; i < (iHeight); i++) \
    ------------------------------------------------------------------------ */
 
 /* Reinitialise the neighborhood, so that it will be used for a new region */
-void reinit_neighborhood(pNeighborhood, type)
+static void reinit_neighborhood(pNeighborhood, type)
 Neighborhood* pNeighborhood;
 enum TypeOfTree type;
 {
@@ -131,7 +131,7 @@ enum TypeOfTree type;
 }
 
 /* To allocate the structure representing the neighborhood of a region */
-void init_neighborhood(pNeighborhood, iMaxArea)
+static void init_neighborhood(pNeighborhood, iMaxArea)
 Neighborhood* pNeighborhood;
 int iMaxArea;
 {
@@ -146,7 +146,7 @@ int iMaxArea;
 }
 
 /* Free the structure representing the neighborhood of a region */
-void free_neighborhood(pNeighborhood)
+static void free_neighborhood(pNeighborhood)
 Neighborhood* pNeighborhood;
 {
   free(pNeighborhood->tabPoints);
@@ -158,7 +158,7 @@ Neighborhood* pNeighborhood;
                   tabPoints[k] = tabPoints[l]; \
                   tabPoints[l] = tabPoints[0];
 /* Put the last neighbor at a position so that we fix the heap */
-void fix_up(pNeighborhood)
+static void fix_up(pNeighborhood)
 Neighborhood* pNeighborhood;
 {
   Neighbor *tabPoints = pNeighborhood->tabPoints;
@@ -181,7 +181,7 @@ Neighborhood* pNeighborhood;
 #define ORDER_MAX2(k,l) (tabPoints[k].value >= tabPoints[l].value)
 #define ORDER_MIN2(k,l) (tabPoints[k].value <= tabPoints[l].value)
 /* Put the first neighbor at a position so that we fix the heap */
-void fix_down(pNeighborhood)
+static void fix_down(pNeighborhood)
 Neighborhood* pNeighborhood;
 {
   Neighbor *tabPoints = pNeighborhood->tabPoints;
@@ -208,7 +208,7 @@ Neighborhood* pNeighborhood;
 }
 
 /* Add the pixel (x,y), of gray-level VALUE, to the neighbor pixels */
-void add_neighbor(pNeighborhood, x, y, value)
+static void add_neighbor(pNeighborhood, x, y, value)
 Neighborhood* pNeighborhood;
 short int x, y;
 float value;
@@ -256,7 +256,7 @@ float value;
 }
 
 /* Remove the neighbor at the top of the heap, that is the root of the tree. */
-void remove_neighbor(pNeighborhood)
+static void remove_neighbor(pNeighborhood)
 Neighborhood* pNeighborhood;
 {
   Neighbor* pTop = &pNeighborhood->tabPoints[1];
@@ -278,7 +278,7 @@ Neighborhood* pNeighborhood;
 
 /* Allocate image of the tags for visited pixels and the visited neighbors.
 Do not be afraid about the parameters: pointers to 2-D arrays. */
-void init_image_of_visited_pixels(ptabtabVisitedPixels)
+static void init_image_of_visited_pixels(ptabtabVisitedPixels)
 int*** ptabtabVisitedPixels;
 {
   int i;
@@ -287,7 +287,7 @@ int*** ptabtabVisitedPixels;
   ARRAY_2D_ALLOC(tabtabVisitedNeighbors, iWidth, iHeight, int);
 }
 
-void free_image_of_visited_pixels(tabtabVisitedPixels)
+static void free_image_of_visited_pixels(tabtabVisitedPixels)
 int** tabtabVisitedPixels;
 {
   free(tabtabVisitedPixels[0]);  /* Actually a 1-D array */
@@ -298,7 +298,7 @@ int** tabtabVisitedPixels;
 }
 
 /* Initialize the output image */
-void init_output_image(tabPixelsIn, ptabtabPixelsOutput)
+static void init_output_image(tabPixelsIn, ptabtabPixelsOutput)
 float *tabPixelsIn, ***ptabtabPixelsOutput;
 {
   int i;
@@ -310,13 +310,13 @@ float *tabPixelsIn, ***ptabtabPixelsOutput;
     (*ptabtabPixelsOutput)[i] = tabPixelsIn + i * iWidth;
 }
 
-void free_output_image(tabtabPixelsOutput)
+static void free_output_image(tabtabPixelsOutput)
 float** tabtabPixelsOutput;
 {
   free(tabtabPixelsOutput);
 }
 
-void init_region(iMaxArea)
+static void init_region(iMaxArea)
 int iMaxArea;
 {
   tabPointsInShape = (Point_plane) malloc(iMaxArea*sizeof(struct point_plane));
@@ -324,7 +324,7 @@ int iMaxArea;
     mwerror(FATAL, 1, "init_region --> impossible to allocate the array\n");
 }
 
-void free_region()
+static void free_region()
 {
   free(tabPointsInShape);
 }
@@ -334,7 +334,7 @@ void free_region()
    ------------------------------------------------------------------------ */
 
 /* Is pixel (x, y) a local minimum? */
-char is_local_min(ou, x, y, b8Connected)
+static char is_local_min(ou, x, y, b8Connected)
 float** ou; /* A 2-D array of the image */
 short int x, y;
 char b8Connected;
@@ -356,7 +356,7 @@ char b8Connected;
 }
 
 /* Is pixel (x,y) a local maximum? */
-char is_local_max(ou, x, y, b8Connected)
+static char is_local_max(ou, x, y, b8Connected)
 float** ou; /* A 2-D array of the image */
 short int x, y;
 char b8Connected;
@@ -378,7 +378,7 @@ char b8Connected;
 }
 
 /* Set pixels and saddle points in `tabPoints' at level newGray */
-void levelize(tabtabPixelsOutput, tabPoints, iNbPoints, newGray)
+static void levelize(tabtabPixelsOutput, tabPoints, iNbPoints, newGray)
 float** tabtabPixelsOutput;
 Point_plane tabPoints;
 int iNbPoints;
@@ -390,7 +390,7 @@ float newGray;
 }
 
 /* Return, coded in one byte, the local configuration around the pixel (x,y) */
-unsigned char configuration(tabtabVisitedPixels, x, y)
+static unsigned char configuration(tabtabVisitedPixels, x, y)
 int** tabtabVisitedPixels;
 short int x, y;
 {
@@ -433,7 +433,7 @@ short int x, y;
 }
 
 /* Insert a new shape and its siblings in the tree, with parent pParent */
-void insert_children(pParent, pNewChildToInsert)
+static void insert_children(pParent, pNewChildToInsert)
 Shape pParent, pNewChildToInsert;
 {
   Shape pSibling = pNewChildToInsert;
@@ -446,7 +446,7 @@ Shape pParent, pNewChildToInsert;
   pParent->child = pNewChildToInsert;
 }
 
-Shape new_shape(iCurrentArea, currentGrayLevel, bOfInferiorType, pChild)
+static Shape new_shape(iCurrentArea, currentGrayLevel, bOfInferiorType, pChild)
 int iCurrentArea;
 float currentGrayLevel;
 char bOfInferiorType;
@@ -473,7 +473,7 @@ Shape pChild; /* Supposed to have no sibling. Can be NULL */
 
 /* Knowing that the last extracted shape contains the points, update,
 for each one, the smallest shape containing it */
-void update_smallest_shapes(tabPoints, iNbPoints)
+static void update_smallest_shapes(tabPoints, iNbPoints)
 Point_plane tabPoints;
 int iNbPoints;
 {
@@ -492,7 +492,7 @@ int iNbPoints;
 /* Find children of the last constructed monotone section, which is composed
 of the interval between pSmallestShape and the last extracted shape. That is,
 find shapes in other monotone sections whose parent is inside this interval */
-void connect(tabPoints, iNbPoints, tabConnections, pSmallestShape)
+static void connect(tabPoints, iNbPoints, tabConnections, pSmallestShape)
 Point_plane tabPoints;
 int iNbPoints;
 Connection* tabConnections;
@@ -519,7 +519,7 @@ Shape pSmallestShape;
 }
 
 /* Make a new connection structure at the given point */
-void new_connection(pPoint, level, tabConnections)
+static void new_connection(pPoint, level, tabConnections)
 Point_plane pPoint;
 float level;
 Connection* tabConnections;
@@ -544,7 +544,7 @@ Connection* tabConnections;
 #define NEIGHBOR_NOT_STORED(x,y) (tabtabVisitedNeighbors[y][x] < iExploration)
 
 /* Store the 4-neighbors of pixel (x,y) */
-void store_4neighbors(ou, x, y, pNeighborhood)
+static void store_4neighbors(ou, x, y, pNeighborhood)
 float** ou;
 short int x, y;
 Neighborhood* pNeighborhood;
@@ -560,7 +560,7 @@ Neighborhood* pNeighborhood;
 }
 
 /* Store the diagonal neighbors of pixel (x,y) */
-void store_8neighbors(ou, x, y, pNeighborhood)
+static void store_8neighbors(ou, x, y, pNeighborhood)
 float** ou;
 short int x, y;
 Neighborhood* pNeighborhood;
@@ -584,7 +584,7 @@ region tabPointsInShape and return 1 if a new shape is (maybe) detected.
 This "maybe" is linked to `pIgnoreHoles', indicating if we can count the
 holes. New points are added to `tabPointsInShape' from position `pCurrentArea'.
 This value is changed at exit in case of success. */
-char add_iso_level(tabPointsInShape, pCurrentArea,
+static char add_iso_level(tabPointsInShape, pCurrentArea,
 		   currentGrayLevel, pNeighborhood, ou,
 		   tabtabVisitedPixels, p8Connected, pIgnoreHoles)
 Point_plane tabPointsInShape;
@@ -640,7 +640,7 @@ char* pIgnoreHoles;
 }
 
 /* Extract the terminal branch containing the point (x,y) */
-void find_terminal_branch(ou, tabtabVisitedPixels, x, y,
+static void find_terminal_branch(ou, tabtabVisitedPixels, x, y,
 			  b8Connected, pNeighborhood, tabConnections)
 float **ou;
 int** tabtabVisitedPixels;
@@ -700,7 +700,7 @@ Connection* tabConnections;
 
 /* Scan the image, calling a procedure to extract terminal branch at each
    (not yet visited) local extremum */
-void scan(tabtabPixelsOutput, tabtabVisitedPixels,pNeighborhood,tabConnections)
+static void scan(tabtabPixelsOutput, tabtabVisitedPixels,pNeighborhood,tabConnections)
 float **tabtabPixelsOutput;
 int** tabtabVisitedPixels;
 Neighborhood* pNeighborhood;

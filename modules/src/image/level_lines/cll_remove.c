@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-void check_ll(ll)
+static void check_ll(ll)
 
 Cmorpho_line ll;
 
@@ -29,7 +29,7 @@ Cmorpho_line ll;
   printf("check_ll : np=%d  nt=%d\n",np,nt);
 }
 
-void remove_cll(cmimage,ll)
+static void remove_cll(cmimage,ll)
 
 Cmimage cmimage;
 Cmorpho_line ll;

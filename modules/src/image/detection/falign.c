@@ -41,7 +41,7 @@ struct one_segment
 /*------------------------------------------------------------*/
 
 
-double *tab(n,p,m)
+static double *tab(n,p,m)
 int n;
 double p;
 double m;
@@ -80,7 +80,7 @@ double m;
 /*    compute the direction of the level line at each point   */
 /*------------------------------------------------------------*/
 
-Fimage ll_angle(a,threshold)
+static Fimage ll_angle(a,threshold)
 Fimage a;
 float threshold;
 {

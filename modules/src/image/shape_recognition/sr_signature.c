@@ -30,7 +30,7 @@ int NPARAM;
 
 /* Compute the size of a Fcurves */
 
-int size_fcurves(cs)
+static int size_fcurves(cs)
 Fcurves cs;
 {
   Fcurve        c;
@@ -50,7 +50,7 @@ Fcurves cs;
 
 /*---------------- Parameters evaluation ---------------*/
 
-void thickness(cs,thick,Distance)
+static void thickness(cs,thick,Distance)
 Fcurves  cs;
 float    *thick;
 int      **Distance;
@@ -118,7 +118,7 @@ int      **Distance;
 }
 
 
-void Init_param(thick,surf_cour,param,treshold)
+static void Init_param(thick,surf_cour,param,treshold)
 float  thick;
 int    *surf_cour;
 float  *param;
@@ -153,7 +153,7 @@ int    *treshold;
 }
 
 
-void Normalize_param(param,surf_cour)
+static void Normalize_param(param,surf_cour)
 float *param;
 int   *surf_cour;
 {
@@ -167,7 +167,7 @@ int   *surf_cour;
 }
 
 
-void Density(param,treshold,Distance)
+static void Density(param,treshold,Distance)
 float *param;
 int   *treshold;
 int   *Distance;

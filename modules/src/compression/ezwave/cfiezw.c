@@ -37,7 +37,7 @@ Fsignal      ORI1, ORI2;          /* Non normalized filters */
 
 
 
-void
+static void
 INIT_RI(ri1, ri2)
 
 Fsignal ri1, ri2;
@@ -63,7 +63,7 @@ Fsignal ri1, ri2;
 
 
 
-void
+static void
 REFRESH_FILTERS(ri1, ri2)
 
 Fsignal ri1, ri2;
@@ -83,7 +83,7 @@ Fsignal ri1, ri2;
 
 
 
-void
+static void
 COPY_FIMAGE2CHANNEL(image, chimage, color)
 
 Cfimage     image;		/* Output color image */

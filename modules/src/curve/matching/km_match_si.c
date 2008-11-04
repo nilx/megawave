@@ -67,7 +67,7 @@ static float M_SI[2][3];
 
 /* Computes the similitude-transform between two frames */
 
-void getMatrixSI(xini1, yini1, xfin1, yfin1, xini2, yini2, xfin2, yfin2, A)
+static void getMatrixSI(xini1, yini1, xfin1, yfin1, xini2, yini2, xfin2, yfin2, A)
      float xini1, yini1, xfin1, yfin1, xini2, yini2, xfin2, yfin2;
      float A[2][3];
 {
@@ -100,7 +100,7 @@ void getMatrixSI(xini1, yini1, xfin1, yfin1, xini2, yini2, xfin2, yfin2, A)
    one local frame in image 1 to another local frame in image 2. 
    M_SI is a global variable whose computation is done below */
 
-void map1to2_SI(x, y)
+static void map1to2_SI(x, y)
      float *x, *y;
 {
   float xN, yN;
@@ -295,7 +295,7 @@ static void get_last_index_matching(errorMax, info1, info2, fcrv1, fcrv2, iL1, i
    performance value is calculated, matching information is stored in a
    MATCHDATA structure, and function returns 1. */
 
-unsigned char extend_matchingSI(errorMax, minLength, info1, info2, fcrv1, fcrv2, ini1, fin1, ini2, fin2,matchdataaux)
+static unsigned char extend_matchingSI(errorMax, minLength, info1, info2, fcrv1, fcrv2, ini1, fin1, ini2, fin2,matchdataaux)
      float errorMax, minLength;
      struct NormDataSIconcat *info1; 
      struct NormDataSIconcat *info2; 
@@ -411,7 +411,7 @@ static float get_complexity(fcrv, i1, i2)
    All the matching information is stored in a MATCHDATA structure 
    (see function extend_matchingSI) .*/
 
-unsigned char check_matchingSI(fcrv1, fcrv2, info1, info2, minComplex, errorMax, minLength, A, matchdataaux)
+static unsigned char check_matchingSI(fcrv1, fcrv2, info1, info2, minComplex, errorMax, minLength, A, matchdataaux)
      Flist fcrv1, fcrv2; 
      struct NormDataSIconcat *info1, *info2;
      struct matchdata *matchdataaux;

@@ -20,7 +20,7 @@
 
 
 /* Is shape 1 inside shape 2? */
-char is_included(pShape1, pShape2)
+static char is_included(pShape1, pShape2)
 Shape pShape1, pShape2;
 {
   return (pShape1->area <= pShape2->area &&
@@ -29,7 +29,7 @@ Shape pShape1, pShape2;
 }
 
 /* Clear, no? */
-Shape common_ancestor(pShape1, pShape2)
+static Shape common_ancestor(pShape1, pShape2)
 Shape pShape1, pShape2;
 {
   while(! is_included(pShape1, pShape2))
@@ -38,7 +38,7 @@ Shape pShape1, pShape2;
 }
 
 /* Build a new shape, of parent pParent, variation of pShapeTemplate */
-void copy_shape(pShapeTemplate, pShape)
+static void copy_shape(pShapeTemplate, pShape)
 Shape pShapeTemplate, pShape;
 {
   *pShape = *pShapeTemplate;
@@ -52,7 +52,7 @@ Shape pShapeTemplate, pShape;
 /* `shapeInf' is a shape in original tree of same type as shape to
 be created and contained in it. If new shape must be `shapeInf', create
 it in new tree as parent of `shapeInf'. */
-void insert_shape(pDualTree, shapeInf, v)
+static void insert_shape(pDualTree, shapeInf, v)
 Shapes pDualTree;
 Shape shapeInf;
 float v;
@@ -101,7 +101,7 @@ float v;
 }
 
 /* Find shape passing through corner of dual pixel (i,j) */
-void find_shape(pTree, pDualTree, i, j)
+static void find_shape(pTree, pDualTree, i, j)
 Shapes pTree, pDualTree;
 int i, j;
 {

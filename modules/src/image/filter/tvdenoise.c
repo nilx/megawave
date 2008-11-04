@@ -36,7 +36,7 @@ usage = {
 
 
 /* compute weight * total variation and add its gradient to grad */
-double mytvgrad(u,grad,eps,p,weight)
+static double mytvgrad(u,grad,eps,p,weight)
      Fimage u,grad;
      double eps,p,weight;
 {
@@ -71,7 +71,7 @@ double mytvgrad(u,grad,eps,p,weight)
 }
 
 /* Compute energy F(u) = int |u-u_0|^2 and its gradient */
-double fidelity_term_grad(u,u0,grad)
+static double fidelity_term_grad(u,u0,grad)
      Fimage u,u0,grad;
 {
   int adr;

@@ -35,7 +35,7 @@ usage = {
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 
 
-float max_of_wpack2d(pack)
+static float max_of_wpack2d(pack)
      
      Wpack2d pack;
      
@@ -56,7 +56,7 @@ float max_of_wpack2d(pack)
 }
  
 /***************************************************************/
-float  increaseContrast(pack)
+static float  increaseContrast(pack)
 
      Wpack2d pack;
 
@@ -123,7 +123,7 @@ float  increaseContrast(pack)
  return(max0);
 }
 /***************************************************************/
-void increaseSize(pack,backgroundColor)
+static void increaseSize(pack,backgroundColor)
      /*adds a line of one pixel width around each image */
 
      Wpack2d pack;
@@ -163,7 +163,7 @@ void increaseSize(pack,backgroundColor)
 
 
 /***************************************************************/
-void glue(pack, img, img11, img12, img21,img22,backgroundColor,level)
+static void glue(pack, img, img11, img12, img21,img22,backgroundColor,level)
      /* glue four images together */
 
      Wpack2d pack; 
@@ -264,7 +264,7 @@ void glue(pack, img, img11, img12, img21,img22,backgroundColor,level)
 
 
 /***************************************************************/
-void  wpack2dGlue(pack,backgroundColor,do_not_reorder_flag)
+static void  wpack2dGlue(pack,backgroundColor,do_not_reorder_flag)
      /* glue all the images of pack->images together */
 
      Wpack2d pack;

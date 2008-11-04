@@ -30,7 +30,7 @@ usage = {
    By the way, check the consistency of the mask M.
 */
 
-int GetWaveletDepth(M)
+static int GetWaveletDepth(M)
      
      Fsignal M;
      
@@ -63,7 +63,7 @@ int GetWaveletDepth(M)
    J(u) = exact total variation of u.
 */
 
-double J(u,dJ)
+static double J(u,dJ)
      
      Fsignal u,dJ;
      
@@ -90,7 +90,7 @@ double J(u,dJ)
    J(u) = smoothed total variation of u.
 */
 
-double J_alpha(u,dJ,alpha)
+static double J_alpha(u,dJ,alpha)
 
      Fsignal u,dJ;
      double alpha;
@@ -115,7 +115,7 @@ double J_alpha(u,dJ,alpha)
 
 /* Compute the projection on the constraint in the wavelet domain */
 
-void Wproj(relax,WdJ,M)
+static void Wproj(relax,WdJ,M)
      
 char *relax;    /* If != NULL, relax constraint on approximation space V_J.
 		   Warning : on versions < 1.4, this option was active (bug) !
@@ -147,7 +147,7 @@ Fsignal M;
 
 /* Compute the projection on the constraint P(dJ) */
 
-void Proj(relax,dJ,M,O,I,r)
+static void Proj(relax,dJ,M,O,I,r)
 
 char *relax;    /* If != NULL, relax constraint on approximation space V_J.
 		   Warning : on versions < 1.4, this option was active (bug) !
@@ -204,7 +204,7 @@ int *r;
    Exact total variation case.
 */
 
-double f(t,u,dJ)
+static double f(t,u,dJ)
      
      double t;
      Fsignal u;
@@ -224,7 +224,7 @@ double f(t,u,dJ)
    Smoothed total variation case.
 */
 
-double f_alpha(t,u,dJ,alpha)
+static double f_alpha(t,u,dJ,alpha)
      
      double t;
      Fsignal u;
@@ -248,7 +248,7 @@ double f_alpha(t,u,dJ,alpha)
 /* Output the values of f(t)
 */
 
-void output_f(u,dJ,alpha)
+static void output_f(u,dJ,alpha)
      
      Fsignal u;
      Fsignal dJ;  
@@ -267,7 +267,7 @@ void output_f(u,dJ,alpha)
    Exact total variation case.
 */
 
-double df(t,u,dJ)
+static double df(t,u,dJ)
 
      double t;
      Fsignal u;
@@ -293,7 +293,7 @@ double df(t,u,dJ)
    Smoothed total variation case.
 */
 
-double df_alpha(t,u,dJ,alpha)
+static double df_alpha(t,u,dJ,alpha)
 
      double t;
      Fsignal u;
@@ -318,7 +318,7 @@ double df_alpha(t,u,dJ,alpha)
 /* Generate comments in output signal u
 */
 
-void Make_Comments(u,tv,Niter,alpha,O,I)
+static void Make_Comments(u,tv,Niter,alpha,O,I)
 
      Fsignal u;
      double tv;

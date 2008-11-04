@@ -70,7 +70,7 @@ struct fill_segment {
           &&(N_EQUAL(im[(Y)][(X)],current_level)) \
           &&(EQUAL(im[(Y)][(X)],p_level))  )
 
-void llcheck(mimage)
+static void llcheck(mimage)
 Mimage mimage;
 {
   Point_curve point;
@@ -94,7 +94,7 @@ Mimage mimage;
     }
 }
 
-void
+static void
 draw_HV(lline_ptr,V,H,NL,NC)
 Morpho_line lline_ptr;
 unsigned char **V,**H;
@@ -154,7 +154,7 @@ int NL,NC;
 
 /* "fill" fills (x,y) and all its 4-connected neighbours with color */
 /* current_level in image im. The region is delimited by V and H.   */
-void
+static void
 fill(y,x,V,H,ST,size_ST,current_level,im,NL,NC,p_level)
 int y,x,NC,NL,size_ST;
 unsigned char **V,**H;
@@ -218,7 +218,7 @@ float **im, current_level,p_level;
   }
 }
 
-void
+static void
 fill_level(V,H,ST,size_ST,lline,v_flag,im,NL,NC,p_level)
 unsigned char **V,**H;
 struct fill_segment *ST;

@@ -33,7 +33,7 @@
 #define MIN(a,b) ((a) > (b) ? (b) : (a))
 #define ABS(x)   ((x)>0?(x):(-(x)))
 
-Fimage compute_distance(sg,param)
+static Fimage compute_distance(sg,param)
 Fimage sg,param;
 {
   Fimage dist;
@@ -60,7 +60,7 @@ Fimage sg,param;
 
 
 
-int comparefloat(v1,v2)
+static int comparefloat(v1,v2)
 float *v1,*v2;
 {
   double a,b;
@@ -74,7 +74,7 @@ float *v1,*v2;
 }
 
 
-Fimage sort_hypo(hypo_list,dist,nb_hypo)
+static Fimage sort_hypo(hypo_list,dist,nb_hypo)
 Fimage  hypo_list,dist;
 int     nb_hypo;
 {

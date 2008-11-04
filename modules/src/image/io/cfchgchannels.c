@@ -49,7 +49,7 @@
 /*--- Global variables ---*/ 
 
 
-void
+static void
 YUV_RGB(r, g, b, tr, tg, tb)
 
 float      *r, *g, *b;   /* Pointers to red, green and blue channels 
@@ -66,7 +66,7 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 }
 
 
-void
+static void
 RGB_YUV(r, g, b, tr, tg, tb)
 
 float      *r, *g, *b;   /* Pointers to red, green and blue channels 
@@ -83,7 +83,7 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 }
 
 
-void
+static void
 YUV_RGB_NORM(r, g, b, tr, tg, tb)
 
 float      *r, *g, *b;   /* Pointers to red, green and blue channels 
@@ -100,7 +100,7 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 }
 
 
-void
+static void
 RGB_YUV_NORM(r, g, b, tr, tg, tb)
 
 float      *r, *g, *b;   /* Pointers to red, green and blue channels 
@@ -118,7 +118,7 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 
 /* ----- HSI ----- */
 
-void
+static void
 RGB_HSI(r, g, b, tr, tg, tb)
 
 float      *r, *g, *b;   /* Pointers to red, green and blue channels 
@@ -170,7 +170,7 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 #define beta(S,H) (1.0 + ((S) * cos ((H))) / cos(P3-(H)))
 #endif
 
-void
+static void
 HSI_RGB(r, g, b, tr, tg, tb)
 
 float      *r, *g, *b;   /* Pointers to red, green and blue channels 
@@ -227,7 +227,7 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 
 #define NOHUE -1
 
-void
+static void
 RGB_HSV(r, g, b, tr, tg, tb)
 
 float      *r, *g, *b;   /* Pointers to red, green and blue channels 
@@ -280,7 +280,7 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
     }
 }
 
-void
+static void
 HSV_RGB(r, g, b, tr, tg, tb)
 
 float      *r, *g, *b;   /* Pointers to red, green and blue channels 
@@ -346,7 +346,7 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 
 /* ----------------------- */
 
-void
+static void
 COLOR_CONVERT(image, timage, convert_point)
 
 Cfimage     image;		/* Input color image */

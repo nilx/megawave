@@ -19,7 +19,7 @@
  
 /***** gamma correction [0,1]->[0,1] *****/
 
-float fgamma(g,x)
+static float fgamma(g,x)
      float g,x;
 {
   return (float)pow((double)x,1.0/(double)g);

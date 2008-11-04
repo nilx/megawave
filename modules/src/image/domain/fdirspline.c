@@ -16,7 +16,7 @@
 #include "mw.h"
 
 /* extract image value (symmetrize outside image domain) */
-float v(in,x,y)
+static float v(in,x,y)
      Fimage in;
      int x,y;
 {
@@ -28,7 +28,7 @@ float v(in,x,y)
 }
 
 /* fast integral power function */
-float ipow(x,n)
+static float ipow(x,n)
      float x;
      int n;
 {

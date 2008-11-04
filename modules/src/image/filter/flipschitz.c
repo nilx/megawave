@@ -28,7 +28,7 @@
 
 /*------------- one step -------------*/
 
-void step(u,v,s,delta,i_flag)
+static void step(u,v,s,delta,i_flag)
      Fimage u,v;
      Curve  s;
      float *delta;

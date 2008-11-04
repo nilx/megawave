@@ -176,7 +176,7 @@ void mam(in,out,ptime,ppower,n_iter,pMAXvit,pMINvit,pfmxa)
 
 /*-------------------------------------------------------------------------*/
 
-void RESOLUTION2()
+static void RESOLUTION2()
 {
   printf("Computing curvature ... "); 
   fflush(stdout);
@@ -195,7 +195,7 @@ void RESOLUTION2()
 /*              EVOL                      */
 /*----------------------------------------*/
 
-void EVOL()
+static void EVOL()
 {
   register int j,i,l;
   long adr,ofs;
@@ -238,7 +238,7 @@ void EVOL()
 
 /*-------------------------------------------------------------------------*/
 
-short calcul(x,y)
+static short calcul(x,y)
      short x,y;
 {
   int t;
@@ -261,7 +261,7 @@ short calcul(x,y)
 }
 
 
-void CALCULB()
+static void CALCULB()
 {
   register short i,j;
   short vit;
@@ -300,7 +300,7 @@ void CALCULB()
 #define RAC2 1.41421356
 #define CONS 0.292893219
 
-void CALC_CURV()
+static void CALC_CURV()
 {
   
   int i,j,l;
@@ -354,7 +354,7 @@ void CALC_CURV()
 /*-------------------------------------------------------------------------*/
 
 
-void CALC_ACCEL()
+static void CALC_ACCEL()
 {
   int lx,ly,kx,ky,i,j,l;
   int lx2,ly2,lx1,ly1;

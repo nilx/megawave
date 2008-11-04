@@ -47,7 +47,7 @@ int      n_alloc;
 /* return the index of the point with minimal contrast 
    (first point where the curve will be cut) */
 
-int contrast_and_length(c,open)
+static int contrast_and_length(c,open)
 Flist c;
 char open;
 {
@@ -104,7 +104,7 @@ char open;
 
 /*===== compute NFA term associated to contrast mu =====*/
 
-float logH(mu)
+static float logH(mu)
 float mu;
 {
   int i;
@@ -118,7 +118,7 @@ float mu;
 /*===== detect maximal meaningful edges recursively =====*/
 /* since c can be closed, i and j are defined modulo c->size */
 
-float add_edge(c,bestnfa,i,j)
+static float add_edge(c,bestnfa,i,j)
      Flist  c;
      float  bestnfa;
      int    i,j;

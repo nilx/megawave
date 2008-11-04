@@ -74,7 +74,7 @@ int show_all,motion_flag;     /* for motion and single display */
 /*--------------------------------------------------------*/
 
 /* compute the rule (graduations) associated to a given interval */
-void getrule(a,b,ofs,step,nsub)
+static void getrule(a,b,ofs,step,nsub)
      double a,b;
      double *ofs,*step;
      int *nsub;
@@ -93,7 +93,7 @@ void getrule(a,b,ofs,step,nsub)
 }
 
 /* modify the virtual window to achieve the real window x/y ratio */
-void restore_xyratio()
+static void restore_xyratio()
 {
   double ratio,m,d;
 
@@ -109,7 +109,7 @@ void restore_xyratio()
   }
 }
 
-double trunc(v,ref)
+static double trunc(v,ref)
      double v,ref;
 {
   ref = v/ref;
@@ -118,7 +118,7 @@ double trunc(v,ref)
 }
 
 /* draw a line with any coordinates (part can be out of frame) */
-void draw_framed(xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax,i)
+static void draw_framed(xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax,i)
      int xa,ya,xb,yb,xmin,xmax,ymin,ymax,i;
      unsigned char r,g,b;
 {
@@ -159,7 +159,7 @@ void draw_framed(xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax,i)
 }
 
 /* draw a curve in local referential */
-void draw_curve_framed(x,y,c,r,g,b,xmin,xmax,ymin,ymax,i)
+static void draw_curve_framed(x,y,c,r,g,b,xmin,xmax,ymin,ymax,i)
 int x,y,xmin,xmax,ymin,ymax,i;
 unsigned char r,g,b;
 Curve c;
@@ -181,7 +181,7 @@ Curve c;
 }
 
 /* set display background (bg image or white) */
-void put_bg()
+static void put_bg()
 {
   float v,sx,sy,fbg=255.;
   int adr,x,y;
@@ -209,7 +209,7 @@ void put_bg()
 }
 
 /* plot one of the curves */
-void plot_one_curve(i,color,pcolor,mode)
+static void plot_one_curve(i,color,pcolor,mode)
      int i,color,pcolor,mode;
 {
   Flist c;
@@ -244,7 +244,7 @@ void plot_one_curve(i,color,pcolor,mode)
 #define STRSIZE 15
 
 /* plot everything: bg, axes, curves */
-void plot_curves()
+static void plot_curves()
 {
   Flist c;
   double xofs,xstep,yofs,ystep,v,ssx1,ssx2,ssy1,ssy2,truncref;
@@ -399,7 +399,7 @@ void plot_curves()
 }
 
 /* compute initial virtual window */
-void init_sxy()
+static void init_sxy()
 {
   Flist c;
   int i,j,init;
@@ -430,7 +430,7 @@ void init_sxy()
 }
 
 
-void zoom_sxy(x,y)
+static void zoom_sxy(x,y)
      int x,y;
 {
   double d;
@@ -445,7 +445,7 @@ void zoom_sxy(x,y)
   sy2 = sy1+d;
 }
 
-void unzoom_sxy()
+static void unzoom_sxy()
 {
   double d;
 
@@ -457,7 +457,7 @@ void unzoom_sxy()
   sy2 += d;
 }
 
-void shift_sx(p)
+static void shift_sx(p)
      double p;
 {
   p *= (sx2-sx1<sy2-sy1?sx2-sx1:sy2-sy1);
@@ -465,7 +465,7 @@ void shift_sx(p)
   sx2 += p;
 }
 
-void shift_sy(p)
+static void shift_sy(p)
      double p;
 {
   p *= (sx2-sx1<sy2-sy1?sx2-sx1:sy2-sy1);
@@ -474,7 +474,7 @@ void shift_sy(p)
 }
 
 /* tell which curve is near the selected location */
-int curve_selected(x,y)
+static int curve_selected(x,y)
      int x,y;
 {
   Point_curve p;
@@ -493,7 +493,7 @@ int curve_selected(x,y)
 }
 
 /* ask the user the index of the curve to be selected */
-void select_curve_index()
+static void select_curve_index()
 {
   int index;
   printf("Enter curve index: ");
@@ -506,14 +506,14 @@ void select_curve_index()
 }
 
 /*** refresh display with current image ***/
-void redisplay()
+static void redisplay()
 {
   WLoadBitMapColorImage(win,image->red,image->green,image->blue,nx,ny);
   WRestoreImageWindow(win,0,0,nx,ny);
   WFlushWindow(win);
 }
 
-void help()
+static void help()
 {
   printf("\n\t\tHelp on line\n");
   printf("\nMouse:\n");
@@ -543,7 +543,7 @@ void help()
 }
 
 /* handle display events */
-int win_notify(window,param)
+static int win_notify(window,param)
 Wframe *window;
 void *param;
 {

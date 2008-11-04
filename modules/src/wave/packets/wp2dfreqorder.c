@@ -19,7 +19,7 @@ usage = {
 #include "mw.h"
 
 /***************************************************************/
-void switchOrder(order)
+static void switchOrder(order)
      
      Fsignal order;
 

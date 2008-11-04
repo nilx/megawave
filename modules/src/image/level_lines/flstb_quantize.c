@@ -24,7 +24,7 @@
 #include "mw-modules.h" /* for flst_pixels() */
 
 
-int compare_floats(p1, p2)
+static int compare_floats(p1, p2)
      void *p1, *p2;
 {
   float f1= *(float*)p1, f2 = *(float*)p2;
@@ -34,7 +34,7 @@ int compare_floats(p1, p2)
 }
 
 /* Return min and max values of image represented by pTree */
-void find_bounds(pTree, pMin, pMax)
+static void find_bounds(pTree, pMin, pMax)
      Shapes pTree;
      float *pMin, *pMax;
 {
@@ -48,7 +48,7 @@ void find_bounds(pTree, pMin, pMax)
 }
 
 /* Return the family of levels associated to the offset and the step */
-Fsignal build_signal(pTree, pOffset, pStep)
+static Fsignal build_signal(pTree, pOffset, pStep)
      Shapes pTree;
      float *pOffset, *pStep;
 {
@@ -74,7 +74,7 @@ Fsignal build_signal(pTree, pOffset, pStep)
 
 /* Return min{i: pLevels->values[i] >= fValue} if inf==1 or
           max{i: pLevels->values[i] <= fValue} otherwise */
-int lookup_index(pLevels, fValue, inf)
+static int lookup_index(pLevels, fValue, inf)
      Fsignal pLevels;
      float fValue;
      char inf;
@@ -103,7 +103,7 @@ int lookup_index(pLevels, fValue, inf)
 }
 
 /* Count the number of quantized shapes in the tree */
-int count_shapes(pTree, tabIndices, pLevels)
+static int count_shapes(pTree, tabIndices, pLevels)
      Shapes pTree;
      int* tabIndices;
      Fsignal pLevels;
@@ -124,7 +124,7 @@ int count_shapes(pTree, tabIndices, pLevels)
 }
 
 /* Build a new shape, of parent pParent, variation of pShapeTemplate */
-void build_shape(pShapeTemplate, pShape, fValue, pParent)
+static void build_shape(pShapeTemplate, pShape, fValue, pParent)
 Shape pShapeTemplate, pShape, pParent;
 float fValue;
 {
@@ -142,7 +142,7 @@ float fValue;
 /* Main algorithm: enumerate the shapes of original tree in preorder, where
 for each shape, construct the shapes of the quantized tree comprised between
 it and the parent */
-void fill_quantized_tree(pTree, pQuantizedTree, pLevels, tabIndices)
+static void fill_quantized_tree(pTree, pQuantizedTree, pLevels, tabIndices)
      Shapes pTree, pQuantizedTree;
      Fsignal pLevels;
      int* tabIndices;
@@ -208,7 +208,7 @@ void fill_quantized_tree(pTree, pQuantizedTree, pLevels, tabIndices)
   free(pStackNewShapes);
 }
 
-void quantize_tree(pLevels, pTree, pQuantizedTree)
+static void quantize_tree(pLevels, pTree, pQuantizedTree)
      Fsignal pLevels;
      Shapes pTree, pQuantizedTree;
 {

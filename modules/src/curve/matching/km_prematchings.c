@@ -28,7 +28,7 @@ usage = {
    euclidean distance to (x,y) is less than maxErr. 
    The function returns the number of such codes.*/
 
-unsigned char search_value(x,y,dict,maxErr,list_matchings,j)
+static unsigned char search_value(x,y,dict,maxErr,list_matchings,j)
      float x,y;
      Flists dict;
      float maxErr;
@@ -50,7 +50,7 @@ unsigned char search_value(x,y,dict,maxErr,list_matchings,j)
    points P_i(X_i,Y_i) satisfy : eucl-dist(P_i,L_i) < maxErr 
    for all i in {0,...,Nnorm-1} */
 
-void matchings_code(liste,dict,maxErr,Nnorm,matchaux)
+static void matchings_code(liste,dict,maxErr,Nnorm,matchaux)
      Flist liste;
      Flists dict;
      float maxErr;

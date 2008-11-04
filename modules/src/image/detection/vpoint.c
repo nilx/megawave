@@ -59,7 +59,7 @@ static int IdentifyOppositeTiles=0;
    Ref-counted Set implementation using MegaWave Flist
    **************************************************************** */
 typedef  Flist SegList;
-SegList  newSegList(n)
+static SegList  newSegList(n)
      int n;
 {
   SegList l = mw_change_flist(NULL,n,0,1);
@@ -68,7 +68,7 @@ SegList  newSegList(n)
   (*(int*)l->data) = 1;
   return l;
 }
-int  deleteSegList(L)
+static int  deleteSegList(L)
      SegList L;
 {
   if (--(*(int*)L->data) == 0) {
@@ -79,7 +79,7 @@ int  deleteSegList(L)
   }
   return 0;
 }
-SegList  newSegListRef(L)
+static SegList  newSegListRef(L)
      SegList L;
 {
   (*(int*)L->data)++;
@@ -92,7 +92,7 @@ typedef  float* SegListIterator;
 #define  SegListEnd(L,it)     (it>=(L->values+(L->size)))
 #define  SegListNext(it)      (it++)
 #define  SegListValue(it)     ((int)*it)
-Flist    SegListCopy(L)
+static Flist    SegListCopy(L)
      SegList L;
 {
   SegListIterator p;
@@ -168,7 +168,7 @@ Flist    SegListCopy(L)
    so the last (infinite) region has a probability between 0 and pint.
   ---------------------------------------------------------------------------*/
 
-double pext(beta1,beta2,theta)
+static double pext(beta1,beta2,theta)
      double beta1,beta2,theta;
 {
   double f1,f2;
@@ -185,7 +185,7 @@ double pext(beta1,beta2,theta)
   return ( 2.0*theta + f2-f1 ) / (double) M_PI;
 }
 
-double pext_prime(beta2,theta)
+static double pext_prime(beta2,theta)
      double beta2,theta;
 {
   double fp2;
@@ -197,13 +197,13 @@ double pext_prime(beta2,theta)
   return ( 1.0 + fp2 ) / (double) M_PI;
 }
 
-double pinf(beta1,theta)
+static double pinf(beta1,theta)
      double beta1,theta;
 {
   return pext(beta1,M_PI_2,theta);
 }
 
-double fzero_convex(a0,b0,tolx,tolf,beta1,dtheta,p)
+static double fzero_convex(a0,b0,tolx,tolf,beta1,dtheta,p)
      double a0,b0,tolx,tolf,beta1,dtheta,p;
      /* Finds the zero x0 of a convex function myfun(x) on an interval [a0,b0].
         We assume that:
@@ -232,7 +232,7 @@ double fzero_convex(a0,b0,tolx,tolf,beta1,dtheta,p)
 
 }
 
-double* qtile(p,dtheta,nq,p_inf)
+static double* qtile(p,dtheta,nq,p_inf)
      double p;
      double dtheta;
      int* nq;
@@ -269,7 +269,7 @@ double* qtile(p,dtheta,nq,p_inf)
   return beta;
 }
 
-void polar2cart(theta,q,R,Xcenter,Ycenter,x,y)
+static void polar2cart(theta,q,R,Xcenter,Ycenter,x,y)
      double theta,q;           /* normalized polar coordinates */
      double R,Xcenter,Ycenter; /* parameters used for normalization */
      float  *x,*y;             /* non-normalized cartesian coordinates */
@@ -286,7 +286,7 @@ void polar2cart(theta,q,R,Xcenter,Ycenter,x,y)
 /*------------------------------------------------------------*/
 
 
-double *tab(n,p)
+static double *tab(n,p)
 int n;
 double p;
 {
@@ -320,7 +320,7 @@ double p;
   return out;
 }
 
-double *tab2(n,p)
+static double *tab2(n,p)
 int n;
 double p;
 /* alternative implementation: it computes directly the binomial tail,
@@ -352,7 +352,7 @@ double p;
   return out;
 }
 
-double* binomial_tail(n,p)
+static double* binomial_tail(n,p)
 int n;
 double p;
 {
@@ -425,7 +425,7 @@ typedef struct tiling {
 /* Alternative to TMeaning that deals with out of bounds indices.
    Useful to compare a tile to its neighbours
  */
-double TMeaning2(T,ie,ix,iy)
+static double TMeaning2(T,ie,ix,iy)
      Tiling* T;
      int ie,ix,iy;
 {
@@ -458,7 +458,7 @@ double TMeaning2(T,ie,ix,iy)
 
 /* Create and initialize a new Tiling of the plane into vanishing regions
    for a given angular precision level (ntheta orientations) */
-Tiling* newTiling(ntheta,p,p_inf,M)
+static Tiling* newTiling(ntheta,p,p_inf,M)
    int ntheta;   /* Number of orientations in the exterior tiling */
    double *p;    /* (output) probability of a line meeting any of the tiles */
    double *p_inf;/* (output) probability of a line meeting infinite tiles
@@ -584,7 +584,7 @@ Tiling* newTiling(ntheta,p,p_inf,M)
   return T;
 }
 
-void deleteTiling(T)
+static void deleteTiling(T)
      Tiling* T;
 {
   int ie, ix, iy;
@@ -624,7 +624,7 @@ void deleteTiling(T)
 	       TMeaning(Tilings[i],ie,iy,ix) to find its meaningfulness.
    ------------------------------------------------------------------------- */
 #ifdef SegmentsAsFimage
-Flists newSegments(allsegs)
+static Flists newSegments(allsegs)
      Fimage allsegs;
 {
   int N, dim, i, j;
@@ -650,7 +650,7 @@ Flists newSegments(allsegs)
   return Segments;
 }
 
-void deleteSegments(Segments)
+static void deleteSegments(Segments)
      Flists Segments;
 {
   int i;
@@ -696,7 +696,7 @@ void deleteSegments(Segments)
    ------------------------------------------------------------------------- */
 
 /* Cross-product in R3 or join or meet in P2 */
-void cross_prod(a,b,c)
+static void cross_prod(a,b,c)
      double *a,*b,*c;
 {
   c[2] =  a[0]*b[1]-a[1]*b[0];
@@ -706,7 +706,7 @@ void cross_prod(a,b,c)
 
 
 /* Normalized polar coordinates of the line supporting a segment */
-void polar_coords(seg,R,Xcenter,Ycenter,rho,phi)
+static void polar_coords(seg,R,Xcenter,Ycenter,rho,phi)
      float* seg;
      double R,Xcenter,Ycenter;
      double *rho,*phi;
@@ -751,7 +751,7 @@ void polar_coords(seg,R,Xcenter,Ycenter,rho,phi)
 }
 
 /* Normalized projective coordinates of the line supporting a segment */
-void proj_coords(seg,R,Xcenter,Ycenter,L)
+static void proj_coords(seg,R,Xcenter,Ycenter,L)
      float* seg;
      double R,Xcenter,Ycenter;
      double *L; /* should be called with an allocated L[3] */
@@ -779,7 +779,7 @@ void proj_coords(seg,R,Xcenter,Ycenter,L)
   Append a record to the end of the Flist.
   (This is used to add a segment j to an accumulator TSegs(T,ie,ix,iy))
  */
-void FlistAdd(l,tuple)
+static void FlistAdd(l,tuple)
      Flist l;
      float *tuple;
 {
@@ -795,7 +795,7 @@ void FlistAdd(l,tuple)
   (l->size)++;
 }
 
-Flist FlistCat(l1,l2)
+static Flist FlistCat(l1,l2)
      Flist l1,l2;
 {
   int i, j; 
@@ -815,7 +815,7 @@ Flist FlistCat(l1,l2)
   return l1;
 }
 
-Flist FlistFlush(l1)
+static Flist FlistFlush(l1)
      Flist l1;
 {
   l1->size=0;
@@ -837,7 +837,7 @@ Flist FlistFlush(l1)
    per segment, precision level. The size of ls is at most 2*nx+4*ny).
    Observe that this implementation ignores the last argument j.
 */
-void STilesAddUnique(L,Tilings,i,ie,ix,iy,j)
+static void STilesAddUnique(L,Tilings,i,ie,ix,iy,j)
      Flist L;   /* 4-Flist containing the tiles met by the j-th segment */
      Tiling **Tilings;
      int i,ie,ix,iy; /* 4-tuple representing the tile to be added */
@@ -904,7 +904,7 @@ void STilesAddUnique(L,Tilings,i,ie,ix,iy,j)
    - update vp to meaning>eps
   -------------------------------------------------------------------------
 */
-int TAddSegment(Tilings,i,S,j,R,Xcenter,Ycenter)
+static int TAddSegment(Tilings,i,S,j,R,Xcenter,Ycenter)
      Tiling **Tilings;
      int i; /* index to precision level */
      Flists S;
@@ -1076,7 +1076,7 @@ int TAddSegment(Tilings,i,S,j,R,Xcenter,Ycenter)
     - intersections between interior and exterior tiles at the same or different levels
    
  */
-int FindIntersection(T,ie,ix,iy,TT,ie2,ix2,iy2)
+static int FindIntersection(T,ie,ix,iy,TT,ie2,ix2,iy2)
      Tiling *T,*TT;
      int  ie,  ix,   iy;
      int *ie2,*ix2,*iy2;

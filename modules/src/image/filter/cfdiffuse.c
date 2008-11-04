@@ -31,7 +31,7 @@ usage = {
 #define wgh(X) (((X)<epsilon)? (deltat/epsilon):(deltat/(X)))
  
 /* Compute L2h, L2v */
-void set_lambda(I,L2h,L2v,deltat,epsilon)
+static void set_lambda(I,L2h,L2v,deltat,epsilon)
 
 Cfimage I;
 Fimage L2h,L2v;
@@ -78,7 +78,7 @@ float deltat,epsilon;
 }
 
 
-void inverse(D0,D1,U0,Yr,Yg,Yb,Vr,Vg,Vb,size)
+static void inverse(D0,D1,U0,Yr,Yg,Yb,Vr,Vg,Vb,size)
 
 float *D0,*D1,*U0,*Yr,*Yg,*Yb,*Vr,*Vg,*Vb;
 int size;

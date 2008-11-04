@@ -48,7 +48,7 @@ float X1,Y1,X2,Y2;  /* location of displayed subimage */
 /*--------------------------------------------------------*/
 
 
-void faded_fimage_to_ccimage(in,out,lambda)
+static void faded_fimage_to_ccimage(in,out,lambda)
      Fimage in;     
      Ccimage out;
      float lambda;
@@ -64,7 +64,7 @@ void faded_fimage_to_ccimage(in,out,lambda)
   }
 }
 		  
-void my_llmap(in,out,ofs,step)
+static void my_llmap(in,out,ofs,step)
      Fimage in;
      Ccimage out;
      float ofs,step;
@@ -139,7 +139,7 @@ void my_llmap(in,out,ofs,step)
 }
 
 
-int redisplay(wt,n)
+static int redisplay(wt,n)
      Wp_toggle wt;
      short n;
 {
@@ -150,7 +150,7 @@ int redisplay(wt,n)
   return(0);
 }
 
-int grey_level(wi,n)
+static int grey_level(wi,n)
      Wp_int wi;
      short n;
 {
@@ -159,7 +159,7 @@ int grey_level(wi,n)
   return(0);
 }
 
-int step(wi,n)
+static int step(wi,n)
      Wp_int wi;
      short n;
 {
@@ -169,7 +169,7 @@ int step(wi,n)
   return(0);
 }
 
-int quit(wt,n)
+static int quit(wt,n)
      Wp_toggle wt;
      short n;
 {
@@ -177,7 +177,7 @@ int quit(wt,n)
   return(wp->state);
 }
 
-void help()
+static void help()
 {
   printf("\n\t\tHelp on line\n");
   printf("\nMouse:\n");
@@ -195,7 +195,7 @@ void help()
 }
 
 /* handle display events */
-int win2_notify(window,param)
+static int win2_notify(window,param)
      Wframe *window;
      void *param;
 {
@@ -292,7 +292,7 @@ int win2_notify(window,param)
 }
 
 /* initialize buttons on control window */
-void init_buttons()
+static void init_buttons()
 {
   int line,linestep;
 

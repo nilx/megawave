@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-void compute_area(connex8, U, O, M, nrow, ncol, a, b, x, y, l, stoparea, area)
+static void compute_area(connex8, U, O, M, nrow, ncol, a, b, x, y, l, stoparea, area)
      char *connex8;
      unsigned char *U,*O,*M;
      int nrow,ncol,a,b,x,y,l;

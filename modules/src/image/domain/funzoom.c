@@ -27,7 +27,7 @@
 /* NB : calling this module with out=in is possible */
 
 /* extract image value (symmetrize outside image domain) */
-float v(in,x,y)
+static float v(in,x,y)
      Fimage in;
      int x,y;
 {
@@ -39,7 +39,7 @@ float v(in,x,y)
 }
 
 /* fast integral power function */
-double ipow(x,n)
+static double ipow(x,n)
      double x;
      int n;
 {
@@ -53,7 +53,7 @@ double ipow(x,n)
 }
 
 /* binomial coefficient */
-double binom(k,n)
+static double binom(k,n)
      int k,n;
 {
   int i;
@@ -80,7 +80,7 @@ typedef struct ppfunction {
 } *Ppfunction;
 
 /* print algebraic description of Ppfunction */
-void ppprint(f)
+static void ppprint(f)
      Ppfunction f;
 {
   int i,j;
@@ -97,7 +97,7 @@ void ppprint(f)
 
 /* find the interval [x(i),x(i+1)] corresponding to a given point */
 /* convention : i=-1 if the interval is unbounded */
-int ppfind(f,x)
+static int ppfind(f,x)
      Ppfunction f;
      double x;
 {
@@ -109,7 +109,7 @@ int ppfind(f,x)
 }
 
 /* eval a Ppfunction at a given point x (Horner algorithm) */
-double ppeval(f,x)
+static double ppeval(f,x)
      Ppfunction f;
      double x;
 {
@@ -125,7 +125,7 @@ double ppeval(f,x)
     
 /* add integral between x[i] and t-w (sign=-1) 
              or between x[i] and t+w (sign=1) */
-void ppaddint(f,g,i,sign,w)
+static void ppaddint(f,g,i,sign,w)
      Ppfunction f,g;
      int i,sign;
      double w;
@@ -148,7 +148,7 @@ void ppaddint(f,g,i,sign,w)
 }
 
 /* add integral between x[i1] and x[i2] */
-void ppaddcte(f,g,i1,i2)
+static void ppaddcte(f,g,i1,i2)
      Ppfunction f,g;
      int i1,i2;
 {
@@ -172,7 +172,7 @@ void ppaddcte(f,g,i1,i2)
 
 /* convolution of a piecewise polynomial function */
 /* by a symmetric pulse of width 2*w and height 1 */
-void ppconvol(f,g,w)
+static void ppconvol(f,g,w)
      Ppfunction f,g;
      double w;
 {
@@ -219,7 +219,7 @@ void ppconvol(f,g,w)
 }
 
 /* build spline of order o : W1^o */
-void ppspline(f,o)
+static void ppspline(f,o)
      Ppfunction f;
      int o;
 {
@@ -240,7 +240,7 @@ void ppspline(f,o)
 }
 
 /* build unzoom kernel of order o : (W1*Wz)^o */
-void ppkernel(f,o,z)
+static void ppkernel(f,o,z)
      Ppfunction f;
      int o;
      float z;

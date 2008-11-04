@@ -26,7 +26,7 @@ usage = {
 #include <math.h>
 #include "mw.h"
 
-void Final(pict,sortie)
+static void Final(pict,sortie)
 
 Fimage pict;
 Cmovie sortie;
@@ -64,19 +64,19 @@ for(i=0;i<Size;i++) {
 }
 }
 
-int circle(x,y)
+static int circle(x,y)
      float x,y;
 {
   if ((x*x+y*y)< 1) return(1); else return(0);
 }
 
-int rect(x,y)
+static int rect(x,y)
      float x,y;
 {
   if ((x<0.4)&&(x>-0.4)&&(y<0.4)&&(y>-0.4)) return(1); else return(0);
 }
 
-int srect(x,y)
+static int srect(x,y)
      float x,y;
 {
   if ((x<0.4)&&(x>=0)&&(y<0.1)&&(y>-0.1)) return(1); else return(0);

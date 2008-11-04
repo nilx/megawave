@@ -324,7 +324,7 @@ static void get_last_index_matching(errorMax, info1, info2, fcrv1, fcrv2, iL1, i
    performance value is calculated, matching information is stored in a
    MATCHDATA structure, and function returns 1. */
 
-unsigned char extend_matchingAI(errorMax, minLength, info1, info2, fcrv1, fcrv2, ini1, fin1, ini2, fin2,matchdataaux)
+static unsigned char extend_matchingAI(errorMax, minLength, info1, info2, fcrv1, fcrv2, ini1, fin1, ini2, fin2,matchdataaux)
      float errorMax, minLength;
      struct NormDataAI *info1; 
      struct NormDataAI *info2; 
@@ -442,7 +442,7 @@ static float get_complexity(fcrv, i1, i2)
    All the matching information is stored in a MATCHDATA structure 
    (see function extend_matchingAI). */
 
-unsigned char check_matchingAI(fcrv1, fcrv2, info1, info2, minComplex, errorMax, minLength, A_norm1, A_norm2, A_12, matchdataaux)
+static unsigned char check_matchingAI(fcrv1, fcrv2, info1, info2, minComplex, errorMax, minLength, A_norm1, A_norm2, A_12, matchdataaux)
      Flist fcrv1, fcrv2; 
      struct NormDataAI *info1, *info2;
      struct matchdata *matchdataaux;

@@ -36,7 +36,7 @@ float X1,Y1,X2,Y2,min,max;
 Fimage u1,u2,u;
 Ccimage image1,image2;
 
-void max_contrast()
+static void max_contrast()
 {
   int adr;
   float bg,a,c,fnx,fny;
@@ -54,7 +54,7 @@ void max_contrast()
   }
 }
 
-void recompute()
+static void recompute()
 {
   int adr;
   float bg,a,c,fnx,fny;
@@ -78,7 +78,7 @@ void recompute()
   }
 }
 
-void redisplay()
+static void redisplay()
 {
   /* 
    * FIXME: oversized str, but this is not safe, snprintf *is*
@@ -112,7 +112,7 @@ void redisplay()
   WFlushWindow(win);
 }
 
-void help()
+static void help()
 {
   printf("\n\t\tHelp on line\n");
   printf("\nMouse:\n");
@@ -134,7 +134,7 @@ void help()
 
 
 /* handle display events */
-int win_notify(window,param)
+static int win_notify(window,param)
      Wframe *window;
      void *param;
 {

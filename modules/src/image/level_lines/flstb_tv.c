@@ -34,7 +34,7 @@ typedef struct {
 } point_t;
 #endif
 
-float curve_perimeter(pCurve, iHeight, iWidth)
+static float curve_perimeter(pCurve, iHeight, iWidth)
      Flist pCurve;
      int iHeight, iWidth;
 {
@@ -83,7 +83,7 @@ float curve_perimeter(pCurve, iHeight, iWidth)
   return (float)dPerimeter;
 }
 
-float curve_area(pCurve, iHeight, iWidth)
+static float curve_area(pCurve, iHeight, iWidth)
      Flist pCurve;
      int iHeight, iWidth;
 {
@@ -124,7 +124,7 @@ float curve_area(pCurve, iHeight, iWidth)
   return (float)(dArea * .5);
 }
 
-void decrease_tv(tabScales, fQuantizationLevel, iQuantizationCurve, pImage,
+static void decrease_tv(tabScales, fQuantizationLevel, iQuantizationCurve, pImage,
 		 pTree, tabtabSaddleValues)
      float *tabScales, fQuantizationLevel;
      int iQuantizationCurve;

@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-float apply_g(g,v)
+static float apply_g(g,v)
      Flist g;
      float v;
 {

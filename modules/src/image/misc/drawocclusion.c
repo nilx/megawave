@@ -34,7 +34,7 @@ usage = {
  (before updating) */
 #define LABELS_NUMBER 100000
 
-int u_compar_i(u,v)  /*  Called by function qsort for sorting decreasingly */
+static int u_compar_i(u,v)  /*  Called by function qsort for sorting decreasingly */
 int *u,*v;
   {
     if ((*u)<(*v)) return (1);
@@ -61,7 +61,7 @@ of each nonzero pixel by the smallest label to which it is associated.
 */
 /****************************************************************************/
 
-void mise_a_jour_transcode(transcode,a,b)
+static void mise_a_jour_transcode(transcode,a,b)
 
 int transcode[LABELS_NUMBER];
 int a,b;
@@ -92,7 +92,7 @@ itself associated with a third label l3, etc... The following function simply
 performs a recursive association of each label l1,l2,l3 with the smallest possible
 label in the chain. */
 
-void refresh(transcode,refresh_transcode,i,first)
+static void refresh(transcode,refresh_transcode,i,first)
 
 int transcode[LABELS_NUMBER],refresh_transcode[LABELS_NUMBER];
 int i;
@@ -110,7 +110,7 @@ int *first;
 
 /****************************************************************************/
 
-void fconnected(In,line,col,FOREGROUND,NUMBER,not_writing_on,complement,connectivity)
+static void fconnected(In,line,col,FOREGROUND,NUMBER,not_writing_on,complement,connectivity)
 float *In;
 int line,col;
 float FOREGROUND;
@@ -245,7 +245,7 @@ char print_mode=0;
 
 /* Return the number of points in a polygon */
 
-int give_number_of_point_in_poly(p)
+static int give_number_of_point_in_poly(p)
 
 Polygon p;
 
@@ -258,7 +258,7 @@ Polygon p;
   return(n);
 }
 
-void DrawLinePoly(ImageWindow,a0,b0,a1,b1)
+static void DrawLinePoly(ImageWindow,a0,b0,a1,b1)
 
 
 Wframe *ImageWindow;
@@ -287,7 +287,7 @@ int a0,b0,a1,b1;
   WSetColorPencil(ImageWindow,0);
 }
 
-void List_of_Poly()
+static void List_of_Poly()
 
 {
   Polygon p;
@@ -305,7 +305,7 @@ void List_of_Poly()
   printf("\n");
 }
 
-void Unzoom_Poly(zoom)
+static void Unzoom_Poly(zoom)
 int zoom;
 {
   Polygon p;
@@ -322,7 +322,7 @@ int zoom;
 }  
 
 
-void Help()
+static void Help()
 
 {
   printf("\n\t\tHelp on line\n");
@@ -341,7 +341,7 @@ void Help()
 }
 
 
-void Redraw(ImageWindow)
+static void Redraw(ImageWindow)
 
 Wframe *ImageWindow;
 
@@ -375,7 +375,7 @@ Wframe *ImageWindow;
 /*     > 0 if there was an event caught (but Destroy) */
 /*      -1 if the event Destroy was caught (or 'Q')   */
 
-int readpoly_notify(ImageWindow)
+static int readpoly_notify(ImageWindow)
 
 Wframe *ImageWindow;
 

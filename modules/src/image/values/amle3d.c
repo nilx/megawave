@@ -20,7 +20,7 @@
 
 /*create a movie with value 0.0 with the same number of images as the input*/
 
-void createmovie(input,output,nl,nc)
+static void createmovie(input,output,nl,nc)
      Fmovie input,output;
      int nc,nl;
 {
@@ -42,7 +42,7 @@ void createmovie(input,output,nl,nc)
 /*------------------ compute the value of the 4 neighbours of a pixel in the same image . 
                            If the pixel is at a border, a mirror effect is applied  ------*/
 
-void neighbor_4(x,y,xmax,ymax,p,left,right,up,down)
+static void neighbor_4(x,y,xmax,ymax,p,left,right,up,down)
      register int x,y,xmax,ymax;
      register float *p;
      float **left,**right,**up,**down;
@@ -115,7 +115,7 @@ compute the max and min in the 6 (3d) neighborhood of the pixel,
 then replace the value by 0.5(max+min).*/
 
 
-void iterate(input,output,nl,nc)
+static void iterate(input,output,nl,nc)
      Fmovie input,output;
      int nl,nc;
 {
@@ -187,7 +187,7 @@ void iterate(input,output,nl,nc)
 }
 
 
-void copymovie(input,output,nl,nc)
+static void copymovie(input,output,nl,nc)
      int nl,nc;
      Fmovie input,output;
 {

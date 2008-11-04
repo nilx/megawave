@@ -236,7 +236,7 @@ Cimage          bufcomp;        /* Buffer for compressed image */
 
 
 
-void
+static void
 COMPUTE_CHANNEL_PSNR(conv, psnr, gpsnr, bpsnr, redpsnr, greenpsnr, bluepsnr)
 
 int        *conv;
@@ -276,7 +276,7 @@ float      *redpsnr, *greenpsnr, *bluepsnr; /* Target rates for each channel */
 
 
 
-void
+static void
 COMPUTE_CHANNEL_RATES(conv, rate, grate, brate, redrate, greenrate, bluerate)
 
 int        *conv;
@@ -314,7 +314,7 @@ float      *redrate, *greenrate, *bluerate; /* Target rates for each channel */
 }
 
 
-void
+static void
 COPY_CHANNEL2FIMAGE(image, chimage, color)
 
 Cfimage     image;		/* Input color image */
@@ -340,7 +340,7 @@ int         color;              /* Index of channel */
 }
 
 
-void
+static void
 COPY_FIMAGE2CHANNEL(image, chimage, color)
 
 Cfimage     image;		/* Output color image */

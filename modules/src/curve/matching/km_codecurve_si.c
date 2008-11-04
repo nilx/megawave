@@ -133,7 +133,7 @@ static int get_next_point_angle(fcrv, i1, i2, i_max, angle_max, type)
 
 /* find intersection points between (i1,i2) and the tangent to i */
 
-void find_intersection_point(curve,i1,i2,i,xR,yR)
+static void find_intersection_point(curve,i1,i2,i,xR,yR)
      Flist curve;
      int i1,i2,i;
      float *xR, *yR;
@@ -169,7 +169,7 @@ static int halfplane(x1, y1, x2, y2, x, y)
 /* compute the central point C on the curve (coords xc,yc between points 
    of indices ileft and iright */
 
-void find_central_point(curve,xR1,yR1,xR2,yR2,iFirst,iLast,xC,yC,ileft,iright)
+static void find_central_point(curve,xR1,yR1,xR2,yR2,iFirst,iLast,xC,yC,ileft,iright)
      Flist curve;
      float xR1,yR1,xR2,yR2;
      int iFirst, iLast;
@@ -260,7 +260,7 @@ static int get_next_point_length(fcrv, xI0, yI0, iFirst, iLast, d, type)
 
 /* add the normalized coords of (x,y) in arc_code_SI at index m */
 
-void add_codeSI(arc_code_SI,x,y,m,x0,y0,vux,vuy,L0)
+static void add_codeSI(arc_code_SI,x,y,m,x0,y0,vux,vuy,L0)
      Flist arc_code_SI;
      float x,y;
      int m;
@@ -277,7 +277,7 @@ void add_codeSI(arc_code_SI,x,y,m,x0,y0,vux,vuy,L0)
 
 /* compute the NNorm normalized points */
 
-int get_code_SI(arc_code_SI,curve,xC,yC,i_left,i_right,xR1,yR1,xR2,yR2)
+static int get_code_SI(arc_code_SI,curve,xC,yC,i_left,i_right,xR1,yR1,xR2,yR2)
      Flist arc_code_SI;
      Flist curve;
      float xC, yC;
@@ -346,7 +346,7 @@ float xR1,yR1,xR2,yR2;
 /* compute the normalized descriptor of piece of curve in the coords 
    defined by points of indices i1 and i2 */
 
-int codeSI(arc_code_SI,curve,i1,i2)
+static int codeSI(arc_code_SI,curve,i1,i2)
      Flist arc_code_SI, curve;
      int i1, i2;
 {

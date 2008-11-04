@@ -41,7 +41,7 @@
  (before updating) */
 #define LABELS_NUMBER 100000
 
-int u_compar_i(u,v)  /*  Called by function qsort for sorting decreasingly */
+static int u_compar_i(u,v)  /*  Called by function qsort for sorting decreasingly */
 int *u,*v;
   {
     if ((*u)<(*v)) return (1);
@@ -68,7 +68,7 @@ of each nonzero pixel by the smallest label to which it is associated.
 */
 /****************************************************************************/
 
-void mise_a_jour_transcode(transcode,a,b)
+static void mise_a_jour_transcode(transcode,a,b)
 
 int transcode[LABELS_NUMBER];
 int a,b;
@@ -99,7 +99,7 @@ itself associated with a third label l3, etc... The following function simply
 performs a recursive association of each label l1,l2,l3 with the smallest possible
 label in the chain. */
 
-void refresh(transcode,refresh_transcode,i,first)
+static void refresh(transcode,refresh_transcode,i,first)
 
 int transcode[LABELS_NUMBER],refresh_transcode[LABELS_NUMBER];
 int i;
@@ -117,7 +117,7 @@ int *first;
 
 /****************************************************************************/
 
-void fconnected(In,line,col,FOREGROUND,NUMBER,not_writing_on,complement,connectivity)
+static void fconnected(In,line,col,FOREGROUND,NUMBER,not_writing_on,complement,connectivity)
 float *In;
 int line,col;
 float FOREGROUND;
@@ -382,7 +382,7 @@ Ppoint_t *ops;
 /****************************************************************************/
 
 /* ccw test: counterclockwise, clockwise or collinear */
-int ccw (p1p,p2p,p3p)
+static int ccw (p1p,p2p,p3p)
 Ppoint_t *p1p,*p2p,*p3p;
   {
     double d;
@@ -395,7 +395,7 @@ Ppoint_t *p1p,*p2p,*p3p;
 /****************************************************************************/
 
 /* is pbp between pap and pcp */
-int between (pap,pbp,pcp)
+static int between (pap,pbp,pcp)
 Ppoint_t *pap,*pbp,*pcp;
   {
     Ppoint_t p1, p2;
@@ -411,7 +411,7 @@ Ppoint_t *pap,*pbp,*pcp;
 /****************************************************************************/
 
 /* line to line intersection */
-int intersects (pap,pbp,pcp,pdp)
+static int intersects (pap,pbp,pcp,pdp)
 Ppoint_t *pap,*pbp,*pcp,*pdp;
   {
     int ccw1, ccw2, ccw3, ccw4;
@@ -434,7 +434,7 @@ Ppoint_t *pap,*pbp,*pcp,*pdp;
 /****************************************************************************/
 
 /* check if (i, i + 2) is a diagonal */
-int isdiagonal (pnli,pnlip2,pnln)
+static int isdiagonal (pnli,pnlip2,pnln)
 int pnli,pnlip2,pnln;
   {
     int pnlip1, pnlim1, pnlj, pnljp1, res;
@@ -469,7 +469,7 @@ int pnli,pnlip2,pnln;
 
 /****************************************************************************/
 
-void growtris (newtrin)
+static void growtris (newtrin)
 int newtrin;
   {
     if (newtrin <= trin) return;
@@ -490,7 +490,7 @@ int newtrin;
 
 /****************************************************************************/
 
-void loadtriangle (pnlap,pnlbp,pnlcp)
+static void loadtriangle (pnlap,pnlbp,pnlcp)
 pointnlink_t *pnlap,*pnlbp,*pnlcp;
   {
     triangle_t *trip;
@@ -510,7 +510,7 @@ pointnlink_t *pnlap,*pnlbp,*pnlcp;
 /****************************************************************************/
 
 /* triangulate polygon */
-void triangulate (pnln)
+static void triangulate (pnln)
 int pnln; 
   {
     int pnli, pnlip1, pnlip2;
@@ -536,7 +536,7 @@ int pnln;
 /****************************************************************************/
 
 /* connect a pair of triangles at their common edge (if any) */
-void connecttris (tri1,tri2)
+static void connecttris (tri1,tri2)
 int tri1,tri2;
   {
     triangle_t *tri1p, *tri2p;
@@ -557,7 +557,7 @@ int tri1,tri2;
 /****************************************************************************/
 
 /* find and mark path from trii, to trij */
-int marktripath (trii,trij)
+static int marktripath (trii,trij)
 int trii,trij;
   {
     int ei;
@@ -578,7 +578,7 @@ int trii,trij;
 /****************************************************************************/
 
 /* add a new point to the deque, either front or back */
-void add2dq (side,pnlp)
+static void add2dq (side,pnlp)
 int side;
 pointnlink_t *pnlp;
   {
@@ -597,7 +597,7 @@ pointnlink_t *pnlp;
 
 /****************************************************************************/
 
-void splitdq (side,index)
+static void splitdq (side,index)
 int side,index;
  {
     if (side == DQ_FRONT)
@@ -608,7 +608,7 @@ int side,index;
 
 /****************************************************************************/
 
-int finddqsplit (pnlp)
+static int finddqsplit (pnlp)
 pointnlink_t *pnlp;
   {
     int index;
@@ -624,7 +624,7 @@ pointnlink_t *pnlp;
 
 /****************************************************************************/
 
-int pointintri (trii,pp)
+static int pointintri (trii,pp)
 int trii;
 Ppoint_t *pp;
   {
@@ -639,7 +639,7 @@ Ppoint_t *pp;
 
 /****************************************************************************/
 
-void growpnls (newpnln)
+static void growpnls (newpnln)
 int newpnln;
   {
     if (!pnls) {
@@ -653,7 +653,7 @@ int newpnln;
 
 /****************************************************************************/
 
-void growdq (newdqn)
+static void growdq (newdqn)
 int newdqn;
   {
     if (newdqn <= dq.pnlpn) return;
@@ -672,7 +672,7 @@ int newdqn;
 
 /****************************************************************************/
 
-void growops (newopn)
+static void growops (newopn)
 int newopn;
   {
     ops=NULL;
@@ -683,7 +683,7 @@ int newopn;
 
 /****************************************************************************/
 
-void Triangulation(polyp)
+static void Triangulation(polyp)
 Ppoly_t *polyp;
 
   {
@@ -755,7 +755,7 @@ Ppoly_t *polyp;
 /****************************************************************************/
 /* return an angle between -pi and pi */
 
-double AngleFix(a)
+static double AngleFix(a)
 double a;
 {
     while (a > M_PI)
@@ -768,7 +768,7 @@ double a;
 
 /* compare the current angle a with reference angle b */
 
-double AngleCheck(a,b)
+static double AngleCheck(a,b)
 double a,b;
 {
     if ((a+M_PI>=b+M_PI_2)&&(a+M_PI<=b+3*M_PI_2)) return a;
@@ -781,7 +781,7 @@ double a,b;
    meandir1 is the geodesic curve mean direction at eps1
    meandir2 is the geodesic curve mean direction at eps2 */
 
-double GeodesicDistance(jc1,jc2,TVangle)
+static double GeodesicDistance(jc1,jc2,TVangle)
 jordan *jc1,*jc2;
 double *TVangle;
   {
@@ -915,7 +915,7 @@ double *TVangle;
 
 /****************************************************************************/
 
-int Pshortestpath (eps1,eps2,output)
+static int Pshortestpath (eps1,eps2,output)
 Ppoint_t eps1,eps2;
 Ppolyline_t *output;
   {
@@ -1041,7 +1041,7 @@ Ppolyline_t *output;
 }
 /****************************************************************************/
 
-void FreeTPath()
+static void FreeTPath()
   {
     if (tris) {free((void*)tris);tris=NULL;}
     if (pnls) {free((void*)pnls);pnls=NULL;}
@@ -1060,7 +1060,7 @@ Ppoint_t *endTjunctions; /* All the geodesics endpoints */
 
 /* Adds a new element to the list of vertices of occlusion boundary */
 
-void add_to_frontier(x,y)
+static void add_to_frontier(x,y)
 double x,y;
 
   {
@@ -1082,7 +1082,7 @@ double x,y;
    Note that level line direction is at this level of algorithm either equal to 
    0, 2, 4 or 6 (see convention above) */
 
-jordan *add_to_jordan(nouv,x,y,direction,gray1,gray2,dofrontier)
+static jordan *add_to_jordan(nouv,x,y,direction,gray1,gray2,dofrontier)
 jordan *nouv;
 double x,y;
 char direction;
@@ -1120,7 +1120,7 @@ char dofrontier;
 
 /* Inserts a new element in the chain defining the structuring element*/
 
-jordan *insert_jordan(jc,gray1,gray2)
+static jordan *insert_jordan(jc,gray1,gray2)
 jordan *jc;
 unsigned char gray1,gray2;
 
@@ -1144,7 +1144,7 @@ unsigned char gray1,gray2;
 
 /* Deletes an element in the chain defining the structuring element*/
 
-jordan *delete_jordan(jc)
+static jordan *delete_jordan(jc)
 jordan *jc;
 
   {
@@ -1159,7 +1159,7 @@ jordan *jc;
 /*  Frees the chain defining the T-junctions */
 /*  Be careful that this function is valid only if jordan curve is "broken" */
 
-void free_jordan(jc)
+static void free_jordan(jc)
 jordan *jc;
   
   {
@@ -1173,7 +1173,7 @@ jordan *jc;
 /*  Frees the frontier chain  */
 /*  Be careful that this function is valid only if frontier curve is "broken" */
 
-void free_frontier(jbi)
+static void free_frontier(jbi)
 frontier *jbi;
   
   {
@@ -1189,7 +1189,7 @@ frontier *jbi;
    in such a way that it contains only those points of bifurcation of 
    the polygonal line enclosing the occlusion */
 
-void copy_frontier(x)
+static void copy_frontier(x)
 int x;
   {
     frontier *jbi;
@@ -1205,7 +1205,7 @@ int x;
 
 /* Colorization of pixels on both sides of the current geodesic path */
 
-void geodfill(p1,p2,gray1,gray2,change)
+static void geodfill(p1,p2,gray1,gray2,change)
 int p1,p2;
 unsigned char gray1,gray2;
 char change;
@@ -1224,7 +1224,7 @@ char change;
 
 /* Colorization of peculiar pixels in the neighborhood of geodesic path nodes  */
 
-void pivotfill(p,gray,force)
+static void pivotfill(p,gray,force)
 int p;
 unsigned char gray;
 char force;
@@ -1240,7 +1240,7 @@ char force;
 
 /* Colorization of peculiar pixels in the neighborhood of geodesic path nodes */
 
-void fpivotfill(piv,p1,p2,gray1,gray2)
+static void fpivotfill(piv,p1,p2,gray1,gray2)
 int piv,p1,p2;
 unsigned char gray1,gray2;
 
@@ -1260,7 +1260,7 @@ unsigned char gray1,gray2;
        xe=Horizontal coordinate of end point
        ye=Vertical coordinate of end point */
 
-void drawgeod(xf,yf,xe,ye,gray1,gray2,piv)
+static void drawgeod(xf,yf,xe,ye,gray1,gray2,piv)
 int xf,yf,xe,ye;
 unsigned char gray1,gray2;
 int piv; /* Current pivot number */
@@ -1571,7 +1571,7 @@ int piv; /* Current pivot number */
    is walked counterclockwise, we draw the corresponding paths by forcing the value 
    on the "right" of the path and setting it on the left only if it has not been set yet. */
 
-void geodesic(jc,x)
+static void geodesic(jc,x)
 jordan *jc;
 int x;
 
@@ -1743,7 +1743,7 @@ int x;
 /* Once the geodesic paths have been drawn, it remains to let the values propagate
    within occlusion */
 
-void propagation(occlusionArea)
+static void propagation(occlusionArea)
 int occlusionArea;
 
   {
@@ -1794,7 +1794,7 @@ int occlusionArea;
 /* This procedure is used to "clean" the jordan curve. Zero-length line are removed, 
    as well as lines that have the same endpoints */
 
-jordan *update_jordan_curve(jc,ExternVal)
+static jordan *update_jordan_curve(jc,ExternVal)
 jordan *jc;
 unsigned char *ExternVal;
 
@@ -1872,7 +1872,7 @@ unsigned char *ExternVal;
 /* In the same time that we construct the chain "jordan" of level lines, we construct the 
    jordan curve made of the vertices of the polygonal lines enclosing the occlusion. */
 
-jordan *allocation_jordan_curve(instart,jc,previous_direction,next_direction,i,j)
+static jordan *allocation_jordan_curve(instart,jc,previous_direction,next_direction,i,j)
 unsigned char *instart;
 jordan *jc;
 char previous_direction,next_direction;
@@ -2015,7 +2015,7 @@ int i,j;
 /* Here we scan image for computing level lines input and output, construct the
 jordan curve, compute the optimal set of junctions and computes the final result */
 
-void perform_disocclusion(ptrin,gray_value,ptr_label,value,ptrout)
+static void perform_disocclusion(ptrin,gray_value,ptr_label,value,ptrout)
 
 register unsigned char *ptrin,*ptrout;
 unsigned char gray_value; /* value of a pixel connected to the occlusion but out of it */
@@ -2451,7 +2451,7 @@ If x>y we must have x-y < 2/CPL. Assume that we want it to be satisfied when y<x
 So we need CPL < 2/9.
 */
 
-double CCost(jc1,jc2)
+static double CCost(jc1,jc2)
 jordan *jc1,*jc2;
 
   {
@@ -2503,7 +2503,7 @@ jordan *jc1,*jc2;
 
 /* After computation of minimal energy, the associated set of junctions is updated */
 
-void joinback(i,j)
+static void joinback(i,j)
 int i,j;
 
   {
@@ -2524,7 +2524,7 @@ int i,j;
 
 /* Computes minimal energy within the arc defined by segment [i, i+j] */
 
-double ComputeEnergy(i,j)
+static double ComputeEnergy(i,j)
 int i,j;
 
   {
@@ -2574,7 +2574,7 @@ int i,j;
 
 /* Computes the optimal set of connections */
 
-void ComputeOptimalSet(jc)
+static void ComputeOptimalSet(jc)
 jordan *jc;
   {
     jordan *jci,*jcj;

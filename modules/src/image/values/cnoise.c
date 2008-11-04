@@ -32,7 +32,7 @@
 /*** NB: Calling this module with in=out is possible ***/
 
 
-unsigned char truncation(x)
+static unsigned char truncation(x)
 float x;
 {
   return (x<0.0?0:(x>255.0?255:(unsigned char)x));

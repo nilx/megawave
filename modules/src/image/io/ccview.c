@@ -38,7 +38,7 @@ typedef struct ccview_SParam {
 int GLprint;  /* Toggle to print the R,G,B values */
 int oldx1,oldy1,oldevent,zfactor;
 
-void ccview_notify_help()
+static void ccview_notify_help()
 
 {
   printf("\n\t\tHelp on line\n");
@@ -59,7 +59,7 @@ void ccview_notify_help()
 /*     > 0 if there was an event catched (but Destroy) */
 /*      -1 if the event Destroy was catched (or 'Q')   */
 
-int ccview_notify(ImageWindow,param)
+static int ccview_notify(ImageWindow,param)
 
 Wframe *ImageWindow;
 void *param;          /* Users's parameters: don't forget the cast ! */

@@ -78,7 +78,7 @@ static float halfplane(x1, y1, x2, y2, x, y)
 
 
 /* compute the first triplet of three consecutive points following i in the direction type */
-unsigned char get_first_triplet(iFirst, i, iP, iN, iLast, type)
+static unsigned char get_first_triplet(iFirst, i, iP, iN, iLast, type)
      int iFirst;
      int *i, *iP, *iN;
      int iLast;
@@ -115,7 +115,7 @@ unsigned char get_first_triplet(iFirst, i, iP, iN, iLast, type)
   return 1;
 }
 
-unsigned char get_next_triplet(i, iP, iN, last, type)
+static unsigned char get_next_triplet(i, iP, iN, last, type)
      int *i, *iP, *iN; 
      int last;
      unsigned char type;
@@ -145,7 +145,7 @@ unsigned char get_next_triplet(i, iP, iN, last, type)
 }
 
 /* check if the points lie on the same halfplane */
-unsigned char check_triplet(fcrv, i, j, k1, k2)
+static unsigned char check_triplet(fcrv, i, j, k1, k2)
      Flist fcrv;
      int i,j, k1, k2;
 {
@@ -168,7 +168,7 @@ unsigned char check_triplet(fcrv, i, j, k1, k2)
 }
 
 /* check if the curve cross the straight line between points i1 and i2 */
-unsigned char check_crossing_curve(fcrv, i1, i2)
+static unsigned char check_crossing_curve(fcrv, i1, i2)
      Flist fcrv;
      int i1,i2;
 {
@@ -215,7 +215,7 @@ unsigned char check_crossing_curve(fcrv, i1, i2)
 
 
 
-unsigned char get_bitangent(curve_IP,curve_BP,fcrv,IP1,IP2,nBts,nBts_max,nIPs)
+static unsigned char get_bitangent(curve_IP,curve_BP,fcrv,IP1,IP2,nBts,nBts_max,nIPs)
      Flist curve_IP;
      Flist curve_BP;
      Flist fcrv;

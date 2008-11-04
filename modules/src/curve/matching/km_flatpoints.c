@@ -30,7 +30,7 @@ static int N_Points;
 
 
 /* cosinus of the angle between two vectors*/
-float cosangle(vx1, vy1, vx2, vy2)
+static float cosangle(vx1, vy1, vx2, vy2)
      float vx1, vy1, vx2, vy2;
 {
   float c, qd1, qd2, a;
@@ -164,7 +164,7 @@ static float arc_length(fcrv, i1, i2)
 
 /* get central index between i1 and i2 (closed curve) */
 
-int get_central_index(i1, i2)
+static int get_central_index(i1, i2)
      int i1, i2;
 {
   int i;
@@ -178,7 +178,7 @@ int get_central_index(i1, i2)
 
 /* flat points of a closed curve without inflexion point */
 
-void get_flat_points_closed_curve(curve_FP,fcrv,dist,angle)
+static void get_flat_points_closed_curve(curve_FP,fcrv,dist,angle)
      Flist curve_FP;
      Flist fcrv;
      float dist;
@@ -217,7 +217,7 @@ void get_flat_points_closed_curve(curve_FP,fcrv,dist,angle)
 
 /* flat points of a convex piece of curve */
 
-void get_flat_points_convex(curve_FP,fcrv, iFirst, iLast, dist, angle, noIPs)
+static void get_flat_points_convex(curve_FP,fcrv, iFirst, iLast, dist, angle, noIPs)
      Flist curve_FP;
      Flist fcrv;
      int iFirst, iLast;

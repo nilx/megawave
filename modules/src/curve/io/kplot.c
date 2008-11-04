@@ -25,7 +25,7 @@
 
 /* Compute the bounding box of a Curves */
 
-void bound_curves(cs,xmin,ymin,xmax,ymax)
+static void bound_curves(cs,xmin,ymin,xmax,ymax)
      Curves cs;
      int *xmin,*ymin,*xmax,*ymax;
 {
@@ -50,7 +50,7 @@ void bound_curves(cs,xmin,ymin,xmax,ymax)
 }
 
 
-void bitmap_curve_with_lines(curve,A,B,xmin,ymin,mode)
+static void bitmap_curve_with_lines(curve,A,B,xmin,ymin,mode)
      
      Curve curve;
      Cimage A,B;
@@ -101,7 +101,7 @@ void bitmap_curve_with_lines(curve,A,B,xmin,ymin,mode)
       }
 }
 
-void bitmap_curve(curve,A,B,xmin,ymin)
+static void bitmap_curve(curve,A,B,xmin,ymin)
      
      Curve curve;
      Cimage A,B;

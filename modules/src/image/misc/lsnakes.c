@@ -43,7 +43,7 @@
 
 
 /* Smooth the input image along the x and y directions. Output is image */
-void smooth_image(image)
+static void smooth_image(image)
 
 Fimage image;
 
@@ -84,7 +84,7 @@ Fimage image;
 
 /* Calcul of gradient */
 
-void fgradient(g,d,e)
+static void fgradient(g,d,e)
 
 Fimage g,d,e;
 
@@ -118,7 +118,7 @@ Fimage g,d,e;
 
 /*Determination of contours*/
 
-void fsqrtmod(d,e,f)
+static void fsqrtmod(d,e,f)
 
 Fimage d,e,f;
       
@@ -140,7 +140,7 @@ Fimage d,e,f;
                 
 /* Return the squared modulus of the smoothed gradient of image */
 
-Fimage get_mod2_smooth_gradient(image,Dx,Dy)
+static Fimage get_mod2_smooth_gradient(image,Dx,Dy)
 
 Fimage image,Dx,Dy;
 
@@ -171,7 +171,7 @@ Fimage image,Dx,Dy;
 
 /* Return the "force" matrix */
 
-Fimage get_force_matrix(image,A)
+static Fimage get_force_matrix(image,A)
 
 Fimage image;
 float A;
@@ -196,7 +196,7 @@ float A;
 
 /* Build internal coefficients Dxy, Dyx, Dx, Dy and g */
   
-void build(a,g0,Dx,Dy, Dxy,Dyx,g)
+static void build(a,g0,Dx,Dy, Dxy,Dyx,g)
 
 Fimage a,g0,Dx,Dy, Dxy,Dyx,g;
 
@@ -308,7 +308,7 @@ Fimage a,g0,Dx,Dy, Dxy,Dyx,g;
 
 /* Solve the system */
 
-void solve(a,Dx,Dy,Dxy,Dyx,g,f,ng,iter,Niter)
+static void solve(a,Dx,Dy,Dxy,Dyx,g,f,ng,iter,Niter)
 
 Fimage a,Dx,Dy,Dxy,Dyx,g,f,ng;
 int iter,Niter;
@@ -428,7 +428,7 @@ int iter,Niter;
 
 /* Binarize the fimage a, by putting 255 for gray levels >= c, 0 elsewhere */
 
-void fbinarize(a,c)
+static void fbinarize(a,c)
 
 Fimage a;
 float c;

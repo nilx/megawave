@@ -31,7 +31,7 @@ static double dist(const float *p, const float *q)
      return sqrt(x * x + y * y);
 }
 
-void fksample(in,out,t)
+static void fksample(in,out,t)
      Flist in,out;
      float t;
 {
@@ -75,7 +75,7 @@ void fksample(in,out,t)
   out->size = j;
 }
 
-void convol(in,out,s)
+static void convol(in,out,s)
      Flist in,out;
      Fsignal s;
 {

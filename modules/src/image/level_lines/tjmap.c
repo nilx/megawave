@@ -24,7 +24,7 @@
 
 /* Record the junction location */
 
-void record_junction(U,J,values,x,y)
+static void record_junction(U,J,values,x,y)
      Cimage U,J;
      char *values;
      int x,y;

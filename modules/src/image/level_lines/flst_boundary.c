@@ -32,7 +32,7 @@ typedef struct {
 #endif
 
 /* Is the point in the shape? */
-char point_in_shape(x, y, pShape, pTree)
+static char point_in_shape(x, y, pShape, pTree)
 short int x, y;
 Shape pShape;
 Shapes pTree;
@@ -52,7 +52,7 @@ dir = (dir==NORTH ? EAST :\
       (dir==SOUTH ? WEST : NORTH)))
 
 /* Find the dual point following pDualPoint as we follow the shape boundary */
-void find_next_dual_point(pDualPoint, pShape, pTree)
+static void find_next_dual_point(pDualPoint, pShape, pTree)
 DualPoint* pDualPoint;
 Shape pShape;
 Shapes pTree;
@@ -116,7 +116,7 @@ Shapes pTree;
 }
 
 /* Find the boundary of the shape, which is closed */
-int find_closed_boundary(pTree, pShape, pBoundary)
+static int find_closed_boundary(pTree, pShape, pBoundary)
 Shapes pTree;
 Shape pShape;
 Flist pBoundary;
@@ -147,7 +147,7 @@ Flist pBoundary;
 }
 
 /* Find an initial point (to follow the boundary) at the border of the image */
-void initial_point_border(pDualPoint, pShape, pTree)
+static void initial_point_border(pDualPoint, pShape, pTree)
 DualPoint* pDualPoint;
 Shape pShape;
 Shapes pTree;
@@ -207,7 +207,7 @@ Shapes pTree;
 }
 
 /* Find an open boundary */
-void find_open_boundary(pTree, pShape, pBoundary)
+static void find_open_boundary(pTree, pShape, pBoundary)
 Shapes pTree;
 Shape pShape;
 Flist pBoundary;

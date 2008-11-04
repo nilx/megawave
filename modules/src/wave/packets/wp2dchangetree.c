@@ -32,7 +32,7 @@ usage = {
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 
 /***************************************************************/
-void  test_input(treeIn,up_tree,down_tree,new_tree_size,prune_tree,tree_for_max,tree_for_min)
+static void  test_input(treeIn,up_tree,down_tree,new_tree_size,prune_tree,tree_for_max,tree_for_min)
 
      Cimage treeIn,tree_for_max,tree_for_min;
      int *new_tree_size;
@@ -64,7 +64,7 @@ void  test_input(treeIn,up_tree,down_tree,new_tree_size,prune_tree,tree_for_max,
 /***************************************************************/
 /*returns the maximum level of the decomposition corresponding to tree */
 
-int treeLevel(tree)
+static int treeLevel(tree)
      
      Cimage tree;
      
@@ -82,7 +82,7 @@ int treeLevel(tree)
 /***************************************************************/
 /*returns the minimum level of the decomposition corresponding to tree */
 
-int treeMin(tree)
+static int treeMin(tree)
      
      Cimage tree;
      
@@ -102,7 +102,7 @@ int treeMin(tree)
 /* the same decomposition                                                            */
 /* but has the smallest possible size                                             */
 /* the result is in 'tree_out'                                                            */
-void pruneTree(tree_in,tree_out)
+static void pruneTree(tree_in,tree_out)
 
      Cimage tree_in,tree_out;
 
@@ -142,7 +142,7 @@ void pruneTree(tree_in,tree_out)
 /* but has the size of 'tree_out'                                                     */
 /* the result is in 'tree_out'                                                            */
 
-void extendTree(tree_in,tree_out)
+static void extendTree(tree_in,tree_out)
      
      Cimage tree_in,tree_out;
      
@@ -176,7 +176,7 @@ void extendTree(tree_in,tree_out)
 /* 'tree_out1' describes the same decomposition as    'tree_in1'      */
 /* 'tree_out2' describes the same decomposition as    'tree_in2'      */
 
-void   resize_trees(tree_in1,tree_in2,tree_out1,tree_out2)
+static void   resize_trees(tree_in1,tree_in2,tree_out1,tree_out2)
 
      Cimage tree_in1,tree_in2,tree_out1,tree_out2;
 
@@ -222,7 +222,7 @@ void   resize_trees(tree_in1,tree_in2,tree_out1,tree_out2)
 /* Computes the maximum of two Cimage                                            */
 /* the three images must have the same size                                         */
 
-void max_tree(tree_in1, tree_in2, tree_out)
+static void max_tree(tree_in1, tree_in2, tree_out)
 
      Cimage tree_in1, tree_in2, tree_out;
 
@@ -238,7 +238,7 @@ void max_tree(tree_in1, tree_in2, tree_out)
 /* Computes the minimum of two Cimage                                            */
 /* the three images must have the same size                                         */
 
-void min_tree(tree_in1, tree_in2, tree_out)
+static void min_tree(tree_in1, tree_in2, tree_out)
 
      Cimage tree_in1, tree_in2, tree_out;
 
@@ -253,7 +253,7 @@ void min_tree(tree_in1, tree_in2, tree_out)
 /***************************************************************/
 /* adds 1 at the smallest elements of 'tree'           */
 
-void add_one_at_tree(tree)
+static void add_one_at_tree(tree)
      
      Cimage tree;
      
@@ -272,7 +272,7 @@ void add_one_at_tree(tree)
 /***************************************************************/
 /* substract 1 at 'tree', when possible           */
 
-void substract_one_at_tree(tree)
+static void substract_one_at_tree(tree)
      
      Cimage tree;
      
