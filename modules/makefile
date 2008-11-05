@@ -24,21 +24,17 @@ distclean	: distclean-bin distclean-doc
 
 SRCDIR	= ./src
 SRC	:= $(sort $(shell find $(SRCDIR) -type f	\
-	-name "*.c" ! -name "*.lib.c" ! -name "*.exec.c"))
+	-name "*.c" ! -name "*.cmd.c"))
 
 HDR	= $(SRC:.c=.h)
 OBJ	= $(SRC:.c=.o)
 
 CMDSRC	= $(SRC:.c=.cmd.c)
-CMDHDR	= $(CMDSRC:.c=.h)
 CMDOBJ	= $(CMDSRC:.c=.o)
 
 LIBNAME	= mw-modules
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
-
-AUTOSRC	= $(CMDSRC)
-AUTOHDR	= $(HDR) $(CMDHDR) $(API)
 
 # no need for cproto and makedepend
 #.PHONY	: $(AUTOHDR:.h=.d)
@@ -89,10 +85,12 @@ lib$(LIBNAME).so	: $(OBJ)
 	@$(ECHO) '$(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
 	@$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
 
-$(API) 	: $(LIBHDR)
+.PHONY	: api
+api	: $(API)
+$(API) 	: $(HDR)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
-	@$(ECHO) '$(SED) "/#.*$$/d" $$(LIBHDR) | $(SED) "/^$$/N;/\n$$/D" >> $@'
+	@$(ECHO) '$(SED) "/#.*$$/d" $$(HDR) | $(SED) "/^$$/N;/\n$$/D" >> $@'
 	@$(SED) '/#.*$$/d' $^ | $(SED) '/^$$/N;/\n$$/D' >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
 
@@ -108,7 +106,7 @@ ifeq	($(STATIC), 0)
 else
 # order of the libraries matters
 # see http://gcc.gnu.org/ml/gcc-help/2004-04/msg00106.html
-%.exec	: %.exec.o $(LIBMW_MODULES).a $(LIBMW).a $(LIBMW_WDEVICE).a \
+%.cmd	: %.cmd.o $(LIBMW_MODULES).a $(LIBMW).a $(LIBMW_WDEVICE).a \
 	$(addsuffix .a, $(addprefix /usr/lib/lib, $(STLIBS)))
 	$(LD) $(LDFLAGS) -o $@ $^
 	$(CP) $@ $(BUILDDIR)/$(basename $(notdir $@))
@@ -137,7 +135,7 @@ distclean-bin : clean-bin
 #
 
 .PHONY	: prebuild
-prebuild	: $(AUTOSRC) $(AUTOHDR) $(API)
+prebuild	: $(CMDSRC) $(HDR) $(API)
 
 #.PHONY	: dep
 #dep	: $(DEP)
