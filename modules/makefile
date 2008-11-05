@@ -180,7 +180,7 @@ $(DOCDIR)/html/index.html	: $(SRC)
 	$(MKDIR) $(DOCDIR)/html
 	(cat $(DOXYCONF); \
 		echo "INPUT         = $(SRCDIR)"; \
-		echo "FILE_PATTERNS = *.lib.c"; \
+		echo "FILE_PATTERNS = *.c"; \
 		echo "RECURSIVE     = YES"; \
 		echo "GENERATE_HTML = YES"; \
 		echo "HTML_OUTPUT   = $(DOCDIR)/html";) | $(DOXYGEN) -
@@ -188,7 +188,7 @@ $(DOCDIR)/latex/refman.tex	: $(SRC)
 	$(MKDIR) $(DOCDIR)/latex
 	(cat $(DOXYCONF); \
 		echo "INPUT          = $(SRCDIR)"; \
-		echo "FILE_PATTERNS = *.lib.c"; \
+		echo "FILE_PATTERNS = *.c"; \
 		echo "RECURSIVE      = YES"; \
 		echo "GENERATE_LATEX = YES"; \
 		echo "LATEX_OUTPUT   = $(DOCDIR)/latex";) | $(DOXYGEN) -
