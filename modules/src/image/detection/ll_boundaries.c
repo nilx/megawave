@@ -168,8 +168,7 @@ float *bestnfa_inf,bestnfa_sup;
 char type;
 { 
   Shape t;
-  float mu,nfa,new_bestnfa_inf,old_bestnfa_sup;
-  int length,detect;
+  float nfa,new_bestnfa_inf,old_bestnfa_sup;
   struct mydata *sdata, *tdata;
 
   if (!s) return;
@@ -308,7 +307,6 @@ float *eps,*step;
 int *precision;
 char *all,*z,*weak;
 {
-  Shape s;
   Fimage saddles,copy_in;
   float threshold,nfa_inf,nfa_sup,offset,histo_step,fzero;
   int newtree=0,nsize,i;

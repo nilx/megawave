@@ -45,7 +45,6 @@ void cnoise(u,v,std,p,q,n_flag)
 {
   int i;
   double a,b,z;
-  float min,max,c;
 
   if ((std?1:0) + (p?1:0) + (q?1:0)!= 1) 
     mwerror(FATAL,1,"Please select exactly one of the -g, -i and -q options.");

@@ -31,7 +31,6 @@
 #define   MIN(A,B)          ((A) < (B)) ?  (A) : (B)
                                        /* now define the max,min of three quantities */
                                        /* we use a temporary variable to speed up    */
-static float TMP;
 #define   MAX3(A,B,C)       (A) > (TMP= ((B)>(C)) ? (B):(C)) ? (A) : TMP
 #define   MIN3(A,B,C)       (A) < (TMP= ((B)<(C)) ? (B):(C)) ? (A) : TMP
 
@@ -46,7 +45,6 @@ Cimage image1, image2;
 int dx,dy,taille;
 register unsigned char *b;
 register unsigned char *a;
-float g;
 
 
 image1=NULL;
@@ -326,7 +324,6 @@ int l_min;
 {
   int ll,cc;
   int l,c,dl,dc;
-  int aa,j;
   int test,compte;
   int rayon,longueur;
   int dx,dy,ref,ref_vois;
@@ -442,9 +439,9 @@ Cmovie output;
   Cimage im_inter=NULL;
   Cimage im_work=NULL;
   int iter=*iteration;
-  int test_a,test_b,test_c,dx,dy,l,c,mcm,n;
+  int test_a,test_b,dx,dy,n;
   int nc,n_courbure;
-  unsigned long a, b, size;
+  unsigned long a, size;
   float deginf;
   float degsup;
   int l_min=*extremite;

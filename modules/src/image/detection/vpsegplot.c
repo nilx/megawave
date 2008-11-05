@@ -73,7 +73,7 @@ void vpsegplot(image,allsegs,vpoints,vsegs,n,crv,lines)
      Flists crv;
      char   *lines;
 {
-  int i,j,k, m, seg_idx, *ismember;
+  int i,j, m, seg_idx, *ismember;
   double R,X0,Y0,dx,dy;
   float *csegs;
   int    nsegs;

@@ -51,7 +51,7 @@ Fimage fdirspline(in,n,out)
 {
   Fimage tmp;
   int nx,ny,n1,n2,d,i,k,x,y;
-  float a,m,*c,xn,res;
+  float a,*c,xn,res;
      
   if (n<0) mwerror(FATAL,1,"fdirspline: spline order cannot be negative\n");
 

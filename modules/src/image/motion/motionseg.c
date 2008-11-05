@@ -246,7 +246,7 @@ void motionseg(n,prec,e,alphac,alphabr,alphacr,seu,N,C,B)
   
   int nx,ny,n_images,l,k,it;
   Fimage u=NULL,Anterior=NULL,D1=NULL,v=NULL;
-  float *ptrB,*ptrAnt,*ptrfilm,*ptrfilm2,diff,error;
+  float *ptrB,*ptrAnt,*ptrfilm,diff,error;
   
   
   

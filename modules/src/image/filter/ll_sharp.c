@@ -55,7 +55,7 @@ static void remove_gradation(pShape, fFactorIncreaseArea)
      Shape pShape; 
      float fFactorIncreaseArea; 
 { 
-  Shape pCurrentShape, pParent, pChild, pSibling, pRepresentativeShape; 
+  Shape pCurrentShape, pParent, pChild, pRepresentativeShape; 
   float fCriterium, fOptimalCriterium, fMeanGrayLevel; 
  
   pCurrentShape = pRepresentativeShape = pShape; 

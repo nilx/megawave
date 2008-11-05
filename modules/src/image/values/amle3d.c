@@ -229,7 +229,6 @@ void amle3d(num,init,in,out)
      Fmovie in,out,init;
 {
   int NC,NL,i;
-  Fimage ima;
   
   if (in==NULL) mwerror(FATAL,1,"Null input fmovie.\n");
   NL=in->first->nrow;

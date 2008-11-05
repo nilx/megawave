@@ -72,7 +72,7 @@ static void ALLOCATE(out,nb_image)
 
 static void CALC_EDERIV()
 {   
-  int i,j,l,r;
+  int i,j,l;
   register float a010,a000,a110,a100,a011,a001,a111,a101;
   long adr;
   
@@ -112,9 +112,9 @@ static void SCHEMA_ITER(niter,alpha)
      int niter;
      float *alpha;
 {
-  int i,j,k,r,l;
-  long addr,adr,adresse1,adresse2; 
-  float f,g,d,o,u1,v1;
+  int i,j,k,l;
+  long adr; 
+  float f,g,d,o;
   float **Ua,**Va;          /* coordonnees des vecteurs moyennes */ 
   register float um0,u01,u10,u0m,umm,um1, u11,u1m;
   register float vm0,v01,v10,v0m,vmm,vm1,v11,v1m;
@@ -259,9 +259,8 @@ void hs_flow(niter,alpha,in,xflow,yflow)
      Fmovie in,xflow,yflow;
 {
   Fimage u,ud,ux,uy;
-  int  i,j,k,l,r;
-  long  adr,adr1,reponse,deb,fin,essai;
-  float g=0.25;
+  int  k,l;
+  long  adr;
   
   if((in->first==NULL)||(in->first->next==NULL))
     mwerror(FATAL,1,"\nInput movie is too short\n");

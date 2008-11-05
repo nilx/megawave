@@ -78,7 +78,6 @@ COMLINE_ERR(wtrans, ri, edge_ri, edge, inverse, precond, numrec, haar)
 
 {
   long	dx, dy;			/* Size of the image */
-  long	j, i;			/* Index for level and orientation */
 
   dx = wtrans->ncol;
   dy = wtrans->nrow;
@@ -182,7 +181,7 @@ INIT_SHRINK(wtrans, ri, numrec, edge)
 				 * (see `Edge` in iowave2) */
 
 {
-    short i,j;		/* Indices for orientation and level */
+    short j;		/* Indices for orientation and level */
 
     if ((edge == 2) || (edge == 0))
     {

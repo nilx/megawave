@@ -106,9 +106,8 @@ Fimage tvdenoise2(in,out,s,v,n,r,W,V)
      int *v,*n,*V;
 {
   double *px,*py,*u,E,oldE;
-  int x,y,adr,i,k,cont,stop,key;
+  int adr,i,cont,stop,key;
   char str[100];
-  Fimage im;
 
   nx = in->ncol; ny = in->nrow;
   out = mw_change_fimage(out,ny,nx);

@@ -124,7 +124,6 @@ Flist pBoundary;
   short int x0, y0;
   DualPoint dualPoint;
   point_t* pPoint = (point_t*) pBoundary->values;
-  short int iWidth = (short int)pTree->ncol, iHeight = (short int)pTree->nrow;
 
   /* 1) Find initial point, with NORTH direction */
   dualPoint.x = pShape->pixels[0].x; dualPoint.y = pShape->pixels[0].y;
@@ -235,7 +234,6 @@ Shapes pTree;
 Shape pShape;
 Flist pBoundary;
 {
-  int i;
   char bBuildBoundary;
   
   bBuildBoundary = (pBoundary==NULL);

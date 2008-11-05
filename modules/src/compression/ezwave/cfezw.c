@@ -402,7 +402,6 @@ Cfimage     QImage;		/* Output quantized image */
   float      *RedR, *GreenR, *BlueR; /* Target rates for each channel */
   float       redpsnr, greenpsnr, bluepsnr; /* Target psnrs for each channel */
   float      *RedP, *GreenP, *BlueP; /* Target psnrs for each channel */
-  double      psnr;	        /* Peak signal to noise ratio / `Image` */
   Fimage      ChImage;          /* Original channel image */
   Fimage      QChImage;         /* Reconstructed channel image */
   Cimage      bufcomp;          /* Buffer for compressed image */

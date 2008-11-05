@@ -36,7 +36,7 @@ unsigned int npts, ncvs;
   Curve cv;
   Point_curve point, secondpoint;
   int x0,y0,x1,y1;
-  int dir0,dir1,dx,dy,ddir,ncol;
+  int dir0,dir1,dx,dy,ddir;
   float *dptr;
   unsigned int size;
 
@@ -108,7 +108,6 @@ double *B;
   Fimage dirchg=NULL;  /* Direction change of points in the curves */
   unsigned int npts;   /* Total number of points in the curves of C (=*N) */
   unsigned int ncvs;   /* Number of curves = Nb of origin points */
-  int nrow,ncol;       /* Size of bitmap, if used. */
   unsigned int size;   /* Minimal size of dirchg */
   int nsymb=4;         /* Number of symbols for arencode2 */
   int optdef;          /* to set the option */

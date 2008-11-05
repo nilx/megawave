@@ -565,7 +565,7 @@ int *gray;
   Wframe *ImageWindow;
   Polygon p;
   Point_curve c;
-  int i,j,n,*Cx,*Cy;
+  int i,j;
   Cimage image_zoom;
   float fzoom;
   register float *ptrlabel,*ptrinterlabel;

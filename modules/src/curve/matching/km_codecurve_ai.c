@@ -595,7 +595,7 @@ static int codeAI(arc_code_AI, curve, i1, i2, MinAngle)
 {
   int i_left, i_right;  float xC, yC;
   unsigned char same_orientation;
-  int iN, iP;
+  int iP;
   float xP1, yP1, xP2, yP2, xC1, yC1, xC2, yC2;
   int iT;
   float xR1, yR1, xR2, yR2, xR3, yR3, xR4, yR4;

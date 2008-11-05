@@ -319,7 +319,6 @@ int iter,Niter;
   register float *ptr1,*ptr2,*ptr3;
   int im,jm,l,n_sist;
   int P,P1,P2,P3,P4,P5,P6,P7,P8;
-  int it,IT;
 
   mwdebug("\t Enter solve fct...\n");
 

@@ -609,10 +609,9 @@ Fimage      result, result2, result3, result4;  /* Resulting codebook */
   long      sizeb;		/* Size of blocks */
   long      sizet, sizet2, sizet3, sizet4; /* size of training sets */
   long      dx, dy;
-  long	    imgj, t;
-  long	    ldxi, ldxr, ldxr2, ldxr3, ldxr4;
+  long	    t;
+  long	    ldxr, ldxr2, ldxr3, ldxr4;
   Cimage    indts;		/* Index of training set for an image block */
-  int       testadap;
   int       niter;
   int       min_trainsize;
 

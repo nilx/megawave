@@ -108,7 +108,6 @@ int        *precond;
 
 {
   int         i,J;
-  int         decim;            /* Flag of decimation for sconvolve */
   int         nsubim;           /* Number of subimages */
   long        c, r;		/* Indices for line and column in resume 
 					 * or detail */

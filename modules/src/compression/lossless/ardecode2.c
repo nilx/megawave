@@ -45,7 +45,6 @@ static int              bits_to_go;
 static long             nbitread;
 static long             ncwread;        /* Number of output codewords */
 static long             sizei;          /* Size of input buffer */
-static int             *list;           /* List of different symbol */
 static int              EOF_symb;
 static unsigned char   *ptri;
 static float           *ptro;  

@@ -391,9 +391,6 @@ Cfimage     TImage;		/* Output transformed image */
 {
   void        (*convert_point) ();  /* Pointer to the conversion
 				        * function */
-  float       redrate, greenrate, bluerate; /* Target rates for each channel */
-  float      *RedR, *GreenR, *BlueR; /* Target rates for each channel */
-  double      psnr;	        /* Peak signal to noise ratio / `Image` */
 
   /*--- Memory allocation for transformed color image ---*/
 

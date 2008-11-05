@@ -215,7 +215,7 @@ static double fzero_convex(a0,b0,tolx,tolf,beta1,dtheta,p)
 
      */
 {
-  double a,b,fa,fb,fpa,fpb;
+  double a,b,fa,fb,fpb;
   a = a0; b=b0;
   fa = pext(beta1,a,dtheta)-p; /* == myfun(a); */
   fb = pext(beta1,b,dtheta)-p; /* == myfun(b); */
@@ -292,7 +292,7 @@ double p;
 {
   double *out;
   int adr1,adr2,x,y;
-  double lambda,q;
+  double q;
 
   q = 1.0-p;
   out = (double *)calloc((n+1)*(n+1),sizeof(double));
@@ -328,7 +328,7 @@ double p;
 {
   double *out;
   int adr1,adr2,x,y;
-  double lambda,q;
+  double q;
 
   q = 1.0-p;
   out = (double *)calloc((n+1)*(n+1),sizeof(double));
@@ -1170,7 +1170,6 @@ int    *maskedVPs;
 {
   int N,*M,min_pl,max_pl,n_pl,i,j,k,ntheta,itn;
   int    ie, ix, iy;
-  int i2,ie2,ix2,iy2;
   int max_i,max_ie,max_ix,max_iy;
   float max_meaning;
   int    IE[9],IX[9],IY[9]; /* used to hold the output of FindIntersection */
@@ -1181,11 +1180,9 @@ int    *maskedVPs;
   double *p,meaning,*p_inf,threshold;
   Tiling **Tilings, *T, *TT;
   Flists Segments;
-  Flist tiles;
   SegListIterator it;
   SegList CSegs;
-  float  *csegs;
-  int    nsegs,besttile;
+  int    nsegs;
   float x1,x2,x3,x4;
   float y1,y2,y3,y4;
   float d1,d2,d3,d4;

@@ -288,10 +288,6 @@ Fsignal     Ri;			/* Impulse response of the low pass filter */
 Wtrans2d   *Output1;            /* Sequence of generated codebooks */
 
 {
-  int           J;	        /* Current level of decomposition */
-  int           J1, J2;         /* Initial and final level of decomposition */
-  int           i;	      	/* Orientation index */
-  int           i1, i2;      	/* Initial and final orientation index */
   Wtrans2d      TrainWtrans1, TrainWtrans2, TrainWtrans3, TrainWtrans4; 
                                 /* Wavelet transforms for training set */
   int           Edge;	        /* Edge processing mode */

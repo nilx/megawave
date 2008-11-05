@@ -83,7 +83,7 @@ void finvspline(in,order,out)
      Fimage in,out;
      int order;
 {
-  double *c,*d,z[5],tmp;
+  double *c,*d,z[5];
   int npoles,nx,ny,x,y;
  
   /* initialize poles of associated z-filter */

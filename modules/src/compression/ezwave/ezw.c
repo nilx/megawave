@@ -443,8 +443,6 @@ unsigned char    p;              /* Index of polygon */
 {
   int              i;                /* Index for orientation in wav. trans. */
   int              j;                /* Index for level in wav. trans. */
-  register unsigned char  *ptra1, *ptra2, *ptra3;  /* Pointers to significance 
-				      * map for each orientation */
   register unsigned char  *ptrb;     /* Pointer to bitmap */
   int              r, c;             /* Row and column indices for current 
 				      * point in bitmap */
@@ -454,7 +452,6 @@ unsigned char    p;              /* Index of polygon */
 				      * and subimage */
   long             x;                /* Buffer index for current coefficient 
 				      * and its parent */
-  long             size;             /* Size of subimages */
 
   fac = 0;
   for (j = 1; j <= nrec; j++) {
@@ -1059,7 +1056,6 @@ int             *distrate;
   register unsigned char *ptrs;    /* Pointer to significance map */
   register unsigned char *ptra;    /* Pointer to area mask */
   long            x, size;
-  long            ncol;
   double          quant_step;
   long            count_sigpos, count_signeg, count_ztroot, count_isolz;
   long            count_total;
@@ -1615,7 +1611,7 @@ int         *distrate;           /* Flag for computation of dist. rate curve */
   int              j, jp;            /* Index for level in wav. trans. */
   unsigned char ***sigmap;           /* Map of significance information */
   unsigned char ***areamap;          /* Mask for selected areas */
-  register float  *ptrw, *ptro;      /* Pointers to wavelet coeff. in 
+  register float  *ptrw;             /* Pointers to wavelet coeff. in 
 				      * wtrans and output */
   register unsigned char  *ptrs;     /* Pointer to significance map */
   register unsigned char  *ptra;     /* Pointer to area mask */
@@ -1627,8 +1623,6 @@ int         *distrate;           /* Flag for computation of dist. rate curve */
   long             nsignif;          /* Number of significant coefficients */
   int              test_par;         /* test flag for parents */
   float            effrate;          /* Effective rate */
-  long             effnbitar;        /* Number of bit encoded at each call 
-				      * of ENCODE_SYMBOL */
   double           thresprec;        /* Quantization step for initial 
 				      * threshold */
   int              thressymb;        /* Threshold symbol for encoding */

@@ -160,8 +160,8 @@ Fimage tvdeblur(in,out,ker,s,c,v,e,n,W,ref,eps,p)
 {
   Fimage dE,aux,tmp,cur,prev;
   double energy,old_energy,step;
-  float two,norm1,norm2;
-  int i,j,border,cont,prevok,nx,ny,x,y;
+  float two,norm2;
+  int i,j,border,cont,prevok,nx,ny;
 
   /* initialization */
   nx = in->ncol; 

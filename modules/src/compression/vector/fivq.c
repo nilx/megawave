@@ -1423,7 +1423,6 @@ double     *Rate;               /* Bit rate for Compress */
 
 {
   int             testmulticb;  /* Control for multiple codebooks */
-  float           testsize;     /* Control for codebook structure */
   bufind          indcb;        /* Indices of codebook for each class */
   int             nrow1, ncol1; /* Size of image */
   int             r, c;         /* Indeices for row and column in image */

@@ -341,7 +341,7 @@ void fview(input,x0,y0,zoom,order,no_refresh,window,linear,m,M,d)
   float  *fgray_save,inverse_zoom;
   unsigned char *gray_save;
   fview_Param param;
-  int i,j,smax;
+  int smax;
 
   if (*zoom != 1.0) 
     {

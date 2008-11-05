@@ -33,7 +33,7 @@ static int median1(u,v,s)
      Cimage u,v;
      Curve  s;
 {
-  int           ir,changed;
+  int           changed;
   register int  i,x,y,nx,ny,xx,yy;
   unsigned char curr[10000];
   Point_curve   p;

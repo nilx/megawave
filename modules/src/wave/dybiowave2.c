@@ -354,8 +354,6 @@ int        *edge;		/* Type of edge processing (see `Edge`
   long        K2, K2s;
   long        dxs;              /* Size of subimages */
   int         s;                /* index of subimage */
-  long        osi, osr;         /* origin of subimage in Im (Im1, Im2) */
-  long        dxK2s;
   Fsignal     Tabin;		/* One line of wtrans->image[J-1][0], 
 					 * input for `sconvolve` */
   Fsignal     Tabout;		/* Output for module `sconvolve`, 

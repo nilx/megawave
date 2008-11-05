@@ -162,7 +162,7 @@ struct fill_segment *ST;
 float **im, current_level,p_level;
 {
   struct fill_segment *st_ptr;
-  int left, right, x1, x2, dy, dx;
+  int left, right, x1, x2, dy;
 
 
   if((EQUAL(im[y][x],current_level))||(x<0)||(x>=NC)||(y<0)||(y>=NL))

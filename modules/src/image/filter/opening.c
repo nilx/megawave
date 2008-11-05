@@ -29,7 +29,6 @@ Cimage opening(u, v, r, s, n, i)
      char   *i;
 {
   Cimage w;
-  char   *ni;
   
   v = mw_change_cimage(v,u->nrow,u->ncol);
   w = mw_change_cimage(NULL,u->nrow,u->ncol);

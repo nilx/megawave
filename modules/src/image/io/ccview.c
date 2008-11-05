@@ -226,7 +226,6 @@ char *window;
   Ccimage zimage=NULL;
   unsigned char *red_save,*green_save,*blue_save;
   ccview_Param param;
-  int i,j;
   char text[BUFSIZ];
   float inverse_zoom;
 

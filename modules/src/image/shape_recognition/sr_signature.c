@@ -58,8 +58,8 @@ int      **Distance;
   Point_fcurve  p;
   Fcurve        c;
   float         d1,d2,d3,d4,xg,yg,xmin,ymin,xmax,ymax,radius,distf;
-  long           size,surf,diametre,distance,disti,*pdist;
-  long           i,j,nb,dx,dy,XG,YG;
+  long           surf,diametre,distance,*pdist;
+  long           i,nb,dx,dy,XG,YG;
   double        x,y;
   
   fkbox(cs,&xmin,&ymin,&xmax,&ymax,NULL,NULL);
@@ -158,7 +158,6 @@ float *param;
 int   *surf_cour;
 {
     int i;
-    float delta_s;
     
     for(i=0;i<NPARAM;i++) {
 	param[i]/=(float)surf_cour[i+1];
@@ -172,7 +171,7 @@ float *param;
 int   *treshold;
 int   *Distance;
 {
-  int x,y,i,j;
+  int i,j;
   
   for(i=0;i<NPARAM;i++) 
     for(j=treshold[i];j<treshold[i+1];j++) 

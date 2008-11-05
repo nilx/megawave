@@ -33,11 +33,10 @@ void km_createdict_ai(FNorm,NNorm,list_curves,dict)
      Flists list_curves;
      Flists dict; 
 { 
-  Flist curve, curveIP, curveFP, curveBP;
+  Flist curveIP, curveFP, curveBP;
   Flists dictaux;
   int j,i,t1,t2,num_curves;
   float angle, dist;
-  int kk;
   
   t1=clock();
   num_curves=list_curves->size;

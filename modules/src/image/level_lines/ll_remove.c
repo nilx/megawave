@@ -43,7 +43,7 @@ Mimage ll_remove(mimage,L)
 {
   Morpho_line ll,ll_next;
   unsigned long N,Nrm;
-  float infty = MORPHO_INFTY, max,min;
+  float infty = MORPHO_INFTY;
   int ll_type;
 
   if((ll=mimage->first_ml)==NULL)

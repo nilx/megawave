@@ -674,7 +674,6 @@ double     *Ent;                /* Entropic rate */
 double     *RateAr;             /* Arithmetic coding rate */
 
 {
-  int         i;
   double      psnr;		/* Peak signal to noise ratio */
   double      mrd;		/* Root mean square error between 
     					 * original and quantized image */

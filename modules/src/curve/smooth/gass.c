@@ -63,7 +63,7 @@ static int my_split_convex(in,out,ncc)
      double **out;
      int    *ncc;
 {
-  int     il,i,d1,d2,ni,n,is_closed,ok;
+  int     il,d1,d2,ni,is_closed,ok;
   double  *p,*q,*pmax,mx,my,px1,py1,px2,py2,px3,py3,px4,py4,*first;
 
   if (!in) return(0);
@@ -179,8 +179,8 @@ static double *sample(in,size,out,eps2)
      int     size;
      double  eps2;
 {
-  double  x,y,ox,oy,d2,dx,dy,threshold,*p,*q,*pmax;
-  int     i,j,k,n,osize;
+  double  x,y,ox,oy,d2,dx,dy,*p,*q,*pmax;
+  int     i,k,n;
 
   /*--- return if the curve has less than 3 points ---*/
   if (size<3) {
@@ -257,8 +257,8 @@ static int aceros(in,size,out,area)
      int     size;
      double  area;
 {
-  int     j,j0,n,is_closed,stop,okp,okq;
-  double  abs_area,tot_area,cur_area,inc_area,lambda;
+  int     j,n,is_closed,stop,okp,okq;
+  double  tot_area,cur_area,inc_area,lambda;
   double  *p,*p0,*p1,*p2,*q0,*q1,*pmax;
 
   j = 0; 
@@ -380,7 +380,7 @@ static void dafferos(l,area,eps2,rad,ncc)
      double   rad;    /* bounding box radius */
      int      *ncc;   /* output: number of connected components after evol. */
 {
-  double        a,narea,r2,min_area,*first,*last;
+  double        a,narea,min_area,*first,*last;
   int           i,nc;
 
   min_area = *area/8.0;    /*** critical area for effective erosion ***/

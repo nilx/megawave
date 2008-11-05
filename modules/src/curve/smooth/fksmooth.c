@@ -35,7 +35,6 @@ static void fksample(in,out,t)
      Flist in,out;
      float t;
 {
-  float *ptr;
   double per,cur,step,d,l;
   int i,j,k,n,max;
 

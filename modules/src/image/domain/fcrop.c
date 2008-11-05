@@ -123,7 +123,7 @@ Fimage fcrop(in,out,sx,sy,z,bg,o,p,X1,Y1,X2,Y2)
      float  *sx,*sy,*z,*p,*bg,X1,Y1,X2,Y2;
      int    *o;
 {
-  int    nsx,nsy,n1,n2,nx,ny,x,y,xi,yi,adr,d;
+  int    nsx,nsy,n1,n2,nx,ny,x,y,xi,yi,d;
   float  zx,zy,res,xp,yp,u,c[12],ak[13];
   Fimage ref,tmp,coeffs;
 

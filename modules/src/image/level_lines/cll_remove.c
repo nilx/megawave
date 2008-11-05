@@ -58,7 +58,7 @@ int *L;
 {
   Cmorpho_line ll,ll_next;
   unsigned long N,Nrm;
-  float infty = MORPHO_INFTY, max,min;
+  float infty = MORPHO_INFTY;
   int ll_type;
 
   if((ll=cmimage->first_ml)==NULL)

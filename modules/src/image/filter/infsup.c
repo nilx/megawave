@@ -46,7 +46,6 @@ static unsigned char TheInf(image,maskn,x,y)
   int dx,dy;      /* taille de l'image */
   register int i,j;
   int aa,mm;      /* intermediaires de calcul */
-  int l;
   unsigned char value;
 
   value=255;
@@ -88,7 +87,6 @@ static unsigned char TheSup(image,maskn,x,y)
   int dx,dy;      /* taille de l'image */
   register int i,j;
   int aa,mm;      /* intermediaires de calcul */
-  int l;
   unsigned char value;
 
   value=0;
@@ -188,7 +186,6 @@ static void ResolutionInfSup(image,A,G,t1,t2,movie,Nmask)
      float t1,t2;
 {
   Fimage maskn;
-  int kx,ky;
   int i,j,l;
   register int k;
   int dx,dy;                /* size of the image  */

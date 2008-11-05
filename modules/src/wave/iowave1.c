@@ -177,8 +177,7 @@ int             edge;		/* Type of edge processing
 				 * (see `Edge` in iowave2) */
 
 {
-  short i,j;				/* Indices for orientation and level */
-  short size;
+  short j;				/* Indices for orientation and level */
   short firstphigh;
 
   if ((edge == 2) || (edge == 0)) {

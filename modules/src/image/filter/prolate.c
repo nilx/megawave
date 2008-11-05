@@ -29,7 +29,7 @@ float prolate(s,d,m,ker)
      int *m;
 {
   Fimage re,im,tmp;
-  int n,r,i,x,y,xx,yy,cont;
+  int n,i,x,y,xx,yy,cont;
   float v,rad2;
   double norm,energy,last_energy;
 

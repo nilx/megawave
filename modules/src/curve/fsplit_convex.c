@@ -45,7 +45,7 @@ Flists fsplit_convex(in,out,ncc,eps)
      double  *eps;
 {
   Flist   l;
-  int     i,j,d1,d2,ni,nr,n,is_closed,ok;
+  int     j,d1,d2,ni,nr,is_closed,ok;
   float   *p,*q,*pmax,*first,px1,py1,px2,py2,px3,py3,px4,py4,mx,my;
   double  epsilon;
 

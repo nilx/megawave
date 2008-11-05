@@ -466,7 +466,7 @@ Shape pShape;
 Flist pDualchain,pBoundary;
 char* ctabtabSaddleValues; /* True type: (float**) */
 {
-  int i, iNbPoints;
+  int iNbPoints;
   char bBuildDualchain = 0,bBuildBoundary;
   
   if(pTree->interpolation != 1)

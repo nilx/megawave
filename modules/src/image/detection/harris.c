@@ -34,11 +34,10 @@ Flist harris(in,k,g,size,t)
 {
   Fimage gradx,grady,ux2,uy2,uxuy,corner;
   Fimage Sux2,Suy2,Suxuy;
-  int period=2,b=2,nsize=8,neigh;
+  int b=2,nsize=8,neigh;
   int ncol,nrow,i,j,m,n;
   Flist out;
   float *p,max,fzero = 0.;
-  float cmax,cmin;
   
   nrow = in->nrow; ncol = in->ncol;
 

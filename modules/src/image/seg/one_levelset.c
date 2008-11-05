@@ -171,7 +171,7 @@ Fimage  image_org;     /* On cree huit blocs pour reserver de la memoire      */
 {                      /* aux regions,bords et sommets,... ; Grace a un codage*/
                        /* des places memoire on peut facilement initialiser   */
   unsigned short i,j;  /* les pointeurs des differentes structures.           */
-  unsigned long  l,n,
+  unsigned long  l,
                  dbreg,dbbor,dbsom,dblibor,dblipix,   /* Dimensions des blocs */
                  lbreg,lbbor,lbsom;                   /* Largeur des blocs    */
 
@@ -366,7 +366,6 @@ static void RegMerge(reg,regvois,bordcom)/* On agglutine les regions reg et regv
 REGIONPTR reg,regvois;            /* de bord commun bordcom,dans l'espace    */
 BORDPTR bordcom;                  /* memoire de reg                          */
 {
-  unsigned short i;
   BORDCONNEXEPTR cnxeptr;
 
   *reg->canal=MAX(*reg->canal,*regvois->canal);
@@ -633,7 +632,6 @@ SOMMETPTR som;                     /*  cnxes. d'un meme bord on reunit ces   */
 static void Union2Bords(som)              /* Si som est entre deux bords exactement */
 SOMMETPTR som;                     /*  on reunit ces bords en un bord unique */
 {
-  char i;
   short dir_bcnxe1,dir_bcnxe2;
   SOMMETPTR sa_old;
   BORDPTR bord1,bord2,bord;
@@ -730,7 +728,7 @@ SOMMETPTR som;                     /*  on reunit ces bords en un bord unique */
 static void UnionBordCnxe(reg)  /* Reunit les bords de reg,qui font frontiere a une */
 REGIONPTR reg;           /*  meme region voisine,                            */
 {                        /*  on obtient le comp. connexes d'un bord          */
-  short i,dir_bord2;
+  short dir_bord2;
   SOMMETPTR som;
   LI_PIXELSPTR lpix;
   LI_BORDSPTR lbor1,lbor2,lbor3,lbor;

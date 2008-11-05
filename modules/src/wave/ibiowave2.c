@@ -61,7 +61,7 @@ int            *haar_test;      /* Test value for use of Haar filter */
 
 {
   long	dx, dy;				/* Size of the image */
-  long	j, i;				/* Index for level and orientation */
+  long	j;				/* Index for level and orientation */
 
   dx = wtrans->ncol;
   dy = wtrans->nrow;

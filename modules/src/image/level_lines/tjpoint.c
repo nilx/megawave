@@ -98,7 +98,7 @@ int a,b,x0,y0;
 int stoparea;
 
 {
-  int area,c,p;
+  int area,c;
   int l;
 
   l=y0*U->ncol+x0;

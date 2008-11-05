@@ -48,7 +48,7 @@ double m;
 {
   double *out;
   int adr1,adr2,x,y;
-  double lambda,q;
+  double q;
 
   q = 1.0-p;
   out = (double *)calloc((n+1)*(n+1),sizeof(double));
@@ -142,7 +142,7 @@ Flists crv;
   int *count,*startbloc,*endbloc;
   int mx,my,ox,oy,nx,ny,n;
   int xx,yy,pos,posmax,nblocs,inbloc,max_nblocs;
-  int cur,i,j,side,tmp,l,lphase;
+  int cur,i,j,side,l,lphase;
   int itheta,ntheta;
   float theta,theta0,dtheta,dx,dy,prec,error;
 

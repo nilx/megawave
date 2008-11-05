@@ -155,8 +155,8 @@ static float SomGris(image_org,i,j)   /* Calcule la somme de gris dans le rectan
 Fimage image_org;
 unsigned short i,j;            /*  (i*PAS,j*PAS)-( (i+1)*PAS-1,(j+1)*PAS-1 ).*/
 {                              /* Determine l'energie elastique initale !!   */
-  unsigned char k,l,c;
-  float somme=0.0,sommeSpas;
+  unsigned char k,l;
+  float somme=0.0;
 
   for (k=0;k<image.PAS;k++)
     for (l=0;l<image.PAS;l++) 

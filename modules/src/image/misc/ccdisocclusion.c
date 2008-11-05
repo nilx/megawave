@@ -49,7 +49,7 @@ void ccdisocclusion(Input,Output,Holes,energy_type,angle)
   unsigned char *r,*g,*b,*y,*u,*v;
   Cimage InputY=NULL,InputU=NULL,InputV=NULL;
   Cimage OutputY=NULL,OutputU=NULL,OutputV=NULL;
-  int line_number,col_number,i,j;
+  int line_number,col_number,i;
   
   
   line_number=Input->nrow;col_number=Input->ncol;

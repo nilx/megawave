@@ -119,7 +119,7 @@ static int my_split_convex(in,out,ncc)
      double **out;
      int    *ncc;
 {
-  int     il,i,d1,d2,ni,n,is_closed,ok;
+  int     il,d1,d2,ni,is_closed,ok;
   double  *p,*q,*pmax,mx,my,px1,py1,px2,py2,px3,py3,px4,py4,*first;
 
   if (!in) return(0);
@@ -245,8 +245,8 @@ static double *sample(in,size,out,eps2)
      int     size;
      double  eps2;
 {
-  double  x,y,ox,oy,d2,dx,dy,threshold,*p,*q,*pmax;
-  int     i,j,k,n,osize;
+  double  x,y,ox,oy,d2,dx,dy,*p,*q,*pmax;
+  int     i,k,n;
 
   /*--- return if the curve has less than 3 points ---*/
   if (size<3) {
@@ -310,8 +310,8 @@ static int sample_chord(in,ch_in,size,out,ch_out,eps2)
      int     size;
      double  eps2;
 {
-  double  x,y,ox,oy,d2,dx,dy,threshold,*p,*q,*pmax,*c,*d,*cmax;
-  int     i,j,k,n,osize;
+  double  x,y,ox,oy,d2,dx,dy,*p,*q,*pmax,*c,*d;
+  int     i,j,k,n;
 
 
   /*--- return if the curve has less than 3 points ---*/
@@ -420,7 +420,7 @@ static void gamma_point(ext1,ext2,far,height,gp,gam,a,alpha)
      double *ext1,*ext2,*far,*gp;
      double a,alpha,height,gam;
 {
-  double abscissa,h,d,length,sn,cn,dx,dy,u;
+  double abscissa,d,length,sn,cn,dx,dy,u;
 
   length = norm(ext1,ext2);
   if (length==0.0){
@@ -464,8 +464,8 @@ static int gaceros(in,ch,size,out,gam,area,a,alpha,eps2,sign)
      double   gam,area,a,alpha,eps2,*sign;
      int      size;
 {
-  double     *p,*p0,*p1,*p2,*pmax,*q0,*q1,*v,*w,*pt,*far,*prevfar,*cv,*gp;
-  double     abs_area,tot_area,cur_area,inc_area,height,h,d,l,lambda,eps;
+  double     *p,*p0,*p1,*p2,*pmax,*q0,*q1,*v,*w,*far,*prevfar,*gp;
+  double     tot_area,cur_area,inc_area,height,lambda,eps;
   int        j,n,is_closed,stop,okp,okq,firstfar,firstmove;
 
 
@@ -636,7 +636,6 @@ static double height(in,pmax,is_closed,first,last,fixed,pt,far,firstfar)
   double *p,*f;
   double a,h,l;
   int secu,s;
-  int okp,okq;
 
 
   s=3;
@@ -778,7 +777,7 @@ static int convexify(in,ch,remove,size,sign)
      double sign;
      int size;
 {
-  double *p0,*p1,*q0,*q1,*p2,*pmax,*p;
+  double *p0,*p1,*q0,*q1,*pmax,*p;
   int j,pushp,is_closed,ok,stop,go_ahead,forward,removed=0;
 
   /* start by removing points where the direction of the
@@ -929,9 +928,9 @@ static void g_eros(li,gam,scale,area,eps2,ncc,conv)
      int      *ncc;   /* number of convex components after erosion*/
      int      conv;   /*do NOT convexify after erosion*/
 {
-  double        eps,a,b,alpha,delta,narea,min_area,d,h,sign;
+  double        eps,a,b,alpha,delta,narea,min_area,sign;
   double        *first,*last;
-  int           nc,nbpt,npc,*npt,i;
+  int           nc,npc,*npt,i;
 
 
   eps = sqrt(eps2);

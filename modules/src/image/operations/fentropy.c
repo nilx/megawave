@@ -55,7 +55,6 @@ Fimage A;
 
 {
   Fsignal B,C;
-  int n;
   float e;
 
   B = mw_new_fsignal();

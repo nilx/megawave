@@ -149,7 +149,7 @@ Ccimage ccputstring(in,x,y,c,C,r,str)
      float *r;
      char *str;
 {
-  int nx,ny,cx,cy,sx,sy,dx,dy,adr,i,v,adr2;
+  int nx,ny,cx,cy,dx,dy,adr,i,v,adr2;
   Curve thedisc;
   Point_curve p;
 

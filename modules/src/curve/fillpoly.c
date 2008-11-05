@@ -414,7 +414,6 @@ Polygon         contour;             /* Contour of polygon */
 
 {
   Point_curve     current_point;      /* Pointer to the current curve point */
-  unsigned char  *ptri1, *ptri2;      /* Pointers to the image values */
   int             r, c;		      /* indices of row and column in 
 				       * bitmap for the current point */
   int             nrow, ncol;	      /* Number of rows and columns bitmap */
@@ -764,7 +763,6 @@ Cimage      bitmap;                  /* Output bitmap */
   long             x;                /* Buffer index for current point 
 				      * in bitmap */
   long             size;             /* Size of bitmap */
-  Polygon          ptr_polyg;        /* Pointer to the current polygon */
   Polygon          contour;          /* Contour of current polygon */
   Point_curve      alloc_point;      /* Table of points for memory 
 				      * allocation */ 

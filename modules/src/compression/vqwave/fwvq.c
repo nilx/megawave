@@ -83,7 +83,6 @@ static int    count_dr;        /* Index of a point in distortion-rate curve */
 static int    max_count_dr;    /* Number of points in distortion-rate curve */
 static float  rateartot;       /* Rate with arithmetic coding 
 				* for global image */
-static long   effnbit;         /* Total number of bits stored in compress */
 static int    ncodewords;      /* Number of codewords stored in compress */
 static int    bits_to_go;      /* Number of free bits in the currently 
 				* encoded codeword */
@@ -390,7 +389,6 @@ double         *var1, *var2, *var3, *varthres;
 long	       *num1, *num2, *num3, *numthres;
     
 {
-  register float *ptri;
   int             sizeb;
   int             height, width;
   int             rb, cb;
@@ -694,7 +692,7 @@ int          nlevelscal;
 Cimage       compress;           /* Compressed file */
 
 {
-  int           i, j, n;
+  int           i, j;
 
   if (compress) {
 
@@ -868,8 +866,6 @@ int       multicb;
   int      j, i, nadap;
   int      jmax, imax, nadapmax;
   float    effrate, diffrate, diffrate1;
-  float    effmse, minmse;
-  int      testopt, opt;
   float    maxdiff, diff;
 
   indcb[0][numrec][0] = 0;
@@ -1026,7 +1022,6 @@ Wtrans2d        Output;               /* Quantized wavelet transform (can be
   double	  SNR;
   double          msetot, MSE;         /* m.s.e. for global image 
 					* and subimages */
-  double          bitmaprate;
   int             bitmapcode;          /* Encode bitmap even if all codebooks 
 					* have size 1 */
   bufind          indcb;               /* Buffer for indices of codebooks */

@@ -99,7 +99,7 @@ static void dummies(v)
 /***derivees compute spatial and temporal derivatives of image*********/
 static void derivees()
 {   
-  int i,j,l,r;
+  int i,j,l;
   register float a_or,a_N,a_S,a_E,a_O,a_NE,a_NO,a_SE,a_SO,at_post;
   long adr;
   
@@ -151,11 +151,11 @@ static void schema_ws(threshold,eps,tau,alpha,lambda,niter)
      float *threshold,eps,tau,alpha,lambda;
      int niter;
 {
-  int i,j,k,l,p;
+  int i,j,l,p;
   long adr;
   register float grad_2u,grad_2v;
   float *diffus,*tampU,*tampV;
-  register float wN,wS,wE,wO,wNz,wSz,reste,reste0;
+  register float wN,wS,wE,wO,wNz,wSz;
   register float maxresidue,maxresidue0;
   /****one pixel has six neighbours in 3D (North, South, Est, West [Ouest in french], before [South in z] and after [North in z]) and four in 2D (North, South, Est, West)********/
   long taille;
@@ -301,7 +301,7 @@ void ws_flow(percent,n,tau,lambda,eps,alpha,norm,movie,wsU,wsV)
      Fmovie norm;
      Fmovie movie,wsU,wsV;
 {
-  int i,j,k,l;
+  int l;
   long adr;
   char normflag=1;
   Fimage u,uU,uV,ud,nd;

@@ -79,10 +79,10 @@ Fimage image,NormofDu;
 char *all;
 {
   Shape s;
-  Flist l,lhisto;
-  int i,j;
+  Flist l;
+  int i;
   Mydata sdata; 
-  float proba,probastep,lognbtests,proba2;
+  float lognbtests,proba2;
   
 
   lognbtests = (float)log10((double)tree->nb_shapes);
@@ -176,7 +176,7 @@ float **tabsaddles,*sumsqper;
 int *prec;
 {
   Shape s;
-  int i,k;
+  int i;
   Mydata data;
   Flist l;
 
@@ -238,8 +238,8 @@ int size;
 float scale;
 {
   Point_plane p;
-  int i,ncol,nrow,k,nbpt=0,ox,oy,x,y;
-  float value,*tabvalues;
+  int i,ncol,nrow,k;
+  float value;
   
   Fsignal histo;
   
@@ -360,7 +360,7 @@ struct myglobal Global;
 int *new_open;
 { 
   Shape t;
-  float mu,length,threshold;
+  float mu,threshold;
   struct mydata *sdata, *tdata;
   int detect=0;
   
@@ -427,8 +427,7 @@ char type;
 struct myglobal Global;
 { 
   Shape t;
-  float mu,nfa,new_bestnfa_inf,old_bestnfa_sup,threshold;
-  int length,detect;
+  float nfa,new_bestnfa_inf,old_bestnfa_sup,threshold;
   Mydata sdata,tdata;
   char *all;
 
@@ -515,7 +514,7 @@ struct myglobal Global;
 int new_open;
 {
   Shape t;
-  Mydata sdata,tdata;
+  Mydata sdata;
   float nfa,threshold,new_bestnfa_inf;
 
 
@@ -613,11 +612,10 @@ Fimage NormofDu;
 Fsignal local_histo,local_repart;
 struct myglobal Global;
 {
-  int detect,sumarea,new_open;
+  int detect,new_open;
   float nfa_inf,nfa_sup,nfils=0.;
   Shape s;
   Mydata sdata,rdata;
-  float newbestrootnfa;
 
   if(!local_root) return;
 

@@ -579,7 +579,7 @@ Cfimage image_org;
 Cmimage m_image;
 {
   Cmorpho_line current_lline=NULL;
-  unsigned long nb_points, l;
+  unsigned long nb_points;
   unsigned long Nll, Nllrm;
   unsigned int NL=image_org->nrow, NC=image_org->ncol;
   unsigned char **V, **H, *cptr;
@@ -688,7 +688,7 @@ int *L;
 Cfimage image_in;
 {
   Cmimage cmimage=NULL;
-  Cfsignal levels,tmp_levels;
+  Cfsignal levels;
   long l;
   
   cmimage=mw_change_cmimage(cmimage);

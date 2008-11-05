@@ -84,7 +84,7 @@ void mam(in,out,ptime,ppower,n_iter,pMAXvit,pMINvit,pfmxa)
 
 {
   Cimage u,ud;
-  int    k,i,j,l;
+  int    k,l;
   long  adr;
   float val;
 
@@ -198,7 +198,7 @@ static void RESOLUTION2()
 static void EVOL()
 {
   register int j,i,l;
-  long adr,ofs;
+  long adr;
   float c;
   
   for(l=1;l<nz-1;l++) 

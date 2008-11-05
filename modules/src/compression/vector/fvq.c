@@ -1239,7 +1239,7 @@ double	       *ent;
   int             nrow, ncol;
   int             nrowb, ncolb;
   int             sizec, sizecres, sizecresres;
-  long            x, size;
+  long            size;
   Fsignal	  histo;
   Fsignal         reshisto, resreshisto;
   float           bmse;
@@ -1346,16 +1346,13 @@ double	       *ent;
 
 {
   int             r, c;
-  int             rb, cb, ov, ovi, ovcb;
-  int             l;
+  int             rb, cb;
   int             rcol;
-  int             index;
   int             sizev, sizec1, sizec2, sizec3, sizec4;
   int             nrowb, ncolb;
   int             nrow, ncol;
-  int             sizecres;
   long            x, size, sizeb;
-  long	          num1, num2, num3, num4, numthres, nsig;
+  long	          num1, num2, num3, num4, numthres;
   float	          thres1, thres2, thres3;
   float	          benergy;			/* Block benergy */
   Fsignal         histo1, histo2, histo3, histo4;
@@ -1821,7 +1818,6 @@ double	       *ent;
   Fimage          cb1, cb2, cb3, cb4;
   Fimage          rescb1, rescb2, rescb3, rescb4;
   Fimage          resrescb1, resrescb2;
-  int             testsearch;
 
   if (testmulticb >= 1) {
     if (nrescb1 > ncb1)

@@ -52,7 +52,6 @@ Fimage      Output;		/* Reconstructed image */
   int         FilterNorm;	/* Normalisation of filters */
   int         Precond;          /* Preconditionning mode for orthogonal 
 				 * transform */
-  int         Max_Count_AC;     /* Size of histogram for arithm. coding */
 
   
   /*--- Reconstruct wavelet transform ---*/

@@ -92,7 +92,7 @@ static void Fill_Distance(distance,bitmap,npxs)
      
 {
   float *ptr;
-  int n,l,l0,l1;
+  int n,l,l0;
 
 
   n=l0=0;

@@ -168,8 +168,6 @@ unsigned char    p;              /* Index of polygon */
 {
   int              i;                /* Index for orientation in wav. trans. */
   int              j;                /* Index for level in wav. trans. */
-  register unsigned char  *ptra1, *ptra2, *ptra3;  /* Pointers to significance 
-				      * map for each orientation */
   register unsigned char  *ptrb;     /* Pointer to bitmap */
   int              r, c;             /* Row and column indices for current 
 				      * point in bitmap */
@@ -179,7 +177,6 @@ unsigned char    p;              /* Index of polygon */
 				      * and subimage */
   long             x;                /* Buffer index for current coefficient 
 				      * and its parent */
-  long             size;             /* Size of subimages */
 
   fac = 0;
   for (j = 1; j <= nrec; j++) {
@@ -293,7 +290,7 @@ REALLOCATE_SUBIMAGES(output)
 Wtrans2d    output;
 
 {
-  int    i, j, nrec;
+  int    j, nrec;
   int    nrow, ncol;
   int    nrow2, ncol2;
 
@@ -1368,7 +1365,6 @@ int         *printfull;           /* Flag for information printing */
   unsigned char  ***sigmap;         /* Map of significance information */
   unsigned char  ***areamap;        /* Mask for selected areas */
   register float *ptro;             /* Pointer to wavelet coeff. in output */
-  register unsigned char *ptrs;     /* Pointer to significance map */
   long            x;                /* Buffer index for current coefficient */
   long            size;             /* Size of subimages */
   long            nsignif;          /* Number of significant coefficients */

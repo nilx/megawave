@@ -248,9 +248,8 @@ static void plot_curves()
 {
   Flist c;
   double xofs,xstep,yofs,ystep,v,ssx1,ssx2,ssy1,ssy2,truncref;
-  int i,j,k,x,y,n1,n2,line,ox,oy,fgcolor,bgcolor,size0;
-  int xsub,ysub,color,pcolor,mode;
-  Ccimage tmp;
+  int i,j,k,x,y,line,ox,oy,fgcolor,bgcolor,size0;
+  int xsub,ysub,pcolor,mode;
   char str[STRSIZE];
 
   if (grid_mode==0) {

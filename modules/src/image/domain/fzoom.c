@@ -31,7 +31,7 @@ Fimage fzoom(in,out,x_flg,y_flg,zoom,o,p,i_flg)
      float *zoom,*p;
      int *o;
 {
-  float X2,Y2,nx,ny,sx,sy,zero;
+  float nx,ny,sx,sy,zero;
 
   if (x_flg && y_flg) 
     mwerror(USAGE,0,"Options -x and -y are not compatible.");

@@ -33,7 +33,7 @@ static int N_Points;
 static float cosangle(vx1, vy1, vx2, vy2)
      float vx1, vy1, vx2, vy2;
 {
-  float c, qd1, qd2, a;
+  float c, qd1, qd2;
   
   qd1=vx1*vx1+vy1*vy1;
   qd2=vx2*vx2+vy2*vy2;

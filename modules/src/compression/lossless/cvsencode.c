@@ -144,12 +144,8 @@ static Curves Split_Curves(O,C,L,bitmap,mincol,minrow)
      
 {
   Curve cv;
-  Point_curve P, p0, p1, begp;
-  int x0,y0,x1,y1;
+  Point_curve p0, p1, begp;
   int ncol;
-  float *dptr;
-  unsigned char *bptr;
-  unsigned int size;
   
   /* Split curve in 2 curves when 4 successive points or more are 
      already coded by other curves.
@@ -188,8 +184,6 @@ double cvsencode(L,O,C,N,B)
   Cimage bitmap=NULL;  /* Bitmap the points of the curves to detect multiple
 			  points */
   Curves Oorg;         /* Initial value of O */
-  unsigned int npts;   /* Total number of points in the curves of C (=*N) */
-  unsigned int ncvs;   /* Number of curves = Nb of origin points */
   int nrow,ncol;       /* Size of bitmap, if used. */
   int minrow, mincol;  /* Translation point in bitmap, if used. */
   double Borg;         /* Nb of bits to code origin of curves */

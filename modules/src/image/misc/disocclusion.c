@@ -2037,12 +2037,10 @@ float value;
     char neighbors; /* equal to 1 if the first point of the jordan curve has neighbors, 0 else */
     char encore;
     unsigned char ExternVal=0;
-    int Line;
     int baire;
     double bx,by,norm_v,bvalue;
     Ppoly_t poly;
     int occlusionArea; /* Number of occluding points */
-    int Number=0;
 
     /*        1   0
             . | . | .

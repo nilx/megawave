@@ -32,8 +32,8 @@ float prolatef(s,d,n,ker,p,c)
      int *n,*p,*c;
 {
   Fimage sker,tmp;
-  int m,r,i,x,y,xx,yy,cont,out_domain;
-  float v,rad2,side;
+  int m,i,x,y,xx,yy,cont,out_domain;
+  float rad2,side;
   double norm,energy,last_energy;
 
   m = *n;

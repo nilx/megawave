@@ -107,7 +107,7 @@ int i, j;
 {
   Shape tabShapes[4], shapeInf, shapeTemp, shapeSaddle;
   int k, n;
-  float v, x, x0;
+  float v, x;
 
   /* Find adjacent centers of pixels */
   tabShapes[0] = (i == 0 || j == 0) ? NULL :

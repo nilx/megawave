@@ -75,7 +75,7 @@ Fimage wiener(in,out,kernel,rad,g,lambda)
 {
   Fimage re,im;
   int x,y,nx,ny,adr,kernel_delete,deblur;
-  float var,c,k,rho2,cx,cy;
+  float c,k,rho2,cx,cy;
 
   re = mw_new_fimage();
   im = mw_new_fimage();

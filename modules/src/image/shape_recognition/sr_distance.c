@@ -80,7 +80,7 @@ Fcurves  the_shape;
 {
   Point_fcurve  pixel;
   Fcurve        curve;
-  float         x,y,xf,yf,cs,sn,theta,theta_min;
+  float         x,y,cs,sn,theta,theta_min;
   long           xx,yy,i,dx,dy,k,l,prod,prod_min;
   
   prod_min = 100000;
@@ -151,7 +151,7 @@ Fcurves  the_shape;
 float sr_distance(Shape1,Shape2)
 Fcurves Shape1,Shape2;
 {
-  int     product1_2,product2_1,product,surface_shape1,surface_shape2,n_iter;
+  int     product1_2,product2_1,surface_shape1,surface_shape2,n_iter;
   Cimage  image1,image2,image1_dilat,image2_dilat;
   float   xg,yg,radius,dist_max,dist1_2,dist2_1,dist;
   

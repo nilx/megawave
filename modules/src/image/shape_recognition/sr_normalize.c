@@ -235,7 +235,7 @@ Fcurves sr_normalize(in)
      Fcurves in;
 {
   float    close;
-  float    xg=0.0,yg=0.0,xmin,ymin,xmax,ymax;
+  float    xg=0.0,yg=0.0;
   float    determinant;
   
   fkcenter(in,&xg,&yg);

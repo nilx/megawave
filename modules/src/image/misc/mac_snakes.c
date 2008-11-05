@@ -167,8 +167,8 @@ Dlists mac_snakes(u,in,niter,step,power,v,V)
   int nx,ny,i,j,k,kp,stop;
   double *ux,*uy,*uxx,*uxy,*uyy,*dx,*dy,*dn,g,*dg,*h;
   float mingrad;
-  double mx,my,zx,zy,a,b,c,d,e,length,s,tx,ty,p,energy;
-  int xi,yi,nsize,size,sizemax,closed;
+  double mx,my,e,length,s,tx,ty,energy;
+  int nsize,size,sizemax,closed;
 
   thepower = *power;
   sizemax = stop = 0;

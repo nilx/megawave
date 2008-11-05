@@ -252,7 +252,6 @@ void wpsconvolve(Signal, Output, Ri, upSample, band, oddSize)
      Fsignal         Ri;	      /* Impulse response of the low pass filter */
      
 { 
-  long            l;		/* Index of current point in `Output` */
   long            sizeres;	/* Size of `Output` */  
   Fsignal         extendedSignal; /* Extenssion of the input to deal with edges */
   Fsignal         modifiedFilter;     /* modification of the filter */

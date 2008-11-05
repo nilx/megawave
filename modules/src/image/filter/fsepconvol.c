@@ -34,7 +34,7 @@ Fimage fsepconvol(in,out,xker,yker,width,std,b)
      float *std;
 {
   Fimage tmp;
-  int nx,nx2,ny,ny2,x,y,org,i,iter,s;
+  int nx,nx2,ny,ny2,x,y,org,i,s;
   float value,sum,precision;
   int delete_xker;
 
