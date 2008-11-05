@@ -32,7 +32,7 @@ float snorm(in,ref,p,s,v,b,n,t)
      char *n;
      float *t;
 {
-  int x,y,num;
+  int x,num;
   double sum,diff,val;
 
   /* check options */

@@ -14,21 +14,6 @@
 #include <stdio.h>
 #include "mw.h"
 
-static void check_ll(ll)
-
-Cmorpho_line ll;
-
-{
-  Point_curve point;
-  Point_type type;
-  int np,nt;
- 
-  np=nt=0;
-  for (point=ll->first_point; point; point=point->next) np++;
-  for (type=ll->first_type; type; type=type->next) nt++;
-  printf("check_ll : np=%d  nt=%d\n",np,nt);
-}
-
 static void remove_cll(cmimage,ll)
 
 Cmimage cmimage;

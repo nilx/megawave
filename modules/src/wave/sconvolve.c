@@ -62,9 +62,6 @@ static double   (*RI) ();	/* Pointer to low or high-pass impulse
 				 * response function */
 static Fsignal  ri;		/* Low-pass filter for computation inner
 				 * coefficients */
-static int      Low = FALSE;	/* Convolution with low-pass filter */
-static int      High = TRUE;	/* "	"   high  "     "   */
-static int      Reflir = TRUE;  /* Convolution with reflected filter h/g(-n) */
 
 
 static double

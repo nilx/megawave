@@ -127,7 +127,7 @@ Fsignal M;
   register int i;
   register float *pW;
   register float *pM;
-  int j,offset;
+  int j;
 
   pM=M->values; 
   /* Hard or soft thresholding */
@@ -167,8 +167,6 @@ int *r;
   double	PSNR;		/* Peak signal to noise ratio / `Sig1` */
   double	MSE;		/* Mean square error between Sig1 and Sig2 */
   double	MRD;
-
-  int x0,y0,sx,sy;
   
   if (I) Edge=3; else Edge=1;
 
@@ -199,121 +197,6 @@ int *r;
   mw_delete_wtrans1d(WdJ);
   if (mwdbg != 0) mw_delete_fsignal(dJ0);
 }
-
-/* Return the f(t) = J(u-tP(dJ(u))) (Not needed : to draw f(t) only)
-   Exact total variation case.
-*/
-
-static double f(t,u,dJ)
-     
-     double t;
-     Fsignal u;
-     Fsignal dJ;  
-     
-{
-  int n;
-  double r=0.0;
-
-  for (n=0;n<u->size-1;n++)
-    r += fabs((double) u->values[n+1]-u->values[n]
-	      -t*(dJ->values[n+1]-dJ->values[n]));
-  return(r);
-}
-
-/* Return the f(t) = J(u-tP(dJ(u))) (Not needed : to draw f(t) only)
-   Smoothed total variation case.
-*/
-
-static double f_alpha(t,u,dJ,alpha)
-     
-     double t;
-     Fsignal u;
-     Fsignal dJ;  
-     double alpha;
-     
-{
-  int n;
-  double r,dn;
-
-  r=0.;
-  for (n=0;n<u->size-1;n++)
-    {
-      dn = ((double) u->values[n+1] - u->values[n]) 
-	- t * ((double) dJ->values[n+1]-dJ->values[n]);
-      r += sqrt (dn*dn + alpha);
-    }
-  return(r);
-}
-
-/* Output the values of f(t)
-*/
-
-static void output_f(u,dJ,alpha)
-     
-     Fsignal u;
-     Fsignal dJ;  
-     double *alpha;
-     
-{
-  double t;
-
-  if (!alpha)
-    for (t=0;t<=0.1;t+=1e-5) fprintf(stderr,"%f %g\n",t,f(t,u,dJ));
-  else
-    for (t=0;t<=0.1;t+=1e-5) fprintf(stderr,"%f %g\n",t,f_alpha(t,u,dJ,*alpha));    
-}
-
-/* Return the derivative of f(t) = J(u-tP(dJ(u))) 
-   Exact total variation case.
-*/
-
-static double df(t,u,dJ)
-
-     double t;
-     Fsignal u;
-     Fsignal dJ;  
-     
-{
-  int n;
-  double r=0.0;
-  double s,du,dw;
-
-  for (n=0;n<u->size-1;n++)
-    {
-      dw=dJ->values[n+1]-dJ->values[n];
-      du=u->values[n+1]-u->values[n];
-      s = du - t * dw;
-      if (s > 0) r-=dw;
-      else if (s < 0) r+=dw;
-    }
-  return(r);
-}
-
-/* Return the derivative of f(t) = J(u-tP(dJ(u))) 
-   Smoothed total variation case.
-*/
-
-static double df_alpha(t,u,dJ,alpha)
-
-     double t;
-     Fsignal u;
-     Fsignal dJ;  
-     double alpha;
-     
-{
-  int n;
-  double r,dw,dn;
-
-  r=0.;
-  for (n=0;n<u->size-1;n++)
-    {
-      dw = dJ->values[n+1]-dJ->values[n];
-      dn = ((double) u->values[n+1] - u->values[n]) - t * dw;
-      r -= (dw * dn) / sqrt( dn*dn + alpha);
-    }
-  return(r);
-}
-
 
 /* Generate comments in output signal u
 */

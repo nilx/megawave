@@ -35,7 +35,7 @@ static void realft(data,n,inverse)
      char *inverse;
      
 {
-  int m,i,i1,i2,i3,i4,n2p3;
+  int i,i1,i2,i3,i4,n2p3;
   float c1=0.5,c2,h1r,h1i,h2r,h2i;
   double wr,wi,wpr,wpi,wtemp,theta;
   Fsignal data1=NULL;

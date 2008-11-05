@@ -295,17 +295,6 @@ int *lambda,*mu;
   return(0); /* areas of 1st and 2nd m.s. to small : not a junction */
 }
 
-/* Record the junction location */
-
-static void record_junction(J,x,y,l)
-
-unsigned char *J;
-int x,y,l;
-
-{
-  J[l] = 255;
-}
-
 int tjpoint(connex8,tarea,tquant,U,x0,y0,lambda,mu,xlambda,ylambda,xmu,ymu,M,P)
 
 char *connex8;

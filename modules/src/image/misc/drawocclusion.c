@@ -243,21 +243,6 @@ int x0,y0,x1,y1,oldx1,oldy1,dx,dy;
 static char first_point=0;
 char print_mode=0;
 
-/* Return the number of points in a polygon */
-
-static int give_number_of_point_in_poly(p)
-
-Polygon p;
-
-{
-  Point_curve c;
-  int n;
-
-  n=0;
-  for (c=p->first; c; c=c->next) n++;
-  return(n);
-}
-
 static void DrawLinePoly(ImageWindow,a0,b0,a1,b1)
 
 

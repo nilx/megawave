@@ -29,35 +29,6 @@ static int N_Points;  /* number of points of the curve */
 static float hmax;  /* maximal distance between bitangent and curve */
 
 
-/* next index after i in the direction type. 
-   iLast is the last index of the curve */
-
-static int get_next_index(i, iLast, type)
-     int i;
-     int iLast;
-     unsigned char type;
-{
-  int i_next;
-  if (type == 1) {
-    if ((Closed) && (iLast == 0)) iLast=N_Points-1;
-  } else {
-    if ((Closed) && (iLast == N_Points-1)) iLast=0;
-  }
-  
-  if (type == 1) {
-    i_next=i+1;
-    if ((i_next > N_Points-1) && (!Closed)) return -1;
-    if ((i_next > N_Points-1) && (Closed)) i_next=1;
-  } else {
-    i_next=i-1;
-    if ((i_next < 0) && (!Closed)) return -1;
-    if ((i_next < 0) && (Closed)) i_next=N_Points-2;
-  }
-  if (i_next == iLast) return -1;
-  return i_next;
-}
-
-
 /* check the position of a point w.r.t. a line */ 
 static float halfplane(x1, y1, x2, y2, x, y)
      float x1,y1,x2,y2,x,y;

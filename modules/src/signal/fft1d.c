@@ -108,7 +108,7 @@ static int decompose(int * tab, int n)
 #define SWAP(a,b) tempr=(a);(a)=(b);(b)=tempr;
 
 static void old_fft1d(Fsignal Xr,Fsignal Xi,Fsignal Yr,Fsignal Yi,char *inverse){
-  int size,n,mmax,m,l,j,istep,i,isign;
+  int size,n,mmax,m,j,istep,i,isign;
   double wtemp,wr,wpr,wpi,wi,theta;
   float tempr,tempi;
   Fsignal data;
@@ -197,7 +197,7 @@ Fsignal Xr,Xi,Yr,Yi;
 char *inverse;
 {
   int n,tab[32],t,i,j,k,e,l,p,m,idxd,idxs,nsmp,mp;
-  float *tra,*s,*d,*tmpf,wljx,wljy,last,*mc,*ms,isign;
+  float *tra,*s,*d,*tmpf,wljx,wljy,*mc,*ms,isign;
   
   n=Xr->size;
 

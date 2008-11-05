@@ -358,27 +358,6 @@ int             nlevelscal;
 
 
 
-
-static void
-clear_fimage(image, mse)
-     Fimage         image;
-     double        *mse;
-
-{
-  long              x;
-  long              size;
-
-  size = image->nrow * image->ncol;
-  *mse = 0.0;
-  for (x = 0; x < size; x++) {
-    *mse += image->gray[x] * image->gray[x];
-    image->gray[x] = 0.0;
-  }
-  *mse /= (double) size;
-}
-
-
-
 static void
 fvariance(wtrans, j, i, cb1, cb2, cb3, var1, var2, var3, varthres, num1, num2, num3, numthres)
 
@@ -514,31 +493,6 @@ Fimage     image;
   return(e);
 }
 
-
-
-
-static float
-sqdist(image1, image2)
-
-    Fimage          image1, image2;
-
-{
-    int             i;
-    int             size;
-    float           error, e;
-
-    size = image1->nrow * image1->ncol;
-    error = 0.0;
-    for (i = 0; i < size; i++)
-    {
-	e = image1->gray[i] - image2->gray[i];
-	error += e * e;
-    }
-
-    error /= (float) size;
-    return (error);
-
-}
 
 
 static void
@@ -747,70 +701,6 @@ Cimage       compress;           /* Compressed file */
   } 
 
 }
-
-
-
-
-static void
-extract_cb(codebook, n)
-
-Fimage     codebook;
-int        n;
-
-{
-  int      size, sizei, sizef;
-  int      nrow;
-  long     xshift;
-  long     x, xi, xf;
-  int      n1;
-  
-  sizei = floor(codebook->gray[(codebook->nrow - 5) * codebook->ncol]
-		+ .5);
-  sizef = floor(codebook->gray[(codebook->nrow - 6) * codebook->ncol]
-		+ .5);
-	       
-  if (n == 0) {
-    xi = sizef;
-    xf = (sizef + sizei);
-  } else
-    {
-      size = 1;
-      while (size < sizei)
-	size *= 2;
-      if (size == sizei)
-	size *= 2;
-      xi = sizef + sizei;
-      n1 = 1; 
-      while ((n1 < n) && (size * 2 < sizef)) {
-	xi += size;
-	size *= 2;
-	n1++;
-      }
-      if (n1 < n) {
-	xi = 0;
-	xf = sizef;
-      } else
-	xf = xi + size;
-    }
-
-  nrow = xf - xi + 4;
-  xi *= codebook->ncol;
-  xf *= codebook->ncol;
-
-  for (x = xi; x < xf; x++)
-    codebook->gray[x - xi] = codebook->gray[x];    
-
-  xi = (codebook->nrow - 4) * codebook->ncol;
-  xf = codebook->nrow * codebook->ncol;
-  xshift = (nrow - codebook->nrow) * codebook->ncol;
-  for (x = xi; x < xf; x++)
-    codebook->gray[x + xshift] = codebook->gray[x];
-
-  codebook = mw_change_fimage(codebook, nrow, codebook->ncol);
-  if (codebook == NULL)
-    mwerror(FATAL,1,"Not enough memory for extracted codebook.\n");
-}
-
 
 
 

@@ -753,30 +753,6 @@ Ppoly_t *polyp;
 
   }
 /****************************************************************************/
-/* return an angle between -pi and pi */
-
-static double AngleFix(a)
-double a;
-{
-    while (a > M_PI)
-        a -= 2 * M_PI;
-    while (a < -M_PI)
-        a += 2 * M_PI;
-    return a;
-}
-/****************************************************************************/
-
-/* compare the current angle a with reference angle b */
-
-static double AngleCheck(a,b)
-double a,b;
-{
-    if ((a+M_PI>=b+M_PI_2)&&(a+M_PI<=b+3*M_PI_2)) return a;
-    return AngleFix(a+M_PI);
-}
-
-
-/****************************************************************************/
 /* eps1 and eps2 are the T-junctions. 
    meandir1 is the geodesic curve mean direction at eps1
    meandir2 is the geodesic curve mean direction at eps2 */
@@ -1141,20 +1117,6 @@ unsigned char gray1,gray2;
     return new;
   }
 /****************************************************************************/
-
-/* Deletes an element in the chain defining the structuring element*/
-
-static jordan *delete_jordan(jc)
-jordan *jc;
-
-  {
-    if (jc->previous) jc->previous->next=jc->next;
-    if (jc->next) jc->next->previous=jc->previous;
-    free((void*)jc);
-    return (jordan*)NULL;
-  }
-
-/***************************************************************************/
 
 /*  Frees the chain defining the T-junctions */
 /*  Be careful that this function is valid only if jordan curve is "broken" */

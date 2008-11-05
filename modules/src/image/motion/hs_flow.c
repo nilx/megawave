@@ -229,28 +229,6 @@ static void SCHEMA_ITER(niter,alpha)
 
 
 
-/* computes sens */
-
-static int SENS(adr,numero_image)
-     int adr,numero_image;
-{
-  int sens;
-  float rx,ry;
-  
-  rx = U[1][adr+nx*ny*numero_image];
-  ry = -V[1][adr+nx*ny*numero_image];
-  
-  sens=-1;
-  
-  if( (rx>0) && (ry>0) )  sens=0;
-  if( (rx<0) && (ry>0) )  sens=1;
-  if( (rx<0) && (ry<0) )  sens=2;
-  if( (rx>0) && (ry<0) )  sens=3;
-  
-  return(sens); 
-}
-
-
 /*------------------------------ MAIN MODULE ------------------------------*/
 
 void hs_flow(niter,alpha,in,xflow,yflow)

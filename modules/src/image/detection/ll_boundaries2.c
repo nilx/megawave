@@ -158,16 +158,6 @@ Fimage NormofDu;
   return(minmu);
 }
 
-static float dist2(p,q)
-float *p,*q;
-{
-  double x, y;
-  x = *p - *q;
-  y = *(p + 1) - *(q + 1);
-  return (float) sqrt(x * x + y * y);
-}
-
-
 /* allocate memory for boundaries data */
 static void pixels_and_data(tree,NormofDu,image,prec,tabsaddles,sumsqper)
 Shapes tree;
@@ -683,11 +673,10 @@ char *all,*loc;
   Shapes ref_tree;
   float **tabsaddles,offset,fzero,maxDu;
   float threshold,lognbtests,sumsqper,eps2;
-  int newtree,nsize,ndetect,maxvisit,hsize,i,i_one;
-  Fsignal local_histo,local_repart,child_histo;
+  int nsize,ndetect,maxvisit,hsize,i,i_one;
+  Fsignal local_histo,local_repart;
   Shape root,cur_s;
-  Flists boundaries,out;
-  Mydata data;
+  Flists boundaries;
   struct myglobal Global;
   
   /* preliminary smoothing to prevent gradient quantization 

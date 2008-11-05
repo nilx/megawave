@@ -148,7 +148,6 @@ static void plot_signal()
 {
   double xofs,xstep,yofs,ystep,v,truncref;
   int i,k,x,y,n1,n2,line,zero,x1,x2,ox,oy,fgcolor,bgcolor,max,xsub,ysub;
-  Ccimage tmp;
   char str[STRSIZE];
 
   mw_clear_ccimage(image,255,255,255);

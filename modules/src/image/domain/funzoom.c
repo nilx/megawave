@@ -79,22 +79,6 @@ typedef struct ppfunction {
                         /* a[i][j] X^j contributes between x[i] and x[i+1] */
 } *Ppfunction;
 
-/* print algebraic description of Ppfunction */
-static void ppprint(f)
-     Ppfunction f;
-{
-  int i,j;
-
-  printf("%d knots\n",f->n);
-  for (i=0;i<f->n-1;i++) {
-    printf("interval [%f,%f]\n",f->x[i],f->x[i+1]);
-    printf("%f ",f->a[i][0]);
-    for (j=1;j<f->k;j++) 
-      printf("+ %f X^%d",f->a[i][j],j);
-    printf("\n\n");
-  }
-}
-
 /* find the interval [x(i),x(i+1)] corresponding to a given point */
 /* convention : i=-1 if the interval is unbounded */
 static int ppfind(f,x)
@@ -218,26 +202,6 @@ static void ppconvol(f,g,w)
   }
 }
 
-/* build spline of order o : W1^o */
-static void ppspline(f,o)
-     Ppfunction f;
-     int o;
-{
-  struct ppfunction g;
-  Ppfunction f1,f2,f3;
-  int i;
-
-  /* init */
-  f->n=2; f->x[0]=-0.5; f->x[1]=0.5; f->k=1; f->a[0][0]=1.;
-  f1=f; f2=&g;
-
-  for (i=0;i<o;i++) {
-    ppconvol(f1,f2,0.5);
-    f3=f1; f1=f2; f2=f3;
-  }
-
-  if (f!=f1) *f=g;
-}
 
 /* build unzoom kernel of order o : (W1*Wz)^o */
 static void ppkernel(f,o,z)

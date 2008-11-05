@@ -1090,20 +1090,6 @@ segment()
 
 
 
-static void EcritComm(comm)     /* Ecrit le commentaire pour le fichier resultat,   */
-char *comm;              /*  ceci suivant les particularites de l'algorithme.*/
-{                        /* Utilisee par 'SaveIm()' et autres 'Save'         */
-
-   sprintf(comm,
-	   "2-normal segmentation (Mumford&Shah model), multichannel. "
-	   "Parameter:%g, grid of %d*%d pixels. "
-	   "Nb. of regions: %lu,frontiers: %lu,tips: %lu, El.en. "
-	   "%.4g,length %ld(G.Koepfler).",
-	   image.lambda, image.PAS, image.PAS, image.nbregions, 
-	   image.nbbords, image.nbsommets, image.energie.e, image.energie.l);
-}
-
-
 static void make_curves(curves)
 Curves curves;
 {

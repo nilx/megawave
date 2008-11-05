@@ -279,47 +279,6 @@ static void polar2cart(theta,q,R,Xcenter,Ycenter,x,y)
 }
 
 
-/*------------------------------------------------------------*/
-/*       compute P(k,l) : array out[] of size n+1 * n+1       */
-/*   P[k][l] =     sum(i=k..l) binom(l,i) p^i (1-p)^(l-i)     */
-/*   P[k][l] = P[ (n+1)*l+k ]                                 */
-/*------------------------------------------------------------*/
-
-
-static double *tab(n,p)
-int n;
-double p;
-{
-  double *out;
-  int adr1,adr2,x,y;
-  double q;
-
-  q = 1.0-p;
-  out = (double *)calloc((n+1)*(n+1),sizeof(double));
-
-  /*** compute proba (=x among y) ***/
-  out[0] = 1.0;
-  for (y=1,adr2=0;y<=n;y++) {
-    adr1 = adr2;
-    adr2 += n+1;    
-    out[adr2] = q*out[adr1];
-    for (x=1;x<=y;x++) 
-      out[adr2+x] = p*out[adr1+x-1] + q*out[adr1+x];
-  }  
-
-  /*** sum to obtain proba (>=k among y) ***/
-  for (y=1,adr1=n+1;y<=n;y++,adr1+=n+1) 
-    for (x=y-1;x>=0;x--) 
-      out[adr1+x] += out[adr1+x+1];
-
-  /*** multiply by m (number of segments) to obtain expectation***
-  for (adr1=(n+1)*(n+1);--adr1>=0;)
-    out[adr1] *= m;
-  */
-
-  return out;
-}
-
 static double *tab2(n,p)
 int n;
 double p;
