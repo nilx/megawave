@@ -26,26 +26,26 @@ SRCDIR	= ./src
 SRC	:= $(sort $(shell find $(SRCDIR) -type f	\
 	-name "*.c" ! -name "*.lib.c" ! -name "*.exec.c"))
 
-LIBSRC	= $(SRC:.c=.lib.c)
-LIBHDR	= $(LIBSRC:.c=.h)
-BINSRC	= $(SRC:.c=.exec.c)
-BINHDR	= $(BINSRC:.c=.h)
-AUTOSRC	= $(LIBSRC) $(BINSRC)
-AUTOHDR	= $(LIBHDR) $(BINHDR)
-LIBOBJ	= $(LIBSRC:.c=.o)
-BINOBJ	= $(BINSRC:.c=.o)
+HDR	= $(SRC:.c=.h)
+OBJ	= $(SRC:.c=.o)
 
-# no need for cproto and makedepend
-#.PHONY	: $(AUTOHDR:.h=.d)
-
-MODULES	= $(BINOBJ:.exec.o=.exec)
-
-BUILDDIR = build
+CMDSRC	= $(SRC:.c=.cmd.c)
+CMDHDR	= $(CMDSRC:.c=.h)
+CMDOBJ	= $(CMDSRC:.c=.o)
 
 LIBNAME	= mw-modules
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
-APIINC	= <mw.h>
+
+AUTOSRC	= $(CMDSRC)
+AUTOHDR	= $(HDR) $(CMDHDR) $(API)
+
+# no need for cproto and makedepend
+#.PHONY	: $(AUTOHDR:.h=.d)
+
+MODULES	= $(CMDOBJ:.cmd.o=.cmd)
+
+BUILDDIR = build
 
 LIBMW_MODULES	= lib$(LIBNAME)
 LIBMW	= $(BASEDIR)/libmw/libmw
@@ -82,15 +82,13 @@ lib 	: lib$(LIBNAME).so
 else
 lib 	: lib$(LIBNAME).a
 endif
-lib$(LIBNAME).a	: $(LIBOBJ)
-	@$(ECHO) '$(AR) ru $@ $$(LIBOBJ)'
+lib$(LIBNAME).a	: $(OBJ)
+	@$(ECHO) '$(AR) ru $@ $$(OBJ)'
 	@$(AR) ru $@ $?
-lib$(LIBNAME).so	: $(LIBOBJ)
-	@$(ECHO) '$(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(LIBOBJ)'
+lib$(LIBNAME).so	: $(OBJ)
+	@$(ECHO) '$(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
 	@$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
 
-.PHONY	: api
-api 	: $(API)
 $(API) 	: $(LIBHDR)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
@@ -100,18 +98,11 @@ $(API) 	: $(LIBHDR)
 
 # RULES
 
-%.lib.c	: %.c $(MWPLIGHT)
-	$(MWPLIGHT) --source $< --library $@
-%.exec.c	: %.c $(MWPLIGHT)
+%.cmd.c	: %.c $(MWPLIGHT)
 	$(MWPLIGHT) --source $< --exec $@
 
-%.lib.o	: %.lib.c
-	$(CC) -c $(CFLAGS) -o $@ $<
-%.exec.o	: %.exec.c
-	$(CC) -c $(CFLAGS) -o $@ $<
-
 ifeq	($(STATIC), 0)
-%.exec	: %.exec.o $(LIBMW_MODULES).so $(LIBMW).so $(LIBMW_WDEVICE).so
+%.cmd	: %.cmd.o $(LIBMW_MODULES).so $(LIBMW).so $(LIBMW_WDEVICE).so
 	$(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
 	$(CP) $@ $(BUILDDIR)/$(basename $(notdir $@))
 else
@@ -125,8 +116,8 @@ endif
 
 .PHONY	: clean-bin
 clean-bin :
-	@echo '$(RM) $$(LIBOBJ) $$(BINOBJ)'
-	@$(RM) $(LIBOBJ) $(BINOBJ)
+	@echo '$(RM) $$(OBJ) $$(CMDOBJ)'
+	@$(RM) $(OBJ) $(CMDOBJ)
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
@@ -135,22 +126,18 @@ distclean-bin : clean-bin
 	$(RM) lib$(LIBNAME).a
 	$(RM) lib$(LIBNAME).so
 	$(RM) $(BUILDDIR)/*
+	$(RM) $(API)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
 #-include $(DEP)
 
+#
 # PREBUILD AND UTILS
 #
 
 .PHONY	: prebuild
-prebuild	: autosrc autohdr api man #dep
-
-.PHONY	: autosrc
-autosrc	: $(AUTOSRC)
-
-.PHONY	: autohdr
-autohdr	: $(AUTOHDR)
+prebuild	: $(AUTOSRC) $(AUTOHDR) $(API)
 
 #.PHONY	: dep
 #dep	: $(DEP)
@@ -219,4 +206,3 @@ distclean-doc	: clean-doc
 	$(RM) $(MAN) $(MANHTML)
 	$(RM) $(DOCDIR)/srcdoc.pdf
 	$(RRM) $(DOCDIR)/html $(DOCDIR)/latex
-
