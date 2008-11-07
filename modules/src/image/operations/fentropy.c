@@ -40,7 +40,7 @@ static double signal_entropy(input)
 
   entr = 0.0;
   for (i=0;i<input->size;i++)
-    if (p = (input->values[i] / sum))
+       if (0 != (p = (input->values[i] / sum)))
 	 entr += p * ((double)log(p)/log(2.));
 
   mwdebug("entropy : size = %d, sum = %f,  E = %f\n",
