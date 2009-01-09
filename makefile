@@ -1,20 +1,22 @@
 default	: all
 all	: mwplight libmw libmw-wdevice modules
+.PHONY	: prebuild mwplight libmw libmw-wdevice modules
 
-MAKEOPTS	= CC="ccache gcc"
-
+prebuild	:
+	$(MAKE) -C ./mwplight prebuild
+	$(MAKE) -C ./modules prebuild
 
 mwplight	:
-	$(MAKE) -C ./mwplight STRICT=1 $(MAKEOPTS)
+	$(MAKE) -C ./mwplight
 
 libmw	: libmw-wdevice
-	$(MAKE) -C ./libmw STRICT=1 $(MAKEOPTS)
+	$(MAKE) -C ./libmw
 
 libmw-wdevice	:
-	$(MAKE) -C ./libmw-wdevice STRICT=1 $(MAKEOPTS)
+	$(MAKE) -C ./libmw-wdevice
 
 modules	: mwplight libmw libmw-wdevice
-	$(MAKE) -C ./modules $(MAKEOPTS)
+	$(MAKE) -C ./modules
 
 test	:
 	$(MAKE) -C ./modules test

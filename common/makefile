@@ -130,7 +130,7 @@ CPROTO_FLAGS	= $(addprefix -I, $(IPATH)) -q
 
 # make a C prototype header
 # FIXME: cproto -q is buggy
-%.h	: %.c
+%.h	:: %.c
 	$(CPROTO) $(CPROTO_FLAGS) $< -o $@
 	@HNAME=_`echo -n $(notdir $@) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_ \
 		&& ($(ECHO) -e "/*\n * $(notdir $@)\n */\n"; \
@@ -138,22 +138,6 @@ CPROTO_FLAGS	= $(addprefix -I, $(IPATH)) -q
 			$(CAT) $@; \
 			$(ECHO) -e "\n#endif /* !$${HNAME} */";) > $@.$$$$ \
 		&& $(MV) $@.$$$$ $@
-
-# extract the command-line description
-%.ggo	: %.c
-	$(CSPLIT) $^ -f $*_split %GENGETOPT\ BEGIN%+1 /GENGETOPT\ END/
-	$(SED) 's/^ *\* *//' $*_split00 > $@
-	$(RM) $*_split0[01]
-
-# TODO: one pass
-%_cmdline.c	: %.ggo
-	cd $(dir $@) \
-		&& $(GENGETOPT) ${GENGETOPT_FLAGS} \
-			-i $(notdir $^) --file-name=$(notdir $*_cmdline)
-%_cmdline.h	: %.ggo
-	cd $(dir $@) \
-		&& $(GENGETOPT) ${GENGETOPT_FLAGS} \
-			-i $(notdir $^) --file-name=$(notdir $*_cmdline)
 
 # markdown to manpage
 %.man : %.man.mdwn
@@ -165,6 +149,16 @@ CPROTO_FLAGS	= $(addprefix -I, $(IPATH)) -q
 
 
 # UTILITIES
+
+# gengetopt
+%.c+cmdline	: %.c
+	$(CSPLIT) $^ -f $*_split %GENGETOPT\ BEGIN%+1 /GENGETOPT\ END/
+	$(SED) 's/^ *\* *//' $*_split00 > $*.ggo
+	$(RM) $*_split0[01]
+	cd $(dir $@) \
+		&& $(GENGETOPT) ${GENGETOPT_FLAGS} \
+			-i $(notdir $*).ggo \
+			--file-name=$(notdir $*_cmdline)
 
 # TODO : empty blank lines at the end of the file
 %+cleanup : %

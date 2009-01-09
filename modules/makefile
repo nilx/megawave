@@ -135,7 +135,7 @@ distclean-bin : clean-bin
 #
 
 .PHONY	: prebuild
-prebuild	: $(CMDSRC) $(HDR) $(API)
+prebuild	: $(HDR) $(API)
 
 #.PHONY	: dep
 #dep	: $(DEP)

@@ -42,7 +42,7 @@ BINNAME	= mwplight
 prebuild	: autohdr cmdline man #dep
 
 .PHONY	: cmdline
-cmdline	: $(CMDLINE)
+cmdline	: $(SRCDIR)/mwplight.c+cmdline
 
 .PHONY	: autohdr
 autohdr	: $(AUTOHDR)
@@ -61,7 +61,7 @@ $(BINNAME) 	: $(OBJ)
 
 # FIXME: unused parameters and long string
 $(CMDLINE:.c=.o)	: $(CMDLINE)
-	$(CC) $(CFLACS_NOWARN) -c -o $@ $<
+	$(CC) $(CFLAGS_NOWARN) -c -o $@ $<
 
 .PHONY	: lint
 lint	: lint.flag
@@ -87,6 +87,8 @@ clean-bin :
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
 	$(RM) $(SRCDIR)/*.ggo
+	$(RM) $(SRCDIR)/mwplight_cmdline.c
+	$(RM) $(SRCDIR)/mwplight_cmdline.h
 	$(RM) $(BINNAME)
 
 # include the prerequisites files
