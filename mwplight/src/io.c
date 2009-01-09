@@ -190,7 +190,7 @@ void error(char * fmt, ...)
 
      logger(LOG_ERROR, stderr, msg);
      fprintf(stderr, "\n");
-     fprintf(stderr, str_fileposition(position_info, source_file_global));
+     fprintf(stderr, "%s", str_fileposition(position_info, source_file_global));
      abort();
 }
 

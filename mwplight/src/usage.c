@@ -155,7 +155,7 @@ int module_presentation(FILE * afile, char * Prog, char * Vers, char * Auth,
      xprint(afile, ' ', lP - 2);
      fprintf(afile, "\\\\\\\\   ");
      if (Ch4[0] == '\0')
-          fprintf(afile, Ch);
+          fprintf(afile, "%s", Ch);
      else
           fprintf(afile, "%s\\n", Ch4);
      fprintf(afile, "\");\n");
@@ -182,7 +182,7 @@ int module_presentation(FILE * afile, char * Prog, char * Vers, char * Auth,
           sprintf(Ch, MSG_WEBSITE);
      else
           sprintf(Ch, MSG_COPYRIGHT_WEBSITE, yearXXXX);
-     fprintf(afile, Ch);
+     fprintf(afile, "%s", Ch);
      fprintf(afile, "\");\n");
 
      /* last lines */
