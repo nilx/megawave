@@ -15,7 +15,7 @@
  * purpose "Parse a megawave module"
  * usage   "mwplight [-s module-source] [output-options]"
  * description "This parser reads the megawave header of a module. It \
- * produces:
+ * can produce:
  * * a library file, with a modified version of the module C code for \
  *   inclusion in the megawave modules library;
  * * a main file, with a main() function in C, for the stand-alone \
@@ -31,23 +31,23 @@
  *
  * section "Input"
  * option "source"         S "module source file name"    optional
- *         string             typestr="filename" default="-"
+ *         string             typestr="filename"          default="-"
  *
- * section "Outputs (optional)"
- * option "library"        L  "library code file name"    optional
+ * section "Output (optional)"
+ * option "executable"     E  "executable code file name" optional
  *         string              typestr="filename"
  *
- * option "executable"     E  "executable code file name" optional
+ * option "library"        L  "library code file name"    optional
  *         string              typestr="filename"
  *
  * option "documentation"  D  "documentation file name"   optional
  *         string              typestr="filename"
  *
  * option "interface"      I  "interface file"            optional
- *         string              typestr="filename"         hidden
+ *         string              typestr="filename"
  *
  * option "name"           N  "name file name"            optional
- *         string              typestr="filename"         hidden
+ *         string              typestr="filename"
  *
  * section "Misc"
  * option "module-name"    m  "module name"
@@ -56,16 +56,15 @@
  * option "group-name"     g  "module group name"
  *         string              typestr="name" default="unknown" optional
  *
- * text ""
- * option "help"           h  "print help and exit" flag off
+ * section "Generic"
+ * option "help"           h  "print help and exit"    flag off
  * option "version"        v  "print version and exit" flag off
- * option "debug"          d  "debug flag" flag off
+ * option "debug"          d  "debug flag"             flag off
  *
  * text "
- * Use '-' for standard input/output. Default mode is to use stdin for
- * the source file, and no output activated. The output order doesn't
- * follow the options order (in case of multiple output to a single
- * file/pipe).
+ * Use '-' for standard input/output. The default behaviour is to read
+ * from stdin and write on stdout. The output order doesn't follow the
+ * options order (in case of multiple output to a single file/pipe).
  *
  * This program is part of the megawave framework.
  * See http://megawave.cmla.ens-cachan.fr/ for details.
@@ -114,7 +113,7 @@ static FILE * open_file(const char * filename, const char * mode,
 }
 
 /**
- * @brief Strip directory and suffix part of a fule name
+ * @brief Strip directory and suffix part of a full name
  *
  * - find the last '/' in sfile_name
  * - go to the next position if it exists
@@ -172,8 +171,7 @@ extern FILE * source_file_global;
 #include "mwplight_cmdline.h"
 int main( int argc, char **argv)
 {
-     struct mw_args_info args_info;
-     struct mw_cmdline_params args_params;
+     struct mw_args_info mw_args_info;
 
      /* io file pointers */
      FILE * source_file = NULL; /* source        */
@@ -185,36 +183,28 @@ int main( int argc, char **argv)
 
      int c;
 
-     /* 1rst parsing of the command-line, searching -h or -v */
-     args_params.check_required = 0;
-     args_params.print_errors = 0;
-     mw_cmdline_ext(argc, argv, &args_info, &args_params);
-     if (args_info.help_given)
+     if (0 != mw_cmdline(argc, argv, &mw_args_info))
+     {
+          printf("Try '%s --help' for more information.\n", argv[0]);
+          exit(1);
+     }
+     if (mw_args_info.help_given)
      {
           mw_cmdline_print_help();
           exit(0);
      }
-     if (args_info.version_given)
+     if (mw_args_info.version_given)
      {
           mw_cmdline_print_version();
           exit(0);
      }
 
-     /* 2nd parsing of the command-line, checking the options */
-     args_params.check_required = 1;
-     args_params.print_errors = 1;
-     if (0 != mw_cmdline_ext(argc, argv, &args_info, &args_params))
-     {
-          printf("Try '%s --help' for more information.\n", argv[0]);
-          exit(1);
-     }
-
      /* OK, use the params now */
-     debug_flag = args_info.debug_flag;
+     debug_flag = mw_args_info.debug_flag;
      if (debug_flag)
      {
           debug("command-line parameters:");
-          mw_cmdline_dump(stdout, &args_info);
+          mw_cmdline_dump(stdout, &mw_args_info);
      }
 
      /*
@@ -222,20 +212,20 @@ int main( int argc, char **argv)
       * having its default value) and the source file is not stdin,
       * extract the module name from its filename
       */
-     if  ((!args_info.module_name_given)
-          && (0 != strcmp("-", args_info.source_arg)))
-          module_name = basename(args_info.source_arg);
+     if  ((!mw_args_info.module_name_given)
+          && (0 != strcmp("-", mw_args_info.source_arg)))
+          module_name = basename(mw_args_info.source_arg);
      else
-          module_name = strclone(args_info.module_name_arg);
+          module_name = strclone(mw_args_info.module_name_arg);
 
-     group_name = strclone(args_info.group_name_arg);
+     group_name = strclone(mw_args_info.group_name_arg);
 
      if (debug_flag)
           printf("module name : '%s'\ngroup  name : '%s'\n",
                  module_name, group_name);
 
      /* open the input file */
-     source_file = open_file(args_info.source_arg, "r", stdin);
+     source_file = open_file(mw_args_info.source_arg, "r", stdin);
 
      /*
       * input is stdin : we store the data in a temporary file,
@@ -266,9 +256,9 @@ int main( int argc, char **argv)
      /*
       * generate the library code
       */
-     if (args_info.library_given)
+     if (mw_args_info.library_given)
      {
-          lib_file = open_file(args_info.library_arg, "w", stdout);
+          lib_file = open_file(mw_args_info.library_arg, "w", stdout);
           gen_lib_file(lib_file, source_file);
           fclose(lib_file);
      }
@@ -276,9 +266,9 @@ int main( int argc, char **argv)
      /*
       * generate the executable code
       */
-     if (args_info.executable_given)
+     if (mw_args_info.executable_given)
      {
-          exec_file = open_file(args_info.executable_arg, "w", stdout);
+          exec_file = open_file(mw_args_info.executable_arg, "w", stdout);
           gen_exec_file(exec_file);
           fclose(exec_file);
      }
@@ -286,9 +276,9 @@ int main( int argc, char **argv)
      /*
       * generate the documentation
       */
-     if (args_info.documentation_given)
+     if (mw_args_info.documentation_given)
      {
-          doc_file = open_file(args_info.documentation_arg, "w", stdout);
+          doc_file = open_file(mw_args_info.documentation_arg, "w", stdout);
           gen_doc_file(doc_file);
           fclose(doc_file);
      }
@@ -296,9 +286,9 @@ int main( int argc, char **argv)
      /*
       * generate the interface
       */
-     if (args_info.interface_given)
+     if (mw_args_info.interface_given)
      {
-          int_file = open_file(args_info.interface_arg, "w", stdout);
+          int_file = open_file(mw_args_info.interface_arg, "w", stdout);
           gen_int_file(int_file);
           fclose(int_file);
      }
@@ -306,9 +296,9 @@ int main( int argc, char **argv)
      /*
       * generate the name
       */
-     if (args_info.name_given)
+     if (mw_args_info.name_given)
      {
-          name_file = open_file(args_info.name_arg, "w", stdout);
+          name_file = open_file(mw_args_info.name_arg, "w", stdout);
           fprintf(name_file, "%s/%s\n", group_name, module_name);
           fclose(name_file);
      }
