@@ -20,7 +20,9 @@ CAT	= /bin/cat
 ECHO	= /bin/echo
 
 CC	= /usr/bin/gcc
-LD	= /usr/bin/gcc
+CCWRAP	= 
+LD	= $(CC)
+LDWRAP	= 
 AR	= /usr/bin/ar
 MAKEDEP	= /usr/bin/gcc -MM
 CPROTO	= /usr/bin/cproto
@@ -39,17 +41,17 @@ PDFLATEX	= /usr/bin/pdflatex
 
 # CC OPTIONS
 
-CCVERSION	:= $(shell  $(CC) --version | head -n 1 | cut -d ' ' -f 3)
-CSTRICT_4_1	:= $(shell if [ "$(CCVERSION)" \> "4.1" ]; then   \
-                             echo "-Wc++-compat -Wextra";         \
-                           fi) # available from gcc 4.1
-
 # C language version
 CSTD	= -ansi
 # compiler warning level
 CWARN	= -Wall
 # compiler miscellaneous flags
 CMISC	=
+
+CCVERSION	:= $(shell  $(CC) --version | head -n 1 | cut -d ' ' -f 3)
+CSTRICT_4_1	:= $(shell if [ "$(CCVERSION)" \> "4.1" ]; then   \
+                             echo "-Wc++-compat -Wextra";         \
+                           fi) # available from gcc 4.1
 
 # strict compilation switch
 STRICT	?= 0
@@ -62,6 +64,13 @@ CWARN 	+= -pedantic -Werror $(CSTRICT_4_1)		\
 	-Wmissing-declarations -Wnested-externs
 endif
 
+# include and link paths
+IPATH	= .
+LPATH	= .
+LPREFIX	=
+# libraries to link with
+SHLIBS	=
+
 # compilation switchs
 DEBUG	?= 0
 PROF	?= 0
@@ -73,6 +82,7 @@ ifeq	($(DEBUG), 1)
 CMISC	+= -g
 PROF	= 0
 OPTI	= 0
+LPREFIX	= debug/
 endif
 
 # profiling
@@ -87,22 +97,15 @@ CMISC	+= -O2 -funroll-loops -finline-functions	\
 	-ffunction-sections -fdata-sections
 endif
 
-# include and link paths
-IPATH	= .
-LPATH	= .
-# libraries to link with
-SHLIBS	=
-
 # compiler flags
-CFLAGS	= -fPIC -ffunction-sections				\
-	$(CSTD) $(CWARN) $(CMISC) $(addprefix -I, $(IPATH))
 CFLAGS_NOWARN	= $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
+CFLAGS	= -fPIC -ffunction-sections $(CWARN) $(CFLAGS_NOWARN)
 
 # linker flags
 # FIXME: gcc syntax
-LDFLAGS	= -Wl,--gc-sections					\
-	$(LDDEBUG) $(CPROF)					\
-	$(addprefix -L, $(LPATH)) $(addprefix -l, $(SHLIBS))
+LDFLAGS	= -Wl,--gc-sections						\
+	$(LDDEBUG) $(CPROF)						\
+	$(addprefix -L, $(LPATH)) $(addprefix -l$(LPREFIX), $(SHLIBS))
 
 # TOOLS OPTIONS
 
@@ -126,7 +129,7 @@ CPROTO_FLAGS	= $(addprefix -I, $(IPATH)) -q
 
 # std C compilation
 %.o	: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CCWRAP) $(CC) $(CFLAGS) -c -o $@ $<
 
 # make a C prototype header
 # FIXME: cproto -q is buggy

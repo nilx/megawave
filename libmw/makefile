@@ -134,8 +134,8 @@ lib$(LIBNAME).a	: $(OBJ)
 	@$(ECHO) '$(AR) ru $$(OBJ)'
 	@$(AR) ru $@ $?
 lib$(LIBNAME).so	: $(OBJ)
-	@$(ECHO) '$(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
-	@$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
+	@$(ECHO) '$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
+	@$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
 
 .PHONY	: api
 api 	: $(API)

@@ -51,15 +51,13 @@ MWPLIGHT	= $(BASEDIR)/mwplight/mwplight
 ifeq	($(STATIC), 0)
 SHLIBS	= c m X11 tiff
 STLIBS	=
+LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 else
-SHLIBS	=
+SHLIBS	= c m dl X11
 STLIBS	=				\
-	tiff jpeg z			\
-	X11 xcb xcb-xlib dl Xau Xdmcp	\
-	m c
+	tiff jpeg z
 endif
 
-LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 
 $(MWPLIGHT)	:
@@ -82,8 +80,8 @@ lib$(LIBNAME).a	: $(OBJ)
 	@$(ECHO) '$(AR) ru $@ $$(OBJ)'
 	@$(AR) ru $@ $?
 lib$(LIBNAME).so	: $(OBJ)
-	@$(ECHO) '$(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
-	@$(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
+	@$(ECHO) '$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
+	@$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
 
 .PHONY	: api
 api	: $(API)
@@ -101,14 +99,14 @@ $(API) 	: $(HDR)
 
 ifeq	($(STATIC), 0)
 %.cmd	: %.cmd.o $(LIBMW_MODULES).so $(LIBMW).so $(LIBMW_WDEVICE).so
-	$(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
+	$(LDWRAP) $(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
 	$(CP) $@ $(BUILDDIR)/$(basename $(notdir $@))
 else
 # order of the libraries matters
 # see http://gcc.gnu.org/ml/gcc-help/2004-04/msg00106.html
 %.cmd	: %.cmd.o $(LIBMW_MODULES).a $(LIBMW).a $(LIBMW_WDEVICE).a \
 	$(addsuffix .a, $(addprefix /usr/lib/lib, $(STLIBS)))
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LDWRAP) $(LD) $(LDFLAGS) -o $@ $^
 	$(CP) $@ $(BUILDDIR)/$(basename $(notdir $@))
 endif
 

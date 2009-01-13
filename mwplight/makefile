@@ -57,11 +57,11 @@ autohdr	: $(AUTOHDR)
 .PHONY	: bin
 bin 	: $(BINNAME)
 $(BINNAME) 	: $(OBJ)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LDWRAP) $(LD) $(LDFLAGS) -o $@ $^
 
 # FIXME: unused parameters and long string
 $(CMDLINE:.c=.o)	: $(CMDLINE)
-	$(CC) $(CFLAGS_NOWARN) -c -o $@ $<
+	$(CCWRAP) $(CC) $(CFLAGS_NOWARN) -c -o $@ $<
 
 .PHONY	: lint
 lint	: lint.flag
