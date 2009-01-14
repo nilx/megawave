@@ -1,4 +1,6 @@
-COMPILATION OF THE MEGAWAVE LIGHT COMPILER
+INSTRUCTIONS FOR COMPILING THE MEGAWAVE LIGHT PREPROCESSOR
+
+See `../README.txt` for generic instructions.
 
 # basic
 
@@ -10,7 +12,7 @@ COMPILATION OF THE MEGAWAVE LIGHT COMPILER
 * cleanup everything, keep only the source
     make distclean
 * compile everything and clean
-   make && make clean
+    make && make clean
 
 # other targets
 
@@ -23,41 +25,3 @@ COMPILATION OF THE MEGAWAVE LIGHT COMPILER
     make lint
 * test the code and the resulting program
     make test
-* do all the portable stuff for compiling later on a machine with only
-  a compiler and a linker
-    make prebuild
-
-# options
-
-* compile with strict warning options
-  Append `STRICT=1` to the make command.
-* compile with compilet optimization
-  Append `OPTI=1` to the make command.
-* compile for debugging
-  Append `DEBUG=1` to the make command.
-* compile for profiling
-  Append `PROF=1` to the make command.
-
-# required tools
-
-* for bin
-  * gcc
-  * cproto
-  * gengetopt
-  * csplit
-* for man
-  * pandoc
-* for beautify
-  * expand
-  * indent
-  * sed
-* for lint
-  * splint
-  * file
-  * wc
-* for test
-  *
-
-# configuration
-
-All the configuration is in `../common/makefile`.

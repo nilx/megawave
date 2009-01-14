@@ -2,41 +2,35 @@ default	: all
 all	: mwplight libmw libmw-wdevice modules
 .PHONY	: prebuild mwplight libmw libmw-wdevice modules
 
-OPTIONS	= MODE=$(MODE) LINK=$(LINK) CHECK=$(CHECK)
-
 prebuild	:
-	$(MAKE) $(OPTIONS) -C ./libmw-wdevice prebuild
-	$(MAKE) $(OPTIONS) -C ./libmw prebuild
-	$(MAKE) $(OPTIONS) -C ./mwplight prebuild
-	$(MAKE) $(OPTIONS) -C ./modules prebuild
+	$(MAKE) -C ./libmw-wdevice prebuild
+	$(MAKE) -C ./libmw prebuild
+	$(MAKE) -C ./mwplight prebuild
+	$(MAKE) -C ./modules prebuild
 
 libmw-wdevice	:
-	$(MAKE) $(OPTIONS) -C ./libmw-wdevice prebuild
-	$(MAKE) $(OPTIONS) -C ./libmw-wdevice
+	$(MAKE) -C ./libmw-wdevice
 
 libmw	: libmw-wdevice
-	$(MAKE) $(OPTIONS) -C ./libmw prebuild
-	$(MAKE) $(OPTIONS) -C ./libmw
+	$(MAKE) -C ./libmw
 
 mwplight	:
-	$(MAKE) $(OPTIONS) -C ./mwplight prebuild
-	$(MAKE) $(OPTIONS) -C ./mwplight
+	$(MAKE) -C ./mwplight
 
 modules	: mwplight libmw libmw-wdevice
-	$(MAKE) $(OPTIONS) -C ./modules prebuild
-	$(MAKE) $(OPTIONS) -C ./modules
+	$(MAKE) -C ./modules
 
 test	: modules
-	$(MAKE) $(OPTIONS) -C ./modules test
+	$(MAKE) -C ./modules test
 
 clean	:
-	$(MAKE) $(OPTIONS) -C ./mwplight clean
-	$(MAKE) $(OPTIONS) -C ./libmw clean
-	$(MAKE) $(OPTIONS) -C ./libmw-wdevice clean
-	$(MAKE) $(OPTIONS) -C ./modules clean
+	$(MAKE) -C ./mwplight clean
+	$(MAKE) -C ./libmw-wdevice clean
+	$(MAKE) -C ./libmw clean
+	$(MAKE) -C ./modules clean
 
 distclean	:
-	$(MAKE) $(OPTIONS) -C ./mwplight distclean
-	$(MAKE) $(OPTIONS) -C ./libmw distclean
-	$(MAKE) $(OPTIONS) -C ./libmw-wdevice distclean
-	$(MAKE) $(OPTIONS) -C ./modules distclean
+	$(MAKE) -C ./mwplight distclean
+	$(MAKE) -C ./libmw-wdevice distclean
+	$(MAKE) -C ./libmw distclean
+	$(MAKE) -C ./modules distclean

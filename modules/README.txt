@@ -1,15 +1,18 @@
-INSTRUCTIONS FOR COMPILING THE MEGAWAVE MAIN LIBRARY
+INSTRUCTIONS FOR COMPILING THE MEGAWAVE MODULES
 
 See `../README.txt` for generic instructions.
 
 # basic
 
 * compile the library shared and static objects
-  The result is `./libmw.so` and `./libmw.a`.
+  The result is `./libmw-modules.so` and `./libmw-modules.a`.
     make lib
 * compile the library api header
-  The result is `./mw.h`.
+  The result is `./mw-modules.h`.
     make api
+* compile the executable modules
+  The result is in `./build`.
+    make modules
 * cleanup the compilation headers, objects, ...
     make clean
 * cleanup everything, keep only the source
@@ -19,9 +22,6 @@ See `../README.txt` for generic instructions.
 
 # other targets
 
-* compile the manpage
-  The result is `doc/libmw.man` and `doc/libmw.man.html`.
-    make man
 * beautify the source code
     make beautify
 * lint the source code
