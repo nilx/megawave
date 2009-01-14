@@ -36,10 +36,10 @@ APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 #
 
 .PHONY	: lib
-ifeq	($(STATIC), 0)
-lib 	: lib$(LIBNAME).so
-else
+ifeq	($(LINK), static)
 lib 	: lib$(LIBNAME).a
+else
+lib 	: lib$(LIBNAME).so
 endif
 lib$(LIBNAME).a	: $(OBJ)
 	@$(ECHO) '$(AR) ru $$(OBJ) $^'

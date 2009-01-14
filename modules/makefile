@@ -48,14 +48,13 @@ LIBMW	= $(BASEDIR)/libmw/libmw
 LIBMW_WDEVICE	= $(BASEDIR)/libmw-wdevice/libmw-wdevice
 MWPLIGHT	= $(BASEDIR)/mwplight/mwplight
 
-ifeq	($(STATIC), 0)
+ifeq	($(LINK), static)
+SHLIBS	= c m dl X11
+STLIBS	= tiff jpeg z
+else
 SHLIBS	= c m X11 tiff
 STLIBS	=
 LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
-else
-SHLIBS	= c m dl X11
-STLIBS	=				\
-	tiff jpeg z
 endif
 
 IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
@@ -71,10 +70,10 @@ $(LIBMW_WDEVICE).%	:
 modules	: $(MODULES)
 
 .PHONY	: lib
-ifeq	($(STATIC), 0)
-lib 	: lib$(LIBNAME).so
-else
+ifeq	($(LINK), static)
 lib 	: lib$(LIBNAME).a
+else
+lib 	: lib$(LIBNAME).so
 endif
 lib$(LIBNAME).a	: $(OBJ)
 	@$(ECHO) '$(AR) ru $@ $$(OBJ)'
@@ -97,16 +96,16 @@ $(API) 	: $(HDR)
 %.cmd.c	: %.c $(MWPLIGHT)
 	$(MWPLIGHT) --source $< --exec $@
 
-ifeq	($(STATIC), 0)
-%.cmd	: %.cmd.o $(LIBMW_MODULES).so $(LIBMW).so $(LIBMW_WDEVICE).so
-	$(LDWRAP) $(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
-	$(CP) $@ $(BUILDDIR)/$(basename $(notdir $@))
-else
+ifeq	($(LINK), static)
 # order of the libraries matters
 # see http://gcc.gnu.org/ml/gcc-help/2004-04/msg00106.html
 %.cmd	: %.cmd.o $(LIBMW_MODULES).a $(LIBMW).a $(LIBMW_WDEVICE).a \
 	$(addsuffix .a, $(addprefix /usr/lib/lib, $(STLIBS)))
 	$(LDWRAP) $(LD) $(LDFLAGS) -o $@ $^
+	$(CP) $@ $(BUILDDIR)/$(basename $(notdir $@))
+else
+%.cmd	: %.cmd.o $(LIBMW_MODULES).so $(LIBMW).so $(LIBMW_WDEVICE).so
+	$(LDWRAP) $(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
 	$(CP) $@ $(BUILDDIR)/$(basename $(notdir $@))
 endif
 
@@ -150,7 +149,7 @@ TESTENV	= PATH=$(BUILDDIR):$$PATH	\
 	SAMPLES=$(BASEDIR)/data/PUBLIC	\
 	SCRIPTS=$(BASEDIR)/scripts
 
-ifeq	($(STATIC), 0)
+ifeq	($(LINK), dynamic)
 TESTENV	+= LD_LIBRARY_PATH=$(LIBPATH)
 endif
 

@@ -52,10 +52,11 @@ CCVERSION	:= $(shell  $(CC) --version | head -n 1 | cut -d ' ' -f 3)
 CSTRICT_4_1	:= $(shell if [ "$(CCVERSION)" \> "4.1" ]; then   \
                              echo "-Wc++-compat -Wextra";         \
                            fi) # available from gcc 4.1
-
+# code ckecking options
+# CHECK can be "relax" or "strict"
+CHECK	?= relax
 # strict compilation switch
-STRICT	?= 0
-ifeq	($(STRICT), 1)
+ifeq	($(CHECK), strict)
 CWARN 	+= -pedantic -Werror $(CSTRICT_4_1)		\
 	-Wfloat-equal -Wundef -Wshadow -Wpointer-arith	\
 	-Wbad-function-cast -Wcast-qual -Wcast-align	\
@@ -64,42 +65,48 @@ CWARN 	+= -pedantic -Werror $(CSTRICT_4_1)		\
 	-Wmissing-declarations -Wnested-externs
 endif
 
-# include and link paths
-IPATH	= .
-LPATH	= .
-LPREFIX	=
-# libraries to link with
-SHLIBS	=
-
-# compilation switchs
-DEBUG	?= 0
-PROF	?= 0
-OPTI	?= 0
-STATIC	?= 0
+# compilation mode options
+# MODE can be "normal", "opti", "debug" or "profile" 
+MODE	?= normal
 
 # debug
-ifeq	($(DEBUG), 1)
+ifeq	($(MODE), debug)
 CMISC	+= -g
 PROF	= 0
-OPTI	= 0
-LPREFIX	= debug/
 endif
 
 # profiling
-ifeq	($(PROF), 1)
+ifeq	($(MODE), profile)
 CMISC	+= -pg
-OPTI	= 1
+CMISC	+= -O2 -funroll-loops -finline-functions	\
+	-ffunction-sections -fdata-sections
 endif
 
 # optimisation
-ifeq	($(OPTI), 1)
+ifeq	($(MODE), opti)
 CMISC	+= -O2 -funroll-loops -finline-functions	\
 	-ffunction-sections -fdata-sections
 endif
 
 # compiler flags
+IPATH	= .
 CFLAGS_NOWARN	= $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
 CFLAGS	= -fPIC -ffunction-sections $(CWARN) $(CFLAGS_NOWARN)
+
+# linking option
+# LINK can be "dynamic" or "static"
+LINK	?= dynamic
+
+# include and link paths
+LPATH	= .
+LPREFIX	=
+# libraries to link with
+SHLIBS	=
+
+# debug
+ifeq	($(MODE), debug)
+LPREFIX	= debug/
+endif
 
 # linker flags
 # FIXME: gcc syntax
