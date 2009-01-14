@@ -25,7 +25,6 @@
 #include <fcntl.h>
 
 #include <stdarg.h>
-#include <ctype.h>
 #include <setjmp.h>
 
 #include "libmw-defs.h"
@@ -35,6 +34,16 @@
 #include "utils.h"
 
 #define FNULL "/dev/null"
+
+/*#include <ctype.h> */
+/**
+ * emulate a simple isdigit() without handling localization
+ * to avoid glibc dependencies
+ */
+static int isdigit(int c)
+{
+     return ((c >= '0') && (c <= '9'));
+}
 
 /* Global Variables */
 

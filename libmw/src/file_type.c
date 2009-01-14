@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <ctype.h>
 /* FIXME : avoid */
 #include <setjmp.h>
 /* FIXME : UNIX-centric */
@@ -38,6 +37,25 @@
 #include "jpeglib.h"
 
 #include "file_type.h"
+
+/*#include <ctype.h> */
+/**
+ * emulate a simple isupper() without handling localization
+ * to avoid glibc dependencies
+ */
+static int isupper(int c)
+{
+     return ((c >= 'A') && (c <= 'Z'));
+}
+
+/**
+ * emulate a simple tolower() without handling localization
+ * to avoid glibc dependencies
+ */
+static int tolower(int c)
+{
+     return (isupper(c) ? (c + 'a' - 'A') : c);
+}
 
 /* 
    Size of Header ID for MW2 binary types. 
