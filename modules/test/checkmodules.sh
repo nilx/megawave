@@ -65,6 +65,7 @@ results() {
 	echo "failed modules:$FAILED"
     fi
     rm -rf $TMP
+    rm -f $HISTFILE
     exit $FAIL
 }
 
@@ -73,6 +74,8 @@ FAIL=0
 FAILED=""
 TMP=/tmp/megawave_checkmodules.$$.tmp
 mkdir $TMP
+
+HISTFILE=`tempfile`
 
 # check modules
 echo "checking megawave modules"
@@ -452,7 +455,7 @@ echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
     && exact $VAL 2 \
     && VAL=`perimeter $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 93.4166 \
-    && pass || fail
+    && pass || fail fkreadasc
 
 echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
     | flreadasc 2 $TMP/1 > /dev/null \
@@ -460,36 +463,36 @@ echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
     && exact $VAL 2 \
     && VAL=`perimeter $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 93.4166 \
-    && pass || fail
+    && pass || fail flreadasc
 
 kplot $SAMPLES/curves/curve $TMP/1 \
     && VAL=`fsize $TMP/1` \
     && exact "$VAL" "630 790" \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 1.90955 \
-    && pass || fail
+    && pass || fail kplot
 
 fkplot -s $SAMPLES/curves/curve $TMP/1 \
     && VAL=`fsize $TMP/1` \
     && exact "$VAL" "630 790" \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 1.90955 \
-    && pass || fail
+    && pass || fail fkplot
 
 fkprintasc $SAMPLES/curves/curve > /dev/null \
     && VAL=`fkprintasc $SAMPLES/curves/curve | wc -l` \
     && exact $VAL 4115 \
-    && pass || fail
+    && pass || fail fkprintasc
 
 flprintasc $SAMPLES/curves/curve > /dev/null \
     && VAL=`flprintasc $SAMPLES/curves/curve | wc -l` \
     && exact $VAL 4115 \
-    && pass || fail
+    && pass || fail flprintasc
 
 fkprintfig $SAMPLES/curves/curve > /dev/null \
     && VAL=`fkprintfig $SAMPLES/curves/curve | wc -w` \
     && exact $VAL 8255 \
-    && pass || fail
+    && pass || fail fkprintfig
 
 echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
     | flreadasc 2 $TMP/1 > /dev/null \
@@ -499,18 +502,18 @@ echo "10 10 60 20 30 50 e 40 30 41 31 41 20 q" \
     && exact $VAL 2 \
     && VAL=`area $TMP/2 | cut -d"=" -f2` \
     && exact $VAL 3600 \
-    && pass || fail
+    && pass || fail fkzrt
 
 fkview -o $TMP/1 -n $SAMPLES/curves/curve \
     && VAL=`fnorm -v $TMP/1 2> /dev/null | cut -d"=" -f2` \
     && approx $VAL 2.61157 \
-    && pass || fail
+    && pass || fail fkview
 
 echo "1 1 6 2 3 5 4 3 4 4 4 2 q" | fkreadasc $TMP/1 > /dev/null \
     && kplotasc $TMP/1 > /dev/null \
     && VAL=`kplotasc $TMP/1 | wc -c` \
     && exact $VAL 84 \
-    && pass || fail
+    && pass || fail kplotasc
 
 # TODO
 # readpoly
@@ -526,36 +529,36 @@ fksmooth -n 20 -s 10 $SAMPLES/curves/curve $TMP/1 \
     && approx $VAL 204306 \
     && VAL=`perimeter $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 3128.84 \
-    && pass || fail
+    && pass || fail fksmooth
 
 iter_fksmooth -N 2 -n 10 -s 10 $SAMPLES/curves/curve $TMP/1 \
     && VAL=`dkinfo $TMP/1 | grep "Number of curves" | cut -d":" -f2` \
     && exact $VAL 3 \
-    && pass || fail
+    && pass || fail iter_fksmooth
 
 gass -l 10 $SAMPLES/curves/curve $TMP/1 \
     && VAL=`area $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 207081 \
     && VAL=`perimeter $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 3914.79 \
-    && pass || fail
+    && pass || fail gass
 
 iter_gass -N 2 -S 10 $SAMPLES/curves/curve $TMP/1 \
     && VAL=`dkinfo $TMP/1 | grep "Number of curves" | cut -d":" -f2` \
     && exact $VAL 3 \
-    && pass || fail
+    && pass || fail iter_gass
 
 gcsf -l 10 $SAMPLES/curves/curve $TMP/1 \
     && VAL=`area $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 209003 \
     && VAL=`perimeter $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 3929.08 \
-    && pass || fail
+    && pass || fail gcsf
 
 iter_gcsf -N 2 -l 20 $SAMPLES/curves/curve $TMP/1 \
     && VAL=`dkinfo $TMP/1 | grep "Number of curves" | cut -d":" -f2` \
     && exact $VAL 3 \
-    && pass || fail
+    && pass || fail iter_gcsf
 
 echo
 
@@ -566,17 +569,17 @@ gass -l 3 -e 2 $SAMPLES/curves/curve $TMP/1 \
     && km_inflexionpoints $TMP/1 $TMP/2 \
     && VAL=`flprintasc $TMP/2 | wc -l` \
     && exact $VAL 43 \
-    && pass || fail
+    && pass || fail  km_inflexionpoints
 
 km_bitangents $TMP/1 $TMP/2 $TMP/3 \
     && VAL=`flprintasc $TMP/3 | wc -l` \
     && exact $VAL 20 \
-    && pass || fail
+    && pass || fail km_bitangents
 
 km_flatpoints $TMP/1 $TMP/2 $TMP/4 0.1 0.1 \
     && VAL=`flprintasc $TMP/4 | wc -l` \
     && exact $VAL 25 \
-    && pass || fail
+    && pass || fail km_flatpoints
 
 # TODO
 # km_codecurve_ai
@@ -679,42 +682,42 @@ funzoom -o 0 -z 4 $SAMPLES/images/cimage $TMP/1
 canny $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 13.5183 \
-    && pass || fail
+    && pass || fail canny
 
 falign -e 4.3 $TMP/1 $TMP/2 > /dev/null \
     && VAL=`flprintasc $TMP/2 | wc -l` \
     && exact $VAL 14 \
-    && pass || fail
+    && pass || fail falign
 
 falign_mdl -e -2 -l 1 -n 30 $SAMPLES/images/cimage $TMP/2 > /dev/null \
     && VAL=`fsize $TMP/2` \
     && exact "$VAL" "6 43" \
-    && pass || fail
+    && pass || fail falign_mdl
 
 vpoint $SAMPLES/images/cimage $TMP/2 $TMP/3 > /dev/null \
     && VAL=`flprintasc $TMP/3 | cut -d" " -f2` \
     && approx $VAL 17.9527 \
-    && pass || fail
+    && pass || fail vpoint
 
 ll_boundaries -e 11 $TMP/1 $TMP/2 > /dev/null \
     && VAL=`flprintasc $TMP/2 | wc -l` \
     && exact $VAL 1139 \
-    && pass || fail
+    && pass || fail ll_boundaries
 
 ll_boundaries2 -e 11 $TMP/1 $TMP/2 > /dev/null \
     && VAL=`flprintasc $TMP/2 | wc -l` \
     && exact $VAL 1073 \
-    && pass || fail
+    && pass || fail ll_boundaries2
 
 ll_edges -e 17 $TMP/1 $TMP/2 > /dev/null \
     && VAL=`flprintasc $TMP/2 | wc -l` \
     && exact $VAL 526 \
-    && pass || fail
+    && pass || fail ll_edges
 
 harris $TMP/1 $TMP/2 \
     && VAL=`flprintasc $TMP/2 | wc -l` \
     && approx $VAL 55 \
-    && pass || fail
+    && pass || fail harris
 
 # TODO
 # vpsegplot
@@ -728,146 +731,148 @@ echo -n "image/domain: "
 fcrop -x 20 -y 20 -o 3 $SAMPLES/images/cimage $TMP/1 40 100 50 110 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 3.21633 \
-    && pass || fail
+    && pass || fail fcrop
 
-cccrop -x 20 -y 20 -o 3 $SAMPLES/images/ccimage $TMP/1 40 100 50 110 2> /dev/null \
+cccrop -x 20 -y 20 -o 3 $SAMPLES/images/ccimage \
+    $TMP/1 40 100 50 110 2> /dev/null \
     && cfgetchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
     && fdiff $TMP/3 $TMP/2 $TMP/4 \
     && VAL=`fnorm -v $TMP/4 | cut -d"=" -f2` \
     && approx $VAL 6.01568 \
-    && pass || fail
+    && pass || fail cccrop
 
 cextract $SAMPLES/images/cimage $TMP/1 40 100 50 110 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 5.06073 \
-    && pass || fail
+    && pass || fail cextract
 
 fextract $SAMPLES/images/cimage $TMP/1 40 100 50 110 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 5.06073 \
-    && pass || fail
+    && pass || fail fextract
 
 ccextract $SAMPLES/images/ccimage $TMP/1 40 100 50 110 \
     && cfgetchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
     && fdiff $TMP/3 $TMP/2 $TMP/4 \
     && VAL=`fnorm -v $TMP/4 | cut -d"=" -f2` \
     && approx $VAL 6.9226 \
-    && pass || fail
+    && pass || fail ccextract
 
 clocal_zoom -x 100 -y 150 -W 64 -X 3 $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 8.07492 \
-    && pass || fail
+    && pass || fail clocal_zoom
 
 flocal_zoom -x 100 -y 150 -W 64 -X 3 $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 8.07492 \
-    && pass || fail
+    && pass || fail flocal_zoom
 
 cclocal_zoom -x 100 -y 150 -W 64 -X 3 $SAMPLES/images/ccimage $TMP/1 \
     && cfgetchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
     && fdiff $TMP/3 $TMP/2 $TMP/4 \
     && VAL=`fnorm -v $TMP/4 | cut -d"=" -f2` \
     && approx $VAL 8.50785 \
-    && pass || fail
+    && pass || fail cclocal_zoom
 
 funzoom -o 0 -z 4 $SAMPLES/images/cimage $TMP/1 \
     && fshift -h $TMP/1 $TMP/2 \
     && VAL=`fnorm -p 2 -c $TMP/1 $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 110.12 \
-    && pass || fail
+    && pass || fail funzoom
 
 czoom -X 4 -o 5 $TMP/1 $TMP/2 2> /dev/null \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 5.97412 \
-    && pass || fail
+    && pass || fail czoom
 
 cczoom -X 4 -o 5 $TMP/1 $TMP/2 2> /dev/null \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 5.97412 \
-    && pass || fail
+    && pass || fail cczoom
 
 fzoom -X 4 -o 5 $TMP/1 $TMP/2 2> /dev/null \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 5.969 \
-    && pass || fail
+    && pass || fail fzoom
 
 csample $SAMPLES/images/cimage $TMP/1 4 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 19.2588 \
-    && pass || fail
+    && pass || fail csample
 
 fsample $SAMPLES/images/cimage $TMP/1 4 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 19.2588 \
-    && pass || fail
+    && pass || fail fsample
 
 cextcenter -f 27 $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fsize $TMP/1` \
     && exact "$VAL" "243 243" \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 8.76071 \
-    && pass || fail
+    && pass || fail cextcenter
 
 cfextcenter -ftype IMG -f 27 $SAMPLES/images/ccimage $TMP/1 2> /dev/null \
     && VAL=`fsize $TMP/1` \
     && exact "$VAL" "243 243" \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 15.6567 \
-    && pass || fail
+    && pass || fail cfextcenter
 
 fmaskrot -s 30 -b 10 $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 6.09773 \
-    && pass || fail
+    && pass || fail fmaskrot
 
-fproj -x 100 -y 120 -o 3 $SAMPLES/images/cimage $TMP/1 10 20 250 40 80 210 130 200 \
+fproj -x 100 -y 120 -o 3 $SAMPLES/images/cimage $TMP/1 \
+    10 20 250 40 80 210 130 200 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 9.06184 \
-    && pass || fail
+    && pass || fail fproj
 
 fzrt -o 3 $SAMPLES/images/cimage $TMP/1 1.1 57 -10 -20 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 7.30864 \
-    && pass || fail
+    && pass || fail fzrt
 
 frot -a 35 $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 5.02289 \
-    && pass || fail
+    && pass || fail frot
 
 fdirspline $SAMPLES/images/cimage 5 $TMP/1 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 6.31651 \
-    && pass || fail
+    && pass || fail fdirspline
 
 finvspline $SAMPLES/images/cimage 5 $TMP/1 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 41.7204 \
-    && pass || fail
+    && pass || fail finvspline
 
 ccopy $SAMPLES/images/cimage $TMP/1_001 \
     && ccopy $SAMPLES/images/fimage $TMP/1_002 \
     && sh $SCRIPTS/mw-mkmovie.sh Cmovie $TMP/1 1 2 \
-    && pass || fail
+    && pass || fail mk-movie
 
 cmzoom -o 3 -X 2 $TMP/1 $TMP/2 2> /dev/null \
     && fdiff $TMP/2_01 $TMP/2_02 $TMP/3 \
     && VAL=`fnorm -v $TMP/3 | cut -d"=" -f2` \
     && approx $VAL 9.81426 \
-    && pass || fail
+    && pass || fail cmzoom
 
 ccmzoom -o 3 -X 2 $TMP/1 $TMP/2 2> /dev/null \
     && fdiff $TMP/2_01 $TMP/2_02 $TMP/3 \
     && VAL=`fnorm -v $TMP/3 | cut -d"=" -f2` \
     && approx $VAL 9.81426 \
-    && pass || fail
+    && pass || fail ccmzoom
 
 cmextract -b 0 $TMP/2 $TMP/3 30 30 1 170 170 1 $TMP/1 50 50 2 \
     && fdiff $TMP/3_01 $TMP/3_02 $TMP/4 \
     && VAL=`fnorm -v $TMP/4 | cut -d"=" -f2` \
     && approx $VAL 8.09011 \
-    && pass || fail
+    && pass || fail cmextract
 
 cmparitysep -l $TMP/1 $TMP/2 \
     && fdiff $TMP/2_01 $TMP/2_03 $TMP/3 \
@@ -876,7 +881,7 @@ cmparitysep -l $TMP/1 $TMP/2 \
     && approx $VAL 14.6972 \
     && VAL=`fnorm -v $TMP/4 | cut -d"=" -f2` \
     && approx $VAL 14.74 \
-    && pass || fail
+    && pass || fail cmparitysep
 
 # TODO
 # cmcollect
@@ -893,138 +898,138 @@ cfunzoom -z 4 -o 0 $SAMPLES/images/ccimage $TMP/1 \
     && cfdiffuse $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 2> /dev/null | cut -d"=" -f2` \
     && approx $VAL 9.08767 \
-    && pass || fail
+    && pass || fail cfunzoom
 
 cfmdiffuse -n 2 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2_01 2> /dev/null | cut -d"=" -f2` \
     && approx $VAL 9.08767 \
     && VAL=`fnorm -v $TMP/2_02 2> /dev/null | cut -d"=" -f2` \
     && approx $VAL 7.25923 \
-    && pass || fail
+    && pass || fail cfmdiffuse
 
 funzoom -z 4 -o 0 -ftype IMG $SAMPLES/images/cimage $TMP/1 2> /dev/null \
     && erosion -r 1.5 -n 1 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 13.8314 \
-    && pass || fail
+    && pass || fail funzoom
 
 opening -r 1.5 -n 1 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 13.77 \
-    && pass || fail
+    && pass || fail opening
 
 median -r 1.5 -n 1 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 13.7447 \
-    && pass || fail
+    && pass || fail median
 
 amss -l 2 -d $TMP/2 $TMP/1 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 11.838 \
-    && pass || fail
+    && pass || fail amss
 
 fquant $TMP/1 $TMP/2 5 > /dev/null \
     && osamss -l 2 $TMP/2 $TMP/3 \
     && VAL=`fnorm -v $TMP/3 | cut -d"=" -f2` \
     && approx $VAL 11.8249 \
-    && pass || fail
+    && pass || fail fquant
 
 heat -n 10 -s 0.1 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 10.777 \
-    && pass || fail
+    && pass || fail heat
 
 fsmooth -S 2 -W 1 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 7.20909 \
-    && pass || fail
+    && pass || fail fsmooth
 
 echo "-1 1 -1 1" | freadasc $TMP/2 2 2 \
     && fconvol $TMP/1 $TMP/2 $TMP/3 \
     && VAL=`fnorm -v $TMP/3 | cut -d"=" -f2` \
     && approx $VAL 26.6814 \
-    && pass || fail
+    && pass || fail fconvol
 
 fsepconvol -g 2 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 9.13969 \
-    && pass || fail
+    && pass || fail fsepconvol
 
 fgrain -a 20 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 13.8573 \
-    && pass || fail
+    && pass || fail fgrain
 
 forder -e 5 -n 1 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 13.697 \
-    && pass || fail
+    && pass || fail forder
 
 fsharpen -p 50 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 22.7716 \
-    && pass || fail
+    && pass || fail fsharpen
 
 rotaffin -r 5 -a 3 -t 3 -T 0 -A 5 $TMP/2 \
     && VAL=`grep nimage $TMP/2 | cut -d":" -f2` \
     && exact $VAL 15 \
     && VAL=`fnorm -v $TMP/2_10 | cut -d"=" -f2` \
     && approx $VAL 29.1366 \
-    && pass || fail
+    && pass || fail rotaffin
 
 infsup -n 2 $TMP/1 $TMP/2 $TMP/3 \
     && VAL=`fnorm -v $TMP/3 | cut -d"=" -f2` \
     && approx $VAL 11.2894 \
-    && pass || fail
+    && pass || fail infsup
 
 ll_sharp -p 20 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 16.9317 \
-    && pass || fail
+    && pass || fail ll_sharp
 
 resthline $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 16.5496 \
-    && pass || fail
+    && pass || fail resthline
 
 shock -n 10 -s 0.1 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 19.0514 \
-    && pass || fail
+    && pass || fail shock
 
 tvdenoise $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 14.5648 \
-    && pass || fail
+    && pass || fail tvdenoise
 
 tvdenoise2 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 14.4665 \
-    && pass || fail
+    && pass || fail tvdenoise2
 
 nlmeans -s 3 -d 5 $SAMPLES/images/cimage $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 6.45733 \
-    && pass || fail
+    && pass || fail nlmeans
 
 fconvol $TMP/1 $DATA/image/blur3x3.ir $TMP/2 \
     && tvdeblur -n 30 $TMP/2 $DATA/image/blur3x3.ir $TMP/3 \
     && VAL=`fnorm -p 2 -c $TMP/1 $TMP/3 | cut -d"=" -f2` \
     && approx $VAL 7.51181 \
-    && pass || fail
+    && pass || fail fconvol
 
 cmextract $SAMPLES/movies/cmovie $TMP/1 128 128 3 140 140 7 \
     && mam -n 20 -a 0 $TMP/1 $TMP/2 > /dev/null \
     && VAL=`fnorm -v $TMP/2_03 | cut -d"=" -f2` \
     && approx $VAL 8.49737 \
-    && pass || fail
+    && pass || fail cmextract
 
 prolate -n 128 3 0.5 $TMP/1 > /dev/null \
     && VAL=`fsize $TMP/1` \
     && exact "$VAL" "3 3" \
     && VAL=`fmean $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 0.111111 \
-    && pass || fail
+    && pass || fail prolate
 
 # TODO
 # cfsharpen
@@ -1043,7 +1048,7 @@ fft2d -A $TMP/1 -B $TMP/2 $SAMPLES/images/cimage  \
     && fextract $TMP/2 $TMP/2 20 20 230 230 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 1230.29 \
-    && pass || fail
+    && pass || fail fft2d
 
 fft2dpol -M $TMP/1 -P $TMP/2 $SAMPLES/images/cimage  \
     && fextract $TMP/1 $TMP/1 20 20 230 230 \
@@ -1052,76 +1057,76 @@ fft2dpol -M $TMP/1 -P $TMP/2 $SAMPLES/images/cimage  \
     && fextract $TMP/2 $TMP/2 20 20 230 230 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 1.65156 \
-    && pass || fail
+    && pass || fail fft2dpol
 
 fft2drad -l -s 100 $SAMPLES/images/cimage $TMP/1 \
     && VAL=`snorm -b 5 -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 0.0241473 \
     && VAL=`snorm -b 5 -p 2 $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 3.48635 \
-    && pass || fail
+    && pass || fail fft2drad
 
 fft2dview -t 0 -o $TMP/1 $SAMPLES/images/cimage \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 1923.05 \
-    && pass || fail
+    && pass || fail fft2dview
 
 fftgrad -n $TMP/1 $SAMPLES/images/cimage \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 8.00567 \
-    && pass || fail
+    && pass || fail fftgrad
 
 fftrot -a 33 $SAMPLES/images/cimage $TMP/1  \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 9.72568 \
-    && pass || fail
+    && pass || fail fftrot
 
 funzoom -z 4 -o 0 $SAMPLES/images/cimage $TMP/1 \
     && fftzoom -z 2 $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 10.8767 \
-    && pass || fail
+    && pass || fail fftzoom
 
 fhamming $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 2.74239 \
-    && pass || fail
+    && pass || fail fhamming
 
 frandphase $SAMPLES/images/fimage $TMP/1 \
     && fft2dpol -P $TMP/2 $TMP/1 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && rand_approx $VAL 1.63 \
-    && pass || fail
+    && pass || fail frandphase
 
 fextract $SAMPLES/images/cimage $TMP/1 10 10 200 210 \
     && fft2dshrink $TMP/1 $TMP/2 \
     && VAL=`fsize $TMP/2` \
     && exact "$VAL" "189 200" \
-    && pass || fail
+    && pass || fail fextract
 
 fshrink2 $TMP/1 $TMP/2 \
     && VAL=`fsize $TMP/2` \
     && exact "$VAL" "128 128" \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 8.33146 \
-    && pass || fail
+    && pass || fail fshrink2
 
 fsym2 $TMP/2 $TMP/2 \
     && VAL=`fsize $TMP/2` \
     && exact "$VAL" "256 256" \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 8.36696 \
-    && pass || fail
+    && pass || fail fsym2
 
 wiener -W 0.1 -g 1 $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fnorm -b 10 -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 11.1962 \
-    && pass || fail
+    && pass || fail wiener
 
 fkeepphase $SAMPLES/images/cimage $SAMPLES/images/fimage $TMP/1 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 14.041 \
-    && pass || fail
+    && pass || fail fkeepphase
 
 faxpb -a 0 -b 0 $SAMPLES/images/cimage $TMP/1 \
     && fpset $TMP/1 0 0 1 $TMP/1 \
@@ -1131,7 +1136,7 @@ faxpb -a 0 -b 0 $SAMPLES/images/cimage $TMP/1 \
     && fsepconvol -b 2 -g 3 $SAMPLES/images/cimage $TMP/5 \
     && VAL=`fnorm -t 0.0001 -p 2 -c $TMP/4 $TMP/5 | cut -d"=" -f2` \
     && exact $VAL 0 \
-    && pass || fail
+    && pass || fail faxpb
 
 echo
 
@@ -1142,13 +1147,13 @@ ccopy $SAMPLES/images/cimage $TMP/1 \
     && fdiff $SAMPLES/images/cimage $TMP/1 $TMP/1 \
     && VAL=`fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
     && exact $VAL 0 \
-    && pass || fail
+    && pass || fail ccopy
 
 fcopy $SAMPLES/images/fimage $TMP/1 \
     && fdiff $SAMPLES/images/fimage $TMP/1 $TMP/1 \
     && VAL=`fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
     && exact $VAL 0 \
-    && pass || fail
+    && pass || fail fcopy
 
 cccopy $SAMPLES/images/ccimage $TMP/1 \
     && cfdiff $SAMPLES/images/ccimage $TMP/1 $TMP/1 \
@@ -1159,7 +1164,7 @@ cccopy $SAMPLES/images/ccimage $TMP/1 \
     && exact $VAL 0 \
     && VAL=`fnorm -p 2 $TMP/4 | cut -d"=" -f2` \
     && exact $VAL 0 \
-    && pass || fail
+    && pass || fail cccopy
 
 # TODO
 # cview
@@ -1175,7 +1180,7 @@ fconst $TMP/1 0 60 20 \
     && ccopy $TMP/1 $TMP/1 2> /dev/null \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 19.8406 \
-    && pass || fail
+    && pass || fail fconst
 
 cfgetchannels $SAMPLES/images/ccimage $TMP/1 $TMP/2 $TMP/3 \
     && cfputchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
@@ -1183,7 +1188,7 @@ cfgetchannels $SAMPLES/images/ccimage $TMP/1 $TMP/2 $TMP/3 \
     $SAMPLES/images/ccimage $TMP/4 $TMP/1 2> /dev/null \
     && VAL=`fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
     && exact $VAL 0 \
-    && pass || fail
+    && pass || fail cfgetchannel
 
 cfchgchannels $SAMPLES/images/ccimage $TMP/1 \
     && cfgetchannels $TMP/1 $TMP/2 $TMP/3 $TMP/4 \
@@ -1193,34 +1198,34 @@ cfchgchannels $SAMPLES/images/ccimage $TMP/1 \
     && approx $VAL 15.9369 \
     && VAL=`fnorm -v $TMP/4 | cut -d"=" -f2` \
     && approx $VAL 9.98046 \
-    && pass || fail
+    && pass || fail cfchgetchannel
 
 cline_extract $SAMPLES/images/cimage $TMP/1 30 \
     && VAL=`snorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 11.1133 \
-    && pass || fail
+    && pass || fail cline_extract
 
 fline_extract $SAMPLES/images/cimage $TMP/1 30 \
     && VAL=`snorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 11.1133 \
-    && pass || fail
+    && pass || fail fline_extract
 
 echo "1 5 2 3" | creadasc $TMP/1 2 2 \
     && VAL=`fmean $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 2.75 \
     && VAL=`fvar $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 2.91667 \
-    && pass || fail
+    && pass || fail creadasc
 
 cprintasc $TMP/1 > $TMP/2 \
     && VAL=`cat $TMP/2 | wc -l` \
     && exact $VAL 1 \
-    && pass || fail
+    && pass || fail cprintasc
 
 fprintasc $TMP/1 > $TMP/2 \
     && VAL=`cat $TMP/2 | wc -l` \
     && exact $VAL 1 \
-    && pass || fail
+    && pass || fail fprintasc
 
 # common: freadasc Mkmovie cfgetchannels
 
@@ -1279,7 +1284,7 @@ echo -n "image/misc: "
 cdisc $TMP/1 100 100 \
     && VAL=`fmean $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 126.888 \
-    && pass || fail
+    && pass || fail cdisc
 
 funzoom -z 4 -o 0 -ftype IMG \
     $SAMPLES/images/cimage $TMP/1 2> /dev/null \
@@ -1292,7 +1297,7 @@ funzoom -z 4 -o 0 -ftype IMG \
     && approx $VAL 980.02 \
     && VAL=`fnorm -v $TMP/4 | cut -d"=" -f2` \
     && approx $VAL 14.66 \
-    && pass || fail
+    && pass || fail disocclusion
 
 # TODO
 # drawocclusion
@@ -1303,13 +1308,13 @@ echo "10 10 60 20 30 50 e 100 10 110 50 150 20 q" \
     && emptypoly $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 12.4411 \
-    && pass || fail
+    && pass || fail  fillpolys
 
 binarize -i -t 120 $SAMPLES/images/cimage $TMP/1 \
     && thinning $TMP/1 $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 17.7433 \
-    && pass || fail
+    && pass || fail thinning
 
 funzoom -z 4 -o 0 -ftype IMG $SAMPLES/images/cimage $TMP/1 2> /dev/null \
     && binarize -i -t 120 $TMP/1 $TMP/1 \
@@ -1318,7 +1323,7 @@ funzoom -z 4 -o 0 -ftype IMG $SAMPLES/images/cimage $TMP/1 2> /dev/null \
     && exact $VAL 11 \
     && VAL=`fnorm -v $TMP/2_11 | cut -d"=" -f2` \
     && approx $VAL 32.5981 \
-    && pass || fail
+    && pass || fail skeleton
 
 # TODO
 # lsnakes
@@ -1334,29 +1339,29 @@ echo -n "image/operations: "
 fop -p -A $SAMPLES/images/cimage $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 287.596 \
-    && pass || fail
+    && pass || fail fop
 
 faxpb -a -1 $SAMPLES/images/cimage $TMP/1 \
     && fabso $TMP/1 $TMP/2 \
     && fdiff $TMP/2 $SAMPLES/images/cimage $TMP/3 \
     && VAL=`fnorm -p 2 $TMP/3 | cut -d"=" -f2` \
     && exact $VAL 0 \
-    && pass || fail
+    && pass || fail faxpb
 
 fentropy $SAMPLES/images/cimage > $TMP/1 \
     && VAL=`cat $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 7.51668 \
-    && pass || fail
+    && pass || fail fentropy
 
 fderiv -n $TMP/1 $SAMPLES/images/cimage \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 3.85916 \
-    && pass || fail
+    && pass || fail fderiv
 
 finfo $SAMPLES/images/cimage > $TMP/1 \
     && VAL=`grep "bv norm" $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 8.732667 \
-    && pass || fail
+    && pass || fail finfo
 
 fmse -n $SAMPLES/images/cimage $SAMPLES/images/fimage > $TMP/1 \
     && VAL=`grep "^SNR" $TMP/1 | cut -d"=" -f2` \
@@ -1367,23 +1372,23 @@ fmse -n $SAMPLES/images/cimage $SAMPLES/images/fimage > $TMP/1 \
     && approx $VAL 2.23241 \
     && VAL=`grep MRD $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 89.7111 \
-    && pass || fail
+    && pass || fail fmse
 
 cdisc $TMP/1 256 256 \
     && fmask $TMP/2 $TMP/1 $SAMPLES/images/cimage $SAMPLES/images/fimage \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 11.5658 \
-    && pass || fail
+    && pass || fail cdisk
 
 fpsnr255 $SAMPLES/images/fimage > $TMP/1 \
     && VAL=`cat $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 0.347482 \
-    && pass || fail
+    && pass || fail fpsnr255
 
 frthre -l 100 $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fmean $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 44.9395 \
-    && pass || fail
+    && pass || fail frthre
 
 # common: faxpb fpset cfdiff fadd fconst fdiff fmean fnorm fsize fvar
 
@@ -1405,7 +1410,7 @@ echo -n "image/values: "
 binarize -t 150 $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fmean $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 77.9132 \
-    && pass || fail
+    && pass || fail binarize
 
 funzoom -z 8 $SAMPLES/images/cimage $TMP/1 \
     && fquant $TMP/1 $TMP/1 5 > $TMP/2 \
@@ -1413,12 +1418,12 @@ funzoom -z 8 $SAMPLES/images/cimage $TMP/1 \
     && amle_init $TMP/1 $VAL $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 48.7051 \
-    && pass || fail
+    && pass || fail fquant
 
 amle $TMP/2 $TMP/3 2> /dev/null \
     && VAL=`fnorm -v $TMP/3 | cut -d"=" -f2` \
     && approx $VAL 17.4285 \
-    && pass || fail
+    && pass || fail amle
 
 cmextract $SAMPLES/movies/cmovie $TMP/1 40 170 3 80 210 7 \
     && for I in 1 2 3 4 5; do
@@ -1430,41 +1435,41 @@ cmextract $SAMPLES/movies/cmovie $TMP/1 40 170 3 80 210 7 \
     && amle3d_init $TMP/1 10 $TMP/2 \
     && VAL=`fnorm -v $TMP/2_03 | cut -d"=" -f2` \
     && approx $VAL  26.1018 \
-    && pass || fail
+    && pass || fail amle_init
 
 amle3d $TMP/2 $TMP/3 \
     && VAL=`fnorm -v $TMP/3_03 | cut -d"=" -f2` \
     && approx $VAL 4.03325 \
-    && pass || fail
+    && pass || fail amle3d
 
 fvalues -r $TMP/1 $SAMPLES/images/cimage $TMP/2 \
     && VAL=`grep size $TMP/2 | cut -d":" -f2` \
     && approx $VAL 256 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 8.73267 \
-    && pass || fail
+    && pass || fail fvalues
 
 ccontrast $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 12.5844 \
-    && pass || fail
+    && pass || fail ccontrast
 
 ccontrast_local -d 2 $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fnorm -v $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 13.2157 \
-    && pass || fail
+    && pass || fail ccontrast_local
 
 fconst $TMP/1 0 100 100 \
     && cnoise -i 50 $TMP/1 $TMP/1 \
     && VAL=`fmean $TMP/1 | cut -d"=" -f2` \
     && rand_approx $VAL 64 \
-    && pass || fail
+    && pass || fail cnoise
 
 fconst $TMP/1 0 100 100 \
     && fnoise -g 10 $TMP/1 $TMP/1 \
     && VAL=`fvar $TMP/1 | cut -d"=" -f2` \
     && rand_approx $VAL 100 \
-    && pass || fail
+    && pass || fail fnoise
 
 cmextract $SAMPLES/movies/cmovie $TMP/1 10 10 1 210 210 10 \
     && cmnoise -i 50 $TMP/1 $TMP/2 \
@@ -1472,37 +1477,37 @@ cmextract $SAMPLES/movies/cmovie $TMP/1 10 10 1 210 210 10 \
     && exact $VAL 10 \
     && VAL=`fmean $TMP/2_05 | cut -d"=" -f2` \
     && rand_approx $VAL 116 \
-    && pass || fail
+    && pass || fail cmnoise
 
 chisto $SAMPLES/images/cimage $TMP/1 \
     && VAL=`snorm -p 2 $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 366.222 \
-    && pass || fail
+    && pass || fail chisto
 
 fhisto $SAMPLES/images/cimage $TMP/1 \
     && VAL=`snorm -p 2 $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 929.198 \
-    && pass || fail
+    && pass || fail fhisto
 
 flgamma -f 256 $TMP/1 \
     && VAL=`flprintasc $TMP/1 | grep "^246" | cut -d" " -f2` \
     && approx $VAL 236.391 \
-    && pass || fail
+    && pass || fail flgamma
 
 fcontrast $SAMPLES/images/cimage $TMP/1 $TMP/2 \
     && VAL=`fnorm -p 2 $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 103.585 \
-    && pass || fail
+    && pass || fail fcontrast
 
 frank -r $TMP/1 $SAMPLES/images/cimage \
     && VAL=`fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 0.577342 \
-    && pass || fail
+    && pass || fail frank
 
 fthre -N $SAMPLES/images/cimage $TMP/1 \
     && VAL=`fnorm -p 2 $TMP/1 | cut -d"=" -f2` \
     && approx $VAL 143.798 \
-    && pass || fail
+    && pass || fail fthre
 
 # TODO
 # cfquant
@@ -1518,11 +1523,11 @@ echo -n "signal: "
 entropy $SAMPLES/signals/fsignal > $TMP/1 \
     && VAL=`cut -d"=" -f2 $TMP/1` \
     && approx $VAL 11.0934 \
-    && pass || fail entropy
+    && pass || fail entropy entropy
 
 sprintasc $SAMPLES/signals/fsignal 101 101 > $TMP/1 \
     && exact `cat $TMP/1` 3014 \
-    && pass || fail sprintasc
+    && pass || fail sprintasc sprintasc
 
 sprintasc $SAMPLES/signals/fsignal 1 123 | sreadasc $TMP/1 123 \
     && fft1dshrink $TMP/1 $TMP/2 \
@@ -1645,12 +1650,12 @@ owave1 -e 0 $SAMPLES/signals/fsignal $TMP/1 $DATA/wave/ortho/da02.ir \
     && exact $VAL 1104 \
     && VAL=`grep size $TMP/1_01_D.wtrans1d | cut -d":" -f2` \
     && exact $VAL 1104 \
-    && pass || fail
+    && pass || fail owave1
 
 iowave1 -e 0 $TMP/1 $TMP/2 $DATA/wave/ortho/da02.ir \
     && VAL=`snorm -t 0.001 -b 2 -p 2 -c $SAMPLES/signals/fsignal $TMP/2 | cut -d"=" -f2` \
     && exact $VAL 0 \
-    && pass || fail
+    && pass || fail owave1
 
 biowave1 $SAMPLES/signals/fsignal $TMP/1 \
     $DATA/wave/biortho/h/sp02.ir $DATA/wave/biortho/htilde/sl05.ir \
@@ -1658,13 +1663,13 @@ biowave1 $SAMPLES/signals/fsignal $TMP/1 \
     && exact $VAL 1104 \
     && VAL=`grep size $TMP/1_01_D.wtrans1d | cut -d":" -f2` \
     && exact $VAL 1104 \
-    && pass || fail
+    && pass || fail biowave1
 
 ibiowave1 -e 0 $TMP/1 $TMP/2 \
     $DATA/wave/biortho/h/sp02.ir $DATA/wave/biortho/htilde/sl05.ir \
     && VAL=`snorm -t 0.001 -b 2 -p 2 -c $SAMPLES/signals/fsignal $TMP/2 | cut -d"=" -f2` \
     && exact $VAL 0 \
-    && pass || fail
+    && pass || fail ibiowave1
 
 # TODO
 # biowave2
@@ -1688,16 +1693,16 @@ wp2dmktree -w 4 $TMP/1 \
     && exact "$VAL" "16 16" \
     && VAL=`fmean $TMP/1 | cut -d"=" -f2` \
     && exact $VAL 1.32812 \
-    && pass || fail
+    && pass || fail wp2dmktree
 
 wp2doperate -t 2 -s 15 -b $DATA/wave/packets/biortho/htilde/sd09.ir \
     $TMP/1 $DATA/wave/packets/biortho/h/sd07.ir $SAMPLES/images/cimage $TMP/2 \
     && VAL=`fnorm -v $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 6.15582 \
-    && pass || fail
+    && pass || fail wp2doperate
 
 wp2ddecomp $TMP/1 $SAMPLES/images/cimage $DATA/wave/ortho/da05.ir $TMP/2 \
-    && pass || fail
+    && pass || fail wp2ddecomp
 
 # TODO
 # wp2dchangepack
