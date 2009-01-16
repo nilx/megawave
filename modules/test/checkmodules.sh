@@ -1,6 +1,17 @@
 #!/bin/sh 
 #
 # Testsuite for the modules
+#
+# Set $PATH, $SAMPLES, $SCRIPTS and $LD_LIBRARY_PATH according to your
+# locations.
+#
+# example : 
+# MWBASE=~/megawave
+# PATH=$MWBASE/bin
+# SCRIPTS=$MWBASE/scripts
+# SAMPLES=$MWBASE/data
+# LD_LIBRARY_PATH=$MWBASE/lib
+#
 
 usage() {
     echo "megawave_checkmodules (no option)"
