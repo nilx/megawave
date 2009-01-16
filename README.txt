@@ -60,6 +60,9 @@ full list.
 * LDWRAP an optional wrapper over the linker; intended for tools
          such as `diet`.
 
+* DYLIB_EXT the file extension for dynamic libraries (default:so)
+* STLIB_EXT the file extension for static libraries (default:a)
+
 Example:
 Build the modules with the `gcc-3.4` and `ccache`.
     make CC=gcc-3.4 CCWRAP=ccache modules

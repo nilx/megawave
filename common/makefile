@@ -4,6 +4,8 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
+include $(COMMONDIR)/makefile.detection
+
 default :
 .SUFFIXES	:
 
@@ -48,7 +50,6 @@ CWARN	= -Wall
 # compiler miscellaneous flags
 CMISC	=
 
-CCVERSION	:= $(shell  $(CC) --version | head -n 1 | cut -d ' ' -f 3)
 CSTRICT_4_1	:= $(shell if [ "$(CCVERSION)" \> "4.1" ]; then   \
                              echo "-Wc++-compat -Wextra";         \
                            fi) # available from gcc 4.1
@@ -102,6 +103,14 @@ LPATH	= .
 LPREFIX	=
 # libraries to link with
 SHLIBS	=
+# file extentions (think OSX)
+DYLIB_EXT	?= so
+STLIB_EXT	?= a
+ifeq	($(LINK), dynamic)
+LIB_EXT	= $(DYLIB_EXT)
+else
+LIB_EXT	= $(STLIB_EXT)
+endif
 
 # debug
 ifeq	($(MODE), debug)

@@ -39,9 +39,9 @@ APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 # no need for cproto and makedepend
 #.PHONY	: $(AUTOHDR:.h=.d)
 
-MODULES	= $(CMDOBJ:.cmd.o=.cmd)
-
+MODOBJ	= $(CMDOBJ:.cmd.o=.cmd)
 BUILDDIR = build
+MODULES	= $(addprefix $(BUILDDIR)/, $(notdir $(MODOBJ:.cmd=)))
 
 LIBMW_MODULES	= lib$(LIBNAME)
 LIBMW	= $(BASEDIR)/libmw/libmw
@@ -70,15 +70,12 @@ $(LIBMW_WDEVICE).%	:
 modules	: $(MODULES)
 
 .PHONY	: lib
-ifeq	($(LINK), static)
-lib 	: lib$(LIBNAME).a
-else
-lib 	: lib$(LIBNAME).so
-endif
-lib$(LIBNAME).a	: $(OBJ)
+lib 	: lib$(LIBNAME).$(LIB_EXT)
+
+lib$(LIBNAME).$(STLIB_EXT)	: $(OBJ)
 	@$(ECHO) '$(AR) ru $@ $$(OBJ)'
 	@$(AR) ru $@ $?
-lib$(LIBNAME).so	: $(OBJ)
+lib$(LIBNAME).$(DYLIB_EXT)	: $(OBJ)
 	@$(ECHO) '$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
 	@$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
 
@@ -102,12 +99,27 @@ ifeq	($(LINK), static)
 %.cmd	: %.cmd.o $(LIBMW_MODULES).a $(LIBMW).a $(LIBMW_WDEVICE).a \
 	$(addsuffix .a, $(addprefix /usr/lib/lib, $(STLIBS)))
 	$(LDWRAP) $(LD) $(LDFLAGS) -o $@ $^
-	$(CP) $@ $(BUILDDIR)/$(basename $(notdir $@))
 else
 %.cmd	: %.cmd.o $(LIBMW_MODULES).so $(LIBMW).so $(LIBMW_WDEVICE).so
 	$(LDWRAP) $(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
-	$(CP) $@ $(BUILDDIR)/$(basename $(notdir $@))
 endif
+
+$(MODULES)	:
+	$(CP) $< $@
+
+include makefile.dep
+makefile.dep	: $(SRC)
+	$(RM) $@
+	$(TOUCH) $@
+	@echo 'for SRC in $$(SRC); do \
+		echo "$(BUILDDIR)/`basename $$SRC .c`\t: $${SRC%.c}.cmd" \
+		>> $@; \
+	done'
+	@for SRC in $^; do \
+		echo "$(BUILDDIR)/`basename $$SRC .c`\t: $${SRC%.c}.cmd" \
+		>> $@; \
+	done
+
 
 .PHONY	: clean-bin
 clean-bin :
@@ -122,6 +134,7 @@ distclean-bin : clean-bin
 	$(RM) lib$(LIBNAME).so
 	$(RM) $(BUILDDIR)/*
 	$(RM) $(API)
+	$(RM) makefile.dep
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
@@ -132,7 +145,7 @@ distclean-bin : clean-bin
 #
 
 .PHONY	: prebuild
-prebuild	: $(HDR) $(API)
+prebuild	: $(HDR) $(API) makefile.dep
 
 #.PHONY	: dep
 #dep	: $(DEP)

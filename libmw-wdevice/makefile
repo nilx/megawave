@@ -36,15 +36,12 @@ APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 #
 
 .PHONY	: lib
-ifeq	($(LINK), static)
-lib 	: lib$(LIBNAME).a
-else
-lib 	: lib$(LIBNAME).so
-endif
-lib$(LIBNAME).a	: $(OBJ)
+lib 	: lib$(LIBNAME).$(LIB_EXT)
+
+lib$(LIBNAME).$(STLIB_EXT)	: $(OBJ)
 	@$(ECHO) '$(AR) ru $$(OBJ) $^'
 	@$(AR) ru $@ $?
-lib$(LIBNAME).so	: $(OBJ)
+lib$(LIBNAME).$(DYLIB_EXT)	: $(OBJ)
 	@$(ECHO) '$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
 	@$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
 
