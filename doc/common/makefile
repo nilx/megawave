@@ -31,7 +31,7 @@ PDFLATEX_FLAGS	=
 HEVEA_FLAGS	= -fix -O
 HEVEA_CSS	= $(COMMON_DIR)/manual.css
 HACHA_FLAGS	= -tocbis
-HTML2TEXT_OPTS	= -width 72 -style compact -nobs 	\
+HTML2TEXT_FLAGS	= -width 72 -style compact -nobs 	\
 	-rcfile $(COMMON_DIR)/html2textrc
 
 # ACTIONS

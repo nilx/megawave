@@ -1,20 +1,26 @@
 H1.prefix = [[\ 
 H1.suffix = \ ]]
 H1.vspace.before = 2
-H1.vspace.after = 2
+H1.vspace.after = 3
 
 H2.prefix = ==\ 
 H2.suffix = \ ==
 H2.vspace.before = 1
-H2.vspace.after = 1
+H2.vspace.after = 2
 
 H3.prefix = __\ 
 H3.suffix = \ __
 H3.vspace.before = 1
-H3.vspace.after = 1
+H3.vspace.after = 2
 
 DD.vspace.after = 1
 
 UL.indents = 2
+UL.vspace.after = 1
+
+P.vspace.after = 1
+
+PRE.indent.left = 4
+PRE.vspace.after = 1
 
 A.attributes.external_link = NONE

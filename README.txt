@@ -1,5 +1,7 @@
 INSTRUCTIONS FOR COMPILING MEGAWAVE
 
+
+
 # basic
 
 * Prepare the source; this is only needed if you downloaded a "rawsrc"
@@ -15,6 +17,12 @@ INSTRUCTIONS FOR COMPILING MEGAWAVE
 
     make
 
+
+* Compile the system and user documentation manuals.
+  Required tools: `pdflatex`, `hevea`, `hacha`, `html2text`.
+
+    make doc
+
 * Cleanup the compilation headers and objects.
 
     make clean
@@ -22,6 +30,8 @@ INSTRUCTIONS FOR COMPILING MEGAWAVE
 * Cleanup everything, keep only the raw source.
 
     make distclean
+
+
 
 # options
 
@@ -47,6 +57,8 @@ syntax check, with static linking and debugging symbols.
 
     make CHECK=strict LINK=static MODE=debug modules
 
+
+
 # parameters
 
 Different parameters can be changed from the command-line. Some of
@@ -67,12 +79,20 @@ Example:
 Build the modules with the `gcc-3.4` and `ccache`.
     make CC=gcc-3.4 CCWRAP=ccache modules
 
+
+
 # subfolders
 
 You can also invoke make directly from within the subfolders
 `mwplight`, `libmw-wdevice`, `libmw` and `modules`. The previous
 options are still valid, and some other make targets are
 available. Please refer to `<subfolder>/README.txt` for the details.
+
+Some other targets are available from the subfolders, mainly for
+development porpose (code linting, syntax cleanup, ...). They are not
+extensively tested.
+
+
 
 # configuration
 

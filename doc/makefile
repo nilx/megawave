@@ -10,7 +10,7 @@ SYSTEM_DIR	= system
 # ACTIONS
 
 .PHONY : default all pdf ps html splithtml txt clean distclean
-default	: pdf html splithtml
+default	: pdf html splithtml txt
 all	: pdf ps html splithtml txt
 
 pdf	:
