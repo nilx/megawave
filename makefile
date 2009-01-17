@@ -27,7 +27,10 @@ doc	:
 	$(MAKE) -C ./doc
 
 srcdoc	:
-	$(MAKE) -C ./doc
+	$(MAKE) -C ./libmw-wdevice srcdoc
+	$(MAKE) -C ./libmw srcdoc
+	$(MAKE) -C ./mwplight srcdoc
+	$(MAKE) -C ./modules srcdoc
 
 clean	:
 	$(MAKE) -C ./mwplight clean

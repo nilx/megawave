@@ -17,7 +17,7 @@ SYSTEM_ARCH	:= $(shell [ -x /usr/bin/dpkg ] \
 			&& dpkg --print-architecture \
 			|| ( file /bin/ls | cut -d: -f2 | cut -d, -f2 ))
 
-CCVERSION	:= $(shell  $(CC) --version | head -n 1 | cut -d ' ' -f 3)
-CPROTOVERSION	:= $(shell  $(CPROTO) -V)
+CCVERSION	:= $(shell $(CC) --version | head -n 1 | cut -d ' ' -f 3)
+CPROTOVERSION	:= $(shell $(CPROTO) -V 2>&1 )
 GENGETOPTVERSION	:= $(shell  $(GENGETOPT) --version \
 				| head -n 1 | cut -d ' ' -f 3)

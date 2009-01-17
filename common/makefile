@@ -4,8 +4,6 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
-include $(COMMONDIR)/makefile.detection
-
 default :
 .SUFFIXES	:
 
@@ -40,6 +38,8 @@ EXPAND	= /usr/bin/expand
 DOXYGEN	= /usr/bin/doxygen
 PANDOC	= /usr/bin/pandoc
 PDFLATEX	= /usr/bin/pdflatex
+
+include $(COMMONDIR)/makefile.detection
 
 # CC OPTIONS
 

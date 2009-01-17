@@ -17,11 +17,15 @@ INSTRUCTIONS FOR COMPILING MEGAWAVE
 
     make
 
-
 * Compile the system and user documentation manuals.
   Required tools: `pdflatex`, `hevea`, `hacha`, `html2text`.
 
     make doc
+
+* Compile source documentation (warning: needs time)
+  Required tools: `doxygen`, `graphviz`, `pdflatex`.
+
+    make srcdoc
 
 * Cleanup the compilation headers and objects.
 

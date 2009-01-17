@@ -126,6 +126,7 @@ clean-bin :
 	@echo '$(RM) $$(OBJ) $$(CMDOBJ)'
 	@$(RM) $(OBJ) $(CMDOBJ)
 
+# TODO fixme, remove the header and cmdline sources
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
 	@echo '$(RM) $$(MODULES)'
@@ -206,6 +207,7 @@ $(DOCDIR)/srcdoc.pdf : $(DOCDIR)/latex/refman.tex
 	$(MAKE) -C $(DOCDIR)/latex refman.pdf
 	mv $(DOCDIR)/latex/refman.pdf $(DOCDIR)/srcdoc.pdf
 
+# TODO fixme
 .PHONY	: clean-doc
 clean-doc	:
 
