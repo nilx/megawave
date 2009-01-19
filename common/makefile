@@ -118,8 +118,12 @@ LPREFIX	= debug/
 endif
 
 # linker flags
+# options not available in OSX gcc; be conservative
+LDFLAGS_LINUX	:= $(shell if [ "$(KERNEL)" = "Linux" ]; then   \
+                             echo "-Wl,--gc-sections";          \
+                           fi)
 # FIXME: gcc syntax
-LDFLAGS	= -Wl,--gc-sections						\
+LDFLAGS	= $(LDFLAGS_LINUX)						\
 	$(LDDEBUG) $(CPROF)						\
 	$(addprefix -L, $(LPATH)) $(addprefix -l$(LPREFIX), $(SHLIBS))
 
