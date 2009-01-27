@@ -1,0 +1,9 @@
+#!/usr/bin/make -f
+#
+# specific settings for Windows + Cygwin
+#
+# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2009)
+
+.SO	= .dll
+LDFLAGS	?= $(LDDEBUG) $(CPROF)						\
+	$(addprefix -L, $(LPATH)) $(addprefix -l$(LPREFIX), $(SHLIBS))

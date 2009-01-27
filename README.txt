@@ -18,11 +18,13 @@ INSTRUCTIONS FOR COMPILING MEGAWAVE
     make
 
 * Compile the system and user documentation manuals.
+  This target is not thoroughly tested.
   Required tools: `pdflatex`, `hevea`, `hacha`, `html2text`.
 
     make doc
 
 * Compile source documentation (warning: needs time)
+  This target is not thoroughly tested.
   Required tools: `doxygen`, `graphviz`, `pdflatex`.
 
     make srcdoc
@@ -76,13 +78,18 @@ full list.
 * LDWRAP an optional wrapper over the linker; intended for tools
          such as `diet`.
 
-* DYLIB_EXT the file extension for dynamic libraries (default:so)
-* STLIB_EXT the file extension for static libraries (default:a)
+* .O  the file extension for objects files (default:.o)
+* .A  the file extension for static  libraries files (default:.a)
+* .SO the file extension for dynamic libraries files (default:.so)
 
 Example:
 Build the modules with the `gcc-3.4` and `ccache`.
     make CC=gcc-3.4 CCWRAP=ccache modules
 
+This makefile is written on and for linux systems. Some predefined
+parameter variations are available in `common/makefile.<SYSTEM>` for
+other systems, but not thoroughly tested.
+Uncomment the related include lines in `common/makefile` to use them.
 
 
 # subfolders

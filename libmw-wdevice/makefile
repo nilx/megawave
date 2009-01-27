@@ -24,7 +24,7 @@ SRC	= $(addprefix $(SRCDIR)/, wdevice.c wdevice-misc.c)
 
 AUTOHDR	= $(SRC:.c=.h)
 HDR	= $(AUTOHDR) $(SRCDIR)/wdevice-defs.h $(SRCDIR)/wdevice-config.h
-OBJ	= $(SRC:.c=.o)
+OBJ	= $(SRC:.c=$(.O))
 DEP	= $(SRC:.c=.d)
 
 LIBNAME	= mw-wdevice
@@ -36,14 +36,14 @@ APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 #
 
 .PHONY	: lib
-lib 	: lib$(LIBNAME).$(LIB_EXT)
+lib 	: lib$(LIBNAME)$(LIB_EXT)
 
-lib$(LIBNAME).$(STLIB_EXT)	: $(OBJ)
+lib$(LIBNAME)$(.A)	: $(OBJ)
 	@$(ECHO) '$(AR) ru $$(OBJ) $^'
 	@$(AR) ru $@ $?
-lib$(LIBNAME).$(DYLIB_EXT)	: $(OBJ)
-	@$(ECHO) '$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
-	@$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
+lib$(LIBNAME)$(.SO)	: $(OBJ)
+	@$(ECHO) '$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $$(OBJ)'
+	@$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $^
 
 .PHONY	: api
 api 	: $(API)
@@ -77,8 +77,8 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) lib$(LIBNAME).a
-	$(RM) lib$(LIBNAME).so
+	$(RM) lib$(LIBNAME)$(.A)
+	$(RM) lib$(LIBNAME)$(.A)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing

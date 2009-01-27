@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+#
+# specific settings for Mac OSX
+#
+# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2009)
+
+.SO	= .dylib
+LDFLAGS	?= $(LDDEBUG) $(CPROF)						\
+	$(addprefix -L, $(LPATH)) $(addprefix -l$(LPREFIX), $(SHLIBS))
+LDFLAGS_SHARED	?= -dynamiclib $(LDFLAGS)

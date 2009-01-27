@@ -108,7 +108,7 @@ AUTOHDR	= $(SRC:.c=.h)
 HDR	= $(AUTOHDR) $(addprefix $(SRCDIR)/,	\
 	tiff.h strtoul.h ppmr_io.h pm.h tiffio.h \
 	wpanel-defs.h libmw-defs.h)
-OBJ	= $(SRC:.c=.o)
+OBJ	= $(SRC:.c=$(.O))
 #DEP	= $(SRC:.c=.d)
 
 LIBNAME	= mw
@@ -125,14 +125,14 @@ CWARN	+= -Wno-float-equal
 #
 
 .PHONY	: lib
-lib 	: lib$(LIBNAME).$(LIB_EXT)
+lib 	: lib$(LIBNAME)$(LIB_EXT)
 
-lib$(LIBNAME).$(STLIB_EXT)	: $(OBJ)
+lib$(LIBNAME)$(.A)	: $(OBJ)
 	@$(ECHO) '$(AR) ru $$(OBJ)'
 	@$(AR) ru $@ $?
-lib$(LIBNAME).$(DYLIB_EXT)	: $(OBJ)
-	@$(ECHO) '$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
-	@$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
+lib$(LIBNAME)$(.SO)	: $(OBJ)
+	@$(ECHO) '$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $$(OBJ)'
+	@$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $^
 
 .PHONY	: api
 api 	: $(API)
@@ -166,8 +166,8 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) lib$(LIBNAME).a
-	$(RM) lib$(LIBNAME).so
+	$(RM) lib$(LIBNAME)$(.A)
+	$(RM) lib$(LIBNAME)$(.SO)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing

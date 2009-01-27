@@ -29,7 +29,7 @@ CMDLINE	= $(SRCDIR)/mwplight_cmdline.c
 AUTOHDR	= $(SRC:.c=.h)
 HDR	= $(AUTOHDR) $(CMDLINE:.c=.h)				\
 	$(SRCDIR)/mwplight-defs.h $(SRCDIR)/mwplight-config.h
-OBJ	= $(SRC:.c=.o) $(CMDLINE:.c=.o)
+OBJ	= $(SRC:.c=$(.O)) $(CMDLINE:.c=$(.O))
 #DEP	= $(SRC:.c=.d)
 
 BINNAME	= mwplight
@@ -60,7 +60,7 @@ $(BINNAME) 	: $(OBJ)
 	$(LDWRAP) $(LD) $(LDFLAGS) -o $@ $^
 
 # FIXME: unused parameters and long string
-$(CMDLINE:.c=.o)	: $(CMDLINE)
+$(CMDLINE:.c=$(.O))	: $(CMDLINE)
 	$(CCWRAP) $(CC) $(CFLAGS_NOWARN) -c -o $@ $<
 
 .PHONY	: lint

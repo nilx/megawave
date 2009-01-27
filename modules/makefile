@@ -27,10 +27,10 @@ SRC	:= $(sort $(shell find $(SRCDIR) -type f	\
 	-name "*.c" ! -name "*.cmd.c"))
 
 HDR	= $(SRC:.c=.h)
-OBJ	= $(SRC:.c=.o)
+OBJ	= $(SRC:.c=$(.O))
 
 CMDSRC	= $(SRC:.c=.cmd.c)
-CMDOBJ	= $(CMDSRC:.c=.o)
+CMDOBJ	= $(CMDSRC:.c=$(.O))
 
 LIBNAME	= mw-modules
 API	= $(LIBNAME).h
@@ -39,9 +39,9 @@ APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 # no need for cproto and makedepend
 #.PHONY	: $(AUTOHDR:.h=.d)
 
-MODOBJ	= $(CMDOBJ:.cmd.o=.cmd)
+MODEXE	= $(SRC:.c=.cmd)
 BUILDDIR = build
-MODULES	= $(addprefix $(BUILDDIR)/, $(notdir $(MODOBJ:.cmd=)))
+MODULES	= $(addprefix $(BUILDDIR)/, $(notdir $(SRC:.c=)))
 
 LIBMW_MODULES	= lib$(LIBNAME)
 LIBMW	= $(BASEDIR)/libmw/libmw
@@ -70,14 +70,14 @@ $(LIBMW_WDEVICE).%	:
 modules	: $(MODULES)
 
 .PHONY	: lib
-lib 	: lib$(LIBNAME).$(LIB_EXT)
+lib 	: lib$(LIBNAME)$(LIB_EXT)
 
-lib$(LIBNAME).$(STLIB_EXT)	: $(OBJ)
+lib$(LIBNAME)$(.A)	: $(OBJ)
 	@$(ECHO) '$(AR) ru $@ $$(OBJ)'
 	@$(AR) ru $@ $?
-lib$(LIBNAME).$(DYLIB_EXT)	: $(OBJ)
-	@$(ECHO) '$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $$(OBJ)'
-	@$(LDWRAP) $(LD) -fPIC -shared $(LDFLAGS) -o $@ $^
+lib$(LIBNAME)$(.SO)	: $(OBJ)
+	@$(ECHO) '$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $$(OBJ)'
+	@$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $^
 
 .PHONY	: api
 api	: $(API)
@@ -104,10 +104,6 @@ else
 	$(LDWRAP) $(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
 endif
 
-$(MODULES)	:
-	$(CP) $< $@
-
-include makefile.dep
 makefile.dep	: $(SRC)
 	$(RM) $@
 	$(TOUCH) $@
@@ -120,6 +116,9 @@ makefile.dep	: $(SRC)
 		>> $@; \
 	done
 
+include makefile.dep
+$(MODULES)	:
+	$(CP) $< $@
 
 .PHONY	: clean-bin
 clean-bin :
@@ -131,8 +130,8 @@ clean-bin :
 distclean-bin : clean-bin
 	@echo '$(RM) $$(MODULES)'
 	@$(RM) $(MODULES)
-	$(RM) lib$(LIBNAME).a
-	$(RM) lib$(LIBNAME).so
+	$(RM) lib$(LIBNAME)$(.A)
+	$(RM) lib$(LIBNAME)$(.SO)
 	$(RM) $(BUILDDIR)/*
 	$(RM) $(API)
 	$(RM) makefile.dep

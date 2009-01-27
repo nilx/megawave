@@ -7,17 +7,3 @@
 default :
 .SUFFIXES	:
 
-KERNEL	:= $(shell uname -s)
-
-# note : the kernel architecture and system architecture may differ;
-# for example, 32bit system with a 64bit kernel; in this case, the
-# system architecture must be used for binary compatibility
-KERNEL_ARCH	:= $(shell uname -m)
-SYSTEM_ARCH	:= $(shell [ -x /usr/bin/dpkg ] \
-			&& dpkg --print-architecture \
-			|| ( file /bin/ls | cut -d: -f2 | cut -d, -f2 ))
-
-CCVERSION	:= $(shell $(CC) --version | head -n 1 | cut -d ' ' -f 3)
-CPROTOVERSION	:= $(shell $(CPROTO) -V 2>&1 )
-GENGETOPTVERSION	:= $(shell  $(GENGETOPT) --version \
-				| head -n 1 | cut -d ' ' -f 3)

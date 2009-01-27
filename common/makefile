@@ -39,16 +39,30 @@ DOXYGEN	= /usr/bin/doxygen
 PANDOC	= /usr/bin/pandoc
 PDFLATEX	= /usr/bin/pdflatex
 
-include $(COMMONDIR)/makefile.detection
+KERNEL	:= $(shell uname -s)
+# note : the kernel architecture and system architecture may differ;
+# for example, 32bit system with a 64bit kernel; in this case, the
+# system architecture must be used for binary compatibility
+KERNEL_ARCH	:= $(shell uname -m)
+# debian provides a clean way to get the system architecture from
+# dpkg; for other distributons, we rely on a fragile hack
+SYSTEM_ARCH	:= $(shell [ -x /usr/bin/dpkg ] \
+			&& dpkg --print-architecture \
+			|| ( file /bin/ls | cut -d: -f2 | cut -d, -f2 ))
+
+# for non-linux targets, uncomment the relevant line
+#include $(COMMONDIR)/makefile.osx
+#include $(COMMONDIR)/makefile.cygwin
 
 # CC OPTIONS
-
 # C language version
-CSTD	= -ansi
+CSTD	?= -ansi
 # compiler warning level
-CWARN	= -Wall
+CWARN	?= -Wall
 # compiler miscellaneous flags
-CMISC	=
+CMISC	?=
+
+CCVERSION	:= $(shell $(CC) --version | head -n 1 | cut -d ' ' -f 3)
 
 CSTRICT_4_1	:= $(shell if [ "$(CCVERSION)" \> "4.1" ]; then   \
                              echo "-Wc++-compat -Wextra";         \
@@ -90,53 +104,50 @@ CMISC	+= -O2 -funroll-loops -finline-functions	\
 endif
 
 # compiler flags
-IPATH	= .
-CFLAGS_NOWARN	= $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
-CFLAGS	= -fPIC -ffunction-sections $(CWARN) $(CFLAGS_NOWARN)
+IPATH	?= .
+CFLAGS_NOWARN	?= $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
+CFLAGS	?= -fPIC -ffunction-sections $(CWARN) $(CFLAGS_NOWARN)
 
 # linking option
 # LINK can be "dynamic" or "static"
 LINK	?= dynamic
 
 # include and link paths
-LPATH	= .
-LPREFIX	=
+LPATH	?= .
+LPREFIX	?=
 # libraries to link with
-SHLIBS	=
-# file extentions (think OSX)
-DYLIB_EXT	?= so
-STLIB_EXT	?= a
+SHLIBS	?=
+
+# file extentions (objects, static libs, shared libs)
+.O	?= .o
+.A	?= .a
+.SO	?= .so
+
 ifeq	($(LINK), dynamic)
-LIB_EXT	= $(DYLIB_EXT)
+LIB_EXT	?= $(.SO)
 else
-LIB_EXT	= $(STLIB_EXT)
+LIB_EXT	?= $(.A)
 endif
 
 # debug
 ifeq	($(MODE), debug)
-LPREFIX	= debug/
+LPREFIX	?= debug/
 endif
 
-# linker flags
-# options not available in OSX gcc; be conservative
-LDFLAGS_LINUX	:= $(shell if [ "$(KERNEL)" = "Linux" ]; then   \
-                             echo "-Wl,--gc-sections";          \
-                           fi)
-# FIXME: gcc syntax
-LDFLAGS	= $(LDFLAGS_LINUX)						\
-	$(LDDEBUG) $(CPROF)						\
+LDFLAGS	?= -Wl,--gc-sections $(LDDEBUG) $(CPROF)			\
 	$(addprefix -L, $(LPATH)) $(addprefix -l$(LPREFIX), $(SHLIBS))
+LDFLAGS_SHARED	?= -shared $(LDFLAGS)
 
 # TOOLS OPTIONS
 
-LINT_FLAGS	= -posixlib -weak -ansi89limits
-PANDOC_FLAGS	= --standalone --reference-links --smart
-DOXYCONF	= $(COMMONDIR)/doxygen.conf
-GENGETOPT_FLAGS	= --func-name=mw_cmdline --arg-struct=mw_args_info	\
+LINT_FLAGS	?= -posixlib -weak -ansi89limits
+PANDOC_FLAGS	?= --standalone --reference-links --smart
+DOXYCONF	?= $(COMMONDIR)/doxygen.conf
+GENGETOPT_FLAGS	?= --func-name=mw_cmdline --arg-struct=mw_args_info	\
 	--no-handle-error 						\
 	--no-handle-help --no-help					\
 	--no-handle-version --no-version
-CPROTO_FLAGS	= $(addprefix -I, $(IPATH)) -q
+CPROTO_FLAGS	?= $(addprefix -I, $(IPATH)) -q
 
 # GENERIC RULES
 
@@ -148,7 +159,7 @@ CPROTO_FLAGS	= $(addprefix -I, $(IPATH)) -q
 	    $(MV) $@.$$$$ $@;
 
 # std C compilation
-%.o	: %.c
+%$(.O)	: %.c
 	$(CCWRAP) $(CC) $(CFLAGS) -c -o $@ $<
 
 # make a C prototype header
