@@ -360,7 +360,6 @@ static void writegendecl(FILE * afile)
 
      fprintf(afile, "#include \"mw.h\"\n");
      fprintf(afile, "#include \"mw-modules.h\"\n");
-/*     fprintf(afile, "#include \"mwi.h\"\n\n"); */
 
      fprintf(afile, "extern int _%s();\n", module_name);
      fprintf(afile, "extern int usage_%s();\n", module_name);
@@ -1606,6 +1605,9 @@ static void writeusage(FILE * afile)
 
      fprintf(afile, "\n/* ~~~ [writeusage] ~~~*/\n\n");
 
+     fprintf(afile, "/**\n");
+     fprintf(afile, " * usage information for the module executable\n");
+     fprintf(afile, " */\n");
      fprintf(afile, "int usage_%s(char *msg)\n", H->Name);
      fprintf(afile, "{\n");
      fprintf(afile, "  extern char _mwdefoptbuf[];\n");
@@ -1795,6 +1797,19 @@ static void writebody(FILE * afile)
      fprintf(afile, "\n/* ~~~ end of [writebody] ~~~*/\n\n");
 }
 
+/*
+ * write main() function of the executable module
+ */
+static void writemain(FILE * afile)
+{
+    fprintf(afile, "/**\n");
+    fprintf(afile, " * main() function of the executable module\n");
+    fprintf(afile, " */\n");
+    fprintf(afile, "int main(int argc, char ** argv, char ** envp)\n");
+    fprintf(afile, "{\n");
+    fprintf(afile, "    return _mw_main(argc, argv, envp);\n");
+    fprintf(afile, "}\n");
+}
 
 /*
  * main entry : generate A-file
@@ -1805,6 +1820,6 @@ void gen_exec_file(FILE * afile)
      writegendecl(afile);
      writeargdecl(afile);
      writebody(afile);
-
      writeusage(afile);
+     writemain(afile);
 }
