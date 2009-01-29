@@ -23,6 +23,12 @@ library "libmw"
 
 /usr/include/libmw.h
 
+# COPYRIGHT
+
+This program is part of the megawave framework.  
+See http://megawave.cmla.ens-cachan.fr/ for details.  
+(C) 2008 CMLA, ENS Cachan, 94235 Cachan cedex, France.  
+
 # SEE ALSO
 
 **megawave(7)**, **megawave-modules(7)**, **libmw-x11(3)**
