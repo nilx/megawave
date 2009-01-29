@@ -326,6 +326,7 @@ static Cimage fimage_to_cimage(in,out)
 
 
 /*------------------------------ MAIN MODULE ------------------------------*/
+/* TODO: no Wframe in the parameters */
 
 void fview(input,x0,y0,zoom,order,no_refresh,window,linear,m,M,d)
      int    *x0,*y0,*no_refresh,*order;

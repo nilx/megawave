@@ -20,7 +20,7 @@ clean 	: clean-bin clean-doc
 distclean	: distclean-bin distclean-doc
 
 # TODO: drop unused or unwanted (module, unix_bsd, ...)
-# TODO: libmw/libmw-cmdline/libmw-wpanel(with libmw-wdevice?)
+# TODO: split libmw/libmw-cmdline
 SRCDIR	= src
 SRC	:= $(addprefix $(SRCDIR)/, \
         ccimage.c       \
@@ -100,14 +100,12 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         mw_main.c       \
         mwio.c          \
         type_conv.c     \
-        window.c        \
-        wpanel.c        \
 	)
 
 AUTOHDR	= $(SRC:.c=.h)
 HDR	= $(AUTOHDR) $(addprefix $(SRCDIR)/,	\
 	tiff.h strtoul.h ppmr_io.h pm.h tiffio.h \
-	wpanel-defs.h libmw-defs.h)
+	libmw-defs.h)
 OBJ	= $(SRC:.c=$(.O))
 #DEP	= $(SRC:.c=.d)
 
@@ -115,7 +113,7 @@ LIBNAME	= mw
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
-IPATH	+= $(BASEDIR)/libmw-wdevice
+IPATH	+= $(BASEDIR)/libmw-x
 
 # FIXME: hacks
 CWARN	+= -Wno-float-equal
@@ -125,7 +123,7 @@ CWARN	+= -Wno-float-equal
 #
 
 .PHONY	: lib
-lib 	: lib$(LIBNAME)$(LIB_EXT)
+lib 	: lib$(LIBNAME)$(.A) lib$(LIBNAME)$(.SO)
 
 lib$(LIBNAME)$(.A)	: $(OBJ)
 	@$(ECHO) '$(AR) ru $$(OBJ)'
@@ -136,7 +134,7 @@ lib$(LIBNAME)$(.SO)	: $(OBJ)
 
 .PHONY	: api
 api 	: $(API)
-$(API) 	: $(AUTOHDR) $(addprefix $(SRCDIR)/, wpanel-defs.h libmw-defs.h)
+$(API) 	: $(AUTOHDR) $(addprefix $(SRCDIR)/, libmw-defs.h)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
 	$(ECHO) -e "\n#include <stdio.h> /* for FILE */\n" >> $@

@@ -5,7 +5,7 @@
 # NAME
 
 **FIXME**: to be filled
-- Kernel library for the megawave framework.
+ - core library for the megawave framework.
 
 # LIBRARY
 
@@ -25,4 +25,4 @@ library "libmw"
 
 # SEE ALSO
 
-**megawave(7)**, **libmw-wdevice(3)**, **megawave-modules(7)**
+**megawave(7)**, **megawave-modules(7)**, **libmw-x11(3)**

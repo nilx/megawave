@@ -1,14 +1,14 @@
-INSTRUCTIONS FOR COMPILING THE MEGAWAVE WDEVICE LIBRARY
+INSTRUCTIONS FOR COMPILING THE MEGAWAVE X11 LIBRARY
 
 See `../README.txt` for generic instructions.
 
 # basic
 
 * compile the library shared and static objects
-  The result is `./libmw-wdevice.so` and `./libmw-wdevice.a`.
+  The result is `./libmw-x11.so` and `./libmw-x11.a`.
     make lib
 * compile the library api header
-  The result is `./libmw-wdevice.h`.
+  The result is `./libmw-x11.h`.
     make api
 * cleanup the compilation headers, objects, ...
     make clean
@@ -20,7 +20,7 @@ See `../README.txt` for generic instructions.
 # other targets
 
 * compile the manpage
-  The result is `doc/libmw-wdevice.man` and `doc/libmw-wdevice.man.html`.
+  The result is `doc/libmw-x11.man` and `doc/libmw-x11.man.html`.
     make man
 * beautify the source code
     make beautify

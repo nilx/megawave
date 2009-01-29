@@ -1,14 +1,14 @@
 /*
- * mw-wdevice api header
+ * mw-x11 api header
  */
 
-#ifndef _MW_WDEVICE_H_
-#define _MW_WDEVICE_H_
+#ifndef _MW_X11_H_
+#define _MW_X11_H_
 
 /**
- * @file wdevice-defs.h
+ * @file definitions.h
  *
- * structures and declarations for the megawave wdevice library
+ * structures and declarations for the megawave wpanel library
  *
  * @author John Bradley for XV <xv@trilon.com> (1989 - 1994),		\
  *         Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2006), \
@@ -20,8 +20,8 @@
  *        replace by a free alternative
  */
 
-#ifndef _WDEVICE_DEFS_H_
-#define _WDEVICE_DEFS_H_
+#ifndef _DEFINITIONS_H_
+#define _DEFINITIONS_H_
 
 #include <X11/Xlib.h>
 #define  XK_MISCELLANY
@@ -94,7 +94,120 @@ extern int             _W_KeyBuffer;
 extern unsigned long   _W_cols[256];
 
 
-#endif /* !_WDEVICE_DEFS_H_ */
+#define Wp_max_buttons 100  /* maximum number of buttons */
+#define WP_STRSIZE 1000  /* maximum string size */
+
+/* colors 64 grey levels + 5x5x5 */
+
+#define WP_BLACK    0
+#define WP_GREY    40
+#define WP_WHITE   63
+#define WP_RED    164
+#define WP_BLUE    68
+#define WP_GREEN   84
+
+
+/* wp types */
+
+#define WP_NULL    0
+#define WP_TOGGLE  1
+#define WP_INT     2
+#define WP_FLOAT   3
+
+
+typedef struct wp_toggle {
+  char *text;          /* text to display */
+  int color;           /* active color */
+  short nbuttons;      /* number of buttons */
+  short button;        /* current active button */
+  char **button_text;  /* text for each button */
+  int x,y ;            /* position on window (upleft corner) */
+  int (*proc)(struct wp_toggle *, int); 
+                       /* function to call when value changes */
+                       /* (may be NULL) */
+} *Wp_toggle;
+
+typedef struct wp_int {
+  char *text;          /* text to display */
+  char *format;        /* format for int display (eg "%d") */
+  int value;           /* value */
+  int strsize;         /* internal use (initialize to 0) */
+  int scale;           /* length of scale bar (0 means no bar) */
+  int firstscale;      /* value of bar left border */
+  int lastscale;       /* value of bar right border */
+  int divscale;        /* number of bar scale divisions */
+  int color;           /* text color */
+  short nbuttons;      /* number of buttons */
+  char **button_text;  /* text for each button */
+  int *button_inc;     /* increment for each button */
+  int x,y ;            /* position on window (upleft corner) */
+  int (*proc)(struct wp_int *, int); 
+                       /* function to call when value changes */
+                       /* (may be NULL) */
+} *Wp_int;
+
+typedef struct wp_float {
+  char *text;          /* text to display */
+  char *format;        /* format for int display (eg "%d") */
+  float value;         /* value */
+  int strsize;         /* internal use (initialize to 0) */
+  int color;           /* text color */
+  short nbuttons;      /* number of buttons */
+  char **button_text;  /* text for each button */
+  float *button_inc;   /* increment for each button */
+  int x,y ;            /* position on window (upleft corner) */
+  int (*proc)(struct wp_float *, int); 
+                       /* function to call when value changes */
+                       /* (may be NULL) */
+} *Wp_float;
+
+typedef struct wpanel {
+  Wframe *window;        /* attached window */
+  char state;            /* -1 means that window should be closed */
+  int nx,ny;             /* size of bitmaps (initial window size) */
+  char *type;            /* bitmap (associated wp type) */
+  void **action;         /* bitmap (pointer to wp structure) */
+  short *button;         /* bitmap (associated button number) */
+} *Wpanel;
+
+/* TODO: drop? */
+extern int mwrunmode;
+extern int mwwindelay;
+
+#endif /* !_DEFINITIONS_H_ */
+
+/*
+ * wpanel.h
+ */
+
+#ifndef _WPANEL_H_
+#define _WPANEL_H_
+
+/* src/wpanel.c */
+int Wp_DrawButton(Wframe *window, int x, int y, char *str, int color);
+void Wp_DrawScale(Wframe *window, int x, int y, int pos, int divisions, int length, int color);
+Wpanel Wp_Init(Wframe *window);
+void Wp_SetButton(int type, Wpanel wp, void *b);
+int Wp_handle(Wpanel wp, int event, int x, int y);
+int Wp_notify(Wframe *window, void *wp);
+void Wp_main_loop(Wpanel wp);
+
+#endif /* !_WPANEL_H_ */
+/*
+ * window.h
+ */
+
+#ifndef _WINDOW_H_
+#define _WINDOW_H_
+
+/* src/window.c */
+unsigned char mw_CeldaGris(unsigned char gris);
+unsigned char mw_CeldaColor(unsigned char *color);
+Wframe *mw_get_window(Wframe *window, int dx, int dy, int x0, int y0, char *title);
+void mw_window_notify(Wframe *Win, void *param, int (*proc)(Wframe *, void *));
+void mw_window_main_loop(void);
+
+#endif /* !_WINDOW_H_ */
 /*
  * wdevice.h
  */
@@ -157,16 +270,16 @@ int WX_KeyPress(XKeyEvent *event);
 
 #endif /* !_WDEVICE_MISC_H_ */
 /**
- * @file wdevice-config.h
+ * @file config.h
  *
- * settings for the megawave wdevice library
+ * settings for the megawave wpanel library
  *
  * @author Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2002), \
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
-#ifndef _WDEVICE_CONFIG_H_
-#define _WDEVICE_CONFIG_H_
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
 
 /*
  * FONTS
@@ -247,6 +360,6 @@ int WX_KeyPress(XKeyEvent *event);
 #define W_COPY GXcopy
 #define W_XOR  GXequiv
 
-#endif /* !_WDEVICE_CONFIG_H_ */
+#endif /* !_CONFIG_H_ */
 
-#endif /* !_MW_WDEVICE_H_ */
+#endif /* !_MW_X11_H_ */

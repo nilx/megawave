@@ -23,15 +23,13 @@
 #include <string.h>
 #include <stdarg.h>
 
-#include "mw-wdevice.h"
-#include "libmw-defs.h"
-#include "utils.h"
-#include "wpanel-defs.h"
-
+#include "definitions.h"
+#include "config.h"
 #include "window.h"
-
+#include "wdevice.h"
 
 #include "wpanel.h"
+/*#include "utils.h"*/
 
 /* FIXME: unsafe snprintf() hack */
 static int snprintf(char * dest, int nb, const char * fmt, ...)
@@ -224,7 +222,9 @@ void Wp_SetButton(int type, Wpanel wp, void *b)
 	  break;
      
      default:
-	  mwerror(FATAL,1,"Wp_SetButton : no such button type (%d).",(int)type);
+	 fprintf(stderr, "Wp_SetButton : no such button type (%d).", 
+		 (int)type);
+	 abort();
      }
 }
 

@@ -45,7 +45,7 @@ MODULES	= $(addprefix $(BUILDDIR)/, $(notdir $(SRC:.c=)))
 
 LIBMW_MODULES	= lib$(LIBNAME)
 LIBMW	= $(BASEDIR)/libmw/libmw
-LIBMW_WDEVICE	= $(BASEDIR)/libmw-wdevice/libmw-wdevice
+LIBMW_X11	= $(BASEDIR)/libmw-x11/libmw-x11
 MWP	= $(BASEDIR)/mwp/mwp
 
 ifeq	($(LINK), static)
@@ -54,23 +54,23 @@ STLIBS	= tiff jpeg z
 else
 SHLIBS	= c m X11 tiff
 STLIBS	=
-LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
+LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-x11
 endif
 
-IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
+IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-x11
 
 $(MWP)	:
 	$(MAKE) -C $(BASEDIR)/mwp $(notdir $<)
 $(LIBMW).%	:
 	$(MAKE) -C $(BASEDIR)/libmw $(notdir $<)
-$(LIBMW_WDEVICE).%	:
-	$(MAKE) -C $(BASEDIR)/libmw-wdevice $(notdir $<)
+$(LIBMW_X11).%	:
+	$(MAKE) -C $(BASEDIR)/libmw-x11 $(notdir $<)
 
 .PHONY	: modules
 modules	: $(MODULES)
 
 .PHONY	: lib
-lib 	: lib$(LIBNAME)$(LIB_EXT)
+lib 	: lib$(LIBNAME)$(.A) lib$(LIBNAME)$(.SO)
 
 lib$(LIBNAME)$(.A)	: $(OBJ)
 	@$(ECHO) '$(AR) ru $@ $$(OBJ)'
@@ -84,6 +84,8 @@ api	: $(API)
 $(API) 	: $(HDR)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
+	$(ECHO) -e "/* TODO: drop, only required by fview() */" >> $@
+	$(ECHO) -e "#include \"mw-x11.h\"\n" >> $@
 	@$(ECHO) '$(SED) "/#.*$$/d" $$(HDR) | $(SED) "/^$$/N;/\n$$/D" >> $@'
 	@$(SED) '/#.*$$/d' $^ | $(SED) '/^$$/N;/\n$$/D' >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
@@ -96,12 +98,12 @@ $(API) 	: $(HDR)
 ifeq	($(LINK), static)
 # order of the libraries matters
 # see http://gcc.gnu.org/ml/gcc-help/2004-04/msg00106.html
-%.cmd	: %.cmd.o $(LIBMW_MODULES).a $(LIBMW).a $(LIBMW_WDEVICE).a \
+%.cmd	: %.cmd.o $(LIBMW_MODULES).a $(LIBMW).a $(LIBMW_X11).a \
 	$(addsuffix .a, $(addprefix /usr/lib/lib, $(STLIBS)))
 	$(LDWRAP) $(LD) $(LDFLAGS) -o $@ $^
 else
-%.cmd	: %.cmd.o $(LIBMW_MODULES).so $(LIBMW).so $(LIBMW_WDEVICE).so
-	$(LDWRAP) $(LD) $(LDFLAGS) -lmw -lmw-wdevice -lmw-modules -o $@ $<
+%.cmd	: %.cmd.o $(LIBMW_MODULES).so $(LIBMW).so $(LIBMW_X11).so
+	$(LDWRAP) $(LD) $(LDFLAGS) -lmw -lmw-x11 -lmw-modules -o $@ $<
 endif
 
 makefile.dep	: $(SRC)
@@ -155,7 +157,7 @@ prebuild	: $(HDR) $(API) makefile.dep
 #
 
 TEST	= test/checkmodules.sh
-LIBPATH	= ./:$(BASEDIR)/libmw:$(BASEDIR)/libmw-wdevice
+LIBPATH	= ./:$(BASEDIR)/libmw:$(BASEDIR)/libmw-x11
 
 TESTENV	= PATH=$(BUILDDIR):$$PATH	\
 	DATA=$(BASEDIR)/data		\

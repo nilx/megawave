@@ -1,6 +1,7 @@
-% LIBMW-WDEVICE(3)
+% LIBMW-X11(3)
 % Jacques Froment <jacques.froment@univ-ubs.fr>
-% 2008-09-29
+% Lionel Moisan <lionel.moisan@math-info.univ-paris5.fr>
+% 2009-01-29
 
 # NAME
 
@@ -12,8 +13,10 @@ WClearWindow, WDestroyWdeviceWindow, WDestroyWindow, WMoveWindow,
 WPutTitleWindow, WSaveImageWindow, WRestoreImageWindow,
 WLoadBitMapImage, WLoadBitMapColorImage, WSystemEvent, WSetUserEvent,
 WUserEvent, WGetStateMouse, WGetKeyboard, WNewImageWindow,
-WOpenImageWindow, WReOpenImageWindow - Window device library for the
-megawave framework.
+WOpenImageWindow, WReOpenImageWindow, Wp_DrawButton, Wp_DrawScale,
+Wp_Init, Wp_SetButton, Wp_handle, Wp_notify, Wp_main_loop,
+mw_CeldaGris, mw_CeldaColor, mw_get_window, mw_window_notify,
+mw_window_main_loop - X11 library for the megawave framework.
 
 # LIBRARY
 
@@ -29,7 +32,7 @@ library "libmw-mwplight"
 
 # FILES
 
-/usr/include/libmw-wdevice.h
+/usr/include/libmw-x11.h
 
 # SEE ALSO
 

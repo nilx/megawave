@@ -1,6 +1,6 @@
 #! make -f
 #
-# makefile for the megawave wdevice library
+# makefile for the megawave X11 library
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
@@ -20,14 +20,14 @@ distclean	: distclean-bin distclean-doc
 
 
 SRCDIR	= src
-SRC	= $(addprefix $(SRCDIR)/, wdevice.c wdevice-misc.c)
+SRC	= $(addprefix $(SRCDIR)/, wpanel.c window.c wdevice.c wdevice-misc.c)
 
 AUTOHDR	= $(SRC:.c=.h)
-HDR	= $(AUTOHDR) $(SRCDIR)/wdevice-defs.h $(SRCDIR)/wdevice-config.h
+HDR	= $(AUTOHDR) $(SRCDIR)/definitions.h $(SRCDIR)/config.h
 OBJ	= $(SRC:.c=$(.O))
 DEP	= $(SRC:.c=.d)
 
-LIBNAME	= mw-wdevice
+LIBNAME	= mw-x11
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
@@ -36,7 +36,7 @@ APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 #
 
 .PHONY	: lib
-lib 	: lib$(LIBNAME)$(LIB_EXT)
+lib 	: lib$(LIBNAME)$(.A) lib$(LIBNAME)$(.SO)
 
 lib$(LIBNAME)$(.A)	: $(OBJ)
 	@$(ECHO) '$(AR) ru $$(OBJ) $^'
@@ -50,8 +50,8 @@ api 	: $(API)
 $(API) 	: $(HDR)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
-	$(CAT) $(filter %-defs.h, $^) >> $@
-	$(CAT) $(filter-out %-defs.h, $^) >> $@
+	$(CAT) $(filter %definitions.h, $^) >> $@
+	$(CAT) $(filter-out %definitions.h, $^) >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
 
 
@@ -78,7 +78,7 @@ clean-bin :
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
 	$(RM) lib$(LIBNAME)$(.A)
-	$(RM) lib$(LIBNAME)$(.A)
+	$(RM) lib$(LIBNAME)$(.SO)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
@@ -89,11 +89,11 @@ distclean-bin : clean-bin
 #
 
 .PHONY	: prebuild
-prebuild	: autohdr man #dep
+prebuild	: autohdr man api #dep
 
 .PHONY	: autohdr
 autohdr	: $(AUTOHDR)
-	echo $(AUTOHDR)
+	@echo $(AUTOHDR)
 
 #.PHONY	: dep
 #dep	: $(DEP)

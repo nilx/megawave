@@ -8,89 +8,6 @@
 
 #include <stdio.h> /* for FILE */
 
-#ifndef _WPANEL_DEFS_H_
-#define _WPANEL_DEFS_H_
-
-#include "mw-wdevice.h"
-
-#define Wp_max_buttons 100  /* maximum number of buttons */
-#define WP_STRSIZE 1000  /* maximum string size */
-
-/* colors 64 grey levels + 5x5x5 */
-
-#define WP_BLACK    0
-#define WP_GREY    40
-#define WP_WHITE   63
-#define WP_RED    164
-#define WP_BLUE    68
-#define WP_GREEN   84
-
-
-/* wp types */
-
-#define WP_NULL    0
-#define WP_TOGGLE  1
-#define WP_INT     2
-#define WP_FLOAT   3
-
-
-typedef struct wp_toggle {
-  char *text;          /* text to display */
-  int color;           /* active color */
-  short nbuttons;      /* number of buttons */
-  short button;        /* current active button */
-  char **button_text;  /* text for each button */
-  int x,y ;            /* position on window (upleft corner) */
-  int (*proc)(struct wp_toggle *, int); 
-                       /* function to call when value changes */
-                       /* (may be NULL) */
-} *Wp_toggle;
-
-typedef struct wp_int {
-  char *text;          /* text to display */
-  char *format;        /* format for int display (eg "%d") */
-  int value;           /* value */
-  int strsize;         /* internal use (initialize to 0) */
-  int scale;           /* length of scale bar (0 means no bar) */
-  int firstscale;      /* value of bar left border */
-  int lastscale;       /* value of bar right border */
-  int divscale;        /* number of bar scale divisions */
-  int color;           /* text color */
-  short nbuttons;      /* number of buttons */
-  char **button_text;  /* text for each button */
-  int *button_inc;     /* increment for each button */
-  int x,y ;            /* position on window (upleft corner) */
-  int (*proc)(struct wp_int *, int); 
-                       /* function to call when value changes */
-                       /* (may be NULL) */
-} *Wp_int;
-
-typedef struct wp_float {
-  char *text;          /* text to display */
-  char *format;        /* format for int display (eg "%d") */
-  float value;         /* value */
-  int strsize;         /* internal use (initialize to 0) */
-  int color;           /* text color */
-  short nbuttons;      /* number of buttons */
-  char **button_text;  /* text for each button */
-  float *button_inc;   /* increment for each button */
-  int x,y ;            /* position on window (upleft corner) */
-  int (*proc)(struct wp_float *, int); 
-                       /* function to call when value changes */
-                       /* (may be NULL) */
-} *Wp_float;
-
-typedef struct wpanel {
-  Wframe *window;        /* attached window */
-  char state;            /* -1 means that window should be closed */
-  int nx,ny;             /* size of bitmaps (initial window size) */
-  char *type;            /* bitmap (associated wp type) */
-  void **action;         /* bitmap (pointer to wp structure) */
-  short *button;         /* bitmap (associated button number) */
-} *Wpanel;
-
-#endif /* !_WPANEL_DEFS_H_ */
-
 /*
  * libmw.h
  *
@@ -99,8 +16,6 @@ typedef struct wpanel {
 
 #ifndef _LIBMW_DEFS_H
 #define _LIBMW_DEFS_H
-
-#include "mw-wdevice.h"
 
 /* FIXME : split libmw-common (#defines) and libmw-defs (typedef)*/
 /* FIXME : rename libmw3 */
@@ -1145,12 +1060,6 @@ typedef struct Mwiline Mwiline;
 
 extern Mwiline mwicmd[];
 extern int mwind;
-
-/*
- * from window.h
- */
-
-extern int mwwindelay;
 
 /*
  * from utils.h
@@ -2616,37 +2525,5 @@ void *_mw_load_etype_to_itype(char *fname, char *typein, char *typeout, char *Ty
 short _mw_create_etype_from_itype(char *fname, void *mwstruct, char *typein, char *ftype);
 
 #endif /* !_TYPE_CONV_H_ */
-/*
- * window.h
- */
-
-#ifndef _WINDOW_H_
-#define _WINDOW_H_
-
-/* src/window.c */
-unsigned char mw_CeldaGris(unsigned char gris);
-unsigned char mw_CeldaColor(unsigned char *color);
-Wframe *mw_get_window(Wframe *window, int dx, int dy, int x0, int y0, char *title);
-void mw_window_notify(Wframe *Win, void *param, int (*proc)(Wframe *, void *));
-void mw_window_main_loop(void);
-
-#endif /* !_WINDOW_H_ */
-/*
- * wpanel.h
- */
-
-#ifndef _WPANEL_H_
-#define _WPANEL_H_
-
-/* src/wpanel.c */
-int Wp_DrawButton(Wframe *window, int x, int y, char *str, int color);
-void Wp_DrawScale(Wframe *window, int x, int y, int pos, int divisions, int length, int color);
-Wpanel Wp_Init(Wframe *window);
-void Wp_SetButton(int type, Wpanel wp, void *b);
-int Wp_handle(Wpanel wp, int event, int x, int y);
-int Wp_notify(Wframe *window, void *wp);
-void Wp_main_loop(Wpanel wp);
-
-#endif /* !_WPANEL_H_ */
 
 #endif /* !_MW_H_ */

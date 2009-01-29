@@ -22,8 +22,8 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 
-#include "wdevice-config.h"
-#include "wdevice-defs.h"
+#include "config.h"
+#include "definitions.h"
 #include "wdevice.h"
 
 #include "wdevice-misc.h"

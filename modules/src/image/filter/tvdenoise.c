@@ -29,6 +29,7 @@ usage = {
 #include <stdlib.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-x11.h"
 #include "mw-modules.h" /* for fnorm() */
 
 #define STEP_FACTOR 0.8

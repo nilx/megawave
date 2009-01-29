@@ -7,8 +7,6 @@
 #ifndef _LIBMW_DEFS_H
 #define _LIBMW_DEFS_H
 
-#include "mw-wdevice.h"
-
 /* FIXME : split libmw-common (#defines) and libmw-defs (typedef)*/
 /* FIXME : rename libmw3 */
 
@@ -1052,12 +1050,6 @@ typedef struct Mwiline Mwiline;
 
 extern Mwiline mwicmd[];
 extern int mwind;
-
-/*
- * from window.h
- */
-
-extern int mwwindelay;
 
 /*
  * from utils.h

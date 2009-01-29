@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "mw.h"
-#include "mw-wdevice.h"
+#include "mw-x11.h"
 #include "mw-modules.h" /* for cmzoom() */
 
 typedef struct ccmview_SParam {

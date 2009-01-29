@@ -18,12 +18,14 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+/* TODO: drop */
 #include <unistd.h>
 
-#include "libmw-defs.h"
-#include "utils.h"
-
+#include "definitions.h"
+#include "wdevice.h"
 #include "window.h"
+/*#include "utils.h" */
 
 #define mw_nmax_windows 10 /* Max Numbers of windows */
 
@@ -87,7 +89,10 @@ Wframe *mw_get_window(Wframe * window, int dx, int dy,
      }
     
      if ((ImageWindow == NULL) || (ImageWindow->win == (Window) NULL)) 
-	  mwerror(FATAL,1,"Cannot run the Wdevice library !\n");
+     {
+	 fprintf(stderr, "Cannot run the Wdevice library !\n");
+	 abort();
+     }
 
      return(ImageWindow);
 }
@@ -113,9 +118,9 @@ void mw_window_notify(Wframe * Win, void * param,
      /* Second case: new window to notify */
      if (mw_n_windows >= mw_nmax_windows) 
      {
-	  mwerror(ERROR, 0,
-		  "Cannot notify window #%d: too many windows\n",mw_n_windows);
-	  return;
+	 fprintf(stderr, "Cannot notify window #%d: too many windows\n",
+		 mw_n_windows);
+	 return;
      }
 
      mw_ptr_window[mw_n_windows] = Win;

@@ -1,14 +1,14 @@
 /**
- * @file wdevice-config.h
+ * @file config.h
  *
- * settings for the megawave wdevice library
+ * settings for the megawave wpanel library
  *
  * @author Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2002), \
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
-#ifndef _WDEVICE_CONFIG_H_
-#define _WDEVICE_CONFIG_H_
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
 
 /*
  * FONTS
@@ -89,4 +89,4 @@
 #define W_COPY GXcopy
 #define W_XOR  GXequiv
 
-#endif /* !_WDEVICE_CONFIG_H_ */
+#endif /* !_CONFIG_H_ */
