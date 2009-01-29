@@ -19,7 +19,7 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "error.h"
 
 #include "curve.h"
 #include "fcurve.h"

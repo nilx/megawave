@@ -23,7 +23,7 @@
 #include <unistd.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "error.h"
 #include "fimage.h"
 #include "mwio.h"
 #include "file_type.h"

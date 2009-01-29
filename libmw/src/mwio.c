@@ -31,7 +31,7 @@
 #include <unistd.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "error.h"
 
 #include "cimage_io.h"
 #include "fimage_io.h"

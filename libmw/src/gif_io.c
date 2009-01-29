@@ -11,7 +11,7 @@
 #include <string.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "error.h"
 
 #include "cimage.h"
 #include "mwio.h"

@@ -21,7 +21,7 @@
 #include <unistd.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "error.h"
 
 #include "ccimage_io.h"
 #include "ccmovie.h"

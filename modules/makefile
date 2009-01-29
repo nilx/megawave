@@ -46,6 +46,7 @@ MODULES	= $(addprefix $(BUILDDIR)/, $(notdir $(SRC:.c=)))
 LIBMW_MODULES	= lib$(LIBNAME)
 LIBMW	= $(BASEDIR)/libmw/libmw
 LIBMW_X11	= $(BASEDIR)/libmw-x11/libmw-x11
+LIBMW_CMDLINE	= $(BASEDIR)/libmw-cmdline/libmw-cmdline
 MWP	= $(BASEDIR)/mwp/mwp
 
 ifeq	($(LINK), static)
@@ -54,10 +55,10 @@ STLIBS	= tiff jpeg z
 else
 SHLIBS	= c m X11 tiff
 STLIBS	=
-LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-x11
+LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-x11 $(BASEDIR)/libmw-cmdline
 endif
 
-IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-x11
+IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-x11 $(BASEDIR)/libmw-cmdline
 
 $(MWP)	:
 	$(MAKE) -C $(BASEDIR)/mwp $(notdir $<)
@@ -65,6 +66,8 @@ $(LIBMW).%	:
 	$(MAKE) -C $(BASEDIR)/libmw $(notdir $<)
 $(LIBMW_X11).%	:
 	$(MAKE) -C $(BASEDIR)/libmw-x11 $(notdir $<)
+$(LIBMW_CMDLINE).%	:
+	$(MAKE) -C $(BASEDIR)/libmw-cmdline $(notdir $<)
 
 .PHONY	: modules
 modules	: $(MODULES)
@@ -98,12 +101,15 @@ $(API) 	: $(HDR)
 ifeq	($(LINK), static)
 # order of the libraries matters
 # see http://gcc.gnu.org/ml/gcc-help/2004-04/msg00106.html
-%.cmd	: %.cmd.o $(LIBMW_MODULES).a $(LIBMW).a $(LIBMW_X11).a \
-	$(addsuffix .a, $(addprefix /usr/lib/lib, $(STLIBS)))
+%.cmd	: %.cmd.o $(LIBMW_MODULES)$(.A) \
+	$(LIBMW)$(.A) $(LIBMW_X11)$(.A) $(LIBMW_CMDLINE)$(.A) \
+	$(addsuffix $(.A), $(addprefix /usr/lib/lib, $(STLIBS)))
 	$(LDWRAP) $(LD) $(LDFLAGS) -o $@ $^
 else
-%.cmd	: %.cmd.o $(LIBMW_MODULES).so $(LIBMW).so $(LIBMW_X11).so
-	$(LDWRAP) $(LD) $(LDFLAGS) -lmw -lmw-x11 -lmw-modules -o $@ $<
+%.cmd	: %.cmd.o $(LIBMW_MODULES)$(.SO) \
+	$(LIBMW)$(.SO) $(LIBMW_X11)$(.SO) $(LIBMW_CMDLINE)$(.SO)
+	$(LDWRAP) $(LD) $(LDFLAGS) \
+	-lmw -lmw-x11 -lmw-cmdline -lmw-modules -o $@ $<
 endif
 
 makefile.dep	: $(SRC)
@@ -157,7 +163,7 @@ prebuild	: $(HDR) $(API) makefile.dep
 #
 
 TEST	= test/checkmodules.sh
-LIBPATH	= ./:$(BASEDIR)/libmw:$(BASEDIR)/libmw-x11
+LIBPATH	= ./:$(BASEDIR)/libmw:$(BASEDIR)/libmw-x11:$(BASEDIR)/libmw-cmdline
 
 TESTENV	= PATH=$(BUILDDIR):$$PATH	\
 	DATA=$(BASEDIR)/data		\

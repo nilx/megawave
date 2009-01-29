@@ -27,7 +27,7 @@
 */
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "error.h"
 
 #include "ascii_file.h"
 #include "wpack2d.h"

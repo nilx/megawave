@@ -1052,11 +1052,9 @@ extern Mwiline mwicmd[];
 extern int mwind;
 
 /*
- * from utils.h
+ * from error.h
  */
 
 extern int mwdbg;
-extern int help_flg;
-extern int vers_flg;
 
 #endif /* !_LIBMW_DEFS_H */

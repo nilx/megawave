@@ -360,6 +360,7 @@ static void writegendecl(FILE * afile)
 
      fprintf(afile, "#include \"mw.h\"\n");
      fprintf(afile, "#include \"mw-modules.h\"\n");
+     fprintf(afile, "#include \"mw-cmdline.h\"\n");
 
      fprintf(afile, "extern int _%s();\n", module_name);
      fprintf(afile, "extern int usage_%s();\n", module_name);

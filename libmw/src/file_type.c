@@ -26,7 +26,7 @@
 #include <unistd.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "error.h"
 
 #include "type_conv.h"
 #include "mwio.h"

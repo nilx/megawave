@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "error.h"
 
 /*
  * native external (file) types sorted in decreasing priority order

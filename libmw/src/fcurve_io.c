@@ -21,7 +21,7 @@
 #include <sys/stat.h>
 
 #include "libmw-defs.h"
-#include "utils.h"
+#include "error.h"
 
 #include "file_type.h"
 #include "type_conv.h"

@@ -1,8 +1,8 @@
 #! make -f
 #
-# makefile for the megawave library
+# makefile for the megawave commandline library
 #
-# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2009)
 
 BASEDIR	= ..
 COMMONDIR	= $(BASEDIR)/common
@@ -15,108 +15,23 @@ include	$(COMMONDIR)/makefile
 .PHONY	: default all clean distclean
 default	: lib api
 all	: beautify lint lib api test man
-lint	: lint-bin lint-test lint-doc
 clean 	: clean-bin clean-doc
 distclean	: distclean-bin distclean-doc
 
-# TODO: drop unused or unwanted (module, unix_bsd, ...)
-# TODO: split libmw/libmw-cmdline
+
 SRCDIR	= src
-SRC	:= $(addprefix $(SRCDIR)/, \
-        ccimage.c       \
-        ccimage_io.c    \
-        cfimage.c       \
-        cfimage_io.c    \
-        cimage.c        \
-        cimage_io.c     \
-        fimage.c        \
-        fimage_io.c     \
-        \
-        ccmovie.c       \
-        ccmovie_io.c    \
-        cfmovie.c       \
-        cfmovie_io.c    \
-        cmovie.c        \
-        cmovie_io.c     \
-        fmovie.c        \
-        fmovie_io.c     \
-        \
-        cmimage.c       \
-        cmimage_io.c    \
-        mimage.c        \
-        mimage_io.c     \
-        \
-        curve.c         \
-        curve_io.c      \
-        dcurve.c        \
-        dcurve_io.c     \
-        fcurve.c        \
-        fcurve_io.c     \
-        fpolygon.c      \
-        fpolygon_io.c   \
-        polygon.c       \
-        polygon_io.c    \
-        shape.c         \
-        shape_io.c      \
-        \
-        fsignal.c       \
-        fsignal_io.c    \
-	\
-        list.c          \
-        list_io.c       \
-	\
-        wave_io.c       \
-        wmax2d.c        \
-        wmax2d_io.c     \
-        wpack2d.c       \
-        wpack2d_io.c    \
-        wtrans1d.c      \
-        wtrans1d_io.c   \
-        wtrans2d.c      \
-        wtrans2d_io.c   \
-        \
-        error.c         \
-	\
-        module.c        \
-        module_io.c     \
-	\
-        rawdata.c       \
-        rawdata_io.c    \
-        \
-        bmp_io.c        \
-        epsf_io.c       \
-        gif_io.c        \
-        jpeg_io.c       \
-        pgm_io.c        \
-        pm_io.c         \
-        ppm_io.c        \
-        ps_io.c         \
-        tiff_io.c       \
-        \
-        ascii_file.c    \
-        basic_conv.c    \
-        file_type.c     \
-        \
-        libmw.c         \
-        mwio.c          \
-        type_conv.c     \
-	)
+SRC	= $(addprefix $(SRCDIR)/, commandline.c)
 
 AUTOHDR	= $(SRC:.c=.h)
-HDR	= $(AUTOHDR) $(addprefix $(SRCDIR)/,	\
-	tiff.h strtoul.h ppmr_io.h pm.h tiffio.h \
-	libmw-defs.h)
+HDR	= $(AUTOHDR) # $(SRCDIR)/definitions.h $(SRCDIR)/config.h
 OBJ	= $(SRC:.c=$(.O))
-#DEP	= $(SRC:.c=.d)
+DEP	= $(SRC:.c=.d)
 
-LIBNAME	= mw
+LIBNAME	= mw-cmdline
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
-IPATH	+= $(BASEDIR)/libmw-x11
-
-# FIXME: hacks
-CWARN	+= -Wno-float-equal
+IPATH	+= $(BASEDIR)/libmw
 
 #
 # BIN
@@ -126,7 +41,7 @@ CWARN	+= -Wno-float-equal
 lib 	: lib$(LIBNAME)$(.A) lib$(LIBNAME)$(.SO)
 
 lib$(LIBNAME)$(.A)	: $(OBJ)
-	@$(ECHO) '$(AR) ru $$(OBJ)'
+	@$(ECHO) '$(AR) ru $$(OBJ) $^'
 	@$(AR) ru $@ $?
 lib$(LIBNAME)$(.SO)	: $(OBJ)
 	@$(ECHO) '$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $$(OBJ)'
@@ -134,13 +49,13 @@ lib$(LIBNAME)$(.SO)	: $(OBJ)
 
 .PHONY	: api
 api 	: $(API)
-$(API) 	: $(AUTOHDR) $(addprefix $(SRCDIR)/, libmw-defs.h)
+$(API) 	: $(HDR)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
-	$(ECHO) -e "\n#include <stdio.h> /* for FILE */\n" >> $@
-	$(CAT) $(filter %-defs.h, $^) >> $@
-	$(CAT) $(filter-out %-defs.h, $^) >> $@
+#	$(CAT) $(filter %definitions.h, $^) >> $@
+	$(CAT) $(filter-out %definitions.h, $^) >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
+
 
 .PHONY	: lint
 lint	: lint.flag
@@ -171,16 +86,16 @@ distclean-bin : clean-bin
 # they will be built and re-read if they are missing
 #-include $(DEP)
 
-
 #
 # PREBUILD AND UTILS
 #
 
 .PHONY	: prebuild
-prebuild	: autohdr man #dep
+prebuild	: autohdr man api #dep
 
 .PHONY	: autohdr
 autohdr	: $(AUTOHDR)
+	@echo $(AUTOHDR)
 
 #.PHONY	: dep
 #dep	: $(DEP)
@@ -192,14 +107,14 @@ autohdr	: $(AUTOHDR)
 
 .PHONY	: test
 
-
 #
 # DOC
 #
 
+
 DOCDIR	= doc
 MAN	= $(DOCDIR)/lib$(LIBNAME).man
-MANHTML	= $(DOCDIR)/lib$(LIBNAME).man
+MANHTML	= $(MAN).html
 
 .PHONY	: man
 man	: $(MAN) $(MANHTML)
@@ -232,4 +147,3 @@ $(DOCDIR)/latex/refman.tex	: $(SRC) $(HDR)
 $(DOCDIR)/srcdoc.pdf : $(DOCDIR)/latex/refman.tex
 	$(MAKE) -C $(DOCDIR)/latex refman.pdf
 	mv $(DOCDIR)/latex/refman.pdf $(DOCDIR)/srcdoc.pdf
-

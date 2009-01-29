@@ -1062,12 +1062,10 @@ extern Mwiline mwicmd[];
 extern int mwind;
 
 /*
- * from utils.h
+ * from error.h
  */
 
 extern int mwdbg;
-extern int help_flg;
-extern int vers_flg;
 
 #endif /* !_LIBMW_DEFS_H */
 /*
@@ -2022,6 +2020,18 @@ short _mw_wtrans2d_create_wtrans(char *fname, Wtrans2d wtrans, char *type);
 
 #endif /* !_WTRANS2D_IO_H_ */
 /*
+ * error.h
+ */
+
+#ifndef _ERROR_H_
+#define _ERROR_H_
+
+/* src/error.c */
+void mwdebug(char *fmt, ...);
+void mwerror(int code, int exit_code, char *fmt, ...);
+
+#endif /* !_ERROR_H_ */
+/*
  * module.h
  */
 
@@ -2078,6 +2088,130 @@ Rawdata _mw_load_rawdata(char *fname);
 short _mw_create_rawdata(char *fname, Rawdata rd);
 
 #endif /* !_RAWDATA_IO_H_ */
+/*
+ * bmp_io.h
+ */
+
+#ifndef _BMP_IO_H_
+#define _BMP_IO_H_
+
+/* src/bmp_io.c */
+FILE *_mw_read_bmp_header(char *fname, unsigned int *nx, unsigned int *ny, unsigned int *offset, unsigned int *size, unsigned int *planes, unsigned int *bitcount, unsigned int *compression);
+Cimage _mw_cimage_load_bmp(char *file);
+short _mw_cimage_create_bmp(char *file, Cimage image);
+Ccimage _mw_ccimage_load_bmp(char *file);
+short _mw_ccimage_create_bmp(char *file, Ccimage image);
+
+#endif /* !_BMP_IO_H_ */
+/*
+ * epsf_io.h
+ */
+
+#ifndef _EPSF_IO_H_
+#define _EPSF_IO_H_
+
+/* src/epsf_io.c */
+Cimage _mw_cimage_load_epsf(char *fname);
+short _mw_cimage_create_epsf(char *fname, Cimage image);
+
+#endif /* !_EPSF_IO_H_ */
+/*
+ * gif_io.h
+ */
+
+#ifndef _GIF_IO_H_
+#define _GIF_IO_H_
+
+/* src/gif_io.c */
+Cimage _mw_cimage_load_gif(char *fname);
+short _mw_cimage_create_gif(char *fname, Cimage image);
+
+#endif /* !_GIF_IO_H_ */
+/*
+ * jpeg_io.h
+ */
+
+#ifndef _JPEG_IO_H_
+#define _JPEG_IO_H_
+
+/* src/jpeg_io.c */
+Cimage _mw_cimage_load_jpeg(char *fname);
+Ccimage _mw_ccimage_load_jpeg(char *fname);
+short _mw_cimage_create_jpeg(char *fname, Cimage image, char *Quality);
+short _mw_ccimage_create_jpeg(char *fname, Ccimage image, char *Quality);
+
+#endif /* !_JPEG_IO_H_ */
+/*
+ * pgm_io.h
+ */
+
+#ifndef _PGM_IO_H_
+#define _PGM_IO_H_
+
+/* src/pgm_io.c */
+int _mw_pgm_get_next_item(FILE *fp, char *comment);
+Cimage _mw_cimage_load_pgma(char *file);
+short _mw_cimage_create_pgma(char *file, Cimage image);
+Cimage _mw_cimage_load_pgmr(char *file);
+short _mw_cimage_create_pgmr(char *file, Cimage image);
+
+#endif /* !_PGM_IO_H_ */
+/*
+ * pm_io.h
+ */
+
+#ifndef _PM_IO_H_
+#define _PM_IO_H_
+
+/* src/pm_io.c */
+Cimage _mw_cimage_load_pm(char *file);
+short _mw_cimage_create_pm(char *file, Cimage image);
+Fimage _mw_fimage_load_pm(char *file);
+short _mw_fimage_create_pm(char *file, Fimage image);
+Ccimage _mw_ccimage_load_pm(char *file);
+short _mw_ccimage_create_pm(char *file, Ccimage image);
+Cfimage _mw_cfimage_load_pm(char *file);
+short _mw_cfimage_create_pm(char *file, Cfimage image);
+
+#endif /* !_PM_IO_H_ */
+/*
+ * ppm_io.h
+ */
+
+#ifndef _PPM_IO_H_
+#define _PPM_IO_H_
+
+/* src/ppm_io.c */
+Ccimage _mw_ccimage_load_ppmr(char *file);
+short _mw_ccimage_create_ppmr(char *file, Ccimage image);
+
+#endif /* !_PPM_IO_H_ */
+/*
+ * ps_io.h
+ */
+
+#ifndef _PS_IO_H_
+#define _PS_IO_H_
+
+/* src/ps_io.c */
+Cimage _mw_cimage_load_ps(char *fname);
+short _mw_cimage_create_ps(char *fname, Cimage image);
+
+#endif /* !_PS_IO_H_ */
+/*
+ * tiff_io.h
+ */
+
+#ifndef _TIFF_IO_H_
+#define _TIFF_IO_H_
+
+/* src/tiff_io.c */
+Ccimage _mw_ccimage_load_tiff(char *fname);
+Cimage _mw_cimage_load_tiff(char *fname);
+short _mw_ccimage_create_tiff(char *fname, Ccimage image);
+short _mw_cimage_create_tiff(char *fname, Cimage image);
+
+#endif /* !_TIFF_IO_H_ */
 /*
  * ascii_file.h
  */
@@ -2235,130 +2369,6 @@ int _mw_get_file_type(char *fname, char *ftype, char *mtype, int *hsize, float *
 
 #endif /* !_FILE_TYPE_H_ */
 /*
- * bmp_io.h
- */
-
-#ifndef _BMP_IO_H_
-#define _BMP_IO_H_
-
-/* src/bmp_io.c */
-FILE *_mw_read_bmp_header(char *fname, unsigned int *nx, unsigned int *ny, unsigned int *offset, unsigned int *size, unsigned int *planes, unsigned int *bitcount, unsigned int *compression);
-Cimage _mw_cimage_load_bmp(char *file);
-short _mw_cimage_create_bmp(char *file, Cimage image);
-Ccimage _mw_ccimage_load_bmp(char *file);
-short _mw_ccimage_create_bmp(char *file, Ccimage image);
-
-#endif /* !_BMP_IO_H_ */
-/*
- * epsf_io.h
- */
-
-#ifndef _EPSF_IO_H_
-#define _EPSF_IO_H_
-
-/* src/epsf_io.c */
-Cimage _mw_cimage_load_epsf(char *fname);
-short _mw_cimage_create_epsf(char *fname, Cimage image);
-
-#endif /* !_EPSF_IO_H_ */
-/*
- * gif_io.h
- */
-
-#ifndef _GIF_IO_H_
-#define _GIF_IO_H_
-
-/* src/gif_io.c */
-Cimage _mw_cimage_load_gif(char *fname);
-short _mw_cimage_create_gif(char *fname, Cimage image);
-
-#endif /* !_GIF_IO_H_ */
-/*
- * jpeg_io.h
- */
-
-#ifndef _JPEG_IO_H_
-#define _JPEG_IO_H_
-
-/* src/jpeg_io.c */
-Cimage _mw_cimage_load_jpeg(char *fname);
-Ccimage _mw_ccimage_load_jpeg(char *fname);
-short _mw_cimage_create_jpeg(char *fname, Cimage image, char *Quality);
-short _mw_ccimage_create_jpeg(char *fname, Ccimage image, char *Quality);
-
-#endif /* !_JPEG_IO_H_ */
-/*
- * pgm_io.h
- */
-
-#ifndef _PGM_IO_H_
-#define _PGM_IO_H_
-
-/* src/pgm_io.c */
-int _mw_pgm_get_next_item(FILE *fp, char *comment);
-Cimage _mw_cimage_load_pgma(char *file);
-short _mw_cimage_create_pgma(char *file, Cimage image);
-Cimage _mw_cimage_load_pgmr(char *file);
-short _mw_cimage_create_pgmr(char *file, Cimage image);
-
-#endif /* !_PGM_IO_H_ */
-/*
- * pm_io.h
- */
-
-#ifndef _PM_IO_H_
-#define _PM_IO_H_
-
-/* src/pm_io.c */
-Cimage _mw_cimage_load_pm(char *file);
-short _mw_cimage_create_pm(char *file, Cimage image);
-Fimage _mw_fimage_load_pm(char *file);
-short _mw_fimage_create_pm(char *file, Fimage image);
-Ccimage _mw_ccimage_load_pm(char *file);
-short _mw_ccimage_create_pm(char *file, Ccimage image);
-Cfimage _mw_cfimage_load_pm(char *file);
-short _mw_cfimage_create_pm(char *file, Cfimage image);
-
-#endif /* !_PM_IO_H_ */
-/*
- * ppm_io.h
- */
-
-#ifndef _PPM_IO_H_
-#define _PPM_IO_H_
-
-/* src/ppm_io.c */
-Ccimage _mw_ccimage_load_ppmr(char *file);
-short _mw_ccimage_create_ppmr(char *file, Ccimage image);
-
-#endif /* !_PPM_IO_H_ */
-/*
- * ps_io.h
- */
-
-#ifndef _PS_IO_H_
-#define _PS_IO_H_
-
-/* src/ps_io.c */
-Cimage _mw_cimage_load_ps(char *fname);
-short _mw_cimage_create_ps(char *fname, Cimage image);
-
-#endif /* !_PS_IO_H_ */
-/*
- * tiff_io.h
- */
-
-#ifndef _TIFF_IO_H_
-#define _TIFF_IO_H_
-
-/* src/tiff_io.c */
-Ccimage _mw_ccimage_load_tiff(char *fname);
-Cimage _mw_cimage_load_tiff(char *fname);
-short _mw_ccimage_create_tiff(char *fname, Ccimage image);
-short _mw_cimage_create_tiff(char *fname, Cimage image);
-
-#endif /* !_TIFF_IO_H_ */
-/*
  * libmw.h
  */
 
@@ -2368,51 +2378,6 @@ short _mw_cimage_create_tiff(char *fname, Cimage image);
 /* src/libmw.c */
 
 #endif /* !_LIBMW_H_ */
-/*
- * utils.h
- */
-
-#ifndef _UTILS_H_
-#define _UTILS_H_
-
-/* src/utils.c */
-void mwexit(int n);
-void mw_exit(int n);
-void *mwmalloc(size_t size);
-void mwfree(void *ptr);
-void *mwrealloc(void *ptr, size_t size);
-void *mwcalloc(size_t nelem, size_t elsize);
-void mwcfree(void *ptr);
-int _mw_main(int argc, char *argv[], char *envp[]);
-void MegaWaveDefOpt(char *vers);
-int mw_opt_used(char c);
-void mwdebug(char *fmt, ...);
-void mwerror(int code, int exit_code, char *fmt, ...);
-char *_mw_ctoa_(char c);
-char *_mw_uctoa_(unsigned char uc);
-char *_mw_stoa_(short s);
-char *_mw_ustoa_(unsigned short us);
-char *_mw_itoa_(int i);
-char *_mw_uitoa_(unsigned int ui);
-char *_mw_ltoa_(long l);
-char *_mw_ultoa_(unsigned long ul);
-char *_mw_ftoa_(float f);
-char *_mw_dtoa_(double d);
-int _mwis_open(char *s, char *rw);
-int _mwgetopt(int argc, char **argv, char *optstring);
-
-#endif /* !_UTILS_H_ */
-/*
- * mw_main.h
- */
-
-#ifndef _MW_MAIN_H_
-#define _MW_MAIN_H_
-
-/* src/mw_main.c */
-int main(int argc, char **argv, char **envp);
-
-#endif /* !_MW_MAIN_H_ */
 /*
  * mwio.h
  */

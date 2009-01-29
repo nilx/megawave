@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
+#include "mw-x11.h" /* for fthre() */
 #include "mw-modules.h" /* for fthre() */
 
 static Wframe *PlotWindow=NULL;  
