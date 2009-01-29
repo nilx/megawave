@@ -95,9 +95,9 @@ Uncomment the related include lines in `common/makefile` to use them.
 # subfolders
 
 You can also invoke make directly from within the subfolders
-`mwplight`, `libmw-wdevice`, `libmw` and `modules`. The previous
-options are still valid, and some other make targets are
-available. Please refer to `<subfolder>/README.txt` for the details.
+`mwp`, `libmw-wdevice`, `libmw` and `modules`. The previous options
+are still valid, and some other make targets are available. Please
+refer to `<subfolder>/README.txt` for the details.
 
 Some other targets are available from the subfolders, mainly for
 development porpose (code linting, syntax cleanup, ...). They are not

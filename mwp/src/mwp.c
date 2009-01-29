@@ -1,7 +1,7 @@
 /**
- * @file mwplight.c
+ * @file mwp.c
  *
- * main() function for mwplight, the megawave modules preprocessor
+ * main() function for mwp, the megawave modules preprocessor
  *
  * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
@@ -10,10 +10,10 @@
 /**
  * GENGETOPT BEGIN
  *
- * package "mwplight"
+ * package "mwp"
  * version "1.01"
  * purpose "Parse a megawave module"
- * usage   "mwplight [-s module-source] [output-options]"
+ * usage   "mwp [-s module-source] [output-options]"
  * description "This parser reads the megawave header of a module. It \
  * can produce:
  * * a library file, with a modified version of the module C code for \
@@ -76,7 +76,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "mwplight-defs.h"
+#include "definitions.h"
 
 #include "io.h"
 #include "parser.h"
@@ -85,7 +85,7 @@
 #include "interface.h"
 #include "documentation.h"
 
-#include "mwplight.h"
+#include "mwp.h"
 
 /**
  * @brief Open a file for read or write, with a default file
@@ -106,7 +106,7 @@ static FILE * open_file(const char * filename, const char * mode,
      else
           if (NULL == (file = fopen(filename, mode)))
           {
-               fprintf(stderr, "mwplight: cannot open file '%s'\n", filename);
+               fprintf(stderr, "mwp: cannot open file '%s'\n", filename);
                exit(1);
           }
      return file;
@@ -168,7 +168,7 @@ extern char * module_name;
 extern char * group_name;
 extern FILE * source_file_global;
 
-#include "mwplight_cmdline.h"
+#include "mwp_cmdline.h"
 int main( int argc, char **argv)
 {
      struct mw_args_info mw_args_info;

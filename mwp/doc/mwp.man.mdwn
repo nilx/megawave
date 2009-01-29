@@ -1,18 +1,18 @@
-% MWPLIGHT(1)
+% MWP(1)
 % Jacques Froment <jacques.froment@univ-ubs.fr>
 % 2008-09-27
 
 # NAME
 
-mwplight\ --\ the light preprocessor for megawave
+mwp\ --\ the light preprocessor for megawave
 
 # SYNOPSYS
 
-**mwplight** \[-s module-source\] \[output-options\] \[misc-options\]
+**mwp** \[-s module-source\] \[output-options\] \[misc-options\]
 
 # DESCRIPTION
 
-**mwplight** reads the megawave header of a module. It produces:
+**mwp** reads the megawave header of a module. It produces:
 
 * a library file, with a modified version of the module C code for inclusion in 
 the megawave modules library;
@@ -65,14 +65,14 @@ These options are optional.
 
 # ENVIRONMENT
 
-Unlike previous versions, this version of **mwplight** doesn't use any
+Unlike previous versions, this version of **mwp** doesn't use any
 environment variable; you must provide the full (absolute or relative)
 path to the files.
 
 # EXAMPLES
 
-* `mwplight -l foo_lib.c -e foo_exec.c -d foo_doc.tex -g bar -s foo.c`
-* `< foo.c mwplight -l - > foo_lib.c`
+* `mwp -L foo_lib.c -E foo_exec.c -D foo_doc.tex -g bar -s foo.c`
+* `< foo.c mwplight -L - > foo_lib.c`
 
 # COPYRIGHT
 
@@ -82,4 +82,4 @@ See http://megawave.cmla.ens-cachan.fr/ for details.
 
 # SEE ALSO
 
-**megawave(7)**, **libmw(3)**, **megawave-modules(7)**
+**megawave(7)**, **megawave-modules(7)**, **libmw(3)**

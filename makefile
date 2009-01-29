@@ -1,11 +1,11 @@
 default	: all
-all	: mwplight libmw libmw-wdevice modules
-.PHONY	: prebuild mwplight libmw libmw-wdevice modules doc
+all	: mwp libmw libmw-wdevice modules
+.PHONY	: prebuild mwp libmw libmw-wdevice modules doc
 
 prebuild	:
 	$(MAKE) -C ./libmw-wdevice prebuild
 	$(MAKE) -C ./libmw prebuild
-	$(MAKE) -C ./mwplight prebuild
+	$(MAKE) -C ./mwp prebuild
 	$(MAKE) -C ./modules prebuild
 
 libmw-wdevice	:
@@ -14,10 +14,10 @@ libmw-wdevice	:
 libmw	: libmw-wdevice
 	$(MAKE) -C ./libmw
 
-mwplight	:
-	$(MAKE) -C ./mwplight
+mwp	:
+	$(MAKE) -C ./mwp
 
-modules	: mwplight libmw libmw-wdevice
+modules	: mwp libmw libmw-wdevice
 	$(MAKE) -C ./modules
 
 test	: modules
@@ -29,18 +29,18 @@ doc	:
 srcdoc	:
 	$(MAKE) -C ./libmw-wdevice srcdoc
 	$(MAKE) -C ./libmw srcdoc
-	$(MAKE) -C ./mwplight srcdoc
+	$(MAKE) -C ./mwp srcdoc
 	$(MAKE) -C ./modules srcdoc
 
 clean	:
-	$(MAKE) -C ./mwplight clean
+	$(MAKE) -C ./mwp clean
 	$(MAKE) -C ./libmw-wdevice clean
 	$(MAKE) -C ./libmw clean
 	$(MAKE) -C ./modules clean
 	$(MAKE) -C ./doc clean
 
 distclean	:
-	$(MAKE) -C ./mwplight distclean
+	$(MAKE) -C ./mwp distclean
 	$(MAKE) -C ./libmw-wdevice distclean
 	$(MAKE) -C ./libmw distclean
 	$(MAKE) -C ./modules distclean

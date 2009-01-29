@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "mwplight-defs.h"
+#include "definitions.h"
 #include "io.h"
 
 #include "interface.h"

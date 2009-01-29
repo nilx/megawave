@@ -16,7 +16,7 @@
 #include <ctype.h>
 #include <stdarg.h>
 
-#include "mwplight-defs.h"
+#include "definitions.h"
 
 #include "io.h"
 
@@ -125,19 +125,19 @@ static void logger(int log_level, FILE * outfile, char * msg)
      switch(log_level)
      {
      case LOG_DEBUG:
-          fprintf(outfile, "mwplight.debug   : %s\n", msg);
+          fprintf(outfile, "mwp.debug   : %s\n", msg);
           break;
      case LOG_INFO:
-          fprintf(outfile, "mwplight.info    : %s\n", msg);
+          fprintf(outfile, "mwp.info    : %s\n", msg);
           break;
      case LOG_WARN:
-          fprintf(outfile, "mwplight.warning : %s\n", msg);
+          fprintf(outfile, "mwp.warning : %s\n", msg);
           break;
      case LOG_ERROR:
-          fprintf(outfile, "mwplight.error   : %s\n", msg);
+          fprintf(outfile, "mwp.error   : %s\n", msg);
           break;
      default:
-          fprintf(outfile, "mwplight         : %s\n", msg);
+          fprintf(outfile, "mwp         : %s\n", msg);
           break;
      }
 }

@@ -1,9 +1,9 @@
 /*
- * mwplight.h
+ * mwp.h
  */
 
-#ifndef _MWPLIGHT_H_
-#define _MWPLIGHT_H_
+#ifndef _MWP_H_
+#define _MWP_H_
 
 /* src/mwplight.c */
 int main(int argc, char **argv);

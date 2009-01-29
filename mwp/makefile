@@ -1,6 +1,6 @@
 #! make -f
 #
-# makefile for the megawave mwplight parser
+# makefile for the megawave parser
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
 
@@ -16,23 +16,23 @@ include	$(COMMONDIR)/makefile
 default	: bin
 all	: beautify lint bin test man
 clean	: clean-bin clean-test clean-doc
-distclean	: distclean-bin distclean-test distclean-doc
+distclean	: distclean-bin distclean-doc #distclean-test
 
 
 SRCDIR	= src
 SRC	= $(addprefix $(SRCDIR)/,				\
 	tree.c parser.c instruction.c io.c header.c usage.c	\
 	executable.c interface.c library.c documentation.c	\
-	mwplight.c)
-CMDLINE	= $(SRCDIR)/mwplight_cmdline.c
+	mwp.c)
+CMDLINE	= $(SRCDIR)/mwp_cmdline.c
 
 AUTOHDR	= $(SRC:.c=.h)
 HDR	= $(AUTOHDR) $(CMDLINE:.c=.h)				\
-	$(SRCDIR)/mwplight-defs.h $(SRCDIR)/mwplight-config.h
+	$(SRCDIR)/definitions.h $(SRCDIR)/config.h
 OBJ	= $(SRC:.c=$(.O)) $(CMDLINE:.c=$(.O))
 #DEP	= $(SRC:.c=.d)
 
-BINNAME	= mwplight
+BINNAME	= mwp
 
 #
 # PREBUILD AND UTILS
@@ -42,7 +42,7 @@ BINNAME	= mwplight
 prebuild	: autohdr cmdline man #dep
 
 .PHONY	: cmdline
-cmdline	: $(SRCDIR)/mwplight.c+cmdline
+cmdline	: $(SRCDIR)/mwp.c+cmdline
 
 .PHONY	: autohdr
 autohdr	: $(AUTOHDR)
@@ -87,8 +87,8 @@ clean-bin :
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
 	$(RM) $(SRCDIR)/*.ggo
-	$(RM) $(SRCDIR)/mwplight_cmdline.c
-	$(RM) $(SRCDIR)/mwplight_cmdline.h
+	$(RM) $(SRCDIR)/mwp_cmdline.c
+	$(RM) $(SRCDIR)/mwp_cmdline.h
 	$(RM) $(BINNAME)
 
 # include the prerequisites files
@@ -99,30 +99,30 @@ distclean-bin : clean-bin
 # TEST
 #
 
-TEST_MODULES	= $(shell find $(BASEDIR)/modules/src -type f -name *.c)
-TEST_ENV	= MWPLIGHT=$(BINNAME) 	\
-	MODULES="$(TEST_MODULES)" 			\
-	LIBMWDIR=../libmw				\
-	LIBMW_WDEVICEDIR=../libmw-wdevice		\
-	TESTDIR=test
-
+#TEST_MODULES	= $(shell find $(BASEDIR)/modules/src -type f -name *.c)
+#TEST_ENV	= MWPLIGHT=$(BINNAME) 	\
+#	MODULES="$(TEST_MODULES)" 			\
+#	LIBMWDIR=../libmw				\
+#	LIBMW_WDEVICEDIR=../libmw-wdevice		\
+#	TESTDIR=test
+#
 # TODO: test_interface
-TESTS	= $(addprefix test_, run library executable documentation name)
-
-.PHONY	: test
-test	: $(addsuffix .flag, $(TESTS))
-
-test_%.flag	: $(BINNAME)
-	@echo test_$*.sh 
-	@env $(TEST_ENV) sh test/test_$*.sh
-	@touch $@
-
-.PHONY	: clean-test
-clean-test :
-	$(RM) $(addsuffix .flag, $(TESTS))
-
-.PHONY	: distclean-test
-distclean-test : clean-test
+#TESTS	= $(addprefix test_, run library executable documentation name)
+#
+#.PHONY	: test
+#test	: $(addsuffix .flag, $(TESTS))
+#
+#test_%.flag	: $(BINNAME)
+#	@echo test_$*.sh 
+#	@env $(TEST_ENV) sh test/test_$*.sh
+#	@touch $@
+#
+#.PHONY	: clean-test
+#clean-test :
+#	$(RM) $(addsuffix .flag, $(TESTS))
+#
+#.PHONY	: distclean-test
+#distclean-test : clean-test
 
 #
 # DOC

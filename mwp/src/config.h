@@ -1,7 +1,7 @@
 /**
- * @file mwplight-config.h
+ * @file config.h
  *
- * common configuration for mwplight
+ * common configuration for mwp
  *
  * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005), \
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
@@ -9,8 +9,8 @@
 
 /* TODO: distribute */
 
-#ifndef _MWPLIGHT_CONFIG_H
-#define _MWPLIGHT_CONFIG_H
+#ifndef _CONFIG_H
+#define _CONFIG_H
 
 /*
  * CONSTANTS
@@ -168,4 +168,4 @@
  */
 #define DT_Stype 4
 
-#endif /* !_MWPLIGHT_CONFIG_H */
+#endif /* !_CONFIG_H */

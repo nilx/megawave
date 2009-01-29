@@ -46,7 +46,7 @@ MODULES	= $(addprefix $(BUILDDIR)/, $(notdir $(SRC:.c=)))
 LIBMW_MODULES	= lib$(LIBNAME)
 LIBMW	= $(BASEDIR)/libmw/libmw
 LIBMW_WDEVICE	= $(BASEDIR)/libmw-wdevice/libmw-wdevice
-MWPLIGHT	= $(BASEDIR)/mwplight/mwplight
+MWP	= $(BASEDIR)/mwp/mwp
 
 ifeq	($(LINK), static)
 SHLIBS	= c m dl X11
@@ -59,8 +59,8 @@ endif
 
 IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-wdevice
 
-$(MWPLIGHT)	:
-	$(MAKE) -C $(BASEDIR)/mwplight $(notdir $<)
+$(MWP)	:
+	$(MAKE) -C $(BASEDIR)/mwp $(notdir $<)
 $(LIBMW).%	:
 	$(MAKE) -C $(BASEDIR)/libmw $(notdir $<)
 $(LIBMW_WDEVICE).%	:
@@ -90,8 +90,8 @@ $(API) 	: $(HDR)
 
 # RULES
 
-%.cmd.c	: %.c $(MWPLIGHT)
-	$(MWPLIGHT) --source $< --exec $@
+%.cmd.c	: %.c $(MWP)
+	$(MWP) --source $< --exec $@
 
 ifeq	($(LINK), static)
 # order of the libraries matters

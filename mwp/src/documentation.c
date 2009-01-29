@@ -19,7 +19,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "mwplight-defs.h"
+#include "definitions.h"
 #include "io.h"
 
 #include "documentation.h"

@@ -1,20 +1,20 @@
 /**
- * @file mwplight-defs.h
+ * @file definitions.h
  *
- * common definitions for mwplight
+ * common definitions for mwp
  *
  * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005), \
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
-#ifndef _MWPLIGHT_DEFS_H
-#define _MWPLIGHT_DEFS_H
+#ifndef _DEFINITIONS_H
+#define _DEFINITIONS_H
 
 /* FIXME: drop */
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "mwplight-config.h"
+#include "config.h"
 
 /*
  * CUSTOM TYPES/STRUCTURES
@@ -302,4 +302,4 @@ char protobuf[STRSIZE];
 			   ((x)->Itype == I_FUNCPROTO_KR))
 #define ISCI_FUNCTION(x)  (ISCI_FUNCDECL(x) || ISCI_FUNCPROTO(x))
 
-#endif /* !_MWPLIGHT_DEFS_H */
+#endif /* !_DEFINITIONS_H */
