@@ -27,8 +27,7 @@ float *newht_global;		/* new histogram */
 
 /*--------------- SOME BASIC FUNCTIONS ---------------------------*/
 
-static int integer_sup(f)
-float f;
+static int integer_sup(float f)
 {
   int q;
   
@@ -39,8 +38,8 @@ float f;
   return q;
 }
 
-static int IPOWER(a, INT)			/* Integer Power */
-int a, INT;
+static int IPOWER(int a, int INT)			/* Integer Power */
+           
 {
   int i;
   
@@ -60,13 +59,13 @@ int a, INT;
    
    fimage(point1)==fimage(point2) <=> image(point1)==image(point2)
 */
-static void ccontrast_curve(image, fimage, curve, lambda1, lambda2, image_size, n_flag)
-Cimage image;			/* original image */
-Fimage fimage;			/* image to be enhanced */
-Fcurve curve;			/* enhancing region */
-int *lambda1, *lambda2;		/* enhancing gray value region */
-int *image_size;
-char *n_flag;
+static void ccontrast_curve(Cimage image, Fimage fimage, Fcurve curve, int *lambda1, int *lambda2, int *image_size, char *n_flag)
+             			/* original image */
+              			/* image to be enhanced */
+             			/* enhancing region */
+                       		/* enhancing gray value region */
+                
+             
 
 {
   unsigned int h, histo_distr;
@@ -129,11 +128,7 @@ char *n_flag;
 /*--------------------------- MAIN MODULE -----------------------------------*/
 /*---------------------------------------------------------------------------*/
 
-void ccontrast_local(in, out, d, n_flag)
-Cimage in;
-Cimage out;
-int *d;
-char *n_flag;
+void ccontrast_local(Cimage in, Cimage out, int *d, char *n_flag)
 {
   int j, k, k2, adr, size, lambda, lambda1, lambda2;
   int debug_gray1, debug_gray2, debug_gray3, debug_empty;

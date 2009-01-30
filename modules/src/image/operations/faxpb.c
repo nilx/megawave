@@ -29,10 +29,7 @@
 
 /*** NB: Calling this module with out=in is possible ***/
 
-void faxpb(in,out,a,s,b,m,k,M,N)
-     Fimage in,out;
-     float *a,*s,*b,*m,*M,*N;
-     char *k;
+void faxpb(Fimage in, Fimage out, float *a, float *s, float *b, float *m, char *k, float *M, float *N)
 {
   double sum;
   float gain,ofs1,ofs2,*pin,*pout;

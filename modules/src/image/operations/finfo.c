@@ -17,8 +17,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* fvalues(), fentropy(), fmean(), fnorm() */
 
-static int test_chars(s)
-     Fsignal s;
+static int test_chars(Fsignal s)
 {
   int ok,i,c;
 
@@ -31,8 +30,7 @@ static int test_chars(s)
     
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void finfo(u)
-     Fimage u;
+void finfo(Fimage u)
 {  
   Fsignal v;
   int b;

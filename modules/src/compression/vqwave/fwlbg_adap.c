@@ -54,10 +54,7 @@ static Fsignal      ORI1, ORI2;          /* Non normalized filters */
 
 
 static void
-INIT_RI(ri1, ri2)
-
-Fsignal ri1, ri2;
-
+INIT_RI(Fsignal ri1, Fsignal ri2)
 {
   int i;
 
@@ -80,10 +77,7 @@ Fsignal ri1, ri2;
 
 
 static void
-REFRESH_FILTERS(ri1, ri2)
-
-Fsignal ri1, ri2;
-
+REFRESH_FILTERS(Fsignal ri1, Fsignal ri2)
 {
   int i;
 
@@ -99,13 +93,13 @@ Fsignal ri1, ri2;
 
 
 static void
-WCB2FCB(wcb, fcb)
+WCB2FCB(Wtrans2d wcb, Fimage fcb)
 
   /*--- Translate a codebook sequence from the wtrans2d ---*/
                  /*--- to the fimage format ---*/
 
-Wtrans2d      wcb;         /* Codebook in the wtrans2d format */
-Fimage        fcb;         /* Codebook in the fimage format */
+                           /* Codebook in the wtrans2d format */
+                           /* Codebook in the fimage format */
 
 {
   int           j;	        /* Scale index in wav. transf. */
@@ -171,13 +165,13 @@ Fimage        fcb;         /* Codebook in the fimage format */
 
 
 static void
-FCB2WCB(fcb, wcb)
+FCB2WCB(Fimage fcb, Wtrans2d wcb)
 
   /*--- Translate a codebook sequence from the fimage ---*/
                /*--- to the wtrans2d format ---*/
 
-Fimage        fcb;         /* Codebook in the fimage format */
-Wtrans2d      wcb;         /* Codebook in the wtrans2d format */
+                           /* Codebook in the fimage format */
+                           /* Codebook in the wtrans2d format */
 
 {
   int           nlevel;
@@ -250,42 +244,42 @@ Wtrans2d      wcb;         /* Codebook in the wtrans2d format */
 
 
 static void
-fwlbg_adap_wcb(NumRecMax, Level, Orient, Edge_Ri, Ri2, FilterNorm, StopDecim, Width, Height, MultiCB, Lap, Sizec1, Sizec2, Sizec3, ThresVal1, ThresVal2, ThresVal3, OldCodeBook, OldAdapCodeBook2, OldAdapCodeBook3, Output2, Output3, Image2, Image3, Image4, ResCodeBook, ResResCodeBook, Image1, Ri, Output1)
+fwlbg_adap_wcb(int *NumRecMax, int *Level, int *Orient, Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, int *StopDecim, int *Width, int *Height, int *MultiCB, int *Lap, int *Sizec1, int *Sizec2, int *Sizec3, float *ThresVal1, float *ThresVal2, float *ThresVal3, Wtrans2d OldCodeBook, Wtrans2d OldAdapCodeBook2, Wtrans2d OldAdapCodeBook3, Wtrans2d *Output2, Wtrans2d *Output3, Fimage Image2, Fimage Image3, Fimage Image4, Wtrans2d ResCodeBook, Wtrans2d ResResCodeBook, Fimage Image1, Fsignal Ri, Wtrans2d *Output1)
 
-int        *NumRecMax;          /* Number of level in Output1 */
-int        *Level;              /* Generate codebook only at one scale */
-int        *Orient;             /* Generate codebook only in one orientation */
-Fimage	    Edge_Ri;		/* Impulse responses of filters for special 
+                                /* Number of level in Output1 */
+                                /* Generate codebook only at one scale */
+                                /* Generate codebook only in one orientation */
+      	            		/* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
-Fsignal     Ri2;		/* Impulse response of the low pass filter */
+                		/* Impulse response of the low pass filter */
 				/* for synthesis */
-int        *FilterNorm;	        /* Equal 0 if no normalisation of filter's tap
+                       	        /* Equal 0 if no normalisation of filter's tap
 			         *       1 if normalisation of the sum 
 			         *       2 if normalistion of the square sum */
-int        *StopDecim;          /* Level where decimation is cancelled */
-int        *Width;              /* Width of block */
-int        *Height;             /* Height of block */
-int        *MultiCB;            /* Generates all code books of size equal 
+                                /* Level where decimation is cancelled */
+                                /* Width of block */
+                                /* Height of block */
+                                /* Generates all code books of size equal 
 				 * to a power of 2 */
-int        *Lap;                /* Take overlapping vectors 
+                                /* Take overlapping vectors 
 				 * in training images */
-int        *Sizec1, *Sizec2, *Sizec3; /* Size of first, second and third 
+                                      /* Size of first, second and third 
 				 * codebooks  */
-float      *ThresVal1, *ThresVal2, *ThresVal3;	/* threshold values  
+                                              	/* threshold values  
     			         * for block energy */
-Wtrans2d    OldCodeBook;        /* Modified sequence of first class codebook */
-Wtrans2d    OldAdapCodeBook2, OldAdapCodeBook3; /* Modified sequence 
+                                /* Modified sequence of first class codebook */
+                                                /* Modified sequence 
 				 * of second and third class codebooks */
-Wtrans2d   *Output2, *Output3;  /* Generated sequences of second and third 
+                                /* Generated sequences of second and third 
 				 * class codebook */
-Fimage      Image2, Image3, Image4;  /* Images for training set */
-Wtrans2d    ResCodeBook, ResResCodeBook; /* Generate resdu codebook after 
+                                     /* Images for training set */
+                                         /* Generate resdu codebook after 
 				 * quantization with ResCodeBook 
 				 * and ResResCodeBook */ 
-Fimage      Image1;             /* First image for training set */
-Fsignal     Ri;			/* Impulse response of the low pass filter */
-Wtrans2d   *Output1;            /* Sequence of generated codebooks */
+                                /* First image for training set */
+               			/* Impulse response of the low pass filter */
+                                /* Sequence of generated codebooks */
 
 {
   Wtrans2d      TrainWtrans1, TrainWtrans2, TrainWtrans3, TrainWtrans4; 
@@ -374,42 +368,42 @@ Wtrans2d   *Output1;            /* Sequence of generated codebooks */
 
 
 void
-fwlbg_adap(NumRecMax, Level, Orient, Edge_Ri, Ri2, FilterNorm, StopDecim, Width, Height, MultiCB, Lap, Sizec1, Sizec2, Sizec3, ThresVal1, ThresVal2, ThresVal3, OldCodeBook, OldAdapCodeBook2, OldAdapCodeBook3, Output2, Output3, Image2, Image3, Image4, ResCodeBook, ResResCodeBook, Image1, Ri, Output1)
+fwlbg_adap(int *NumRecMax, int *Level, int *Orient, Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, int *StopDecim, int *Width, int *Height, int *MultiCB, int *Lap, int *Sizec1, int *Sizec2, int *Sizec3, float *ThresVal1, float *ThresVal2, float *ThresVal3, Fimage OldCodeBook, Fimage OldAdapCodeBook2, Fimage OldAdapCodeBook3, Fimage Output2, Fimage Output3, Fimage Image2, Fimage Image3, Fimage Image4, Fimage ResCodeBook, Fimage ResResCodeBook, Fimage Image1, Fsignal Ri, Fimage Output1)
 
-int        *NumRecMax;          /* Number of level in Output1 */
-int        *Level;              /* Generate codebook only at one scale */
-int        *Orient;             /* Generate codebook only in one orientation */
-Fimage	    Edge_Ri;		/* Impulse responses of filters for special 
+                                /* Number of level in Output1 */
+                                /* Generate codebook only at one scale */
+                                /* Generate codebook only in one orientation */
+      	            		/* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
-Fsignal     Ri2;		/* Impulse response of the low pass filter */
+                		/* Impulse response of the low pass filter */
 				/* for synthesis */
-int        *FilterNorm;	        /* Equal 0 if no normalisation of filter's tap
+                       	        /* Equal 0 if no normalisation of filter's tap
 			         *       1 if normalisation of the sum 
 			         *       2 if normalistion of the square sum */
-int        *StopDecim;      /* Level where decimation is cancelled */
-int        *Width;              /* Width of block */
-int        *Height;             /* Height of block */
-int        *MultiCB;            /* Generates all code books of size equal 
+                            /* Level where decimation is cancelled */
+                                /* Width of block */
+                                /* Height of block */
+                                /* Generates all code books of size equal 
 				 * to a power of 2 */
-int        *Lap;                /* Take overlapping vectors 
+                                /* Take overlapping vectors 
 				 * in training images */
-int        *Sizec1, *Sizec2, *Sizec3; /* Size of first, second and third 
+                                      /* Size of first, second and third 
 				 * codebooks  */
-float      *ThresVal1, *ThresVal2, *ThresVal3;	/* threshold values  
+                                              	/* threshold values  
     			         * for block energy */
-Fimage      OldCodeBook;        /* Modified sequence of first class codebook */
-Fimage      OldAdapCodeBook2, OldAdapCodeBook3; /* Modified sequence 
+                                /* Modified sequence of first class codebook */
+                                                /* Modified sequence 
 				 * of second and third class codebooks */
-Fimage      Output2, Output3;  /* Generated sequences of second and third 
+                               /* Generated sequences of second and third 
 				 * class codebook */
-Fimage      Image2, Image3, Image4;  /* Images for training set */
-Fimage      ResCodeBook, ResResCodeBook; /* Generate resdu codebook after 
+                                     /* Images for training set */
+                                         /* Generate resdu codebook after 
 				 * quantization with ResCodeBook 
 				 * and ResResCodeBook */ 
-Fimage      Image1;             /* First image for training set */
-Fsignal     Ri;			/* Impulse response of the low pass filter */
-Fimage      Output1;            /* Sequence of generated codebooks */
+                                /* First image for training set */
+               			/* Impulse response of the low pass filter */
+                                /* Sequence of generated codebooks */
 
 {
   Wtrans2d    WOldCodeBook;     /* Modified sequence of first class codebook */

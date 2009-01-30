@@ -17,12 +17,12 @@
 #include  "mw.h"
 
 
-void cfputchannels(RImage, GImage, BImage, Image)
+void cfputchannels(Fimage RImage, Fimage GImage, Fimage BImage, Cfimage Image)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 
-Fimage      RImage, GImage, BImage;    /* Input channel images */
-Cfimage     Image;		       /* Output color image */
+                                       /* Input channel images */
+                  		       /* Output color image */
 
 {
   register float  *ptri, *ptrc;         /* Pointers to red, green and blue 

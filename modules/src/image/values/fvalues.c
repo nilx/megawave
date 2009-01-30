@@ -38,11 +38,7 @@
 #define h_left(A)       ((u_long)((u_long)(A)<<1)+1)
 #define h_right(A)      ((u_long)((u_long)(A)+1)<<1)
 
-Fsignal fvalues(i_flag,multiplicity,image_rank,image_in)
-     char *i_flag;
-     Fsignal multiplicity;
-     Fimage image_rank;  
-     Fimage image_in;
+Fsignal fvalues(char *i_flag, Fsignal multiplicity, Fimage image_rank, Fimage image_in)
 {
   Fsignal values;
   float *val;

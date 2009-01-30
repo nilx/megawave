@@ -53,9 +53,7 @@ Flist    boundary;
 
 /*===== Compute the minimum contrast and the length of the curve l =====*/
 
-static float min_contrast(l,length)
-Flist l;
-float *length;
+static float min_contrast(Flist l, float *length)
 {
   double per;
   float mu,minmu,x,y,ox,oy;
@@ -90,8 +88,7 @@ float *length;
 
 /*===== compute NFA term associated to contrast mu =====*/
 
-static float logH(mu)
-float mu;
+static float logH(float mu)
 {
   int i;
 
@@ -104,10 +101,7 @@ float mu;
 
 /*===== first pass: compute # meaningful sons w/o contrast reversal =====*/
 
-static void update_mydata(s,threshold,type)
-Shape s;
-float threshold;
-char type;
+static void update_mydata(Shape s, float threshold, char type)
 { 
   Shape t;
   float mu,length;
@@ -161,11 +155,7 @@ char type;
 
 /*===== second pass : compute and store maximal meaningful boundaries =====*/
 
-static void add_boundary(s,threshold,bestnfa_inf,bestnfa_sup,type)
-Shape s;
-float threshold;
-float *bestnfa_inf,bestnfa_sup;
-char type;
+static void add_boundary(Shape s, float threshold, float *bestnfa_inf, float bestnfa_sup, char type)
 { 
   Shape t;
   float nfa,new_bestnfa_inf,old_bestnfa_sup;
@@ -224,10 +214,7 @@ char type;
 
 /*===== simplified recursive algorithm for no or weak maximality =====*/
 
-static void add_boundary_weak(s,threshold,bestnfa_inf,bestnfa_sup)
-Shape s;
-float threshold;
-float *bestnfa_inf,bestnfa_sup;
+static void add_boundary_weak(Shape s, float threshold, float *bestnfa_inf, float bestnfa_sup)
 { 
   Shape t;
   float mu,nfa,new_bestnfa_inf,new_bestnfa_sup,length;
@@ -300,12 +287,7 @@ float *bestnfa_inf,bestnfa_sup;
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Flists ll_boundaries(in,tree,eps,all,step,precision,z,weak)
-Fimage in;
-Shapes tree;
-float *eps,*step;
-int *precision;
-char *all,*z,*weak;
+Flists ll_boundaries(Fimage in, Shapes tree, float *eps, char *all, float *step, int *precision, char *z, char *weak)
 {
   Fimage saddles,copy_in;
   float threshold,nfa_inf,nfa_sup,offset,histo_step,fzero;

@@ -42,8 +42,7 @@ static int ascending_order=1;
    ------------------------------------------------------------------ */
 
 
-static int cmpcolor(c1,c2)
-Color c1,c2;
+static int cmpcolor(Color c1, Color c2)
 {
   if (c1.model != c2.model)
     mwerror(INTERNAL,1,"[cmpcolor] Two different color models %d and %d !\n",
@@ -73,10 +72,7 @@ Color c1,c2;
    Check if mimage is OK
    --------------------- */
 
-static void llcheck(mimage)
-
-Cmimage mimage;
-
+static void llcheck(Cmimage mimage)
 {  Point_curve point;
    Cmorpho_line ll;
    int NC,NL;
@@ -103,11 +99,7 @@ Cmimage mimage;
 
 
 static void
-draw_lline(lline_ptr,c_lline,V,H1,NL,NC)
-Cmorpho_line lline_ptr;
-struct closest_lline *c_lline;
-unsigned char **V,*H1;
-int NL,NC;
+draw_lline(Cmorpho_line lline_ptr, struct closest_lline *c_lline, unsigned char **V, unsigned char *H1, int NL, int NC)
 {
   Point_curve point;
   int l,c,dl,dc;
@@ -170,8 +162,7 @@ int NL,NC;
 }
 
 static unsigned char
-zero_inside(c_lline)
-struct closest_lline *c_lline;
+zero_inside(struct closest_lline *c_lline)
 {
   Point_curve c_p,p_p,n_p;
 
@@ -206,11 +197,7 @@ struct closest_lline *c_lline;
 }
 
 static void
-fill_lline(V,H1,level,inside,image,NL,NC)
-unsigned char **V,*H1,inside;
-Color level;
-Cfimage image;
-int NL,NC;
+fill_lline(unsigned char **V, unsigned char *H1, Color level, unsigned char inside, Cfimage image, int NL, int NC)
 {
   int l,c;
   unsigned char prec_line;
@@ -255,9 +242,7 @@ int NL,NC;
 }
 
 Cfimage
-cml_reconstruct(v_flag,m_image)
-char* v_flag;
-Cmimage m_image;
+cml_reconstruct(char *v_flag, Cmimage m_image)
 { 
   unsigned char **V,*H1,*cptr,inc_val,inside,zero_inside();
   int NC,NL,i;

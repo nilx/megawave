@@ -29,9 +29,7 @@
 #define ABS(x)       ( (x)>0?(x):-(x) )
 
 
-static Fimage add_image(nx,ny,prev,next)
-     int nx,ny;
-     Fimage *prev,**next;
+static Fimage add_image(int nx, int ny, Fimage *prev, Fimage **next)
 {
   Fimage u;
   
@@ -46,10 +44,7 @@ static Fimage add_image(nx,ny,prev,next)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void mschannel(N,S,W,p,in,mov)
-     int    *N,*W,*S,*p;
-     Fimage in;
-     Fmovie mov;
+void mschannel(int *N, int *S, int *W, int *p, Fimage in, Fmovie mov)
 {
   int      x,y,xl,xr,yl,yr,e,nx,ny,boundary=1;  
   Fimage   H,V,D,tmp,prev,*next;

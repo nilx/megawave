@@ -21,10 +21,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fvalues() */
 
-void bicontrast(u,v,verb,r,g,out)
-     Fimage u,v,out;
-     char *verb;
-     Flist r,g;
+void bicontrast(Fimage u, Fimage v, char *verb, Flist r, Flist g, Fimage out)
 {
   Fsignal values;
   Fimage rank;

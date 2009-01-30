@@ -14,10 +14,7 @@
 #include <math.h>
 #include "mw.h"
 
-void sderiv(A,B)
-     
-     Fsignal A,B;
-     
+void sderiv(Fsignal A, Fsignal B)
 {
   int i,size;
 

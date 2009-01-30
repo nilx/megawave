@@ -74,10 +74,7 @@ int show_all,motion_flag;     /* for motion and single display */
 /*--------------------------------------------------------*/
 
 /* compute the rule (graduations) associated to a given interval */
-static void getrule(a,b,ofs,step,nsub)
-     double a,b;
-     double *ofs,*step;
-     int *nsub;
+static void getrule(double a, double b, double *ofs, double *step, int *nsub)
 {
   double x,r;
 
@@ -93,7 +90,7 @@ static void getrule(a,b,ofs,step,nsub)
 }
 
 /* modify the virtual window to achieve the real window x/y ratio */
-static void restore_xyratio()
+static void restore_xyratio(void)
 {
   double ratio,m,d;
 
@@ -109,8 +106,7 @@ static void restore_xyratio()
   }
 }
 
-static double trunc(v,ref)
-     double v,ref;
+static double trunc(double v, double ref)
 {
   ref = v/ref;
   ref = ABS(ref);
@@ -118,9 +114,7 @@ static double trunc(v,ref)
 }
 
 /* draw a line with any coordinates (part can be out of frame) */
-static void draw_framed(xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax,i)
-     int xa,ya,xb,yb,xmin,xmax,ymin,ymax,i;
-     unsigned char r,g,b;
+static void draw_framed(int xa, int ya, int xb, int yb, unsigned char r, unsigned char g, unsigned char b, int xmin, int xmax, int ymin, int ymax, int i)
 {
   double txa,tya,txb,tyb,dx,dy;
 
@@ -159,10 +153,7 @@ static void draw_framed(xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax,i)
 }
 
 /* draw a curve in local referential */
-static void draw_curve_framed(x,y,c,r,g,b,xmin,xmax,ymin,ymax,i)
-int x,y,xmin,xmax,ymin,ymax,i;
-unsigned char r,g,b;
-Curve c;
+static void draw_curve_framed(int x, int y, Curve c, unsigned char r, unsigned char g, unsigned char b, int xmin, int xmax, int ymin, int ymax, int i)
 {
   Point_curve p;
   int xx,yy,adr;
@@ -181,7 +172,7 @@ Curve c;
 }
 
 /* set display background (bg image or white) */
-static void put_bg()
+static void put_bg(void)
 {
   float v,sx,sy,fbg=255.;
   int adr,x,y;
@@ -209,8 +200,7 @@ static void put_bg()
 }
 
 /* plot one of the curves */
-static void plot_one_curve(i,color,pcolor,mode)
-     int i,color,pcolor,mode;
+static void plot_one_curve(int i, int color, int pcolor, int mode)
 {
   Flist c;
   int line,j,x,y,ox,oy;
@@ -244,7 +234,7 @@ static void plot_one_curve(i,color,pcolor,mode)
 #define STRSIZE 15
 
 /* plot everything: bg, axes, curves */
-static void plot_curves()
+static void plot_curves(void)
 {
   Flist c;
   double xofs,xstep,yofs,ystep,v,ssx1,ssx2,ssy1,ssy2,truncref;
@@ -398,7 +388,7 @@ static void plot_curves()
 }
 
 /* compute initial virtual window */
-static void init_sxy()
+static void init_sxy(void)
 {
   Flist c;
   int i,j,init;
@@ -429,8 +419,7 @@ static void init_sxy()
 }
 
 
-static void zoom_sxy(x,y)
-     int x,y;
+static void zoom_sxy(int x, int y)
 {
   double d;
 
@@ -444,7 +433,7 @@ static void zoom_sxy(x,y)
   sy2 = sy1+d;
 }
 
-static void unzoom_sxy()
+static void unzoom_sxy(void)
 {
   double d;
 
@@ -456,16 +445,14 @@ static void unzoom_sxy()
   sy2 += d;
 }
 
-static void shift_sx(p)
-     double p;
+static void shift_sx(double p)
 {
   p *= (sx2-sx1<sy2-sy1?sx2-sx1:sy2-sy1);
   sx1 += p;
   sx2 += p;
 }
 
-static void shift_sy(p)
-     double p;
+static void shift_sy(double p)
 {
   p *= (sx2-sx1<sy2-sy1?sx2-sx1:sy2-sy1);
   sy1 += p;
@@ -473,8 +460,7 @@ static void shift_sy(p)
 }
 
 /* tell which curve is near the selected location */
-static int curve_selected(x,y)
-     int x,y;
+static int curve_selected(int x, int y)
 {
   Point_curve p;
   int i,besti,bestr2;
@@ -492,7 +478,7 @@ static int curve_selected(x,y)
 }
 
 /* ask the user the index of the curve to be selected */
-static void select_curve_index()
+static void select_curve_index(void)
 {
   int index;
   printf("Enter curve index: ");
@@ -505,14 +491,14 @@ static void select_curve_index()
 }
 
 /*** refresh display with current image ***/
-static void redisplay()
+static void redisplay(void)
 {
   WLoadBitMapColorImage(win,image->red,image->green,image->blue,nx,ny);
   WRestoreImageWindow(win,0,0,nx,ny);
   WFlushWindow(win);
 }
 
-static void help()
+static void help(void)
 {
   printf("\n\t\tHelp on line\n");
   printf("\nMouse:\n");
@@ -542,9 +528,7 @@ static void help()
 }
 
 /* handle display events */
-static int win_notify(window,param)
-Wframe *window;
-void *param;
+static int win_notify(Wframe *window, void *param)
 {
   int event,ret,x,y,button_mask,redisplay_flag,i;
   int c; /* Key code must be int and not char to handle non-printable keys */
@@ -677,13 +661,7 @@ void *param;
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void fkview(in,out,sx,sy,ref,bg,i,a,s,e,d,g,c,C,n,window,x_0,y_0,curve)
-     int *x_0,*y_0,*sx,*sy,*d,*c,*C,*i,*g;
-     Flists in,ref;
-     char *window,*n,*a,*s,*e;
-     Ccimage *out;
-     Fimage bg;
-     Flist *curve;
+void fkview(Flists in, Ccimage *out, int *sx, int *sy, Flists ref, Fimage bg, int *i, char *a, char *s, char *e, int *d, int *g, int *c, int *C, char *n, char *window, int *x_0, int *y_0, Flist *curve)
 {
   if (!in || !in->size || (in->size==1 && !in->list[0]->size))
     mwerror(FATAL,1,"Empty data. ");

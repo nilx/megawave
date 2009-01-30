@@ -30,8 +30,7 @@ static float hmax;  /* maximal distance between bitangent and curve */
 
 
 /* check the position of a point w.r.t. a line */ 
-static float halfplane(x1, y1, x2, y2, x, y)
-     float x1,y1,x2,y2,x,y;
+static float halfplane(float x1, float y1, float x2, float y2, float x, float y)
 {
   float u, v;
   double dx, dy;
@@ -49,11 +48,7 @@ static float halfplane(x1, y1, x2, y2, x, y)
 
 
 /* compute the first triplet of three consecutive points following i in the direction type */
-static unsigned char get_first_triplet(iFirst, i, iP, iN, iLast, type)
-     int iFirst;
-     int *i, *iP, *iN;
-     int iLast;
-     unsigned char type;
+static unsigned char get_first_triplet(int iFirst, int *i, int *iP, int *iN, int iLast, unsigned char type)
 {
   *iP=iFirst;
   if (type == 1) {
@@ -86,10 +81,7 @@ static unsigned char get_first_triplet(iFirst, i, iP, iN, iLast, type)
   return 1;
 }
 
-static unsigned char get_next_triplet(i, iP, iN, last, type)
-     int *i, *iP, *iN; 
-     int last;
-     unsigned char type;
+static unsigned char get_next_triplet(int *i, int *iP, int *iN, int last, unsigned char type)
 {
   *iP=*i;
   *i=*iN;
@@ -116,9 +108,7 @@ static unsigned char get_next_triplet(i, iP, iN, last, type)
 }
 
 /* check if the points lie on the same halfplane */
-static unsigned char check_triplet(fcrv, i, j, k1, k2)
-     Flist fcrv;
-     int i,j, k1, k2;
+static unsigned char check_triplet(Flist fcrv, int i, int j, int k1, int k2)
 {
   float x1, y1, x2, y2, xk1, yk1, xk2, yk2;
   float h1, h2;
@@ -139,9 +129,7 @@ static unsigned char check_triplet(fcrv, i, j, k1, k2)
 }
 
 /* check if the curve cross the straight line between points i1 and i2 */
-static unsigned char check_crossing_curve(fcrv, i1, i2)
-     Flist fcrv;
-     int i1,i2;
+static unsigned char check_crossing_curve(Flist fcrv, int i1, int i2)
 {
   int i;
   float h, h_prev;
@@ -186,12 +174,7 @@ static unsigned char check_crossing_curve(fcrv, i1, i2)
 
 
 
-static unsigned char get_bitangent(curve_IP,curve_BP,fcrv,IP1,IP2,nBts,nBts_max,nIPs)
-     Flist curve_IP;
-     Flist curve_BP;
-     Flist fcrv;
-     int IP1, IP2;
-     int *nBts, nBts_max, nIPs;
+static unsigned char get_bitangent(Flist curve_IP, Flist curve_BP, Flist fcrv, int IP1, int IP2, int *nBts, int nBts_max, int nIPs)
 {
   int iFirst, iLast, jFirst, jLast, last, i, iP, iN, j, jP, jN;
   unsigned char change_i, change_j, same_convex, ok;
@@ -253,10 +236,7 @@ static unsigned char get_bitangent(curve_IP,curve_BP,fcrv,IP1,IP2,nBts,nBts_max,
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Flist km_bitangents(curve,curve_IP,curve_BP)
-     Flist curve;
-     Flist curve_IP;
-     Flist curve_BP; 
+Flist km_bitangents(Flist curve, Flist curve_IP, Flist curve_BP)
 {  
   int i, i_next, i_next_next;
   int nBts, nBts_max, nIPs;

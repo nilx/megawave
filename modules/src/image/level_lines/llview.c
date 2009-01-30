@@ -48,10 +48,7 @@ float X1,Y1,X2,Y2;  /* location of displayed subimage */
 /*--------------------------------------------------------*/
 
 
-static void faded_fimage_to_ccimage(in,out,lambda)
-     Fimage in;     
-     Ccimage out;
-     float lambda;
+static void faded_fimage_to_ccimage(Fimage in, Ccimage out, float lambda)
 {
   int adr;
   float c;
@@ -64,10 +61,7 @@ static void faded_fimage_to_ccimage(in,out,lambda)
   }
 }
 		  
-static void my_llmap(in,out,ofs,step)
-     Fimage in;
-     Ccimage out;
-     float ofs,step;
+static void my_llmap(Fimage in, Ccimage out, float ofs, float step)
 {
   float bg,v,w,a,NX,NY;
   int x,y,adr,ok,order;
@@ -139,9 +133,7 @@ static void my_llmap(in,out,ofs,step)
 }
 
 
-static int redisplay(wt,n)
-     Wp_toggle wt;
-     short n;
+static int redisplay(Wp_toggle wt, short int n)
 {
   my_llmap(ref,image,(float)b4.value,(float)b5.value);
   WLoadBitMapColorImage(win2,image->red,image->green,image->blue,nx,ny);
@@ -150,18 +142,14 @@ static int redisplay(wt,n)
   return(0);
 }
 
-static int grey_level(wi,n)
-     Wp_int wi;
-     short n;
+static int grey_level(Wp_int wi, short int n)
 {
   wi->value = (wi->value+256)%256;
   redisplay(NULL,0);
   return(0);
 }
 
-static int step(wi,n)
-     Wp_int wi;
-     short n;
+static int step(Wp_int wi, short int n)
 {
   if (wi->value<1) wi->value = 1;
   if (wi->value>255) wi->value = 255;
@@ -169,15 +157,13 @@ static int step(wi,n)
   return(0);
 }
 
-static int quit(wt,n)
-     Wp_toggle wt;
-     short n;
+static int quit(Wp_toggle wt, short int n)
 {
   wp->state = -1;
   return(wp->state);
 }
 
-static void help()
+static void help(void)
 {
   printf("\n\t\tHelp on line\n");
   printf("\nMouse:\n");
@@ -195,9 +181,7 @@ static void help()
 }
 
 /* handle display events */
-static int win2_notify(window,param)
-     Wframe *window;
-     void *param;
+static int win2_notify(Wframe *window, void *param)
 {
   int event,ret,x,y,button_mask;
   float nc,nd;
@@ -292,7 +276,7 @@ static int win2_notify(window,param)
 }
 
 /* initialize buttons on control window */
-static void init_buttons()
+static void init_buttons(void)
 {
   int line,linestep;
 
@@ -369,12 +353,7 @@ static void init_buttons()
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void llview(in,z,s,l,d,i,b,out,n)
-     Fimage in;
-     float *z;
-     int *s,*l,*d,*i,*b;
-     Ccimage *out;
-     char *n;
+void llview(Fimage in, float *z, int *s, int *l, int *d, int *i, int *b, Ccimage *out, char *n)
 {
   /* Initialization */
   nx = (int)(*z*(float)in->ncol);

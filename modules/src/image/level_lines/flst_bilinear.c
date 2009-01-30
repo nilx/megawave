@@ -125,18 +125,14 @@ for(i = 1; i < (iHeight); i++) \
    ------------------------------------------------------------------------ */
 
 /* Reinitialise the neighborhood, so that it will be used for a new region */
-static void reinit_neighborhood(pNeighborhood, type)
-Neighborhood* pNeighborhood;
-enum TypeOfTree type;
+static void reinit_neighborhood(Neighborhood *pNeighborhood, enum TypeOfTree type)
 {
   pNeighborhood->iNbPoints = 0;
   pNeighborhood->type = type;
 }
 
 /* To allocate the structure representing the neighborhood of a region */
-static void init_neighborhood(pNeighborhood, iMaxArea)
-Neighborhood* pNeighborhood;
-int iMaxArea;
+static void init_neighborhood(Neighborhood *pNeighborhood, int iMaxArea)
 {
   iMaxArea = 4*(iMaxArea+1);
   if(iMaxArea > iWidth*iHeight)
@@ -149,8 +145,7 @@ int iMaxArea;
 }
 
 /* Free the structure representing the neighborhood of a region */
-static void free_neighborhood(pNeighborhood)
-Neighborhood* pNeighborhood;
+static void free_neighborhood(Neighborhood *pNeighborhood)
 {
   free(pNeighborhood->tabPoints);
 }
@@ -161,8 +156,7 @@ Neighborhood* pNeighborhood;
                   tabNeighbors[k] = tabNeighbors[l]; \
                   tabNeighbors[l] = tabNeighbors[0];
 /* Put the last neighbor at a position so that we fix the heap */
-static void fix_up(pNeighborhood)
-Neighborhood* pNeighborhood;
+static void fix_up(Neighborhood *pNeighborhood)
 {
   Neighbor* tabNeighbors = pNeighborhood->tabPoints;
   int k = pNeighborhood->iNbPoints, l;
@@ -179,8 +173,7 @@ Neighborhood* pNeighborhood;
 }
 
 /* Put the first neighbor at a position so that we fix the heap */
-static void fix_down(pNeighborhood)
-Neighborhood* pNeighborhood;
+static void fix_down(Neighborhood *pNeighborhood)
 {
   Neighbor* tabNeighbors = pNeighborhood->tabPoints;
   int N = pNeighborhood->iNbPoints, k = 1, l;
@@ -203,11 +196,7 @@ Neighborhood* pNeighborhood;
 }
 
 /* Add the pixel (x,y), of gray-level VALUE, to the neighbor pixels */
-static void add_neighbor(pNeighborhood, x, y, value, bSaddle)
-Neighborhood* pNeighborhood;
-short int x, y;
-PIXEL_T value;
-char bSaddle;
+static void add_neighbor(Neighborhood *pNeighborhood, short int x, short int y, float value, char bSaddle)
 {
   Neighbor* pNewNeighbor;
 
@@ -254,8 +243,7 @@ char bSaddle;
 }
 
 /* Remove  neighbor at the top of the heap, i.e., the root */
-static void remove_neighbor(pNeighborhood)
-Neighborhood* pNeighborhood;
+static void remove_neighbor(Neighborhood *pNeighborhood)
 {
   Neighbor* pTop = &pNeighborhood->tabPoints[1];
   PIXEL_T value = pTop->value;
@@ -276,8 +264,7 @@ Neighborhood* pNeighborhood;
 
 /* Allocate image of the tags for visited pixels and the visited neighbors.
 Do not be afraid about the parameters: pointers to 2-D arrays. */
-static void init_image_of_visited_pixels(ptabtabVisitedPixels, ptabtabVisitedSaddles)
-int ***ptabtabVisitedPixels, ***ptabtabVisitedSaddles;
+static void init_image_of_visited_pixels(int ***ptabtabVisitedPixels, int ***ptabtabVisitedSaddles)
 {
   int i;
 
@@ -287,8 +274,7 @@ int ***ptabtabVisitedPixels, ***ptabtabVisitedSaddles;
   ARRAY_2D_ALLOC(tabtabVisitedNeighborSaddles, iWidth-1, iHeight-1, int);
 }
 
-static void free_image_of_visited_pixels(tabtabVisitedPixels, tabtabVisitedSaddles)
-int **tabtabVisitedPixels, **tabtabVisitedSaddles;
+static void free_image_of_visited_pixels(int **tabtabVisitedPixels, int **tabtabVisitedSaddles)
 {
   free(tabtabVisitedPixels[0]); /* Actually a 1-D array */
   free(tabtabVisitedPixels);
@@ -304,8 +290,7 @@ int **tabtabVisitedPixels, **tabtabVisitedSaddles;
 }
 
 /* Initialize the output image */
-static void init_output_image(tabPixelsIn, ptabtabPixelsOutput)
-PIXEL_T *tabPixelsIn, ***ptabtabPixelsOutput;
+static void init_output_image(float *tabPixelsIn, float ***ptabtabPixelsOutput)
 {
   int i;
 
@@ -316,21 +301,19 @@ PIXEL_T *tabPixelsIn, ***ptabtabPixelsOutput;
     (*ptabtabPixelsOutput)[i] = tabPixelsIn + i * iWidth;
 }
 
-static void free_output_image(tabtabPixelsOutput)
-PIXEL_T** tabtabPixelsOutput;
+static void free_output_image(float **tabtabPixelsOutput)
 {
   free(tabtabPixelsOutput);
 }
 
-static void init_region(iMaxArea)
-int iMaxArea;
+static void init_region(int iMaxArea)
 {
   tabPointsInShape = (PixelOrSaddle*)malloc(iMaxArea * sizeof(PixelOrSaddle));
   if(tabPointsInShape == NULL)
     mwerror(FATAL, 1, "init_region --> impossible to allocate the array\n");
 }
 
-static void free_region()
+static void free_region(void)
 {
   free(tabPointsInShape);
 }
@@ -340,9 +323,9 @@ static void free_region()
    ------------------------------------------------------------------------ */
 
 /* Is pixel (x, y) a local minimum? */
-static char is_local_min(ou, x, y)
-PIXEL_T** ou; /* A 2-D array of the image */
-short int x, y;
+static char is_local_min(float **ou, short int x, short int y)
+              /* A 2-D array of the image */
+               
 {
   PIXEL_T v;
   char n = 0;
@@ -356,9 +339,9 @@ short int x, y;
 }
 
 /* Is pixel (x,y) a local maximum? */
-static char is_local_max(ou, x, y)
-PIXEL_T** ou; /* A 2-D array of the image */
-short int x, y;
+static char is_local_max(float **ou, short int x, short int y)
+              /* A 2-D array of the image */
+               
 {
   PIXEL_T v;
   char n = 0;
@@ -372,13 +355,7 @@ short int x, y;
 }
 
 /* Set pixels and saddle points in `tabPoints' at level newGray */
-static void levelize(tabtabPixelsOutput, tabtabSaddleValues,
-	      tabPoints, iNbPoints, newGray)
-PIXEL_T** tabtabPixelsOutput;
-float** tabtabSaddleValues;
-PixelOrSaddle* tabPoints;
-int iNbPoints;
-PIXEL_T newGray;
+static void levelize(float **tabtabPixelsOutput, float **tabtabSaddleValues, PixelOrSaddle *tabPoints, int iNbPoints, float newGray)
 {
   int i;
   for(i = iNbPoints - 1; i >= 0; i--)
@@ -389,9 +366,7 @@ PIXEL_T newGray;
 }
 
 /* Return, coded in one byte, the local configuration around the pixel (x,y) */
-static unsigned char configuration(tabtabVisitedPixels, tabtabVisitedSaddles, x, y)
-int **tabtabVisitedPixels, **tabtabVisitedSaddles;
-short int x, y;
+static unsigned char configuration(int **tabtabVisitedPixels, int **tabtabVisitedSaddles, short int x, short int y)
 {
   short int iMaxX = iWidth-1, iMaxY = iHeight-1;
   unsigned char cPattern = 0;
@@ -442,8 +417,7 @@ short int x, y;
 }
 
 /* Insert a new shape and its siblings in the tree, with parent pParent */
-static void insert_children(pParent, pNewChildToInsert)
-Shape pParent, pNewChildToInsert;
+static void insert_children(Shape pParent, Shape pNewChildToInsert)
 {
   Shape pSibling = pNewChildToInsert;
   while(pSibling->next_sibling != NULL) {
@@ -455,11 +429,11 @@ Shape pParent, pNewChildToInsert;
   pParent->child = pNewChildToInsert;
 }
 
-static Shape new_shape(iCurrentArea, currentGrayLevel, bOfInferiorType, pChild)
-int iCurrentArea;
-PIXEL_T currentGrayLevel;
-char bOfInferiorType;
-Shape pChild; /* Supposed to have no sibling. Can be NULL */
+static Shape new_shape(int iCurrentArea, float currentGrayLevel, char bOfInferiorType, Shape pChild)
+                 
+                         
+                     
+              /* Supposed to have no sibling. Can be NULL */
 {
   Shape pNewShape = &pGlobalTree->the_shapes[pGlobalTree->nb_shapes++];
 
@@ -482,9 +456,7 @@ Shape pChild; /* Supposed to have no sibling. Can be NULL */
 
 /* Knowing that the last extracted shape contains the points, update,
 for each one, the smallest shape containing it */
-static void update_smallest_shapes(tabPoints, iNbPoints)
-PixelOrSaddle* tabPoints;
-int iNbPoints;
+static void update_smallest_shapes(PixelOrSaddle *tabPoints, int iNbPoints)
 {
   int i, iIndex;
   Shape pNewShape, pRoot = &pGlobalTree->the_shapes[0];
@@ -501,11 +473,7 @@ int iNbPoints;
 /* Find children of the last constructed monotone section, which is composed
 of the interval between pSmallestShape and the last extracted shape. That is,
 find shapes in other monotone sections whose parent is inside this interval */
-static void connect(tabPoints, iNbPoints, tabConnections, pSmallestShape)
-PixelOrSaddle* tabPoints;
-int iNbPoints;
-Connection* tabConnections;
-Shape pSmallestShape;
+static void connect(PixelOrSaddle *tabPoints, int iNbPoints, Connection *tabConnections, Shape pSmallestShape)
 {
   int i, iIndex;
   Shape pShape, pParent;
@@ -527,10 +495,7 @@ Shape pSmallestShape;
 }
 
 /* Make a new connection structure at the given point */
-static void new_connection(pPoint, level, tabConnections)
-PixelOrSaddle* pPoint;
-float level;
-Connection* tabConnections;
+static void new_connection(PixelOrSaddle *pPoint, float level, Connection *tabConnections)
 {
   int iIndex;
   Shape pSibling, pShape = &pGlobalTree->the_shapes[pGlobalTree->nb_shapes-1];
@@ -552,10 +517,7 @@ Connection* tabConnections;
 #define NEIGHBOR_NOT_STORED(x,y) (tabtabVisitedNeighbors[y][x] < iExploration)
 
 /* Store the 4-neighbors of pixel (x,y) */
-static void store_4neighbors(ou, x, y, pNeighborhood)
-PIXEL_T** ou;
-short int x, y;
-Neighborhood* pNeighborhood;
+static void store_4neighbors(float **ou, short int x, short int y, Neighborhood *pNeighborhood)
 {
   if(x > 0         && NEIGHBOR_NOT_STORED(x-1,y))
     add_neighbor(pNeighborhood, x-1, y, ou[y][x-1], (char)0);
@@ -568,10 +530,7 @@ Neighborhood* pNeighborhood;
 }
 
 /* Store the neighbors of the saddle point (x,y) */
-static void store_neighbors_to_saddle(ou, x, y, pNeighborhood)
-PIXEL_T** ou;
-short int x, y;
-Neighborhood* pNeighborhood;
+static void store_neighbors_to_saddle(float **ou, short int x, short int y, Neighborhood *pNeighborhood)
 {
   if(NEIGHBOR_NOT_STORED(x,y))
     add_neighbor(pNeighborhood, x, y, ou[y][x], (char)0);
@@ -588,10 +547,7 @@ Neighborhood* pNeighborhood;
   (is_a_saddle(ou[y][x]) && tabtabVisitedNeighborSaddles[y][x] < iExploration)
 
 /* Store the saddle points being neighbors of pixel (x,y) */
-static void store_saddle_neighbors(ou, x, y, pNeighborhood)
-float** ou;
-short int x, y;
-Neighborhood* pNeighborhood;
+static void store_saddle_neighbors(float **ou, short int x, short int y, Neighborhood *pNeighborhood)
 {
   if(x > 0) {
     if(y > 0         && SADDLE_NOT_STORED(x-1,y-1))
@@ -608,9 +564,7 @@ Neighborhood* pNeighborhood;
 }
 
 /* Does the addition of saddle point (x,y) change the Euler number? */
-static char saddle_change(tabtabVisitedPixels, x, y)
-int** tabtabVisitedPixels;
-short int x, y;
+static char saddle_change(int **tabtabVisitedPixels, short int x, short int y)
 {
   char cDiag1, cDiag2, cDiag3;
 
@@ -637,15 +591,7 @@ short int x, y;
 region `tabPointsInShape' and return 1 if a new shape is detected. New points
 are added from position `pCurrentArea'. This value is changed at exit in case
 of success. */
-static char add_iso_level(tabPointsInShape, pCurrentArea, pNbPixels,
-		   currentGrayLevel, pNeighborhood, ou, tabtabVisitedPixels,
-		   tabtabVisitedSaddles, tabtabSaddleValues)
-PixelOrSaddle* tabPointsInShape;
-int *pCurrentArea, *pNbPixels;
-PIXEL_T currentGrayLevel, **ou;
-Neighborhood* pNeighborhood;
-int **tabtabVisitedPixels, **tabtabVisitedSaddles;
-float** tabtabSaddleValues;
+static char add_iso_level(PixelOrSaddle *tabPointsInShape, int *pCurrentArea, int *pNbPixels, float currentGrayLevel, Neighborhood *pNeighborhood, float **ou, int **tabtabVisitedPixels, int **tabtabVisitedSaddles, float **tabtabSaddleValues)
 {
   short int x, y;
   Neighbor* pNeighbor;
@@ -694,16 +640,7 @@ float** tabtabSaddleValues;
 }
 
 /* Extract the terminal branch containing the point (x,y) */
-static void find_terminal_branch(ou, tabtabVisitedPixels, tabtabVisitedSaddles,
-			  tabtabSaddleValues, x, y,
-			  pNeighborhood, type, tabConnections)
-PIXEL_T **ou;
-int **tabtabVisitedPixels, **tabtabVisitedSaddles;
-float** tabtabSaddleValues;
-short int x, y;
-Neighborhood* pNeighborhood;
-enum TypeOfTree type;
-Connection* tabConnections;
+static void find_terminal_branch(float **ou, int **tabtabVisitedPixels, int **tabtabVisitedSaddles, float **tabtabSaddleValues, short int x, short int y, Neighborhood *pNeighborhood, enum TypeOfTree type, Connection *tabConnections)
 {
   PIXEL_T level;
   int iArea=0, iLastArea=0, iNbPixels=0;
@@ -747,13 +684,7 @@ Connection* tabConnections;
 
 /* Scan the image, calling a procedure to extract terminal branch at each
 (not yet visited) local extremum */
-static void scan(tabtabPixelsOutput, tabtabVisitedPixels, tabtabVisitedSaddles,
-	  tabtabSaddleValues, pNeighborhood, tabConnections)
-PIXEL_T **tabtabPixelsOutput;
-int **tabtabVisitedPixels, **tabtabVisitedSaddles;
-float** tabtabSaddleValues;
-Neighborhood* pNeighborhood;
-Connection* tabConnections;
+static void scan(float **tabtabPixelsOutput, int **tabtabVisitedPixels, int **tabtabVisitedSaddles, float **tabtabSaddleValues, Neighborhood *pNeighborhood, Connection *tabConnections)
 {
   short int i, j;
   enum TypeOfTree type;
@@ -782,10 +713,7 @@ Connection* tabConnections;
 (named 'shapes') representing the image.
 Only shapes of area >= *pMinArea are in the tree. pMinArea==NULL means 1.
 Output: *pTree is filled (pTree must point to an allocated tree). */
-void flst_bilinear(pMinArea, pImageInput, pTree)
-int* pMinArea;
-Fimage pImageInput;
-Shapes pTree;
+void flst_bilinear(int *pMinArea, Fimage pImageInput, Shapes pTree)
 {
   PIXEL_T** tabtabPixelsOutput; /* Array accessing pixels of output image */
   struct fimage imageSaddles;

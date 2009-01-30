@@ -22,11 +22,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fft2d() */
 
-float prolate(s,d,m,ker)
-     int s;
-     float d;
-     Fimage ker;
-     int *m;
+float prolate(int s, float d, int *m, Fimage ker)
 {
   Fimage re,im,tmp;
   int n,i,x,y,xx,yy,cont;

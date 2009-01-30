@@ -20,9 +20,7 @@
 
 /*create a movie with value 0.0 with the same number of images as the input*/
 
-static void createmovie(input,output,nl,nc)
-     Fmovie input,output;
-     int nc,nl;
+static void createmovie(Fmovie input, Fmovie output, int nl, int nc)
 {
   Fimage u,cur,prev,*next;
 
@@ -42,10 +40,7 @@ static void createmovie(input,output,nl,nc)
 /*------------------ compute the value of the 4 neighbours of a pixel in the same image . 
                            If the pixel is at a border, a mirror effect is applied  ------*/
 
-static void neighbor_4(x,y,xmax,ymax,p,left,right,up,down)
-     register int x,y,xmax,ymax;
-     register float *p;
-     float **left,**right,**up,**down;
+static void neighbor_4(register int x, register int y, register int xmax, register int ymax, register float *p, float **left, float **right, float **up, float **down)
 {
   if (x>0)
     {
@@ -115,9 +110,7 @@ compute the max and min in the 6 (3d) neighborhood of the pixel,
 then replace the value by 0.5(max+min).*/
 
 
-static void iterate(input,output,nl,nc)
-     Fmovie input,output;
-     int nl,nc;
+static void iterate(Fmovie input, Fmovie output, int nl, int nc)
 {
   Fmovie mov,del;
   Fimage iminput,ima,im,imoutput;
@@ -187,9 +180,7 @@ static void iterate(input,output,nl,nc)
 }
 
 
-static void copymovie(input,output,nl,nc)
-     int nl,nc;
-     Fmovie input,output;
+static void copymovie(Fmovie input, Fmovie output, int nl, int nc)
 {
   Fimage imin,imout,im;
   float *I,*O;
@@ -224,9 +215,7 @@ static void copymovie(input,output,nl,nc)
 
 /*-----------------------------  Main Program --------------------------*/
 
-void amle3d(num,init,in,out)
-     int *num;
-     Fmovie in,out,init;
+void amle3d(int *num, Fmovie init, Fmovie in, Fmovie out)
 {
   int NC,NL,i;
   

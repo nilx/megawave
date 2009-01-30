@@ -25,19 +25,13 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fproj() */
 
-static void rotate(cx,cy,ca,sa,x,y,nx,ny)
-     double cx,cy,ca,sa,x,y;
-     float *nx,*ny;
+static void rotate(double cx, double cy, double ca, double sa, double x, double y, float *nx, float *ny)
 {
   *nx = (float)(cx + (x-cx)*ca-(y-cy)*sa);
   *ny = (float)(cy + (x-cx)*sa+(y-cy)*ca);
 }
 
-void fzrt(in,out,zoom,angle,x,y,o,p,b)
-     Fimage in,out;
-     float zoom,angle,x,y;
-     int *o;
-     float *p,*b;
+void fzrt(Fimage in, Fimage out, float zoom, float angle, float x, float y, int *o, float *p, float *b)
 {
   int nx,ny,sx,sy;
   float X1,Y1,X2,Y2,X3,Y3;

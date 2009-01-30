@@ -20,8 +20,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* fvalues() */
 
-static double signal_entropy(input)
-     Fsignal input;
+static double signal_entropy(Fsignal input)
 {
   int i;
   double sum, entr, p;
@@ -49,10 +48,7 @@ static double signal_entropy(input)
   return(-entr);
 }
 
-float fentropy(A)
-
-Fimage A;
-
+float fentropy(Fimage A)
 {
   Fsignal B,C;
   float e;

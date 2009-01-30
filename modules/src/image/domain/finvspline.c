@@ -18,10 +18,7 @@
 #include <math.h>
 #include "mw.h"
 
-static double initcausal(c,n,z)
-     double *c;
-     int n;
-     double z;
+static double initcausal(double *c, int n, double z)
 {
   double zk,z2k,iz,sum;
   int k;
@@ -38,20 +35,13 @@ static double initcausal(c,n,z)
   return (sum/(1.-zk*zk));
 }
 
-static double initanticausal(c,n,z)
-     double *c;
-     int n;
-     double z;
+static double initanticausal(double *c, int n, double z)
 {
   return((z/(z*z-1.))*(z*c[n-2]+c[n-1]));
 }
 
 
-static void invspline1D(c,size,z,npoles)
-     double *c;
-     int size;
-     double *z;
-     int npoles;
+static void invspline1D(double *c, int size, double *z, int npoles)
 {
   double lambda;
   int n,k;
@@ -79,9 +69,7 @@ static void invspline1D(c,size,z,npoles)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void finvspline(in,order,out)
-     Fimage in,out;
-     int order;
+void finvspline(Fimage in, int order, Fimage out)
 {
   double *c,*d,z[5];
   int npoles,nx,ny,x,y;

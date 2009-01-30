@@ -25,11 +25,7 @@
 
 #define ABS(x) ((x)>0?(x):-(x))
 
-float prolatef(s,d,n,ker,p,c)
-     int s;
-     float d;
-     Fimage ker;
-     int *n,*p,*c;
+float prolatef(int s, float d, int *n, Fimage ker, int *p, int *c)
 {
   Fimage sker,tmp;
   int m,i,x,y,xx,yy,cont,out_domain;

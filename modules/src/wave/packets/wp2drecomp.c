@@ -26,14 +26,14 @@ usage = {
 /* pack->images[img21], pack->images[img22]                       */
 /* the result is in pack->images[img11] */
 
-static void iondel(pack, img11, img12, img21,img22,futur_level)
+static void iondel(Wpack2d pack, int img11, int img12, int img21, int img22, int futur_level)
      
-     Wpack2d pack; /* the initial image corresponds to the index  img11*/
-     int img11;  /* index of the low in x -low in y image */
-     int img12;  /* index of the low in x -high in y image */
-     int img21;  /* index of the high in x -low in y image */
-     int img22;  /* index of the high in x -high in y image */
-     int futur_level;
+                   /* the initial image corresponds to the index  img11*/
+                 /* index of the low in x -low in y image */
+                 /* index of the low in x -high in y image */
+                 /* index of the high in x -low in y image */
+                 /* index of the high in x -high in y image */
+                     
      
 { int dx_in,dy_in,dx_out,dy_out;
  int x,y;
@@ -174,11 +174,7 @@ static void iondel(pack, img11, img12, img21,img22,futur_level)
 /*-------------------------------------------------------------*/
 
 
-void wp2drecomp(pack,F)
-     
-Wpack2d pack;
-Fimage F;
-
+void wp2drecomp(Wpack2d pack, Fimage F)
 { 
 /* variable definition */
   int futur_level,kx,ky,treesize;

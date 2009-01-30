@@ -21,10 +21,7 @@
 #include "mw.h"
 
 
-static void gradient ( IN, gradx,grady,alpha )
-     Fimage IN;
-     Fimage gradx,grady;
-     float *alpha;
+static void gradient (Fimage IN, Fimage gradx, Fimage grady, float *alpha)
 {
   float *a1,*a2,*a3,*a4;
   register int i,j;
@@ -235,9 +232,7 @@ static void gradient ( IN, gradx,grady,alpha )
 
 /*--------------------------------------------------------------------------*/
 
-static void maxima ( gradx,grady,  OUT, IN )
-     Fimage OUT,IN;
-     Fimage gradx,grady;
+static void maxima (Fimage gradx, Fimage grady, Fimage OUT, Fimage IN)
 {
   int icolonnes,icoll;
   int  lig_2,col_2,jp1,jm1,im1,ip1;
@@ -395,9 +390,7 @@ static void maxima ( gradx,grady,  OUT, IN )
 
 /*-------------------------  MAIN MODULE ------------------------------*/
 
-Fimage canny ( alpha,IN, OUT )
-     float *alpha;
-     Fimage IN, OUT;
+Fimage canny (float *alpha, Fimage IN, Fimage OUT)
 {
   Fimage gradx,grady;
   

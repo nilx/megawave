@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-Curves kreadfig()
+Curves kreadfig(void)
 {
   Curves       cs;
   Curve        c,cprev,*cnext;

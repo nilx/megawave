@@ -20,10 +20,7 @@
 #include <stdio.h>
 #include "mw.h"
  
-Fsignal sreadasc(out,n,s,t,g)
-     Fsignal out;
-     int *n;
-     float *s,*t,*g;
+Fsignal sreadasc(Fsignal out, int *n, float *s, float *t, float *g)
 {
   int i,size;
   float v;

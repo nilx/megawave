@@ -21,10 +21,7 @@
 #include <stdio.h>
 #include  "mw.h"
 
-Fimage fadd(A,B,C,min,max,a)
-     Fimage  A,B,C;
-     float   *min,*max;
-     char    *a;
+Fimage fadd(Fimage A, Fimage B, Fimage C, float *min, float *max, char *a)
 {
   float v;
   int i;

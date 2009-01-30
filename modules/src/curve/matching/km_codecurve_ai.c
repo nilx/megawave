@@ -62,9 +62,7 @@ struct NormDataAI {
 /* compute index following i and last index of the curve (depending on the 
    direction 1 or 0) */
 
-static int get_next_index(i, iLast, type)
-     int i, iLast;
-     unsigned char type;
+static int get_next_index(int i, int iLast, unsigned char type)
 {
   int i_next;
   
@@ -91,8 +89,7 @@ static int get_next_index(i, iLast, type)
 
 /* test the position of a point w.r.t. a line */ 
 
-static int halfplane(x1, y1, x2, y2, x, y)
-     float x1,y1,x2,y2,x,y;
+static int halfplane(float x1, float y1, float x2, float y2, float x, float y)
 {
   float u, v;
 
@@ -106,8 +103,7 @@ static int halfplane(x1, y1, x2, y2, x, y)
 /* compute angle between u0 and v0. 
    Radians, between -PI and +PI */
 
-static float angle(u0x,u0y,v0x,v0y)
-     float u0x,u0y,v0x,v0y; 
+static float angle(float u0x, float u0y, float v0x, float v0y)
 {
   float c,s;
   
@@ -117,11 +113,7 @@ static float angle(u0x,u0y,v0x,v0y)
 }
 
 
-static int get_next_tangent_aux(curve, iFirst, iLast, x1, y1, x2, y2, same_orientation)
-     Flist curve; 
-     int iFirst, iLast; 
-     float x1, y1, x2, y2; 
-     unsigned char *same_orientation;
+static int get_next_tangent_aux(Flist curve, int iFirst, int iLast, float x1, float y1, float x2, float y2, unsigned char *same_orientation)
 {
   int i, i_next, i_prev, hL, hR;
   float xL, yL, xR, yR, x0, y0;
@@ -164,10 +156,7 @@ static int get_next_tangent_aux(curve, iFirst, iLast, x1, y1, x2, y2, same_orien
   return -1;
 }
 
-static int get_next_tangent(curve, iFirst, iLast, iFirstC, same_orientation)
-     Flist curve; 
-     int iFirst, iLast, iFirstC;
-     unsigned char *same_orientation;
+static int get_next_tangent(Flist curve, int iFirst, int iLast, int iFirstC, unsigned char *same_orientation)
 {
   float x1, y1, x2, y2;
   int i;
@@ -185,9 +174,7 @@ static int get_next_tangent(curve, iFirst, iLast, iFirstC, same_orientation)
 
 /* get intersection point between straight lines (A1,A2) and (A3,A4)
    if angle of intersection < Minangle then intersection not valid */
-static unsigned char get_intersection_point(x1, y1, x2, y2, x3, y3, x4, y4, x, y, MinAngle)
-     float x1, y1, x2, y2, x3, y3, x4, y4, MinAngle;
-     float *x, *y;
+static unsigned char get_intersection_point(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float *x, float *y, float MinAngle)
 {
   float det, lambda, ang;
 
@@ -209,10 +196,7 @@ static unsigned char get_intersection_point(x1, y1, x2, y2, x3, y3, x4, y4, x, y
   return 1;
 }
 
-static void get_perpendicular_points(curve, i1, i2, i3, xP1, yP1, xP2, yP2)
-     Flist curve;
-     int i1, i2, i3;
-     float *xP1, *yP1, *xP2, *yP2;
+static void get_perpendicular_points(Flist curve, int i1, int i2, int i3, float *xP1, float *yP1, float *xP2, float *yP2)
 {
   float x1, y1, x2, y2, x3, y3, x4, y4, x5, y5;
 
@@ -232,12 +216,7 @@ static void get_perpendicular_points(curve, i1, i2, i3, xP1, yP1, xP2, yP2)
 
 
 /* intersection between a line and the curve */
-static unsigned char intersection_curve_line(curve, iFirst, iLast, x1, y1, x2, y2, xC, yC, i_left, i_right)
-     Flist curve;
-     int iFirst, iLast;
-     float x1, y1, x2, y2;
-     float *xC, *yC;
-     int *i_left, *i_right;
+static unsigned char intersection_curve_line(Flist curve, int iFirst, int iLast, float x1, float y1, float x2, float y2, float *xC, float *yC, int *i_left, int *i_right)
 {
   int i, i_next, hL, hR;
   float xL, yL, xR, yR;
@@ -277,12 +256,7 @@ static unsigned char intersection_curve_line(curve, iFirst, iLast, x1, y1, x2, y
 
 /* get parallel to the two basis straight lines with distance d (=1/3) */ 
 
-static unsigned char get_cross_parallel(curve, i1, i2, i3, xP1, yP1, xP2, yP2, d, xC, yC, i_left, i_right)
-     Flist curve;
-     int i1, i2, i3;
-     float xP1, yP1, xP2, yP2, d;
-     float *xC, *yC; 
-     int *i_left, *i_right;
+static unsigned char get_cross_parallel(Flist curve, int i1, int i2, int i3, float xP1, float yP1, float xP2, float yP2, float d, float *xC, float *yC, int *i_left, int *i_right)
 {
   float x1, y1, x2, y2, x3, y3, x4, y4;
 
@@ -301,15 +275,7 @@ static unsigned char get_cross_parallel(curve, i1, i2, i3, xP1, yP1, xP2, yP2, d
 }
 
 
-static unsigned char find_intersection_pointsAI(curve,  i1, i2, i3, i4, xC1, yC1, xC2, yC2, 
-					 xR1, yR1, xR2, yR2, xR3, yR3, xR4, yR4, MinAngle)
-
-     Flist curve;
-     int i1, i2, i3, i4;
-     float xC1, yC1, xC2, yC2;
-     float *xR1, *yR1, *xR2, *yR2, *xR3, *yR3, *xR4, *yR4;
-     float MinAngle;
-
+static unsigned char find_intersection_pointsAI(Flist curve, int i1, int i2, int i3, int i4, float xC1, float yC1, float xC2, float yC2, float *xR1, float *yR1, float *xR2, float *yR2, float *xR3, float *yR3, float *xR4, float *yR4, float MinAngle)
 {
   float x1, y1, x2, y2, x3, y3, x3b, y3b, x4, y4, x4b, y4b;
   
@@ -335,16 +301,13 @@ static unsigned char find_intersection_pointsAI(curve,  i1, i2, i3, i4, xC1, yC1
 }
 
 
-static float detM2(x1, y1, x2, y2)
-     float x1, y1, x2, y2;
+static float detM2(float x1, float y1, float x2, float y2)
 {
   return (x1*y2-y1*x2);
 }
 
 
-static unsigned char getMatrixAffine(x1, y1, x2, y2, x3, y3, x1N, y1N, x2N, y2N, x3N, y3N, A)
-     float x1, y1, x2, y2, x3, y3, x1N, y1N, x2N, y2N, x3N, y3N;
-     float A[3][3];
+static unsigned char getMatrixAffine(float x1, float y1, float x2, float y2, float x3, float y3, float x1N, float y1N, float x2N, float y2N, float x3N, float y3N, float (*A)[3])
 {
   float a11, a12, a13, a21, a22, a23, a31, a32, a33;
   float a, b, c, d, Tx, Ty;
@@ -385,8 +348,7 @@ static unsigned char getMatrixAffine(x1, y1, x2, y2, x3, y3, x1N, y1N, x2N, y2N,
 }
 
 /* compute the normalized coords of (x,y) */
-static void normalizeAI(x, y)
-     float *x, *y;
+static void normalizeAI(float *x, float *y)
 {
   float xN, yN;
   
@@ -396,10 +358,7 @@ static void normalizeAI(x, y)
   *x=xN; *y=yN;
 }
 
-static void add_codeAI(arc_code_AI, x, y, m)
-     Flist arc_code_AI;
-     float x, y;
-     int m;
+static void add_codeAI(Flist arc_code_AI, float x, float y, int m)
 {
   normalizeAI(&x, &y);
   _(arc_code_AI,m,0)=x;
@@ -409,12 +368,7 @@ static void add_codeAI(arc_code_AI, x, y, m)
 
 /* get next point with distance d */
 
-static int get_next_point_length(fcrv, xI0, yI0, iFirst, iLast, d, type)
-     Flist fcrv;
-     float *xI0, *yI0;
-     int iFirst, iLast;
-     float d;
-     unsigned char type;
+static int get_next_point_length(Flist fcrv, float *xI0, float *yI0, int iFirst, int iLast, float d, unsigned char type)
 {
   int i, i_last;
   float x, y, xP, yP, s, t;
@@ -451,13 +405,7 @@ static int get_next_point_length(fcrv, xI0, yI0, iFirst, iLast, d, type)
 
 /* normalize a piece of curve whose arclength is Lmax */
 
-static int get_normalized_arcAI(fcrvN, fcrv, iFirst, iLast, Lmax, iMax, type)
-     Flist fcrv; 
-     Flist fcrvN;
-     int iFirst, iLast;
-     float Lmax; 
-     int *iMax; 
-     unsigned char type;
+static int get_normalized_arcAI(Flist fcrvN, Flist fcrv, int iFirst, int iLast, float Lmax, int *iMax, unsigned char type)
 {
   float d, x1, y1, x2, y2;
   int i, i_next, n_pointsN, n;
@@ -517,11 +465,7 @@ static int get_normalized_arcAI(fcrvN, fcrv, iFirst, iLast, Lmax, iMax, type)
 }
 
 
-static int codeAI_aux(arc_code_AI, curve, xC, yC, i_left, i_right, xR1, yR1, xR2, yR2, xR3, yR3, xR4, yR4)
-     Flist curve, arc_code_AI; 
-     float xC, yC;
-     int i_left, i_right;
-     float xR1, yR1, xR2, yR2, xR3, yR3, xR4, yR4;
+static int codeAI_aux(Flist arc_code_AI, Flist curve, float xC, float yC, int i_left, int i_right, float xR1, float yR1, float xR2, float yR2, float xR3, float yR3, float xR4, float yR4)
 {
   Flist fcrvAI_left, fcrvAI_right;
   float disc, xN, yN, xP, yP;
@@ -588,10 +532,7 @@ static int codeAI_aux(arc_code_AI, curve, xC, yC, i_left, i_right, xR1, yR1, xR2
 
 
 /* code the piece of curve in the basis of (i1,i2) */
-static int codeAI(arc_code_AI, curve, i1, i2, MinAngle)
-     Flist curve, arc_code_AI;
-     int i1, i2;
-     float MinAngle;
+static int codeAI(Flist arc_code_AI, Flist curve, int i1, int i2, float MinAngle)
 {
   int i_left, i_right;  float xC, yC;
   unsigned char same_orientation;
@@ -643,15 +584,7 @@ static int codeAI(arc_code_AI, curve, i1, i2, MinAngle)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Flists km_codecurve_ai(curve,curve_IP,curve_FP,curve_BP,dict,NC,NN,FN)
-     Flist curve;
-     Flist curve_IP;
-     Flist curve_FP;
-     Flist curve_BP;
-     Flists dict;
-     int NC;
-     int NN;
-     float FN; 
+Flists km_codecurve_ai(Flist curve, Flist curve_IP, Flist curve_FP, Flist curve_BP, Flists dict, int NC, int NN, float FN)
 { 
   Flist arc_code_AI;
   int i1,i2,k;

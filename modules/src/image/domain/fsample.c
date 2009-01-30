@@ -26,10 +26,7 @@ usage    = {
 
 #define _(a,i,j)  ((a)->gray[(i)*(a)->ncol+(j)] )
 
-Fimage fsample(in ,out,step,delta,norm)
-     Fimage out,in;
-     double step,*delta;
-     int *norm;
+Fimage fsample(Fimage in, Fimage out, double step, double *delta, int *norm)
 {
   float coeff;
   register int i,j;

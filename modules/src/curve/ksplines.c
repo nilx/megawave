@@ -27,10 +27,7 @@ ksplines<-splines          "B-spline curves (curves output)"
 
 /* Return the maximum number of points in a set of curves */
 
-static int give_max_number_of_points_in_curves(curves)
-
-Curves curves;
-
+static int give_max_number_of_points_in_curves(Curves curves)
 {
   Curve cv;
   int n;
@@ -42,9 +39,9 @@ Curves curves;
 }
 
 
-static void init_nodes(X,j,n)   /* Init the node vector */
+static void init_nodes(int *X, int j, int n)   /* Init the node vector */
      
-     int *X,j,n;
+                
      
 {
   int i;
@@ -62,15 +59,15 @@ static void init_nodes(X,j,n)   /* Init the node vector */
 
 /* Compute the spline */
 
-static void compute_spline(S,P,X,N,C,M,NPC,Step)
+static void compute_spline(Curve S, Curve P, int *X, Fimage N, int C, int M, int NPC, float Step)
      
-     Curve S;    /* Spline to compute */
-     Curve P;    /* Control points */
-     int *X;     /* Node vector */
-     Fimage N;   /* Spline function */
-     int C;      /* Order j of the spline */
-     int M,NPC;  /* M = NPC+1 = number of control pts */
-     float Step; /* Step in the discretization of the spline */
+                 /* Spline to compute */
+                 /* Control points */
+                 /* Node vector */
+                 /* Spline function */
+                 /* Order j of the spline */
+                 /* M = NPC+1 = number of control pts */
+                 /* Step in the discretization of the spline */
 
 {
   int k;     /* number of the point in the spline */
@@ -183,11 +180,11 @@ static void compute_spline(S,P,X,N,C,M,NPC,Step)
 
 /*------------------------------ Main function ------------------------------*/
 
-void ksplines(C,Step,ctrl_pts,splines)
+void ksplines(int *C, float *Step, Curves ctrl_pts, Curves splines)
 
-     int *C;      /* Order j of the spline */
-     float *Step; /* Step in the discretization of the spline */
-     Curves ctrl_pts,splines;
+                  /* Order j of the spline */
+                  /* Step in the discretization of the spline */
+                             
      
 { Curve P,newsp,oldsp;    
   int *X;            /* Node vector */

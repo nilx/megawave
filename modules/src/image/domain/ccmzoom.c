@@ -24,14 +24,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for cczoom() */
 
-void ccmzoom(Input, Output, x_flg, y_flg, factor, o, i_flg)
-     
-     char *x_flg, *y_flg, *i_flg;
-     float *factor;
-     int *o;
-     Ccmovie Input;
-     Ccmovie Output;
-     
+void ccmzoom(Ccmovie Input, Ccmovie Output, char *x_flg, char *y_flg, float *factor, int *o, char *i_flg)
 {
   Ccimage src,dst,prev;
   

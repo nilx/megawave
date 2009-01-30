@@ -20,12 +20,7 @@
 #include <math.h>
 #include "mw.h"
 
-void ssinus(size,A,D,signal)
-     
-     int *size;
-     float *A,*D;
-     Fsignal signal;
-     
+void ssinus(int *size, float *A, float *D, Fsignal signal)
 {
   int i;
 

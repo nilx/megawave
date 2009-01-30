@@ -34,10 +34,7 @@
 
 #define ABS(x) ((x)>0?(x):(-(x)))
 
-void sop(B,out,A,a,plus,minus,times,divide,dist,norm,inf,sup,less,greater,equal)
-     Fsignal B,out,A;
-     float *a;
-     char *plus,*minus,*times,*divide,*dist,*norm,*inf,*sup,*less,*greater,*equal;
+void sop(Fsignal B, Fsignal out, Fsignal A, float *a, char *plus, char *minus, char *times, char *divide, char *dist, char *norm, char *inf, char *sup, char *less, char *greater, char *equal)
 {
   int i;
   float left,res;

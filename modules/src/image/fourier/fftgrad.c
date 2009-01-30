@@ -30,8 +30,7 @@ in->in
 #define RADIANS_TO_DEGREES (180.0/M_PI)
 
 
-void fftgrad(in,gradx,grady,gradn,gradp)
-Fimage in,gradx,grady,gradn,gradp;
+void fftgrad(Fimage in, Fimage gradx, Fimage grady, Fimage gradn, Fimage gradp)
 {
   int nx,ny,x,y,adr;
   float normx,normy,cx,cy,xx,yy;

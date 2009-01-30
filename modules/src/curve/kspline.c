@@ -22,9 +22,9 @@
 #include <stdio.h>
 #include "mw.h"
 
-static void init_nodes(X,j,n)   /* Init the node vector */
+static void init_nodes(int *X, int j, int n)   /* Init the node vector */
 
-     int *X,j,n;
+                
 
 {
   int i;
@@ -42,15 +42,15 @@ static void init_nodes(X,j,n)   /* Init the node vector */
 
 /* Compute the spline */
 
-static void compute_spline(S,P,X,N,C,M,NPC,Step)
+static void compute_spline(Curve S, Curve P, int *X, Fimage N, int C, int M, int NPC, float Step)
      
-     Curve S;    /* Spline to compute */
-     Curve P;    /* Control points */
-     int *X;     /* Node vector */
-     Fimage N;   /* Spline function */
-     int C;      /* Order j of the spline */
-     int M,NPC;  /* M = NPC+1 = number of control pts */
-     float Step; /* Step in the discretization of the spline */
+                 /* Spline to compute */
+                 /* Control points */
+                 /* Node vector */
+                 /* Spline function */
+                 /* Order j of the spline */
+                 /* M = NPC+1 = number of control pts */
+                 /* Step in the discretization of the spline */
      
 {
   int k;     /* number of the point in the spline */
@@ -163,11 +163,11 @@ static void compute_spline(S,P,X,N,C,M,NPC,Step)
 
 /*------------------------------ Main function ------------------------------*/
 
-void kspline(C,Step,P,spline)
+void kspline(int *C, float *Step, Curve P, Curve spline)
      
-     int *C;      /* Order j of the spline */
-     float *Step; /* Step in the discretization of the spline */
-     Curve P,spline;
+                  /* Order j of the spline */
+                  /* Step in the discretization of the spline */
+                    
      
 { 
   int *X;            /* Node vector */

@@ -20,11 +20,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fvalues() */
 
-void frank(u,rank,g,w,c)
-     Fimage u,rank;
-     Flist g;
-     float *w;
-     int *c;
+void frank(Fimage u, Fimage rank, Flist g, float *w, int *c)
 {
   Fsignal s,mult;
   double sum;

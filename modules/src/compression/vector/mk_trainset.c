@@ -46,14 +46,14 @@ usage = {
 
 
 static void
-THRES_ADAP(width, height, thresval1, thresval2, thresval3, image, image2, image3, image4, image5, image6, image7, image8)
+THRES_ADAP(int width, int height, float *thresval1, float *thresval2, float *thresval3, Fimage image, Fimage image2, Fimage image3, Fimage image4, Fimage image5, Fimage image6, Fimage image7, Fimage image8)
 
   /*--- Compute threshold values fo adaptive quantization ---*/
 
-int         width, height;                      /* Width and height of block */
-float	   *thresval1, *thresval2, *thresval3;  /* Block energy thresholds 
+                                                /* Width and height of block */
+     	                                        /* Block energy thresholds 
 						 * between codebooks */
-Fimage      image, image2, image3, image4, image5, image6, image7, image8;
+                                                                          
                                                 /* Training images */
 
 {
@@ -138,17 +138,17 @@ Fimage      image, image2, image3, image4, image5, image6, image7, image8;
 
 
 static long
-SIZE_TS(imgsize, vecsize, lap, decim, edge)
+SIZE_TS(long int imgsize, long int vecsize, int *lap, int decim, int edge)
 
   /*--- Compute and return number of training vectors extracted ---*/
           /*--- along the lines or columns of an image ---*/
 
-long	    imgsize;	       	/* Number of row or column in image */
-long	    vecsize;	       	/* Number of row or column in blocks */
-int        *lap;                /* Take overlapping blocks 
+    	            	       	/* Number of row or column in image */
+    	            	       	/* Number of row or column in blocks */
+                                /* Take overlapping blocks 
 				 * in training images */
-int         decim;              /* Space between pixels in a vector */
-int         edge;               /* No overlapping on edges */
+                                /* Space between pixels in a vector */
+                                /* No overlapping on edges */
 
 {
     long	    size;
@@ -171,13 +171,13 @@ int         edge;               /* No overlapping on edges */
 
 
 static unsigned char
-SWITCH_TS(energy, tv1, tv2, tv3)
+SWITCH_TS(float energy, float *tv1, float *tv2, float *tv3)
 
   /*--- Return the adaptive class according to the comparison ---*/ 
         /*--- between energy value and threshold values ---*/
 
-float	    energy;           /*--- Energy of the block ---*/
-float	   *tv1, *tv2, *tv3;  /*--- Threshold values ---*/
+     	                      /*--- Energy of the block ---*/
+     	                      /*--- Threshold values ---*/
 
 {
   unsigned char i;
@@ -206,14 +206,14 @@ float	   *tv1, *tv2, *tv3;  /*--- Threshold values ---*/
 
 
 static double
-ENERGY_BLOCK(image, decim, width, height, ldxi, imgj)
+ENERGY_BLOCK(Fimage image, int decim, int width, int height, long int ldxi, long int imgj)
 
   /*--- Compute the energy of a block ---*/
 
-Fimage      image;            /* Training image */
-int         decim;            /* Space between pixels in a vector */
-int         width, height;    /* Width and height of block */
-long	    ldxi, imgj;
+                              /* Training image */
+                              /* Space between pixels in a vector */
+                              /* Width and height of block */
+    	               
 
 {
   long      r, c;
@@ -235,22 +235,22 @@ long	    ldxi, imgj;
 
 
 static void
-SEARCH_LINE_TS(image, ldxi, indts, t, width, height, lap, decim, edge, thresval1, thresval2, thresval3)
+SEARCH_LINE_TS(Fimage image, long int ldxi, Cimage indts, long int *t, int width, int height, int *lap, int decim, int edge, float *thresval1, float *thresval2, float *thresval3)
 
   /*--- Search for the adaptive class of the blocks in a given line ---*/
 
-Fimage      image;            /* Training image */
-long	    ldxi;             /* index of the first pixel of the line 
+                              /* Training image */
+    	                      /* index of the first pixel of the line 
 			       * in image */
-Cimage	    indts;	      /* Index of training set for image block 't' */
-long       *t;                /* index of the vector currently added 
+      	          	      /* Index of training set for image block 't' */
+                              /* index of the vector currently added 
 			       * to the training set */
-int         width, height;    /* Width and height of block */
-int        *lap;              /* Flag for taking overlapping 
+                              /* Width and height of block */
+                              /* Flag for taking overlapping 
 			       * blocks in training images */
-int         decim;            /* Space between pixels in a vector */
-int         edge;             /* No overlapping on edges */
-float	   *thresval1, *thresval2, *thresval3;  /* Block energy thresholds 
+                              /* Space between pixels in a vector */
+                              /* No overlapping on edges */
+     	                                        /* Block energy thresholds 
 						 * between codebooks */
 
 {
@@ -304,18 +304,18 @@ float	   *thresval1, *thresval2, *thresval3;  /* Block energy thresholds
 
 
 static void
-SEARCH_TS(image, indts, width, height, lap, decim, edge, thresval1, thresval2, thresval3)
+SEARCH_TS(Fimage image, Cimage indts, int width, int height, int *lap, int decim, int edge, float *thresval1, float *thresval2, float *thresval3)
 
   /*--- Search for the adaptive class of the blocks in a given image ---*/
 
-Fimage      image;            /* Training image */
-Cimage	    indts;	      /* Index of training set for image block 't' */
-int         width, height;    /* Width and height of block */
-int        *lap;              /* Flag for taking overlapping 
+                              /* Training image */
+      	          	      /* Index of training set for image block 't' */
+                              /* Width and height of block */
+                              /* Flag for taking overlapping 
 			       * blocks in training images */
-int         decim;            /* Space between pixels in a vector */
-int         edge;             /* No overlapping on edges */
-float	   *thresval1, *thresval2, *thresval3;  /* Block energy thresholds 
+                              /* Space between pixels in a vector */
+                              /* No overlapping on edges */
+     	                                        /* Block energy thresholds 
 						 * between codebooks */
 
 {
@@ -373,20 +373,20 @@ float	   *thresval1, *thresval2, *thresval3;  /* Block energy thresholds
 
 
 static void
-COPY_BLOCK(image, indts, t, decim, result, result2, result3, result4, width, height, ldxi, imgj, ldxr, ldxr2, ldxr3, ldxr4)
+COPY_BLOCK(Fimage image, Cimage indts, long int t, int decim, Fimage result, Fimage result2, Fimage result3, Fimage result4, int width, int height, long int ldxi, long int imgj, long int *ldxr, long int *ldxr2, long int *ldxr3, long int *ldxr4)
 
   /*--- Extract a block from 'image' and copy it on specified ---*/
                 /*--- training set ---*/
 
-Fimage      image;            /* Training image */
-Cimage	    indts;	      /* Index of training set for image block 't' */
-long	    t;                /* Index of block im image */
-int         decim;            /* Space between pixels in a vector */
-Fimage      result, result2, result3, result4; /* Resulting training sets */
-int         width, height;    /* Width and height of block */
-long	    ldxi, imgj;       /* index of the first pixel of the line 
+                              /* Training image */
+      	          	      /* Index of training set for image block 't' */
+    	                      /* Index of block im image */
+                              /* Space between pixels in a vector */
+                                               /* Resulting training sets */
+                              /* Width and height of block */
+    	                      /* index of the first pixel of the line 
 			       * and first pixel of the block in image */
-long       *ldxr, *ldxr2, *ldxr3, *ldxr4;
+                                         
 
 {
   long            r, c;
@@ -450,23 +450,23 @@ long       *ldxr, *ldxr2, *ldxr3, *ldxr4;
 
 
 static void
-COPY_LINE_OF_BLOCK(image, indts, lap, decim, edge, result, result2, result3, result4, width, height, t, ldxi, ldxr, ldxr2, ldxr3, ldxr4)
+COPY_LINE_OF_BLOCK(Fimage image, Cimage indts, int *lap, int decim, int edge, Fimage result, Fimage result2, Fimage result3, Fimage result4, int width, int height, long int *t, long int ldxi, long int *ldxr, long int *ldxr2, long int *ldxr3, long int *ldxr4)
 
   /*--- Extract blocks from a line in 'image' and copy them on specified ---*/
                      /*--- training set ---*/
 
-Fimage      image;            /* Training image */
-Cimage	    indts;	      /* Index of training set for image block 't' */
-int        *lap;              /* Take overlapping blocks 
+                              /* Training image */
+      	          	      /* Index of training set for image block 't' */
+                              /* Take overlapping blocks 
 			       * in training images */
-int         decim;            /* Space between pixels in a vector */
-int         edge;             /* No overlapping on edges */
-Fimage      result, result2, result3, result4; /* Resulting training sets */
-int         width, height;    /* Width and height of block */
-long	   *t;                /* Index of block in training set */
-long	    ldxi;             /* index of the first pixel of the line 
+                              /* Space between pixels in a vector */
+                              /* No overlapping on edges */
+                                               /* Resulting training sets */
+                              /* Width and height of block */
+    	                      /* Index of block in training set */
+    	                      /* index of the first pixel of the line 
 			       * in image */
-long       *ldxr, *ldxr2, *ldxr3, *ldxr4;  /* Indices in training sets 
+                                           /* Indices in training sets 
 			       * of the first point of the vector 
 			       * currently added */
 
@@ -517,22 +517,22 @@ long       *ldxr, *ldxr2, *ldxr3, *ldxr4;  /* Indices in training sets
 
 
 static void
-ADD_IMAGE_ADAP(width, height, t, ldxr, ldxr2, ldxr3, ldxr4, lap, decim, edge, image, indts, result, result2, result3, result4)
+ADD_IMAGE_ADAP(int width, int height, long int *t, long int *ldxr, long int *ldxr2, long int *ldxr3, long int *ldxr4, int *lap, int decim, int edge, Fimage image, Cimage indts, Fimage result, Fimage result2, Fimage result3, Fimage result4)
 
   /*--- Extract vectors from an image and add them to the training set(s) ---*/
 
-int             width, height;  /* Width and height of block */
-long	       *t;
-long           *ldxr, *ldxr2, *ldxr3, *ldxr4;  /* Indices in training sets 
+                                /* Width and height of block */
+    	          
+                                               /* Indices in training sets 
 				 * of the first point of the vector 
 				 * currently added */
-int            *lap;            /* Take overlapping blocks 
+                                /* Take overlapping blocks 
 				 * in training images */
-int             decim;          /* Space between pixels in a vector */
-int             edge;           /* No overlapping on edges */
-Fimage          image;          /* Input image */
-Cimage          indts;		/* Index of training set for an image block */
-Fimage          result, result2, result3, result4;
+                                /* Space between pixels in a vector */
+                                /* No overlapping on edges */
+                                /* Input image */
+                      		/* Index of training set for an image block */
+                                                  
 
 {
   long      sizeb;	      /* Size of blocks */
@@ -588,21 +588,21 @@ Fimage          result, result2, result3, result4;
 
 
 static void
-MK_TRAINSET_ADAP(width, height, lap, decim, edge, thresval1, thresval2, thresval3, sizecb, image, image2, image3, image4, image5, image6, image7, image8, result, result2, result3, result4)
+MK_TRAINSET_ADAP(int width, int height, int *lap, int decim, int edge, float *thresval1, float *thresval2, float *thresval3, int *sizecb, Fimage image, Fimage image2, Fimage image3, Fimage image4, Fimage image5, Fimage image6, Fimage image7, Fimage image8, Fimage result, Fimage result2, Fimage result3, Fimage result4)
 
   /*--- Construct adaptive training set(s) ---*/
 
-int         width, height;      /* Width and height of block */
-int        *lap;                /* Flag for taking overlapping 
+                                /* Width and height of block */
+                                /* Flag for taking overlapping 
 				 * blocks in training images */
-int         decim;              /* Space between pixels in a vector */
-int         edge;               /* No overlapping on edges */
-float	   *thresval1, *thresval2, *thresval3;  /* Block energy thresholds 
+                                /* Space between pixels in a vector */
+                                /* No overlapping on edges */
+     	                                        /* Block energy thresholds 
 						 * between codebooks */
-int        *sizecb;             /* Size of codebook */
-Fimage      image, image2, image3, image4, image5, image6, image7, image8;
+                                /* Size of codebook */
+                                                                          
                                 /* Training images */
-Fimage      result, result2, result3, result4;  /* Resulting codebook */
+                                                /* Resulting codebook */
 
 
 {
@@ -823,17 +823,17 @@ Fimage      result, result2, result3, result4;  /* Resulting codebook */
 
      
 static void
-MK_TRAINSET(width, height, lap, decim, edge, image, image2, image3, image4, image5, image6, image7, image8, result)
+MK_TRAINSET(int width, int height, int *lap, int decim, int edge, Fimage image, Fimage image2, Fimage image3, Fimage image4, Fimage image5, Fimage image6, Fimage image7, Fimage image8, Fimage result)
 
   /*--- Construct non adaptive training set ---*/
 
-int             width, height;    /* Width and height of block */
-int            *lap;              /* Take overlapping blocks 
+                                  /* Width and height of block */
+                                  /* Take overlapping blocks 
 				   * in training images */
-int             decim;            /* Space between pixels in a vector */
-int             edge;             /* No overlapping on edges */
-Fimage          image, image2, image3, image4, image5, image6, image7, image8;
-Fimage          result;
+                                  /* Space between pixels in a vector */
+                                  /* No overlapping on edges */
+                                                                              
+                       
 
 
 {
@@ -930,21 +930,21 @@ Fimage          result;
 
 
 void
-mk_trainset(Width, Height, Lap, Decim, Edge, ThresVal1, ThresVal2, ThresVal3, SizeCB, Image2, Image3, Image4, Image5, Image6, Image7, Image8, Result2, Result3, Result4, Image, Result)
+mk_trainset(int *Width, int *Height, int *Lap, int *Decim, int *Edge, float *ThresVal1, float *ThresVal2, float *ThresVal3, int *SizeCB, Fimage Image2, Fimage Image3, Fimage Image4, Fimage Image5, Fimage Image6, Fimage Image7, Fimage Image8, Fimage Result2, Fimage Result3, Fimage Result4, Fimage Image, Fimage Result)
 
-int        *Width, *Height;		/* Dimensions of blocks */
-int        *Lap;                        /* Flag for taking overlapping 
+                           		/* Dimensions of blocks */
+                                        /* Flag for taking overlapping 
 					 * blocks in training images */
-int        *Decim;          /* Space between pixels in a vector */
-int        *Edge;                       /* No overlapping on edges */
-float	   *ThresVal1, *ThresVal2, *ThresVal3;	/* threshold values  
+                            /* Space between pixels in a vector */
+                                        /* No overlapping on edges */
+     	                                      	/* threshold values  
     					 * for block energy */
-int        *SizeCB;                     /* Size of codebook */
-Fimage      Image2, Image3, Image4, Image5, Image6, Image7, Image8;     
+                                        /* Size of codebook */
+                                                                        
                                         /* Training images */
-Fimage      Result2, Result3, Result4;  /* Resulting adapted codeooks */
-Fimage      Image;                      /* Training image */
-Fimage      Result;                     /* Resulting adapted codeook */
+                                        /* Resulting adapted codeooks */
+                                        /* Training image */
+                                        /* Resulting adapted codeook */
 
 {
 

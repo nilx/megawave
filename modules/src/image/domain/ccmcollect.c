@@ -23,10 +23,7 @@
 #include <math.h>
 #include "mw.h"
 
-Ccimage ccmcollect(in,out,n,i,o,c,x,y)
-     Ccmovie in;
-     Ccimage out;
-     int *n,*i,*o,*c,*x,*y;
+Ccimage ccmcollect(Ccmovie in, Ccimage out, int *n, int *i, int *o, int *c, int *x, int *y)
 {
   Ccimage u;
   int nx,ny,nl,nr,ox,oy,ix,iy,tx,ty,dx,dy,il,k;

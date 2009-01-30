@@ -45,11 +45,7 @@ usage = {
 /*--- Constants ---*/
 
 static void
-WSUBIMCHANGE(codebook, nlevel)
-
-Wtrans2d      codebook;
-int           nlevel;
-
+WSUBIMCHANGE(Wtrans2d codebook, int nlevel)
 {
   int     i, j;
 
@@ -62,12 +58,12 @@ int           nlevel;
 
 
 static int
-count_cb(codebook)
+count_cb(Fimage codebook)
 
   /*--- Count and return the number of codebooks contained ---*/
              /*--- in the fimage 'codebook' ---*/
 
-Fimage     codebook;
+                    
 
 {
   long      size, sizei, sizef;
@@ -96,36 +92,36 @@ Fimage     codebook;
 
 
 void
-wlbg_adap(NumRecMax, Level, Orient, Dyadic, Lap, Edge, Width, Height, MultiCB, Sizec1, Sizec2, Sizec3, ThresVal1, ThresVal2, ThresVal3, OldCodeBook, OldAdapCodeBook2, OldAdapCodeBook3, Output2, Output3, TrainWtrans2, TrainWtrans3, TrainWtrans4, ResCodeBook, ResResCodeBook, TrainWtrans1, Output1)
+wlbg_adap(int *NumRecMax, int *Level, int *Orient, int *Dyadic, int *Lap, int *Edge, int *Width, int *Height, int *MultiCB, int *Sizec1, int *Sizec2, int *Sizec3, float *ThresVal1, float *ThresVal2, float *ThresVal3, Wtrans2d OldCodeBook, Wtrans2d OldAdapCodeBook2, Wtrans2d OldAdapCodeBook3, Wtrans2d *Output2, Wtrans2d *Output3, Wtrans2d TrainWtrans2, Wtrans2d TrainWtrans3, Wtrans2d TrainWtrans4, Wtrans2d ResCodeBook, Wtrans2d ResResCodeBook, Wtrans2d TrainWtrans1, Wtrans2d *Output1)
 
-int        *NumRecMax;          /* Number of level in Output1 */
-int        *Level;              /* Generate codebook only at one scale */
-int        *Orient;             /* Generate codebook only in one orientation */
-int        *Dyadic;             /* Training set is formed of dyadic 
+                                /* Number of level in Output1 */
+                                /* Generate codebook only at one scale */
+                                /* Generate codebook only in one orientation */
+                                /* Training set is formed of dyadic 
 				 * wav. trans. from level Dyadic */
-int        *Lap;                /* Take overlapping vectors 
+                                /* Take overlapping vectors 
 				 * in training images */
-int        *Edge;               /* Overlapping inhibited near edges */
-int        *Width;              /* Width of block */
-int        *Height;             /* Height of block */
-int        *MultiCB;            /* Generates all code books of size equal 
+                                /* Overlapping inhibited near edges */
+                                /* Width of block */
+                                /* Height of block */
+                                /* Generates all code books of size equal 
 				 * to a power of 2 */
-int        *Sizec1, *Sizec2, *Sizec3; /* Size of first, second and third 
+                                      /* Size of first, second and third 
 				 * codebooks  */
-float      *ThresVal1, *ThresVal2, *ThresVal3;	/* threshold values  
+                                              	/* threshold values  
     			         * for block energy */
-Wtrans2d    OldCodeBook;        /* Modified sequence of first class codebook */
-Wtrans2d    OldAdapCodeBook2, OldAdapCodeBook3; /* Modified sequence 
+                                /* Modified sequence of first class codebook */
+                                                /* Modified sequence 
 				 * of second and third class codebooks */
-Wtrans2d   *Output2, *Output3;  /* Generated sequences of second and third 
+                                /* Generated sequences of second and third 
 				 * class codebook */
-Wtrans2d    TrainWtrans2, TrainWtrans3, TrainWtrans4; /* Wavelet 
+                                                      /* Wavelet 
 			         * transforms for training set */
-Wtrans2d    ResCodeBook, ResResCodeBook; /* Generate resdu codebook after 
+                                         /* Generate resdu codebook after 
 				 * quantization with ResCodeBook 
 				 * and ResResCodeBook */ 
-Wtrans2d    TrainWtrans1;       /* First wavelet transform for training set */
-Wtrans2d   *Output1;            /* Sequence of generated codebooks */
+                                /* First wavelet transform for training set */
+                                /* Sequence of generated codebooks */
 
 {
   int             J;	        /* Current level of decomposition */

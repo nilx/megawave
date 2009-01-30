@@ -74,10 +74,7 @@ float           min, max;	  /* Minimum and maximum values of gray level
 
 
 static void
-RESIZE_COMPRESS_FIMAGE(compress)
-
-Cimage           compress;
-
+RESIZE_COMPRESS_FIMAGE(Cimage compress)
 {
   int              i;
   int              ncolo, nrowo;
@@ -139,10 +136,7 @@ Cimage           compress;
 
 
 static void
-REALLOCATE_COMPRESS_FIMAGE(compress)
-
-Cimage           compress;
-
+REALLOCATE_COMPRESS_FIMAGE(Cimage compress)
 {
   int              i;
   Cimage           bufcomp;
@@ -177,11 +171,7 @@ Cimage           compress;
 
 
 static void
-ADD_BIT_TO_COMPRESS_FIMAGE(bit, compress)
-
-int              bit;
-Cimage           compress;
-
+ADD_BIT_TO_COMPRESS_FIMAGE(int bit, Cimage compress)
 {
   buffer >>= 1;
   if (bit) 
@@ -201,11 +191,11 @@ Cimage           compress;
 
 
 static void
-ENCODE_INT_FIMAGE(symb, max_symb, compress)
+ENCODE_INT_FIMAGE(int symb, int max_symb, Cimage compress)
 
-int            symb;         /* Value of symbol to write */
-int            max_symb;     /* Half of maximum value for symbol */
-Cimage         compress;     /* Compressed file */
+                             /* Value of symbol to write */
+                             /* Half of maximum value for symbol */
+                             /* Compressed file */
 
 {
 
@@ -224,12 +214,7 @@ Cimage         compress;     /* Compressed file */
 
 
 static int
-FLOAT2INT(f, nbitlog, nbitstep, testoverflow)
-
-float   *f;
-int      nbitlog, nbitstep;
-int     *testoverflow;
-
+FLOAT2INT(float *f, int nbitlog, int nbitstep, int *testoverflow)
 {
   int n;
   int logf;
@@ -267,17 +252,17 @@ int     *testoverflow;
 
 
 static void
-INIT_ENCODING_FIMAGE(smallheader, nrow, ncol, c_stepsize, nstep, center, minstep, ashift, c_ashift, compress)
+INIT_ENCODING_FIMAGE(int *smallheader, int nrow, int ncol, int c_stepsize, int nstep, int *center, int minstep, float ashift, int c_ashift, Cimage compress)
 
-int         *smallheader;        /* Put size of image in header iff NULL */ 
-int          nrow, ncol;         /* Size of image */
-int          c_stepsize;	 /* Cell width code */
-int          nstep;              /* Number of quantization level */
-int         *center;             /* Flag for centering of quantization step */
-float        ashift;  
-int          c_ashift;           /* Index of lowest quantization step shift */
-int          minstep;            /* Index of lowest cell */
-Cimage       compress;           /* Compressed file */
+                                 /* Put size of image in header iff NULL */ 
+                                 /* Size of image */
+                        	 /* Cell width code */
+                                 /* Number of quantization level */
+                                 /* Flag for centering of quantization step */
+                      
+                                 /* Index of lowest quantization step shift */
+                                 /* Index of lowest cell */
+                                 /* Compressed file */
 
 {
 
@@ -381,10 +366,10 @@ Cimage       compress;           /* Compressed file */
 
 
 static void
-ADD_BUF_TO_COMPRESS_FIMAGE(compress, bufcomp)
+ADD_BUF_TO_COMPRESS_FIMAGE(Cimage compress, Cimage bufcomp)
 
-Cimage          compress;       /* Compressed image */
-Cimage          bufcomp;        /* Buffer for compressed image */
+                                /* Compressed image */
+                                /* Buffer for compressed image */
 
 {
   int bit;
@@ -417,10 +402,7 @@ Cimage          bufcomp;        /* Buffer for compressed image */
 
 
 static void
-min_max(image)
-     
-Fimage          image;
-
+min_max(Fimage image)
 {
     long            i;
     long            size;	/* Number of pixel in `image` */
@@ -438,17 +420,17 @@ Fimage          image;
 
 
 static void
-unif_quant(printsnr, smallheader, nstep, sstep, center, image, result, compress, ent, ratear)
+unif_quant(int *printsnr, int *smallheader, int *nstep, float *sstep, int *center, Fimage image, Fimage result, Cimage compress, double *ent, double *ratear)
 
-int        *printsnr;           /* Control info print on SNR */       
-int        *smallheader;        /* Put size of image in header iff NULL */ 
-int        *nstep;              /* Size of histogram */
-float      *sstep;              /* Step size for quantization */
-int        *center;             /* Flag for centering of quantization step */
-Fimage      image, result;
-Cimage      compress;		/* Compressed `Image` */
-double     *ent;            /* Entropic rate */
-double     *ratear;             /* Arithmetic coding rate */
+                                /* Control info print on SNR */       
+                                /* Put size of image in header iff NULL */ 
+                                /* Size of histogram */
+                                /* Step size for quantization */
+                                /* Flag for centering of quantization step */
+                          
+                     		/* Compressed `Image` */
+                            /* Entropic rate */
+                                /* Arithmetic coding rate */
 
 {
   float         stepsize;	 /* Cell width */
@@ -657,21 +639,21 @@ double     *ratear;             /* Arithmetic coding rate */
 
 
 void
-fscalq(PrintSNR, SmallHeader, NStep, SStep, Center, Compress, Image, Result, MSE, SNR, Ent, RateAr)
+fscalq(int *PrintSNR, int *SmallHeader, int *NStep, float *SStep, int *Center, Cimage Compress, Fimage Image, Fimage Result, double *MSE, double *SNR, double *Ent, double *RateAr)
 
-int        *PrintSNR;           /* Control info print on SNR */       
-int        *SmallHeader;        /* Do not specify size of image in header */
-int        *NStep;              /* Size of histogram */
-float      *SStep;              /* Step size for histogram */
-int        *Center;             /* Interval centered at zero */
-Cimage      Compress;		/* Compressed `Image` */
-Fimage      Image;              /* Input image */
-Fimage      Result;             /* Quantized image */
-double	   *MSE;		/* Mean square error between 
+                                /* Control info print on SNR */       
+                                /* Do not specify size of image in header */
+                                /* Size of histogram */
+                                /* Step size for histogram */
+                                /* Interval centered at zero */
+                     		/* Compressed `Image` */
+                                /* Input image */
+                                /* Quantized image */
+      	        		/* Mean square error between 
 				 * original and quantized image */
-double     *SNR;		/* Signal to noise ratio */
-double     *Ent;                /* Entropic rate */
-double     *RateAr;             /* Arithmetic coding rate */
+                		/* Signal to noise ratio */
+                                /* Entropic rate */
+                                /* Arithmetic coding rate */
 
 {
   double      psnr;		/* Peak signal to noise ratio */

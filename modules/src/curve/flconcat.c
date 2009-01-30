@@ -14,8 +14,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-Flists flconcat(l1,l2,out)
-     Flists l1,l2,out;
+Flists flconcat(Flists l1, Flists l2, Flists out)
 {
   int i,j;
 

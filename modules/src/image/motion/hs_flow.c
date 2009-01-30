@@ -40,9 +40,7 @@ long  adrxyz,adrxyz2,adrxy;
 
  
 
-static void ALLOCATE(out,nb_image)
-     Fmovie out;
-     int nb_image;
+static void ALLOCATE(Fmovie out, int nb_image)
 {
   Fimage image,image_prev;
   int l;
@@ -70,7 +68,7 @@ static void ALLOCATE(out,nb_image)
 /* computes gray level derivatives E(x,y,t) 
    (following the scheme proposed by Horn and Schunck)*/
 
-static void CALC_EDERIV()
+static void CALC_EDERIV(void)
 {   
   int i,j,l;
   register float a010,a000,a110,a100,a011,a001,a111,a101;
@@ -108,9 +106,7 @@ static void CALC_EDERIV()
 
 /* rentree du schema iteratif pour calculer le flot optique */
 
-static void SCHEMA_ITER(niter,alpha)
-     int niter;
-     float *alpha;
+static void SCHEMA_ITER(int niter, float *alpha)
 {
   int i,j,k,l;
   long adr; 
@@ -231,10 +227,7 @@ static void SCHEMA_ITER(niter,alpha)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void hs_flow(niter,alpha,in,xflow,yflow)
-     int *niter;
-     float  *alpha;
-     Fmovie in,xflow,yflow;
+void hs_flow(int *niter, float *alpha, Fmovie in, Fmovie xflow, Fmovie yflow)
 {
   Fimage u,ud,ux,uy;
   int  k,l;

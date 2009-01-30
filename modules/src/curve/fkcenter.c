@@ -15,9 +15,7 @@
 #include "mw.h"
 
 
-void fkcenter(cs,xg,yg)
-     Fcurves cs;
-     float *xg,*yg;
+void fkcenter(Fcurves cs, float *xg, float *yg)
 {
   int           n;
   Fcurve        c;

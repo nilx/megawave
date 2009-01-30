@@ -22,11 +22,7 @@
 #include <string.h>
 #include "mw.h"
 
-Fimage flocal_zoom(Input, X, Y, W, factor)
-     
-     int *X,*Y,*W,*factor;
-     Fimage Input;
-
+Fimage flocal_zoom(Fimage Input, int *X, int *Y, int *W, int *factor)
 {
   float *square,c;
   register float *ptr;

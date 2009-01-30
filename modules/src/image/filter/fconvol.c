@@ -23,8 +23,7 @@
 #define max(a,b)        (((a)>(b)) ? (a) : (b))
 
 
-void fconvol(in,filtre,out)
-     Fimage in,filtre,out;
+void fconvol(Fimage in, Fimage filtre, Fimage out)
 {
   int n,m,k,l,dxS,dyS,kmax,kmin,lmax,lmin,K2,L2;
   double S;

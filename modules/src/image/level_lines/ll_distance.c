@@ -21,10 +21,7 @@
 #define MIN(x,y) ((x)<(y)?(x):(y))
 
 
-void ll_distance(in, out, level, MaxDist, nearest)
-     Fimage in,out,nearest;
-     float *level;
-     int *MaxDist;
+void ll_distance(Fimage in, Fimage out, float *level, int *MaxDist, Fimage nearest)
 {
   int i,j,X1,Y1,X2,Y2,kx,ky,dx,dy,pos,ok,maxdist;
   float d,cur,min,max;

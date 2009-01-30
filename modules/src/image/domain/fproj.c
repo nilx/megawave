@@ -38,10 +38,7 @@
 /* NB : calling this module with out=in is not possible */
 
 /* extract image value (even outside image domain) */
-static float v(in,x,y,bg)
-     Fimage in;
-     int x,y;
-     float bg;
+static float v(Fimage in, int x, int y, float bg)
 {
   if (x<0 || x>=in->ncol || y<0 || y>=in->nrow)
     return(bg); else return(in->gray[y*in->ncol+x]);
@@ -51,8 +48,7 @@ static float v(in,x,y,bg)
 /* c[] = values of interpolation function at ...,t-2,t-1,t,t+1,... */
 
 /* coefficients for cubic interpolant (Keys' function) */
-static void keys(c,t,a)
-     float *c,t,a;
+static void keys(float *c, float t, float a)
 {
   float t2,at;
 
@@ -65,8 +61,7 @@ static void keys(c,t,a)
 }
 
 /* coefficients for cubic spline */
-static void spline3(c,t)
-     float *c,t;
+static void spline3(float *c, float t)
 {
   float tmp;
 
@@ -78,9 +73,7 @@ static void spline3(c,t)
 }
 
 /* pre-computation for spline of order >3 */
-static void init_splinen(a,n)
-     float *a;
-     int n;
+static void init_splinen(float *a, int n)
 {
   int k;
 
@@ -91,9 +84,7 @@ static void init_splinen(a,n)
 }
 
 /* fast integral power function */
-static float ipow(x,n)
-     float x;
-     int n;
+static float ipow(float x, int n)
 {
   float res;
 
@@ -105,9 +96,7 @@ static float ipow(x,n)
 }
 
 /* coefficients for spline of order >3 */
-static void splinen(c,t,a,n)
-     float *c,t,*a;
-     int n;
+static void splinen(float *c, float t, float *a, int n)
 {
   int i,k;
   float xn;
@@ -123,11 +112,7 @@ static void splinen(c,t,a,n)
 
 /*------------------------ MAIN MODULE ---------------------------------*/
 
-void fproj(in,out,sx,sy,bg,o,p,i,X1,Y1,X2,Y2,X3,Y3,x4,y4)
-     Fimage in,out;
-     int    *sx,*sy,*o;
-     char   *i;
-     float  *bg,*p,X1,Y1,X2,Y2,X3,Y3,*x4,*y4;
+void fproj(Fimage in, Fimage out, int *sx, int *sy, float *bg, int *o, float *p, char *i, float X1, float Y1, float X2, float Y2, float X3, float Y3, float *x4, float *y4)
 {
   int    n1,n2,nx,ny,x,y,xi,yi,adr,dx,dy;
   float  res,xx,yy,xp,yp,ux,uy,a,b,d,fx,fy,x12,x13,y12,y13;

@@ -23,8 +23,7 @@ static char Closed;
 static int N_Points;
 
 /* return sign of det(u,v) modulo EPS */
-static int signdet(ux,uy,vx,vy)
-     float ux,uy,vx,vy;
+static int signdet(float ux, float uy, float vx, float vy)
 {
   float aux;
 
@@ -37,9 +36,7 @@ static int signdet(ux,uy,vx,vy)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Flist km_inflexionpoints(curve,curve_IP)
-     Flist curve;
-     Flist curve_IP; 
+Flist km_inflexionpoints(Flist curve, Flist curve_IP)
 { 
   int i,sign1,sign2,iaux,signaux,iauxinit,signauxinit;
   float x1,y1,x2,y2,x3,y3;

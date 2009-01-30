@@ -37,10 +37,7 @@ typedef struct {
 } DualPixel;
 
 /* Is the center of pixel (x+.5,y+.5) in the shape? */
-static char point_in_shape(x, y, pShape, pTree)
-short int x, y;
-Shape pShape;
-Shapes pTree;
+static char point_in_shape(short int x, short int y, Shape pShape, Shapes pTree)
 {
   Shape pShapePoint = pTree->smallest_shape[y*pTree->ncol+x];
   return (pShapePoint->area <= pShape->area &&
@@ -50,10 +47,7 @@ Shapes pTree;
 
 /* If there is a saddle point in the dual pixel of top left corner (x,y) and
 this saddle point belongs to pShape, return 1 */
-static char saddle_inside(x, y, pShape, tabtabSaddleValues)
-short int x, y;
-Shape pShape;
-float** tabtabSaddleValues;
+static char saddle_inside(short int x, short int y, Shape pShape, float **tabtabSaddleValues)
 {
   float v = tabtabSaddleValues[y-1][x-1];
 
@@ -74,11 +68,7 @@ dir = (dir==NORTH ? EAST :\
       (dir==SOUTH ? WEST : NORTH)))
 
 /* Find the dual pixel following pDualPixel as we follow the shape boundary */
-static void find_next_dual_pixel(pDualPixel, pShape, pTree, tabtabSaddleValues)
-DualPixel* pDualPixel;
-Shape pShape;
-Shapes pTree;
-float** tabtabSaddleValues;
+static void find_next_dual_pixel(DualPixel *pDualPixel, Shape pShape, Shapes pTree, float **tabtabSaddleValues)
 {
   char bLeftIn, bRightIn;
 
@@ -147,11 +137,7 @@ float** tabtabSaddleValues;
 }
 
 /* Find the boundary of the shape, which is closed */
-static int find_closed_boundary(pTree, pShape, tabtabSaddleValues, pBoundary)
-Shapes pTree;
-Shape pShape;
-float** tabtabSaddleValues;
-Flist pBoundary;
+static int find_closed_boundary(Shapes pTree, Shape pShape, float **tabtabSaddleValues, Flist pBoundary)
 {
   short int x0, y0;
   DualPixel dualPixel;
@@ -175,10 +161,7 @@ Flist pBoundary;
 }
 
 /* Find an initial point (to follow the boundary) at the border of the image */
-static void initial_point_border(pDualPixel, pShape, pTree)
-DualPixel* pDualPixel;
-Shape pShape;
-Shapes pTree;
+static void initial_point_border(DualPixel *pDualPixel, Shape pShape, Shapes pTree)
 {
   short int iWidth = (short int)pTree->ncol, iHeight = (short int)pTree->nrow;
   short int x, y;
@@ -235,11 +218,7 @@ Shapes pTree;
 }
 
 /* Find an open boundary */
-static int find_open_boundary(pTree, pShape, tabtabSaddleValues, pBoundary)
-Shapes pTree;
-Shape pShape;
-float** tabtabSaddleValues;
-Flist pBoundary;
+static int find_open_boundary(Shapes pTree, Shape pShape, float **tabtabSaddleValues, Flist pBoundary)
 {
   DualPixel dualPixel;
   short int iWidth = (short int)pTree->ncol, iHeight = (short int)pTree->nrow;
@@ -258,11 +237,7 @@ Flist pBoundary;
 }
 
 /* Find boundary of the shape */
-void flstb_dualchain(pTree, pShape, pBoundary, ctabtabSaddleValues)
-Shapes pTree;
-Shape pShape;
-Flist pBoundary;
-char* ctabtabSaddleValues;
+void flstb_dualchain(Shapes pTree, Shape pShape, Flist pBoundary, char *ctabtabSaddleValues)
 {
   struct fimage imageSaddles, *pImage;
   char bBuildSaddleValues = 0;

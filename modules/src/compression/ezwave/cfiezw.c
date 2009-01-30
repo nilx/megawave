@@ -38,10 +38,7 @@ Fsignal      ORI1, ORI2;          /* Non normalized filters */
 
 
 static void
-INIT_RI(ri1, ri2)
-
-Fsignal ri1, ri2;
-
+INIT_RI(Fsignal ri1, Fsignal ri2)
 {
   int i;
 
@@ -64,10 +61,7 @@ Fsignal ri1, ri2;
 
 
 static void
-REFRESH_FILTERS(ri1, ri2)
-
-Fsignal ri1, ri2;
-
+REFRESH_FILTERS(Fsignal ri1, Fsignal ri2)
 {
   int i;
 
@@ -84,11 +78,11 @@ Fsignal ri1, ri2;
 
 
 static void
-COPY_FIMAGE2CHANNEL(image, chimage, color)
+COPY_FIMAGE2CHANNEL(Cfimage image, Fimage chimage, int color)
 
-Cfimage     image;		/* Output color image */
-Fimage      chimage;            /* Original channel image */
-int         color;              /* Index of channel */
+                  		/* Output color image */
+                                /* Original channel image */
+                                /* Index of channel */
 
 {
   int             x, size;
@@ -114,20 +108,20 @@ int         color;              /* Index of channel */
 
 
 void
-cfiezw(Edge_Ri, Ri2, WeightFac, Conv, Compress, Ri, Output)
+cfiezw(Fimage Edge_Ri, Fsignal Ri2, float *WeightFac, int *Conv, Cimage Compress, Fsignal Ri, Cfimage Output)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 
-Fimage	    Edge_Ri;		/* Impulse responses of filters for special 
+      	            		/* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
-Fsignal     Ri2;		/* Impulse response of the low pass filter */
+                		/* Impulse response of the low pass filter */
 				/* for synthesis */
-float      *WeightFac;          /* Weighting factor for wavelet coeff. */
-int        *Conv;		/* Conversion type */
-Cimage      Compress;		/* Input compressed image */
-Fsignal     Ri;			/* Impulse response of the low pass filter */
-Cfimage     Output;	        /* Reconstructed image */
+                                /* Weighting factor for wavelet coeff. */
+                 		/* Conversion type */
+                     		/* Input compressed image */
+               			/* Impulse response of the low pass filter */
+                   	        /* Reconstructed image */
 
 {
   Fimage      QChImage;         /* Reconstructed channel image */

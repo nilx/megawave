@@ -45,20 +45,20 @@ static double	    s1,s2;     	/* Sums of coefficients of `ri1` and `ri2` */
 
 
 static void
-COMMENT(result, image, edge, filternorm, ri1, ri2)
+COMMENT(Wtrans2d result, Fimage image, int edge, int *filternorm, Fsignal ri1, Fsignal ri2)
 
 	/*--- Fill comment and other fields for result ---*/
 
-Wtrans2d    result;		/* Wavelet transform of the image `Image` */
-Fimage      image;		/* Input image */
-int 	    edge;		/* Type of edge processing 
+                   		/* Wavelet transform of the image `Image` */
+                  		/* Input image */
+    	         		/* Type of edge processing 
 				 * (see `Edge` in `biowave2`) */
-int	   *filternorm;	        /* Type of normalisation :
+   	               	        /* Type of normalisation :
 				 * equal 0 if normalisation of the sum of 
 				 *         `ri`'s coefficients to 1.0
 			 	 *       1 if normalisation of the squares' 
 			 	 *         sum to 1.0 */
-Fsignal	ri1, ri2;	        /* Impulse responses of the low-pass filters */
+       	         	        /* Impulse responses of the low-pass filters */
 
 {
   result->edges = edge;
@@ -76,17 +76,17 @@ Fsignal	ri1, ri2;	        /* Impulse responses of the low-pass filters */
 
 
 static void
-COMLINE_ERR(ri1, ri2, edge, numrec, haar, dy, dx)
+COMLINE_ERR(Fsignal ri1, Fsignal ri2, int edge, int *numrec, int *haar, int dy, int dx)
 
 	/*--- Detects errors and contradiction in command line ---*/
 
-Fsignal	   ri1, ri2;	/* Impulse responses of the low-pass filters */
-int 	   edge;       	/* Type of edge processing 
+       	            	/* Impulse responses of the low-pass filters */
+    	               	/* Type of edge processing 
 			 * (see `Edge` in biowave2) */
-int       *numrec;    	/* Number of levels for decomposition */
-int       *haar;        /* Continue decomposition with Haar wavelet
+                      	/* Number of levels for decomposition */
+                        /* Continue decomposition with Haar wavelet
 		         * until ultimate level */
-int	   dx, dy;     	/* Size of the image */
+   	               	/* Size of the image */
 
 {
 
@@ -117,19 +117,19 @@ int	   dx, dy;     	/* Size of the image */
 
 
 static void
-NORM_FIL(ri1, ri2, filternorm, haar)
+NORM_FIL(Fsignal ri1, Fsignal ri2, int filternorm, int *haar)
 
 	/*--- Normalisation of the coefficients of the filter impulse 
 	 *--- responses ---*/
 
-Fsignal	ri1, ri2;	/* Impulse response of the low-pass filter 
+       	         	/* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
-int	filternorm;	/* Type of normalisation :
+   	           	/* Type of normalisation :
 			 * equal 0 if normalisation of the sum of 
 			 *         `ri`'s coefficients to 1.0
 			 *       1 if normalisation of the squares' sum 
 			 *         `ri`'s coefficients to 1.0 */
-int    *haar;           /* Continue decomposition with Haar wavelet
+                        /* Continue decomposition with Haar wavelet
 			 * until haar level */
 
 {
@@ -256,13 +256,13 @@ int    *haar;           /* Continue decomposition with Haar wavelet
 
 
 static void
-HAAR_WAVEL2(wtrans, numrec, haar, filternorm)
+HAAR_WAVEL2(Wtrans2d wtrans, int numrec, int haar, int filternorm)
 
-Wtrans2d     wtrans;		/* Wavelet transform */
-int          numrec;            /* Level of average */
-int          haar;              /* Continue decomposition with Haar wavelet
+                    		/* Wavelet transform */
+                                /* Level of average */
+                                /* Continue decomposition with Haar wavelet
 				 * until ultimate level */
-int	     filternorm;	/* Type of normalisation : see 'owave2' */
+   	                	/* Type of normalisation : see 'owave2' */
 
 {
   int          j;
@@ -342,21 +342,21 @@ int	     filternorm;	/* Type of normalisation : see 'owave2' */
 
 
 static void
-COLUMN_WAVEL(Im, Im1, Im2, J, haar, edge, ri1, ri2)
+COLUMN_WAVEL(Fimage Im, Fimage Im1, Fimage Im2, int J, int *haar, int *edge, Fsignal ri1, Fsignal ri2)
 
 	/*--- Computes the 1-D wavelet transform of each column  ---*
 	 *--- in image "Tab", puts the result in "Im1" and "Im2" ---*/
 
-Fimage	    Im;		/* Input (wavelet transform along the lines
+      	       		/* Input (wavelet transform along the lines
 			 * of image or resume at level J-1) */
-Fimage      Im1, Im2;	/* Low and high-pass filtered sub-images */
-int         J;	        /* Level of decomposition */
-int        *haar;       /* Continue decomposition with Haar wavelet
+                     	/* Low and high-pass filtered sub-images */
+              	        /* Level of decomposition */
+                        /* Continue decomposition with Haar wavelet
 			 * until haar level */
 
-int        *edge;     	/* Type of edge processing (see `Edge`
+                      	/* Type of edge processing (see `Edge`
 			 * in biowave2) */
-Fsignal     ri1, ri2;	/* Impulse responses of the low-pass filters */
+                     	/* Impulse responses of the low-pass filters */
 
 {
   int      c, l;		/* Variables for line and column in resume 
@@ -465,16 +465,16 @@ Fsignal     ri1, ri2;	/* Impulse responses of the low-pass filters */
 
 
 static void
-WAVEL(wtrans, J, haar, ri1, ri2, edge)
+WAVEL(Wtrans2d wtrans, int J, int *haar, Fsignal ri1, Fsignal ri2, int *edge)
 
 	/*----- Computes the wavelet decomposition of S -----*/
 
-Wtrans2d    wtrans;	    /* Wavelet transform */
-int         J;		    /* Level of decomposition */
-int        *haar;           /* Continue decomposition with Haar wavelet
+                   	    /* Wavelet transform */
+              		    /* Level of decomposition */
+                            /* Continue decomposition with Haar wavelet
 			     * until haar level */
-Fsignal     ri1, ri2;	    /* Impulse responses of the low-pass filters */
-int        *edge;           /* Type of edge processing (see `Edge`
+                     	    /* Impulse responses of the low-pass filters */
+                            /* Type of edge processing (see `Edge`
 			     * in biowave2) */
 
 {
@@ -600,23 +600,23 @@ int        *edge;           /* Type of edge processing (see `Edge`
 
 
 void
-biowave2(NumRec, Haar, Edge, FilterNorm, Image, Output, Ri1, Ri2)
+biowave2(int *NumRec, int *Haar, int *Edge, int *FilterNorm, Fimage Image, Wtrans2d Output, Fsignal Ri1, Fsignal Ri2)
 
   /*--- Computes the biorthogonal wavelet transform of image `Image` ---*/
 
-int        *NumRec;	      /* Number de recursion (-j) */
-int        *Haar;             /* Continue decomposition with Haar wavelet
+                   	      /* Number de recursion (-j) */
+                              /* Continue decomposition with Haar wavelet
 			       * until haar level */
 
-int        *Edge;	      /* Equal 0 (default) if extension with 0 */
+                 	      /* Equal 0 (default) if extension with 0 */
 			      /* 1 if periodization */
 			      /* 2 if reflexion */
-int        *FilterNorm;	      /* Equal 0 if no normalisation of filter's tap
+                       	      /* Equal 0 if no normalisation of filter's tap
 			       *       1 if normalisation of the sum 
 			       *       2 if normalistion of the square sum */
-Fimage      Image;	      /* Input image */
-Wtrans2d    Output;	      /* Wavelet transform of the image `Image` */
-Fsignal     Ri1, Ri2;	      /* Impulse responses of the low pass filters */
+                  	      /* Input image */
+                   	      /* Wavelet transform of the image `Image` */
+                     	      /* Impulse responses of the low pass filters */
 
 {
   int         J;			/* Current level of decomposition */

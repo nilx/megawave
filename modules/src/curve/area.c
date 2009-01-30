@@ -15,8 +15,7 @@
 /* determinant of an affine basis = det(b-a,c-a) */
 #define DET3(ax,ay,bx,by,cx,cy) ((bx-ax)*(cy-ay) - (by-ay)*(cx-ax))
 
-double area(in)
-     Dlist in;
+double area(Dlist in)
 {
   double  *first,*p,a;
   int     d,i;

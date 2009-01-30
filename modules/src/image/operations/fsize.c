@@ -12,8 +12,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-void fsize(in)
-     Fimage in;
+void fsize(Fimage in)
 {
   printf("%d %d\n",in->ncol,in->nrow);
 }

@@ -27,10 +27,7 @@
 #define MIN(a,b) ((a)<(b)?(a):(b))
 #define MAX(a,b) ((a)>(b)?(a):(b))
 
-Fimage nlmeans(in,out,h,a,s,d,c)
-     Fimage in,out;
-     double *h,*a,*c;
-     int *s,*d;
+Fimage nlmeans(Fimage in, Fimage out, double *h, double *a, int *s, int *d, double *c)
 {
   int *dadr,*dd,nx,ny,x,y,xp,yp,i,adr,adrp,wsize,ds;
   double *w,*ww,dist,new,sum,e,A;

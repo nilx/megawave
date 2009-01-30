@@ -97,13 +97,13 @@ static Fimage OEDGE_RI;        /* Non normalized edge filters */
 
 
 static void
-FCB2WCB(fcb, wcb)
+FCB2WCB(Fimage fcb, Wtrans2d wcb)
 
   /*--- Translate a codebook sequence from the fimage ---*/
                /*--- to the wtrans2d format ---*/
 
-Fimage        fcb;         /* Codebook in the fimage format */
-Wtrans2d      wcb;         /* Codebook in the wtrans2d format */
+                           /* Codebook in the fimage format */
+                           /* Codebook in the wtrans2d format */
 
 {
   int           nlevel;
@@ -175,10 +175,7 @@ Wtrans2d      wcb;         /* Codebook in the wtrans2d format */
 
 
 static void
-INIT_TARGNBIT_DR(wtrans)
-
-Wtrans2d      wtrans;
-
+INIT_TARGNBIT_DR(Wtrans2d wtrans)
 {
 
   targrate_dr[0] = 0.008;
@@ -203,11 +200,7 @@ Wtrans2d      wtrans;
 
 
 static void
-INIT_RI(ri1, ri2, edge_ri)
-
-Fsignal ri1, ri2;
-Fimage  edge_ri;
-
+INIT_RI(Fsignal ri1, Fsignal ri2, Fimage edge_ri)
 {
   int i, j;
 
@@ -242,11 +235,7 @@ Fimage  edge_ri;
 
 
 static void
-REFRESH_FILTERS(ri1, ri2, edge_ri)
-
-Fsignal ri1, ri2;
-Fimage  edge_ri;
-
+REFRESH_FILTERS(Fsignal ri1, Fsignal ri2, Fimage edge_ri)
 {
   int i, j;
 
@@ -267,10 +256,7 @@ Fimage  edge_ri;
 
 
 static float
-SPHERE_CONST(dim)
-
-int   dim;
-
+SPHERE_CONST(int dim)
 {
   float   r;
 
@@ -327,12 +313,7 @@ int   dim;
 
 
 static void 
-COMPUTE_CONST(codebook, nlevel, nlevelscal)
-
-Wtrans2d        codebook;
-int             nlevel;
-int             nlevelscal;
-
+COMPUTE_CONST(Wtrans2d codebook, int nlevel, int nlevelscal)
 {
   int             j, i, nadap;
 
@@ -359,14 +340,7 @@ int             nlevelscal;
 
 
 static void
-fvariance(wtrans, j, i, cb1, cb2, cb3, var1, var2, var3, varthres, num1, num2, num3, numthres)
-
-Wtrans2d        wtrans;
-int             j, i;
-Wtrans2d        cb1, cb2, cb3;
-double         *var1, *var2, *var3, *varthres;
-long	       *num1, *num2, *num3, *numthres;
-    
+fvariance(Wtrans2d wtrans, int j, int i, Wtrans2d cb1, Wtrans2d cb2, Wtrans2d cb3, double *var1, double *var2, double *var3, double *varthres, long int *num1, long int *num2, long int *num3, long int *numthres)
 {
   int             sizeb;
   int             height, width;
@@ -476,10 +450,7 @@ long	       *num1, *num2, *num3, *numthres;
 
 
 static double
-det_energy(image)
-
-Fimage     image;
-
+det_energy(Fimage image)
 {
   long x, size;
   double e;
@@ -496,10 +467,7 @@ Fimage     image;
 
 
 static void
-RESIZE_COMPRESS_WTRANS(compress)
-
-Cimage           compress;
-
+RESIZE_COMPRESS_WTRANS(Cimage compress)
 {
   int              i;
   int              ncolo, nrowo;
@@ -554,10 +522,7 @@ Cimage           compress;
 
 
 static void
-REALLOCATE_COMPRESS_WTRANS(compress)
-
-Cimage           compress;
-
+REALLOCATE_COMPRESS_WTRANS(Cimage compress)
 {
   int              i;
   Cimage           bufcomp;
@@ -592,11 +557,7 @@ Cimage           compress;
 
 
 static void
-ADD_BIT_TO_COMPRESS_WTRANS(bit, compress)
-
-int              bit;
-Cimage           compress;
-
+ADD_BIT_TO_COMPRESS_WTRANS(int bit, Cimage compress)
 {
   buffer >>= 1;
   if (bit) 
@@ -616,11 +577,11 @@ Cimage           compress;
 
 
 static void
-ENCODE_INT_WTRANS(symb, max, compress)
+ENCODE_INT_WTRANS(int symb, int max, Cimage compress)
 
-int            symb;         /* Value of symbol to write */
-int            max;          /* Half of maximum value for symbol */
-Cimage         compress;     /* Compressed file */
+                             /* Value of symbol to write */
+                             /* Half of maximum value for symbol */
+                             /* Compressed file */
 
 {
 
@@ -637,13 +598,13 @@ Cimage         compress;     /* Compressed file */
 
 
 static void
-INIT_ENCODING_WTRANS(nrow, ncol, nlevel, codebook1, nlevelscal, compress)
+INIT_ENCODING_WTRANS(int nrow, int ncol, int nlevel, Wtrans2d codebook1, int nlevelscal, Cimage compress)
 
-int          nrow, ncol;         /* Size of original image */
-int          nlevel;             /* Number of levels in wavelet transform */
-Wtrans2d     codebook1;
-int          nlevelscal;
-Cimage       compress;           /* Compressed file */
+                                 /* Size of original image */
+                                 /* Number of levels in wavelet transform */
+                       
+                        
+                                 /* Compressed file */
 
 {
   int           i, j;
@@ -705,10 +666,7 @@ Cimage       compress;           /* Compressed file */
 
 
 static int
-count_cb(codebook)
-
-Fimage     codebook;
-
+count_cb(Fimage codebook)
 {
   long      size, sizei, sizef;
   int      n;
@@ -742,14 +700,14 @@ Fimage     codebook;
 
 
 static void
-compute_indexcb(indcb, targrate, rateheader, numrec, test_dr, multicb)
+compute_indexcb(int (*indcb)[6][4], float targrate, float rateheader, int numrec, int test_dr, int multicb)
 
-bufind    indcb;                /* Index of codebooks to be used */
-float     targrate;
-float     rateheader;           /* Bit rate to encode header */
-int       numrec;
-int       test_dr;
-int       multicb;
+                                /* Index of codebooks to be used */
+                   
+                                /* Bit rate to encode header */
+                 
+                  
+                  
 
 {
   int      q, qmax;
@@ -836,37 +794,37 @@ int       multicb;
 
 
 static void
-wvq_loc(NumRec, ScaleWeight, NumRecScal, NStep, MultiCB, TargRate, CodeBook2, CodeBook3, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResResCodeBook1, ResResCodeBook2, Compress, Wtrans, CodeBook1, Output)
+wvq_loc(int *NumRec, float *ScaleWeight, int *NumRecScal, int *NStep, int *MultiCB, float *TargRate, Wtrans2d CodeBook2, Wtrans2d CodeBook3, Wtrans2d ResCodeBook1, Wtrans2d ResCodeBook2, Wtrans2d ResCodeBook3, Wtrans2d ResResCodeBook1, Wtrans2d ResResCodeBook2, Cimage Compress, Wtrans2d Wtrans, Wtrans2d CodeBook1, Wtrans2d Output)
 
-int            *NumRec;               /* Quantize wavelet transform up 
+                                      /* Quantize wavelet transform up 
 				       * to level NumRec */
-float          *ScaleWeight;          /* Apply a weighting of coefficients 
+                                      /* Apply a weighting of coefficients 
 				       * before quantization */
-int            *NumRecScal;           /* Scalar quantize wavelet subimages  
+                                      /* Scalar quantize wavelet subimages  
 				       * at level NumRecScal and higher */
-int            *NStep;                /* Number of steps in case of scalar 
+                                      /* Number of steps in case of scalar 
 				       * quantization of resume */
-int            *MultiCB;              /* Not selected : one codebook per file
+                                      /* Not selected : one codebook per file
 					 1: compute approx. dist-rate curves
 					 2: compute exact dist-rate curves */
-float          *TargRate;             /* Target bit rate */
-Wtrans2d        CodeBook2, CodeBook3; /* Sequence of codebooks for adaptive 
+                                      /* Target bit rate */
+                                      /* Sequence of codebooks for adaptive 
 				       * quantization */
-Wtrans2d        ResCodeBook1, ResCodeBook2, ResCodeBook3; /* Sequence of 
+                                                          /* Sequence of 
 				       * codebooks for residu quantization  
 				       * after quantization with CodeBook 
 				       * AdapCodeBook2 and AdapCodeBook3 */
-Wtrans2d        ResResCodeBook1;      /* Sequence of codebooks for residu 
+                                      /* Sequence of codebooks for residu 
 				       * quantization after quantization 
 				       * with CodeBook and ResCodeBook1 */
-Wtrans2d        ResResCodeBook2;      /* Sequence of codebooks for residu 
+                                      /* Sequence of codebooks for residu 
 				       * quantization after quantization 
 				       * with AdapCodeBook2 and ResCodeBook2 */
-Cimage          Compress;	      /* Compressed representation of Wtrans */
-Wtrans2d        Wtrans;               /* Input wavelet transform */
-Wtrans2d        CodeBook1;            /* First sequence of codebooks for 
+                         	      /* Compressed representation of Wtrans */
+                                      /* Input wavelet transform */
+                                      /* First sequence of codebooks for 
 				       * for quantization */
-Wtrans2d        Output;               /* Quantized wavelet transform (can be 
+                                      /* Quantized wavelet transform (can be 
 				       * reconstructed from compress */
 
 {
@@ -1716,47 +1674,47 @@ Wtrans2d        Output;               /* Quantized wavelet transform (can be
 
 
 static void
-fwvq_wcb(NumRec, Edge_Ri, Ri2, FilterNorm, WeightFac, NumRecScal, NStep, MultiCB, CodeBook2, CodeBook3, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResResCodeBook1, ResResCodeBook2, DistRate, TargRate, Output, Image, CodeBook1, Ri, QImage)
+fwvq_wcb(int *NumRec, Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *WeightFac, int *NumRecScal, int *NStep, int *MultiCB, Wtrans2d CodeBook2, Wtrans2d CodeBook3, Wtrans2d ResCodeBook1, Wtrans2d ResCodeBook2, Wtrans2d ResCodeBook3, Wtrans2d ResResCodeBook1, Wtrans2d ResResCodeBook2, int *DistRate, float *TargRate, Cimage Output, Fimage Image, Wtrans2d CodeBook1, Fsignal Ri, Fimage QImage)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 
-int        *NumRec;		/* Number of recursion (-j) */
-Fimage	    Edge_Ri;		/* Impulse responses of filters for special 
+                   		/* Number of recursion (-j) */
+      	            		/* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
-Fsignal     Ri2;		/* Impulse response of the low pass filter */
+                		/* Impulse response of the low pass filter */
 				/* for synthesis */
-int        *FilterNorm;	        /* Equal 0 if no normalisation of filter's tap
+                       	        /* Equal 0 if no normalisation of filter's tap
 			         *       1 if normalisation of the sum 
 			         *       2 if normalistion of the square sum */
-float      *WeightFac;          /* Weighting factor for wavelet coeff. */
-int        *NumRecScal;         /* Scalar quantize wavelet subimages  
+                                /* Weighting factor for wavelet coeff. */
+                                /* Scalar quantize wavelet subimages  
 				 * at level NumRecScal and higher */
-int        *NStep;              /* Number of steps in case of scalar 
+                                /* Number of steps in case of scalar 
 				 * quantizarion of resume */
-int        *MultiCB;            /* Not selected : one codebook per file
+                                /* Not selected : one codebook per file
 					 1: compute approx. dist-rate curves
 					 2: compute exact dist-rate curves */
-Wtrans2d    CodeBook2, CodeBook3; /* Sequence of codebooks for adaptive 
+                                  /* Sequence of codebooks for adaptive 
 			         * quantization */
-Wtrans2d    ResCodeBook1, ResCodeBook2, ResCodeBook3; /* Sequence of 
+                                                      /* Sequence of 
 			         * codebooks for residu quantization  
 				 * after quantization with CodeBook 
 				 * AdapCodeBook2 and AdapCodeBook3 */
-Wtrans2d    ResResCodeBook1;    /* Sequence of codebooks for residu 
+                                /* Sequence of codebooks for residu 
 				 * quantization after quantization 
 				 * with CodeBook and ResCodeBook1 */
-Wtrans2d    ResResCodeBook2;    /* Sequence of codebooks for residu 
+                                /* Sequence of codebooks for residu 
 				 * quantization after quantization 
 				 * with AdapCodeBook2 and ResCodeBook2 */
-int        *DistRate;           /* Compute distortion-rate function */
-float      *TargRate;           /* Target bit rate */
-Cimage      Output;		/* Compressed `Image` */
-Fimage      Image;		/* Input image */
-Wtrans2d    CodeBook1;          /* First sequence of codebooks for 
+                                /* Compute distortion-rate function */
+                                /* Target bit rate */
+                   		/* Compressed `Image` */
+                  		/* Input image */
+                                /* First sequence of codebooks for 
 			         * for quantization */
-Fsignal     Ri;			/* Impulse response of the low pass filter */
-Fimage      QImage;		/* Output quantized image */
+               			/* Impulse response of the low pass filter */
+                   		/* Output quantized image */
 
 {
   int         NumLev;           /* Number of  level of decomposition */
@@ -1969,47 +1927,47 @@ Fimage      QImage;		/* Output quantized image */
 
 
 void
-fwvq(NumRec, Edge_Ri, Ri2, FilterNorm, WeightFac, NumRecScal, NStep, MultiCB, CodeBook2, CodeBook3, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResResCodeBook1, ResResCodeBook2, DistRate, TargRate, Output, Image, CodeBook1, Ri, QImage)
+fwvq(int *NumRec, Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *WeightFac, int *NumRecScal, int *NStep, int *MultiCB, Fimage CodeBook2, Fimage CodeBook3, Fimage ResCodeBook1, Fimage ResCodeBook2, Fimage ResCodeBook3, Fimage ResResCodeBook1, Fimage ResResCodeBook2, int *DistRate, float *TargRate, Cimage Output, Fimage Image, Fimage CodeBook1, Fsignal Ri, Fimage QImage)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 
-int        *NumRec;		/* Number of recursion (-j) */
-Fimage	    Edge_Ri;		/* Impulse responses of filters for special 
+                   		/* Number of recursion (-j) */
+      	            		/* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
-Fsignal     Ri2;		/* Impulse response of the low pass filter */
+                		/* Impulse response of the low pass filter */
 				/* for synthesis */
-int        *FilterNorm;	        /* Equal 0 if no normalisation of filter's tap
+                       	        /* Equal 0 if no normalisation of filter's tap
 			         *       1 if normalisation of the sum 
 			         *       2 if normalistion of the square sum */
-float      *WeightFac;          /* Weighting factor for wavelet coeff. */
-int        *NumRecScal;         /* Scalar quantize wavelet subimages  
+                                /* Weighting factor for wavelet coeff. */
+                                /* Scalar quantize wavelet subimages  
 				 * at level NumRecScal and higher */
-int        *NStep;              /* Number of steps in case of scalar 
+                                /* Number of steps in case of scalar 
 				 * quantizarion of resume */
-int        *MultiCB;            /* Not selected : one codebook per file
+                                /* Not selected : one codebook per file
 					 1: compute approx. dist-rate curves
 					 2: compute exact dist-rate curves */
-Fimage	    CodeBook2, CodeBook3; /* Sequence of codebooks for adaptive 
+      	                          /* Sequence of codebooks for adaptive 
 			         * quantization */
-Fimage	    ResCodeBook1, ResCodeBook2, ResCodeBook3; /* Sequence of 
+      	                                              /* Sequence of 
 			         * codebooks for residu quantization  
 				 * after quantization with CodeBook 
 				 * AdapCodeBook2 and AdapCodeBook3 */
-Fimage	    ResResCodeBook1;    /* Sequence of codebooks for residu 
+      	                        /* Sequence of codebooks for residu 
 				 * quantization after quantization 
 				 * with CodeBook and ResCodeBook1 */
-Fimage	    ResResCodeBook2;    /* Sequence of codebooks for residu 
+      	                        /* Sequence of codebooks for residu 
 				 * quantization after quantization 
 				 * with AdapCodeBook2 and ResCodeBook2 */
-int        *DistRate;           /* Compute distortion-rate function */
-float      *TargRate;           /* Target bit rate */
-Cimage      Output;		/* Compressed `Image` */
-Fimage      Image;		/* Input image */
-Fimage	    CodeBook1;          /* First sequence of codebooks for 
+                                /* Compute distortion-rate function */
+                                /* Target bit rate */
+                   		/* Compressed `Image` */
+                  		/* Input image */
+      	                        /* First sequence of codebooks for 
 			         * for quantization */
-Fsignal     Ri;			/* Impulse response of the low pass filter */
-Fimage      QImage;		/* Output quantized image */
+               			/* Impulse response of the low pass filter */
+                   		/* Output quantized image */
 
 {
   Wtrans2d    WCodeBook1, WCodeBook2, WCodeBook3;  /* Sequence of codebooks 

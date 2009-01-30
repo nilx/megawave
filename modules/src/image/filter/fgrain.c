@@ -21,9 +21,7 @@
 that are too small (threshold *pMinArea). As a consequence all the remaining 
 shapes of pFloatImageOutput are of area larger or equal than *pMinArea */ 
 
-void fgrain(pMinArea, pFloatImageInput, pFloatImageOutput) 
-     int *pMinArea; 
-     Fimage pFloatImageInput, pFloatImageOutput; 
+void fgrain(int *pMinArea, Fimage pFloatImageInput, Fimage pFloatImageOutput)
 { 
   int i; 
   Shapes pTree; 

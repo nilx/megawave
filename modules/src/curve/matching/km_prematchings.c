@@ -28,12 +28,7 @@ usage = {
    euclidean distance to (x,y) is less than maxErr. 
    The function returns the number of such codes.*/
 
-static unsigned char search_value(x,y,dict,maxErr,list_matchings,j)
-     float x,y;
-     Flists dict;
-     float maxErr;
-     Flist list_matchings;
-     int j;
+static unsigned char search_value(float x, float y, Flists dict, float maxErr, Flist list_matchings, int j)
 {
   int i;
 
@@ -50,12 +45,7 @@ static unsigned char search_value(x,y,dict,maxErr,list_matchings,j)
    points P_i(X_i,Y_i) satisfy : eucl-dist(P_i,L_i) < maxErr 
    for all i in {0,...,Nnorm-1} */
 
-static void matchings_code(liste,dict,maxErr,Nnorm,matchaux)
-     Flist liste;
-     Flists dict;
-     float maxErr;
-     int Nnorm;
-     Flist matchaux;
+static void matchings_code(Flist liste, Flists dict, float maxErr, int Nnorm, Flist matchaux)
 {
   int i, n, m;
   unsigned char ok;
@@ -100,9 +90,7 @@ static void matchings_code(liste,dict,maxErr,Nnorm,matchaux)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Flists km_prematchings(maxError,dict1,dict2,matchings)
-     float maxError;
-     Flists dict1,dict2,matchings; 
+Flists km_prematchings(float maxError, Flists dict1, Flists dict2, Flists matchings)
 {
   int k;
   int Nnorm;

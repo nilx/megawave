@@ -25,9 +25,7 @@
 #include "mw.h"
 
 
-static int diff(a,b)
-     unsigned char *a;
-     unsigned char *b;
+static int diff(unsigned char *a, unsigned char *b)
 {
   if ((*a)<(*b)) {
     return (-1);
@@ -37,10 +35,7 @@ static int diff(a,b)
   }
 }
 
-static unsigned char TheInf(image,maskn,x,y)
-     Cimage image;
-     Fimage maskn;
-     int x,y;
+static unsigned char TheInf(Cimage image, Fimage maskn, int x, int y)
 {
   int xd,yd,xf,yf,ntx,nty,Mdx,Mdy;
   int dx,dy;      /* taille de l'image */
@@ -78,10 +73,7 @@ static unsigned char TheInf(image,maskn,x,y)
   return(value);
 }
 
-static unsigned char TheSup(image,maskn,x,y)
-     Cimage image;
-     Fimage maskn;
-     int x,y;
+static unsigned char TheSup(Cimage image, Fimage maskn, int x, int y)
 {
   int xd,yd,xf,yf,ntx,nty,Mdx,Mdy;
   int dx,dy;      /* taille de l'image */
@@ -121,11 +113,7 @@ static unsigned char TheSup(image,maskn,x,y)
 
 
 
-static float  Histogram( image,maskn,x,y,Hist)
-     Cimage image;
-     Fimage maskn;
-     int x,y;
-     float *Hist;
+static float  Histogram(Cimage image, Fimage maskn, int x, int y, float *Hist)
 {
   int xd,yd,xf,yf,ntx,nty,Mdx,Mdy;
   int dx,dy;      /* taille de l'image */
@@ -177,13 +165,13 @@ static float  Histogram( image,maskn,x,y,Hist)
 /* t1, t2 are the level of the median */
 /* t1=1, t2=0, process a InfSup... */
 
-static void ResolutionInfSup(image,A,G,t1,t2,movie,Nmask)
-     Cimage image;
-     Cimage A;              /* Image Buffer */
-     unsigned char *G;      /* contains the values for each mask */     
-     Fmovie movie;
-     int Nmask;             /* Number of masks   */
-     float t1,t2;
+static void ResolutionInfSup(Cimage image, Cimage A, unsigned char *G, float t1, float t2, Fmovie movie, int Nmask)
+                  
+                            /* Image Buffer */
+                            /* contains the values for each mask */     
+                  
+                            /* Number of masks   */
+                 
 {
   Fimage maskn;
   int i,j,l;
@@ -317,14 +305,7 @@ static void ResolutionInfSup(image,A,G,t1,t2,movie,Nmask)
 /* ----------------------------------------------------------*/
 
 
-Cimage infsup(Niter,deginf,degsup,average,image,fmovie,output)
-     int *Niter;
-     float *deginf;
-     float *degsup;
-     char *average;
-     Cimage image;
-     Fmovie fmovie;
-     Cimage output;
+Cimage infsup(int *Niter, float *deginf, float *degsup, char *average, Cimage image, Fmovie fmovie, Cimage output)
 {
   int n,j,size,Nmask;
   Fimage i;

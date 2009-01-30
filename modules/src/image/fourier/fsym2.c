@@ -14,9 +14,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fextract() */
 
-void fsym2(in,out,i)
-     Fimage in,out;
-     char *i;
+void fsym2(Fimage in, Fimage out, char *i)
 {
   int x,y,nx,ny,z;
   float b;

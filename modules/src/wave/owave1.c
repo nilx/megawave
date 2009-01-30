@@ -42,18 +42,18 @@ static int EDGE_HAAR=0;        /* Edge processing mode for haar filter */
 
 
 static void
-COMMENT(result, signal, edge, precond, filternorm, ri)
+COMMENT(Wtrans1d result, Fsignal signal, int edge, int precond, int filternorm, Fsignal ri)
 
 	/*--- Fill comment and other fields for result ---*/
 
-Wtrans1d    result;		/* Wavelet transform of the signal `Signal` */
-Fsignal     signal;		/* Input signal */
-int 	edge;		        /* Type of edge processing 
+                   		/* Wavelet transform of the signal `Signal` */
+                   		/* Input signal */
+    	     		        /* Type of edge processing 
 				 * (see `Edge` in `owave1`) */
-int		precond;	/* Type of edge preconditionning
+   		        	/* Type of edge preconditionning
 				 * (see `Precond` in `owave1`) */
-int	        filternorm;	/* Type of normalisation : see 'owave1' */
-Fsignal	ri;		        /* Impulse response of the low-pass filter 
+   	                   	/* Type of normalisation : see 'owave1' */
+       	   		        /* Impulse response of the low-pass filter 
 		       	 * (computation of the inner wavelet coefficients) */
 
 {
@@ -76,24 +76,24 @@ Fsignal	ri;		        /* Impulse response of the low-pass filter
 
 
 static void
-COMLINE_ERR(ri, edge_ri, edge, precond, numrec, haar, inverse, size)
+COMLINE_ERR(Fsignal ri, Fimage edge_ri, int edge, int precond, int *numrec, int *haar, int *inverse, long int size)
 
 	/*--- Detects errors and contradiction in command line ---*/
 
-Fsignal	ri;		/* Impulse response of the low-pass filter 
+       	   		/* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
-Fimage	edge_ri;	/* Impulse responses of the edge filters
+      	        	/* Impulse responses of the edge filters
 			 * (computation of wavelet coefficients near edges) */
-int 	edge;		/* Type of edge processing 
+    	     		/* Type of edge processing 
 			 * (see `Edge` in owave1) */
-int	precond;	/* Type of edge preconditionning
+   	        	/* Type of edge preconditionning
 			 * (see `Precond` in `owave1`) */
-int    *numrec;		/* Number of levels for decomposition */
-int    *haar;           /* Continue decomposition with Haar wavelet
+               		/* Number of levels for decomposition */
+                        /* Continue decomposition with Haar wavelet
 			 * until ultimate level */
-int    *inverse;	/* Performs invertible transform for edge
+                	/* Performs invertible transform for edge
 			 * processing mode 0 and 2 */
-long	size;		/* Size of the signal */
+    	     		/* Size of the signal */
 
 {
     /*--- Invertible transform and edge processing mode ---*/
@@ -151,19 +151,19 @@ long	size;		/* Size of the signal */
 
 
 static void
-NORM_FIL(ri, edge_ri, filternorm, edge, haar_ri)
+NORM_FIL(Fsignal ri, Fimage edge_ri, int filternorm, int edge, Fsignal haar_ri)
 
 	/*--- Normalisation of the coefficients of the filter impulse 
 	 *--- responses ---*/
 
-    Fsignal	ri;		/* Impulse response of the low-pass filter 
+           	   		/* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
-    Fimage	edge_ri;	/* Impulse responses of the edge filters
+          	        	/* Impulse responses of the edge filters
 			 * (computation of wavelet coefficients near edges) */
-    int	        filternorm;	/* Type of normalisation : see 'owave1' */
-    int 	edge;		/* Type of edge processing 
+       	                   	/* Type of normalisation : see 'owave1' */
+        	     		/* Type of edge processing 
 				 * (see `Edge` in owave1) */
-    Fsignal     haar_ri;        /* Impulse response for Haar filter */
+                                /* Impulse response for Haar filter */
 
 
 {
@@ -215,12 +215,12 @@ NORM_FIL(ri, edge_ri, filternorm, edge, haar_ri)
 
 
 static void
-HAAR_WAVEL1(wtrans, haar, filternorm)
+HAAR_WAVEL1(Wtrans1d wtrans, int haar, int filternorm)
 
-    Wtrans1d    wtrans;		/* Wavelet transform */
-    int         haar;           /* Continue decomposition with Haar wavelet
+                       		/* Wavelet transform */
+                                /* Continue decomposition with Haar wavelet
 				 * until ultimate level */
-    int	        filternorm;	/* Type of normalisation : see adapowave2 */
+       	                   	/* Type of normalisation : see adapowave2 */
 
 {
   int          j;
@@ -264,21 +264,21 @@ HAAR_WAVEL1(wtrans, haar, filternorm)
 
 
 static void
-WAVEL(wtrans, J, int_ri, edge_ri, edge, inverse, haar_ri)
+WAVEL(Wtrans1d wtrans, int J, Fsignal int_ri, Fimage edge_ri, int edge, int *inverse, Fsignal haar_ri)
 
 	/*----- Computes the wavelet decomposition of S -----*/
 
-Wtrans1d    wtrans;		/* Wavelet transform */
-int         J;			/* Level of decomposition */
-Fsignal     int_ri;		/* Impulse response of the low-pass filter 
+                   		/* Wavelet transform */
+              			/* Level of decomposition */
+                   		/* Impulse response of the low-pass filter 
 				 * (computation of the inner wavelet coefficients) */
-Fimage      edge_ri;		/* Impulse responses of filters for special 
+                    		/* Impulse responses of filters for special 
 				 * edge processing */
-int         edge;		/* Type of edge processing (see `Edge`
+                 		/* Type of edge processing (see `Edge`
 				 * in owave1) */
-int	       *inverse;		/* Performs invertible transform for edge
+   	                		/* Performs invertible transform for edge
 				 * processing mode 0 and 2 */
-Fsignal     haar_ri;        	/* Impulse response for Haar filter */
+                            	/* Impulse response for Haar filter */
 
 {
   int	    prolong;		/* Indicates signal extension 
@@ -314,34 +314,34 @@ Fsignal     haar_ri;        	/* Impulse response for Haar filter */
 
 
 void
-owave1(NumRec, Haar, Edge, Precond, Inverse, FilterNorm, Signal, Output, Ri, Edge_Ri)
+owave1(int *NumRec, int *Haar, int *Edge, int *Precond, int *Inverse, int *FilterNorm, Fsignal Signal, Wtrans1d Output, Fsignal Ri, Fimage Edge_Ri)
 
 	/*--- Computes the orthogonal wavelet transform of signal `Signal` ---*/
 
-int       *NumRec;		/* Number of recursion (-j) */
-int       *Haar;                /* Continue decomposition with Haar wavelet
+                  		/* Number of recursion (-j) */
+                                /* Continue decomposition with Haar wavelet
 				 * until ultimate level */
-int       *Edge;		/* Equal 0 if extension with 0 */
+                		/* Equal 0 if extension with 0 */
 				/* 1 if periodization */
 				/* 2 if reflexion */
 				/* 3 (default) if special treatment of edges */
-int       *Precond;		/* Equal 0 (default) if no
+                   		/* Equal 0 (default) if no
 				 * (un)preconditionning 
 				 * 1 if preconditionning only
 				 * 2 if preconditionning and unpreconditionning
 				 */
-int	  *Inverse;		/* Performs invertible transform for edge
+   	           		/* Performs invertible transform for edge
 				 * processing mode 0 and 2 */
-int       *FilterNorm;	        /* Type of normalisation :
+                      	        /* Type of normalisation :
 			         * equal 0 if no normalisation 
 			         *       1 if normalisation of the sum of
 			         *         `ri`'s coefficients to 1.0 
 			         *       2 if normalisation of the squares' sum 
 			         *         `ri`'s coefficients to 1.0 */
-Fsignal    Signal;		/* Input signal */
-Wtrans1d   Output;		/* Wavelet transform of the signal `Signal` */
-Fsignal    Ri;			/* Impulse response of the low pass filter */
-Fimage     Edge_Ri;		/* Impulse responses of filters for special 
+                  		/* Input signal */
+                  		/* Wavelet transform of the signal `Signal` */
+              			/* Impulse response of the low pass filter */
+                   		/* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
 

@@ -21,11 +21,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-void fmask(mask,A,B,out,i_flag,v,c)
-     Fimage mask,A,B,out;
-     char *i_flag;
-     int *v;
-     float *c;
+void fmask(Fimage mask, Fimage A, Fimage B, Fimage out, char *i_flag, int *v, float *c)
 {
   int i;
   float a,b;

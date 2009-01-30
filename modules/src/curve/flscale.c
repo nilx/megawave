@@ -14,9 +14,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-Flists flscale(in,s)
-     Flists in;
-     Fsignal s;
+Flists flscale(Flists in, Fsignal s)
 {
   int i,j,k,d;
 

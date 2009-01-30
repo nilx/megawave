@@ -46,9 +46,9 @@ static double   raterec, entropyrec; /* Fixed and entropic rate */
 
 
 static void
-ENERGY_TS(trainset)
+ENERGY_TS(Fimage trainset)
 
-Fimage          trainset;       /* Input training set */
+                                /* Input training set */
 
 {
   register float *ptrts;
@@ -71,12 +71,12 @@ Fimage          trainset;       /* Input training set */
 
 
 static double
-sqdist(trainset, codebook, bweight, cell)
+sqdist(Fimage trainset, Fimage codebook, Fsignal bweight, short int *cell)
 
-Fimage          trainset;        /* Input training set */
-Fimage          codebook;        /* Generated codebook */
-Fsignal         bweight;         /* Coordinates weights in block */
-short          *cell;
+                                 /* Input training set */
+                                 /* Generated codebook */
+                                 /* Coordinates weights in block */
+                     
 
 {
   int             t, c;
@@ -109,11 +109,7 @@ short          *cell;
 
 
 static void
-copy_multicb(codebook, size)
-
-Fimage          codebook;
-int             size;
-
+copy_multicb(Fimage codebook, int size)
 {
   long            sizeb, sizec;  
   register float *ptrcb1, *ptrcb2;
@@ -132,13 +128,13 @@ int             size;
 
 
 static void
-extract_cb(codebook, n)
+extract_cb(Fimage codebook, int n)
 
   /*---extract codebook number n of the sequence of codebooks contained ---*/
           /*--- in 'codebook', put the result in 'codebook' ---*/
 
-Fimage     codebook;
-int        n;
+                    
+             
 
 {
   long      size, sizei, sizef;
@@ -196,18 +192,18 @@ int        n;
 
 
 static void 
-trainset_vq(trainset, codebook, bweight, printsnr)
+trainset_vq(Fimage trainset, Fimage codebook, Fsignal bweight, int *printsnr)
 
   /*--- Computation of residus of quantization of trainset vectors ---*/
   /*--- with codebook. The resulting vectors are stored in trainset ---*/
 
-Fimage          trainset;        /* Input training set and resulting training 
+                                 /* Input training set and resulting training 
 				  * set of residus after quantization 
 				  * with codebook */
-Fimage          codebook;        /* Codebooks to be used for 
+                                 /* Codebooks to be used for 
 				  * quantization of training set */
-Fsignal         bweight;         /* Coordinates weights in block */
-int            *printsnr;
+                                 /* Coordinates weights in block */
+                         
 
 {
   long      t, t1, c, n, nc;
@@ -334,17 +330,17 @@ int            *printsnr;
 
 	
 static void
-split(trainset, codebook, bweight, cell, sizec, sizecf, printsnr)
+split(Fimage trainset, Fimage codebook, Fsignal bweight, short int *cell, int *sizec, int sizecf, int *printsnr)
 
   /*--- Split all or some of the vectors in codebook into two vectors ---*/
 
-Fimage          trainset;        /* Training set of vectors */
-Fimage          codebook;        /* Generated (sequence of) codebook */
-Fsignal         bweight;         /* Coordinates weights in block */
-short          *cell;            /* Cell indices of tr. set vectors */
-int            *sizec;		 /* Actual number of vector in codebook */
-int             sizecf;	         /* Final dimension of codebook */
-int            *printsnr;
+                                 /* Training set of vectors */
+                                 /* Generated (sequence of) codebook */
+                                 /* Coordinates weights in block */
+                                 /* Cell indices of tr. set vectors */
+                      		 /* Actual number of vector in codebook */
+                       	         /* Final dimension of codebook */
+                         
 					
 
 {
@@ -706,16 +702,16 @@ int            *printsnr;
 
 
 static void
-optivect(trainset, codebook, cell, sizec)
+optivect(Fimage trainset, Fimage codebook, short int *cell, int *sizec)
 
         /*--- Optimize the coordinates of vectors in codebook ---*/
   /*--- Each vector in codebook is replaced by the center of gravity ---*/
                    /*--- of the corresponding cell ---*/
 
-Fimage          trainset;        /* Training set of vectors */
-Fimage          codebook;        /* Generated (sequence of) codebook */
-short          *cell;            /* Cell indices of tr. set vectors */
-int            *sizec;           /* Current size of codebook */
+                                 /* Training set of vectors */
+                                 /* Generated (sequence of) codebook */
+                                 /* Cell indices of tr. set vectors */
+                                 /* Current size of codebook */
 
 {
   register float *ptrts, *ptrcb;
@@ -780,17 +776,17 @@ int            *sizec;           /* Current size of codebook */
 
 
 static void
-opticell(trainset, codebook, bweight, cell, sizec)
+opticell(Fimage trainset, Fimage codebook, Fsignal bweight, short int *cell, short int sizec)
 
   /*--- Optimize the cells of training vectors. Each vector ---*/
      /*--- in training set is put in the cell associated ---*/
            /*--- to the closest vector in codebook ---*/
 
-Fimage          trainset;        /* Training set of vectors */
-Fimage          codebook;        /* Generated (sequence of) codebook */
-Fsignal         bweight;         /* Coordinates weights in block */
-short          *cell;            /* Cell indices of tr. set vectors */
-short           sizec;           /* Current size of codebook */
+                                 /* Training set of vectors */
+                                 /* Generated (sequence of) codebook */
+                                 /* Coordinates weights in block */
+                                 /* Cell indices of tr. set vectors */
+                                 /* Current size of codebook */
 
 {
   register float *ptrts1, *ptrts2, *ptrcb1, *ptrcb2;
@@ -852,16 +848,16 @@ short           sizec;           /* Current size of codebook */
 
 
 static void
-optimize(trainset, codebook, bweight, cell, sizec, sizecf, printsnr, multicb)
+optimize(Fimage trainset, Fimage codebook, Fsignal bweight, short int *cell, int *sizec, int sizecf, int *printsnr, int *multicb)
 
-Fimage          trainset;        /* Training set of vectors */
-Fimage          codebook;        /* Generated (sequence of) codebook */
-Fsignal         bweight;         /* Coordinates weights in block */
-short          *cell;            /* Cell indices of tr. set vectors */
-int            *sizec;           /* Current size of codebook */
-int             sizecf;          /* Final size of codebook */
-int            *printsnr;
-int            *multicb;         /* Generate a sequence of codebooks */ 
+                                 /* Training set of vectors */
+                                 /* Generated (sequence of) codebook */
+                                 /* Coordinates weights in block */
+                                 /* Cell indices of tr. set vectors */
+                                 /* Current size of codebook */
+                                 /* Final size of codebook */
+                         
+                                 /* Generate a sequence of codebooks */ 
 
 {
   double    olddist;
@@ -906,21 +902,21 @@ int            *multicb;         /* Generate a sequence of codebooks */
 
 
 void
-flbg_train(Size, Weight, MultiCB, InitCodeBook, NResCB, NResResCB, ResCodeBook, ResResCodeBook, PrintSNR, TrainSet, MSE, CodeBook)
+flbg_train(int *Size, Fsignal Weight, int *MultiCB, Fimage InitCodeBook, int *NResCB, int *NResResCB, Fimage ResCodeBook, Fimage ResResCodeBook, int *PrintSNR, Fimage TrainSet, float *MSE, Fimage CodeBook)
 
-int        *Size;           /* Size of codebook */
-Fsignal     Weight;         /* Coordinates weights in block */
-int        *MultiCB;        /* Generates all codebooks of size equal 
+                            /* Size of codebook */
+                            /* Coordinates weights in block */
+                            /* Generates all codebooks of size equal 
 			     * to a power of 2 and less than *Size */
-Fimage      InitCodeBook;   /* Initial codebook */
-int        *NResCB, *NResResCB; /* Size for residual codebooks */
-Fimage      ResCodeBook, ResResCodeBook;   /* Codebooks to be used for 
+                            /* Initial codebook */
+                                /* Size for residual codebooks */
+                                           /* Codebooks to be used for 
 			     * quantization of training set */
-int        *PrintSNR;       /* Print SNR and rate */
-Fimage      TrainSet;       /* Input training set of vectors, one vector 
+                            /* Print SNR and rate */
+                            /* Input training set of vectors, one vector 
 			     * per row */
-float	   *MSE;            /* Mean square error for training set */
-Fimage      CodeBook;       /* Generated (sequence of) codebook, 
+     	                    /* Mean square error for training set */
+                            /* Generated (sequence of) codebook, 
 			     * one vector per row */
 
 

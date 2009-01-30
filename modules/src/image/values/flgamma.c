@@ -20,10 +20,7 @@
 #include <math.h>
 #include "mw.h"
 
-Flist flgamma(out,g,s,n,f)
-     Flist out;
-     float *g,*s,*f;
-     int *n;
+Flist flgamma(Flist out, float *g, float *s, int *n, float *f)
 {
   int i;
   double x,scale;

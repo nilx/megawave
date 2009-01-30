@@ -36,18 +36,18 @@ static int PROLONG=0;		/* Index for inverse preconditionning */
 
 
 static void
-COMLINE_ERR(ri1, ri2, edge, numrec, size)
+COMLINE_ERR(Fsignal ri1, Fsignal ri2, int edge, short int numrec, long int size)
 
 	/*--- Detects errors and contradiction in command line ---*/
 
-    Fsignal     ri1;		/* Impulse response of the low-pass filter 
+                    		/* Impulse response of the low-pass filter 
 			 	 * for decomposition */
-    Fsignal     ri2;		/* Impulse responses of the low-pass filter 
+                    		/* Impulse responses of the low-pass filter 
 			 	 * for synthesis */
-    int 	edge;		/* Type of edge processing 
+        	     		/* Type of edge processing 
 				 * (see `Edge` in biowave1) */
-    short	numrec;		/* Number of levels for decomposition */
-    long	size;		/* Size of the signal */
+         	       		/* Number of levels for decomposition */
+        	     		/* Size of the signal */
 
 {
 
@@ -66,22 +66,22 @@ COMLINE_ERR(ri1, ri2, edge, numrec, size)
 
 
 static void
-COMMENT(result, signal, edge, filternorm, ri1, ri2)
+COMMENT(Wtrans1d result, Fsignal signal, int edge, int *filternorm, Fsignal ri1, Fsignal ri2)
 
 	/*--- Fill comment and other fields for result ---*/
 
-    Wtrans1d    result;		/* Wavelet transform of the signal */
-    Fsignal     signal;		/* Input signal */
-    int 	edge;		/* Type of edge processing 
+                       		/* Wavelet transform of the signal */
+                       		/* Input signal */
+        	     		/* Type of edge processing 
 				 * (see `Edge` in `biowave1`) */
-    int	       *filternorm;	/* Type of normalisation :
+       	                   	/* Type of normalisation :
 				 * equal 0 if normalisation of the sum of 
 				 *         `ri`'s coefficients to 1.0
 			 	 *       1 if normalisation of the squares' sum 
 			 	 *         `ri`'s coefficients to 1.0 */
-    Fsignal     ri1;		/* Impulse response of the low-pass filter 
+                    		/* Impulse response of the low-pass filter 
 			 	 * for decomposition */
-    Fsignal     ri2;		/* Impulse responses of the low-pass filter 
+                    		/* Impulse responses of the low-pass filter 
 			 	 * for synthesis */
 
 {
@@ -102,14 +102,14 @@ COMMENT(result, signal, edge, filternorm, ri1, ri2)
 
 
 static void
-NORM_FIL(ri1, ri2, filternorm)
+NORM_FIL(Fsignal ri1, Fsignal ri2, int filternorm)
 
 	/*--- Normalisation of the coefficients of the filter impulse 
 	 *--- responses ---*/
 
-    Fsignal	ri1, ri2;	/* Impulse response of the low-pass filter 
+           	         	/* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
-    int		filternorm;	/* Type of normalisation :
+       		           	/* Type of normalisation :
 				 * equal 0 if normalisation of the sum of 
 				 *         `ri`'s coefficients to 1.0
 			 	 *       1 if normalisation of the squares' sum 
@@ -215,17 +215,17 @@ NORM_FIL(ri1, ri2, filternorm)
 
 
 static void
-WAVEL(wtrans, J, ri1, ri2, edge)
+WAVEL(Wtrans1d wtrans, int J, Fsignal ri1, Fsignal ri2, int *edge)
 
 	/*----- Computes the wavelet decomposition of S -----*/
 
-Wtrans1d    wtrans;		/* Wavelet transform */
-int         J;		        /* Level of decomposition */
-Fsignal     ri1;		/* Impulse response of the low-pass filter 
+                   		/* Wavelet transform */
+              		        /* Level of decomposition */
+                		/* Impulse response of the low-pass filter 
 			 	 * for decomposition */
-Fsignal     ri2;		/* Impulse responses of the low-pass filter 
+                		/* Impulse responses of the low-pass filter 
 			 	 * for synthesis */
-int        *edge;		/* Type of edge processing (see `Edge`
+                 		/* Type of edge processing (see `Edge`
 				 * in biowave1) */
 
 {
@@ -244,21 +244,21 @@ int        *edge;		/* Type of edge processing (see `Edge`
 
 
 void
-biowave1(NumRec, Edge, FilterNorm, Signal, Output, Ri1, Ri2)
+biowave1(int *NumRec, int *Edge, int *FilterNorm, Fsignal Signal, Wtrans1d Output, Fsignal Ri1, Fsignal Ri2)
 
     /*--- Computes the orthogonal wavelet transform of signal `Signal` ---*/
 
-int        *NumRec;		/* Number of recursion (-j) */
-int        *Edge;		/* Equal 0 (default) if extension with 0 
+                   		/* Number of recursion (-j) */
+                 		/* Equal 0 (default) if extension with 0 
 				 * 1 if periodization 
 				 * 2 if reflexion */
-int        *FilterNorm;	        /* Equal 1 if normalisation of filter's
+                       	        /* Equal 1 if normalisation of filter's
 				 * impulse responses (sum = 1.0) */
-Fsignal     Signal;		/* Input signal */
-Wtrans1d    Output;		/* Wavelet transform of the signal `Signal` */
-Fsignal     Ri1;		/* Impulse response of the low pass filter 
+                   		/* Input signal */
+                   		/* Wavelet transform of the signal `Signal` */
+                		/* Impulse response of the low pass filter 
 				 * for decomposition */
-Fsignal     Ri2;		/* Impulse response of the low pass filter */
+                		/* Impulse response of the low pass filter */
 				/* for synthesis */
 
 {

@@ -13,9 +13,7 @@
 #include "mw.h" 
 
  
-void flst_reconstruct(pTree, pFloatImageOutput) 
-     Shapes pTree; 
-     Fimage pFloatImageOutput; 
+void flst_reconstruct(Shapes pTree, Fimage pFloatImageOutput)
 { 
   int i; 
   float* pOutputPixel; 

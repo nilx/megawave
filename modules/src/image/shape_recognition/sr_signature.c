@@ -30,8 +30,7 @@ int NPARAM;
 
 /* Compute the size of a Fcurves */
 
-static int size_fcurves(cs)
-Fcurves cs;
+static int size_fcurves(Fcurves cs)
 {
   Fcurve        c;
   Point_fcurve  p;
@@ -50,10 +49,7 @@ Fcurves cs;
 
 /*---------------- Parameters evaluation ---------------*/
 
-static void thickness(cs,thick,Distance)
-Fcurves  cs;
-float    *thick;
-int      **Distance;
+static void thickness(Fcurves cs, float *thick, int **Distance)
 {
   Point_fcurve  p;
   Fcurve        c;
@@ -118,11 +114,7 @@ int      **Distance;
 }
 
 
-static void Init_param(thick,surf_cour,param,treshold)
-float  thick;
-int    *surf_cour;
-float  *param;
-int    *treshold;
+static void Init_param(float thick, int *surf_cour, float *param, int *treshold)
 {
   int    i,j,k,r,r2,cpt,distance;
   float  s;
@@ -153,9 +145,7 @@ int    *treshold;
 }
 
 
-static void Normalize_param(param,surf_cour)
-float *param;
-int   *surf_cour;
+static void Normalize_param(float *param, int *surf_cour)
 {
     int i;
     
@@ -166,10 +156,7 @@ int   *surf_cour;
 }
 
 
-static void Density(param,treshold,Distance)
-float *param;
-int   *treshold;
-int   *Distance;
+static void Density(float *param, int *treshold, int *Distance)
 {
   int i,j;
   
@@ -181,10 +168,7 @@ int   *Distance;
 
 /*------------- MAIN MODULE --------------*/
 
-Fimage sr_signature(in,n,base)
-Fcurves in;
-int     *n;
-Fimage  base;
+Fimage sr_signature(Fcurves in, int *n, Fimage base)
 { 
   float   *ptr;
   float   thick;

@@ -28,12 +28,7 @@ usage = {
 /*--------------MAIN PROGRAM-----------------------*/
 /*-------------------------------------------------------------*/
 /******** Creates a tree ***********/
-void wp2dmktree(level,tree,sinc_flag,quinc_flag,wave_flag,full_flag,mirror_flag)
-     
-     Cimage tree;
-     int level;
-     char *sinc_flag,*quinc_flag,*wave_flag,*full_flag,*mirror_flag;
-
+void wp2dmktree(int level, Cimage tree, char *sinc_flag, char *quinc_flag, char *wave_flag, char *full_flag, char *mirror_flag)
 {int i,tree_size,kx,ky,x,y,x1,y1,x2,y2;
  int tw,k,rap; 
  int nbOptions;

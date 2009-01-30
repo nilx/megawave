@@ -24,12 +24,7 @@ usage = {
    Compute in (*mincol, *minrow) the translation point.
 */
 
-static void Get_Size_Image(C,ncol,nrow,mincol,minrow)
-     
-     Curves C;
-     int *ncol, *nrow;
-     int *mincol, *minrow;
-     
+static void Get_Size_Image(Curves C, int *ncol, int *nrow, int *mincol, int *minrow)
 {
   Curve cv;
   Point_curve point;
@@ -56,13 +51,7 @@ static void Get_Size_Image(C,ncol,nrow,mincol,minrow)
    p0->next and the next non-successive point p1.
 */
 
-static int Seek_Non_Multiple_Point(C,bitmap,mincol,minrow,p0,p1)
-
-     Curves C;
-     Cimage bitmap;
-     int mincol,minrow;
-     Point_curve p0,*p1;
-     
+static int Seek_Non_Multiple_Point(Curves C, Cimage bitmap, int mincol, int minrow, Point_curve p0, Point_curve *p1)
 {
   Point_curve p;
   int n,ncol;
@@ -90,13 +79,7 @@ static int Seek_Non_Multiple_Point(C,bitmap,mincol,minrow,p0,p1)
    If lpoint=NULL, add the points until the end of the curve.
 */
 
-static void Add_Curve(O,fpoint,lpoint,bitmap,mincol,minrow)
-
-     Curves O;
-     Point_curve fpoint,lpoint;
-     Cimage bitmap;
-     int mincol,minrow;
-     
+static void Add_Curve(Curves O, Point_curve fpoint, Point_curve lpoint, Cimage bitmap, int mincol, int minrow)
 {
   Curve cv,lcv;
   Point_curve p,p0,p1;
@@ -134,14 +117,7 @@ static void Add_Curve(O,fpoint,lpoint,bitmap,mincol,minrow)
 
 /* Split the curves in case of multiple points */
 
-static Curves Split_Curves(O,C,L,bitmap,mincol,minrow)
-
-
-     Curves O,C;
-     int L;
-     Cimage bitmap;
-     int mincol,minrow;
-     
+static Curves Split_Curves(Curves O, Curves C, int L, Cimage bitmap, int mincol, int minrow)
 {
   Curve cv;
   Point_curve p0, p1, begp;
@@ -173,13 +149,7 @@ static Curves Split_Curves(O,C,L,bitmap,mincol,minrow)
   return(O);
 }
 
-double cvsencode(L,O,C,N,B)
-     
-     int *L;
-     Curves O,C;
-     unsigned int *N;
-     double *B;
-
+double cvsencode(int *L, Curves O, Curves C, unsigned int *N, double *B)
 {
   Cimage bitmap=NULL;  /* Bitmap the points of the curves to detect multiple
 			  points */

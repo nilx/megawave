@@ -13,7 +13,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fkprintasc() */
 
-Fcurves fkreadasc()
+Fcurves fkreadasc(void)
 {
   Fcurves cvs;
   Fcurve newcv,cv_previous,*cv_next;

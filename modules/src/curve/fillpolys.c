@@ -30,11 +30,11 @@ static int     fac;
 
 
 static void
-UPDATE_BITMAP(bitmap, bitmap_poly, p)
+UPDATE_BITMAP(Cimage bitmap, Cimage bitmap_poly, unsigned char p)
 
-Cimage           bitmap;         /* Global bitmap image */
-Cimage           bitmap_poly;    /* bitmap image for one polygon */
-unsigned char    p;              /* Index of polygon */
+                                 /* Global bitmap image */
+                                 /* bitmap image for one polygon */
+                                 /* Index of polygon */
 
 {
   register unsigned char  *ptrg;     /* Pointers to bitmap */
@@ -55,11 +55,11 @@ unsigned char    p;              /* Index of polygon */
 
 
 void 
-fillpolys(dx, dy, polys, bitmap)
+fillpolys(int *dx, int *dy, Polygons polys, Cimage bitmap)
 
-int        *dx,*dy;                  /* Size of output bitmap */
-Polygons    polys;                   /* Input polygons */
-Cimage      bitmap;                  /* Output bitmap */
+                                     /* Size of output bitmap */
+                                     /* Input polygons */
+                                     /* Output bitmap */
 
 {
   register unsigned char  *ptra;     /* Pointer to significance map */

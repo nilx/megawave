@@ -30,14 +30,7 @@ usage = {
 #include "mw-modules.h" /* for owave2() */
 
 static void
-ALLOC_WAV(wtrans, image, numrec, stopdecim, edge)
-
-Wtrans2d    wtrans;
-Fimage      image;
-int         numrec;
-int         stopdecim;
-int         edge;
-
+ALLOC_WAV(Wtrans2d wtrans, Fimage image, int numrec, int stopdecim, int edge)
 {
   int             i, J;
   long            nrow, ncol;
@@ -88,23 +81,23 @@ int         edge;
 
 
 static void
-WAVEL(wtrans, numrec, stopdecim, ortho, filternorm, ri, edge_ri, edge, precond)
+WAVEL(Wtrans2d wtrans, int *numrec, int stopdecim, int *ortho, int *filternorm, Fsignal ri, Fimage edge_ri, int *edge, int *precond)
 
 	/*----- Computes the wavelet decomposition of S -----*/
 
-Wtrans2d    wtrans;		/* Wavelet transform */
-int        *numrec;	        /* Level of decomposition */
-int         stopdecim;          /* Level where decimation is cancelled */
-int        *ortho;              /* Computes orthogonal coefficients */
-int        *filternorm;
-Fsignal     ri;		        /* Impulse response of the low-pass filter 
+                   		/* Wavelet transform */
+                   	        /* Level of decomposition */
+                                /* Level where decimation is cancelled */
+                                /* Computes orthogonal coefficients */
+                       
+               		        /* Impulse response of the low-pass filter 
 				 * (computation of the inner wavelet 
                                  * coefficients) */
-Fimage      edge_ri;	        /* Impulse responses of filters for special 
+                    	        /* Impulse responses of filters for special 
 				 * edge processing */
-int        *edge;		/* Type of edge processing (see `Edge`
+                 		/* Type of edge processing (see `Edge`
 				 * in biowave2) */
-int        *precond;
+                    
 
 {
   int         i,J;
@@ -198,26 +191,26 @@ int        *precond;
 
 
 void
-dyowave2(NumRec, StopDecim, Ortho, Edge, Precond, FilterNorm, Image, Output, Ri, Edge_Ri)
+dyowave2(int *NumRec, int *StopDecim, int *Ortho, int *Edge, int *Precond, int *FilterNorm, Fimage Image, Wtrans2d Output, Fsignal Ri, Fimage Edge_Ri)
 
   /*--- Computes the orthogonal wavelet Coefficients of image `Image` ---*/
 
-int        *NumRec;	    /* Number of iteration (-j) */
-int        *StopDecim;      /* Level where decimation is cancelled */
-int        *Ortho;          /* Computes orthogonal coefficients */
-int        *Edge;	    /* Equal 0 (default) if extension with 0 */
+                   	    /* Number of iteration (-j) */
+                            /* Level where decimation is cancelled */
+                            /* Computes orthogonal coefficients */
+                 	    /* Equal 0 (default) if extension with 0 */
 			    /* 1 if periodization */
 			    /* 2 if reflexion */
-int        *Precond;	    /* Equal 0 (default) if no
+                    	    /* Equal 0 (default) if no
 			     * (un)preconditionning 
 			     * 1 if preconditionning only
 			     * 2 if preconditionning and unpreconditionning */
-int        *FilterNorm;	    /* Equal 1 if normalisation of filter's
+                       	    /* Equal 1 if normalisation of filter's
 			     * impulse responses (sum = 1.0) */
-Fimage      Image;	    /* Input image */
-Wtrans2d    Output;	    /* Wavelet transform of the image `Image` */
-Fsignal     Ri;		    /* Impulse response of the low pass filter */
-Fimage	    Edge_Ri;	    /* Impulse responses of filters for special 
+                  	    /* Input image */
+                   	    /* Wavelet transform of the image `Image` */
+               		    /* Impulse response of the low pass filter */
+      	            	    /* Impulse responses of filters for special 
 			     * edge processing (including preconditionning 
 			     * matrices */
 

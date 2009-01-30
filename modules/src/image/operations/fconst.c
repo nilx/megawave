@@ -14,9 +14,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-Fimage fconst(g,x,y)
-     float g;
-     int x,y;
+Fimage fconst(float g, int x, int y)
 {
   Fimage out;
   

@@ -19,9 +19,7 @@
 #include "mw.h"
 
 
-static Point_fcurve new_point(p,x,y)
-     Point_fcurve p;
-     float x,y;
+static Point_fcurve new_point(Point_fcurve p, float x, float y)
 {
   Point_fcurve q;
   
@@ -35,10 +33,7 @@ static Point_fcurve new_point(p,x,y)
 }
 
 
-Fcurves fkcrop(X1,Y1,X2,Y2,cs,box)
-     float X1,Y1,X2,Y2;
-     Fcurves cs;
-     Fcurve box;
+Fcurves fkcrop(float X1, float Y1, float X2, float Y2, Fcurves cs, Fcurve box)
 {
   Fcurves out;
   Fcurve c,newc,cprev,*cnext;

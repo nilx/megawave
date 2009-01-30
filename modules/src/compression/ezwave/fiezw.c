@@ -29,19 +29,19 @@ QImage<-Output
 /*--- Constants ---*/
 
 void
-fiezw(Edge_Ri, Ri2, WeightFac, Compress, Ri, Output)
+fiezw(Fimage Edge_Ri, Fsignal Ri2, float *WeightFac, Cimage Compress, Fsignal Ri, Fimage Output)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 
-Fimage	    Edge_Ri;		/* Impulse responses of filters for special 
+      	            		/* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
-Fsignal     Ri2;		/* Impulse response of the low pass filter */
+                		/* Impulse response of the low pass filter */
 				/* for synthesis */
-float      *WeightFac;          /* Weighting factor for wavelet coeff. */
-Cimage      Compress;		/* Input compressed image */
-Fsignal     Ri;			/* Impulse response of the low pass filter */
-Fimage      Output;		/* Reconstructed image */
+                                /* Weighting factor for wavelet coeff. */
+                     		/* Input compressed image */
+               			/* Impulse response of the low pass filter */
+                   		/* Reconstructed image */
 
 {
   int         J;       	/* Current level of decomposition */

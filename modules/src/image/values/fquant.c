@@ -22,11 +22,7 @@
 #include <math.h>
 #include  "mw.h"
 
-float fquant(A,Q,M,left,min,max)
-     Fimage A,Q;
-     int M;
-     char *left;
-     float *min,*max;
+float fquant(Fimage A, Fimage Q, int M, char *left, float *min, float *max)
 {
   register float *ptrA,*ptrQ;
   register int i,r;

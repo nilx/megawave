@@ -24,10 +24,7 @@
 
 /* Record the junction location */
 
-static void record_junction(U,J,values,x,y)
-     Cimage U,J;
-     char *values;
-     int x,y;
+static void record_junction(Cimage U, Cimage J, char *values, int x, int y)
 {
   int l;
 
@@ -42,12 +39,7 @@ static void record_junction(U,J,values,x,y)
     }
 }
 
-int tjmap(connex8,values,tarea,tquant,U,J)
-     char *connex8;
-     char *values;
-     int *tarea;
-     int *tquant;
-     Cimage U,J;
+int tjmap(char *connex8, char *values, int *tarea, int *tquant, Cimage U, Cimage J)
 {
   int x,y;  /* current position (x,y) */
   int tj,ntj,l;

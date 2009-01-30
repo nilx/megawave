@@ -41,9 +41,7 @@ Fimage aux2;
 
 
 /* compute weight * total variation and add its gradient to grad */
-static double mytvgrad(u,grad,eps,p,weight)
-     Fimage u,grad;
-     double eps,p,weight;
+static double mytvgrad(Fimage u, Fimage grad, double eps, double p, double weight)
 {
   int x,y,nx,ny,adr;
   double E,a,b,c,d,e,f,z,norm,q;
@@ -76,8 +74,7 @@ static double mytvgrad(u,grad,eps,p,weight)
 }
 
 /* Convolution v=k*u, restricted domain for v */
-static void conv1(u,k,v)
-     Fimage u,k,v;
+static void conv1(Fimage u, Fimage k, Fimage v)
 {
   int kx,kx2,ky2,nx,ny,x,y,dx,dy;
   double s;
@@ -102,8 +99,7 @@ static void conv1(u,k,v)
 
 
 /* Convolution v=k'*u, restricted domain for u (not v !) */
-static void conv2(u,k,v)
-     Fimage u,k,v;
+static void conv2(Fimage u, Fimage k, Fimage v)
 {
   int kx,kx2,ky2,nx,ny,x,y,dx,dy,dxmax,dymax;
   double s;
@@ -130,8 +126,7 @@ static void conv2(u,k,v)
 
 
 /* Compute energy F(u) = int (K*u-u_0)^2 and its gradient */
-static double fidelity_term_grad(u,k,u0,grad)
-     Fimage u,k,u0,grad;
+static double fidelity_term_grad(Fimage u, Fimage k, Fimage u0, Fimage grad)
 {
   int adr;
   double e,d;
@@ -152,11 +147,7 @@ static double fidelity_term_grad(u,k,u0,grad)
 
 /*----------------------- MAIN MODULE ---------------*/
 
-Fimage tvdeblur(in,out,ker,s,c,v,e,n,W,ref,eps,p)
-     Fimage in,out,ker,ref;
-     int *n;
-     double *s,*e,*W,*eps,*p;
-     char *v,*c;
+Fimage tvdeblur(Fimage in, Fimage out, Fimage ker, double *s, char *c, char *v, double *e, int *n, double *W, Fimage ref, double *eps, double *p)
 {
   Fimage dE,aux,tmp,cur,prev;
   double energy,old_energy,step;

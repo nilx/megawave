@@ -27,8 +27,7 @@
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))
 
-static void llcheck(mimage)
-     Mimage mimage;
+static void llcheck(Mimage mimage)
 {  Point_curve point;
    Morpho_line ll;
    int NC,NL;
@@ -50,11 +49,7 @@ static void llcheck(mimage)
      }
 }
 
-Mimage ml_decompose(m_image_in,ml_opt,m_flag,image_in)
-     Mimage m_image_in;
-     int* ml_opt;
-     char* m_flag;
-     Fimage image_in;
+Mimage ml_decompose(Mimage m_image_in, int *ml_opt, char *m_flag, Fimage image_in)
 {
   Mimage m_image=NULL;
   Fsignal levels,tmp_levels;

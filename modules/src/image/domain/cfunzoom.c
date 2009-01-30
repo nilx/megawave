@@ -23,10 +23,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for funzoom() */
 
-Cfimage cfunzoom(in,out,z,o,tx,ty)
-     Cfimage in,out;
-     float *z,*tx,*ty;
-     int *o;
+Cfimage cfunzoom(Cfimage in, Cfimage out, float *z, int *o, float *tx, float *ty)
 {
   Fimage aux_in,aux_out;
 

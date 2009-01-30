@@ -30,13 +30,7 @@ usage = {
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
 
-Fimage fextract(b,in,bg,out,X1,Y1,X2,Y2,Xc,Yc,r)
-     Fimage in,out;
-     int X1,Y1,X2,Y2;
-     float *b;
-     Fimage bg;
-     int *Xc,*Yc;
-     char *r;
+Fimage fextract(float *b, Fimage in, Fimage bg, Fimage out, int X1, int Y1, int X2, int Y2, int *Xc, int *Yc, char *r)
 {
   int x,y,pos1,pos2;
 

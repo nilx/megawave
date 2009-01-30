@@ -21,11 +21,11 @@
 #include  "mw.h"
 
 static void
-NORM_IMG(image)
+NORM_IMG(Fimage image)
 
 	/*--- Normalize `image` to 0.0 mean and 1.0 variance ---*/
 
-    Fimage	image;
+          	      
 
 {
     long	l, c;		/* Index of current point in `image` */
@@ -57,17 +57,17 @@ NORM_IMG(image)
 
 
 
-void fmse(Img1, Img2, Norm, PsnrFlg, SNR, PSNR, MSE, MRD)
+void fmse(Fimage Img1, Fimage Img2, int *Norm, char *PsnrFlg, double *SNR, double *PSNR, double *MSE, double *MRD)
 
 	/*--- Computes the mean square error between Img1 and Img2 ---*/
 
-    Fimage	Img1, Img2;	/* Input images */
-    int		*Norm;		/* Normalisation to 0 mean and 1.0 variance */
-    char	*PsnrFlg;	/* Alternative computation for the PSNR */
-    double	*SNR;		/* Signal to noise ratio / `Img1` */
-    double	*PSNR;		/* Peak signal to noise ratio / `Img1` */
-    double	*MSE;		/* Mean square error between Img1 and Img2 */
-    double	*MRD;		/* Maximal relative difference */	
+          	           	/* Input images */
+       		      		/* Normalisation to 0 mean and 1.0 variance */
+        	         	/* Alternative computation for the PSNR */
+          	     		/* Signal to noise ratio / `Img1` */
+          	      		/* Peak signal to noise ratio / `Img1` */
+          	     		/* Mean square error between Img1 and Img2 */
+          	     		/* Maximal relative difference */	
 
 {
     long	l, c;		/* Index of current point in `Img1`, `Img2` */

@@ -25,10 +25,7 @@
 
 /*** NB: Calling this module with out=in is possible ***/
 
-void saxpb(in,out,a,s,b,m,k,M)
-     Fsignal in,out;
-     float *a,*s,*b,*m,*M;
-     char *k;
+void saxpb(Fsignal in, Fsignal out, float *a, float *s, float *b, float *m, char *k, float *M)
 {
   double mean,var;
   float gain,ofs1,ofs2,*pin,*pout;

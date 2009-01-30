@@ -22,9 +22,7 @@ usage    = {
 
 #define _(a,i,j)  ((a)->gray[(i)*(a)->ncol+(j)] )
 
-Cimage csample(in ,out,step)
-     Cimage out,in;
-     double step;
+Cimage csample(Cimage in, Cimage out, double step)
 {
   register int i,j;
   int nr;

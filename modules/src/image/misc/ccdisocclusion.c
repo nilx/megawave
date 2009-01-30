@@ -38,12 +38,7 @@
 #define Unorm(u) (((u)<0.0)?0:(((u)>255.0)?255:((unsigned char)(Rint(u)))))
 
 
-void ccdisocclusion(Input,Output,Holes,energy_type,angle)
-     Ccimage Input,Output;
-     Fimage Holes;
-     char *angle;
-     int *energy_type;
-     
+void ccdisocclusion(Ccimage Input, Ccimage Output, Fimage Holes, int *energy_type, char *angle)
 {
   float lum,ch1,ch2;
   unsigned char *r,*g,*b,*y,*u,*v;

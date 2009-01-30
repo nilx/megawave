@@ -46,11 +46,11 @@
 /*--- Constants ---*/
 
 static void
-orderf(a,b)
+orderf(float *a, float *b)
 
   /*--- Put *a and *b in a decreasing order ---*/
 
- float	*a, *b;
+      	       
  
 {
   float c;
@@ -64,12 +64,12 @@ orderf(a,b)
 
 
 static void
-ORDER_THRES(thres1, thres2, thres3)
+ORDER_THRES(float **thres1, float **thres2, float **thres3)
 
   /*--- Put *thres1, *thres2 and *thres3 (when they are not NULL) ---*/
                      /*--- in a decreasing order ---*/
 
-float	**thres1, **thres2, **thres3;  /* threshold values for block energy */
+     	                               /* threshold values for block energy */
 
 {
   float    thres;
@@ -112,25 +112,25 @@ float	**thres1, **thres2, **thres3;  /* threshold values for block energy */
 
 
 void
-flbg_adap(Size, Width, Height, Lap, Decim, Edge, ThresVal1, ThresVal2, ThresVal3, Weight, MultiCB, PrintSNR, Size2, Size3, Size4, Image2, Image3, Image4, Image5, Image6, Image7, Image8, Output2, Output3, Output4, Image1, Output)
+flbg_adap(int *Size, int *Width, int *Height, int *Lap, int *Decim, int *Edge, float *ThresVal1, float *ThresVal2, float *ThresVal3, Fsignal Weight, int *MultiCB, int *PrintSNR, int *Size2, int *Size3, int *Size4, Fimage Image2, Fimage Image3, Fimage Image4, Fimage Image5, Fimage Image6, Fimage Image7, Fimage Image8, Fimage Output2, Fimage Output3, Fimage Output4, Fimage Image1, Fimage Output)
 
-int        *Size;           /* Size of codebook */
-int        *Width, *Height; /* Width  and height of block */
-int        *Lap;            /* Take overlapping vectors in training images */
-int        *Decim;          /* Space between pixels in a vector */
-int        *Edge;           /* No overlapping on edges */
-float      *ThresVal1, *ThresVal2, *ThresVal3;	/* threshold values  
+                            /* Size of codebook */
+                            /* Width  and height of block */
+                            /* Take overlapping vectors in training images */
+                            /* Space between pixels in a vector */
+                            /* No overlapping on edges */
+                                              	/* threshold values  
 				                 * for block energy */
-Fsignal     Weight;         /* Coordinates weights in block */
-int        *MultiCB;        /* Generates all code books of size equal 
+                            /* Coordinates weights in block */
+                            /* Generates all code books of size equal 
 			     * to a power of 2 */
-int        *PrintSNR;       /* Print SNR and rate */
-int	   *Size2, *Size3, *Size4;     /* Size of adapted codebook */
-Fimage      Image2, Image3, Image4, Image5, Image6, Image7, Image8;    
+                            /* Print SNR and rate */
+   	                               /* Size of adapted codebook */
+                                                                       
                             /* Images for training set */
-Fimage      Output2, Output3, Output4; /* Adapted codebooks */
-Fimage      Image1;         /* First image for training set */
-Fimage      Output;         /* Generated codebook */
+                                       /* Adapted codebooks */
+                            /* First image for training set */
+                            /* Generated codebook */
 
 
 {

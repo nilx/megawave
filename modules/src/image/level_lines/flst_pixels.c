@@ -14,9 +14,7 @@
 
 
 /* For each shape, find its number of proper pixels */
-static void compute_proper_pixels(pTree, tabNbOfProperPixels)
-     Shapes pTree;
-     int* tabNbOfProperPixels;
+static void compute_proper_pixels(Shapes pTree, int *tabNbOfProperPixels)
 {
   Shape pShape;
   int* pNbOfProperPixels;
@@ -36,9 +34,7 @@ static void compute_proper_pixels(pTree, tabNbOfProperPixels)
 /* Allocate the array of pixels of each shape. Thanks to the tree structure,
 we allocate only memory for the pixels of the root, and other arrays are
 just pointers */
-static void allocate_pixels(pTree, tabNbOfProperPixels)
-     Shapes pTree;
-     int* tabNbOfProperPixels;
+static void allocate_pixels(Shapes pTree, int *tabNbOfProperPixels)
 {
   Point_plane tabPixelsOfRoot;
   Shape pShape, *tabpShapesOfStack;
@@ -76,8 +72,7 @@ static void allocate_pixels(pTree, tabNbOfProperPixels)
 the tree structure. From the command line, this function has no interest,
 since that field is not saved to the file. It is meant to be called from
 another module, when this field is needed */
-void flst_pixels(pTree)
-     Shapes pTree;
+void flst_pixels(Shapes pTree)
 {
   Shape* ppShape;
   int* tabNbOfProperPixels; /* For each shape, its number of proper pixels */

@@ -27,11 +27,7 @@
        in_im(x,y) = 0 everywhere 
 */
 
-Fsignal fft2drad(in_re,in_im,out,l_flag,size)
-     Fimage in_re, in_im;
-     Fsignal out;
-     char *l_flag;
-     int *size;
+Fsignal fft2drad(Fimage in_re, Fimage in_im, Fsignal out, char *l_flag, int *size)
 {
   Fimage rho;
   int n,x,y,xx,yy,r,nx,ny,*count;

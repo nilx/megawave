@@ -22,10 +22,7 @@
 #include "mw-modules.h"
 
 
-void fftzoom(in,out,z,i_flag)
-Fimage in, out;
-float  *z;
-char   *i_flag;
+void fftzoom(Fimage in, Fimage out, float *z, char *i_flag)
 {
   Fimage in_re,in_im,out_re,out_im;
   int nx,ny,nxz,nyz,x,y,adr,adrz;

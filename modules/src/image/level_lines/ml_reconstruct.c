@@ -70,8 +70,7 @@ struct fill_segment {
           &&(N_EQUAL(im[(Y)][(X)],current_level)) \
           &&(EQUAL(im[(Y)][(X)],p_level))  )
 
-static void llcheck(mimage)
-Mimage mimage;
+static void llcheck(Mimage mimage)
 {
   Point_curve point;
   Morpho_line ll;
@@ -95,10 +94,7 @@ Mimage mimage;
 }
 
 static void
-draw_HV(lline_ptr,V,H,NL,NC)
-Morpho_line lline_ptr;
-unsigned char **V,**H;
-int NL,NC;
+draw_HV(Morpho_line lline_ptr, unsigned char **V, unsigned char **H, int NL, int NC)
 {
   Point_curve point;
   int l,c,dl,dc;
@@ -155,11 +151,7 @@ int NL,NC;
 /* "fill" fills (x,y) and all its 4-connected neighbours with color */
 /* current_level in image im. The region is delimited by V and H.   */
 static void
-fill(y,x,V,H,ST,size_ST,current_level,im,NL,NC,p_level)
-int y,x,NC,NL,size_ST;
-unsigned char **V,**H;
-struct fill_segment *ST;
-float **im, current_level,p_level;
+fill(int y, int x, unsigned char **V, unsigned char **H, struct fill_segment *ST, int size_ST, float current_level, float **im, int NL, int NC, float p_level)
 {
   struct fill_segment *st_ptr;
   int left, right, x1, x2, dy;
@@ -219,13 +211,7 @@ float **im, current_level,p_level;
 }
 
 static void
-fill_level(V,H,ST,size_ST,lline,v_flag,im,NL,NC,p_level)
-unsigned char **V,**H;
-struct fill_segment *ST;
-Morpho_line lline;
-char *v_flag;
-float **im,p_level;
-int NC,NL,size_ST;
+fill_level(unsigned char **V, unsigned char **H, struct fill_segment *ST, int size_ST, Morpho_line lline, char *v_flag, float **im, int NL, int NC, float p_level)
 {
   float current_level;
   Point_curve p,q;
@@ -258,9 +244,7 @@ int NC,NL,size_ST;
 
 
 Fimage
-ml_reconstruct(v_flag,m_image)
-char* v_flag;
-Mimage m_image;
+ml_reconstruct(char *v_flag, Mimage m_image)
 { 
   unsigned char **V,**H,*cptr,inc_val;
   int NC,NL,i,size_ST;

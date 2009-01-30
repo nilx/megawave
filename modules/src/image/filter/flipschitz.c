@@ -28,11 +28,7 @@
 
 /*------------- one step -------------*/
 
-static void step(u,v,s,delta,i_flag)
-     Fimage u,v;
-     Curve  s;
-     float *delta;
-     char *i_flag;
+static void step(Fimage u, Fimage v, Curve s, float *delta, char *i_flag)
 {
   int x,y,nx,ny,k,xx,yy;
   float new,curr;
@@ -77,12 +73,7 @@ static void step(u,v,s,delta,i_flag)
  
 /*---------------------- Main function : lipschitz --------------------*/
 
-Fimage flipschitz(in,lip,out,r,s,n,i)
-     Fimage in,out;
-     float lip,*r;
-     char *i;
-     int *n;
-     Curve s;
+Fimage flipschitz(Fimage in, float lip, Fimage out, float *r, Curve s, int *n, char *i)
 {
   Fimage w,*src,*dst,*new;
   Curve  shape;

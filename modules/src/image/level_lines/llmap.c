@@ -27,11 +27,7 @@
 #define UP   100
 #define BOTH 0
 
-Cimage llmap(ls,tmap,input, output)
-     short *ls;
-     char *tmap;
-     Cimage input;
-     Cimage output;
+Cimage llmap(short int *ls, char *tmap, Cimage input, Cimage output)
 {
   register int l;
   register unsigned char *in,*out;

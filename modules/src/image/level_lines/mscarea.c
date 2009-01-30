@@ -20,11 +20,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-static void compute_area(connex8, U, O, M, nrow, ncol, a, b, x, y, l, stoparea, area)
-     char *connex8;
-     unsigned char *U,*O,*M;
-     int nrow,ncol,a,b,x,y,l;
-     int *stoparea,*area;
+static void compute_area(char *connex8, unsigned char *U, unsigned char *O, unsigned char *M, int nrow, int ncol, int a, int b, int x, int y, int l, int *stoparea, int *area)
 {
   int k;
 
@@ -76,11 +72,7 @@ static void compute_area(connex8, U, O, M, nrow, ncol, a, b, x, y, l, stoparea, 
 }
 
 
-int mscarea(connex8, U, O, stoparea, a, b, x0, y0)
-     char *connex8;
-     Cimage U,O;
-     int a,b,x0,y0;
-     int *stoparea;
+int mscarea(char *connex8, Cimage U, Cimage O, int *stoparea, int a, int b, int x0, int y0)
 {
   Cimage M=NULL; /* Cimage to mark the pixels */
   int area,l,c;

@@ -15,9 +15,7 @@
 #include <math.h>
 #include  "mw.h"
 
-void frthre(A,B,noise)
-     Fimage	A,B;
-     float *noise;
+void frthre(Fimage A, Fimage B, float *noise)
 {
   register float *ptrA,*ptrB;
   register int i;

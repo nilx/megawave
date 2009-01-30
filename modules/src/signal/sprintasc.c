@@ -17,10 +17,7 @@
 #include <stdio.h>
 #include "mw.h"
  
-void sprintasc(s,i1,i2,verbose)
-     Fsignal s;
-     int *i1,*i2;
-     char *verbose;
+void sprintasc(Fsignal s, int *i1, int *i2, char *verbose)
 {
   int i,vi1,vi2;
 

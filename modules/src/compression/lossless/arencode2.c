@@ -56,20 +56,14 @@ static int              teststop = 0;
 
 
 static int
-symb_ind_direct(symbol)
-
-int    symbol;
-
+symb_ind_direct(int symbol)
 {
   return(symbol+1);
 }
 
 
 static int
-symb_ind_list(symbol)
-
-int    symbol;
-
+symb_ind_list(int symbol)
 {
   int    z;
 
@@ -87,10 +81,7 @@ int    symbol;
 
 
 static void
-REALLOCATE_OUTPUT(output)
-
-Cimage           output;
-
+REALLOCATE_OUTPUT(Cimage output)
 {
   int              i;
   Cimage           bufcomp;
@@ -123,14 +114,7 @@ Cimage           output;
 
 
 static void
-START_MODEL(histo, cap_histo, predic, input, size)
-
-Fsignal      histo;
-int         *cap_histo;
-int         *predic;
-Fimage       input;
-long         size;
-
+START_MODEL(Fsignal histo, int *cap_histo, int *predic, Fimage input, long int size)
 {
   float  *ptri;
   float  *ptrl;
@@ -303,11 +287,7 @@ long         size;
 
 
 static void
-UPDATE_MODEL(symbol, symbol_pred)
-
-int        symbol;
-int        symbol_pred;
-
+UPDATE_MODEL(int symbol, int symbol_pred)
 {
   int      z;
   int      cum;
@@ -329,10 +309,10 @@ int        symbol_pred;
 
 
 static void
-ADD_BIT_TO_OUTPUT(bit, output)
+ADD_BIT_TO_OUTPUT(int bit, Cimage output)
 
-int         bit;
-Cimage      output;            /* String of codewords */  
+                
+                               /* String of codewords */  
 
 {
   buffer >>= 1;
@@ -352,10 +332,10 @@ Cimage      output;            /* String of codewords */
 
 
 static void
-OUTPUT_BITS(bit, output)
+OUTPUT_BITS(int bit, Cimage output)
 
-int         bit;
-Cimage      output;            /* String of codewords */  
+                
+                               /* String of codewords */  
 
 {
 
@@ -372,11 +352,7 @@ Cimage      output;            /* String of codewords */
 
 
 static void
-ENCODE_INT(symb, max, output)
-
-long              symb, max;
-Cimage           output;
-
+ENCODE_INT(long int symb, long int max, Cimage output)
 {
 
   while (max > 0) {
@@ -393,11 +369,11 @@ Cimage           output;
 
 
 static void
-MAKE_HEADER(predic, output, nbit)
+MAKE_HEADER(int *predic, Cimage output, long int *nbit)
 
-int       *predic;            /* Flag for predictive model */
-Cimage     output;            /* String of codewords */  
-long      *nbit;              /* Number of output bits */
+                              /* Flag for predictive model */
+                              /* String of codewords */  
+                              /* Number of output bits */
 
 {
 
@@ -414,13 +390,13 @@ long      *nbit;              /* Number of output bits */
 
 
 static void
-ENCODE_SYMBOL(symbol, symbol_pred, low, high, nbit, output)
+ENCODE_SYMBOL(int symbol, int symbol_pred, long int *low, long int *high, long int *nbit, Cimage output)
 
-int        symbol;
-int        symbol_pred;
-long      *low, *high;         /* Interval extremities for arithmetic coding */
-long      *nbit;              /* Number of output bits */
-Cimage     output;            /* String of codewords */  
+                  
+                       
+                               /* Interval extremities for arithmetic coding */
+                              /* Number of output bits */
+                              /* String of codewords */  
 
 {
   long     range;
@@ -470,19 +446,19 @@ Cimage     output;            /* String of codewords */
 
 
 void
-arencode2(Print, Size, NSymb, Cap_Histo, Predic, Histo, Header, Input, Rate, Output)
+arencode2(int *Print, long int *Size, int *NSymb, long int *Cap_Histo, int *Predic, Fsignal Histo, int *Header, Fimage Input, double *Rate, Cimage Output)
 
-int          *Print;             /* Do not print info if selected */       
-long         *Size;              /* Encode only the first Size symbols 
+                                 /* Do not print info if selected */       
+                                 /* Encode only the first Size symbols 
 				  * Input */
-int          *NSymb;             /* Size of alphabet for Input symbols */
-long	     *Cap_Histo;	 /* Capacity of histogram */
-int          *Predic;            /* Apply predictive encoding */
-Fsignal       Histo;             /* Histogram source symbols */
-int          *Header;            /* Insert header if selected */
-Fimage        Input;	         /* String of symbol to encode */
-double       *Rate;              /* Output rate in bits per symbol */
-Cimage        Output;            /* String of codewords */  
+                                 /* Size of alphabet for Input symbols */
+    	                	 /* Capacity of histogram */
+                                 /* Apply predictive encoding */
+                                 /* Histogram source symbols */
+                                 /* Insert header if selected */
+                    	         /* String of symbol to encode */
+                                 /* Output rate in bits per symbol */
+                                 /* String of codewords */  
 
 {
   register float  *ptri;         /* Pointer to input buffer */

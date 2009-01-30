@@ -23,12 +23,7 @@ usage = {
 #define SUM(in,out) (*out = (v * *in - u * (*(in-1) + *(in+1)+ *(in-A->ncol) +  *(in+A->ncol) + *(in-1-A->ncol) + \
                  *(in-1+A->ncol) + *(in+1-A->ncol) + *(in+1+A->ncol))) / d)
 
-Cfimage cfsharpen(A,B,p,LumOnly)
-     
-     Cfimage A,B;
-     float *p;
-     char *LumOnly;
-     
+Cfimage cfsharpen(Cfimage A, Cfimage B, float *p, char *LumOnly)
 {
   float *ar,*ag,*ab,*br,*bg,*bb;
   int x,y,Conv;

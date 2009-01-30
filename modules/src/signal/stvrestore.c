@@ -30,10 +30,7 @@ usage = {
    By the way, check the consistency of the mask M.
 */
 
-static int GetWaveletDepth(M)
-     
-     Fsignal M;
-     
+static int GetWaveletDepth(Fsignal M)
 {
   int N,n0,n,p,r;
   float v;
@@ -63,10 +60,7 @@ static int GetWaveletDepth(M)
    J(u) = exact total variation of u.
 */
 
-static double J(u,dJ)
-     
-     Fsignal u,dJ;
-     
+static double J(Fsignal u, Fsignal dJ)
 {
   int n;
   double r,d,sd,ad;
@@ -90,11 +84,7 @@ static double J(u,dJ)
    J(u) = smoothed total variation of u.
 */
 
-static double J_alpha(u,dJ,alpha)
-
-     Fsignal u,dJ;
-     double alpha;
-     
+static double J_alpha(Fsignal u, Fsignal dJ, double alpha)
 {
   int n;
   double r,a,b,c;
@@ -115,13 +105,13 @@ static double J_alpha(u,dJ,alpha)
 
 /* Compute the projection on the constraint in the wavelet domain */
 
-static void Wproj(relax,WdJ,M)
+static void Wproj(char *relax, Wtrans1d WdJ, Fsignal M)
      
-char *relax;    /* If != NULL, relax constraint on approximation space V_J.
+                /* If != NULL, relax constraint on approximation space V_J.
 		   Warning : on versions < 1.4, this option was active (bug) !
 		*/
-Wtrans1d WdJ;
-Fsignal M;
+             
+          
 
 {
   register int i;
@@ -147,14 +137,14 @@ Fsignal M;
 
 /* Compute the projection on the constraint P(dJ) */
 
-static void Proj(relax,dJ,M,O,I,r)
+static void Proj(char *relax, Fsignal dJ, Fsignal M, Fsignal O, Fimage I, int *r)
 
-char *relax;    /* If != NULL, relax constraint on approximation space V_J.
+                /* If != NULL, relax constraint on approximation space V_J.
 		   Warning : on versions < 1.4, this option was active (bug) !
 		*/
-Fsignal dJ,M,O;
-Fimage I;
-int *r;
+               
+         
+       
 
 {
   int Edge;
@@ -201,15 +191,7 @@ int *r;
 /* Generate comments in output signal u
 */
 
-static void Make_Comments(u,tv,Niter,alpha,O,I)
-
-     Fsignal u;
-     double tv;
-     int Niter;
-     double *alpha;
-     Fsignal O;    
-     Fimage I;     
-     
+static void Make_Comments(Fsignal u, double tv, int Niter, double *alpha, Fsignal O, Fimage I)
 {
   char A[BUFSIZ];
 
@@ -234,18 +216,18 @@ static void Make_Comments(u,tv,Niter,alpha,O,I)
 
 /* ----- Main function ----- */
 
-Fsignal stvrestore(relax,Niter,alpha,O,I,V,M,u)
+Fsignal stvrestore(char *relax, int *Niter, double *alpha, Fsignal O, Fimage I, Fsignal V, Fsignal M, Fsignal u)
 
-char *relax;    /* If != NULL, relax constraint on approximation space V_J.
+                /* If != NULL, relax constraint on approximation space V_J.
 		   Warning : on versions < 1.4, this option was active (bug) !
 		*/
-int *Niter;     /* Number of iterations */
-double *alpha;  /* Alpha parameter to smooth the TV */
-Fsignal O;      /* Impulse response of orthonormal wavelet */
-Fimage I;       /* Edge filter */
-Fsignal V;
-Fsignal M;      /* Input thresholding mask */
-Fsignal u;      /* Input thresholded signal */
+                /* Number of iterations */
+                /* Alpha parameter to smooth the TV */
+                /* Impulse response of orthonormal wavelet */
+                /* Edge filter */
+          
+                /* Input thresholding mask */
+                /* Input thresholded signal */
 
 {
   int n,r,i,minNiter;

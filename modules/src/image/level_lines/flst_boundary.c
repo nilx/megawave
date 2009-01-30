@@ -32,10 +32,7 @@ typedef struct {
 #endif
 
 /* Is the point in the shape? */
-static char point_in_shape(x, y, pShape, pTree)
-short int x, y;
-Shape pShape;
-Shapes pTree;
+static char point_in_shape(short int x, short int y, Shape pShape, Shapes pTree)
 {
   Shape pShapePoint = pTree->smallest_shape[y*pTree->ncol+x];
   return (pShape->pixels <= pShapePoint->pixels &&
@@ -52,10 +49,7 @@ dir = (dir==NORTH ? EAST :\
       (dir==SOUTH ? WEST : NORTH)))
 
 /* Find the dual point following pDualPoint as we follow the shape boundary */
-static void find_next_dual_point(pDualPoint, pShape, pTree)
-DualPoint* pDualPoint;
-Shape pShape;
-Shapes pTree;
+static void find_next_dual_point(DualPoint *pDualPoint, Shape pShape, Shapes pTree)
 {
   char bLeftIn, bRightIn;
 
@@ -116,10 +110,7 @@ Shapes pTree;
 }
 
 /* Find the boundary of the shape, which is closed */
-static int find_closed_boundary(pTree, pShape, pBoundary)
-Shapes pTree;
-Shape pShape;
-Flist pBoundary;
+static int find_closed_boundary(Shapes pTree, Shape pShape, Flist pBoundary)
 {
   short int x0, y0;
   DualPoint dualPoint;
@@ -146,10 +137,7 @@ Flist pBoundary;
 }
 
 /* Find an initial point (to follow the boundary) at the border of the image */
-static void initial_point_border(pDualPoint, pShape, pTree)
-DualPoint* pDualPoint;
-Shape pShape;
-Shapes pTree;
+static void initial_point_border(DualPoint *pDualPoint, Shape pShape, Shapes pTree)
 {
   short int iWidth = (short int)pTree->ncol, iHeight = (short int)pTree->nrow;
   short int x, y;
@@ -206,10 +194,7 @@ Shapes pTree;
 }
 
 /* Find an open boundary */
-static void find_open_boundary(pTree, pShape, pBoundary)
-Shapes pTree;
-Shape pShape;
-Flist pBoundary;
+static void find_open_boundary(Shapes pTree, Shape pShape, Flist pBoundary)
 {
   DualPoint dualPoint;
   point_t* pPoint = (point_t*) pBoundary->values;
@@ -229,10 +214,7 @@ Flist pBoundary;
 /*------------------------------ MAIN MODULE ------------------------------*/
 
 /* Find boundary of the shape */
-Flist flst_boundary(pTree, pShape, pBoundary)
-Shapes pTree;
-Shape pShape;
-Flist pBoundary;
+Flist flst_boundary(Shapes pTree, Shape pShape, Flist pBoundary)
 {
   char bBuildBoundary;
   

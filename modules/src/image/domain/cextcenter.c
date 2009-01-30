@@ -19,10 +19,10 @@
 #include  "mw.h"
 
 
-Cimage cextcenter(Fact, Image)
+Cimage cextcenter(int *Fact, Cimage Image)
      
-     int            *Fact;   /* Output size must be a multiple of Fact */
-     Cimage          Image;	/* Original image */
+                             /* Output size must be a multiple of Fact */
+                           	/* Original image */
 
 {
   Cimage          Result;	    /* Resulting image */

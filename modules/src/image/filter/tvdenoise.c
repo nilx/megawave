@@ -37,9 +37,7 @@ usage = {
 
 
 /* compute weight * total variation and add its gradient to grad */
-static double mytvgrad(u,grad,eps,p,weight)
-     Fimage u,grad;
-     double eps,p,weight;
+static double mytvgrad(Fimage u, Fimage grad, double eps, double p, double weight)
 {
   int x,y,nx,ny,adr;
   double E,a,b,c,d,e,f,z,norm,q;
@@ -72,8 +70,7 @@ static double mytvgrad(u,grad,eps,p,weight)
 }
 
 /* Compute energy F(u) = int |u-u_0|^2 and its gradient */
-static double fidelity_term_grad(u,u0,grad)
-     Fimage u,u0,grad;
+static double fidelity_term_grad(Fimage u, Fimage u0, Fimage grad)
 {
   int adr;
   double e,d;
@@ -90,11 +87,7 @@ static double fidelity_term_grad(u,u0,grad)
 
 /*----------------------- MAIN MODULE ---------------*/
 
-Fimage tvdenoise(in,out,s,c,v,e,n,W,ref,eps,p)
-     Fimage in,out,ref;
-     int *n;
-     double *s,*e,*W,*eps,*p;
-     char *v,*c;
+Fimage tvdenoise(Fimage in, Fimage out, double *s, char *c, char *v, double *e, int *n, double *W, Fimage ref, double *eps, double *p)
 {
   Fimage dE,aux,tmp,cur,prev;
   double energy,old_energy,step;

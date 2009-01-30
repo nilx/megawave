@@ -28,9 +28,7 @@
 
 /* add a point to a fcurve */
 
-static void add_fpoint(c,x,y)
-Fcurve c;
-float  x,y;
+static void add_fpoint(Fcurve c, float x, float y)
 {
   Point_fcurve p;
 
@@ -48,13 +46,7 @@ float  x,y;
 
 /* put together two shapes
 */
-static void MemeForme(tab,fold,fnew,start,lg)
-long *tab;
-long fold;
-long fnew;
-long start;
-long lg;
-
+static void MemeForme(long int *tab, long int fold, long int fnew, long int start, long int lg)
 {
   long *end;
 
@@ -69,19 +61,14 @@ long lg;
 }
 
 
-static void DecaleStart(start,ou,nbforme)
-long *start;
-int  ou;
-int  nbforme;
-
+static void DecaleStart(long int *start, int ou, int nbforme)
 {
   start += ou;
   memmove(start+1,start,nbforme-ou);
 }
 
 /* Allocate the array that associates the points to the shapes */
-static unsigned long *AllocTab(size)
-unsigned long size;
+static unsigned long *AllocTab(long unsigned int size)
 {
   unsigned long *e,*p,*tab;
   
@@ -98,10 +85,7 @@ unsigned long size;
 
 
 
-Fcurves extract_connex(in,curves,g)
-Cimage  in;
-Fcurves curves;
-int     *g;
+Fcurves extract_connex(Cimage in, Fcurves curves, int *g)
 {
   unsigned long  *tab,*p;
   unsigned char  *bits,grey;

@@ -19,8 +19,7 @@
 #include "mw.h"
 
 
-Curve disc(r,i)
-float r,*i;
+Curve disc(float r, float *i)
 {
   Curve        c;
   Point_curve  p,prev,*next;

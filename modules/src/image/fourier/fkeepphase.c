@@ -16,8 +16,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fft2d(), fft2dpol() */
 
-void fkeepphase(in,mod,out)
-     Fimage in,mod,out;
+void fkeepphase(Fimage in, Fimage mod, Fimage out)
 {
   Fimage re,im,rho;
   int adr;

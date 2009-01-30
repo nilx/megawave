@@ -32,16 +32,12 @@
 /*** NB: Calling this module with in=out is possible ***/
 
 
-static unsigned char truncation(x)
-float x;
+static unsigned char truncation(float x)
 {
   return (x<0.0?0:(x>255.0?255:(unsigned char)x));
 }
 
-void cnoise(u,v,std,p,q,n_flag)
-     Cimage	u,v;
-     float	*std,*p,*q;
-     char       *n_flag;
+void cnoise(Cimage u, Cimage v, float *std, float *p, float *q, char *n_flag)
 {
   int i;
   double a,b,z;

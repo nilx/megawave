@@ -20,10 +20,7 @@
 #define WHITE 255
 
 
-Cimage fkplot(cs,out,s_flag)
-Fcurves cs;
-Cimage  out;
-char *s_flag;
+Cimage fkplot(Fcurves cs, Cimage out, char *s_flag)
 {
   Fcurve        c;
   Point_fcurve  p;

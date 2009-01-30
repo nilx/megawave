@@ -24,8 +24,7 @@
 
 /* compute the scaling function */
 
-static void phi(x,out)
-double x,*out;
+static void phi(double x, double *out)
 {
   if (fabs(x)>EPS) *out=3./8.*pow(((sin(M_PI*x/4.))/( M_PI*x/4.)),4.);
   else *out=3./8.; 
@@ -34,10 +33,10 @@ double x,*out;
 
 /* compute the fft of phi (scaling function)*/
 
-static void phichapo(N,p,outr,outi) 
-     int N;
-     int p;
-     Fsignal outr,outi;
+static void phichapo(int N, int p, Fsignal outr, Fsignal outi) 
+           
+           
+                       
      /* p est l'inverse du pas d'échantillonnage de phi, p divise N,
 	outr est la partie réelle de la TF de phi, outi sa partie imaginaire*/
 {
@@ -76,9 +75,9 @@ static void phichapo(N,p,outr,outi)
 
 /* compute the low-pass filter in Fourier domain */
 
-static void hchapo(N,out)
-     int N; /*nombre de valeurs échantillonnées, N est une puissance de 2*/
-     Fsignal out;/*TF du filtre h*/
+static void hchapo(int N, Fsignal out)
+            /*nombre de valeurs échantillonnées, N est une puissance de 2*/
+                 /*TF du filtre h*/
 {
   Fsignal phichap1,phichap2,im1,im2;
   int i;
@@ -124,9 +123,7 @@ static void hchapo(N,out)
 
 
 /* compute the high-pass filter gchapo=1-hchapo*/
-static void gchapo(N,out)
-     int N;
-     Fsignal out;
+static void gchapo(int N, Fsignal out)
 {
   Fsignal h;
   int i;
@@ -146,8 +143,7 @@ static void gchapo(N,out)
 
 /* compute the details of the signal*/
 
-static void detail(in,out)
-     Fsignal in,out;
+static void detail(Fsignal in, Fsignal out)
 {
  Fsignal g;
  int i,N;
@@ -168,8 +164,7 @@ static void detail(in,out)
 
 
 /* compute the approximation of the signal*/
-static void approx(in,out)
-     Fsignal in,out;
+static void approx(Fsignal in, Fsignal out)
 {
   Fsignal h;
   int i,N;
@@ -192,9 +187,9 @@ static void approx(in,out)
 
 /* decomposition in wavelets of a signal (using the algorithm of Starck) */
 
-void stkwave1(np,in,out)
-     Fsignal in,out;
-     int np;
+void stkwave1(int np, Fsignal in, Fsignal out)
+                    
+            
      /*si np=1,on obtient un vecteur de taille 2N, avec dans la première partie les détails, dans la seconde, l'approximation, l'un et l'autre non décimés*/
 
 {

@@ -48,9 +48,7 @@ struct NormDataSIconcat {
 
 /* compute index following i and last index of the curve (depending on the 
    direction 1 or 0) */
-static int get_next_index(i, iLast, type)
-     int i, iLast;
-     unsigned char type;
+static int get_next_index(int i, int iLast, unsigned char type)
 {
   int i_next;
 
@@ -77,8 +75,7 @@ static int get_next_index(i, iLast, type)
 
 /* compute angle between u0 and v0 */
 
-static float angle(u0x,u0y,v0x,v0y)
-     float u0x,u0y,v0x,v0y; 
+static float angle(float u0x, float u0y, float v0x, float v0y)
 {
   float c,s;
 
@@ -91,11 +88,7 @@ static float angle(u0x,u0y,v0x,v0y)
 /* compute index following i2 that makes an angle ang with (i1,i2) and 
    that is smaller than imax */
 
-static int get_next_point_angle(fcrv, i1, i2, i_max, angle_max, type)
-     Flist fcrv;
-     int i1,i2,i_max;
-     float angle_max;
-     unsigned char type;
+static int get_next_point_angle(Flist fcrv, int i1, int i2, int i_max, float angle_max, unsigned char type)
 {
   int i, i_next;
   float x1, y1, x2, y2, vx0, vy0, vx, vy, alpha;
@@ -133,10 +126,7 @@ static int get_next_point_angle(fcrv, i1, i2, i_max, angle_max, type)
 
 /* find intersection points between (i1,i2) and the tangent to i */
 
-static void find_intersection_point(curve,i1,i2,i,xR,yR)
-     Flist curve;
-     int i1,i2,i;
-     float *xR, *yR;
+static void find_intersection_point(Flist curve, int i1, int i2, int i, float *xR, float *yR)
 {
   float ux, uy, vx, vy, lambda, x, y;
 
@@ -154,8 +144,7 @@ static void find_intersection_point(curve,i1,i2,i,xR,yR)
 
 /* test the position of a point w.r.t. a line */ 
 
-static int halfplane(x1, y1, x2, y2, x, y)
-     float x1,y1,x2,y2,x,y;
+static int halfplane(float x1, float y1, float x2, float y2, float x, float y)
 {
   float u, v;
 
@@ -169,12 +158,7 @@ static int halfplane(x1, y1, x2, y2, x, y)
 /* compute the central point C on the curve (coords xc,yc between points 
    of indices ileft and iright */
 
-static void find_central_point(curve,xR1,yR1,xR2,yR2,iFirst,iLast,xC,yC,ileft,iright)
-     Flist curve;
-     float xR1,yR1,xR2,yR2;
-     int iFirst, iLast;
-     float *xC, *yC;
-     int *ileft, *iright;
+static void find_central_point(Flist curve, float xR1, float yR1, float xR2, float yR2, int iFirst, int iLast, float *xC, float *yC, int *ileft, int *iright)
 {
   int i_last, i_next, i;
   float x1,x2,y1,y2,xL,yL,xR,yR;
@@ -218,12 +202,7 @@ static void find_central_point(curve,xR1,yR1,xR2,yR2,iFirst,iLast,xC,yC,ileft,ir
 
 /* compute next point with distance d */ 
 
-static int get_next_point_length(fcrv, xI0, yI0, iFirst, iLast, d, type)
-     Flist fcrv;
-     float *xI0, *yI0;
-     int iFirst, iLast;
-     float d;
-     unsigned char type;
+static int get_next_point_length(Flist fcrv, float *xI0, float *yI0, int iFirst, int iLast, float d, unsigned char type)
 {
   int i, i_last;
   float x, y, xP, yP, s, t;
@@ -260,11 +239,7 @@ static int get_next_point_length(fcrv, xI0, yI0, iFirst, iLast, d, type)
 
 /* add the normalized coords of (x,y) in arc_code_SI at index m */
 
-static void add_codeSI(arc_code_SI,x,y,m,x0,y0,vux,vuy,L0)
-     Flist arc_code_SI;
-     float x,y;
-     int m;
-     float x0,y0,vux,vuy,L0;
+static void add_codeSI(Flist arc_code_SI, float x, float y, int m, float x0, float y0, float vux, float vuy, float L0)
 {
   float xx, yy;
 
@@ -277,12 +252,7 @@ static void add_codeSI(arc_code_SI,x,y,m,x0,y0,vux,vuy,L0)
 
 /* compute the NNorm normalized points */
 
-static int get_code_SI(arc_code_SI,curve,xC,yC,i_left,i_right,xR1,yR1,xR2,yR2)
-     Flist arc_code_SI;
-     Flist curve;
-     float xC, yC;
-     int i_left, i_right;
-float xR1,yR1,xR2,yR2;
+static int get_code_SI(Flist arc_code_SI, Flist curve, float xC, float yC, int i_left, int i_right, float xR1, float yR1, float xR2, float yR2)
 {
   float x,y,xN,yN,xP,yP;
   int iN, iP, m; 
@@ -346,9 +316,7 @@ float xR1,yR1,xR2,yR2;
 /* compute the normalized descriptor of piece of curve in the coords 
    defined by points of indices i1 and i2 */
 
-static int codeSI(arc_code_SI,curve,i1,i2)
-     Flist arc_code_SI, curve;
-     int i1, i2;
+static int codeSI(Flist arc_code_SI, Flist curve, int i1, int i2)
 {
   int iN, iP, ileft, iright;
   float xC, yC, xR1, yR1, xR2, yR2; 
@@ -368,15 +336,7 @@ static int codeSI(arc_code_SI,curve,i1,i2)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Flists km_codecurve_si(curve,curve_IP,curve_FP,curve_BP,dict,NC,NN,FN)
-     Flist curve;
-     Flist curve_IP;
-     Flist curve_FP;
-     Flist curve_BP;
-     Flists dict;
-     int NC;
-     int NN;
-     float FN; 
+Flists km_codecurve_si(Flist curve, Flist curve_IP, Flist curve_FP, Flist curve_BP, Flists dict, int NC, int NN, float FN)
 { 
   Flist arc_code_SI;
   int i1,i2,k;

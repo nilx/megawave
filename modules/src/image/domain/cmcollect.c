@@ -23,10 +23,7 @@
 #include <math.h>
 #include "mw.h"
 
-Cimage cmcollect(in,out,n,i,o,c,x,y)
-     Cmovie in;
-     Cimage out;
-     int *n,*i,*o,*c,*x,*y;
+Cimage cmcollect(Cmovie in, Cimage out, int *n, int *i, int *o, int *c, int *x, int *y)
 {
   Cimage u;
   int nx,ny,nl,nr,ox,oy,ix,iy,tx,ty,dx,dy,il,k;

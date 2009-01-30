@@ -37,8 +37,7 @@ static int ascending_order=1;
    ------------------------------------------------------------------ */
 
 
-static int cmpcolor(c1,c2)
-Color *c1,*c2;
+static int cmpcolor(Color *c1, Color *c2)
 {
   if (c1->model != c2->model)
     mwerror(INTERNAL,1,"[cmpcolor] Two different color models %d and %d !\n",
@@ -67,10 +66,7 @@ Color *c1,*c2;
    Get and sort all the colors of a cfimage (like fvalues)
    ------------------------------------------------------- */
 
-static Cfsignal cfvalues(image)
-
-Cfimage image;
-
+static Cfsignal cfvalues(Cfimage image)
 {
 
   unsigned long i,j,smax;
@@ -122,10 +118,7 @@ Cfimage image;
    Check if mimage is OK
    --------------------- */
 
-static void llcheck(mimage)
-
-Cmimage mimage;
-
+static void llcheck(Cmimage mimage)
 {  Point_curve point;
    Cmorpho_line ll;
    int NC,NL;
@@ -160,12 +153,7 @@ Cmimage mimage;
    Return 1 if the color value im(c,l) is in [minvalue, maxvalue], 0 elsewhere
    --------------------------------------------------------------------------- */
 
-static int Inside(im,minvalue,maxvalue,l,c)
-
-Cfimage im;
-Color minvalue,maxvalue;
-int l,c;
-
+static int Inside(Cfimage im, Color minvalue, Color maxvalue, int l, int c)
 {
   unsigned long p;
   float r,g,b;
@@ -197,11 +185,7 @@ int l,c;
 
 
 static void
-produce_HV(im,NL,NC,minvalue,maxvalue,H,V)
-Cfimage im;
-Color minvalue,maxvalue;
-unsigned int NL,NC;
-unsigned char **H, **V;
+produce_HV(Cfimage im, unsigned int NL, unsigned int NC, Color minvalue, Color maxvalue, unsigned char **H, unsigned char **V)
 {
   unsigned int l,c;
 
@@ -236,9 +220,7 @@ unsigned char **H, **V;
 }
 
 static unsigned long
-count_X(H,V,NL,NC)
-unsigned char **H,**V;
-unsigned int NL,NC;
+count_X(unsigned char **H, unsigned char **V, unsigned int NL, unsigned int NC)
 {
   unsigned int l,c,sum;
   unsigned long count_points=0L;
@@ -261,10 +243,7 @@ unsigned int NL,NC;
   return(count_points);
 }
 
-static Cmorpho_line produce_lline(minvalue,maxvalue,open)
-
-Color minvalue,maxvalue;
-unsigned char open;
+static Cmorpho_line produce_lline(Color minvalue, Color maxvalue, unsigned char open)
 {
   Cmorpho_line lline=NULL;
 
@@ -278,11 +257,7 @@ unsigned char open;
 
 
 static void
-follow_open_line(NL,NC,H,V,ll,cc,sum,lline)
-unsigned int NL,NC;
-unsigned char **H,**V;
-int ll,cc,sum;
-Cmorpho_line lline;
+follow_open_line(unsigned int NL, unsigned int NC, unsigned char **H, unsigned char **V, int ll, int cc, int sum, Cmorpho_line lline)
 {
   Point_curve p0,p1;
 
@@ -328,16 +303,7 @@ Cmorpho_line lline;
   p1->x=(cc<0)? 0:((cc==NC-1)? NC:cc+1);
 }
 
-static void get_open_lines(im,NL,NC,minvalue,maxvalue,H,V,lline,L,Nll,Nllrm)
-
-Cfimage im;
-Color minvalue,maxvalue;
-unsigned int NL,NC;
-unsigned char **H,**V;
-Cmorpho_line *lline;
-int L;
-int *Nll,*Nllrm;
-
+static void get_open_lines(Cfimage im, unsigned int NL, unsigned int NC, Color minvalue, Color maxvalue, unsigned char **H, unsigned char **V, Cmorpho_line *lline, int L, int *Nll, int *Nllrm)
 {
   Cmorpho_line oldll,newll=NULL;
   Point_curve p;
@@ -469,10 +435,7 @@ int *Nll,*Nllrm;
 }
 
 static void
-follow_closed_line(H,V,ll,cc,sum,lline)
-unsigned char **H,**V;
-int ll,cc,sum;
-Cmorpho_line lline;
+follow_closed_line(unsigned char **H, unsigned char **V, int ll, int cc, int sum, Cmorpho_line lline)
 {
   Point_curve p0,p1;
 
@@ -506,16 +469,7 @@ Cmorpho_line lline;
   } /* end while */
 }
 
-static void get_closed_lines(im,NL,NC,minvalue,maxvalue,H,V,lline,L,Nll,Nllrm)
-
-Cfimage im;
-Color minvalue,maxvalue;
-unsigned int NL,NC;
-unsigned char **H,**V;
-Cmorpho_line *lline;
-int L;
-int *Nll,*Nllrm;
-
+static void get_closed_lines(Cfimage im, unsigned int NL, unsigned int NC, Color minvalue, Color maxvalue, unsigned char **H, unsigned char **V, Cmorpho_line *lline, int L, int *Nll, int *Nllrm)
 {
   Cmorpho_line oldll,newll=NULL;
   Point_curve p;
@@ -571,12 +525,7 @@ int *Nll,*Nllrm;
 /*                                                       where i=0,1,...      */
 /******************************************************************************/
 
-static void cml_extract(levels,opt,L,image_org,m_image)
-Cfsignal levels;
-int *opt;
-int L;
-Cfimage image_org;
-Cmimage m_image;
+static void cml_extract(Cfsignal levels, int *opt, int L, Cfimage image_org, Cmimage m_image)
 {
   Cmorpho_line current_lline=NULL;
   unsigned long nb_points;
@@ -681,11 +630,7 @@ Cmimage m_image;
    Main module function
    -------------------- */
 
-Cmimage cml_decompose(cmimage_in,ml_opt,L,image_in)
-Cmimage cmimage_in;
-int* ml_opt;
-int *L;
-Cfimage image_in;
+Cmimage cml_decompose(Cmimage cmimage_in, int *ml_opt, int *L, Cfimage image_in)
 {
   Cmimage cmimage=NULL;
   Cfsignal levels;

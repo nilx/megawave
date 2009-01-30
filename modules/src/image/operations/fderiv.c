@@ -45,10 +45,7 @@ in->in
 #define RADIANS_TO_DEGREES (180.0/M_PI)
 
 
-void fderiv(in,curv,anti,canny,laplacian,gradx,grady,gradn,gradp,MinGrad,nsize)
-     Fimage in,curv,anti,canny,laplacian,gradx,grady,gradn,gradp;
-     float *MinGrad;
-     int *nsize;
+void fderiv(Fimage in, Fimage curv, Fimage anti, Fimage canny, Fimage laplacian, Fimage gradx, Fimage grady, Fimage gradn, Fimage gradp, float *MinGrad, int *nsize)
 {
   int y,nx,ny;
   register int x,xm,x1,Ym,Y0,Y1;

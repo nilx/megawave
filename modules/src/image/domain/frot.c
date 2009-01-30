@@ -20,10 +20,7 @@
 #include <math.h>
 #include "mw.h"
 
-static void bound(x,y,ca,sa,xmin,xmax,ymin,ymax)
-     int x,y;
-     float ca,sa;
-     int *xmin,*xmax,*ymin,*ymax;
+static void bound(int x, int y, float ca, float sa, int *xmin, int *xmax, int *ymin, int *ymax)
 {   
     int rx,ry;
 
@@ -36,10 +33,7 @@ static void bound(x,y,ca,sa,xmin,xmax,ymin,ymax)
 
 /* NB : calling this module with out=in is nonsense */
 
-void frot(in,out,a,b,k_flag)
-     Fimage in,out;
-     float  *a,*b;
-     char *k_flag;
+void frot(Fimage in, Fimage out, float *a, float *b, char *k_flag)
 {
     int    nx,ny,x,y,x1,y1,adr;
     float  ca,sa,xp,yp,a11,a12,a21,a22,ux,uy,xtrans,ytrans;

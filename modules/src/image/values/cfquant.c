@@ -22,10 +22,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fquant() */
 
-void cfquant(A,Q,Mr,Mg,Mb,left)
-     Cfimage A,Q;
-     int Mr,Mg,Mb;
-     char *left;
+void cfquant(Cfimage A, Cfimage Q, int Mr, int Mg, int Mb, char *left)
 {
   Fimage channel=NULL,Qr,Qg,Qb;
   float *ptrA,*ptr;

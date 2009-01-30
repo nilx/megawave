@@ -26,9 +26,7 @@
 #include "mw-modules.h" /* for fft2d() */
 
 /*** build a Gaussian kernel with std g in Fourier domain ***/
-static void gausskernel(kernel,g)
-     Fimage kernel;
-     float g;
+static void gausskernel(Fimage kernel, float g)
 {
   int nx,ny,x,y,adr;
   double cx,cy;
@@ -45,9 +43,7 @@ static void gausskernel(kernel,g)
 }
 
 /*** build a radial kernel in Fourier domain ***/
-static void radialkernel(kernel,rad)
-     Fimage kernel;
-     Fsignal rad;
+static void radialkernel(Fimage kernel, Fsignal rad)
 {
   int nx,ny,x,y,adr,dist;
   double cx,cy;
@@ -68,10 +64,7 @@ static void radialkernel(kernel,rad)
 
 /****************************** MAIN MODULE ******************************/
 
-Fimage wiener(in,out,kernel,rad,g,lambda)
-     Fimage in,kernel,out;
-     Fsignal rad;
-     float *lambda,*g;
+Fimage wiener(Fimage in, Fimage out, Fimage kernel, Fsignal rad, float *g, float *lambda)
 {
   Fimage re,im;
   int x,y,nx,ny,adr,kernel_delete,deblur;

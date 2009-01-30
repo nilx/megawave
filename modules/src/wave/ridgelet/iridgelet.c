@@ -25,11 +25,7 @@
 #include "mw-modules.h" /* for stkwave1(), ridgrecpol(),
 			 * fline_extract(), fft2d() */
 
-void iridgelet(in_re,in_im,np,out_re,out_im)
-     int np;
-     Fimage in_re,in_im;
-     Fimage out_re,out_im;
-
+void iridgelet(Fimage in_re, Fimage in_im, int np, Fimage out_re, Fimage out_im)
 {
   long N,i,j;
   Fimage pol_re=NULL,pol_im=NULL,out1_re=NULL,out1_im=NULL;

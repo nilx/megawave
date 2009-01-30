@@ -129,8 +129,7 @@ char *font[98]={
 ":7422>08000000000000008000000012204800000000000000800000000<2030"};
 
 
-static int getdotfont(v,x,y)
-     int v,x,y;
+static int getdotfont(int v, int x, int y)
 {
   int adr,bit;
 
@@ -142,12 +141,7 @@ static int getdotfont(v,x,y)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Ccimage ccputstring(in,x,y,c,C,r,str)
-     Ccimage in;
-     int x,y;
-     int *c,*C;
-     float *r;
-     char *str;
+Ccimage ccputstring(Ccimage in, int x, int y, int *c, int *C, float *r, char *str)
 {
   int nx,ny,cx,cy,dx,dy,adr,i,v,adr2;
   Curve thedisc;

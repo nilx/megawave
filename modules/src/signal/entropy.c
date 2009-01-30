@@ -14,10 +14,10 @@ usage = {
 #include  "mw.h"
 
 
-void entropy(Histo, Entropy)
+void entropy(Fsignal Histo, double *Entropy)
      
-     Fsignal     Histo;		/* Input histogram */
-     double     *Entropy;	/* Output, entropy of Histo */
+                       		/* Input histogram */
+                         	/* Output, entropy of Histo */
 {
   int i;
   double sum;				/* Sum of histogram values */

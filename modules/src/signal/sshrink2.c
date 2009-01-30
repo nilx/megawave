@@ -19,8 +19,7 @@
 
 /* NB : calling this module with out=in is nonsense */
 
-Fsignal sshrink2(in,out)
-     Fsignal in,out;
+Fsignal sshrink2(Fsignal in, Fsignal out)
 {
   int n,nn,tmp,i,iofs;
   

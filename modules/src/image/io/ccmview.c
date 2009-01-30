@@ -41,8 +41,7 @@ unsigned char InfoPrint; /* Toggle to print info on the current image */
 int CurrentFrameNumber;  /* Current number of the frame */
 int FrameNumber;         /* Total number of frames */
 
-static void ccmview_notify_help()
-
+static void ccmview_notify_help(void)
 {
   printf("\n\t\tHelp on line\n");
 
@@ -64,10 +63,10 @@ static void ccmview_notify_help()
 /*     > 0 if there was an event catched (but Destroy) */
 /*      -1 if the event Destroy was catched (or 'Q')   */
 
-static int ccmview_notify(ImageWindow,param)
+static int ccmview_notify(Wframe *ImageWindow, void *param)
 
-Wframe *ImageWindow;
-void *param;          /* Users's parameters: don't forget the cast ! */
+                    
+                      /* Users's parameters: don't forget the cast ! */
 
 {
   ccmview_Param data;
@@ -179,13 +178,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 }
 
 
-void ccmview(input,x0,y0,zoom,order,loop,pause,window)
-
-Ccmovie input;
-int *x0,*y0,*loop,*pause,*order;
-float *zoom;
-char *window;
-
+void ccmview(Ccmovie input, int *x0, int *y0, float *zoom, int *order, int *loop, int *pause, char *window)
 {
   Ccimage image,fst_image,lst_image;
   Wframe *ImageWindow;

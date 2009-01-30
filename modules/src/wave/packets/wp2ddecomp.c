@@ -33,14 +33,14 @@ usage = {
 /* the result is in pack->images[img11] , pack->images[img12], */
 /* pack->images[img21], pack->images[img22]                       */
 
-static void ondel(pack,img11,img12,img21,img22,futur_level)
+static void ondel(Wpack2d pack, int img11, int img12, int img21, int img22, int futur_level)
 
-     Wpack2d pack; /* the initial image corresponds to the index  img11*/
-     int img11;  /* index of the low in x -low in y image */
-     int img12;  /* index of the low in x -high in y image */
-     int img21;  /* index of the high in x -low in y image */
-     int img22;  /* index of the high in x -high in y image */
-     int futur_level;
+                   /* the initial image corresponds to the index  img11*/
+                 /* index of the low in x -low in y image */
+                 /* index of the low in x -high in y image */
+                 /* index of the high in x -low in y image */
+                 /* index of the high in x -high in y image */
+                     
      
 { int x,y;
  int dx,dy;
@@ -171,13 +171,7 @@ static void ondel(pack,img11,img12,img21,img22,futur_level)
 /*-------------------------------------------------------------*/
 
 
-void wp2ddecomp(A,Ri,Ri_biortho,pack,tree)
-     
-Fimage A;
-Cimage tree;
-Fsignal Ri,Ri_biortho;
-Wpack2d pack;
-     
+void wp2ddecomp(Fimage A, Fsignal Ri, Fsignal Ri_biortho, Wpack2d pack, Cimage tree)
 { 
   /* variable definition */
   

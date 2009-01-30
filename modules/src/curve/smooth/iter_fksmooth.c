@@ -24,12 +24,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fksmooth() */
 
-Flists iter_fksmooth(in,out,niter,n,std,t,P)
-     Flist   in;
-     Flists  out;
-     int *niter,*n;
-     float *std,*t;
-     char *P;
+Flists iter_fksmooth(Flist in, Flists out, int *niter, int *n, float *std, float *t, char *P)
 {
   int i;
 

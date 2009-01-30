@@ -39,11 +39,7 @@ struct NormDataSIconcat {
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void km_createdict_si(FNorm,NNorm,list_curves,dict)
-     float *FNorm;
-     int *NNorm;
-     Flists list_curves;
-     Flists dict; 
+void km_createdict_si(float *FNorm, int *NNorm, Flists list_curves, Flists dict)
 { 
   Flist curveIP, curveFP, curveBP;
   Flists dictaux;

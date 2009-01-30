@@ -17,9 +17,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-static void remove_ll(mimage,ll)
-     Mimage mimage;
-     Morpho_line ll;
+static void remove_ll(Mimage mimage, Morpho_line ll)
 {
   Morpho_line ll0,ll1;
 
@@ -37,9 +35,7 @@ static void remove_ll(mimage,ll)
   */
 }
 
-Mimage ll_remove(mimage,L)
-     Mimage mimage;
-     int *L;
+Mimage ll_remove(Mimage mimage, int *L)
 {
   Morpho_line ll,ll_next;
   unsigned long N,Nrm;

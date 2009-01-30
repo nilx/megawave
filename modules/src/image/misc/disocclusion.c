@@ -41,8 +41,8 @@
  (before updating) */
 #define LABELS_NUMBER 100000
 
-static int u_compar_i(u,v)  /*  Called by function qsort for sorting decreasingly */
-int *u,*v;
+static int u_compar_i(int *u, int *v)  /*  Called by function qsort for sorting decreasingly */
+          
   {
     if ((*u)<(*v)) return (1);
     if ((*u)==(*v)) return (0);
@@ -68,12 +68,8 @@ of each nonzero pixel by the smallest label to which it is associated.
 */
 /****************************************************************************/
 
-static void mise_a_jour_transcode(transcode,a,b)
-
-int transcode[LABELS_NUMBER];
-int a,b;
-
-  {
+static void mise_a_jour_transcode(int *transcode, int a, int b)
+{
     if (!b) return;
     if (transcode[a]==0)
       transcode[a]=b;
@@ -99,13 +95,8 @@ itself associated with a third label l3, etc... The following function simply
 performs a recursive association of each label l1,l2,l3 with the smallest possible
 label in the chain. */
 
-static void refresh(transcode,refresh_transcode,i,first)
-
-int transcode[LABELS_NUMBER],refresh_transcode[LABELS_NUMBER];
-int i;
-int *first;  
-    
-  {
+static void refresh(int *transcode, int *refresh_transcode, int i, int *first)
+{
     if (transcode[i])
       {
 	refresh(transcode,refresh_transcode,transcode[i],first);
@@ -117,14 +108,8 @@ int *first;
 
 /****************************************************************************/
 
-static void fconnected(In,line,col,FOREGROUND,NUMBER,not_writing_on,complement,connectivity)
-float *In;
-int line,col;
-float FOREGROUND;
-int *NUMBER;
-char *not_writing_on,*complement,*connectivity;
-
-  {
+static void fconnected(float *In, int line, int col, float FOREGROUND, int *NUMBER, char *not_writing_on, char *complement, char *connectivity)
+{
     int Line=line+2,Col=col+2;
     int *Output;
     register float *ptrin;
@@ -266,8 +251,7 @@ typedef struct a_jordan {  /* structure used to describe the T-junctions */
 
 	
 /*  Called by function qsort for sorting unsigned char values by increasing values */
-static int compar_uc(u,v)  
-unsigned char *u,*v;
+static int compar_uc(unsigned char *u, unsigned char *v)
 {
   if ((*u)>(*v)) return (1);
   if ((*u)==(*v)) return (0);
@@ -287,8 +271,8 @@ char *anglep;
 int energy_criterion;
 int globx,globy;
 
-static double CCost();
-static void ComputeOptimalSet();
+static double CCost(jordan *jc1, jordan *jc2);
+static void ComputeOptimalSet(jordan *jc);
 
 unsigned char *IImage,*OImage; /* Pointers to Input and Output images */
 float *LImage; /* Pointer to Label image (image containing the only occlusions) */
@@ -382,9 +366,8 @@ Ppoint_t *ops;
 /****************************************************************************/
 
 /* ccw test: counterclockwise, clockwise or collinear */
-static int ccw (p1p,p2p,p3p)
-Ppoint_t *p1p,*p2p,*p3p;
-  {
+static int ccw (Ppoint_t *p1p, Ppoint_t *p2p, Ppoint_t *p3p)
+{
     double d;
 
     d = ((p1p->y - p2p->y) * (p3p->x - p2p->x)) -
@@ -395,9 +378,8 @@ Ppoint_t *p1p,*p2p,*p3p;
 /****************************************************************************/
 
 /* is pbp between pap and pcp */
-static int between (pap,pbp,pcp)
-Ppoint_t *pap,*pbp,*pcp;
-  {
+static int between (Ppoint_t *pap, Ppoint_t *pbp, Ppoint_t *pcp)
+{
     Ppoint_t p1, p2;
 
     p1.x = pbp->x - pap->x, p1.y = pbp->y - pap->y;
@@ -411,9 +393,8 @@ Ppoint_t *pap,*pbp,*pcp;
 /****************************************************************************/
 
 /* line to line intersection */
-static int intersects (pap,pbp,pcp,pdp)
-Ppoint_t *pap,*pbp,*pcp,*pdp;
-  {
+static int intersects (Ppoint_t *pap, Ppoint_t *pbp, Ppoint_t *pcp, Ppoint_t *pdp)
+{
     int ccw1, ccw2, ccw3, ccw4;
 
     if (ccw (pap, pbp, pcp) == ISON || ccw (pap, pbp, pdp) == ISON ||
@@ -434,9 +415,8 @@ Ppoint_t *pap,*pbp,*pcp,*pdp;
 /****************************************************************************/
 
 /* check if (i, i + 2) is a diagonal */
-static int isdiagonal (pnli,pnlip2,pnln)
-int pnli,pnlip2,pnln;
-  {
+static int isdiagonal (int pnli, int pnlip2, int pnln)
+{
     int pnlip1, pnlim1, pnlj, pnljp1, res;
 
     /* neighborhood test */
@@ -469,9 +449,8 @@ int pnli,pnlip2,pnln;
 
 /****************************************************************************/
 
-static void growtris (newtrin)
-int newtrin;
-  {
+static void growtris (int newtrin)
+{
     if (newtrin <= trin) return;
     if (!tris) {
         if (!(tris = (triangle_t *) malloc (TRIANGLESIZE * newtrin))) {
@@ -490,9 +469,8 @@ int newtrin;
 
 /****************************************************************************/
 
-static void loadtriangle (pnlap,pnlbp,pnlcp)
-pointnlink_t *pnlap,*pnlbp,*pnlcp;
-  {
+static void loadtriangle (pointnlink_t *pnlap, pointnlink_t *pnlbp, pointnlink_t *pnlcp)
+{
     triangle_t *trip;
     int ei;
 
@@ -510,9 +488,8 @@ pointnlink_t *pnlap,*pnlbp,*pnlcp;
 /****************************************************************************/
 
 /* triangulate polygon */
-static void triangulate (pnln)
-int pnln; 
-  {
+static void triangulate (int pnln)
+{
     int pnli, pnlip1, pnlip2;
 
     if (pnln > 3) {
@@ -536,9 +513,8 @@ int pnln;
 /****************************************************************************/
 
 /* connect a pair of triangles at their common edge (if any) */
-static void connecttris (tri1,tri2)
-int tri1,tri2;
-  {
+static void connecttris (int tri1, int tri2)
+{
     triangle_t *tri1p, *tri2p;
     int ei, ej;
 
@@ -557,9 +533,8 @@ int tri1,tri2;
 /****************************************************************************/
 
 /* find and mark path from trii, to trij */
-static int marktripath (trii,trij)
-int trii,trij;
-  {
+static int marktripath (int trii, int trij)
+{
     int ei;
 
     if (tris[trii].mark)
@@ -578,10 +553,8 @@ int trii,trij;
 /****************************************************************************/
 
 /* add a new point to the deque, either front or back */
-static void add2dq (side,pnlp)
-int side;
-pointnlink_t *pnlp;
-  {
+static void add2dq (int side, pointnlink_t *pnlp)
+{
     if (side == DQ_FRONT) {
         if (dq.lpnlpi - dq.fpnlpi >= 0)
             pnlp->link = dq.pnlps[dq.fpnlpi]; /* shortest path links */
@@ -597,9 +570,8 @@ pointnlink_t *pnlp;
 
 /****************************************************************************/
 
-static void splitdq (side,index)
-int side,index;
- {
+static void splitdq (int side, int index)
+{
     if (side == DQ_FRONT)
         dq.lpnlpi = index;
     else
@@ -608,9 +580,8 @@ int side,index;
 
 /****************************************************************************/
 
-static int finddqsplit (pnlp)
-pointnlink_t *pnlp;
-  {
+static int finddqsplit (pointnlink_t *pnlp)
+{
     int index;
 
     for (index = dq.fpnlpi; index < dq.apex; index++)
@@ -624,10 +595,8 @@ pointnlink_t *pnlp;
 
 /****************************************************************************/
 
-static int pointintri (trii,pp)
-int trii;
-Ppoint_t *pp;
-  {
+static int pointintri (int trii, Ppoint_t *pp)
+{
     int ei, sum;
 
     for (ei = 0, sum = 0; ei < 3; ei++)
@@ -639,9 +608,8 @@ Ppoint_t *pp;
 
 /****************************************************************************/
 
-static void growpnls (newpnln)
-int newpnln;
-  {
+static void growpnls (int newpnln)
+{
     if (!pnls) {
       if (!(pnls = (pointnlink_t *) malloc (POINTNLINKSIZE * newpnln))) {
 	prerror ("cannot malloc pnls");
@@ -653,9 +621,8 @@ int newpnln;
 
 /****************************************************************************/
 
-static void growdq (newdqn)
-int newdqn;
-  {
+static void growdq (int newdqn)
+{
     if (newdqn <= dq.pnlpn) return;
     if (!dq.pnlps) {
       dq.pnlps = (pointnlink_t **)malloc(POINTNLINKPSIZE * newdqn);
@@ -672,9 +639,8 @@ int newdqn;
 
 /****************************************************************************/
 
-static void growops (newopn)
-int newopn;
-  {
+static void growops (int newopn)
+{
     ops=NULL;
     if (!(ops = (Ppoint_t *) malloc (POINTSIZE * newopn))) {
       prerror ("cannot malloc ops");
@@ -683,10 +649,8 @@ int newopn;
 
 /****************************************************************************/
 
-static void Triangulation(polyp)
-Ppoly_t *polyp;
-
-  {
+static void Triangulation(Ppoly_t *polyp)
+{
     int pi, minpi;
     double minx;
     Ppoint_t p1, p2, p3;
@@ -757,10 +721,8 @@ Ppoly_t *polyp;
    meandir1 is the geodesic curve mean direction at eps1
    meandir2 is the geodesic curve mean direction at eps2 */
 
-static double GeodesicDistance(jc1,jc2,TVangle)
-jordan *jc1,*jc2;
-double *TVangle;
-  {
+static double GeodesicDistance(jordan *jc1, jordan *jc2, double *TVangle)
+{
     
     Ppoint_t eps1,eps2;
     int trii, ftrii, ltrii;
@@ -891,10 +853,8 @@ double *TVangle;
 
 /****************************************************************************/
 
-static int Pshortestpath (eps1,eps2,output)
-Ppoint_t eps1,eps2;
-Ppolyline_t *output;
-  {
+static int Pshortestpath (Ppoint_t eps1, Ppoint_t eps2, Ppolyline_t *output)
+{
     int pi;
     int trii, ftrii, ltrii;
     int ei;
@@ -1017,8 +977,8 @@ Ppolyline_t *output;
 }
 /****************************************************************************/
 
-static void FreeTPath()
-  {
+static void FreeTPath(void)
+{
     if (tris) {free((void*)tris);tris=NULL;}
     if (pnls) {free((void*)pnls);pnls=NULL;}
     if (pnlps) {free((void*)pnlps);pnlps=NULL;}
@@ -1036,10 +996,8 @@ Ppoint_t *endTjunctions; /* All the geodesics endpoints */
 
 /* Adds a new element to the list of vertices of occlusion boundary */
 
-static void add_to_frontier(x,y)
-double x,y;
-
-  {
+static void add_to_frontier(double x, double y)
+{
     frontier *inter;
   
     inter=jb;
@@ -1058,14 +1016,8 @@ double x,y;
    Note that level line direction is at this level of algorithm either equal to 
    0, 2, 4 or 6 (see convention above) */
 
-static jordan *add_to_jordan(nouv,x,y,direction,gray1,gray2,dofrontier)
-jordan *nouv;
-double x,y;
-char direction;
-unsigned char gray1,gray2;
-char dofrontier;
-
-  {
+static jordan *add_to_jordan(jordan *nouv, double x, double y, char direction, unsigned char gray1, unsigned char gray2, char dofrontier)
+{
     jordan *inter;
   
     if (gray1!=gray2){
@@ -1096,11 +1048,8 @@ char dofrontier;
 
 /* Inserts a new element in the chain defining the structuring element*/
 
-static jordan *insert_jordan(jc,gray1,gray2)
-jordan *jc;
-unsigned char gray1,gray2;
-
-  {
+static jordan *insert_jordan(jordan *jc, unsigned char gray1, unsigned char gray2)
+{
     jordan *new;  /* new is inserted between jc and jc->next */
   
     new=(jordan*)malloc((size_t)sizeof(jordan));
@@ -1121,10 +1070,8 @@ unsigned char gray1,gray2;
 /*  Frees the chain defining the T-junctions */
 /*  Be careful that this function is valid only if jordan curve is "broken" */
 
-static void free_jordan(jc)
-jordan *jc;
-  
-  {
+static void free_jordan(jordan *jc)
+{
     if (jc->next) free_jordan(jc->next);
     free((void*)jc);
     jc=(jordan*)NULL;
@@ -1135,10 +1082,8 @@ jordan *jc;
 /*  Frees the frontier chain  */
 /*  Be careful that this function is valid only if frontier curve is "broken" */
 
-static void free_frontier(jbi)
-frontier *jbi;
-  
-  {
+static void free_frontier(frontier *jbi)
+{
     if (jbi->next) free_frontier(jbi->next);
     free((void*)jbi);
     jbi=(frontier*)NULL;
@@ -1151,9 +1096,8 @@ frontier *jbi;
    in such a way that it contains only those points of bifurcation of 
    the polygonal line enclosing the occlusion */
 
-static void copy_frontier(x)
-int x;
-  {
+static void copy_frontier(int x)
+{
     frontier *jbi;
     int n;
 
@@ -1167,11 +1111,8 @@ int x;
 
 /* Colorization of pixels on both sides of the current geodesic path */
 
-static void geodfill(p1,p2,gray1,gray2,change)
-int p1,p2;
-unsigned char gray1,gray2;
-char change;
-  {
+static void geodfill(int p1, int p2, unsigned char gray1, unsigned char gray2, char change)
+{
     /* LImage == (-1) means that the point has already been modified */
 
     if (LImage[p1]==lvalue) {OImage[p1]=gray1;LImage[p1]=(-1);occlusion[numcolored++].pos=p1;}
@@ -1186,12 +1127,8 @@ char change;
 
 /* Colorization of peculiar pixels in the neighborhood of geodesic path nodes  */
 
-static void pivotfill(p,gray,force)
-int p;
-unsigned char gray;
-char force;
-
-  {
+static void pivotfill(int p, unsigned char gray, char force)
+{
     if (LImage[p]==lvalue) 
       {OImage[p]=gray;LImage[p]=(-1);occlusion[numcolored++].pos=p;return;}
     if (force)
@@ -1202,11 +1139,8 @@ char force;
 
 /* Colorization of peculiar pixels in the neighborhood of geodesic path nodes */
 
-static void fpivotfill(piv,p1,p2,gray1,gray2)
-int piv,p1,p2;
-unsigned char gray1,gray2;
-
-  {
+static void fpivotfill(int piv, int p1, int p2, unsigned char gray1, unsigned char gray2)
+{
     if (p1<4) fpivots[piv+p1]=(int)gray1;
     if (p2<4) fpivots[piv+p2]=(int)gray2;
   }
@@ -1222,10 +1156,10 @@ unsigned char gray1,gray2;
        xe=Horizontal coordinate of end point
        ye=Vertical coordinate of end point */
 
-static void drawgeod(xf,yf,xe,ye,gray1,gray2,piv)
-int xf,yf,xe,ye;
-unsigned char gray1,gray2;
-int piv; /* Current pivot number */
+static void drawgeod(int xf, int yf, int xe, int ye, unsigned char gray1, unsigned char gray2, int piv)
+                
+                          
+         /* Current pivot number */
   {
     int dx=xe-xf,dy=ye-yf,vect=0,d2x,d2y;
     int i,j,epsilon,oldi,oldj;
@@ -1533,11 +1467,8 @@ int piv; /* Current pivot number */
    is walked counterclockwise, we draw the corresponding paths by forcing the value 
    on the "right" of the path and setting it on the left only if it has not been set yet. */
 
-static void geodesic(jc,x)
-jordan *jc;
-int x;
-
-  {
+static void geodesic(jordan *jc, int x)
+{
     jordan *jci;
     Ppolyline_t *geodPoints;
     int n,pi,npivots,npi,npi1,npi2,npi3,npi4,npi5,pos,npipos;
@@ -1705,10 +1636,8 @@ int x;
 /* Once the geodesic paths have been drawn, it remains to let the values propagate
    within occlusion */
 
-static void propagation(occlusionArea)
-int occlusionArea;
-
-  {
+static void propagation(int occlusionArea)
+{
     int k,l,pos;
     int oldnum=numcolored;
     unsigned char gray;
@@ -1756,12 +1685,8 @@ int occlusionArea;
 /* This procedure is used to "clean" the jordan curve. Zero-length line are removed, 
    as well as lines that have the same endpoints */
 
-static jordan *update_jordan_curve(jc,ExternVal)
-jordan *jc;
-unsigned char *ExternVal;
-
-
-  {
+static jordan *update_jordan_curve(jordan *jc, unsigned char *ExternVal)
+{
     jordan *jlook1,*jlook2,*jnext,*jprev;
     double ox1,oy1,ox2,oy2;
     char go_on;
@@ -1834,13 +1759,8 @@ unsigned char *ExternVal;
 /* In the same time that we construct the chain "jordan" of level lines, we construct the 
    jordan curve made of the vertices of the polygonal lines enclosing the occlusion. */
 
-static jordan *allocation_jordan_curve(instart,jc,previous_direction,next_direction,i,j)
-unsigned char *instart;
-jordan *jc;
-char previous_direction,next_direction;
-int i,j;
-
-  {
+static jordan *allocation_jordan_curve(unsigned char *instart, jordan *jc, char previous_direction, char next_direction, int i, int j)
+{
     unsigned char *ptrin;
     unsigned char gray1,gray2;
 
@@ -1977,12 +1897,12 @@ int i,j;
 /* Here we scan image for computing level lines input and output, construct the
 jordan curve, compute the optimal set of junctions and computes the final result */
 
-static void perform_disocclusion(ptrin,gray_value,ptr_label,value,ptrout)
+static void perform_disocclusion(register unsigned char *ptrin, unsigned char gray_value, register float *ptr_label, float value, register unsigned char *ptrout)
 
-register unsigned char *ptrin,*ptrout;
-unsigned char gray_value; /* value of a pixel connected to the occlusion but out of it */
-register float *ptr_label;
-float value;
+                                      
+                          /* value of a pixel connected to the occlusion but out of it */
+                          
+            
 
   {
     int i,j;
@@ -2411,10 +2331,8 @@ If x>y we must have x-y < 2/CPL. Assume that we want it to be satisfied when y<x
 So we need CPL < 2/9.
 */
 
-static double CCost(jc1,jc2)
-jordan *jc1,*jc2;
-
-  {
+static double CCost(jordan *jc1, jordan *jc2)
+{
     double v1x=jc1->vx,v1y=jc1->vy,v2x=jc2->vx,v2y=jc2->vy; /* input vectors */
     double vx=jc2->x-jc1->x,vy=jc2->y-jc1->y;
     double norm_v;
@@ -2463,10 +2381,8 @@ jordan *jc1,*jc2;
 
 /* After computation of minimal energy, the associated set of junctions is updated */
 
-static void joinback(i,j)
-int i,j;
-
-  {
+static void joinback(int i, int j)
+{
     if (correspond[i][(j-1)/2]==(-1))
       {
 	(element[i])->junction=element[(i+j)%IONumber];
@@ -2484,10 +2400,8 @@ int i,j;
 
 /* Computes minimal energy within the arc defined by segment [i, i+j] */
 
-static double ComputeEnergy(i,j)
-int i,j;
-
-  {
+static double ComputeEnergy(int i, int j)
+{
     jordan *jci,*jcj;
     int *corresp;
     int k;
@@ -2534,9 +2448,8 @@ int i,j;
 
 /* Computes the optimal set of connections */
 
-static void ComputeOptimalSet(jc)
-jordan *jc;
-  {
+static void ComputeOptimalSet(jordan *jc)
+{
     jordan *jci,*jcj;
     int i,j,k;
     double Emin,Eminold,Etool1,Etool2;
@@ -2633,13 +2546,8 @@ IONumber-1---|----------------------
 
 /****************************************************************************/
 
-void disocclusion(Input,Output,Holes,energy_type,angle)
-Cimage Input,Output;
-Fimage Holes;
-char *angle;
-int *energy_type;
-
-  {
+void disocclusion(Cimage Input, Cimage Output, Fimage Holes, int *energy_type, char *angle)
+{
     unsigned char *BInput,*BOutput; /* Correspond to an extension of one pixel in every direction 
 				       of Input->gray and Output->gray */
     register unsigned char *ptrin,*ptrout,*ptrBin,*ptrBout;

@@ -26,11 +26,11 @@ usage = {
 #include  "mw.h"
 
 
-static void NORM_SIG(signal)
+static void NORM_SIG(Fsignal signal)
      
      /*--- Normalize `signal` to 0.0 mean and 1.0 variance ---*/
      
-     Fsignal	signal;
+            	       
      
 {
   long	i;		/* Index of current point in `signal` */
@@ -54,16 +54,16 @@ static void NORM_SIG(signal)
 
 
 
-void smse(Sig1, Sig2, Norm, SNR, PSNR, MSE, MRD)
+void smse(Fsignal Sig1, Fsignal Sig2, int *Norm, double *SNR, double *PSNR, double *MSE, double *MRD)
      
      /*--- Computes the mean square error between Sig1 and Sig2 ---*/
      
-     Fsignal	Sig1, Sig2;	/* Input signals */
-     int        *Norm;          /* Normalisation to 0 mean and 1.0 variance */
-     double	*SNR;		/* Signal to noise ratio / `Sig1` */
-     double	*PSNR;		/* Peak signal to noise ratio / `Sig1` */
-     double	*MSE;		/* Mean square error between Sig1 and Sig2 */
-     double	*MRD;		/* Maximal relative difference */	
+            	           	/* Input signals */
+                                /* Normalisation to 0 mean and 1.0 variance */
+           	     		/* Signal to noise ratio / `Sig1` */
+           	      		/* Peak signal to noise ratio / `Sig1` */
+           	     		/* Mean square error between Sig1 and Sig2 */
+           	     		/* Maximal relative difference */	
      
 {
   long	        i;              /* Index of current point in `Sig1`, `Sig2` */

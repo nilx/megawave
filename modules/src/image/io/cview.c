@@ -46,8 +46,7 @@ typedef struct cview_SParam {
 int GLprint;  /* Toggle to print the Gray Level values */
 int oldx1,oldy1,oldevent,zfactor,cscale_shown;
 
-static void cview_notify_help()
-
+static void cview_notify_help(void)
 {
   printf("\n\t\tHelp on line\n");
 
@@ -71,10 +70,10 @@ static void cview_notify_help()
 /*     > 0 if there was an event catched (but Destroy) */
 /*      -1 if the event Destroy was catched (or 'Q')   */
 
-static int cview_notify(ImageWindow,param)
+static int cview_notify(Wframe *ImageWindow, void *param)
 
-Wframe *ImageWindow;
-void *param;          /* Users's parameters: don't forget the cast ! */
+                    
+                      /* Users's parameters: don't forget the cast ! */
 
 {
   int x1,y1,wz,event,button_mask,ret,c;
@@ -297,13 +296,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 }
 
 
-void cview(input,x0,y0,zoom,order,no_refresh,window)
-
-int *x0,*y0,*no_refresh,*order;
-float *zoom;
-Cimage input;
-char *window;
-
+void cview(Cimage input, int *x0, int *y0, float *zoom, int *order, int *no_refresh, char *window)
 {
   Wframe *ImageWindow;
   Cimage image=NULL;

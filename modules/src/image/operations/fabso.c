@@ -14,8 +14,7 @@
 #include <math.h>
 #include  "mw.h"
 
-void fabso(A,O)
-     Fimage	A,O;
+void fabso(Fimage A, Fimage O)
 {
   long l;
   long	dx, dy;		/* Size of image */

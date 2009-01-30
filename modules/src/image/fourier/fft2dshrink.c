@@ -71,8 +71,7 @@ static int primes[SIZE_PRIME] = {2,3,5,7,11,13,17,19,23,29
 /* Compute the complexity per element of the FFT of a signal with size n 
    that is the sum of the "prime factors of n minus 1" */
 
-static int comp(n)
-     int n;
+static int comp(int n)
 {
   int c,i;
 
@@ -88,10 +87,7 @@ static int comp(n)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Fimage fft2dshrink(in,out,p,v)
-     Fimage in,out;
-     float *p;
-     char *v;
+Fimage fft2dshrink(Fimage in, Fimage out, float *p, char *v)
 {
   int nx,ny,x,y,dx,dy,bestx,besty,c,bestc,initc,finalc;
 

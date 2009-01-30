@@ -19,10 +19,7 @@
 #include <math.h>
 #include "mw.h"
 
-Fcurves fkzrt(cs,zoom,angle,x,y,sym)
-     Fcurves cs;
-     float   zoom,angle,x,y;
-     char    *sym;
+Fcurves fkzrt(Fcurves cs, float zoom, float angle, float x, float y, char *sym)
 {
   Fcurve        c;
   Point_fcurve  p;

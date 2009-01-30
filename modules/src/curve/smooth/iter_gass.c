@@ -25,11 +25,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for gass() */
 
-Dlists iter_gass(in,out,scale,niter,e,s,n)
-     Dlist   in;
-     Dlists  out;
-     double  *scale,*e,*s;
-     int     *niter,*n;
+Dlists iter_gass(Dlist in, Dlists out, double *scale, int *niter, double *e, double *s, int *n)
 {
   Dlists aux,res;
   double scale1,scale2;

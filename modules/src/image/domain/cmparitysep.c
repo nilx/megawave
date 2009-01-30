@@ -19,9 +19,7 @@
 
 /*---------- Linear Interpolation ----------*/
 
-static void linear(dst,a,b,n)
-unsigned char *dst,*a,*b;
-int n;
+static void linear(unsigned char *dst, unsigned char *a, unsigned char *b, int n)
 {
     for (;n--;dst++,a++,b++)
       *dst=(unsigned char)(((int)*a+(int)*b)/2);
@@ -40,9 +38,7 @@ int n;
 	 (if linear)  /                       2y+field +2
 -----------------------------------------------------------*/
 
-Cmovie cmparitysep(u,e,l)
-Cmovie	u;
-char *e,*l;
+Cmovie cmparitysep(Cmovie u, char *e, char *l)
 {
     Cmovie v;
     Cimage src,dst,prev,*next;

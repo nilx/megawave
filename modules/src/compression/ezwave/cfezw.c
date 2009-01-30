@@ -74,10 +74,7 @@ static unsigned char *ptrc;       /* Pointer to compress->gray for next
 
 
 static void
-RESIZE_COMPRESS_FIMAGE(compress)
-
-Cimage           compress;
-
+RESIZE_COMPRESS_FIMAGE(Cimage compress)
 {
   int              i;
   int              ncolo, nrowo;
@@ -139,10 +136,7 @@ Cimage           compress;
 
 
 static void
-REALLOCATE_COMPRESS_FIMAGE(compress)
-
-Cimage           compress;
-
+REALLOCATE_COMPRESS_FIMAGE(Cimage compress)
 {
   int              i;
   Cimage           bufcomp;
@@ -177,11 +171,7 @@ Cimage           compress;
 
 
 static void
-ADD_BIT_TO_COMPRESS_FIMAGE(bit, compress)
-
-int              bit;
-Cimage           compress;
-
+ADD_BIT_TO_COMPRESS_FIMAGE(int bit, Cimage compress)
 {
   buffer >>= 1;
   if (bit) 
@@ -202,10 +192,10 @@ Cimage           compress;
 
 
 static void
-ADD_BUF_TO_COMPRESS_FIMAGE(compress, bufcomp)
+ADD_BUF_TO_COMPRESS_FIMAGE(Cimage compress, Cimage bufcomp)
 
-Cimage          compress;       /* Compressed image */
-Cimage          bufcomp;        /* Buffer for compressed image */
+                                /* Compressed image */
+                                /* Buffer for compressed image */
 
 {
   int bit;
@@ -237,15 +227,15 @@ Cimage          bufcomp;        /* Buffer for compressed image */
 
 
 static void
-COMPUTE_CHANNEL_PSNR(conv, psnr, gpsnr, bpsnr, redpsnr, greenpsnr, bluepsnr)
+COMPUTE_CHANNEL_PSNR(int *conv, float *psnr, float *gpsnr, float *bpsnr, float *redpsnr, float *greenpsnr, float *bluepsnr)
 
-int        *conv;
-float      *psnr;               /* Target Psnr */
-float      *gpsnr;              /* Portion of target psnr dedicated to green 
+                 
+                                /* Target Psnr */
+                                /* Portion of target psnr dedicated to green 
 				 channel */
-float      *bpsnr;              /* Portion of target psnr dedicated to blue 
+                                /* Portion of target psnr dedicated to blue 
 				 channel */
-float      *redpsnr, *greenpsnr, *bluepsnr; /* Target rates for each channel */
+                                            /* Target rates for each channel */
  
 {
   if (bpsnr && gpsnr) {
@@ -277,15 +267,15 @@ float      *redpsnr, *greenpsnr, *bluepsnr; /* Target rates for each channel */
 
 
 static void
-COMPUTE_CHANNEL_RATES(conv, rate, grate, brate, redrate, greenrate, bluerate)
+COMPUTE_CHANNEL_RATES(int *conv, float *rate, float *grate, float *brate, float *redrate, float *greenrate, float *bluerate)
 
-int        *conv;
-float      *rate;               /* Target Rate */
-float      *grate;              /* Portion of target rate dedicated to green 
+                 
+                                /* Target Rate */
+                                /* Portion of target rate dedicated to green 
 				 channel */
-float      *brate;              /* Portion of target rate dedicated to blue 
+                                /* Portion of target rate dedicated to blue 
 				 channel */
-float      *redrate, *greenrate, *bluerate; /* Target rates for each channel */
+                                            /* Target rates for each channel */
 
 {
 
@@ -315,11 +305,11 @@ float      *redrate, *greenrate, *bluerate; /* Target rates for each channel */
 
 
 static void
-COPY_CHANNEL2FIMAGE(image, chimage, color)
+COPY_CHANNEL2FIMAGE(Cfimage image, Fimage chimage, int color)
 
-Cfimage     image;		/* Input color image */
-Fimage      chimage;            /* Original channel image */
-int         color;              /* Index of channel */
+                  		/* Input color image */
+                                /* Original channel image */
+                                /* Index of channel */
 
 {
   int             x, size;
@@ -341,11 +331,11 @@ int         color;              /* Index of channel */
 
 
 static void
-COPY_FIMAGE2CHANNEL(image, chimage, color)
+COPY_FIMAGE2CHANNEL(Cfimage image, Fimage chimage, int color)
 
-Cfimage     image;		/* Output color image */
-Fimage      chimage;            /* Original channel image */
-int         color;              /* Index of channel */
+                  		/* Output color image */
+                                /* Original channel image */
+                                /* Index of channel */
 
 {
   int             x, size;
@@ -368,34 +358,34 @@ int         color;              /* Index of channel */
 
 
 void
-cfezw(NumRec, Edge_Ri, Ri2, FilterNorm, WeightFac, DistRate, Rate, GRate, BRate, PSNR, Conv, SelectedArea, Output, Image, Ri, QImage)
+cfezw(int *NumRec, Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *WeightFac, int *DistRate, float *Rate, float *GRate, float *BRate, float *PSNR, int *Conv, Polygons SelectedArea, Cimage Output, Cfimage Image, Fsignal Ri, Cfimage QImage)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 
-int        *NumRec;		/* Number of recursion (-j) */
-Fimage	    Edge_Ri;		/* Impulse responses of filters for special 
+                   		/* Number of recursion (-j) */
+      	            		/* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
-Fsignal     Ri2;		/* Impulse response of the low pass filter */
+                		/* Impulse response of the low pass filter */
 				/* for synthesis */
-int        *FilterNorm;	        /* Equal 0 if no normalisation of filter's tap
+                       	        /* Equal 0 if no normalisation of filter's tap
 			         *       1 if normalisation of the sum 
 			         *       2 if normalistion of the square sum */
-float      *WeightFac;          /* Weighting factor for wavelet coeff. */
-int        *DistRate;           /* Compute distortion-rate function */
-float      *Rate;               /* Target Rate */
-float      *GRate;              /* Portion of target rate dedicated to green 
+                                /* Weighting factor for wavelet coeff. */
+                                /* Compute distortion-rate function */
+                                /* Target Rate */
+                                /* Portion of target rate dedicated to green 
 				 channel */
-float      *BRate;              /* Portion of target rate dedicated to blue 
+                                /* Portion of target rate dedicated to blue 
 				 channel */
-float      *PSNR;               /* Target PSNR */
-int        *Conv;		/* Conversion type */
-Polygons    SelectedArea;       /* Polygnal regions to be encoded with 
+                                /* Target PSNR */
+                 		/* Conversion type */
+                                /* Polygnal regions to be encoded with 
 				 * a special rate or PSNR */
-Cimage      Output;		/* Compressed `Image` */
-Cfimage     Image;		/* Input color image */
-Fsignal     Ri;			/* Impulse response of the low pass filter */
-Cfimage     QImage;		/* Output quantized image */
+                   		/* Compressed `Image` */
+                  		/* Input color image */
+               			/* Impulse response of the low pass filter */
+                   		/* Output quantized image */
 
 {
   float       redrate, greenrate, bluerate; /* Target rates for each channel */

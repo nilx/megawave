@@ -26,10 +26,7 @@ usage = {
 #include  "mw.h"
 
 
-static double ran0(initseed)
-
-     long *initseed;
-
+static double ran0(long int *initseed)
 {
   static double y, v[97];
   float dum;
@@ -56,10 +53,7 @@ static double ran0(initseed)
 }
 
 
-static double normaldev(graine)
-
-     long *graine;
-
+static double normaldev(long int *graine)
 {
   static int iset = 0;
   static double nset;
@@ -84,16 +78,16 @@ static double normaldev(graine)
 }
 
 
-void mk_codebook(Normal, Mean, Variance, Size, BlockSize, CodeBook)
+void mk_codebook(int *Normal, double *Mean, double *Variance, int *Size, int *BlockSize, Fimage CodeBook)
 
 	/*--- Create a gaussian or uniform white noise image ---*/
 
-     int        *Normal;     /* Normal distribution */
-     double     *Mean;       /* Mean of coefficients */
-     double     *Variance;   /* Variance of coefficients */
-     int	*Size;       /* Size of codebook */
-     int        *BlockSize;  /* Size of vectors */
-     Fimage      CodeBook;   /* Generated codebook (output) */
+                             /* Normal distribution */
+                             /* Mean of coefficients */
+                             /* Variance of coefficients */
+        	             /* Size of codebook */
+                             /* Size of vectors */
+                             /* Generated codebook (output) */
      
 {
   register float *ptrc;

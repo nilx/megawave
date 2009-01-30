@@ -22,16 +22,16 @@
 #include  "mw.h"
 
 
-void cline_extract(cflag, Image, Signal, Index, OutImage)
+void cline_extract(char *cflag, Cimage Image, Fsignal Signal, long int Index, Cimage OutImage)
 
 	/*--- Extract line `LineIndex` or column `ColumnIndex` in `Image` ---*/
 
-    char        *cflag;
-    long	Index;	/* Indices of the line or the column 
+                       
+        	      	/* Indices of the line or the column 
 					 * to be extracted */
-    Cimage	Image;			/* Input image */
-    Fsignal	Signal;		/* Output, extracted line or column */
-    Cimage      OutImage;
+          	      			/* Input image */
+           	       		/* Output, extracted line or column */
+                         
 
 {
 

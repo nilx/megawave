@@ -31,9 +31,7 @@ static double dist(const float *p, const float *q)
      return sqrt(x * x + y * y);
 }
 
-static void fksample(in,out,t)
-     Flist in,out;
-     float t;
+static void fksample(Flist in, Flist out, float t)
 {
   double per,cur,step,d,l;
   int i,j,k,n,max;
@@ -74,9 +72,7 @@ static void fksample(in,out,t)
   out->size = j;
 }
 
-static void convol(in,out,s)
-     Flist in,out;
-     Fsignal s;
+static void convol(Flist in, Flist out, Fsignal s)
 {
   int i,j,n;
   float v,*ptr;
@@ -97,11 +93,7 @@ static void convol(in,out,s)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Flist fksmooth(in,n,std,t,P)
-     Flist in;
-     int *n;
-     float *std,*t;
-     char *P;
+Flist fksmooth(Flist in, int *n, float *std, float *t, char *P)
 {
   Flist tmp;
   Fsignal g;

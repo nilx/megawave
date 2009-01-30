@@ -25,9 +25,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for cnoise() */
 
-Cmovie cmnoise(in,std,p,q)
-     Cmovie	in;
-     float	*std,*p,*q;
+Cmovie cmnoise(Cmovie in, float *std, float *p, float *q)
 {
   Cmovie out;
   Cimage u,new,prev,*next;

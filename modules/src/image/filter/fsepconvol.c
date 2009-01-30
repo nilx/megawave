@@ -27,11 +27,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for sconst(), sgauss() */
 
-Fimage fsepconvol(in,out,xker,yker,width,std,b)
-     Fimage in,out;
-     Fsignal xker,yker;
-     int *width,*b;
-     float *std;
+Fimage fsepconvol(Fimage in, Fimage out, Fsignal xker, Fsignal yker, int *width, float *std, int *b)
 {
   Fimage tmp;
   int nx,nx2,ny,ny2,x,y,org,i,s;

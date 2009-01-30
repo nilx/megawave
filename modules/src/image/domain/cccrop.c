@@ -30,11 +30,7 @@
 
 /* NB : calling this module with out=in is possible */
 
-Ccimage cccrop(in,out,sx,sy,z,bg,o,p,X1,Y1,X2,Y2)
-     Ccimage        in,out;
-     float          *sx,*sy,*z,*p,X1,Y1,X2,Y2;
-     unsigned char  *bg;
-     int            *o;
+Ccimage cccrop(Ccimage in, Ccimage out, float *sx, float *sy, float *z, unsigned char *bg, int *o, float *p, float X1, float Y1, float X2, float Y2)
 {
   Cimage aux_in,aux_out;
   Fimage tmp1,tmp2;

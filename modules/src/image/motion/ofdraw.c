@@ -26,11 +26,7 @@
 int dirx[8]={1,1,0,-1,-1,-1,0,1};
 int diry[8]={0,1,1,1,0,-1,-1,-1};
 
-static void draw_arrow(u,x,y,angle,c)
-     Cimage u;
-     int x,y;
-     double angle;
-     unsigned char c;
+static void draw_arrow(Cimage u, int x, int y, double angle, unsigned char c)
 {
   int n,i,j,dx,dy,a;
 
@@ -58,10 +54,7 @@ static void draw_arrow(u,x,y,angle,c)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Cmovie ofdraw(U,V,a,m,p,z,h)
-     Fmovie U,V;
-     float *m,*h;
-     int *p,*z,*a;
+Cmovie ofdraw(Fmovie U, Fmovie V, int *a, float *m, int *p, int *z, float *h)
 {
   Cmovie out;
   Cimage new,prev,*next;

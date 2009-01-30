@@ -30,9 +30,7 @@
 
 /* NB: Calling this module with out=in is possible */
 
-void frandphase(in,out,i_flag)
-     Fimage in,out;
-     char   *i_flag;
+void frandphase(Fimage in, Fimage out, char *i_flag)
 {
   Fimage re,im;
   double rho,theta;

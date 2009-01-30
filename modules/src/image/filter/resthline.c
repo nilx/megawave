@@ -19,9 +19,7 @@
 
 /***** Minimize the total variation between two arrays ****/
 
-static int minimize_tv(a,b,n)
-unsigned char *a,*b;
-int n;
+static int minimize_tv(unsigned char *a, unsigned char *b, int n)
 {
     int d,dmin,i,tv,tvmin,diff;
 
@@ -45,8 +43,7 @@ int n;
 /*** Main function : Suppress horizontal line artefacts by minimizing ***
  ***      the total variation under horizontal offsets correction     ***/
 
-void resthline(u,v)
-Cimage u,v;
+void resthline(Cimage u, Cimage v)
 {
   int x,y,adr,dx,dy,cofs,tofs,*ofs,new;
 

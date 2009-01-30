@@ -14,9 +14,7 @@
 
 #include "mw.h"
 
-Fsignal sintegral(in,n,r)
-     Fsignal in;
-     char *n,*r;
+Fsignal sintegral(Fsignal in, char *n, char *r)
 {
   int i;
   double v;

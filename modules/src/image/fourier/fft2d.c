@@ -28,9 +28,7 @@
        is possible (if you are not interested on one of these outputs)
 */
 
-void fft2d(in_re, in_im, out_re, out_im, i_flag)
-     Fimage  in_re, in_im, out_re, out_im;
-     char    *i_flag;
+void fft2d(Fimage in_re, Fimage in_im, Fimage out_re, Fimage out_im, char *i_flag)
 {
   int      x,y,nx,ny;
   Fsignal  f1_re,f1_im,f2_re,f2_im;

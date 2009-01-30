@@ -41,10 +41,7 @@ struct one_segment
 /*------------------------------------------------------------*/
 
 
-static double *tab(n,p,m)
-int n;
-double p;
-double m;
+static double *tab(int n, double p, double m)
 {
   double *out;
   int adr1,adr2,x,y;
@@ -80,9 +77,7 @@ double m;
 /*    compute the direction of the level line at each point   */
 /*------------------------------------------------------------*/
 
-static Fimage ll_angle(a,threshold)
-Fimage a;
-float threshold;
+static Fimage ll_angle(Fimage a, float threshold)
 {
   Fimage g;
   int n,p,x,y,adr;
@@ -124,13 +119,7 @@ float threshold;
 /*------------------------------------------------------------*/
 
 
-Flist falign(u,d,nl,eps,g,all,crv)
-Fimage u;
-int    *d,*nl;
-double *eps;
-float  *g;
-char   *all;
-Flists crv;
+Flist falign(Fimage u, int *d, int *nl, double *eps, float *g, char *all, Flists crv)
 {
   Flist result;
   Fimage angle;

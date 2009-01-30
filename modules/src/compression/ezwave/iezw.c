@@ -84,12 +84,7 @@ static int    npolyg;            /* Number of selected polygonal areas */
 
 
 static void
-SCALE_WAVT(wtrans, nrec, weightfac)
-
-Wtrans2d      wtrans;
-int           nrec;
-float         weightfac;
-
+SCALE_WAVT(Wtrans2d wtrans, int nrec, float weightfac)
 {
   long   x, size;
   float  scalefac;
@@ -112,12 +107,12 @@ float         weightfac;
 
 
 static void
-INIT_SIGMAP(wtrans, nrec, sigmap)
+INIT_SIGMAP(Wtrans2d wtrans, int nrec, unsigned char ***sigmap)
 
-Wtrans2d         wtrans;         /* Input wavelet transforms */
-int              nrec;           /* Number of level to consider in wavelet 
+                                 /* Input wavelet transforms */
+                                 /* Number of level to consider in wavelet 
 				  * transform */
-unsigned char ***sigmap;         /* Map of significance information 
+                                 /* Map of significance information 
 				  * and mask for selected areas */
 
 {
@@ -156,14 +151,14 @@ unsigned char ***sigmap;         /* Map of significance information
 
 
 static void
-UPDATE_AREAMAP(wtrans, nrec, areamap, bitmap, p)
+UPDATE_AREAMAP(Wtrans2d wtrans, int nrec, unsigned char ***areamap, Cimage bitmap, unsigned char p)
 
-Wtrans2d         wtrans;         /* Input wavelet transforms */
-int              nrec;           /* Number of level to consider in wavelet 
+                                 /* Input wavelet transforms */
+                                 /* Number of level to consider in wavelet 
 				  * transform */
-unsigned char ***areamap;        /* Mask for selected areas */
-Cimage           bitmap;         /* bitmap image */
-unsigned char    p;              /* Index of polygon */
+                                 /* Mask for selected areas */
+                                 /* bitmap image */
+                                 /* Index of polygon */
 
 {
   int              i;                /* Index for orientation in wav. trans. */
@@ -217,12 +212,12 @@ unsigned char    p;              /* Index of polygon */
 
 
 static void
-INIT_AREAMAP(wtrans, nrec, areamap)
+INIT_AREAMAP(Wtrans2d wtrans, int nrec, unsigned char ***areamap)
 
-Wtrans2d         wtrans;         /* Input wavelet transforms */
-int              nrec;           /* Number of level to consider in wavelet 
+                                 /* Input wavelet transforms */
+                                 /* Number of level to consider in wavelet 
 				  * transform */
-unsigned char ***areamap;        /* Mask for selected areas */
+                                 /* Mask for selected areas */
 
 {
   int              i;                /* Index for orientation in wav. trans. */
@@ -285,10 +280,7 @@ unsigned char ***areamap;        /* Mask for selected areas */
 
 
 static void
-REALLOCATE_SUBIMAGES(output)
-
-Wtrans2d    output;
-
+REALLOCATE_SUBIMAGES(Wtrans2d output)
 {
   int    j, nrec;
   int    nrow, ncol;
@@ -334,8 +326,7 @@ Wtrans2d    output;
 
 
 static void
-TEST_END_DECODING() 
-
+TEST_END_DECODING(void)
 {
   int p;
   
@@ -349,12 +340,12 @@ TEST_END_DECODING()
 
 
 static void
-REDRAW_AREAMAP(wtrans, nrec, areamap, p)
+REDRAW_AREAMAP(Wtrans2d wtrans, int nrec, unsigned char ***areamap, unsigned char p)
 
-Wtrans2d         wtrans;
-int              nrec;
-unsigned char ***areamap;            /* Mask for selected areas */
-unsigned char    p;                  /* Index of area to be redrawn */
+                        
+                      
+                                     /* Mask for selected areas */
+                                     /* Index of area to be redrawn */
 
 {
   int              i;                /* Index for orientation in wav. trans. */
@@ -416,8 +407,7 @@ unsigned char    p;                  /* Index of area to be redrawn */
  
 
 static int 
-READ_BIT()
-
+READ_BIT(void)
 {
   int           bit;
 
@@ -447,10 +437,7 @@ READ_BIT()
 
 
 static void
-DECODE_INT(symb, max)
-
-int           *symb, max;
-
+DECODE_INT(int *symb, int max)
 {
   int bit;
 
@@ -467,13 +454,7 @@ int           *symb, max;
 
 
 static void
-READ_HEADER(compress, nrec, nrow, ncol, thres)
-
-Cimage            compress;
-int              *nrec;
-int              *nrow, *ncol;
-float            *thres;
-
+READ_HEADER(Cimage compress, int *nrec, int *nrow, int *ncol, float *thres)
 {
   int           thressymb;
   Polygon       ptr_polyg;       /* Pointer to the current polygon */
@@ -611,12 +592,7 @@ float            *thres;
 
 
 static void
-UPDATE_MODEL(symbol, cum_freq, freq, nsymbol)
-
-int        symbol;
-long       cum_freq[], freq[];
-int        nsymbol;
-
+UPDATE_MODEL(int symbol, long int *cum_freq, long int *freq, int nsymbol)
 {
   int      z;
   int      cum;
@@ -638,10 +614,7 @@ int        nsymbol;
 
 
 static int
-DECODE_SYMBOL(cum_freq)
-
-long           cum_freq[];
-
+DECODE_SYMBOL(long int *cum_freq)
 {
   int          symbol;
   int          cum;
@@ -682,15 +655,15 @@ long           cum_freq[];
 
 
 static void
-MODIFY_CHILDREN(j, i, x, sigmap, output)
+MODIFY_CHILDREN(int j, int i, long int x, unsigned char ***sigmap, Wtrans2d output)
 
-int              i;               /* Direction of sub-image 
+                                  /* Direction of sub-image 
 				   * in wavelet transform */
-int              j;               /* Level of sub-image 
+                                  /* Level of sub-image 
 				   * in wavelet transform */
-long             x;               /* Buffer index for current coefficient */
-Wtrans2d         output;
-unsigned char ***sigmap;
+                                  /* Buffer index for current coefficient */
+                        
+                        
 
 {
   long            size;             /* Size of subimages */
@@ -764,14 +737,14 @@ unsigned char ***sigmap;
 
 
 static void
-DECODE_SIGNIF_MAP(output, sigmap, areamap, nsignif, thres, printfull)
+DECODE_SIGNIF_MAP(Wtrans2d output, unsigned char ***sigmap, unsigned char ***areamap, long int *nsignif, float thres, int *printfull)
 
-Wtrans2d       output;              /* Reconstructed wavelet transform */
-unsigned char ***sigmap;            /* Map of significance information */
-unsigned char ***areamap;           /* Mask for selected areas */
-long          *nsignif;             /* Number of sgnificant coefficients */
-float          thres;               /* Current threshold */
-int           *printfull;           /* Flag for information printing */
+                                    /* Reconstructed wavelet transform */
+                                    /* Map of significance information */
+                                    /* Mask for selected areas */
+                                    /* Number of sgnificant coefficients */
+                                    /* Current threshold */
+                                    /* Flag for information printing */
 
 {
   int             i;                /* Direction of sub-image 
@@ -1159,13 +1132,13 @@ int           *printfull;           /* Flag for information printing */
 
 
 static void
-DECODE_QUANT_STEP(output, sigmap, areamap, thres, printfull)
+DECODE_QUANT_STEP(Wtrans2d output, unsigned char ***sigmap, unsigned char ***areamap, float thres, int *printfull)
 
-Wtrans2d       output;              /* Reconstructed wavelet transform */
-unsigned char ***sigmap;            /* Map of significance information */
-unsigned char ***areamap;           /* Mask for selected areas */
-float          thres;               /* Current threshold */
-int           *printfull;           /* Flag for information printing */
+                                    /* Reconstructed wavelet transform */
+                                    /* Map of significance information */
+                                    /* Mask for selected areas */
+                                    /* Current threshold */
+                                    /* Flag for information printing */
 
 {
   int             i;                /* Index for orientation in wav. trans. */
@@ -1350,12 +1323,12 @@ int           *printfull;           /* Flag for information printing */
 
 
 static void
-ZERO_TREE_DECODE(compress, output, thres, printfull)
+ZERO_TREE_DECODE(Cimage compress, Wtrans2d output, float thres, int *printfull)
 
-Cimage       compress;            /* Compressed buffer */
-Wtrans2d     output;              /* Reconstructed wavelet transform */
-float        thres;               /* Initial threshold */
-int         *printfull;           /* Flag for information printing */
+                                  /* Compressed buffer */
+                                  /* Reconstructed wavelet transform */
+                                  /* Initial threshold */
+                                  /* Flag for information printing */
 
 {
   int             i;                /* Index for orientation in wav. trans. */
@@ -1456,12 +1429,12 @@ int         *printfull;           /* Flag for information printing */
 
 
 void
-iezw(PrintFull, WeightFac, Compress, Output)
+iezw(int *PrintFull, float *WeightFac, Cimage Compress, Wtrans2d Output)
 
-int            *PrintFull;          /* Print full set of information */
-float          *WeightFac;          /* Weighting factor for wavelet coeff. */
-Cimage          Compress;           /* input compressed file */
-Wtrans2d        Output;             /* Reconstructed wavelet transform */
+                                    /* Print full set of information */
+                                    /* Weighting factor for wavelet coeff. */
+                                    /* input compressed file */
+                                    /* Reconstructed wavelet transform */
 
 {
   int             NRec;

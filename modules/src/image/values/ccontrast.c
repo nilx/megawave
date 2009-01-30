@@ -19,8 +19,7 @@
  
 /***** gamma correction [0,1]->[0,1] *****/
 
-static float fgamma(g,x)
-     float g,x;
+static float fgamma(float g, float x)
 {
   return (float)pow((double)x,1.0/(double)g);
 }
@@ -28,10 +27,7 @@ static float fgamma(g,x)
 
 /****************************** CONTRAST ******************************/
 
-void ccontrast(in,out,g)
-     Cimage in;
-     Cimage out;
-     float *g;
+void ccontrast(Cimage in, Cimage out, float *g)
 {
   int *histo, h;
   int adr,i,x2,size,ofs;

@@ -16,8 +16,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-Cimage emptypoly(A,B)
-     Cimage A,B;
+Cimage emptypoly(Cimage A, Cimage B)
 {
   register unsigned char *ptrA,*ptrB;
   register int i;

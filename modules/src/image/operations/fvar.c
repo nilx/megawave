@@ -19,9 +19,7 @@
 #include <math.h>
 #include  "mw.h"
 
-float fvar(A,e,s)
-     Fimage A;
-     char *e, *s;
+float fvar(Fimage A, char *e, char *s)
 {
   int size;
   register float *ptr;

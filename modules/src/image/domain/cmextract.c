@@ -33,13 +33,7 @@ usage = {
 #include "mw.h"
 #include "mw-modules.h" /* for cextract() */
 
-Cmovie cmextract(b,in,bg,X1,Y1,T1,X2,Y2,T2,Xc,Yc,Tc,r)
-     Cmovie in;
-     int X1,Y1,T1,X2,Y2,T2;
-     int *b;
-     Cmovie bg;
-     int *Xc,*Yc,*Tc;
-     char *r;
+Cmovie cmextract(int *b, Cmovie in, Cmovie bg, int X1, int Y1, int T1, int X2, int Y2, int T2, int *Xc, int *Yc, int *Tc, char *r)
 {
   Cmovie out;
   Cimage u,*u1,*u2,new,prev,*next,im1,im2;

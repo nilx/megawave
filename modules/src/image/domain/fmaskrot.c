@@ -21,9 +21,7 @@
 
 /* NB : calling this module with out=in is possible */
 
-Fimage fmaskrot(in,out,bg,s)
-     Fimage in,out;
-     float *bg,*s;
+Fimage fmaskrot(Fimage in, Fimage out, float *bg, float *s)
 {
   int nx,ny,x,y,adr;
   double cx,cy,r,d,dx,dy;

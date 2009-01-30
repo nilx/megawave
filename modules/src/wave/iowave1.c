@@ -46,23 +46,23 @@ static long	sizeav[mw_max_nlevel];
 
 
 static void
-COMLINE_ERR(wtrans, ri, edge_ri, edge, inverse, precond, numrec, haar)
+COMLINE_ERR(Wtrans1d wtrans, Fsignal ri, Fimage edge_ri, int edge, int *inverse, int precond, int *numrec, int *haar)
 
 	/*--- Detects errors and contradiction in command line ---*/
 
-Wtrans1d     wtrans;		/* Wavelet transform */
-Fsignal	     ri;		/* Impulse response of the low-pass filter 
+                    		/* Wavelet transform */
+       	        		/* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
-Fimage	     edge_ri;  	        /* Impulse responses of the edge filters
+      	               	        /* Impulse responses of the edge filters
 			 * (computation of wavelet coefficients near edges) */
-int 	     edge;		/* Type of edge processing 
+    	          		/* Type of edge processing 
 				 * (see `Edge` in iowave1) */
-int	    *inverse;	        /* Performs invertible transform for edge
+   	             	        /* Performs invertible transform for edge
 				 * processing mode 0 and 2 */
-int	     precond;	        /* Type of edge preconditionning
+   	             	        /* Type of edge preconditionning
 				 * (see `Precond` in `iowave1`) */
-int         *numrec;		/* Number of levels for decomposition */
-int         *haar;               /* Reconstruct with Haar wavelet
+                    		/* Number of levels for decomposition */
+                                 /* Reconstruct with Haar wavelet
 				 * from haar level */
 
 {
@@ -116,22 +116,22 @@ int         *haar;               /* Reconstruct with Haar wavelet
 
 
 static void
-COMMENT(result, wtrans, edge, precond, filternorm, ri)
+COMMENT(Fsignal result, Wtrans1d wtrans, int edge, int precond, int *filternorm, Fsignal ri)
 
 	/*--- Fill comment and other fields for result ---*/
 
-Fsignal     result;		/* Inverse wavelet transform of `wtrans` */
-Wtrans1d    wtrans;		/* Input wavelet transform */
-int 	    edge;		/* Type of edge processing 
+                   		/* Inverse wavelet transform of `wtrans` */
+                   		/* Input wavelet transform */
+    	         		/* Type of edge processing 
 				 * (see `Edge` in `iowave1`) */
-int	    precond;	        /* Type of edge preconditionning
+   	            	        /* Type of edge preconditionning
 				 * (see `Precond` in `iowave1`) */
-int	   *filternorm;	        /* Type of normalisation :
+   	               	        /* Type of normalisation :
 				 * equal 0 if normalisation of the sum of 
 				 *         `ri`'s coefficients to 1.0
 			 	 *       1 if normalisation of the squares' sum 
 			 	 *         `ri`'s coefficients to 1.0 */
-Fsignal	ri;		        /* Impulse response of the low-pass filter 
+       	   		        /* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
 
 {
@@ -165,15 +165,15 @@ Fsignal	ri;		        /* Impulse response of the low-pass filter
 
 
 static void
-INIT_SHRINK(wtrans, ri, numrec, edge)
+INIT_SHRINK(Wtrans1d wtrans, Fsignal ri, short int numrec, int edge)
 
 	/*--- Computation of indices for shrinkage ---*/
 
-Wtrans1d	wtrans;		/* Wavelet transform */
-Fsignal	        ri;		/* Impulse response of the low-pass filter 
+        	       		/* Wavelet transform */
+       	           		/* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
-short	        numrec;		/* Number of levels for decomposition */
-int             edge;		/* Type of edge processing
+     	               		/* Number of levels for decomposition */
+                     		/* Type of edge processing
 				 * (see `Edge` in iowave2) */
 
 {
@@ -217,23 +217,23 @@ int             edge;		/* Type of edge processing
 
 
 static void
-NORM_FIL(ri, edge_ri, filternorm, edge, haar_ri)
+NORM_FIL(Fsignal ri, Fimage edge_ri, int filternorm, int edge, Fsignal haar_ri)
 
 	/*--- Normalisation of the coefficients of the filter impulse 
 	 *--- responses ---*/
 
-Fsignal	ri;		/* Impulse response of the low-pass filter 
+       	   		/* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
-Fimage	edge_ri;	/* Impulse responses of the edge filters
+      	        	/* Impulse responses of the edge filters
 			 * (computation of wavelet coefficients near edges) */
-int	filternorm;	/* Type of normalisation :
+   	           	/* Type of normalisation :
 			 * equal 0 if normalisation of the sum of 
 			 *         `ri`'s coefficients to 1.0
 			 *       1 if normalisation of the squares' sum 
 			 *         `ri`'s coefficients to 1.0 */
-int 	edge;		/* Type of edge processing 
+    	     		/* Type of edge processing 
 				 * (see `Edge` in iowave1) */
-Fsignal haar_ri;        /* Impulse response for Haar filter */
+                        /* Impulse response for Haar filter */
 
 
 {
@@ -285,12 +285,12 @@ Fsignal haar_ri;        /* Impulse response for Haar filter */
 
 
 static void
-HAAR_INV_WAVEL1(wtrans, haar, filternorm)
+HAAR_INV_WAVEL1(Wtrans1d wtrans, int haar, int filternorm)
 
-Wtrans1d    wtrans;	    /* Wavelet transform */
-int         haar;           /* Continue decomposition with Haar wavelet
+                   	    /* Wavelet transform */
+                            /* Continue decomposition with Haar wavelet
 			     * until ultimate level */
-int	    filternorm;	    /* Type of normalisation : see adapowave2 */
+   	               	    /* Type of normalisation : see adapowave2 */
 
 {
   int          j;
@@ -332,23 +332,23 @@ int	    filternorm;	    /* Type of normalisation : see adapowave2 */
 
 
 static void
-INV_WAVEL(J, wtrans, S, int_ri, inverse, edge, edge_ri, haar_ri)	
+INV_WAVEL(int J, Wtrans1d wtrans, Fsignal S, Fsignal int_ri, int *inverse, int edge, Fimage edge_ri, Fsignal haar_ri)	
 
 	/*----- Computes average at level J-1 
 	  ----- from average and details at level J -----*/
 
-    int         J;		/* Current level of recomposition */
-    Wtrans1d	wtrans;		/* Wavelet transform */
-    Fsignal	S;		/* Reconstructed resume */
-    Fsignal     int_ri;		/* Impulse response of the low-pass filter 
+                  		/* Current level of recomposition */
+            	       		/* Wavelet transform */
+           	  		/* Reconstructed resume */
+                       		/* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
-    int	       *inverse;	/* Performs invertible transform for edge
+       	                	/* Performs invertible transform for edge
 				 * processing mode 0 and 2 */
-    int         edge;		/* Type of edge processing (see `Edge`
+                     		/* Type of edge processing (see `Edge`
 				 * in iowave1) */
-    Fimage      edge_ri;	/* Impulse responses of filters for special 
+                        	/* Impulse responses of filters for special 
 				 * edge processing */
-    Fsignal     haar_ri;        /* Impulse response for Haar filter */
+                                /* Impulse response for Haar filter */
 
 {
     long        c;		/* Index of the current point in `S` */
@@ -409,30 +409,30 @@ INV_WAVEL(J, wtrans, S, int_ri, inverse, edge, edge_ri, haar_ri)
 
 
 void
-iowave1(NumRec, Haar, Edge, Precond, Inverse, FilterNorm, Wtrans, Output, Ri, Edge_Ri)
+iowave1(int *NumRec, int *Haar, int *Edge, int *Precond, int *Inverse, int *FilterNorm, Wtrans1d Wtrans, Fsignal Output, Fsignal Ri, Fimage Edge_Ri)
 	
 	/*--- Reconstructs an image from the wavelet teansform Wtrans ---*/
 
-int        *NumRec;		/* Number of recursion (-j) */
-int        *Haar;               /* Reconstruct with Haar wavelet
+                   		/* Number of recursion (-j) */
+                                /* Reconstruct with Haar wavelet
 				 * from Haar level */
-int        *Edge;		/* Equal 0 if extension with 0 
+                 		/* Equal 0 if extension with 0 
 				 * 1 if periodization 
 				 * 2 if reflexion 
 				 * 3 (default) if special treatment of edges */
-int        *Precond;         	/* Equal 0 (default) if no
+                             	/* Equal 0 (default) if no
 				 *	   (un)preconditionning
 				 * 	 1 if preconditionning only 
 				 * 	 2 if preconditionning and
 				 * 	   unpreconditionning */
-int        *Inverse;	        /* Performs invertible transform for edge
+                    	        /* Performs invertible transform for edge
 				 * processing mode 0 and 2 */
-int        *FilterNorm;		/* Equal 1 if normalisation of filter's
+                       		/* Equal 1 if normalisation of filter's
 				 * impulse responses (sum = 1.0) */
-Wtrans1d    Wtrans;		/* Input wavelet transform */
-Fsignal     Output;		/* Reconstructed signal */
-Fsignal     Ri;		        /* Impulse response of the low pass filter */
-Fimage	Edge_Ri;	        /* Impulse responses of filters for special 
+                   		/* Input wavelet transform */
+                   		/* Reconstructed signal */
+               		        /* Impulse response of the low pass filter */
+      	        	        /* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
 {

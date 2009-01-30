@@ -82,19 +82,19 @@ static int      nadapcb;          /* Number of levels for adaptive
 
 
 static void
-CHECK_INPUT(ratedist, ncb1, codebook1, codebook2, codebook3, codebook4, nrescb1, rescodebook1, rescodebook2, rescodebook3, rescodebook4, nresrescb1, resrescodebook1, resrescodebook2, image)
+CHECK_INPUT(int ratedist, int *ncb1, Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, int *nrescb1, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, int *nresrescb1, Fimage resrescodebook1, Fimage resrescodebook2, Fimage image)
 
-int             ratedist;
-int            *ncb1;
-Fimage          codebook1, codebook2, codebook3, codebook4; /* Codebooks for 
+                         
+                     
+                                                            /* Codebooks for 
                                  * different classes */
-int            *nrescb1;
-Fimage          rescodebook1, rescodebook2, rescodebook3, rescodebook4; 
+                        
+                                                                        
                                 /* Residu codebooks for different classes */
-int            *nresrescb1;
-Fimage          resrescodebook1, resrescodebook2; /* Residu codebooks 
+                           
+                                                  /* Residu codebooks 
 				 * for different classes */
-Fimage          image;          /* Input image */
+                                /* Input image */
 
 {
   int           sizeb;
@@ -396,8 +396,7 @@ Fimage          image;          /* Input image */
 
 
 static void
-INIT_TARGRATE_DR()
-
+INIT_TARGRATE_DR(void)
 {
 
   targrate_dr[0] = 0.008;
@@ -456,10 +455,7 @@ INIT_TARGRATE_DR()
 
 
 static void
-clear_histo(histo)
-
-Fsignal histo;
-
+clear_histo(Fsignal histo)
 {
   int i;
 
@@ -471,10 +467,7 @@ Fsignal histo;
 
 
 static void
-Variance(image)
-
-Fimage          image;
-    
+Variance(Fimage image)
 {
   int             r, c;
   long	rdx;
@@ -513,10 +506,7 @@ Fimage          image;
 
 
 static void
-RESIZE_COMPRESS_FIMAGE(compress)
-
-Cimage           compress;
-
+RESIZE_COMPRESS_FIMAGE(Cimage compress)
 {
   int              i;
   int              ncolo, nrowo;
@@ -578,10 +568,7 @@ Cimage           compress;
 
 
 static void
-REALLOCATE_COMPRESS_FIMAGE(compress)
-
-Cimage           compress;
-
+REALLOCATE_COMPRESS_FIMAGE(Cimage compress)
 {
   int              i;
   Cimage           bufcomp;
@@ -616,11 +603,7 @@ Cimage           compress;
 
 
 static void
-ADD_BIT_TO_COMPRESS_FIMAGE(bit, compress)
-
-int              bit;
-Cimage           compress;
-
+ADD_BIT_TO_COMPRESS_FIMAGE(int bit, Cimage compress)
 {
   buffer >>= 1;
   if (bit) 
@@ -640,11 +623,11 @@ Cimage           compress;
 
 
 static void
-ENCODE_INT_FIMAGE(symb, max, compress)
+ENCODE_INT_FIMAGE(int symb, int max, Cimage compress)
 
-int            symb;         /* Value of symbol to write */
-int            max;          /* Half of maximum value for symbol */
-Cimage         compress;     /* Compressed file */
+                             /* Value of symbol to write */
+                             /* Half of maximum value for symbol */
+                             /* Compressed file */
 
 {
 
@@ -663,14 +646,14 @@ Cimage         compress;     /* Compressed file */
 
 
 static void
-INIT_ENCODING_FIMAGE(smallheader, nrow, ncol, testmulticb, indexcb, compress)
+INIT_ENCODING_FIMAGE(int *smallheader, int nrow, int ncol, int testmulticb, int *indexcb, Cimage compress)
 
-int         *smallheader;        /* Put size of image in header iff NULL */ 
-int          nrow, ncol;         /* Size of image */
-int          testmulticb;        /* Control for muliple codebooks per class */
-bufind       indexcb;            /* Indices of selected codebooks 
+                                 /* Put size of image in header iff NULL */ 
+                                 /* Size of image */
+                                 /* Control for muliple codebooks per class */
+                                 /* Indices of selected codebooks 
 				  * for quantization */
-Cimage       compress;           /* Compressed file */
+                                 /* Compressed file */
 
 {
   int     n;
@@ -749,10 +732,10 @@ Cimage       compress;           /* Compressed file */
 
 
 static void
-ADD_BUF_TO_COMPRESS_FIMAGE(compress, bufcomp)
+ADD_BUF_TO_COMPRESS_FIMAGE(Cimage compress, Cimage bufcomp)
 
-Cimage          compress;       /* Compressed image */
-Cimage          bufcomp;        /* Buffer for compressed image */
+                                /* Compressed image */
+                                /* Buffer for compressed image */
 
 {
   int bit;
@@ -787,16 +770,16 @@ Cimage          bufcomp;        /* Buffer for compressed image */
 
 
 static void
-compute_rates(symbol, sizec, recfl, histo, rate, ratearc, ent, compress)
+compute_rates(Fimage symbol, int sizec, int *recfl, Fsignal histo, double *rate, double *ratearc, double *ent, Cimage compress)
 
-Fimage          symbol;
-int             sizec;
-int            *recfl;
-Fsignal         histo;
-double         *rate;
-double         *ratearc;
-double	       *ent;
-Cimage          compress;       /* Compressed image */
+                       
+                      
+                      
+                      
+                     
+                        
+      	            
+                                /* Compressed image */
 
 {
   double          e;            /* Rate with arithmetic coding */
@@ -841,15 +824,7 @@ Cimage          compress;       /* Compressed image */
 
 
 static void
-extract_symbol(symbol, symbex, indcb, index, size, recfl, recfac)
-
-Fimage          symbol, symbex;
-Fimage          indcb;
-float           index;
-long            size;
-int            *recfl;
-int             recfac;
-
+extract_symbol(Fimage symbol, Fimage symbex, Fimage indcb, float index, long int size, int *recfl, int recfac)
 {
   register float  *ptrs, *ptrse;
   long             sizet;
@@ -894,19 +869,19 @@ int             recfac;
 
 
 static void
-indexcb_adap(indexcb, nadap, qprec, numcb, bmse, effmse, minmse, brate, brl, effrate, targrate, testopt, opt)
+indexcb_adap(int *indexcb, int nadap, int qprec, int *numcb, float (*bmse)[50], float effmse, float *minmse, float (*brate)[50], float *brl, float effrate, float targrate, int *testopt, int opt)
 
-bufind    indexcb;               /* Indices of selected codebooks 
+                                 /* Indices of selected codebooks 
 				  * for quantization */
-int       nadap;
-int       qprec;
-bufind    numcb;
-bufmse    bmse;
-float     effmse, *minmse;
-bufmse    brate;
-float     brl[MAX_ADAP];
-float     effrate, targrate;
-int      *testopt, opt;
+                
+                
+                
+               
+                          
+                
+                        
+                            
+                       
 
 {
   int      q;
@@ -946,16 +921,7 @@ int      *testopt, opt;
 
 
 static void
-compute_indexcb(indexcb, numcb, bmse, brate, brl, targrate, test_dr)
-
-bufind    indexcb;
-bufind    numcb;
-bufmse    bmse;
-bufmse    brate;
-float     brl[MAX_ADAP];
-float     targrate;
-int       test_dr;
-
+compute_indexcb(int *indexcb, int *numcb, float (*bmse)[50], float (*brate)[50], float *brl, float targrate, int test_dr)
 {
   int      q;
   int      nadap;
@@ -1002,10 +968,7 @@ int       test_dr;
 
 
 static int
-count_cb(codebook)
-
-Fimage     codebook;
-
+count_cb(Fimage codebook)
 {
   long      size, sizei, sizef;
   int      n;
@@ -1033,11 +996,7 @@ Fimage     codebook;
 
 
 static void
-extract_cb(codebook, cb, n)
-
-Fimage     codebook, cb;
-int        n;
-
+extract_cb(Fimage codebook, Fimage cb, int n)
 {
   long      size, sizei, sizef;
   long     xshift;
@@ -1093,10 +1052,10 @@ int        n;
 
 
 static void
-THRESBLOCK(rcol, image)
+THRESBLOCK(long int rcol, Fimage image)
 
-long     rcol;
-Fimage   image;                   /* Input image */
+              
+                                  /* Input image */
 
 {
   long     r,c,i;
@@ -1112,19 +1071,19 @@ Fimage   image;                   /* Input image */
 
 
 static void
-block_vq_adap(image, i, j, codebook, rescodebook, resrescodebook, result, symbol, symbres, symbresres, recfac, histo, reshisto, resreshisto, bmse)
+block_vq_adap(Fimage image, long int i, long int j, Fimage codebook, Fimage rescodebook, Fimage resrescodebook, Fimage result, Fimage symbol, Fimage symbres, Fimage symbresres, long int recfac, Fsignal histo, Fsignal reshisto, Fsignal resreshisto, float *bmse)
 
-Fimage          image;          /* Input image */
-long	        i, j;           /* Row and column indices of block */
-Fimage          codebook;       /* Codebook */
-Fimage          rescodebook, resrescodebook;  /* Codebooks for residus */
-Fimage          result;         /* Quantized image */
-Fimage          symbol, symbres, symbresres; /* Buffers of symbols of 
+                                /* Input image */
+    	                        /* Row and column indices of block */
+                                /* Codebook */
+                                              /* Codebooks for residus */
+                                /* Quantized image */
+                                             /* Buffers of symbols of 
 				 * reproducing blocks */
-long            recfac;
-Fsignal	        histo;          /* Histogram of symbols */
-Fsignal	        reshisto, resreshisto; /* Histogram of symbols for residus */
-float	       *bmse;           /* Quantization mean square error */
+                       
+       	                        /* Histogram of symbols */
+       	                               /* Histogram of symbols for residus */
+     	                        /* Quantization mean square error */
 
 {
   int             rb, cb;       /* Coordinates of coefficients in block */
@@ -1222,17 +1181,17 @@ float	       *bmse;           /* Quantization mean square error */
 
 
 static void
-FULLSEARCH(image, codebook, rescodebook, resrescodebook, compress, result, mse, rate, ratearc, ent)
+FULLSEARCH(Fimage image, Fimage codebook, Fimage rescodebook, Fimage resrescodebook, Cimage compress, Fimage result, double *mse, double *rate, double *ratearc, double *ent)
 
-Fimage          image;          /* Input image */
-Fimage          codebook;       /* Codebook */
-Fimage          rescodebook, resrescodebook; /* Codebooks for residus */
-Cimage          compress;       /* Compressed image */
-Fimage          result;         /* Quantized image */
-double	       *mse;
-double         *rate;
-double         *ratearc;
-double	       *ent;
+                                /* Input image */
+                                /* Codebook */
+                                             /* Codebooks for residus */
+                                /* Compressed image */
+                                /* Quantized image */
+      	            
+                     
+                        
+      	            
 
 {
   int             r, c;
@@ -1325,24 +1284,24 @@ double	       *ent;
 
 
 static void
-FULLSEARCH_ADAP(printsnr, bitmapcode, image, codebook1, codebook2, codebook3, codebook4, rescodebook1, rescodebook2, rescodebook3, rescodebook4, resrescodebook1, resrescodebook2, compress, result, mse, rate, ratearc, ent)
+FULLSEARCH_ADAP(int *printsnr, int *bitmapcode, Fimage image, Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, Fimage resrescodebook1, Fimage resrescodebook2, Cimage compress, Fimage result, double *mse, double *rate, double *ratearc, double *ent)
 
-int            *printsnr;       /* Control info print on SNR */       
-int            *bitmapcode;     /* Encode bitmap even if all codebooks 
+                                /* Control info print on SNR */       
+                                /* Encode bitmap even if all codebooks 
 				 * have size 1 */
-Fimage          image;          /* Input image */
-Fimage          codebook1, codebook2, codebook3, codebook4; /* Codebooks for 
+                                /* Input image */
+                                                            /* Codebooks for 
                                  * different classes */
-Fimage          rescodebook1, rescodebook2, rescodebook3, rescodebook4; 
+                                                                        
                                 /* Residu codebooks for different classes */
-Fimage          resrescodebook1, resrescodebook2; /* Residu codebooks 
+                                                  /* Residu codebooks 
 				 * for different classes */
-Cimage          compress;       /* Compressed file */
-Fimage          result;         /* Quantized image */ 
-double	       *mse;
-double         *rate;
-double         *ratearc;
-double	       *ent;
+                                /* Compressed file */
+                                /* Quantized image */ 
+      	            
+                     
+                        
+      	            
 
 {
   int             r, c;
@@ -1793,26 +1752,26 @@ double	       *ent;
 
 
 static void
-VQ(printsnr, bitmapcode, image, testmulticb, ncb1, ncb2, ncb3, ncb4, codebook1, codebook2, codebook3, codebook4, nrescb1, nrescb2, nrescb3, nrescb4, rescodebook1, rescodebook2, rescodebook3, rescodebook4, nresrescb1, nresrescb2, resrescodebook1, resrescodebook2, compress, result, mse, snr, rate, ratearc, ent)
+VQ(int *printsnr, int *bitmapcode, Fimage image, int testmulticb, int ncb1, int ncb2, int ncb3, int ncb4, Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, int nrescb1, int nrescb2, int nrescb3, int nrescb4, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, int nresrescb1, int nresrescb2, Fimage resrescodebook1, Fimage resrescodebook2, Cimage compress, Fimage result, double *mse, double *snr, double *rate, double *ratearc, double *ent)
 
-int            *printsnr;           /* Control info print on SNR */       
-int            *bitmapcode;         /* Encode bitmap even if all codebooks 
+                                    /* Control info print on SNR */       
+                                    /* Encode bitmap even if all codebooks 
 				     * have size 1 */
-Fimage          image;
-int             testmulticb;
-int             ncb1, ncb2, ncb3, ncb4;
-Fimage          codebook1, codebook2, codebook3, codebook4;
-int             nrescb1, nrescb2, nrescb3, nrescb4;
-Fimage          rescodebook1, rescodebook2, rescodebook3, rescodebook4;
-int             nresrescb1, nresrescb2;
-Fimage          resrescodebook1, resrescodebook2;
-Cimage          compress;       /* Compressed image */
-Fimage          result;
-double	       *mse;
-double	       *snr;		/* Signal to noise ratio */
-double         *rate;
-double         *ratearc;
-double	       *ent;
+                      
+                            
+                                       
+                                                           
+                                                   
+                                                                       
+                                       
+                                                 
+                                /* Compressed image */
+                       
+      	            
+      	            		/* Signal to noise ratio */
+                     
+                        
+      	            
 
 {
   Fimage          cb1, cb2, cb3, cb4;
@@ -1943,38 +1902,38 @@ double	       *ent;
 
 
 void
-fvq(PrintSNR, SmallHeader, BitMapCode, RateDist, NCB1, NCB2, NCB3, NCB4, CodeBook2, CodeBook3, CodeBook4, NResCB1, NResCB2, NResCB3, NResCB4, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResCodeBook4, NResResCB1, NResResCB2, ResResCodeBook1, ResResCodeBook2, Compress, Image, CodeBook1, Result, MSE, SNR, Entropy, RateAr)
+fvq(int *PrintSNR, int *SmallHeader, int *BitMapCode, int *RateDist, int *NCB1, int *NCB2, int *NCB3, int *NCB4, Fimage CodeBook2, Fimage CodeBook3, Fimage CodeBook4, int *NResCB1, int *NResCB2, int *NResCB3, int *NResCB4, Fimage ResCodeBook1, Fimage ResCodeBook2, Fimage ResCodeBook3, Fimage ResCodeBook4, int *NResResCB1, int *NResResCB2, Fimage ResResCodeBook1, Fimage ResResCodeBook2, Cimage Compress, Fimage Image, Fimage CodeBook1, Fimage Result, double *MSE, double *SNR, double *Entropy, double *RateAr)
 
-int        *PrintSNR;           /* Control info print on SNR */       
-int        *SmallHeader;        /* Do not specify size of image in header */
-int        *BitMapCode;         /* Encode bitmap even if all codebooks 
+                                /* Control info print on SNR */       
+                                /* Do not specify size of image in header */
+                                /* Encode bitmap even if all codebooks 
 				 * have size 1 */
-int        *RateDist;           /* Flag for computation of rate-distortion 
+                                /* Flag for computation of rate-distortion 
 				 * curves */
-int        *NCB1, *NCB2, *NCB3, *NCB4;  /* Index of codebook to be used in 
+                                        /* Index of codebook to be used in 
 				 * CodeBook1, ..., CodeBook4 buffers */
-Fimage      CodeBook2, CodeBook3, CodeBook4; /* Buffers for second, third 
+                                             /* Buffers for second, third 
 				 * and fourth codebook */
-int        *NResCB1, *NResCB2, *NResCB3, *NResCB4; /* Index of codebook 
+                                                   /* Index of codebook 
 				  * to be used in ResCodeBook1, ..., 
 				  * ResCodeBook4 buffers */
-Fimage      ResCodeBook1, ResCodeBook2, ResCodeBook3, ResCodeBook4;
+                                                                   
                                 /* Buffers for first, ..., fourth residu 
 				 * codebook */
-int        *NResResCB1, *NResResCB2; /* Index of codebook to be used in 
+                                     /* Index of codebook to be used in 
 				 * ResResCodeBook1 and ResResCodeBook2 
 				 * buffers */
-Fimage      ResResCodeBook1, ResResCodeBook2; /* Buffers for first and second 
+                                              /* Buffers for first and second 
 				 * second level residu codebook */
-Cimage      Compress;		/* Compressed `Image` */
-Fimage      Image;              /* Input image */
-Fimage      CodeBook1;          /* Buffer for first codebook */
-Fimage      Result;             /* Quantized image */
-double	   *MSE;		/* Mean square error between 
+                     		/* Compressed `Image` */
+                                /* Input image */
+                                /* Buffer for first codebook */
+                                /* Quantized image */
+      	        		/* Mean square error between 
     					 * original and quantized image */
-double     *SNR;		/* Signal to noise ratio */
-double     *Entropy;            /* Entropic rate */
-double     *RateAr;             /* Arithmetic coding rate */
+                		/* Signal to noise ratio */
+                                /* Entropic rate */
+                                /* Arithmetic coding rate */
 
 
 {

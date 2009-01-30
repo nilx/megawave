@@ -43,10 +43,7 @@
 
 
 /* Smooth the input image along the x and y directions. Output is image */
-static void smooth_image(image)
-
-Fimage image;
-
+static void smooth_image(Fimage image)
 {
   int i,j;
   float s0,s1;
@@ -84,10 +81,7 @@ Fimage image;
 
 /* Calcul of gradient */
 
-static void fgradient(g,d,e)
-
-Fimage g,d,e;
-
+static void fgradient(Fimage g, Fimage d, Fimage e)
 {
   short i,j,k,l;
   int im = g->ncol;
@@ -118,10 +112,7 @@ Fimage g,d,e;
 
 /*Determination of contours*/
 
-static void fsqrtmod(d,e,f)
-
-Fimage d,e,f;
-      
+static void fsqrtmod(Fimage d, Fimage e, Fimage f)
 {
   short i,j;
   int im = d->ncol;
@@ -140,10 +131,7 @@ Fimage d,e,f;
                 
 /* Return the squared modulus of the smoothed gradient of image */
 
-static Fimage get_mod2_smooth_gradient(image,Dx,Dy)
-
-Fimage image,Dx,Dy;
-
+static Fimage get_mod2_smooth_gradient(Fimage image, Fimage Dx, Fimage Dy)
 {
   register int i,j;  
   Fimage mod;
@@ -171,11 +159,7 @@ Fimage image,Dx,Dy;
 
 /* Return the "force" matrix */
 
-static Fimage get_force_matrix(image,A)
-
-Fimage image;
-float A;
-
+static Fimage get_force_matrix(Fimage image, float A)
 {
   register int i,j;  
   Fimage f;
@@ -196,10 +180,7 @@ float A;
 
 /* Build internal coefficients Dxy, Dyx, Dx, Dy and g */
   
-static void build(a,g0,Dx,Dy, Dxy,Dyx,g)
-
-Fimage a,g0,Dx,Dy, Dxy,Dyx,g;
-
+static void build(Fimage a, Fimage g0, Fimage Dx, Fimage Dy, Fimage Dxy, Fimage Dyx, Fimage g)
 {
   register int i,j;
   float z,z1,z2,z3,z4,z5,z9;
@@ -308,11 +289,7 @@ Fimage a,g0,Dx,Dy, Dxy,Dyx,g;
 
 /* Solve the system */
 
-static void solve(a,Dx,Dy,Dxy,Dyx,g,f,ng,iter,Niter)
-
-Fimage a,Dx,Dy,Dxy,Dyx,g,f,ng;
-int iter,Niter;
-
+static void solve(Fimage a, Fimage Dx, Fimage Dy, Fimage Dxy, Fimage Dyx, Fimage g, Fimage f, Fimage ng, int iter, int Niter)
 {
   float u;
   register int i,j;
@@ -427,11 +404,7 @@ int iter,Niter;
 
 /* Binarize the fimage a, by putting 255 for gray levels >= c, 0 elsewhere */
 
-static void fbinarize(a,c)
-
-Fimage a;
-float c;
-
+static void fbinarize(Fimage a, float c)
 {
   register float *ptr;
   register int i;
@@ -444,12 +417,12 @@ float c;
 
 /*------------------------------ Main function ------------------------------*/
 
-Fimage lsnakes(in,ref,Niter,thre,force)
+Fimage lsnakes(Fimage in, Fimage ref, int *Niter, float *thre, float *force)
 
-     Fimage in; /* Original contour mask and new one */
-     Fimage ref; /* Original image */
-     int *Niter;
-     float *force,*thre;
+                /* Original contour mask and new one */
+                 /* Original image */
+                
+                        
 
 {
   Fimage g0; /* squared modulus smoothed gradient of the image ref */

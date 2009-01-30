@@ -31,10 +31,7 @@
 
 /*** NB: Calling this module with in=out is possible ***/
 
-void fnoise(u,v,std,p,q,n_flag)
-Fimage	u,v;
-float	*std,*p,*q;
-char    *n_flag;
+void fnoise(Fimage u, Fimage v, float *std, float *p, float *q, char *n_flag)
 {
   int i;
   double a,b,z;

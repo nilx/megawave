@@ -25,9 +25,7 @@
 #define OUT(i,j) (ptrOUT[(j)*ncOUT + (i)])
 #define TMP(i,j) (ptrTMP[(j)*ncOUT + (i)])
 
-void fsmooth(S,W,in,out)
-     int    *S,*W;
-     Fimage in,out;
+void fsmooth(int *S, int *W, Fimage in, Fimage out)
 {
   Fimage tmp;
   register int i,j,ncOUT;

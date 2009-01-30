@@ -33,8 +33,7 @@
 #define MIN(a,b) ((a) > (b) ? (b) : (a))
 #define ABS(x)   ((x)>0?(x):(-(x)))
 
-static Fimage compute_distance(sg,param)
-Fimage sg,param;
+static Fimage compute_distance(Fimage sg, Fimage param)
 {
   Fimage dist;
   int    i,j;
@@ -60,8 +59,7 @@ Fimage sg,param;
 
 
 
-static int comparefloat(v1,v2)
-float *v1,*v2;
+static int comparefloat(float *v1, float *v2)
 {
   double a,b;
   
@@ -74,9 +72,7 @@ float *v1,*v2;
 }
 
 
-static Fimage sort_hypo(hypo_list,dist,nb_hypo)
-Fimage  hypo_list,dist;
-int     nb_hypo;
+static Fimage sort_hypo(Fimage hypo_list, Fimage dist, int nb_hypo)
 {
   float  vmax;
   int    dx,i;
@@ -104,10 +100,7 @@ int     nb_hypo;
 
 /* MAIN MODULE */
 
-Fcurves sr_genhypo(sg,img,hypo_list)
-Fimage sg;
-Cimage img;
-Fimage hypo_list;
+Fcurves sr_genhypo(Fimage sg, Cimage img, Fimage hypo_list)
 {
   Fcurves  c0,fn;
   int      i,ASCII_flag,thre,nb_hypo;

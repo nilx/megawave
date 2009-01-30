@@ -47,12 +47,12 @@ usage = {
 /*--- Constants ---*/
 
 static void
-VARMEAN_TS(trainset, mean, var)
+VARMEAN_TS(Fimage trainset, double *mean, double *var)
 
   /*--- Compute mean and variance of vectors in training set ---*/
 
-Fimage     trainset;     /* Training set of vectors for LBG algorithm */
-double    *mean, *var;   /* Mean and variance of vectors in training set */
+                         /* Training set of vectors for LBG algorithm */
+                         /* Mean and variance of vectors in training set */
 
 {
   register float  *ptrts;
@@ -78,26 +78,26 @@ double    *mean, *var;   /* Mean and variance of vectors in training set */
 
 
 void
-flbg(Size, Width, Height, Lap, Decim, Edge, Weight, MultiCB, PrintSNR, Image2, Image3, Image4, Image5, Image6, Image7, Image8, InitRandCB, RepeatRand, NResCB, NResResCB, ResCodeBook, ResResCodeBook, Image1, CodeBook, MSE)
+flbg(int *Size, int *Width, int *Height, int *Lap, int *Decim, int *Edge, Fsignal Weight, int *MultiCB, int *PrintSNR, Fimage Image2, Fimage Image3, Fimage Image4, Fimage Image5, Fimage Image6, Fimage Image7, Fimage Image8, int *InitRandCB, int *RepeatRand, int *NResCB, int *NResResCB, Fimage ResCodeBook, Fimage ResResCodeBook, Fimage Image1, Fimage CodeBook, float *MSE)
 
-int        *Size;           /* Size of codebook */
-int        *Width, *Height; /* Width  and height of block */
-int        *Lap;            /* Take overlapping vectors in training images */
-int        *Decim;          /* Space between pixels in a vector */
-int        *Edge;           /* No overlapping on edges */
-Fsignal     Weight;         /* Coordinates weights in block */
-int        *MultiCB;        /* Generates all code books of size equal 
+                            /* Size of codebook */
+                            /* Width  and height of block */
+                            /* Take overlapping vectors in training images */
+                            /* Space between pixels in a vector */
+                            /* No overlapping on edges */
+                            /* Coordinates weights in block */
+                            /* Generates all code books of size equal 
 			     * to a power of 2 */
-int        *PrintSNR;       /* Print SNR and rate */
-Fimage      Image2, Image3, Image4, Image5, Image6, Image7, Image8;
+                            /* Print SNR and rate */
+                                                                   
                             /* Image for training set */
-int        *InitRandCB;     /* Size of initial codebook (randomly drawn) */
-int        *RepeatRand;     /* Repeat process with random initialization */
-int        *NResCB, *NResResCB; /* Size for residual codebooks */
-Fimage      ResCodeBook, ResResCodeBook;      /* Residual codebooks */
-Fimage      Image1;         /* First image for training set */
-Fimage      CodeBook;       /* Generated codebook */
-float	   *MSE;            /* Quantization m.s.e. for training set */
+                            /* Size of initial codebook (randomly drawn) */
+                            /* Repeat process with random initialization */
+                                /* Size for residual codebooks */
+                                              /* Residual codebooks */
+                            /* First image for training set */
+                            /* Generated codebook */
+     	                    /* Quantization m.s.e. for training set */
 
 
 {

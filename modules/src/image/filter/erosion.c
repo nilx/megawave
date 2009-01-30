@@ -27,10 +27,7 @@
 
 /*------------- one erosion/dilation of a cimage by a shape s -------------*/
 
-static void erodilat1(u,v,s,action)
-     Cimage u,v;
-     Curve  s;
-     short  action;
+static void erodilat1(Cimage u, Cimage v, Curve s, short int action)
 {
   register int x,y,nx,ny,xx,yy;
   register unsigned char new,curr;
@@ -58,12 +55,7 @@ static void erodilat1(u,v,s,action)
 
 /*---------------------- Main function : erosion --------------------*/
 
-Cimage erosion(u, v, r, s, n, i)
-     Cimage u,v;
-     float  *r;
-     Curve  s;
-     int    *n;
-     char   *i;
+Cimage erosion(Cimage u, Cimage v, float *r, Curve s, int *n, char *i)
 {
   Cimage w,*src,*dst,*new;
   Curve  shape;

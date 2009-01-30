@@ -18,9 +18,7 @@
 #include <stdio.h>
 #include "mw.h"
  
-void freadasc(u,Dx,Dy)
-     Fimage u;
-     int *Dx,*Dy;
+void freadasc(Fimage u, int *Dx, int *Dy)
 {
   register float *ptr;
   int i;

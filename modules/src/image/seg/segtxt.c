@@ -26,10 +26,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* msegct(), mschannel() */
 
-Cimage segtxt(N,S,W,p,nr,in,mov)
-     int    *N,*W,*nr,*S,*p;
-     Fimage in;
-     Fmovie mov;
+Cimage segtxt(int *N, int *S, int *W, int *p, int *nr, Fimage in, Fmovie mov)
 {
   float f;
   int nbr;     /* not used by our application */

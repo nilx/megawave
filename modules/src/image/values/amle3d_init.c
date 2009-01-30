@@ -21,10 +21,7 @@
 /* Compute the 4 neighbour pixels of the current pixel p              */
 /* When p touches the border of the image, a mirror effect is applied */
 
-static void neighbor_4(x,y,xmax,ymax,p,left,right,up,down)
-     register int x,y,xmax,ymax;
-     register float *p;
-     float **left,**right,**up,**down;
+static void neighbor_4(register int x, register int y, register int xmax, register int ymax, register float *p, float **left, float **right, float **up, float **down)
 {
   if (x>0)
     {
@@ -87,9 +84,7 @@ static void neighbor_4(x,y,xmax,ymax,p,left,right,up,down)
     }
 }
 
-void amle3d_init(in,delta,out)
-     Fmovie in,out;
-     float delta;
+void amle3d_init(Fmovie in, float delta, Fmovie out)
 { 
   Fimage im,ima,imout;
   int NC,NL,x,y;

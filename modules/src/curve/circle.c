@@ -17,10 +17,7 @@
 #include <math.h>
 #include "mw.h"
 
-Dlist circle(out,r,n)
-     Dlist   out;
-     double  *r;
-     int     *n;
+Dlist circle(Dlist out, double *r, int *n)
 {
   int k;
   double *p;

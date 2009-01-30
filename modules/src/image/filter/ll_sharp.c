@@ -25,8 +25,7 @@
    between the tree and the associated image, it is forbidden to remove such a shape. This 
    function detects if pShape is an elementary shape, and if the answer is positive, mark 
    the shape to be its own gradation. */ 
-static void keep_elementary_shape(pShape) 
-     Shape pShape; 
+static void keep_elementary_shape(Shape pShape)
 { 
   Shape pChild; 
    
@@ -51,9 +50,7 @@ static void keep_elementary_shape(pShape)
    class of the partition is then called a gradation. 
    The representative shape of the gradation is the shape of the gradation with smallest L²/A, 
    where A is the area and L is the length of its boundary */ 
-static void remove_gradation(pShape, fFactorIncreaseArea) 
-     Shape pShape; 
-     float fFactorIncreaseArea; 
+static void remove_gradation(Shape pShape, float fFactorIncreaseArea)
 { 
   Shape pCurrentShape, pParent, pChild, pRepresentativeShape; 
   float fCriterium, fOptimalCriterium, fMeanGrayLevel; 
@@ -115,9 +112,7 @@ static void remove_gradation(pShape, fFactorIncreaseArea)
 /* This removes the gradations from an image. In the tree of shapes representing the input 
    image, the field data of each shape is used to mark the shapes whose gradation was 
    already found */ 
-void ll_sharp(pPercentIncreaseArea, pFloatImageInput, pFloatImageOutput) 
-     float *pPercentIncreaseArea; 
-     Fimage pFloatImageInput, pFloatImageOutput; 
+void ll_sharp(float *pPercentIncreaseArea, Fimage pFloatImageInput, Fimage pFloatImageOutput)
 { 
   int i; 
   Shapes pTree; 

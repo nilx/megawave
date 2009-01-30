@@ -25,12 +25,7 @@ usage = {
    Compute in (*mincol, *minrow) the translation point.
 */
 
-static void Get_Size_Org(C,ncol,nrow,mincol,minrow)
-
-     Curves C;
-     int *ncol, *nrow;
-     int *mincol, *minrow;
-     
+static void Get_Size_Org(Curves C, int *ncol, int *nrow, int *mincol, int *minrow)
 {
   Curve cv;
   int maxcol,maxrow,x,y;
@@ -57,12 +52,7 @@ static void Get_Size_Org(C,ncol,nrow,mincol,minrow)
    Return the number of symbols needed (2 if no duplicated points, > 2 else)
 */
 
-static int Fill_Bitmap_With_Origins(bitmap,C,mincol,minrow)
-     
-     Fimage bitmap;
-     Curves C;
-     int mincol, minrow;
-
+static int Fill_Bitmap_With_Origins(Fimage bitmap, Curves C, int mincol, int minrow)
 {
   int ncol,nsymb;
   Curve cv;
@@ -84,11 +74,11 @@ static int Fill_Bitmap_With_Origins(bitmap,C,mincol,minrow)
    from the content of bitmap.
 */
 
-static void Fill_Distance(distance,bitmap,npxs)
+static void Fill_Distance(Fimage distance, Fimage bitmap, int npxs)
 
-     Fimage distance;
-     Fimage bitmap;
-     int npxs;         /* Number of pixels = size of bitmap */
+                     
+                   
+                       /* Number of pixels = size of bitmap */
      
 {
   float *ptr;
@@ -106,12 +96,7 @@ static void Fill_Distance(distance,bitmap,npxs)
       }
 }
 
-double cvsorgcode(C,N,B)
-
-     Curves C;
-     unsigned int *N;
-     double *B;
-     
+double cvsorgcode(Curves C, unsigned int *N, double *B)
 {
   Fimage bitmap=NULL;  /* Bitmap to map the origin points of C */
   Fimage distance=NULL;/* Distance of two successive origin points */

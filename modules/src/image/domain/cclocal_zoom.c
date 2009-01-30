@@ -22,11 +22,7 @@
 #include <string.h>
 #include "mw.h"
 
-Ccimage cclocal_zoom(Input, X, Y, W, factor)
-     
-     int *X,*Y,*W,*factor;
-     Ccimage Input;
-     
+Ccimage cclocal_zoom(Ccimage Input, int *X, int *Y, int *W, int *factor)
 {
   unsigned char *squareR,*squareG,*squareB;
   unsigned char r,g,b;

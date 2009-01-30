@@ -45,11 +45,7 @@
 
 /*---------- MAIN MODULE ----------*/
 
-void fkprintfig(in,d,e_flag,s_flag,m,r)
-     Fcurves in;
-     int *d;
-     char *e_flag,*s_flag;
-     float *m,*r;
+void fkprintfig(Fcurves in, int *d, char *e_flag, char *s_flag, float *m, float *r)
 {
   Fcurve c;
   Point_fcurve p,last;

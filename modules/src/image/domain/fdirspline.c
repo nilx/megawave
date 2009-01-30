@@ -16,9 +16,7 @@
 #include "mw.h"
 
 /* extract image value (symmetrize outside image domain) */
-static float v(in,x,y)
-     Fimage in;
-     int x,y;
+static float v(Fimage in, int x, int y)
 {
   if (x<0) x=-x;
   if (x>=in->ncol) x=2*(in->ncol-1)-x;
@@ -28,9 +26,7 @@ static float v(in,x,y)
 }
 
 /* fast integral power function */
-static float ipow(x,n)
-     float x;
-     int n;
+static float ipow(float x, int n)
 {
   float res;
 
@@ -45,9 +41,7 @@ static float ipow(x,n)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Fimage fdirspline(in,n,out)
-     Fimage in,out;
-     int n;
+Fimage fdirspline(Fimage in, int n, Fimage out)
 {
   Fimage tmp;
   int nx,ny,n1,n2,d,i,k,x,y;

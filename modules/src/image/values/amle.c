@@ -28,12 +28,7 @@
 /* Compute the 8 neighbour pixels of the current pixel p              */
 /* When p touches the border of the image, a mirror effect is applied */
 
-static void neighbor(x,y,xmax,ymax,p,left,right,up,down,right_down,left_up,right_up,left_down)
-
-register int x,y,xmax,ymax;
-register float *p;
-float **left,**right,**up,**down,**right_down,**left_up,**right_up,**left_down;
-
+static void neighbor(register int x, register int y, register int xmax, register int ymax, register float *p, float **left, float **right, float **up, float **down, float **right_down, float **left_up, float **right_up, float **left_down)
 {
   if (x>0) 
     {
@@ -126,12 +121,8 @@ float **left,**right,**up,**down,**right_down,**left_up,**right_up,**left_down;
 /* Compute the new gray value of the current point (x,y) by solving an implicit Euler scheme */
 /* of the PDE du/dt = D2u (Du/|Du|, Du/|Du|)                                                 */
 
-static void compute_point(x,y,xmax,ymax,p,prev_value,ht,omega)
-register int x,y,xmax,ymax;
-register float *p;
-float prev_value,ht,omega;
-
-  {
+static void compute_point(register int x, register int y, register int xmax, register int ymax, register float *p, float prev_value, float ht, float omega)
+{
     float *left,*right,*up,*down,*right_down,*left_up,*right_up,*left_down;
     float ux,uy,uxx,uyy,uxy;
     double A,B,NG2;
@@ -160,15 +151,7 @@ float prev_value,ht,omega;
   }
 
 
-void amle(Init,Input,Output,omega,n,ht,mse)
-
-Cimage Init;
-Cimage Input;
-Fimage Output;
-int *n;
-float *omega,*ht;
-float *mse;
-
+void amle(Cimage Init, Cimage Input, Fimage Output, float *omega, int *n, float *ht, float *mse)
 {
   unsigned char *ptrIn;
   float *ptrOut,*ptrPrev;

@@ -24,13 +24,7 @@
 #include <math.h>
 #include "mw.h"
 
-float snorm(in,ref,p,s,v,b,n,t)
-     Fsignal in,ref;
-     float *p;
-     char *s,*v;
-     int *b;
-     char *n;
-     float *t;
+float snorm(Fsignal in, Fsignal ref, float *p, char *s, char *v, int *b, char *n, float *t)
 {
   int x,num;
   double sum,diff,val;

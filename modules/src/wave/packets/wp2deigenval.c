@@ -26,8 +26,7 @@ usage = {
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 
 /***************************************************************/
-static int my_log(n)
-     int n;
+static int my_log(int n)
 {int count=0;
  
  if (n<1) 
@@ -51,9 +50,9 @@ static float signedSquare(input)
 }
 
 /***************************************************************/
-static void normalize(pfilter)
+static void normalize(Fimage pfilter)
      /*normalizes sothat pfilter->gray[0]=1*/
-     Fimage pfilter;
+                    
      
 {int size = pfilter->ncol*pfilter->nrow;
  int i;
@@ -67,11 +66,11 @@ static void normalize(pfilter)
 
 /***************************************************************/
 
-static void inverse_filter(filter,work,limit)
+static void inverse_filter(Fimage filter, Fimage work, float *limit)
      /*Computes the inverse of the input filter, the result is in work*/
      /*The modulus of the inverse is truncated if larger the 1/limit */
-     Fimage filter,work;
-     float *limit;
+                        
+                  
      
 {int i,size=filter->ncol*filter->nrow;
  float invLimit=1./(*limit),minusInvLimit=-1./(*limit);
@@ -97,11 +96,7 @@ static void inverse_filter(filter,work,limit)
 
 /***************************************************************/
 
-static void approximation(filter,tree,pfilter)
-     
-     Fimage filter,pfilter;
-     Cimage tree;
-     
+static void approximation(Fimage filter, Cimage tree, Fimage pfilter)
 {Fsignal order;                                        /*for the correspondance between wavelet packets indexes and frequency bands */
  int maxLevel=my_log( tree->ncol ); /*maximum possible level */
  int level;                                                        /*current level */
@@ -170,12 +165,7 @@ static void approximation(filter,tree,pfilter)
 /***************************************************************/
 /***************      MAIN      ********************************/
 /***************************************************************/
-void wp2deigenval(filter,tree,pfilter,limit)
-     
-     Fimage filter,pfilter;
-     Cimage tree;
-     float* limit;
-     
+void wp2deigenval(Fimage filter, Cimage tree, Fimage pfilter, float *limit)
 {
 
   Fimage work;

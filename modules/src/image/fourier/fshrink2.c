@@ -16,8 +16,7 @@
 
 /* NB : calling this module with out=in is nonsense */
 
-void fshrink2(in,out)
-     Fimage in,out;
+void fshrink2(Fimage in, Fimage out)
 {
     int n,p,nn,pp,tmp,i,j,iofs,jofs;
 

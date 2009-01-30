@@ -50,11 +50,11 @@
 
 
 static void
-YUV_RGB(r, g, b, tr, tg, tb)
+YUV_RGB(float *r, float *g, float *b, float *tr, float *tg, float *tb)
 
-float      *r, *g, *b;   /* Pointers to red, green and blue channels 
+                         /* Pointers to red, green and blue channels 
 				   * in image */
-float      *tr, *tg, *tb;  /* Pointers to red, green and blue 
+                           /* Pointers to red, green and blue 
 				   * channels in transformed image */
 
 {
@@ -67,11 +67,11 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 
 
 static void
-RGB_YUV(r, g, b, tr, tg, tb)
+RGB_YUV(float *r, float *g, float *b, float *tr, float *tg, float *tb)
 
-float      *r, *g, *b;   /* Pointers to red, green and blue channels 
+                         /* Pointers to red, green and blue channels 
 				   * in image */
-float      *tr, *tg, *tb;  /* Pointers to red, green and blue 
+                           /* Pointers to red, green and blue 
 				   * channels in transformed image */
 
 {
@@ -84,11 +84,11 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 
 
 static void
-YUV_RGB_NORM(r, g, b, tr, tg, tb)
+YUV_RGB_NORM(float *r, float *g, float *b, float *tr, float *tg, float *tb)
 
-float      *r, *g, *b;   /* Pointers to red, green and blue channels 
+                         /* Pointers to red, green and blue channels 
 				   * in image */
-float      *tr, *tg, *tb;  /* Pointers to red, green and blue 
+                           /* Pointers to red, green and blue 
 				   * channels in transformed image */
 
 {
@@ -101,11 +101,11 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 
 
 static void
-RGB_YUV_NORM(r, g, b, tr, tg, tb)
+RGB_YUV_NORM(float *r, float *g, float *b, float *tr, float *tg, float *tb)
 
-float      *r, *g, *b;   /* Pointers to red, green and blue channels 
+                         /* Pointers to red, green and blue channels 
 				   * in image */
-float      *tr, *tg, *tb;  /* Pointers to red, green and blue 
+                           /* Pointers to red, green and blue 
 				   * channels in transformed image */
 
 {
@@ -119,11 +119,11 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 /* ----- HSI ----- */
 
 static void
-RGB_HSI(r, g, b, tr, tg, tb)
+RGB_HSI(float *r, float *g, float *b, float *tr, float *tg, float *tb)
 
-float      *r, *g, *b;   /* Pointers to red, green and blue channels 
+                         /* Pointers to red, green and blue channels 
 				   * in image */
-float      *tr, *tg, *tb;  /* Pointers to red, green and blue 
+                           /* Pointers to red, green and blue 
 				   * channels in transformed image */
 
 {
@@ -171,11 +171,11 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 #endif
 
 static void
-HSI_RGB(r, g, b, tr, tg, tb)
+HSI_RGB(float *r, float *g, float *b, float *tr, float *tg, float *tb)
 
-float      *r, *g, *b;   /* Pointers to red, green and blue channels 
+                         /* Pointers to red, green and blue channels 
 				   * in image */
-float      *tr, *tg, *tb;  /* Pointers to red, green and blue 
+                           /* Pointers to red, green and blue 
 				   * channels in transformed image */
 
 {
@@ -228,11 +228,11 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 #define NOHUE -1
 
 static void
-RGB_HSV(r, g, b, tr, tg, tb)
+RGB_HSV(float *r, float *g, float *b, float *tr, float *tg, float *tb)
 
-float      *r, *g, *b;   /* Pointers to red, green and blue channels 
+                         /* Pointers to red, green and blue channels 
 				   * in image */
-float      *tr, *tg, *tb;  /* Pointers to red, green and blue 
+                           /* Pointers to red, green and blue 
 				   * channels in transformed image */
 
 {
@@ -281,11 +281,11 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 }
 
 static void
-HSV_RGB(r, g, b, tr, tg, tb)
+HSV_RGB(float *r, float *g, float *b, float *tr, float *tg, float *tb)
 
-float      *r, *g, *b;   /* Pointers to red, green and blue channels 
+                         /* Pointers to red, green and blue channels 
 				   * in image */
-float      *tr, *tg, *tb;  /* Pointers to red, green and blue 
+                           /* Pointers to red, green and blue 
 				   * channels in transformed image */
 
 {
@@ -347,11 +347,11 @@ float      *tr, *tg, *tb;  /* Pointers to red, green and blue
 /* ----------------------- */
 
 static void
-COLOR_CONVERT(image, timage, convert_point)
+COLOR_CONVERT(Cfimage image, Cfimage timage, void (*convert_point) (/* ??? */))
 
-Cfimage     image;		/* Input color image */
-Cfimage     timage;		/* Output transformed image */
-void        (*convert_point) ();  /* Pointer to the conversion
+                  		/* Input color image */
+                   		/* Output transformed image */
+                                  /* Pointer to the conversion
 				        * function */
 
 {
@@ -378,15 +378,15 @@ void        (*convert_point) ();  /* Pointer to the conversion
 
 
 void
-cfchgchannels(Conv, Inverse, Norm, Image, TImage)
+cfchgchannels(int *Conv, int *Inverse, int *Norm, Cfimage Image, Cfimage TImage)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 
-int        *Conv;		/* Conversion type */
-int        *Inverse;	        /* Perform inverse transform */
-int        *Norm;               /* Perform normalisation */
-Cfimage     Image;		/* Input color image */
-Cfimage     TImage;		/* Output transformed image */
+                 		/* Conversion type */
+                    	        /* Perform inverse transform */
+                                /* Perform normalisation */
+                  		/* Input color image */
+                   		/* Output transformed image */
 
 {
   void        (*convert_point) ();  /* Pointer to the conversion

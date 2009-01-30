@@ -31,14 +31,7 @@
 
 /*----- Module mscarea customised to speed up the computations -----*/
 
-static void compute_area(connex8, U, M, P, nrow, ncol, a, b, x, y, l, stoparea, area)
-
-char *connex8;
-unsigned char *U,*M;
-int *P;
-int nrow,ncol,a,b,x,y,l;
-int stoparea,*area;
-
+static void compute_area(char *connex8, unsigned char *U, unsigned char *M, int *P, int nrow, int ncol, int a, int b, int x, int y, int l, int stoparea, int *area)
 {
   int k;
 
@@ -88,15 +81,7 @@ int stoparea,*area;
     }
 }
 
-static int fast_mscarea(connex8, U, M, P, stoparea, a, b, x0, y0)
-
-char *connex8;
-Cimage U;
-unsigned char *M;
-int *P;
-int a,b,x0,y0;
-int stoparea;
-
+static int fast_mscarea(char *connex8, Cimage U, unsigned char *M, int *P, int stoparea, int a, int b, int x0, int y0)
 {
   int area,c;
   int l;
@@ -126,11 +111,7 @@ int stoparea;
 /* compute the pixel (xmin,ymin) with minimal gray level min */
 /* and the pixel (xmax,ymax) with maximal gray level max     */
 
-static int diff_neighbors(U,x,y,l,ncol,q,min,max,xmin,ymin,xmax,ymax)
-
-unsigned char *U;
-int x,y,l,ncol,q;
-int *min,*max,*xmin,*ymin,*xmax,*ymax;
+static int diff_neighbors(unsigned char *U, int x, int y, int l, int ncol, int q, int *min, int *max, int *xmin, int *ymin, int *xmax, int *ymax)
 {
   int nd,d;
 
@@ -199,18 +180,7 @@ int *min,*max,*xmin,*ymin,*xmax,*ymax;
    and {x / U(x) >= mu} are significant at the junction.
 */
 
-static int get_junction(connex8,U,M,P,x,y,dn,ta,q,min,max,xmin,ymin,xmax,ymax,
-		 lambda,mu)
-
-char *connex8;
-Cimage U;
-unsigned char *M;
-int *P;
-int x,y,dn,q;
-int ta;
-int min,max,xmin,ymin,xmax,ymax;
-int *lambda,*mu;
-
+static int get_junction(char *connex8, Cimage U, unsigned char *M, int *P, int x, int y, int dn, int ta, int q, int min, int max, int xmin, int ymin, int xmax, int ymax, int *lambda, int *mu)
 {
   int a,g,gmin,gmax,xmaxmin1,xmaxmin2,ymaxmin1,ymaxmin2,acc1,acc2;
 
@@ -295,16 +265,16 @@ int *lambda,*mu;
   return(0); /* areas of 1st and 2nd m.s. to small : not a junction */
 }
 
-int tjpoint(connex8,tarea,tquant,U,x0,y0,lambda,mu,xlambda,ylambda,xmu,ymu,M,P)
+int tjpoint(char *connex8, int *tarea, int *tquant, Cimage U, int x0, int y0, int *lambda, int *mu, int *xlambda, int *ylambda, int *xmu, int *ymu, unsigned char *M, int *P)
 
-char *connex8;
-int *tarea;
-int *tquant;
-Cimage U;
-int x0,y0;
-int *lambda,*mu,*xlambda,*ylambda,*xmu,*ymu;
-unsigned char *M; /* Tab to mark the pixels in mscarea */
-int *P;           /* Tab to index area -> pixel in mscarea */
+              
+           
+            
+         
+          
+                                            
+                  /* Tab to mark the pixels in mscarea */
+                  /* Tab to index area -> pixel in mscarea */
 
 {
   int l,tj,dn; 

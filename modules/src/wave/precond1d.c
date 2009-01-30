@@ -27,11 +27,7 @@ typedef struct filbank {
 
 
 
-static void INIT_PREC(edge_ri, precleftfil, precrightfil, unprecleftfil, unprecrightfil)
-
-Fimage edge_ri;
-Filbank *precleftfil, *precrightfil, *unprecleftfil, *unprecrightfil;
-
+static void INIT_PREC(Fimage edge_ri, Filbank *precleftfil, Filbank *precrightfil, Filbank *unprecleftfil, Filbank *unprecrightfil)
 {
 short N;
 short i,j;
@@ -73,14 +69,14 @@ for (j=0; j<N; j++)
 
 
 static void
-PRECOND(signal, output, LeftMat, RightMat)	
+PRECOND(Fsignal signal, Fsignal output, Filbank LeftMat, Filbank RightMat)	
 
 	/*--- (Un)preconditionning of image's edges ---*/
 
-    Fsignal	signal;		/* Input signal */    
-    Fsignal	output;		/* Result of preconditionning */
+           	       		/* Input signal */    
+           	       		/* Result of preconditionning */
 
-    Filbank     LeftMat, RightMat;	/*--- Matrix of (un)preconditionning 
+                                  	/*--- Matrix of (un)preconditionning 
 				 * for left and right edges of signal */
 
 {
@@ -130,15 +126,15 @@ PRECOND(signal, output, LeftMat, RightMat)
 
 
 void
-precond1d(Inverse, Signal, Output, Edge_Ri)
+precond1d(int *Inverse, Fsignal Signal, Fsignal Output, Fimage Edge_Ri)
 
 	/*----- Applies (un)preconditionning to edges of `Signal` -----*/
 
-    int	       *Inverse;	/* Equal 0 if normal preconditionning 
+       	                	/* Equal 0 if normal preconditionning 
 				 *	 1 if inverse	    "		*/
-    Fsignal     Signal;		/* Input (Un)preconditionned signal */
-    Fsignal     Output;		/* Output signal */
-    Fimage	Edge_Ri;	/* Buffer containing coefficients of 
+                       		/* Input (Un)preconditionned signal */
+                       		/* Output signal */
+          	        	/* Buffer containing coefficients of 
 				 * preconditionning matrices */
 
 {

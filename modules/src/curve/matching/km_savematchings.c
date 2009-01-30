@@ -30,9 +30,7 @@ usage = {
 static char Closed;
 static int N_Points;
 
-static int get_next_index(i, iLast, type)
-     int i, iLast;
-     unsigned char type;
+static int get_next_index(int i, int iLast, unsigned char type)
 {
   int i_next;
 
@@ -59,12 +57,7 @@ static int get_next_index(i, iLast, type)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void km_savematchings(matching_pieces,levlines1,levlines2, aux1, aux2, pieceaux1, pieceaux2)
-     Flist matching_pieces;
-     Flists levlines1, levlines2;
-     Flists aux1, aux2;
-     Flists pieceaux1, pieceaux2; 
-     
+void km_savematchings(Flist matching_pieces, Flists levlines1, Flists levlines2, Flists aux1, Flists aux2, Flists pieceaux1, Flists pieceaux2)
 { 
   int m, n, piecesize, inext, ilast;
   

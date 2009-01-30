@@ -28,11 +28,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fhamming(), fft2d(), fft2dpol(), fview() */
 
-void fft2dview(type,h_flag,in,out,i_flag,d)
-     int     *type;
-     float   *d;
-     char    *h_flag,*i_flag;
-     Fimage  in,out;
+void fft2dview(int *type, char *h_flag, Fimage in, Fimage out, char *i_flag, float *d)
 {
   Fimage      tmp;
   int	      x,y,i,n,p,out_flag;

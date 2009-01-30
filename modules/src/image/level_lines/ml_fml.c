@@ -16,8 +16,7 @@
 #include "mw.h"
 
 
-Fmorpho_line ml_fml(lline)
-     Morpho_line lline;
+Fmorpho_line ml_fml(Morpho_line lline)
 { 
   Fmorpho_line  flline=NULL,old_flline,first_flline;
   Point_fcurve fpoint;

@@ -38,9 +38,7 @@ long adrxy;
 float *a,*Ex,*Ey,*Et;
 float *U,*V,*residue;
 
-static void ALLOCATE(out,nb_image)
-     Fmovie out;
-     int nb_image;
+static void ALLOCATE(Fmovie out, int nb_image)
 {
   Fimage image,image_prev;
   int l;
@@ -65,8 +63,7 @@ static void ALLOCATE(out,nb_image)
 
 /***derivative of function \psi(s^2)=\epsilon s^2+(1-\epsilon)\lambda^2\sqrt{1+\frac{s^2}{\lamda^2}}
 \psi^{\prime}(s^2)=\epsilon+\frac{1-\epsilon}{\sqrt{1+\frac{s^2}{\lamda^2}}}********/
-static float psip(x,e,l)
-     float x,e,l;
+static float psip(float x, float e, float l)
 {
   float value;
   value=e+(1-e)/(float)sqrt((double)(1+x*x/(l*l)));
@@ -74,8 +71,8 @@ static float psip(x,e,l)
 }
 
 
-static void dummies(v)
-     float *v;
+static void dummies(float *v)
+              
      /* creates dummy boundaries by mirroring (Neumann conditions)*/
 {
   int i, j,l; /* loop variables */
@@ -97,7 +94,7 @@ static void dummies(v)
 }
 
 /***derivees compute spatial and temporal derivatives of image*********/
-static void derivees()
+static void derivees(void)
 {   
   int i,j,l;
   register float a_or,a_N,a_S,a_E,a_O,a_NE,a_NO,a_SE,a_SO,at_post;
@@ -147,9 +144,7 @@ static void derivees()
     }
 }     
 
-static void schema_ws(threshold,eps,tau,alpha,lambda,niter)
-     float *threshold,eps,tau,alpha,lambda;
-     int niter;
+static void schema_ws(float *threshold, float eps, float tau, float alpha, float lambda, int niter)
 {
   int i,j,l,p;
   long adr;
@@ -294,12 +289,7 @@ static void schema_ws(threshold,eps,tau,alpha,lambda,niter)
 }		  
 
 
-void ws_flow(percent,n,tau,lambda,eps,alpha,norm,movie,wsU,wsV)
-     float *percent;
-     int *n;
-     float *tau,*lambda,*eps,*alpha;
-     Fmovie norm;
-     Fmovie movie,wsU,wsV;
+void ws_flow(float *percent, int *n, float *tau, float *lambda, float *eps, float *alpha, Fmovie norm, Fmovie movie, Fmovie wsU, Fmovie wsV)
 {
   int l;
   long adr;

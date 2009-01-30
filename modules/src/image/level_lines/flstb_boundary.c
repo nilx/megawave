@@ -42,8 +42,7 @@ typedef struct {
 #endif
 
 /* Return x, (x,value) being on segment joining (0,value1) and (1,value2) */
-static float offset(value1, value2, value)
-float value1, value2, value;
+static float offset(float value1, float value2, float value)
 {
   assert((value1 < value2 && value1 <= value && value <= value2) ||
 	 (value1 > value2 && value2 <= value && value <= value1));
@@ -52,9 +51,7 @@ float value1, value2, value;
 
 /* The code of this function is UGLY. It finds the starting direction of an
 open level line */ 
-static unsigned char first_direction(pPoint, pImage)
-point_t* pPoint;
-Fimage pImage;
+static unsigned char first_direction(point_t *pPoint, Fimage pImage)
 {
   if(pPoint->x == 0)
     return EAST;
@@ -68,8 +65,7 @@ Fimage pImage;
 /* Return the direction followed by the level line crossing the dual
 edgel adjacent to the dual pixels of top left corners *'pPrevious' and
 *'pPoint' */
-static unsigned char direction(pPrevious, pPoint)
-point_t *pPrevious, *pPoint;
+static unsigned char direction(point_t *pPrevious, point_t *pPoint)
 {
   if(pPoint->x > pPrevious->x)
     return EAST;
@@ -83,11 +79,7 @@ point_t *pPrevious, *pPoint;
 /* (*pX, *pY) being the coordinates of (the center of) a dual pixel,
 modify them so they are the coordinates of the entry point of the level line
 at 'value', knowing it follows direction 'cDirection' */
-static void entry_point(cDirection, value, pImage, pX, pY)
-unsigned char cDirection;
-float value;
-Fimage pImage;
-float *pX, *pY;
+static void entry_point(unsigned char cDirection, float value, Fimage pImage, float *pX, float *pY)
 {
   int x = (int)(*pX), y = (int)*pY, iWidth = pImage->ncol;
   switch(cDirection) {
@@ -127,13 +119,7 @@ float *pX, *pY;
 and the exit point (x2, y2). The first point is stored in 'pPoint', the
 following ones in the following pointers. Return the number of discretized
 points */
-static int discretize(iPrecision, pImage, pPoint, xDualPixel, yDualPixel,
-	       x1, y1, x2, y2)
-int iPrecision;
-Fimage pImage;
-point_t* pPoint;
-int xDualPixel, yDualPixel;
-float x1, y1, x2, y2;
+static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualPixel, int yDualPixel, float x1, float y1, float x2, float y2)
 {
   float alpha, beta, gamma, delta, xMaxCurvature, yMaxCurvature;
   float fStep;
@@ -394,12 +380,7 @@ float x1, y1, x2, y2;
 }
 
 /* Fill pBoundary, the level line boundary of pShape */
-static void extract_line(iPrecision, pImage, pTree, pShape, pDualchain, pBoundary)
-int iPrecision;
-Fimage pImage;
-Shapes pTree;
-Shape pShape;
-Flist pDualchain,pBoundary;
+static void extract_line(int iPrecision, Fimage pImage, Shapes pTree, Shape pShape, Flist pDualchain, Flist pBoundary)
 {
   point_t *pPoint, *pPointCurve;
   float x1, y1, x2, y2;
@@ -457,14 +438,13 @@ Flist pDualchain,pBoundary;
 
 /* Extract the discretized level line corresponding to the boundary of the
 shape pShape in the tree pTree corresponding to bilinear interpolated image */
-Flist flstb_boundary(pPrecision, pImage, pTree, pShape,
-		     pDualchain, pBoundary, ctabtabSaddleValues)
-int *pPrecision;
-Fimage pImage;
-Shapes pTree;
-Shape pShape;
-Flist pDualchain,pBoundary;
-char* ctabtabSaddleValues; /* True type: (float**) */
+Flist flstb_boundary(int *pPrecision, Fimage pImage, Shapes pTree, Shape pShape, Flist pDualchain, Flist pBoundary, char *ctabtabSaddleValues)
+                
+              
+             
+             
+                           
+                           /* True type: (float**) */
 {
   int iNbPoints;
   char bBuildDualchain = 0,bBuildBoundary;

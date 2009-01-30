@@ -32,10 +32,7 @@
 */
 
 
-void ridgpolrec(out_re, out_im, in_re, in_im)
-     Fimage out_re, out_im;
-     Fimage in_re, in_im;
-     
+void ridgpolrec(Fimage out_re, Fimage out_im, Fimage in_re, Fimage in_im)
 {
   Fimage A;
   int indic,indic3;

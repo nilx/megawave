@@ -16,9 +16,7 @@
 #include "mw.h"
 
 
-double perimeter(in,min,max)
-     Dlist in;
-     double *min,*max;
+double perimeter(Dlist in, double *min, double *max)
 {
   int i,d;
   double per, s, *p, d1, d2;

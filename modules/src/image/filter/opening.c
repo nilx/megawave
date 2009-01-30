@@ -21,12 +21,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for erosion() */
 
-Cimage opening(u, v, r, s, n, i)
-     Cimage u,v;
-     float  *r;
-     Curve  s;
-     int    *n;
-     char   *i;
+Cimage opening(Cimage u, Cimage v, float *r, Curve s, int *n, char *i)
 {
   Cimage w;
   

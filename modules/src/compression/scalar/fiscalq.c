@@ -58,8 +58,7 @@ static unsigned char  *ptrc;      /* Pointer to compress->gray for next
 
 
 static int 
-READ_BIT_FIMAGE()
-
+READ_BIT_FIMAGE(void)
 {
   int           bit;              /* Value of read and returned bit */
 
@@ -84,10 +83,10 @@ READ_BIT_FIMAGE()
 
 
 static void
-DECODE_INT_FIMAGE(symb, max)
+DECODE_INT_FIMAGE(int *symb, int max)
 
-int           *symb;         /* Value of read symbol */
-int            max;          /* Half of maximum value for symbol */
+                             /* Value of read symbol */
+                             /* Half of maximum value for symbol */
 
 {
   int bit;
@@ -105,11 +104,7 @@ int            max;          /* Half of maximum value for symbol */
 
 
 static float
-INT2FLOAT(n, nbitlog, nbitstep)
-
-int      n;
-int      nbitlog, nbitstep;
-
+INT2FLOAT(int n, int nbitlog, int nbitstep)
 {
   float f;
   int logf;
@@ -131,18 +126,18 @@ int      nbitlog, nbitstep;
 
 
 static void
-READ_HEADER_FIMAGE(print, nrow, ncol, nrow1, ncol1, stepsize, nstep, center, minstep, ashift, rate, compress)
+READ_HEADER_FIMAGE(int *print, int *nrow, int *ncol, int *nrow1, int *ncol1, float *stepsize, int *nstep, int *center, int *minstep, float *ashift, double *rate, Cimage compress)
 
-int         *print;              /* Do not print the size of image */
-int         *nrow, *ncol;        /* Size of image specified by command line */
-int         *nrow1, *ncol1;      /* Size of image */
-float       *stepsize;	         /* Cell width */
-float       *ashift;             /* Lowest quantization step shift */
-int         *nstep;              /* Number of quantization level */
-int         *center;             /* Flag for centering of quantization step */
-int         *minstep;            /* Index of lowest cell */
-double      *rate;               /* Bit rate in compress */
-Cimage       compress;           /* Compressed image */
+                                 /* Do not print the size of image */
+                                 /* Size of image specified by command line */
+                                 /* Size of image */
+                      	         /* Cell width */
+                                 /* Lowest quantization step shift */
+                                 /* Number of quantization level */
+                                 /* Flag for centering of quantization step */
+                                 /* Index of lowest cell */
+                                 /* Bit rate in compress */
+                                 /* Compressed image */
 
 {
   int          c_stepsize;	 /* Cell width code */
@@ -270,15 +265,15 @@ Cimage       compress;           /* Compressed image */
 
 
 static void
-SCALAR_RECONSTRUCT(print, nrow, ncol, compress, result, rate)
+SCALAR_RECONSTRUCT(int *print, int *nrow, int *ncol, Cimage compress, Fimage result, double *rate)
 
-int        *print;              /* Control info print */       
-int        *nrow, *ncol;        /* Number of rows and columns in 
+                                /* Control info print */       
+                                /* Number of rows and columns in 
 				 * reconstructed image (if not selected, 
 				 * info is read in header of Compress) */
-Fimage      result;             /* Reconstructed image */
-Cimage      compress;		/* Compressed `Image` */
-double     *rate;               /* Bit rate */
+                                /* Reconstructed image */
+                     		/* Compressed `Image` */
+                                /* Bit rate */
 
 {
   int           center;          /* Flag for centering of quantization step */
@@ -353,15 +348,15 @@ double     *rate;               /* Bit rate */
 
 
 void
-fiscalq(Print, NRow, NCol, Compress, Result, Rate)
+fiscalq(int *Print, int *NRow, int *NCol, Cimage Compress, Fimage Result, double *Rate)
 
-int        *Print;              /* Control of information print */  
-int        *NRow, *NCol;        /* Number of rows and columns in 
+                                /* Control of information print */  
+                                /* Number of rows and columns in 
 				 * reconstructed image (if not selected, 
 				 * info is read in header of Compress) */
-Cimage      Compress;		/* Input compressed image */
-Fimage      Result;             /* Reconstructed image */
-double     *Rate;               /* Bit rate for Compress */
+                     		/* Input compressed image */
+                                /* Reconstructed image */
+                                /* Bit rate for Compress */
 
 {
 

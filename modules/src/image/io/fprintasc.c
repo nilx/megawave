@@ -19,10 +19,7 @@
 #include <stdio.h>
 #include "mw.h"
  
-void fprintasc(u,x1,y1,x2,y2,verbose)
-     Fimage u;
-     int *x1,*y1,*x2,*y2;
-     char *verbose;
+void fprintasc(Fimage u, int *x1, int *y1, int *x2, int *y2, char *verbose)
 {
   int x,y,nx,ny;
   int vx1,vy1,vx2,vy2;

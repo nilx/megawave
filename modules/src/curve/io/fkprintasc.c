@@ -12,9 +12,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-void fkprintasc(fcvs)
-     Fcurves fcvs;
-     
+void fkprintasc(Fcurves fcvs)
 {
   Fcurve fcv;
   Point_fcurve  p;

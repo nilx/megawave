@@ -17,11 +17,11 @@
 #include  "mw.h"
 
 static void
-NORM_IMG(image)
+NORM_IMG(Fimage image)
 
 	/*--- Normalize `image` to 0.0 mean and 1.0 variance ---*/
 
-    Fimage	image;
+          	      
 
 {
     long	l, c;		/* Index of current point in `image` */
@@ -51,10 +51,10 @@ NORM_IMG(image)
 
 }
 
-double fpsnr255(Norm,image)
+double fpsnr255(int *Norm, Fimage image)
 
-    Fimage	image;
-    int		*Norm;		/* Normalisation to 0 mean and 1.0 variance */
+          	      
+       		      		/* Normalisation to 0 mean and 1.0 variance */
 {
     long	l, c;		/* Index of current point in image */
     long	ldx;

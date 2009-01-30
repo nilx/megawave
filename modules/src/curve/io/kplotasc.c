@@ -16,10 +16,7 @@
 #define MAXX 100
 #define MAXY 300
 
-void kplotasc(cv)
-
-     Curve cv;
-
+void kplotasc(Curve cv)
 {
   Point_curve point;
   int minx,maxx,miny,maxy,x,y,bx,by,n;

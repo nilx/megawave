@@ -13,16 +13,14 @@
 #include "mw.h"
 #include "mw-modules.h" /* for area(), perimeter(), dsplit_convex() */
 
-static int is_closed(c)
-     Dlist c;
+static int is_closed(Dlist c)
 {
   if (c->size<2) return(0);
   else return( (c->values[0]==c->values[c->dim*(c->size-1)  ]) &&
 	       (c->values[1]==c->values[c->dim*(c->size-1)+1]) );
 }
 
-void dkinfo(in)
-     Dlists in;
+void dkinfo(Dlists in)
 {
   Dlists res;
   Dlist c;

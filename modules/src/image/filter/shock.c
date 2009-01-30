@@ -18,9 +18,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-static void iter(u,v,s)
-     Fimage u,v;
-     float s;
+static void iter(Fimage u, Fimage v, float s)
 {
   int   i,j,im,i1,jm,j1;
   float new,val;
@@ -61,10 +59,7 @@ static void iter(u,v,s)
 
 /*-------------------- MAIN MODULE --------------------*/
 
-Fimage shock(in,n,s)
-     Fimage in;
-     int    *n;
-     float  *s;
+Fimage shock(Fimage in, int *n, float *s)
 {
   Fimage u,*old,*new,*tmp;
   int    i;

@@ -31,12 +31,7 @@ usage = {
 #define wgh(X) (((X)<epsilon)? (deltat/epsilon):(deltat/(X)))
  
 /* Compute L2h, L2v */
-static void set_lambda(I,L2h,L2v,deltat,epsilon)
-
-Cfimage I;
-Fimage L2h,L2v;
-float deltat,epsilon;
-
+static void set_lambda(Cfimage I, Fimage L2h, Fimage L2v, float deltat, float epsilon)
 {
   int sxy;
   int i,j;
@@ -78,11 +73,7 @@ float deltat,epsilon;
 }
 
 
-static void inverse(D0,D1,U0,Yr,Yg,Yb,Vr,Vg,Vb,size)
-
-float *D0,*D1,*U0,*Yr,*Yg,*Yb,*Vr,*Vg,*Vb;
-int size;
-
+static void inverse(float *D0, float *D1, float *U0, float *Yr, float *Yg, float *Yb, float *Vr, float *Vg, float *Vb, int size)
 {
   /* D = LU avec Li,i = 1, Li+1,i != 0 ; Ui,i et Ui,i+1 != 0 */
   /* on a Uii = Dii - Li,i-1Ui-1,i ; Ui,i+1 = Di,i+1
@@ -114,14 +105,7 @@ int size;
 }
 
 
-void cfdiffuse(deltat,epsilon,in,out,MDiag0,MDiag1,U0,Yimage,Vimage,L2h,L2v)
-
-float *deltat,*epsilon;
-Cfimage in,out;
-Fsignal MDiag0,MDiag1,U0;
-Cfimage Yimage,Vimage;
-Fimage L2h,L2v;
-
+void cfdiffuse(float *deltat, float *epsilon, Cfimage in, Cfimage out, Fsignal MDiag0, Fsignal MDiag1, Fsignal U0, Cfimage Yimage, Cfimage Vimage, Fimage L2h, Fimage L2v)
 {
   float *UNorth_r, *UNorth_g, *UNorth_b;
   float *USouth_r, *USouth_g, *USouth_b;

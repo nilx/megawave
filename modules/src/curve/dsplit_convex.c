@@ -21,8 +21,7 @@
 
 
 /*** return +1, 0 or -1, the sign of det(b-a,c-b) modulo double precision ***/
-static int dir(ax,ay,bx,by,cx,cy,eps)
-double ax,ay,bx,by,cx,cy,eps;
+static int dir(double ax, double ay, double bx, double by, double cx, double cy, double eps)
 {
   double det,prec;
 
@@ -38,11 +37,7 @@ double ax,ay,bx,by,cx,cy,eps;
 
 /*---------------------------- MAIN MODULE -------------------------------*/
 
-Dlists dsplit_convex(in,out,ncc,eps)
-     Dlist   in;
-     Dlists  out;
-     int     *ncc;
-     double  *eps;
+Dlists dsplit_convex(Dlist in, Dlists out, int *ncc, double *eps)
 {
   Dlist   l;
   int     j,d1,d2,ni,nr,is_closed,ok;

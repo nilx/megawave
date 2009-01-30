@@ -20,9 +20,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-Fimage fshift(in,out,x,y,h,i)
-     Fimage in,out;
-     int *x,*y,*h,*i;
+Fimage fshift(Fimage in, Fimage out, int *x, int *y, int *h, int *i)
 {
   int xx,yy,nx,ny,dx,dy;
 

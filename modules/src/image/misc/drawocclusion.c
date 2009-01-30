@@ -34,8 +34,8 @@ usage = {
  (before updating) */
 #define LABELS_NUMBER 100000
 
-static int u_compar_i(u,v)  /*  Called by function qsort for sorting decreasingly */
-int *u,*v;
+static int u_compar_i(int *u, int *v)  /*  Called by function qsort for sorting decreasingly */
+          
   {
     if ((*u)<(*v)) return (1);
     if ((*u)==(*v)) return (0);
@@ -61,12 +61,8 @@ of each nonzero pixel by the smallest label to which it is associated.
 */
 /****************************************************************************/
 
-static void mise_a_jour_transcode(transcode,a,b)
-
-int transcode[LABELS_NUMBER];
-int a,b;
-
-  {
+static void mise_a_jour_transcode(int *transcode, int a, int b)
+{
     if (!b) return;
     if (transcode[a]==0)
       transcode[a]=b;
@@ -92,13 +88,8 @@ itself associated with a third label l3, etc... The following function simply
 performs a recursive association of each label l1,l2,l3 with the smallest possible
 label in the chain. */
 
-static void refresh(transcode,refresh_transcode,i,first)
-
-int transcode[LABELS_NUMBER],refresh_transcode[LABELS_NUMBER];
-int i;
-int *first;  
-    
-  {
+static void refresh(int *transcode, int *refresh_transcode, int i, int *first)
+{
     if (transcode[i])
       {
 	refresh(transcode,refresh_transcode,transcode[i],first);
@@ -110,14 +101,8 @@ int *first;
 
 /****************************************************************************/
 
-static void fconnected(In,line,col,FOREGROUND,NUMBER,not_writing_on,complement,connectivity)
-float *In;
-int line,col;
-float FOREGROUND;
-int *NUMBER;
-char *not_writing_on,*complement,*connectivity;
-
-  {
+static void fconnected(float *In, int line, int col, float FOREGROUND, int *NUMBER, char *not_writing_on, char *complement, char *connectivity)
+{
     int Line=line+2,Col=col+2;
     int *Output;
     register float *ptrin;
@@ -243,12 +228,7 @@ int x0,y0,x1,y1,oldx1,oldy1,dx,dy;
 static char first_point=0;
 char print_mode=0;
 
-static void DrawLinePoly(ImageWindow,a0,b0,a1,b1)
-
-
-Wframe *ImageWindow;
-int a0,b0,a1,b1;
-
+static void DrawLinePoly(Wframe *ImageWindow, int a0, int b0, int a1, int b1)
 {
   WSetTypePencil(W_COPY);
 
@@ -272,8 +252,7 @@ int a0,b0,a1,b1;
   WSetColorPencil(ImageWindow,0);
 }
 
-static void List_of_Poly()
-
+static void List_of_Poly(void)
 {
   Polygon p;
   Point_curve c;
@@ -290,8 +269,7 @@ static void List_of_Poly()
   printf("\n");
 }
 
-static void Unzoom_Poly(zoom)
-int zoom;
+static void Unzoom_Poly(int zoom)
 {
   Polygon p;
   Point_curve c;
@@ -307,8 +285,7 @@ int zoom;
 }  
 
 
-static void Help()
-
+static void Help(void)
 {
   printf("\n\t\tHelp on line\n");
 
@@ -326,10 +303,7 @@ static void Help()
 }
 
 
-static void Redraw(ImageWindow)
-
-Wframe *ImageWindow;
-
+static void Redraw(Wframe *ImageWindow)
 {
   Polygon p;
   Point_curve c;
@@ -360,10 +334,7 @@ Wframe *ImageWindow;
 /*     > 0 if there was an event caught (but Destroy) */
 /*      -1 if the event Destroy was caught (or 'Q')   */
 
-static int readpoly_notify(ImageWindow)
-
-Wframe *ImageWindow;
-
+static int readpoly_notify(Wframe *ImageWindow)
 {
   int ret;
   int event,button_mask;
@@ -538,13 +509,7 @@ Wframe *ImageWindow;
 
 /**************************************************************************/
 
-void drawocclusion(image,labelimage,hole_image,window,zoom,gray)
-Cimage image,*hole_image;
-Fimage labelimage;
-char *window;
-int *zoom;
-int *gray;
-
+void drawocclusion(Cimage image, Fimage labelimage, Cimage *hole_image, char *window, int *zoom, int *gray)
 {
   Fimage interlabelimage;
   Wframe *ImageWindow;

@@ -30,8 +30,7 @@
 
 /*--------Definition fonction de la derivee de phi epsilon-----------*/
 /*--- On Utilise phi(t)=sqrt(1+t*t)-1 ---------------*/
-static float dphi(x,e)
-     float x,e;
+static float dphi(float x, float e)
 {
   if ( x<=e)  return x/ sqrt(1+e*e) ;
   else if ( x<=(1./e) ) return (x/sqrt(1+x*x));
@@ -41,9 +40,7 @@ static float dphi(x,e)
 
 
 /*----------- Garde memoire pour le film   ------- */
-static void Film_Allocate( out, n,x,y )
-     Fmovie out;
-     int n,x,y;
+static void Film_Allocate(Fmovie out, int n, int x, int y)
 {
   Fimage image,image_prev;
   int l;
@@ -73,9 +70,7 @@ static void Film_Allocate( out, n,x,y )
 
 /*------Calcule d(i,j)=phi'(|gradB|)/(|gradB|)--*/
 
-static void calcula_D(Orig,D,e1 )
-     Fimage Orig,D;
-     float e1;
+static void calcula_D(Fimage Orig, Fimage D, float e1)
 {
   int x,y;
   float ux,uy,mgrad,a=0.0005;
@@ -106,10 +101,7 @@ static void calcula_D(Orig,D,e1 )
 /*----------------------------------------------*/
 
 
-static void calcula_B(Orig,D,Nh,Ch,alphabr1)
-     Fimage Orig,D;
-     Fmovie Nh,Ch;
-     float alphabr1;
+static void calcula_B(Fimage Orig, Fimage D, Fmovie Nh, Fmovie Ch, float alphabr1)
 {
   int x,y;
   Fimage u1,u2;
@@ -179,9 +171,7 @@ static void calcula_B(Orig,D,Nh,Ch,alphabr1)
 
 
 
-static void calcula_Ch(Ch,D,Fons,Nh,alphac1,alphacr1)
-     Fimage Ch,D,Fons,Nh;
-     float alphac1,alphacr1;
+static void calcula_Ch(Fimage Ch, Fimage D, Fimage Fons, Fimage Nh, float alphac1, float alphacr1)
 {
   int x,y;
   float dt,db,dr,dl;
@@ -237,11 +227,7 @@ static void calcula_Ch(Ch,D,Fons,Nh,alphac1,alphacr1)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void motionseg(n,prec,e,alphac,alphabr,alphacr,seu,N,C,B)
-     int *n;
-     float *prec,*e,*alphac,*alphabr,*alphacr,*seu;
-     Fmovie N, C;
-     Fimage B;
+void motionseg(int *n, float *prec, float *e, float *alphac, float *alphabr, float *alphacr, float *seu, Fmovie N, Fmovie C, Fimage B)
 {
   
   int nx,ny,n_images,l,k,it;

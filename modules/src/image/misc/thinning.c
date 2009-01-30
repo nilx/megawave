@@ -29,11 +29,7 @@
 
 /* Put imageO at the end of the movie M */
 
-static void put_in_movie(imageO,M)
-
-Cimage imageO;
-Cmovie M;
-
+static void put_in_movie(Cimage imageO, Cmovie M)
 {
   Cimage imageN=NULL;
   Cimage imageP;
@@ -56,11 +52,7 @@ Cmovie M;
 /* One iteration of the thinning algorithm A -> O */
 /* Return 1 if O!=A, 0 else.                      */
 
-static int one_thinning(A,O,dy,dx,ONE,ZERO)
-
-unsigned char *A,*O;
-int dy,dx,ONE,ZERO;
-
+static int one_thinning(unsigned char *A, unsigned char *O, int dy, int dx, int ONE, int ZERO)
 {
   int a,x,y,row,change;
 
@@ -196,13 +188,7 @@ int dy,dx,ONE,ZERO;
   return(change);
 }
 
-Cimage thinning(niter,inv,M,imageI,imageO)
-
-int *niter;
-char *inv;
-Cmovie M;
-Cimage imageI,imageO;
-
+Cimage thinning(int *niter, char *inv, Cmovie M, Cimage imageI, Cimage imageO)
 { 
   Cimage imageA=NULL;
   int ncol,nrow;

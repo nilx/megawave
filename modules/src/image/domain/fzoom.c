@@ -25,11 +25,7 @@
 
 /* NB : calling this module with out=in is possible */
 
-Fimage fzoom(in,out,x_flg,y_flg,zoom,o,p,i_flg)
-     Fimage in,out;
-     char *x_flg,*y_flg,*i_flg;
-     float *zoom,*p;
-     int *o;
+Fimage fzoom(Fimage in, Fimage out, char *x_flg, char *y_flg, float *zoom, int *o, float *p, char *i_flg)
 {
   float nx,ny,sx,sy,zero;
 

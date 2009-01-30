@@ -14,11 +14,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-static void remove_cll(cmimage,ll)
-
-Cmimage cmimage;
-Cmorpho_line ll;
-
+static void remove_cll(Cmimage cmimage, Cmorpho_line ll)
 {
   Cmorpho_line ll0,ll1;
 
@@ -36,10 +32,7 @@ Cmorpho_line ll;
   */
 }
 
-Cmimage cll_remove(cmimage,L)
-Cmimage cmimage;
-int *L;
-
+Cmimage cll_remove(Cmimage cmimage, int *L)
 {
   Cmorpho_line ll,ll_next;
   unsigned long N,Nrm;

@@ -41,8 +41,7 @@ double tmp;
 
 
 /*** return +1, 0 or -1, the sign of det(b-a,c-b) modulo double precision ***/
-static int dir(ax,ay,bx,by,cx,cy)
-     double ax,ay,bx,by,cx,cy;
+static int dir(double ax, double ay, double bx, double by, double cx, double cy)
 {
   double det,prec;
 
@@ -58,10 +57,7 @@ static int dir(ax,ay,bx,by,cx,cy)
 
 /*----------------- Split a curve into convex components -----------------*/
 
-static int my_split_convex(in,out,ncc)
-     Dlist  in;
-     double **out;
-     int    *ncc;
+static int my_split_convex(Dlist in, double **out, int *ncc)
 {
   int     il,d1,d2,ni,is_closed,ok;
   double  *p,*q,*pmax,mx,my,px1,py1,px2,py2,px3,py3,px4,py4,*first;
@@ -174,10 +170,7 @@ static int my_split_convex(in,out,ncc)
 /*------------------------------- SAMPLING  -------------------------------*/
 
 /*** sample a curve : return next available address for out ***/
-static double *sample(in,size,out,eps2)
-     double  *in,*out;
-     int     size;
-     double  eps2;
+static double *sample(double *in, int size, double *out, double eps2)
 {
   double  x,y,ox,oy,d2,dx,dy,*p,*q,*pmax;
   int     i,k,n;
@@ -239,8 +232,7 @@ static double *sample(in,size,out,eps2)
 
 
 /*** signed area of a polygonal sector p-q1-q2-p ***/
-static double area_pol(p,q1,q2)
-     double *p,*q1,*q2;
+static double area_pol(double *p, double *q1, double *q2)
 {
   double area,*q;
 
@@ -252,10 +244,7 @@ static double area_pol(p,q1,q2)
 }
 
 /*------------------------- AFFINE CONVEX EROSION -------------------------*/
-static int aceros(in,size,out,area)
-     double  *in,*out;
-     int     size;
-     double  area;
+static int aceros(double *in, int size, double *out, double area)
 {
   int     j,n,is_closed,stop,okp,okq;
   double  tot_area,cur_area,inc_area,lambda;
@@ -373,12 +362,12 @@ static int aceros(in,size,out,area)
 
 /*----------------------- DISCRETE AFFINE EROSION  -----------------------*/
 
-static void dafferos(l,area,eps2,rad,ncc)
-     Dlist    l;      /* input/output curve */
-     double   *area;  /* desired absolute area step (real one is returned) */
-     double   eps2;   /* absolute precision squared */
-     double   rad;    /* bounding box radius */
-     int      *ncc;   /* output: number of connected components after evol. */
+static void dafferos(Dlist l, double *area, double eps2, double rad, int *ncc)
+                      /* input/output curve */
+                      /* desired absolute area step (real one is returned) */
+                      /* absolute precision squared */
+                      /* bounding box radius */
+                      /* output: number of connected components after evol. */
 {
   double        a,narea,min_area,*first,*last;
   int           i,nc;
@@ -415,11 +404,7 @@ static void dafferos(l,area,eps2,rad,ncc)
 /*------------------------------ MAIN MODULE  ------------------------------*/
 
 
-Dlists gass(in,out,first,last,eps,step,n,r,v)
-     Dlists     in,out;
-     double     *first,*last,*eps,*step,*r;
-     char       *v;
-     int        *n;
+Dlists gass(Dlists in, Dlists out, double *first, double *last, double *eps, double *step, int *n, double *r, char *v)
 {
   int       i,j,ncc,MAX_PTS,MAX_CC,npts,maxsize;
   double    a,remaining_h,remaining_a,rad,eps2,omega,step_a,t;

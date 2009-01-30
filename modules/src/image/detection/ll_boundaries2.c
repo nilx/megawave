@@ -69,14 +69,7 @@ struct myglobal{
 
 
 /* store meaningful boundaries */
-static void store_boundaries(cs,tree,image,prec,tabsaddles,visit,all,
-		      NormofDu,eps2)
-Flists cs;
-Shapes tree;
-int *prec,visit;
-float **tabsaddles,eps2;
-Fimage image,NormofDu;
-char *all;
+static void store_boundaries(Flists cs, Shapes tree, Fimage image, int *prec, float **tabsaddles, int visit, char *all, Fimage NormofDu, float eps2)
 {
   Shape s;
   Flist l;
@@ -122,10 +115,7 @@ char *all;
 
 /*===== Compute the minimum contrast and the length of the curve l =====*/
 
-static float min_contrast(l,length,NormofDu)
-Flist l;
-float *length;
-Fimage NormofDu;
+static float min_contrast(Flist l, float *length, Fimage NormofDu)
 {
   double per;
   float mu,minmu,x,y,ox,oy;
@@ -159,11 +149,7 @@ Fimage NormofDu;
 }
 
 /* allocate memory for boundaries data */
-static void pixels_and_data(tree,NormofDu,image,prec,tabsaddles,sumsqper)
-Shapes tree;
-Fimage NormofDu,image;
-float **tabsaddles,*sumsqper;
-int *prec;
+static void pixels_and_data(Shapes tree, Fimage NormofDu, Fimage image, int *prec, float **tabsaddles, float *sumsqper)
 {
   Shape s;
   int i;
@@ -207,8 +193,7 @@ int *prec;
 }
 
 
-static float image_max(image)
-Fimage image;
+static float image_max(Fimage image)
 {
   int i;
   float output;
@@ -221,11 +206,7 @@ Fimage image;
 
 
 /* compute gradient histogram  in a shape */
-static Fsignal shape_histo(shape,NormofDu,size,scale)
-Shape shape;
-Fimage NormofDu;
-int size;
-float scale;
+static Fsignal shape_histo(Shape shape, Fimage NormofDu, int size, float scale)
 {
   Point_plane p;
   int i,ncol,nrow,k;
@@ -253,8 +234,7 @@ float scale;
 }
 
 /* compute log10 of repartition function from a histogram */
-static void update_repart(local_histo,local_repart)
-Fsignal local_histo,local_repart;
+static void update_repart(Fsignal local_histo, Fsignal local_repart)
 {
   int nbins,i;
 
@@ -273,9 +253,7 @@ Fsignal local_histo,local_repart;
 
 
 
-static float logH(mu,local_repart)
-float mu;
-Fsignal local_repart;
+static float logH(float mu, Fsignal local_repart)
 {
   int i;
   
@@ -286,8 +264,7 @@ Fsignal local_repart;
 
 
 /* compute IN PLACE the difference of two signals and take the positive part*/
-static void signal_pos_diff(sig1,sig2)
-Fsignal sig1,sig2;
+static void signal_pos_diff(Fsignal sig1, Fsignal sig2)
 {
   int i;
   
@@ -297,10 +274,7 @@ Fsignal sig1,sig2;
   }
 }
 
-static void update_root_histo(local_root,local_histo,NormofDu)
-Shape local_root;
-Fsignal local_histo;
-Fimage NormofDu;
+static void update_root_histo(Shape local_root, Fsignal local_histo, Fimage NormofDu)
 {
   Shape s;
   Mydata sdata;
@@ -342,12 +316,7 @@ Fimage NormofDu;
 
 
 /* compute nfa of a given shape boundary */
-static int update_mydata(s,type,local_root,local_repart,Global,new_open)
-Shape s,local_root;
-char type;
-Fsignal local_repart;
-struct myglobal Global;
-int *new_open;
+static int update_mydata(Shape s, char type, Shape local_root, Fsignal local_repart, struct myglobal Global, int *new_open)
 { 
   Shape t;
   float mu,threshold;
@@ -410,11 +379,7 @@ int *new_open;
 
 /*===== second pass : compute and select maximal meaningful boundaries =====*/
 /* classical maximality,  if research is not local */
-static void add_boundary(s,local_root,bestnfa_inf,bestnfa_sup,type,Global)
-Shape s,local_root;
-float *bestnfa_inf,bestnfa_sup;
-char type;
-struct myglobal Global;
+static void add_boundary(Shape s, Shape local_root, float *bestnfa_inf, float bestnfa_sup, char type, struct myglobal Global)
 { 
   Shape t;
   float nfa,new_bestnfa_inf,old_bestnfa_sup,threshold;
@@ -497,11 +462,7 @@ struct myglobal Global;
    This is used to give a partition of the image taken as support of the local 
    contrast histograms*/
 
-static void total_maximal(s,local_root,bestnfa_inf,bestnfa_sup,Global,new_open)
-Shape s,local_root;
-float *bestnfa_inf,bestnfa_sup;
-struct myglobal Global;
-int new_open;
+static void total_maximal(Shape s, Shape local_root, float *bestnfa_inf, float bestnfa_sup, struct myglobal Global, int new_open)
 {
   Shape t;
   Mydata sdata;
@@ -556,9 +517,7 @@ int new_open;
    tree of shapes. (only keep maximal curve) 
    These boundaries cannot be scanned in further local detection */
 
-static void clear_total_maximal(s,local_root,threshold)
-Shape s,local_root;
-float threshold;
+static void clear_total_maximal(Shape s, Shape local_root, float threshold)
 {
   Shape t;
   Mydata sdata,tdata;
@@ -596,11 +555,7 @@ float threshold;
   }
 }
 
-static void fathom_tree(local_root,NormofDu,local_histo,local_repart,Global)
-Shape local_root;
-Fimage NormofDu;
-Fsignal local_histo,local_repart;
-struct myglobal Global;
+static void fathom_tree(Shape local_root, Fimage NormofDu, Fsignal local_histo, Fsignal local_repart, struct myglobal Global)
 {
   int detect,new_open;
   float nfa_inf,nfa_sup,nfils=0.;
@@ -662,12 +617,7 @@ struct myglobal Global;
   }
 }
 
-Flists ll_boundaries2(in,eps,tree,step,prec,std,hstep,all,visit,loc,image_out,keep_tree)
-Fimage in,image_out;
-Shapes tree,keep_tree;
-float *eps,*step,*hstep,*std;
-int *prec,*visit;
-char *all,*loc;
+Flists ll_boundaries2(Fimage in, float *eps, Shapes tree, float *step, int *prec, float *std, float *hstep, char *all, int *visit, char *loc, Fimage image_out, Shapes keep_tree)
 {
   Fimage copy_in,saddles,NormofDu;
   Shapes ref_tree;

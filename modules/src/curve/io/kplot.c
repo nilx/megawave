@@ -25,9 +25,7 @@
 
 /* Compute the bounding box of a Curves */
 
-static void bound_curves(cs,xmin,ymin,xmax,ymax)
-     Curves cs;
-     int *xmin,*ymin,*xmax,*ymax;
+static void bound_curves(Curves cs, int *xmin, int *ymin, int *xmax, int *ymax)
 {
   Curve        c;
   Point_curve  p;
@@ -50,12 +48,7 @@ static void bound_curves(cs,xmin,ymin,xmax,ymax)
 }
 
 
-static void bitmap_curve_with_lines(curve,A,B,xmin,ymin,mode)
-     
-     Curve curve;
-     Cimage A,B;
-     int xmin,ymin,mode;
-     
+static void bitmap_curve_with_lines(Curve curve, Cimage A, Cimage B, int xmin, int ymin, int mode)
 { 
   register Point_curve p;
   register int x0,y0;
@@ -101,12 +94,7 @@ static void bitmap_curve_with_lines(curve,A,B,xmin,ymin,mode)
       }
 }
 
-static void bitmap_curve(curve,A,B,xmin,ymin)
-     
-     Curve curve;
-     Cimage A,B;
-     int xmin,ymin;
-     
+static void bitmap_curve(Curve curve, Cimage A, Cimage B, int xmin, int ymin)
 { 
   register Point_curve p;
 
@@ -121,13 +109,7 @@ static void bitmap_curve(curve,A,B,xmin,ymin)
 }
 
 
-void kplot(A,line,curves,B,d)
-     
-     Cimage A,B;
-     char *line;
-     Curves curves;
-     int *d;
-     
+void kplot(Cimage A, char *line, Curves curves, Cimage B, int *d)
 { Curve curve;
   int i,nx,ny;
   int xmax,ymax,xmin,ymin;

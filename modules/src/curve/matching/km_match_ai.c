@@ -66,15 +66,12 @@ static float M_norm2[3][3];
 
 
 /*** Auxiliary functions to Compute the affine-transform between two frames */
-static float detM2(x1, y1, x2, y2)
-     float x1, y1, x2, y2;
+static float detM2(float x1, float y1, float x2, float y2)
 {
   return (x1*y2-y1*x2);
 }
 
-static unsigned char getMatrixAffine(x1, y1, x2, y2, x3, y3, x1N, y1N, x2N, y2N, x3N, y3N, A)
-     float x1, y1, x2, y2, x3, y3, x1N, y1N, x2N, y2N, x3N, y3N;
-     float A[3][3];
+static unsigned char getMatrixAffine(float x1, float y1, float x2, float y2, float x3, float y3, float x1N, float y1N, float x2N, float y2N, float x3N, float y3N, float (*A)[3])
 {
   float a11, a12, a13, a21, a22, a23, a31, a32, a33;
   float a, b, c, d, Tx, Ty;
@@ -119,8 +116,7 @@ static unsigned char getMatrixAffine(x1, y1, x2, y2, x3, y3, x1N, y1N, x2N, y2N,
    one local frame in image 1 to another local frame in image 2. 
    M_aff is a global variable whose computation is done below */
 
-static void motionAI_12(x, y)
-     float *x, *y;
+static void motionAI_12(float *x, float *y)
 {
   float xN, yN;
   
@@ -137,9 +133,7 @@ static void motionAI_12(x, y)
 /* Given a point index, gets the index of the 
    next (type=1) or previous(type=0) point in the curve */
 
-static int get_next_index(i, iLast, type)
-     int i, iLast;
-     unsigned char type;
+static int get_next_index(int i, int iLast, unsigned char type)
 {
   int i_next;
 
@@ -164,9 +158,7 @@ static int get_next_index(i, iLast, type)
 }
 
 
-static float arc_length(fcrv, i1, i2)
-     Flist fcrv;
-     int i1, i2;
+static float arc_length(Flist fcrv, int i1, int i2)
 {
   int i;
   float x1, y1, x2, y2, length;
@@ -209,14 +201,7 @@ static float arc_length(fcrv, i1, i2)
    ILAST index, the function returns -1. Otherwise, it stores in
    (xIO,yIO) the searched point and returns its index */
 
-static int get_next_point_lengthAI(fcrv, xIO, yIO, iFirst, iLast, A_norm, d, type)
-     Flist fcrv;
-     float *xIO;
-     float *yIO;
-     int iFirst, iLast; 
-     float A_norm[3][3];
-     float d;
-     unsigned char type;
+static int get_next_point_lengthAI(Flist fcrv, float *xIO, float *yIO, int iFirst, int iLast, float (*A_norm)[3], float d, unsigned char type)
 {
   int i, i_last;
   float x, y, xP, yP, s, t;
@@ -277,15 +262,7 @@ static int get_next_point_lengthAI(fcrv, xIO, yIO, iFirst, iLast, A_norm, d, typ
    corresponding to the end of the extension are stored in IL1 (for
    FCRV1) and IL2 (for FCRV2).  */
 
-static void get_last_index_matching(errorMax, info1, info2, fcrv1, fcrv2, iL1, iL2, iLast1, iLast2, type)
-     struct NormDataAI *info1;
-     struct NormDataAI *info2; 
-     Flist fcrv1, fcrv2;
-     int *iL1;
-     int *iL2; 
-     int iLast1, iLast2;
-     float errorMax;
-     unsigned char type;
+static void get_last_index_matching(float errorMax, struct NormDataAI *info1, struct NormDataAI *info2, Flist fcrv1, Flist fcrv2, int *iL1, int *iL2, int iLast1, int iLast2, unsigned char type)
 {
   float x1, y1, x2, y2, x1p, y1p, ee;
   int i1, i2;
@@ -324,16 +301,7 @@ static void get_last_index_matching(errorMax, info1, info2, fcrv1, fcrv2, iL1, i
    performance value is calculated, matching information is stored in a
    MATCHDATA structure, and function returns 1. */
 
-static unsigned char extend_matchingAI(errorMax, minLength, info1, info2, fcrv1, fcrv2, ini1, fin1, ini2, fin2,matchdataaux)
-     float errorMax, minLength;
-     struct NormDataAI *info1; 
-     struct NormDataAI *info2; 
-     struct matchdata *matchdataaux;
-     Flist fcrv1, fcrv2; 
-     int *ini1;
-     int *fin1;
-     int *ini2;
-     int *fin2;
+static unsigned char extend_matchingAI(float errorMax, float minLength, struct NormDataAI *info1, struct NormDataAI *info2, Flist fcrv1, Flist fcrv2, int *ini1, int *fin1, int *ini2, int *fin2, struct matchdata *matchdataaux)
 {
   float L1, L2;
   float L1total, L2total;
@@ -385,8 +353,7 @@ static unsigned char extend_matchingAI(errorMax, minLength, info1, info2, fcrv1,
 /***** auxiliary functions for the complexity check of a piece of curve ****/
 
 /* angle between two vectors */
-static float angle(u0x,u0y,v0x,v0y)
-     float u0x,u0y,v0x,v0y; 
+static float angle(float u0x, float u0y, float v0x, float v0y)
 {
   float c,s;
 
@@ -396,9 +363,7 @@ static float angle(u0x,u0y,v0x,v0y)
 }
 
 /* computes the total angle variation of a curve (i.e. its complexity) */
-static float get_complexity(fcrv, i1, i2)
-     Flist fcrv;
-     int i1, i2;
+static float get_complexity(Flist fcrv, int i1, int i2)
 {
   float x1, y1, x2, y2, vx, vy, vxP, vyP, cmpx;
   int i;
@@ -442,14 +407,7 @@ static float get_complexity(fcrv, i1, i2)
    All the matching information is stored in a MATCHDATA structure 
    (see function extend_matchingAI). */
 
-static unsigned char check_matchingAI(fcrv1, fcrv2, info1, info2, minComplex, errorMax, minLength, A_norm1, A_norm2, A_12, matchdataaux)
-     Flist fcrv1, fcrv2; 
-     struct NormDataAI *info1, *info2;
-     struct matchdata *matchdataaux;
-     float minComplex, errorMax, minLength;
-     float A_12[3][3];
-     float A_norm1[3][3];
-     float A_norm2[3][3];
+static unsigned char check_matchingAI(Flist fcrv1, Flist fcrv2, struct NormDataAI *info1, struct NormDataAI *info2, float minComplex, float errorMax, float minLength, float (*A_norm1)[3], float (*A_norm2)[3], float (*A_12)[3], struct matchdata *matchdataaux)
 {
   int i1, f1, i2, f2;
 
@@ -496,11 +454,7 @@ static unsigned char check_matchingAI(fcrv1, fcrv2, info1, info2, minComplex, er
    image2 that match; they can be displayed using FKVIEW.
 */
 
-void km_match_ai(maxError1, maxError2,minLength, minComplex, levlines1, levlines2, dict1, dict2, matchings, matching_pieces)
-     float maxError1, maxError2;
-     float minLength, minComplex;	      
-     Flists levlines1, levlines2, dict1, dict2;
-     Flist matchings, matching_pieces; 
+void km_match_ai(float maxError1, float maxError2, float minLength, float minComplex, Flists levlines1, Flists levlines2, Flists dict1, Flists dict2, Flist matchings, Flist matching_pieces)
 {
   struct matchdata *matchdataaux;
   int m,n;

@@ -20,11 +20,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-Cimage cdisc(out,nx,ny,x,y,r)
-     Cimage out;
-     int nx,ny;
-     float *x,*y;
-     float *r;
+Cimage cdisc(Cimage out, int nx, int ny, float *x, float *y, float *r)
 {
   float cx,cy,rad2;
   int ix,iy;

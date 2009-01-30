@@ -22,9 +22,7 @@
 #include "mw.h"
 
 /*--- One iteration of u<-u+s*Laplacian ---*/
-static void iter(u,v,s)
-     Fimage u,v;
-     float  s;
+static void iter(Fimage u, Fimage v, float s)
 {
   int   i,j,im,i1,jm,j1;
   float laplacian;
@@ -47,10 +45,7 @@ static void iter(u,v,s)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Fimage heat(in,out,n,s)
-     Fimage in,out;
-     int    *n;
-     float  *s;
+Fimage heat(Fimage in, Fimage out, int *n, float *s)
 {
   Fimage w,*src,*dst,*new;
   int niter;

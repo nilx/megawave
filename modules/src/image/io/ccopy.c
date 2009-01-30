@@ -13,8 +13,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-void ccopy(Input,Output)
-     Cimage Input,*Output;
+void ccopy(Cimage Input, Cimage *Output)
 {
   if (*Output == NULL) mwerror(USAGE,1,"At least one Output requested\n");
   *Output = Input; 

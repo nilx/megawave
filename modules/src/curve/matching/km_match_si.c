@@ -67,9 +67,7 @@ static float M_SI[2][3];
 
 /* Computes the similitude-transform between two frames */
 
-static void getMatrixSI(xini1, yini1, xfin1, yfin1, xini2, yini2, xfin2, yfin2, A)
-     float xini1, yini1, xfin1, yfin1, xini2, yini2, xfin2, yfin2;
-     float A[2][3];
+static void getMatrixSI(float xini1, float yini1, float xfin1, float yfin1, float xini2, float yini2, float xfin2, float yfin2, float (*A)[3])
 {
   float X1,Y1,X2,Y2,L1sq;
 
@@ -100,8 +98,7 @@ static void getMatrixSI(xini1, yini1, xfin1, yfin1, xini2, yini2, xfin2, yfin2, 
    one local frame in image 1 to another local frame in image 2. 
    M_SI is a global variable whose computation is done below */
 
-static void map1to2_SI(x, y)
-     float *x, *y;
+static void map1to2_SI(float *x, float *y)
 {
   float xN, yN;
   
@@ -117,9 +114,7 @@ static void map1to2_SI(x, y)
 /* Given a point index, gets the index of the 
    next (type=1) or previous(type=0) point in the curve */
 
-static int get_next_index(i, iLast, type)
-     int i, iLast;
-     unsigned char type;
+static int get_next_index(int i, int iLast, unsigned char type)
 {
   int i_next;
   
@@ -146,9 +141,7 @@ static int get_next_index(i, iLast, type)
 
 /* computes arclength of curve FCRV between indices i1 and i2 */
 
-static float arc_length(fcrv, i1, i2)
-     Flist fcrv;
-     int i1, i2;
+static float arc_length(Flist fcrv, int i1, int i2)
 {
   int i;
   float x1, y1, x2, y2, length;
@@ -191,12 +184,7 @@ static float arc_length(fcrv, i1, i2)
    function returns -1. Otherwise, it stores in (xIO,yIO) the searched 
    point and returns its index */
 
-static int get_next_point_length(fcrv, xI0, yI0, iFirst, iLast, d, type)
-     Flist fcrv;
-     float *xI0, *yI0;
-     int iFirst, iLast;
-     float d;
-     unsigned char type;
+static int get_next_point_length(Flist fcrv, float *xI0, float *yI0, int iFirst, int iLast, float d, unsigned char type)
 {
   int i, i_last;
   float x, y, xP, yP, s, t;
@@ -247,15 +235,7 @@ static int get_next_point_length(fcrv, xI0, yI0, iFirst, iLast, d, type)
    corresponding to the end of the extension are stored in IL1 (for
    FCRV1) and IL2 (for FCRV2).  */
 
-static void get_last_index_matching(errorMax, info1, info2, fcrv1, fcrv2, iL1, iL2, iLast1, iLast2, type)
-     struct NormDataSIconcat *info1;
-     struct NormDataSIconcat *info2; 
-     Flist fcrv1, fcrv2;
-     int *iL1;
-     int *iL2; 
-     int iLast1, iLast2;
-     float errorMax;
-     unsigned char type;
+static void get_last_index_matching(float errorMax, struct NormDataSIconcat *info1, struct NormDataSIconcat *info2, Flist fcrv1, Flist fcrv2, int *iL1, int *iL2, int iLast1, int iLast2, unsigned char type)
 {
   float x1, y1, x2, y2, x1p, y1p, ee;
   int i1, i2;
@@ -295,16 +275,7 @@ static void get_last_index_matching(errorMax, info1, info2, fcrv1, fcrv2, iL1, i
    performance value is calculated, matching information is stored in a
    MATCHDATA structure, and function returns 1. */
 
-static unsigned char extend_matchingSI(errorMax, minLength, info1, info2, fcrv1, fcrv2, ini1, fin1, ini2, fin2,matchdataaux)
-     float errorMax, minLength;
-     struct NormDataSIconcat *info1; 
-     struct NormDataSIconcat *info2; 
-     struct matchdata *matchdataaux;
-     Flist fcrv1, fcrv2; 
-     int *ini1;
-     int *fin1;
-     int *ini2;
-     int *fin2;
+static unsigned char extend_matchingSI(float errorMax, float minLength, struct NormDataSIconcat *info1, struct NormDataSIconcat *info2, Flist fcrv1, Flist fcrv2, int *ini1, int *fin1, int *ini2, int *fin2, struct matchdata *matchdataaux)
 {
   float L1, L2;
   float L1total, L2total;
@@ -354,8 +325,7 @@ static unsigned char extend_matchingSI(errorMax, minLength, info1, info2, fcrv1,
 /***** auxiliary functions for the complexity check of a piece of curve ******/
 
 /* angle between two vectors */
-static float angle(u0x,u0y,v0x,v0y)
-     float u0x,u0y,v0x,v0y; 
+static float angle(float u0x, float u0y, float v0x, float v0y)
 {
   float c,s;
 
@@ -365,9 +335,7 @@ static float angle(u0x,u0y,v0x,v0y)
 }
 
 /* computes the total angle variation of a curve (i.e. its complexity) */
-static float get_complexity(fcrv, i1, i2)
-     Flist fcrv;
-     int i1, i2;
+static float get_complexity(Flist fcrv, int i1, int i2)
 {
   float x1, y1, x2, y2, vx, vy, vxP, vyP, cmpx;
   int i;
@@ -411,12 +379,7 @@ static float get_complexity(fcrv, i1, i2)
    All the matching information is stored in a MATCHDATA structure 
    (see function extend_matchingSI) .*/
 
-static unsigned char check_matchingSI(fcrv1, fcrv2, info1, info2, minComplex, errorMax, minLength, A, matchdataaux)
-     Flist fcrv1, fcrv2; 
-     struct NormDataSIconcat *info1, *info2;
-     struct matchdata *matchdataaux;
-     float minComplex, errorMax, minLength;
-     float A[3][3];
+static unsigned char check_matchingSI(Flist fcrv1, Flist fcrv2, struct NormDataSIconcat *info1, struct NormDataSIconcat *info2, float minComplex, float errorMax, float minLength, float (*A)[3], struct matchdata *matchdataaux)
 {
   int i1, f1, i2, f2;
 
@@ -454,11 +417,7 @@ static unsigned char check_matchingSI(fcrv1, fcrv2, info1, info2, minComplex, er
    image2 that match; they can be displayed using FKVIEW.
 */
 
-void km_match_si(maxError1, maxError2,minLength, minComplex, levlines1, levlines2, dict1, dict2, matchings, matching_pieces)
-     float maxError1, maxError2;
-     float minLength, minComplex;
-     Flists levlines1, levlines2, dict1, dict2;
-     Flist matchings, matching_pieces; 
+void km_match_si(float maxError1, float maxError2, float minLength, float minComplex, Flists levlines1, Flists levlines2, Flists dict1, Flists dict2, Flist matchings, Flist matching_pieces)
 {
   struct matchdata *matchdataaux;
   int m,n;

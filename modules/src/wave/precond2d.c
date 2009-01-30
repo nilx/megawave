@@ -28,11 +28,7 @@ typedef struct filbank {
 
 
 static void
-INIT_PREC(edge_ri, precleftfil, precrightfil, unprecleftfil, unprecrightfil)
-
-Fimage edge_ri;
-Filbank *precleftfil, *precrightfil, *unprecleftfil, *unprecrightfil;
-
+INIT_PREC(Fimage edge_ri, Filbank *precleftfil, Filbank *precrightfil, Filbank *unprecleftfil, Filbank *unprecrightfil)
 {
 short N;
 short i,j;
@@ -73,11 +69,11 @@ for (j=0; j<N; j++) {
 
 
 static void
-PRECOND(image, output, LeftMat, RightMat)	/*--- (Un)preconditionning of image's edges ---*/
+PRECOND(Fimage image, Fimage output, Filbank LeftMat, Filbank RightMat)	/*--- (Un)preconditionning of image's edges ---*/
 
-    Fimage      image;		/*--- input image ---*/
-    Fimage      output;		/*--- (un)preconditionned image ---*/
-    Filbank     LeftMat, RightMat;	/*--- Matrix of (un)preconditionning for left (upper) and right (lower) edges of image ---*/
+                      		/*--- input image ---*/
+                       		/*--- (un)preconditionned image ---*/
+                                  	/*--- Matrix of (un)preconditionning for left (upper) and right (lower) edges of image ---*/
 
 {
 
@@ -149,13 +145,13 @@ PRECOND(image, output, LeftMat, RightMat)	/*--- (Un)preconditionning of image's 
 
 
 void
-precond2d(Inverse, Image, Output, Edge_Ri)
+precond2d(int *Inverse, Fimage Image, Fimage Output, Fimage Edge_Ri)
 
-    int	      *Inverse;		/* Equal 0 if normal preconditionning 
+       	               		/* Equal 0 if normal preconditionning 
 				 *	 1 if inverse	    "		*/
-    Fimage     Image;		/* Input image */
-    Fimage     Output;		/* Output image */
-    Fimage     Edge_Ri;		/* Buffer containing coefficients of 
+                     		/* Input image */
+                      		/* Output image */
+                       		/* Buffer containing coefficients of 
 				 * preconditionning matrices */
 
 {

@@ -68,20 +68,14 @@ float time1,time2,final_scale;
 short MAXvit,MINvit,fmxa;
 
 
-static void RESOLUTION2(),EVOL(),CALCULB(),CALC_CURV(),CALC_ACCEL();
+static void RESOLUTION2(void),EVOL(void),CALCULB(void),CALC_CURV(void),CALC_ACCEL(void);
 
 
 /*---------------------------------------------------------------------------
                                    M A M
 ---------------------------------------------------------------------------*/
 
-void mam(in,out,ptime,ppower,n_iter,pMAXvit,pMINvit,pfmxa)
-
-     Cmovie in,out;
-     float  *ptime,*ppower;
-     int    *n_iter;
-     short  *pMAXvit,*pMINvit,*pfmxa;
-
+void mam(Cmovie in, Cmovie out, float *ptime, float *ppower, int *n_iter, short int *pMAXvit, short int *pMINvit, short int *pfmxa)
 {
   Cimage u,ud;
   int    k,l;
@@ -176,7 +170,7 @@ void mam(in,out,ptime,ppower,n_iter,pMAXvit,pMINvit,pfmxa)
 
 /*-------------------------------------------------------------------------*/
 
-static void RESOLUTION2()
+static void RESOLUTION2(void)
 {
   printf("Computing curvature ... "); 
   fflush(stdout);
@@ -195,7 +189,7 @@ static void RESOLUTION2()
 /*              EVOL                      */
 /*----------------------------------------*/
 
-static void EVOL()
+static void EVOL(void)
 {
   register int j,i,l;
   long adr;
@@ -238,8 +232,7 @@ static void EVOL()
 
 /*-------------------------------------------------------------------------*/
 
-static short calcul(x,y)
-     short x,y;
+static short calcul(short int x, short int y)
 {
   int t;
   
@@ -261,7 +254,7 @@ static short calcul(x,y)
 }
 
 
-static void CALCULB()
+static void CALCULB(void)
 {
   register short i,j;
   short vit;
@@ -300,7 +293,7 @@ static void CALCULB()
 #define RAC2 1.41421356
 #define CONS 0.292893219
 
-static void CALC_CURV()
+static void CALC_CURV(void)
 {
   
   int i,j,l;
@@ -354,7 +347,7 @@ static void CALC_CURV()
 /*-------------------------------------------------------------------------*/
 
 
-static void CALC_ACCEL()
+static void CALC_ACCEL(void)
 {
   int lx,ly,kx,ky,i,j,l;
   int lx2,ly2,lx1,ly1;

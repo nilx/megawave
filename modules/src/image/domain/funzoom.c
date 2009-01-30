@@ -27,9 +27,7 @@
 /* NB : calling this module with out=in is possible */
 
 /* extract image value (symmetrize outside image domain) */
-static float v(in,x,y)
-     Fimage in;
-     int x,y;
+static float v(Fimage in, int x, int y)
 {
   if (x<0) x=-x;
   if (x>=in->ncol) x=2*(in->ncol-1)-x;
@@ -39,9 +37,7 @@ static float v(in,x,y)
 }
 
 /* fast integral power function */
-static double ipow(x,n)
-     double x;
-     int n;
+static double ipow(double x, int n)
 {
   double res;
 
@@ -53,8 +49,7 @@ static double ipow(x,n)
 }
 
 /* binomial coefficient */
-static double binom(k,n)
-     int k,n;
+static double binom(int k, int n)
 {
   int i;
   double v;
@@ -81,9 +76,7 @@ typedef struct ppfunction {
 
 /* find the interval [x(i),x(i+1)] corresponding to a given point */
 /* convention : i=-1 if the interval is unbounded */
-static int ppfind(f,x)
-     Ppfunction f;
-     double x;
+static int ppfind(Ppfunction f, double x)
 {
   int i;
 
@@ -93,9 +86,7 @@ static int ppfind(f,x)
 }
 
 /* eval a Ppfunction at a given point x (Horner algorithm) */
-static double ppeval(f,x)
-     Ppfunction f;
-     double x;
+static double ppeval(Ppfunction f, double x)
 {
   int i,j;
   double v;
@@ -109,10 +100,7 @@ static double ppeval(f,x)
     
 /* add integral between x[i] and t-w (sign=-1) 
              or between x[i] and t+w (sign=1) */
-static void ppaddint(f,g,i,sign,w)
-     Ppfunction f,g;
-     int i,sign;
-     double w;
+static void ppaddint(Ppfunction f, Ppfunction g, int i, int sign, double w)
 {
   double x,v;
   int n,j,i0,k;
@@ -132,9 +120,7 @@ static void ppaddint(f,g,i,sign,w)
 }
 
 /* add integral between x[i1] and x[i2] */
-static void ppaddcte(f,g,i1,i2)
-     Ppfunction f,g;
-     int i1,i2;
+static void ppaddcte(Ppfunction f, Ppfunction g, int i1, int i2)
 {
   double x,y;
   int n,i,j;
@@ -156,9 +142,7 @@ static void ppaddcte(f,g,i1,i2)
 
 /* convolution of a piecewise polynomial function */
 /* by a symmetric pulse of width 2*w and height 1 */
-static void ppconvol(f,g,w)
-     Ppfunction f,g;
-     double w;
+static void ppconvol(Ppfunction f, Ppfunction g, double w)
 {
   float x1,x2;
   int i1,i2;
@@ -204,10 +188,7 @@ static void ppconvol(f,g,w)
 
 
 /* build unzoom kernel of order o : (W1*Wz)^o */
-static void ppkernel(f,o,z)
-     Ppfunction f;
-     int o;
-     float z;
+static void ppkernel(Ppfunction f, int o, float z)
 {
   struct ppfunction g;
   Ppfunction f1,f2,f3;
@@ -234,10 +215,7 @@ static void ppkernel(f,o,z)
 
 /*------------------------ MAIN MODULE ---------------------------------*/
 
-Fimage funzoom(in,out,z,o,tx,ty)
-     Fimage in,out;
-     float *z,*tx,*ty;
-     int *o;
+Fimage funzoom(Fimage in, Fimage out, float *z, int *o, float *tx, float *ty)
 {
   int i,d,n,x,y,nx,ny,nsx,nsy;
   float *c,p,u,res,delta;

@@ -20,8 +20,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fvalues(), smean(), snorm() */
 
-void sinfo(s)
-     Fsignal s;
+void sinfo(Fsignal s)
 {  
   float min,max,p;
   double mean,std;

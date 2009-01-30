@@ -63,11 +63,7 @@ static unsigned char  *ptrc;      /* Pointer to compress->gray for next
 
 
 static void
-FCB2WCB(fcb, wcb)
-
-Fimage        fcb;
-Wtrans2d      wcb;
-
+FCB2WCB(Fimage fcb, Wtrans2d wcb)
 {
   int           nlevel;
   int           j;	        /* Scale index in wav. transf. */
@@ -130,8 +126,7 @@ Wtrans2d      wcb;
 
 
 static int 
-READ_BIT_WTRANS()
-
+READ_BIT_WTRANS(void)
 {
   int           bit;              /* Value of read and returned bit */
 
@@ -156,10 +151,10 @@ READ_BIT_WTRANS()
 
 
 static void
-DECODE_INT_WTRANS(symb, max)
+DECODE_INT_WTRANS(int *symb, int max)
 
-int           *symb;         /* Value of read symbol */
-int            max;          /* Half of maximum value for symbol */
+                             /* Value of read symbol */
+                             /* Half of maximum value for symbol */
   
 {
   int bit;
@@ -179,12 +174,12 @@ int            max;          /* Half of maximum value for symbol */
 
 
 static void
-READ_HEADER_WTRANS(nrow, ncol, nlevel, scalvec, compress)
+READ_HEADER_WTRANS(int *nrow, int *ncol, int *nlevel, int (*scalvec)[4], Cimage compress)
 
-int         *nrow, *ncol;        /* Size of image */
-int         *nlevel;             /* Number of levels in wavelet transform */
-int          scalvec[MAX_LEVEL][NORIENT];
-Cimage       compress;           /* Compressed wavelet transform */
+                                 /* Size of image */
+                                 /* Number of levels in wavelet transform */
+                                         
+                                 /* Compressed wavelet transform */
 
 {
   int       i, j;
@@ -234,26 +229,26 @@ Cimage       compress;           /* Compressed wavelet transform */
 
 
 static void
-wivq_loc(ScaleWeight, CodeBook2, CodeBook3, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResResCodeBook1, ResResCodeBook2, Compress, CodeBook1, Output)
+wivq_loc(float *ScaleWeight, Wtrans2d CodeBook2, Wtrans2d CodeBook3, Wtrans2d ResCodeBook1, Wtrans2d ResCodeBook2, Wtrans2d ResCodeBook3, Wtrans2d ResResCodeBook1, Wtrans2d ResResCodeBook2, Cimage Compress, Wtrans2d CodeBook1, Wtrans2d Output)
 
-float          *ScaleWeight;          /* Apply a weighting of coefficients 
+                                      /* Apply a weighting of coefficients 
 				       * before quantization */
-Wtrans2d        CodeBook2, CodeBook3; /* Sequence of codebooks for adaptive 
+                                      /* Sequence of codebooks for adaptive 
 				       * quantization */
-Wtrans2d        ResCodeBook1, ResCodeBook2, ResCodeBook3; /* Sequence of 
+                                                          /* Sequence of 
 				       * codebooks for residu quantization  
 				       * after quantization with CodeBook 
 				       * AdapCodeBook2 and AdapCodeBook3 */
-Wtrans2d        ResResCodeBook1;      /* Sequence of codebooks for residu 
+                                      /* Sequence of codebooks for residu 
 				       * quantization after quantization 
 				       * with CodeBook and ResCodeBook1 */
-Wtrans2d        ResResCodeBook2;      /* Sequence of codebooks for residu 
+                                      /* Sequence of codebooks for residu 
 				       * quantization after quantization 
 				       * with AdapCodeBook2 and ResCodeBook2 */
-Cimage          Compress;	      /* Input compressed representation */
-Wtrans2d        CodeBook1;            /* First sequence of codebooks for 
+                         	      /* Input compressed representation */
+                                      /* First sequence of codebooks for 
 				       * for quantization */
-Wtrans2d        Output;               /* Reconstructed wavelet transform */
+                                      /* Reconstructed wavelet transform */
 
 {
   int             NRow, NCol;         /* Number of rows and columns in image */
@@ -355,36 +350,36 @@ Wtrans2d        Output;               /* Reconstructed wavelet transform */
 
 
 static void
-fwivq_wcb(CodeBook2, CodeBook3, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResResCodeBook1, ResResCodeBook2, Edge_Ri, Ri2, FilterNorm, WeightFac, Compress, CodeBook1, Output, Ri)
+fwivq_wcb(Wtrans2d CodeBook2, Wtrans2d CodeBook3, Wtrans2d ResCodeBook1, Wtrans2d ResCodeBook2, Wtrans2d ResCodeBook3, Wtrans2d ResResCodeBook1, Wtrans2d ResResCodeBook2, Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *WeightFac, Cimage Compress, Wtrans2d CodeBook1, Fimage Output, Fsignal Ri)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 
-Wtrans2d    CodeBook2, CodeBook3; /* Sequence of codebooks for adaptive 
+                                  /* Sequence of codebooks for adaptive 
 				 * quantization */
-Wtrans2d    ResCodeBook1, ResCodeBook2, ResCodeBook3; /* Sequence of codebooks 
+                                                      /* Sequence of codebooks 
 			         * for residu quantization after quantization 
 				 * with CodeBook AdapCodeBook2 
 				 * and AdapCodeBook3 */
-Wtrans2d    ResResCodeBook1;    /* Sequence of codebooks for residu 
+                                /* Sequence of codebooks for residu 
 				 * quantization after quantization 
 				 * with CodeBook and ResCodeBook1 */
-Wtrans2d    ResResCodeBook2;    /* Sequence of codebooks for residu 
+                                /* Sequence of codebooks for residu 
 				 * quantization after quantization 
 				 * with AdapCodeBook2 and ResCodeBook2 */
-Fimage	    Edge_Ri;		/* Impulse responses of filters for special 
+      	            		/* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
-Fsignal     Ri2;		/* Impulse response of the low pass filter */
+                		/* Impulse response of the low pass filter */
 				/* for synthesis */
-int        *FilterNorm;	        /* Equal 0 if no normalisation of filter's tap
+                       	        /* Equal 0 if no normalisation of filter's tap
 			         *       1 if normalisation of the sum 
 			         *       2 if normalistion of the square sum */
-float      *WeightFac;          /* Weighting factor for wavelet coeff. */
-Cimage      Compress;		/* Input compressed image */
-Wtrans2d    CodeBook1;          /* First sequence of codebooks for 
+                                /* Weighting factor for wavelet coeff. */
+                     		/* Input compressed image */
+                                /* First sequence of codebooks for 
 				 * for quantization */
-Fimage      Output;		/* Reconstructed image */
-Fsignal     Ri;			/* Impulse response of the low pass filter */
+                   		/* Reconstructed image */
+               			/* Impulse response of the low pass filter */
 
 {
   int         J;       	        /* Current level of decomposition */
@@ -438,36 +433,36 @@ Fsignal     Ri;			/* Impulse response of the low pass filter */
 
 
 void
-fwivq(Edge_Ri, Ri2, FilterNorm, WeightFac, CodeBook2, CodeBook3, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResResCodeBook1, ResResCodeBook2, Compress, CodeBook1, Ri, Output)
+fwivq(Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *WeightFac, Fimage CodeBook2, Fimage CodeBook3, Fimage ResCodeBook1, Fimage ResCodeBook2, Fimage ResCodeBook3, Fimage ResResCodeBook1, Fimage ResResCodeBook2, Cimage Compress, Fimage CodeBook1, Fsignal Ri, Fimage Output)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 
-Fimage	    Edge_Ri;		/* Impulse responses of filters for special 
+      	            		/* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
-Fsignal     Ri2;		/* Impulse response of the low pass filter */
+                		/* Impulse response of the low pass filter */
 				/* for synthesis */
-int        *FilterNorm;	        /* Equal 0 if no normalisation of filter's tap
+                       	        /* Equal 0 if no normalisation of filter's tap
 			         *       1 if normalisation of the sum 
 			         *       2 if normalistion of the square sum */
-float      *WeightFac;          /* Weighting factor for wavelet coeff. */
-Fimage      CodeBook2, CodeBook3; /* Sequence of codebooks for adaptive 
+                                /* Weighting factor for wavelet coeff. */
+                                  /* Sequence of codebooks for adaptive 
 				 * quantization */
-Fimage	    ResCodeBook1, ResCodeBook2, ResCodeBook3; /* Sequence of codebooks 
+      	                                              /* Sequence of codebooks 
 			         * for residu quantization after quantization 
 				 * with CodeBook AdapCodeBook2 
 				 * and AdapCodeBook3 */
-Fimage	    ResResCodeBook1;    /* Sequence of codebooks for residu 
+      	                        /* Sequence of codebooks for residu 
 				 * quantization after quantization 
 				 * with CodeBook and ResCodeBook1 */
-Fimage	    ResResCodeBook2;    /* Sequence of codebooks for residu 
+      	                        /* Sequence of codebooks for residu 
 				 * quantization after quantization 
 				 * with AdapCodeBook2 and ResCodeBook2 */
-Cimage      Compress;		/* Input compressed image */
-Fimage	    CodeBook1;          /* First sequence of codebooks for 
+                     		/* Input compressed image */
+      	                        /* First sequence of codebooks for 
 				 * for quantization */
-Fimage      Output;		/* Reconstructed image */
-Fsignal     Ri;			/* Impulse response of the low pass filter */
+                   		/* Reconstructed image */
+               			/* Impulse response of the low pass filter */
 
 {
   Wtrans2d    WCodeBook1, WCodeBook2, WCodeBook3;  /* Sequence of codebooks 

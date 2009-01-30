@@ -27,13 +27,7 @@
 #include "mw-modules.h" /* for flst_boundary(), flst(), flst_bilinear(),
 			 * flstb_quantize(), flstb_boundary(), fsaddles() */
 
-Flists ll_extract(in,levels,offset,step,prec,area,tree,z)
-     Fimage in;
-     Fsignal levels;
-     float *offset,*step;
-     int *area,*prec;
-     Shapes tree;
-     char *z;
+Flists ll_extract(Fimage in, Fsignal levels, float *offset, float *step, int *prec, int *area, Shapes tree, char *z)
 {
   Flists ls;
   Flist boundary;

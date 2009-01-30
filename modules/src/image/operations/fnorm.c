@@ -25,13 +25,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* fop(), fderiv() */
 
-float fnorm(in,ref,p,s,v,b,n,t)
-     Fimage in,ref;
-     float *p;
-     char *s,*v;
-     int *b;
-     char *n;
-     float *t;
+float fnorm(Fimage in, Fimage ref, float *p, char *s, char *v, int *b, char *n, float *t)
 {
   Fimage diff, gradn;
   int x,y,num,four;

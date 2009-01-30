@@ -29,11 +29,7 @@
 #define VERTICAL 1
 
 /* Perform a shear to the image. The two images can be the same */
-static void yr_shear(dAmountOfShear, pFloatImageInput, pFloatImageOutput, iAxis, fDelta,PleaseDoNotCenter)
-double dAmountOfShear;
-Fimage pFloatImageInput, pFloatImageOutput;
-int iAxis, PleaseDoNotCenter;
-float fDelta;
+static void yr_shear(double dAmountOfShear, Fimage pFloatImageInput, Fimage pFloatImageOutput, int iAxis, float fDelta, int PleaseDoNotCenter)
 {
   int i, j, iSize, iHalfSize, iOtherSize, iHalfOtherSize;
   Fsignal pRealSignal, pImaginarySignal, pRealSignalTransformed, pImaginarySignalTransformed;
@@ -130,10 +126,7 @@ float fDelta;
    The angle is oriented in the trigonometric sense.
    It uses the 3-pass sinc interpolation algorithm of Yaroslavsky. */
 
-void fftrot(in,out,a,x,y,o_flag)
-float  *a, *x, *y;
-char   *o_flag;
-Fimage in, out;
+void fftrot(Fimage in, Fimage out, float *a, float *x, float *y, char *o_flag)
 {
   double angle; /* angle in radians */
 

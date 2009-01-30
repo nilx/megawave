@@ -23,11 +23,7 @@ usage = {
 
 /* Return the percent of thresholded coefficients for the given T */
 
-static float getp_threshold(in,T)
-
-     Wtrans1d in;
-     float T;
-
+static float getp_threshold(Wtrans1d in, float T)
 {
   int i,N,j,n,nj,size;
 
@@ -47,13 +43,7 @@ static float getp_threshold(in,T)
 
 /* Do the threshold */
 
-static void do_threshold(in,T,s,M)
-
-     Wtrans1d in;
-     float T;
-     char *s;
-     Fsignal M;
-
+static void do_threshold(Wtrans1d in, float T, char *s, Fsignal M)
 {
   int i,j,offset;
 
@@ -103,10 +93,10 @@ static void do_threshold(in,T,s,M)
 
 /* Return threshold bound to get P % coeff. thresholded */
 
-static float get_threshold_bound(in,P)
+static float get_threshold_bound(Wtrans1d in, float P)
 
-     Wtrans1d in;  /* Input wavelet transform */
-     float P;
+                   /* Input wavelet transform */
+             
      
 {
   float Tmin,Tmax,T,T0,p;
@@ -133,16 +123,16 @@ static float get_threshold_bound(in,P)
 }
 
 
-void w1threshold(P,T,D,s,o,M,in,out)
+void w1threshold(float *P, float *T, float *D, char *s, char *o, Fsignal M, Wtrans1d in, Wtrans1d *out)
      
-     float *P;     /* percent of coefficients to threshold */
-     float *T;
-     float *D;
-     char *s;
-     char *o;
-     Fsignal M;
-     Wtrans1d in;  /* Input wavelet transform */
-     Wtrans1d *out;/* Output wavelet transform */
+                   /* percent of coefficients to threshold */
+              
+              
+             
+             
+               
+                   /* Input wavelet transform */
+                   /* Output wavelet transform */
      
 {
   float t;

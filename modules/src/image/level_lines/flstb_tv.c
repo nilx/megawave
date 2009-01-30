@@ -34,9 +34,7 @@ typedef struct {
 } point_t;
 #endif
 
-static float curve_perimeter(pCurve, iHeight, iWidth)
-     Flist pCurve;
-     int iHeight, iWidth;
+static float curve_perimeter(Flist pCurve, int iHeight, int iWidth)
 {
   point_t *pPoint, point, pointNext;
   int i;
@@ -83,9 +81,7 @@ static float curve_perimeter(pCurve, iHeight, iWidth)
   return (float)dPerimeter;
 }
 
-static float curve_area(pCurve, iHeight, iWidth)
-     Flist pCurve;
-     int iHeight, iWidth;
+static float curve_area(Flist pCurve, int iHeight, int iWidth)
 {
   point_t *pPoint, point, pointNext;
   int i;
@@ -124,13 +120,7 @@ static float curve_area(pCurve, iHeight, iWidth)
   return (float)(dArea * .5);
 }
 
-static void decrease_tv(tabScales, fQuantizationLevel, iQuantizationCurve, pImage,
-		 pTree, tabtabSaddleValues)
-     float *tabScales, fQuantizationLevel;
-     int iQuantizationCurve;
-     Fimage pImage;
-     Shapes pTree;
-     float **tabtabSaddleValues;
+static void decrease_tv(float *tabScales, float fQuantizationLevel, int iQuantizationCurve, Fimage pImage, Shapes pTree, float **tabtabSaddleValues)
 {
   Shape pShape;
   Flists pListBoundaries;
@@ -202,11 +192,7 @@ static void decrease_tv(tabScales, fQuantizationLevel, iQuantizationCurve, pImag
   mw_delete_flists(pListBoundaries);
 }
 
-void flstb_tv(pScale, pQuantizationLevel, pQuantizationCurve, pTree, pImage)
-     float *pScale, *pQuantizationLevel;
-     int* pQuantizationCurve;
-     Shapes pTree;
-     Fimage pImage;
+void flstb_tv(float *pScale, float *pQuantizationLevel, int *pQuantizationCurve, Shapes pTree, Fimage pImage)
 {
   float* tabScales;
   struct fimage originalImage, imageSaddles;

@@ -61,10 +61,7 @@ usage = {
 /*         but it is faster to compute the evolution locally            */
 /*   especially if the gradient norm is not needed (no sqrt to compute) */
 /*----------------------------------------------------------------------*/
-static void one_step(in,out,grad,curv,step,MinGrad,isotrop,power,no_norm)
-     Fimage in,out,grad,curv;
-     float step,MinGrad;
-     char *isotrop,*power,*no_norm;
+static void one_step(Fimage in, Fimage out, Fimage grad, Fimage curv, float step, float MinGrad, char *isotrop, char *power, char *no_norm)
 {
   int y,nx,ny;
   register int x,xm,x1,Ym,Y0,Y1;
@@ -181,11 +178,7 @@ static void one_step(in,out,grad,curv,step,MinGrad,isotrop,power,no_norm)
 /* -------- from scale = firstScale.                               --------*/
 /* ------------------------------------------------------------------------*/
 
-static float  number_iterations(power,lastScale,firstScale,Step)
-     
-     char *power;
-     float  lastScale,Step,firstScale;
-
+static float  number_iterations(char *power, float lastScale, float firstScale, float Step)
 {
   double cfs;
 
@@ -207,11 +200,7 @@ static float  number_iterations(power,lastScale,firstScale,Step)
 
 /*----------------- Insert of an image into the output movie ----------------*/
 
-static void FINAL(pict,sortie)
-     
-     Fimage pict;
-     Cmovie sortie;
-
+static void FINAL(Fimage pict, Cmovie sortie)
 {	
   register int i;
   Cimage image1,image2;
@@ -246,23 +235,23 @@ static void FINAL(pict,sortie)
 
 /*--------------------- Main Program -------------------------------------*/
 
-void amss(isotrop,power,Step,MinGrad,outputStep,firstScale,lastScale,image,imageD,imageG,imageC,cmovieD,cmovieG,cmovieC,no_norm)
+void amss(char *isotrop, char *power, float *Step, float *MinGrad, float *outputStep, float *firstScale, float *lastScale, Fimage image, Fimage *imageD, Fimage *imageG, Fimage *imageC, Cmovie cmovieD, Cmovie cmovieG, Cmovie cmovieC, char *no_norm)
 
-char *isotrop;		/* isotropic diffusion if Grad==0 & isotrop != NULL */
-char *power;		/* power 1, if == NULL ; power 1/3, if != NULL 	    */
-float *Step;		/* Step of the scale				    */
-float *MinGrad;         /* Minimum value of the gradient                    */
-float *outputStep;	/* frequency of saving				    */
-float *firstScale; 	/* first scale, equal to zero if not used	    */
-float *lastScale;	/* scale of the last iteration   		    */
-Fimage image;		/* Initial Picture 				    */
-Fimage *imageD;         /* Final Picture                                    */
-Fimage *imageG;         /* Final gradient picture                           */
-Fimage *imageC;         /* Final curvature picture                          */
-Cmovie cmovieD;	        /* Output of images at differents scale	            */
-Cmovie cmovieG;         /* Output of gradients                              */
-Cmovie cmovieC;         /* Output of curvatures                             */
-char *no_norm;		/* if set, cancel curvature normalization           */
+              		/* isotropic diffusion if Grad==0 & isotrop != NULL */
+            		/* power 1, if == NULL ; power 1/3, if != NULL 	    */
+            		/* Step of the scale				    */
+                        /* Minimum value of the gradient                    */
+                  	/* frequency of saving				    */
+                   	/* first scale, equal to zero if not used	    */
+                 	/* scale of the last iteration   		    */
+             		/* Initial Picture 				    */
+                        /* Final Picture                                    */
+                        /* Final gradient picture                           */
+                        /* Final curvature picture                          */
+               	        /* Output of images at differents scale	            */
+                        /* Output of gradients                              */
+                        /* Output of curvatures                             */
+              		/* if set, cancel curvature normalization           */
 
 {
   int n_iter;		/* number of iterations	*/

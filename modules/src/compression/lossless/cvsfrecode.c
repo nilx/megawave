@@ -26,12 +26,7 @@ usage = {
    for the second point (which always exists) : down, up, right, left;
    for other points : straight, right, left and end_of_curve.
 */
-static unsigned int Freeman(C,dirchg,npts,ncvs)
-
-Curves C;
-Fimage dirchg;
-unsigned int npts, ncvs;
-
+static unsigned int Freeman(Curves C, Fimage dirchg, unsigned int npts, unsigned int ncvs)
 {
   Curve cv;
   Point_curve point, secondpoint;
@@ -98,12 +93,7 @@ unsigned int npts, ncvs;
 }
 
 
-double cvsfrecode(C,N,B)
-
-Curves C;
-unsigned int *N;
-double *B;
-
+double cvsfrecode(Curves C, unsigned int *N, double *B)
 {
   Fimage dirchg=NULL;  /* Direction change of points in the curves */
   unsigned int npts;   /* Total number of points in the curves of C (=*N) */

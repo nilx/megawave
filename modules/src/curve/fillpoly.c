@@ -31,10 +31,10 @@
 #define iabs(A)      (((A)>=(0)) ? (A) : -(A))
 
 
-static void FILL_CONTOUR(bitmap, contour)
+static void FILL_CONTOUR(Cimage bitmap, Polygon contour)
 
-Cimage          bitmap;              /* Output bitmap image */
-Polygon         contour;             /* Contour of polygon */
+                                     /* Output bitmap image */
+                                     /* Contour of polygon */
 
 {
   Point_curve     current_point;      /* Pointer to the current curve point */
@@ -374,9 +374,9 @@ Polygon         contour;             /* Contour of polygon */
 
 
 static void
-CHANGE_ORIENTATION_CONTOUR(contour)
+CHANGE_ORIENTATION_CONTOUR(Polygon contour)
 
-Polygon         contour;             /* Contour of polygon */
+                                     /* Contour of polygon */
 
 {
   Point_curve     point_begin, point_end;  /* Pointers to the beginning and  
@@ -405,12 +405,12 @@ int             r, c;                /* indices of row and column
 
 
 static char
-GET_ORIENTATION_CONTOUR(bitmap, contour)
+GET_ORIENTATION_CONTOUR(Cimage bitmap, Polygon contour)
 
   /*--- Return 0 if inner side is on he left, else return 1 ---*/
 
-Cimage          bitmap;              /* Output bitmap image */
-Polygon         contour;             /* Contour of polygon */
+                                     /* Output bitmap image */
+                                     /* Contour of polygon */
 
 {
   Point_curve     current_point;      /* Pointer to the current curve point */
@@ -488,9 +488,9 @@ Polygon         contour;             /* Contour of polygon */
 
 
 static int
-GET_NPOINTS_CONTOUR(poly)
+GET_NPOINTS_CONTOUR(Polygon poly)
 
-Polygon          poly;           /* Input polygon */
+                                 /* Input polygon */
 
 {
   int              n;
@@ -525,10 +525,10 @@ Polygon          poly;           /* Input polygon */
 
 
 static void
-DRAW_CONTOUR(bitmap, contour)
+DRAW_CONTOUR(Cimage bitmap, Polygon contour)
 
-Cimage           bitmap;         /* bitmap image */
-Polygon          contour;        /* Contour of polygon */
+                                 /* bitmap image */
+                                 /* Contour of polygon */
 
 {
   Point_curve      ptr_point;	    /* Pointer to the current point 
@@ -571,12 +571,12 @@ Polygon          contour;        /* Contour of polygon */
 
 
 static void
-ADD_SEGMENT(x1, y1, x2, y2, cont_point, p)
+ADD_SEGMENT(int x1, int y1, int x2, int y2, Point_curve *cont_point, Point_curve *p)
 
-int             x1, y1;          /* Coordinate of first extremity */
-int             x2, y2;          /* Coordinate of second extremity */
-Point_curve    *cont_point;      /* Pointer to the current point in contour */
-Point_curve    *p;               /* Table of points for memory 
+                                 /* Coordinate of first extremity */
+                                 /* Coordinate of second extremity */
+                                 /* Pointer to the current point in contour */
+                                 /* Table of points for memory 
 				  * allocation */ 
 	     
 {
@@ -696,12 +696,12 @@ Point_curve    *p;               /* Table of points for memory
 
 
 static void
-MAKE_CONTOUR(bitmap, poly, contour, p)
+MAKE_CONTOUR(Cimage bitmap, Polygon poly, Polygon contour, Point_curve *p)
 
-Cimage           bitmap;         /* bitmap image */
-Polygon          poly;           /* Input polygnal */
-Polygon          contour;        /* Contour of polygon */
-Point_curve     *p;              /* Table of points for memory 
+                                 /* bitmap image */
+                                 /* Input polygnal */
+                                 /* Contour of polygon */
+                                 /* Table of points for memory 
 				  * allocation */ 
 
 {
@@ -752,11 +752,11 @@ Point_curve     *p;              /* Table of points for memory
 
 
 void 
-fillpoly(dx, dy, poly, bitmap)
+fillpoly(int *dx, int *dy, Polygon poly, Cimage bitmap)
 
-int        *dx,*dy;                  /* Size of output bitmap */
-Polygon     poly;                    /* Input polygon */
-Cimage      bitmap;                  /* Output bitmap */
+                                     /* Size of output bitmap */
+                                     /* Input polygon */
+                                     /* Output bitmap */
 
 {
   register unsigned char  *ptra;     /* Pointer to significance map */

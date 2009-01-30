@@ -22,13 +22,7 @@ usage = {
 #include "mw-modules.h" /* for cfdiffuse() */
 
 
-void cfmdiffuse(deltat,N,epsilon,in,out)
-
-     float *deltat,*epsilon;
-     int *N;
-     Cfimage in;
-     Cfmovie out;
-
+void cfmdiffuse(float *deltat, int *N, float *epsilon, Cfimage in, Cfmovie out)
 {
   Fsignal MDiag0,MDiag1,U0;
   Cfimage Yimage,Vimage;

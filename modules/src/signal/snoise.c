@@ -29,10 +29,7 @@
 
 /*** NB: Calling this module with in=out is possible ***/
 
-Fsignal snoise(in,out,std,t,n_flag)
-     Fsignal in,out;
-     float   *std,*t;
-     char    *n_flag;
+Fsignal snoise(Fsignal in, Fsignal out, float *std, float *t, char *n_flag)
 {
   int    i;
   double a,b,z;

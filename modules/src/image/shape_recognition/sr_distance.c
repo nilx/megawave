@@ -26,8 +26,7 @@
 
 /* Compute the size (number of points) of a Fcurves structure */
 
-static int size_fcurves(cs)
-Fcurves cs;
+static int size_fcurves(Fcurves cs)
 {
   Fcurve        c;
   Point_fcurve  p;
@@ -44,9 +43,7 @@ Fcurves cs;
 
 /*** Compute the barycenter of a cimage ***/
 
-static void bary_img(image,xg,yg)
-Cimage image;
-float  *xg,*yg;
+static void bary_img(Cimage image, float *xg, float *yg)
 {
   int x,y,dx,dy;
   int i,j,cpt;
@@ -73,10 +70,7 @@ float  *xg,*yg;
 
 /* compute the lowest product up to rotations */
 
-static int Product_curves_rot(image,XG,YG,the_shape)
-Cimage   image;
-float    XG,YG;
-Fcurves  the_shape;
+static int Product_curves_rot(Cimage image, float XG, float YG, Fcurves the_shape)
 {
   Point_fcurve  pixel;
   Fcurve        curve;
@@ -148,8 +142,7 @@ Fcurves  the_shape;
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-float sr_distance(Shape1,Shape2)
-Fcurves Shape1,Shape2;
+float sr_distance(Fcurves Shape1, Fcurves Shape2)
 {
   int     product1_2,product2_1,surface_shape1,surface_shape2,n_iter;
   Cimage  image1,image2,image1_dilat,image2_dilat;

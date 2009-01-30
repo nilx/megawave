@@ -18,11 +18,7 @@
 #include <stdio.h>
 #include "mw.h"
  
-void binarize(in, out, t, i)
-     Fimage in;
-     Cimage out;
-     float  *t;
-     char   *i;
+void binarize(Fimage in, Cimage out, float *t, char *i)
 {
   int ptr;
 

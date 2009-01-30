@@ -76,16 +76,16 @@ static int      nadapcb;          /* Number of levels for adaptive
 
 
 static void
-CHECK_INPUT(testmulticb, codebook1, codebook2, codebook3, codebook4, rescodebook1, rescodebook2, rescodebook3, rescodebook4, resrescodebook1, resrescodebook2, image)
+CHECK_INPUT(int testmulticb, Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, Fimage resrescodebook1, Fimage resrescodebook2, Fimage image)
 
-int             testmulticb;
-Fimage          codebook1, codebook2, codebook3, codebook4; /* Codebooks for 
+                            
+                                                            /* Codebooks for 
                                  * different classes */
-Fimage          rescodebook1, rescodebook2, rescodebook3, rescodebook4; 
+                                                                        
                                 /* Residu codebooks for different classes */
-Fimage          resrescodebook1, resrescodebook2; /* Residu codebooks 
+                                                  /* Residu codebooks 
 				 * for different classes */
-Fimage          image;          /* Input image */
+                                /* Input image */
 
 {
   int           sizeb;
@@ -384,8 +384,7 @@ Fimage          image;          /* Input image */
 
 
 static int 
-READ_BIT_FIMAGE()
-
+READ_BIT_FIMAGE(void)
 {
   int           bit;              /* Value of read and returned bit */
 
@@ -410,10 +409,10 @@ READ_BIT_FIMAGE()
 
 
 static void
-DECODE_INT_FIMAGE(symb, max)
+DECODE_INT_FIMAGE(int *symb, int max)
 
-int           *symb;         /* Value of read symbol */
-int            max;          /* Half of maximum value for symbol */
+                             /* Value of read symbol */
+                             /* Half of maximum value for symbol */
 
 {
   int bit;
@@ -433,17 +432,17 @@ int            max;          /* Half of maximum value for symbol */
 
 
 static void
-READ_HEADER_FIMAGE(print, nrow, ncol, nrow1, ncol1, testmulticb, rate, indexcb, compress)
+READ_HEADER_FIMAGE(int *print, int *nrow, int *ncol, int *nrow1, int *ncol1, int *testmulticb, double *rate, int *indexcb, Cimage compress)
 
-int         *print;              /* Do not print the size of image */
-int         *nrow, *ncol;        /* Size of image specified by command line */
-int         *nrow1, *ncol1;      /* Size of image */
-int         *testmulticb;        /* Flag for multiple codebooks in codebook 
+                                 /* Do not print the size of image */
+                                 /* Size of image specified by command line */
+                                 /* Size of image */
+                                 /* Flag for multiple codebooks in codebook 
 				  * files */
-double      *rate;               /* Bit rate in compress */
-bufind       indexcb;            /* Indices of selected codebooks 
+                                 /* Bit rate in compress */
+                                 /* Indices of selected codebooks 
 				  * for quantization */
-Cimage       compress;           /* Compressed image */
+                                 /* Compressed image */
 
 {
   int     n;
@@ -533,10 +532,7 @@ Cimage       compress;           /* Compressed image */
 
 
 static int
-count_cb(codebook)
-
-Fimage     codebook;
-
+count_cb(Fimage codebook)
 {
   long      size, sizei, sizef;
   int      n;
@@ -564,11 +560,7 @@ Fimage     codebook;
 
 
 static void
-extract_cb(codebook, cb, n)
-
-Fimage     codebook, cb;
-int        n;
-
+extract_cb(Fimage codebook, Fimage cb, int n)
 {
   long      size, sizei, sizef;
   long     xshift;
@@ -626,16 +618,16 @@ int        n;
 
 
 static void
-BLOCK_RECONSTRUCT(i, j, codebook, rescodebook, resrescodebook, result, symbol, symbres, symbresres, recfac)
+BLOCK_RECONSTRUCT(int i, int j, Fimage codebook, Fimage rescodebook, Fimage resrescodebook, Fimage result, Fimage symbol, Fimage symbres, Fimage symbresres, long int recfac)
 
-int 	        i, j;           /* Row and column indices of block */
-Fimage          codebook;       /* Codebook for reconstruction */
-Fimage          rescodebook, resrescodebook; /* First and second level 
+    	                        /* Row and column indices of block */
+                                /* Codebook for reconstruction */
+                                             /* First and second level 
 				 * residual codebooks */
-Fimage          result;         /* Reconstructed image */
-Fimage          symbol, symbres, symbresres; /* Buffer of symbols of vectors 
+                                /* Reconstructed image */
+                                             /* Buffer of symbols of vectors 
 				 * to be used for reconstruction */
-long            recfac;
+                       
 
 {
   int             rb, cb;       /* Indices for row and column of pixel 
@@ -684,15 +676,15 @@ long            recfac;
 
 
 static void
-PLAIN_RECONSTRUCT(losslesscode, codebook, rescodebook, resrescodebook, compress, result, rate)
+PLAIN_RECONSTRUCT(int *losslesscode, Fimage codebook, Fimage rescodebook, Fimage resrescodebook, Cimage compress, Fimage result, double *rate)
 
-int            *losslesscode;   /* Type of lossless encoding applied 
+                                /* Type of lossless encoding applied 
 				 * to symbols*/
-Fimage          codebook;       /* Codebook for reconstruction */
-Fimage          rescodebook, resrescodebook;
-Cimage          compress;       /* Compressed image */
-Fimage          result;         /* Reconstructed image */ 
-double         *rate;           /* Bit rate in compress */
+                                /* Codebook for reconstruction */
+                                            
+                                /* Compressed image */
+                                /* Reconstructed image */ 
+                                /* Bit rate in compress */
 
 {
   int             r, c;
@@ -789,17 +781,17 @@ double         *rate;           /* Bit rate in compress */
 
 
 static void
-ADAP_RECONSTRUCT(losslesscode, codebook1, codebook2, codebook3, codebook4, rescodebook1, rescodebook2, rescodebook3, rescodebook4, resrescodebook1, resrescodebook2, compress, result, rate)
+ADAP_RECONSTRUCT(int *losslesscode, Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, Fimage resrescodebook1, Fimage resrescodebook2, Cimage compress, Fimage result, double *rate)
 
-int            *losslesscode;   /* Type of lossless encoding applied 
+                                /* Type of lossless encoding applied 
 				 * to symbols*/
-Fimage          codebook1, codebook2, codebook3, codebook4; /* Codebooks 
+                                                            /* Codebooks 
 				 * for reconstruction */
-Fimage          rescodebook1, rescodebook2, rescodebook3, rescodebook4;
-Fimage          resrescodebook1, resrescodebook2;
-Cimage          compress;       /* Compressed image */
-Fimage          result;         /* Reconstructed image */ 
-double         *rate;           /* Bit rate in compress */
+                                                                       
+                                                 
+                                /* Compressed image */
+                                /* Reconstructed image */ 
+                                /* Bit rate in compress */
 
 {
   int             rb, cb;
@@ -1178,21 +1170,21 @@ double         *rate;           /* Bit rate in compress */
 
 
 static void
-VECT_RECONSTRUCT(losslesscode, testmulticb, indcb, codebook1, codebook2, codebook3, codebook4, rescodebook1, rescodebook2, rescodebook3, rescodebook4, resrescodebook1, resrescodebook2, compress, result, rate)
+VECT_RECONSTRUCT(int *losslesscode, int testmulticb, int *indcb, Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, Fimage resrescodebook1, Fimage resrescodebook2, Cimage compress, Fimage result, double *rate)
 
-int            *losslesscode;
-int             testmulticb;    /* Control for multiple codebooks */
-bufind          indcb;          /* Indices of codebook for each class */
-Fimage          codebook1, codebook2, codebook3, codebook4; /* Buffers 
+                             
+                                /* Control for multiple codebooks */
+                                /* Indices of codebook for each class */
+                                                            /* Buffers 
                                  * of codebooks for reconstruction */
-Fimage          rescodebook1, rescodebook2, rescodebook3, rescodebook4; 
+                                                                        
                                 /* Buffers of residu codebooks 
                                  * for reconstruction */
-Fimage          resrescodebook1, resrescodebook2; /* Buffers of residu 
+                                                  /* Buffers of residu 
                                  * codebooks for reconstruction */
-Cimage          compress;       /* Compressed image */
-Fimage          result;         /* Reconstructed image */
-double         *rate;           /* Bit rate in compress */
+                                /* Compressed image */
+                                /* Reconstructed image */
+                                /* Bit rate in compress */
 
 {
   Fimage          cb1, cb2, cb3, cb4; /* Codebooks for reconstruction */
@@ -1405,20 +1397,20 @@ double         *rate;           /* Bit rate in compress */
 
 
 void
-fivq(Print, NRow, NCol, CodeBook2, CodeBook3, CodeBook4, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResCodeBook4, ResResCodeBook1, ResResCodeBook2, Compress, CodeBook1, Result, Rate)
+fivq(int *Print, int *NRow, int *NCol, Fimage CodeBook2, Fimage CodeBook3, Fimage CodeBook4, Fimage ResCodeBook1, Fimage ResCodeBook2, Fimage ResCodeBook3, Fimage ResCodeBook4, Fimage ResResCodeBook1, Fimage ResResCodeBook2, Cimage Compress, Fimage CodeBook1, Fimage Result, double *Rate)
 
-int        *Print;              /* Control of information print */  
-int        *NRow, *NCol;        /* Number of rows and columns in 
+                                /* Control of information print */  
+                                /* Number of rows and columns in 
 				 * reconstructed image (if not selected, 
 				 * info is read in header of Compress) */
-Fimage      CodeBook2, CodeBook3, CodeBook4; /* Codebooks for classified 
+                                             /* Codebooks for classified 
 				 * vector quantization */
-Fimage      ResCodeBook1, ResCodeBook2, ResCodeBook3, ResCodeBook4;
-Fimage      ResResCodeBook1, ResResCodeBook2;
-Cimage      Compress;		/* Input compressed image */
-Fimage      CodeBook1;          /* First codebook for reconstruction */
-Fimage      Result;             /* Reconstructed image */
-double     *Rate;               /* Bit rate for Compress */
+                                                                   
+                                             
+                     		/* Input compressed image */
+                                /* First codebook for reconstruction */
+                                /* Reconstructed image */
+                                /* Bit rate for Compress */
 
 
 {

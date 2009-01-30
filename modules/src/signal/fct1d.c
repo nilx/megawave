@@ -21,19 +21,14 @@
 #include  "mw.h"
 #include  "mw-modules.h" /* for fft1d() */
 
-static int is_a_power_of_two(n)
-     int n;
+static int is_a_power_of_two(int n)
 {
   if (n<1) return(0);
   while ((n&1)==0) n=(n>>1);
   return(n==1);
 }
 
-static void realft(data,n,inverse)
-     Fsignal data;
-     int n;
-     char *inverse;
-     
+static void realft(Fsignal data, int n, char *inverse)
 {
   int i,i1,i2,i3,i4,n2p3;
   float c1=0.5,c2,h1r,h1i,h2r,h2i;
@@ -97,10 +92,7 @@ static void realft(data,n,inverse)
 }
 
 
-void fct1d(X,Y,inverse)
-     Fsignal X,Y;
-     char *inverse;
-     
+void fct1d(Fsignal X, Fsignal Y, char *inverse)
 {
   int j,m,n2,n;
   float enf0,even,odd,sum,sume,sumo,y1,y2;

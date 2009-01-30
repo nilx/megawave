@@ -35,10 +35,7 @@ usage = {
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 
 
-static float max_of_wpack2d(pack)
-     
-     Wpack2d pack;
-     
+static float max_of_wpack2d(Wpack2d pack)
 {int k;
  int i,size;
  float max;
@@ -56,10 +53,7 @@ static float max_of_wpack2d(pack)
 }
  
 /***************************************************************/
-static float  increaseContrast(pack)
-
-     Wpack2d pack;
-
+static float  increaseContrast(Wpack2d pack)
 {int k,i;
  int sxy;                                                /*size of the current image of the pack */
  float max0, min0,mean0;              /*mean, max and min values of pack->images[0]*/
@@ -123,11 +117,11 @@ static float  increaseContrast(pack)
  return(max0);
 }
 /***************************************************************/
-static void increaseSize(pack,backgroundColor)
+static void increaseSize(Wpack2d pack, float backgroundColor)
      /*adds a line of one pixel width around each image */
 
-     Wpack2d pack;
-     float backgroundColor; /* color for the background */
+                  
+                            /* color for the background */
 
 {int k;                                            /* index for images in the Wpack2d*/
  int sx,sy;                                       /* initial size of the image */
@@ -163,17 +157,17 @@ static void increaseSize(pack,backgroundColor)
 
 
 /***************************************************************/
-static void glue(pack, img, img11, img12, img21,img22,backgroundColor,level)
+static void glue(Wpack2d pack, int img, int img11, int img12, int img21, int img22, float backgroundColor, int level)
      /* glue four images together */
 
-     Wpack2d pack; 
-     int img;       /* index containing the result */
-     int img11;  /* index of the low in x -low in y image */
-     int img12;  /* index of the low in x -high in y image */
-     int img21;  /* index of the high in x -low in y image */
-     int img22;  /* index of the high in x -high in y image */
-     float backgroundColor; /* color for the background */ 
-     int level;
+                   
+                    /* index containing the result */
+                 /* index of the low in x -low in y image */
+                 /* index of the low in x -high in y image */
+                 /* index of the high in x -low in y image */
+                 /* index of the high in x -high in y image */
+                            /* color for the background */ 
+               
 
 {int sx11=pack->images[img11]->ncol;/*size of the image11 */
  int sy11=pack->images[img11]->nrow;
@@ -264,12 +258,12 @@ static void glue(pack, img, img11, img12, img21,img22,backgroundColor,level)
 
 
 /***************************************************************/
-static void  wpack2dGlue(pack,backgroundColor,do_not_reorder_flag)
+static void  wpack2dGlue(Wpack2d pack, float backgroundColor, char *do_not_reorder_flag)
      /* glue all the images of pack->images together */
 
-     Wpack2d pack;
-     float backgroundColor;
-     char* do_not_reorder_flag;
+                  
+                           
+                               
 
 {int  level,treesize=pack->tree->ncol;
  int kx,ky,kx1,ky1;                     /*indexes to go through pack->images*/
@@ -338,14 +332,14 @@ static void  wpack2dGlue(pack,backgroundColor,do_not_reorder_flag)
 /*-------------  MAIN                ----------------------------*/
 /*-------------------------------------------------------------*/
 
-void wp2dview(A,Ri,Ri_biortho,tree, do_not_reorder_flag,do_not_rescale_flag,toDisplay,input_pack)    
+void wp2dview(Fimage A, Fsignal Ri, Fsignal Ri_biortho, Cimage tree, char *do_not_reorder_flag, char *do_not_rescale_flag, Fimage toDisplay, Wpack2d input_pack)    
      /*displays a wavelet packet transform */
 
-     Fimage A,toDisplay;
-     Cimage tree;
-     Fsignal Ri,Ri_biortho;
-     char* do_not_reorder_flag,*do_not_rescale_flag;
-     Wpack2d input_pack;
+                        
+                 
+                           
+                                                    
+                        
 
 {
   Wpack2d pack;

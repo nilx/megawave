@@ -19,10 +19,10 @@
 #include  "mw.h"
 
 
-Cfimage cfextcenter(Fact, Image)
+Cfimage cfextcenter(int *Fact, Cfimage Image)
      
-     int            *Fact;   /* Output size must be a multiple of Fact */
-     Cfimage         Image;	/* Original image */
+                             /* Output size must be a multiple of Fact */
+                           	/* Original image */
      
 {
   Cfimage         Result;	    /* Resulting image */

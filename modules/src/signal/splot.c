@@ -51,10 +51,7 @@ int selrect,fx1,fx2,fy1,fy2;  /* for rectangle selection */
 /*--------------------------------------------------------*/
 
 /* compute the rule (graduations) associated to a given interval */
-static void getrule(a,b,ofs,step,nsub)
-     double a,b;
-     double *ofs,*step;
-     int *nsub;
+static void getrule(double a, double b, double *ofs, double *step, int *nsub)
 {
   double x,r;
 
@@ -70,8 +67,7 @@ static void getrule(a,b,ofs,step,nsub)
 }
 
 /* compute max interval [n1,n2] such that [sx1,sx2] contains x([n1,n2]) */
-static void interval(n1,n2)
-     int *n1,*n2;
+static void interval(int *n1, int *n2)
 {
   *n1 = (int)ceil ((sx1-(double)signal->shift)/(double)signal->scale);
   *n2 = (int)floor((sx2-(double)signal->shift)/(double)signal->scale);
@@ -79,8 +75,7 @@ static void interval(n1,n2)
   if (*n2>=signal->size) *n2=signal->size-1;
 }
 
-static int minmax(min,max)
-     double *min,*max;
+static int minmax(double *min, double *max)
 {
   int n1,n2,i;
   double v;
@@ -96,8 +91,7 @@ static int minmax(min,max)
   return(0);
 }
 
-static double trunc(v,ref)
-     double v,ref;
+static double trunc(double v, double ref)
 {
   ref = v/ref; 
   ref = ABS(ref);
@@ -105,10 +99,7 @@ static double trunc(v,ref)
 }
 
 /* draw a line with any coordinates (part can be out of frame) */
-static void draw_framed_ccimage(u,xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax)
-     Ccimage u;
-     int xa,ya,xb,yb,xmin,xmax,ymin,ymax;
-     unsigned char r,g,b;
+static void draw_framed_ccimage(Ccimage u, int xa, int ya, int xb, int yb, unsigned char r, unsigned char g, unsigned char b, int xmin, int xmax, int ymin, int ymax)
 {
   double txa,tya,txb,tyb,dx,dy;
 
@@ -144,7 +135,7 @@ static void draw_framed_ccimage(u,xa,ya,xb,yb,r,g,b,xmin,xmax,ymin,ymax)
 
 #define STRSIZE 15
 
-static void plot_signal()
+static void plot_signal(void)
 {
   double xofs,xstep,yofs,ystep,v,truncref;
   int i,k,x,y,n1,n2,line,zero,x1,x2,ox,oy,fgcolor,bgcolor,max,xsub,ysub;
@@ -285,7 +276,7 @@ static void plot_signal()
   }
 }
 
-static void draw_selection_rectangle()
+static void draw_selection_rectangle(void)
 {
   mw_draw_ccimage(image,fx1,fy1,fx2,fy1,0,0,255);
   mw_draw_ccimage(image,fx2,fy1,fx2,fy2,0,0,255);
@@ -293,7 +284,7 @@ static void draw_selection_rectangle()
   mw_draw_ccimage(image,fx1,fy2,fx1,fy1,0,0,255);
 }
 
-static void rescale_sy()
+static void rescale_sy(void)
 {
   double d;
   
@@ -311,7 +302,7 @@ static void rescale_sy()
   } while (sy1==sy2);
 }
 
-static void init_sxy()
+static void init_sxy(void)
 {
   double d;
   
@@ -322,8 +313,7 @@ static void init_sxy()
   rescale_sy();
 }
 
-static void zoom_sx(x,y)
-     int x,y;
+static void zoom_sx(int x, int y)
 {
   double d,m;
   
@@ -335,7 +325,7 @@ static void zoom_sx(x,y)
   }
 }
 
-static void unzoom_sxy()
+static void unzoom_sxy(void)
 {
   double d;
   
@@ -347,23 +337,21 @@ static void unzoom_sxy()
   sy2 += d;
 }
 
-static void shift_sx(p)
-     double p;
+static void shift_sx(double p)
 {
   p *= sx2-sx1;
   sx1 += p;
   sx2 += p;
 }
   
-static void shift_sy(p)
-     double p;
+static void shift_sy(double p)
 {
   p *= sy2-sy1;
   sy1 += p;
   sy2 += p;
 }
   
-static void select_region()
+static void select_region(void)
 {
   double tx1,tx2,ty1,ty2;
 
@@ -377,14 +365,14 @@ static void select_region()
 }
 
 /*** refresh display with current image ***/
-static void redisplay()
+static void redisplay(void)
 {
   WLoadBitMapColorImage(win,image->red,image->green,image->blue,nx,ny);
   WRestoreImageWindow(win,0,0,nx,ny);
   WFlushWindow(win);
 }
 
-static void help()
+static void help(void)
 {
   printf("\n\t\tHelp on line\n");
   printf("\nMouse:\n");
@@ -405,9 +393,7 @@ static void help()
 }
 
 /* handle display events */
-static int win_notify(window,param)
-Wframe *window;
-void *param;
+static int win_notify(Wframe *window, void *param)
 {
   int event,ret,x,y,button_mask,redisplay_flag;
   int c; /* Key code must be int and not char to handle non-printable keys */
@@ -518,11 +504,7 @@ void *param;
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void splot(in,x_0,y_0,sx,sy,no_refresh,window,out,n)
-     int *x_0,*y_0,*sx,*sy,*no_refresh;
-     Fsignal in;
-     char *window,*n;
-     Ccimage *out;
+void splot(Fsignal in, int *x_0, int *y_0, int *sx, int *sy, int *no_refresh, char *window, Ccimage *out, char *n)
 {
   /* Initializations */
   signal=in; nx=*sx; ny=*sy;

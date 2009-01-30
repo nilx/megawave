@@ -19,10 +19,7 @@ usage = {
 #include "mw.h"
 
 /***************************************************************/
-static void switchOrder(order)
-     
-     Fsignal order;
-
+static void switchOrder(Fsignal order)
 {Fsignal tmp;
  int i,j;
  
@@ -43,12 +40,7 @@ static void switchOrder(order)
 /*----------------MAIN PROGRAM--------------------*/
 /*-------------------------------------------------------------*/
 
-void wp2dfreqorder(level,order,inverse_flag)
-
-     int level;
-     Fsignal order;
-     char *inverse_flag;
-
+void wp2dfreqorder(int level, Fsignal order, char *inverse_flag)
 {int i,x,xa,tj,k;
  int *work,*work_old;
  

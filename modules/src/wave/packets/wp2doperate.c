@@ -48,13 +48,7 @@
 /******************************************************************/
 /******************************************************************/
 
-static void test_input(tree,pfilter,translation,threshold_soft,threshold_hard,track_noise_hard,track_noise_soft,track_noise_level,convolution_level)
- 
-     Cimage tree;
-     Fimage pfilter;
-     int* translation,*track_noise_level,*convolution_level;
-     float *threshold_soft,*threshold_hard,*track_noise_hard,*track_noise_soft;
-     
+static void test_input(Cimage tree, Fimage pfilter, int *translation, float *threshold_soft, float *threshold_hard, float *track_noise_hard, float *track_noise_soft, int *track_noise_level, int *convolution_level)
 {int i,size=tree->ncol*tree->nrow;
  int sup,sup_translation;
  int nbOption;
@@ -140,11 +134,7 @@ static int modulo(r,n)
 }
 
 /******************************************************************/
-static void translate_image(in,out,tx,ty)
-     
-     Fimage in, out;
-     int tx,ty;
-     
+static void translate_image(Fimage in, Fimage out, int tx, int ty)
 {int x,y,sx=out->ncol,sy=out->nrow;
  int x1,y1;
  
@@ -162,10 +152,7 @@ static void translate_image(in,out,tx,ty)
 /***************************************************************/
 /*returns the maximum level of the decomposition corresponding to tree */
 
-static int treeLevel(tree)
-     
-     Cimage tree;
-     
+static int treeLevel(Cimage tree)
 {int i;
  int size=  tree->ncol*tree->nrow;
  int level;
@@ -181,10 +168,7 @@ static int treeLevel(tree)
 /***************************************************************/
 /*returns the minimum level of the decomposition corresponding to tree */
 
-static int treeMin(tree)
-     
-     Cimage tree;
-     
+static int treeMin(Cimage tree)
 {int size=tree->ncol*tree->nrow;
  int i;
  int min;
@@ -199,11 +183,7 @@ static int treeMin(tree)
 
 /******************************************************************/
 
-static void threshold_hard_wavelet_packet_transform(pack,threshold_hard)
-     
-     Wpack2d pack;
-     float *threshold_hard;
-     
+static void threshold_hard_wavelet_packet_transform(Wpack2d pack, float *threshold_hard)
 {int k;
  int i,size;
  float tmp;
@@ -225,11 +205,7 @@ static void threshold_hard_wavelet_packet_transform(pack,threshold_hard)
 }
 /******************************************************************/
 
-static void threshold_soft_wavelet_packet_transform(pack,threshold_soft)
-     
-     Wpack2d pack;
-     float *threshold_soft;
-     
+static void threshold_soft_wavelet_packet_transform(Wpack2d pack, float *threshold_soft)
 {int k;
  int i,size;
  float tmp;
@@ -257,11 +233,7 @@ static void threshold_soft_wavelet_packet_transform(pack,threshold_soft)
 /******************************************************************/
 
 
-static void convol_wavelet_packet_transform(pack,pfilter)
-     
-     Wpack2d pack;
-     Fimage pfilter;
-     
+static void convol_wavelet_packet_transform(Wpack2d pack, Fimage pfilter)
 {int k;
  int i,size;
  float tmp;
@@ -284,11 +256,7 @@ static void convol_wavelet_packet_transform(pack,pfilter)
 /* At the end of the process, it corresponds to nextTree*/
 /* At the end of the process, pfilter_to_perform will correspond to the tree tempTree */
 
-static void change_pfilter_and_tree(pfilter_remaining,pfilter_to_perform,tempTree,tree)
-	
-     Fimage pfilter_remaining,pfilter_to_perform;
-     Cimage tempTree,tree;
-     
+static void change_pfilter_and_tree(Fimage pfilter_remaining, Fimage pfilter_to_perform, Cimage tempTree, Cimage tree)
 {Cimage nextTree;                /*contains the the output value of tempTree, its size could be smaller than the size of tempTree */ 
  Fimage next_pfilter_remaining;     /*contains the the output value of pfilter_remaining, its size could be smaller than the size of nextTree */ 
  int kx,ky;                                 /*indexes for nextTree and next_pfilter_remaining*/
@@ -404,10 +372,7 @@ static void change_pfilter_and_tree(pfilter_remaining,pfilter_to_perform,tempTre
 /*computes the difference between the coefficients of two Wpack2ds */
 /* the tree, signals,... are assumed identical    */
 
-static void wpack2d_diff(pack,temppack)
-     
-     Wpack2d pack,temppack;
-     
+static void wpack2d_diff(Wpack2d pack, Wpack2d temppack)
 {int k;
  int i,size;
  
@@ -424,11 +389,7 @@ static void wpack2d_diff(pack,temppack)
 /*****************************************************************/
 /* removes the large coefficients from pack */
 
-static void noise_search_hard(pack,track_noise_hard)
-     
-     Wpack2d pack;
-     float *track_noise_hard;
-     
+static void noise_search_hard(Wpack2d pack, float *track_noise_hard)
 {int k;
  int i,size;
  float tmp;
@@ -452,11 +413,7 @@ static void noise_search_hard(pack,track_noise_hard)
 /*****************************************************************/
 /* removes large coefficients from pack */
 
-static void noise_search_soft(pack,track_noise_soft)
-     
-     Wpack2d pack;
-     float *track_noise_soft;
-     
+static void noise_search_soft(Wpack2d pack, float *track_noise_soft)
 {int k;
  int i,size;
  float tmp;
@@ -482,11 +439,7 @@ static void noise_search_soft(pack,track_noise_soft)
 
 /*****************************************************************/
 /* removes the large coefficients from pack */
-static void noise_search(pack, track_noise_hard, track_noise_soft)
-     
-     Wpack2d pack;
-     float *track_noise_hard,*track_noise_soft;
-     
+static void noise_search(Wpack2d pack, float *track_noise_hard, float *track_noise_soft)
 {
   if(track_noise_hard)
     noise_search_hard(pack,track_noise_hard);
@@ -497,12 +450,7 @@ static void noise_search(pack, track_noise_hard, track_noise_soft)
 /******************************************************************/
 /* performs the noise tracking algorithm */
 
-static void noise_tracking(pack, track_noise_level, track_noise_hard, track_noise_soft)
-     
-     Wpack2d pack;
-     int *track_noise_level; 
-     float *track_noise_hard,*track_noise_soft;
-     
+static void noise_tracking(Wpack2d pack, int *track_noise_level, float *track_noise_hard, float *track_noise_soft)
 {Cimage inOutTree;
  Cimage tmpTree;
  Wpack2d temppack;                 
@@ -567,14 +515,7 @@ static void noise_tracking(pack, track_noise_level, track_noise_hard, track_nois
 /*-------------------------------------------------------------*/
 
 
-void wp2doperate(input,Ri,Ri_biortho,tree,output,threshold_hard,threshold_soft,translation,track_noise_hard,track_noise_soft,track_noise_level,pfilter,convolution_level)
-     
-     Fimage input,output,pfilter;
-     Fsignal Ri,Ri_biortho;
-     Cimage tree;
-     float *threshold_hard,*threshold_soft,*track_noise_hard,*track_noise_soft;
-     int *translation,*track_noise_level,*convolution_level;
-
+void wp2doperate(Fimage input, Fsignal Ri, Fsignal Ri_biortho, Cimage tree, Fimage output, float *threshold_hard, float *threshold_soft, int *translation, float *track_noise_hard, float *track_noise_soft, int *track_noise_level, Fimage pfilter, int *convolution_level)
 {
  Wpack2d pack;
  Fimage work1,work2;

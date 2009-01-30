@@ -24,11 +24,7 @@
 
 /* NB : calling this module with out=in is possible */
 
-Cimage czoom(in,out,x_flg,y_flg,zoom,o,i_flg)
-     Cimage in,out;
-     char *x_flg,*y_flg,*i_flg;
-     float *zoom;
-     int *o;
+Cimage czoom(Cimage in, Cimage out, char *x_flg, char *y_flg, float *zoom, int *o, char *i_flg)
 {
   Fimage tmp;
 

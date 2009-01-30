@@ -30,13 +30,7 @@ usage = {
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
 
-Cimage cextract(b,in,bg,out,X1,Y1,X2,Y2,Xc,Yc,r)
-     Cimage in,out;
-     int X1,Y1,X2,Y2;
-     int *b;
-     Cimage bg;
-     int *Xc,*Yc;
-     char *r;
+Cimage cextract(int *b, Cimage in, Cimage bg, Cimage out, int X1, int Y1, int X2, int Y2, int *Xc, int *Yc, char *r)
 {
   int x,y,pos1,pos2;
 

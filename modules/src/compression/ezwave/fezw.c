@@ -82,10 +82,7 @@ static Fsignal      ORI1, ORI2;          /* Non normalized filters */
 
 
 static void
-INIT_RI(ri1, ri2)
-
-Fsignal ri1, ri2;
-
+INIT_RI(Fsignal ri1, Fsignal ri2)
 {
   int i;
 
@@ -108,10 +105,7 @@ Fsignal ri1, ri2;
 
 
 static void
-REFRESH_FILTERS(ri1, ri2)
-
-Fsignal ri1, ri2;
-
+REFRESH_FILTERS(Fsignal ri1, Fsignal ri2)
 {
   int i;
 
@@ -127,11 +121,7 @@ Fsignal ri1, ri2;
 
 
 static void
-INIT_TARGNBIT_DR(wtrans, ptrdrc)
-
-Wtrans2d      wtrans;
-char         *ptrdrc;
-
+INIT_TARGNBIT_DR(Wtrans2d wtrans, char *ptrdrc)
 {
 
   targrate_dr[0] = 0.008;
@@ -195,30 +185,30 @@ char         *ptrdrc;
 
 
 void
-fezw(NumRec, Edge_Ri, Ri2, FilterNorm, WeightFac, DistRate, Rate, PSNR, SelectedArea, Output, Image, Ri, QImage, PtrDRC)
+fezw(int *NumRec, Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *WeightFac, int *DistRate, float *Rate, float *PSNR, Polygons SelectedArea, Cimage Output, Fimage Image, Fsignal Ri, Fimage QImage, char *PtrDRC)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 
-int        *NumRec;		/* Number of recursion (-j) */
-Fimage	    Edge_Ri;		/* Impulse responses of filters for special 
+                   		/* Number of recursion (-j) */
+      	            		/* Impulse responses of filters for special 
 				 * edge processing (including preconditionning 
 				 * matrices */
-Fsignal     Ri2;		/* Impulse response of the low pass filter */
+                		/* Impulse response of the low pass filter */
 				/* for synthesis */
-int        *FilterNorm;	        /* Equal 0 if no normalisation of filter's tap
+                       	        /* Equal 0 if no normalisation of filter's tap
 			         *       1 if normalisation of the sum 
 			         *       2 if normalistion of the square sum */
-float      *WeightFac;          /* Weighting factor for wavelet coeff. */
-int        *DistRate;           /* Compute distortion-rate function */
-float      *Rate;               /* Target Rate */
-float      *PSNR;               /* Target PSNR */
-Polygons    SelectedArea;       /* Polygnal regions to be encoded with 
+                                /* Weighting factor for wavelet coeff. */
+                                /* Compute distortion-rate function */
+                                /* Target Rate */
+                                /* Target PSNR */
+                                /* Polygnal regions to be encoded with 
 				 * a special rate or PSNR */
-Cimage      Output;		/* Compressed `Image` */
-Fimage      Image;		/* Input image */
-Fsignal     Ri;			/* Impulse response of the low pass filter */
-Fimage      QImage;		/* Output quantized image */
-char       *PtrDRC;             /* Distorsion rate curve */
+                   		/* Compressed `Image` */
+                  		/* Input image */
+               			/* Impulse response of the low pass filter */
+                   		/* Output quantized image */
+                                /* Distorsion rate curve */
 
 {
   int         J, Jx, Jy;       	/* Current level of decomposition */

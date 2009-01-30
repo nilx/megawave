@@ -20,11 +20,7 @@ usage = {
 #include  "mw.h"
 
 
-Fimage fsharpen(A,B,p)
-     
-     Fimage A,B;
-     float *p;
-     
+Fimage fsharpen(Fimage A, Fimage B, float *p)
 {
   register float *a,*b;
   int x,y;

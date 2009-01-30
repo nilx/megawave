@@ -52,10 +52,7 @@ static float           *ptro;
 
 
 static void
-REALLOCATE_OUTPUT(output)
-
-Fimage           output;
-
+REALLOCATE_OUTPUT(Fimage output)
 {
   int              i;
   Fimage           bufcomp;
@@ -89,12 +86,7 @@ Fimage           output;
 
 
 static void
-START_MODEL(histo, cap_histo, predict)
-
-Fsignal      histo;
-int         *cap_histo;
-int          predict;
-
+START_MODEL(Fsignal histo, int *cap_histo, int predict)
 {
   int     y, z;
 
@@ -172,11 +164,7 @@ int          predict;
 
 
 static void
-UPDATE_MODEL(symbol, symbol_pred)
-
-int        symbol;
-int        symbol_pred;
-
+UPDATE_MODEL(int symbol, int symbol_pred)
 {
   int      z;
   int      cum;
@@ -198,8 +186,7 @@ int        symbol_pred;
 
 
 static int 
-READ_BIT()
-
+READ_BIT(void)
 {
   int           bit;
 
@@ -228,10 +215,7 @@ READ_BIT()
 
 
 static void
-DECODE_INT(symb, max)
-
-long           *symb, max;
-
+DECODE_INT(long int *symb, long int max)
 {
   int bit;
 
@@ -249,14 +233,7 @@ long           *symb, max;
 
 
 static void
-READ_HEADER(input, nsymb, predic, predict, print)
-
-Cimage            input;
-int              *nsymb;
-int              *predic;
-long             *predict;
-int              *print;
-
+READ_HEADER(Cimage input, int *nsymb, int *predic, long int *predict, int *print)
 {
 
   sizei = input->nrow * input->ncol;
@@ -298,10 +275,10 @@ int              *print;
 
 
 static int
-DECODE_SYMBOL(symbol_pred, low, high)
+DECODE_SYMBOL(int symbol_pred, long int *low, long int *high)
 
-int        symbol_pred;
-long      *low, *high;         /* Interval extremities for arithmetic coding */
+                       
+                               /* Interval extremities for arithmetic coding */
 
 {
   int          symbol;
@@ -343,17 +320,17 @@ long      *low, *high;         /* Interval extremities for arithmetic coding */
 
 
 void
-ardecode2(Print, NRow, NSymb, Cap_Histo, Predic, Histo, Input, Rate, Output)
+ardecode2(int *Print, int *NRow, int *NSymb, long int *Cap_Histo, int *Predic, Fsignal Histo, Cimage Input, double *Rate, Fimage Output)
 
-int          *Print;            /* Do not print info if selected */       
-int          *NRow;             /* Number of row in Output */
-int          *NSymb;            /* Size of alphabet for Input symbols */
-long	     *Cap_Histo;	/* Capacity of histogram */
-int          *Predic;           /* Apply predictive encoding */
-Fsignal       Histo;            /* Histogram source symbols */
-Cimage        Input;	        /* String of symbol to encode */
-double       *Rate;             /* Input rate in bits per symbol */
-Fimage        Output;           /* String of codewords */  
+                                /* Do not print info if selected */       
+                                /* Number of row in Output */
+                                /* Size of alphabet for Input symbols */
+    	                	/* Capacity of histogram */
+                                /* Apply predictive encoding */
+                                /* Histogram source symbols */
+                    	        /* String of symbol to encode */
+                                /* Input rate in bits per symbol */
+                                /* String of codewords */  
 
 {
   long	           i;

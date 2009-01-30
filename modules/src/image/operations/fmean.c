@@ -13,8 +13,7 @@
 #include <stdio.h>
 #include  "mw.h"
 
-float fmean(A)
-     Fimage A;
+float fmean(Fimage A)
 {
   int s;
   register float *ptr;

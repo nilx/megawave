@@ -18,10 +18,7 @@
 #include <math.h>
 #include "mw.h"
 
-void istkwave1(np,in,out)
-     Fsignal in,out;
-     int np;
-
+void istkwave1(int np, Fsignal in, Fsignal out)
 {
   Fsignal temp=NULL;
   int i,j,k,N,m;

@@ -32,8 +32,7 @@ Wframe *win;
 Dlists ref;
 
 /* the g function in the energy (energy is int g(Du.n)ds) */
-static void gdgh(t,g,dg,h)
-     double t,*g,*dg,*h;
+static void gdgh(double t, double *g, double *dg, double *h)
 {
   if (t>0.) {
     *g = pow(t,thepower);
@@ -49,9 +48,7 @@ static void gdgh(t,g,dg,h)
 }
 
 /* reparameterize a curve with respect to arclength */
-static void param(c,size)
-     double *c;
-     int size;
+static void param(double *c, int size)
 {
   double length,cur,norm,x,y;
   int k,i;
@@ -81,9 +78,7 @@ static void param(c,size)
 }
 
 /* bilinear interpolation */
-static double interpolate(u,x,y)
-     Fimage u;
-     double x,y;
+static double interpolate(Fimage u, double x, double y)
 {
   int ix,iy;
   float *p;
@@ -98,10 +93,7 @@ static double interpolate(u,x,y)
 }
 
 /* init video mode */
-static void init_visu(u,in,zoom)
-     Fimage u;
-     Dlists in;
-     float zoom;
+static void init_visu(Fimage u, Dlists in, float zoom)
 {
   int order=1;
 
@@ -115,11 +107,7 @@ static void init_visu(u,in,zoom)
 }
 
 /* refresh display */
-static int visu(in,zoom,niter,energy,refresh)
-     Dlists in;
-     float zoom;
-     int niter,refresh;
-     double energy;
+static int visu(Dlists in, float zoom, int niter, double energy, int refresh)
 {
   int i,j;
   char str[100];
@@ -155,13 +143,7 @@ static int visu(in,zoom,niter,energy,refresh)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Dlists mac_snakes(u,in,niter,step,power,v,V)
-     Fimage u;
-     Dlists in;
-     int *niter;
-     float *V;
-     double *step,*power;
-     char *v;
+Dlists mac_snakes(Fimage u, Dlists in, int *niter, double *step, double *power, char *v, float *V)
 {
   Fimage imux,imuy,imuxx,imuxy,imuyy;
   int nx,ny,i,j,k,kp,stop;

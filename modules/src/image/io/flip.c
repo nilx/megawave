@@ -36,7 +36,7 @@ float X1,Y1,X2,Y2,min,max;
 Fimage u1,u2,u;
 Ccimage image1,image2;
 
-static void max_contrast()
+static void max_contrast(void)
 {
   int adr;
   float bg,a,c,fnx,fny;
@@ -54,7 +54,7 @@ static void max_contrast()
   }
 }
 
-static void recompute()
+static void recompute(void)
 {
   int adr;
   float bg,a,c,fnx,fny;
@@ -78,7 +78,7 @@ static void recompute()
   }
 }
 
-static void redisplay()
+static void redisplay(void)
 {
   /* 
    * FIXME: oversized str, but this is not safe, snprintf *is*
@@ -112,7 +112,7 @@ static void redisplay()
   WFlushWindow(win);
 }
 
-static void help()
+static void help(void)
 {
   printf("\n\t\tHelp on line\n");
   printf("\nMouse:\n");
@@ -134,9 +134,7 @@ static void help()
 
 
 /* handle display events */
-static int win_notify(window,param)
-     Wframe *window;
-     void *param;
+static int win_notify(Wframe *window, void *param)
 {
   int event,ret,x,y,button_mask;
   float nc,nd;
@@ -253,10 +251,7 @@ static int win_notify(window,param)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void flip(in1,in2,z,o)
-     Fimage in1,in2;
-     float *z;
-     int *o;
+void flip(Fimage in1, Fimage in2, float *z, int *o)
 {
   char str[512];
 

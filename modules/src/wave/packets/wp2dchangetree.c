@@ -32,12 +32,7 @@ usage = {
 #define _(a,i,j) ((a)->gray[(j)*(a)->ncol+(i)])
 
 /***************************************************************/
-static void  test_input(treeIn,up_tree,down_tree,new_tree_size,prune_tree,tree_for_max,tree_for_min)
-
-     Cimage treeIn,tree_for_max,tree_for_min;
-     int *new_tree_size;
-     char *prune_tree,*up_tree,*down_tree;
-    
+static void  test_input(Cimage treeIn, char *up_tree, char *down_tree, int *new_tree_size, char *prune_tree, Cimage tree_for_max, Cimage tree_for_min)
 {int nbOption;
  
 /* check input trees */ 
@@ -64,10 +59,7 @@ static void  test_input(treeIn,up_tree,down_tree,new_tree_size,prune_tree,tree_f
 /***************************************************************/
 /*returns the maximum level of the decomposition corresponding to tree */
 
-static int treeLevel(tree)
-     
-     Cimage tree;
-     
+static int treeLevel(Cimage tree)
 {int i;
  int size=  tree->ncol*tree->nrow;
  int level;
@@ -82,10 +74,7 @@ static int treeLevel(tree)
 /***************************************************************/
 /*returns the minimum level of the decomposition corresponding to tree */
 
-static int treeMin(tree)
-     
-     Cimage tree;
-     
+static int treeMin(Cimage tree)
 {int size=tree->ncol*tree->nrow;
  int i;
  int min;
@@ -102,10 +91,7 @@ static int treeMin(tree)
 /* the same decomposition                                                            */
 /* but has the smallest possible size                                             */
 /* the result is in 'tree_out'                                                            */
-static void pruneTree(tree_in,tree_out)
-
-     Cimage tree_in,tree_out;
-
+static void pruneTree(Cimage tree_in, Cimage tree_out)
 {int level;                                     /* level of the tree */
  int prunedTreeSize;                 /* size of tree_out */
  int i;                                             /* temporary value */
@@ -142,10 +128,7 @@ static void pruneTree(tree_in,tree_out)
 /* but has the size of 'tree_out'                                                     */
 /* the result is in 'tree_out'                                                            */
 
-static void extendTree(tree_in,tree_out)
-     
-     Cimage tree_in,tree_out;
-     
+static void extendTree(Cimage tree_in, Cimage tree_out)
 {int kx,ky;                                 /*indexes for tree_in*/
  int kx1,ky1;                             /*indexes for tree_out*/
  int extra;                                 /*ratio between the size of tree_out and the size of tree_in*/
@@ -176,10 +159,7 @@ static void extendTree(tree_in,tree_out)
 /* 'tree_out1' describes the same decomposition as    'tree_in1'      */
 /* 'tree_out2' describes the same decomposition as    'tree_in2'      */
 
-static void   resize_trees(tree_in1,tree_in2,tree_out1,tree_out2)
-
-     Cimage tree_in1,tree_in2,tree_out1,tree_out2;
-
+static void   resize_trees(Cimage tree_in1, Cimage tree_in2, Cimage tree_out1, Cimage tree_out2)
 {int finalSize;
  Cimage pruned1;
  Cimage pruned2;
@@ -222,10 +202,7 @@ static void   resize_trees(tree_in1,tree_in2,tree_out1,tree_out2)
 /* Computes the maximum of two Cimage                                            */
 /* the three images must have the same size                                         */
 
-static void max_tree(tree_in1, tree_in2, tree_out)
-
-     Cimage tree_in1, tree_in2, tree_out;
-
+static void max_tree(Cimage tree_in1, Cimage tree_in2, Cimage tree_out)
 {int size=tree_in1->ncol*tree_in1->nrow;
  int i;
 
@@ -238,10 +215,7 @@ static void max_tree(tree_in1, tree_in2, tree_out)
 /* Computes the minimum of two Cimage                                            */
 /* the three images must have the same size                                         */
 
-static void min_tree(tree_in1, tree_in2, tree_out)
-
-     Cimage tree_in1, tree_in2, tree_out;
-
+static void min_tree(Cimage tree_in1, Cimage tree_in2, Cimage tree_out)
 {int size=tree_in1->ncol*tree_in1->nrow;
  int i;
 
@@ -253,10 +227,7 @@ static void min_tree(tree_in1, tree_in2, tree_out)
 /***************************************************************/
 /* adds 1 at the smallest elements of 'tree'           */
 
-static void add_one_at_tree(tree)
-     
-     Cimage tree;
-     
+static void add_one_at_tree(Cimage tree)
 {int size=tree->ncol*tree->nrow;
  int i;
  int min;
@@ -272,10 +243,7 @@ static void add_one_at_tree(tree)
 /***************************************************************/
 /* substract 1 at 'tree', when possible           */
 
-static void substract_one_at_tree(tree)
-     
-     Cimage tree;
-     
+static void substract_one_at_tree(Cimage tree)
 {int former_level;
  int levelMax;
  int jump_2;
@@ -312,12 +280,7 @@ static void substract_one_at_tree(tree)
 /*-------------------------------------------------------------*/
 /******** Modifies a tree ***********/
 /* TreeIn can equal treeOut */
-void wp2dchangetree(treeIn,treeOut,up_tree,down_tree,new_tree_size,prune_tree,tree_for_max,tree_for_min)
-     
-     Cimage treeIn,treeOut,tree_for_max,tree_for_min;
-     int *new_tree_size;
-     char *prune_tree,*up_tree,*down_tree;
-     
+void wp2dchangetree(Cimage treeIn, Cimage treeOut, char *up_tree, char *down_tree, int *new_tree_size, char *prune_tree, Cimage tree_for_max, Cimage tree_for_min)
 {Cimage treeTmp;
  Cimage treeInPruned=NULL;
  Cimage otherTreeInPruned=NULL;

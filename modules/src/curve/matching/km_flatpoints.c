@@ -30,8 +30,7 @@ static int N_Points;
 
 
 /* cosinus of the angle between two vectors*/
-static float cosangle(vx1, vy1, vx2, vy2)
-     float vx1, vy1, vx2, vy2;
+static float cosangle(float vx1, float vy1, float vx2, float vy2)
 {
   float c, qd1, qd2;
   
@@ -48,10 +47,7 @@ static float cosangle(vx1, vy1, vx2, vy2)
 /* next index after i in the direction type. 
   iLast is the last index of the curve */
 
-static int get_next_index(i, iLast, type)
-     int i;
-     int iLast;
-     unsigned char type;
+static int get_next_index(int i, int iLast, unsigned char type)
 {
   int i_next;
   
@@ -78,11 +74,7 @@ static int get_next_index(i, iLast, type)
 /* next point after i1 whose angle with tangent in i1 is less than angle, 
    in the direction type. */ 
 
-static int get_next_point_angle(fcrv, i1, i_max, angle_max, type)
-     Flist fcrv;
-     int i1, i_max;
-     float angle_max;
-     unsigned char type;
+static int get_next_point_angle(Flist fcrv, int i1, int i_max, float angle_max, unsigned char type)
 {
   float cos_angle_max;
   int i, i_next;
@@ -124,9 +116,7 @@ static int get_next_point_angle(fcrv, i1, i_max, angle_max, type)
 
 /* length of an arc between index i1 and i2 */
 
-static float arc_length(fcrv, i1, i2)
-     Flist fcrv;
-     int i1,i2;
+static float arc_length(Flist fcrv, int i1, int i2)
 {
   int i;
   float x1, y1, x2, y2, length;
@@ -164,8 +154,7 @@ static float arc_length(fcrv, i1, i2)
 
 /* get central index between i1 and i2 (closed curve) */
 
-static int get_central_index(i1, i2)
-     int i1, i2;
+static int get_central_index(int i1, int i2)
 {
   int i;
   
@@ -178,11 +167,7 @@ static int get_central_index(i1, i2)
 
 /* flat points of a closed curve without inflexion point */
 
-static void get_flat_points_closed_curve(curve_FP,fcrv,dist,angle)
-     Flist curve_FP;
-     Flist fcrv;
-     float dist;
-     float angle;
+static void get_flat_points_closed_curve(Flist curve_FP, Flist fcrv, float dist, float angle)
 {
   int i, i_angle, i_next, i1, i2, i2_limit;
   float d;
@@ -217,12 +202,7 @@ static void get_flat_points_closed_curve(curve_FP,fcrv,dist,angle)
 
 /* flat points of a convex piece of curve */
 
-static void get_flat_points_convex(curve_FP,fcrv, iFirst, iLast, dist, angle, noIPs)
-     Flist curve_FP;
-     Flist fcrv;
-     int iFirst, iLast;
-     float dist, angle;
-     unsigned char noIPs;
+static void get_flat_points_convex(Flist curve_FP, Flist fcrv, int iFirst, int iLast, float dist, float angle, unsigned char noIPs)
 {
   int i1, i2, i, i_next, i_angle;
   float d;
@@ -262,11 +242,7 @@ static void get_flat_points_convex(curve_FP,fcrv, iFirst, iLast, dist, angle, no
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Flist km_flatpoints(curve,curve_IP,curve_FP,angle,dist)
-     Flist curve;
-     Flist curve_IP;
-     Flist curve_FP;
-     float angle, dist; 
+Flist km_flatpoints(Flist curve, Flist curve_IP, Flist curve_FP, float angle, float dist)
 { 
   int i;
   

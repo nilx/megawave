@@ -23,14 +23,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for czoom() */
 
-void cmzoom(Input, Output, x_flg, y_flg, factor, o, i_flg)
-
-     char *x_flg, *y_flg, *i_flg;
-     float *factor;
-     int *o;
-     Cmovie Input;
-     Cmovie Output;
-     
+void cmzoom(Cmovie Input, Cmovie Output, char *x_flg, char *y_flg, float *factor, int *o, char *i_flg)
 {
   Cimage src,dst,prev;
   

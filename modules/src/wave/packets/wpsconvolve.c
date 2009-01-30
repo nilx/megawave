@@ -26,11 +26,11 @@ signal_out<-Output
 #include  "mw.h"
 
 /************************************************************/
-static void barFilter(filter,modifiedFilter)
+static void barFilter(Fsignal filter, Fsignal modifiedFilter)
      /*switch left and right : modifiedFilter[n]=filter[-n]*/
      
-     Fsignal         filter;	        /* original filter */
-     Fsignal         modifiedFilter;	     /* modified filter */
+                            	        /* original filter */
+                                    	     /* modified filter */
      
 { int            n;	        /* Index of the current point in input */
  int               j;                    /* Index of the current point in output */
@@ -50,13 +50,13 @@ static void barFilter(filter,modifiedFilter)
 }
 
 /**************************************************/
-static void changeFilter(filter, modifiedFilter, upSample, band)
+static void changeFilter(Fsignal filter, Fsignal modifiedFilter, char *upSample, char *band)
      /*--- Compute the corresponding high-pass filter ---*/
      
-     Fsignal         filter;	        /* original filter */
-     Fsignal         modifiedFilter;	     /* high-pass filter */
-     char           *upSample;                            /* incates up-sampling */
-     char           *band;                                        /* incates band */
+                            	        /* original filter */
+                                    	     /* high-pass filter */
+                                                          /* incates up-sampling */
+                                                                  /* incates band */
      
 {
   int            n;	        /* Index of the current point in input */
@@ -105,14 +105,14 @@ static void changeFilter(filter, modifiedFilter, upSample, band)
 }
 
 /**************************************************/
-static void extendInput(input, output, shift, upSample)
+static void extendInput(Fsignal input, Fsignal output, int shift, char *upSample)
      
      /*--- Extends the input signal ---*/
      
-     Fsignal         input;	        /* original signal */
-     Fsignal         output;	        /* extended signal */
-     int             shift;                                            /* shift of the filter */
-     char           *upSample;                            /* incates up-sampling */
+                           	        /* original signal */
+                            	        /* extended signal */
+                                                                       /* shift of the filter */
+                                                          /* incates up-sampling */
      
 {        
   long            iInput;	    /* Index of the current point in input */
@@ -185,14 +185,14 @@ static void extendInput(input, output, shift, upSample)
 }
 
 /**************************************************/
-static void convDown(signal, filter, result)
+static void convDown(Fsignal signal, Fsignal filter, Fsignal result)
      
      /*--- Convolution of the input ---*/
      /*--- 'signal' with 'filter' and a downsampling ---*/
      
-     Fsignal         signal;	        /* original signal */
-     Fsignal         filter;                                          /* convolution filter */
-     Fsignal         result;	        /* filtered signal */
+                            	        /* original signal */
+                                                                      /* convolution filter */
+                            	        /* filtered signal */
      
 {
   long            iResult;	    /* Index of the current point in result */
@@ -211,14 +211,14 @@ static void convDown(signal, filter, result)
   
 }
 /**************************************************/
-static void convUp(signal, filter, result)
+static void convUp(Fsignal signal, Fsignal filter, Fsignal result)
      
      /*--- Convolution of the input ---*/
      /*--- 'signal' with 'filter'  ---*/
      
-     Fsignal         signal;	        /* original signal */
-     Fsignal         filter;                                          /* convolution filter */
-     Fsignal         result;	        /* filtered signal */
+                            	        /* original signal */
+                                                                      /* convolution filter */
+                            	        /* filtered signal */
      
 {
   long            iResult;	    /* Index of the current point in result */
@@ -239,17 +239,17 @@ static void convUp(signal, filter, result)
 
 /**************************************************/
 
-void wpsconvolve(Signal, Output, Ri, upSample, band, oddSize)
+void wpsconvolve(Fsignal Signal, Fsignal Output, Fsignal Ri, char *upSample, char *band, char *oddSize)
      /*----- Convolves `Signal` with `Ri`, and decimate the reult-----*/
      /*----- orinterpolate it before the convolution  -----*/
      
      
-     Fsignal         Signal;	        /* Input signal */
-     Fsignal         Output;	        /* Output : convolved signal */
-     char           *upSample;                                    /* to upsample the signal */
-     char           *oddSize;                                     /* to obtain an upsampled result with an odd size */
-     char           *band;                                          /* Indicates convolution with low or  high-pass filter */
-     Fsignal         Ri;	      /* Impulse response of the low pass filter */
+                            	        /* Input signal */
+                            	        /* Output : convolved signal */
+                                                                  /* to upsample the signal */
+                                                                  /* to obtain an upsampled result with an odd size */
+                                                                    /* Indicates convolution with low or  high-pass filter */
+                        	      /* Impulse response of the low pass filter */
      
 { 
   long            sizeres;	/* Size of `Output` */  

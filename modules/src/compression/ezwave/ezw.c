@@ -149,12 +149,7 @@ static unsigned char   *ptrc;     /* Pointer to compress->gray for next
 
 
 static void
-SCALE_WAVT(wtrans, nrec, weightfac)
-
-Wtrans2d      wtrans;
-int           nrec;
-float         weightfac;
-
+SCALE_WAVT(Wtrans2d wtrans, int nrec, float weightfac)
 {
   long   x, size;
   float  scalefac;
@@ -179,11 +174,7 @@ float         weightfac;
 
 
 static void
-INIT_TARGNBIT_DR(wtrans, ptrdrc)
-
-Wtrans2d      wtrans;
-char         *ptrdrc;
-
+INIT_TARGNBIT_DR(Wtrans2d wtrans, char *ptrdrc)
 {
   long   total_nbit;
 
@@ -236,16 +227,16 @@ char         *ptrdrc;
 
 
 static void
-COMPUTE_EFF_TARGET_RATE_MSE(wtrans, output, nrec, areamap, selectarea, psnr, rate)
+COMPUTE_EFF_TARGET_RATE_MSE(Wtrans2d wtrans, Wtrans2d output, int nrec, unsigned char ***areamap, Polygons selectarea, float *psnr, float *rate)
 
-Wtrans2d         wtrans, output; /* Input and quantized wavelet transforms */
-int              nrec;           /* Number of level to consider in wavelet 
+                                 /* Input and quantized wavelet transforms */
+                                 /* Number of level to consider in wavelet 
 				  * transform */
-unsigned char ***areamap;        /* Mask for selected areas */
-Polygons         selectarea;     /* Polygnal regions to be encoded with 
+                                 /* Mask for selected areas */
+                                 /* Polygnal regions to be encoded with 
 				  * a special rate or PSNR */
-float           *rate;           /* Target bit rate for background */
-float           *psnr;           /* Target psnr for background */
+                                 /* Target bit rate for background */
+                                 /* Target psnr for background */
 
 {
   int              i;                /* Index for orientation in wav. trans. */
@@ -374,8 +365,7 @@ float           *psnr;           /* Target psnr for background */
 
 
 static void
-COMPUTE_TOTAL_MSE()
-
+COMPUTE_TOTAL_MSE(void)
 {
   int              p;                /* Index for selected area */
 
@@ -388,12 +378,12 @@ COMPUTE_TOTAL_MSE()
 
 
 static void
-INIT_SIGMAP(wtrans, nrec, sigmap)
+INIT_SIGMAP(Wtrans2d wtrans, int nrec, unsigned char ***sigmap)
 
-Wtrans2d         wtrans;         /* Input wavelet transforms */
-int              nrec;           /* Number of level to consider in wavelet 
+                                 /* Input wavelet transforms */
+                                 /* Number of level to consider in wavelet 
 				  * transform */
-unsigned char ***sigmap;         /* Map of significance information 
+                                 /* Map of significance information 
 				  * and mask for selected areas */
 
 {
@@ -431,14 +421,14 @@ unsigned char ***sigmap;         /* Map of significance information
 
 
 static void
-UPDATE_AREAMAP(wtrans, nrec, areamap, bitmap, p)
+UPDATE_AREAMAP(Wtrans2d wtrans, int nrec, unsigned char ***areamap, Cimage bitmap, unsigned char p)
 
-Wtrans2d         wtrans;         /* Input wavelet transform */
-int              nrec;           /* Number of level to consider in wavelet 
+                                 /* Input wavelet transform */
+                                 /* Number of level to consider in wavelet 
 				  * transform */
-unsigned char ***areamap;        /* Mask for selected areas */
-Cimage           bitmap;         /* bitmap image */
-unsigned char    p;              /* Index of polygon */
+                                 /* Mask for selected areas */
+                                 /* bitmap image */
+                                 /* Index of polygon */
 
 {
   int              i;                /* Index for orientation in wav. trans. */
@@ -491,13 +481,13 @@ unsigned char    p;              /* Index of polygon */
 
 
 static void
-INIT_AREAMAP(wtrans, nrec, areamap, selectarea)
+INIT_AREAMAP(Wtrans2d wtrans, int nrec, unsigned char ***areamap, Polygons selectarea)
 
-Wtrans2d         wtrans;         /* Input wavelet transforms */
-int              nrec;           /* Number of level to consider in wavelet 
+                                 /* Input wavelet transforms */
+                                 /* Number of level to consider in wavelet 
 				  * transform */
-unsigned char ***areamap;        /* Mask for selected areas */
-Polygons         selectarea;     /* Polygnal regions to be encoded with 
+                                 /* Mask for selected areas */
+                                 /* Polygnal regions to be encoded with 
 				  * a special rate or PSNR */
 
 {
@@ -565,10 +555,10 @@ Polygons         selectarea;     /* Polygnal regions to be encoded with
 
 
 static float
-COMPUTES_THRES_ADAP(wtrans, nrec)
+COMPUTES_THRES_ADAP(Wtrans2d wtrans, int nrec)
 
-Wtrans2d     wtrans;             /* Input wavelet transforms */
-int          nrec;               /* Number of level to consider in wavelet 
+                                 /* Input wavelet transforms */
+                                 /* Number of level to consider in wavelet 
 				  * transform */
 
 {
@@ -602,8 +592,7 @@ int          nrec;               /* Number of level to consider in wavelet
 
 
 static void
-TEST_END_ENCODING() 
-
+TEST_END_ENCODING(void)
 {
   int p;
   
@@ -617,14 +606,14 @@ TEST_END_ENCODING()
 
 
 static void
-REDRAW_AREAMAP(wtrans, output, nrec, areamap, p)
+REDRAW_AREAMAP(Wtrans2d wtrans, Wtrans2d output, int nrec, unsigned char ***areamap, unsigned char p)
 
 /*--- Modify areamap after encoding is stopped in some selected area ---*/
 
-Wtrans2d         wtrans, output;     /* Input and output wavelet transforms */
-int              nrec;
-unsigned char ***areamap;            /* Mask for selected areas */
-unsigned char    p;                  /* Index of area to be redrawn */
+                                     /* Input and output wavelet transforms */
+                      
+                                     /* Mask for selected areas */
+                                     /* Index of area to be redrawn */
 
 {
   int              i;                /* Index for orientation in wav. trans. */
@@ -718,10 +707,7 @@ unsigned char    p;                  /* Index of area to be redrawn */
  
 
 static void
-RESIZE_COMPRESS(compress)
-
-Cimage           compress;
-
+RESIZE_COMPRESS(Cimage compress)
 {
   int              i;
   int              ncolo, nrowo;
@@ -757,10 +743,7 @@ Cimage           compress;
 
 
 static void
-REALLOCATE_COMPRESS(compress)
-
-Cimage           compress;
-
+REALLOCATE_COMPRESS(Cimage compress)
 {
   int              i;
   Cimage           bufcomp;
@@ -793,11 +776,7 @@ Cimage           compress;
 
 
 static void
-ADD_BIT_TO_OUTPUT(bit, compress)
-
-int              bit;
-Cimage           compress;
-
+ADD_BIT_TO_OUTPUT(int bit, Cimage compress)
 {
   buffer >>= 1;
   if (bit) 
@@ -817,11 +796,7 @@ Cimage           compress;
 
 
 static void
-ENCODE_INT(symb, max, compress)
-
-int              symb, max;
-Cimage           compress;
-
+ENCODE_INT(int symb, int max, Cimage compress)
 {
 
   while (max > 0) {
@@ -837,14 +812,14 @@ Cimage           compress;
 
 
 static void
-INIT_ENCODING(nrec, nrow, ncol, thressymb, selectarea, compress)
+INIT_ENCODING(int nrec, int nrow, int ncol, int thressymb, Polygons selectarea, Cimage compress)
 
-int               nrec;          /* Number of levels in wav. trans. */
-int               nrow, ncol;    /* Size of original image */
-int               thressymb;     /* Symbol for initial threshold value */
-Polygons          selectarea;    /* Polygnal regions to be encoded with 
+                                 /* Number of levels in wav. trans. */
+                                 /* Size of original image */
+                                 /* Symbol for initial threshold value */
+                                 /* Polygnal regions to be encoded with 
 				  * a special rate or PSNR */
-Cimage            compress;      /* Output compressed file */
+                                 /* Output compressed file */
 
 {
   Polygon       ptr_polyg;       /* Pointer to the current polygon */
@@ -944,12 +919,7 @@ Cimage            compress;      /* Output compressed file */
 
 
 static void
-UPDATE_MODEL(symbol, cum_freq, freq, nsymbol)
-
-int        symbol;
-long       cum_freq[], freq[];
-int        nsymbol;
-
+UPDATE_MODEL(int symbol, long int *cum_freq, long int *freq, int nsymbol)
 {
   int      z;
   int      cum;
@@ -971,11 +941,7 @@ int        nsymbol;
 
 
 static void
-OUTPUT_BITS(bit, compress)
-
-int              bit;
-Cimage           compress;
-
+OUTPUT_BITS(int bit, Cimage compress)
 {
 
   if (ptrc)
@@ -991,13 +957,7 @@ Cimage           compress;
 
 
 static void
-ENCODE_SYMBOL(symbol, cum_freq, effnbitar, compress)
-
-unsigned char    symbol;
-long             cum_freq[];
-long            *effnbitar;
-Cimage           compress;
-
+ENCODE_SYMBOL(unsigned char symbol, long int *cum_freq, long int *effnbitar, Cimage compress)
 {
   long     range;
 
@@ -1034,17 +994,17 @@ Cimage           compress;
 
 
 static void
-ENCODE_SIGNIF_MAP(wtrans, output, compress, sigmap, areamap, nsignif, nrec, thres, printfull, distrate)
+ENCODE_SIGNIF_MAP(Wtrans2d wtrans, Wtrans2d output, Cimage compress, unsigned char ***sigmap, unsigned char ***areamap, long int *nsignif, int nrec, float thres, int *printfull, int *distrate)
 
-Wtrans2d         wtrans, output;
-Cimage           compress;
-unsigned char ***sigmap;             /* Map of significance information */
-unsigned char ***areamap;            /* Mask for selected areas */
-long            *nsignif;
-int              nrec;
-float            thres;
-int             *printfull;
-int             *distrate;
+                                
+                          
+                                     /* Map of significance information */
+                                     /* Mask for selected areas */
+                         
+                      
+                       
+                           
+                          
 
 {
   int             i;               /* Direction of sub-image 
@@ -1328,16 +1288,16 @@ int             *distrate;
 
 
 static void
-ENCODE_QUANT_STEP(wtrans, output, compress, sigmap, areamap, nrec, thres, printfull, distrate)
+ENCODE_QUANT_STEP(Wtrans2d wtrans, Wtrans2d output, Cimage compress, unsigned char ***sigmap, unsigned char ***areamap, int nrec, float thres, int *printfull, int *distrate)
 
-Wtrans2d         wtrans, output;
-Cimage           compress;
-unsigned char ***sigmap;             /* Map of significance information */
-unsigned char ***areamap;            /* Mask for selected areas */
-int              nrec;
-float            thres;
-int             *printfull;
-int             *distrate;
+                                
+                          
+                                     /* Map of significance information */
+                                     /* Mask for selected areas */
+                      
+                       
+                           
+                          
 
 {
   int             i;                /* Index for orientation in wav. trans. */
@@ -1592,19 +1552,19 @@ int             *distrate;
 
 
 static void
-ZERO_TREE_ENCODE(wtrans, output, compress, nrec, thres, rate, psnr, selectarea, printfull, distrate)
+ZERO_TREE_ENCODE(Wtrans2d wtrans, Wtrans2d output, Cimage compress, int nrec, float thres, float *rate, float *psnr, Polygons selectarea, int *printfull, int *distrate)
 
-Wtrans2d     wtrans, output;     /* Input and quantized wavelet transforms */
-Cimage       compress;           /* Compressed file */
-int          nrec;               /* Number of level to consider in wavelet 
+                                 /* Input and quantized wavelet transforms */
+                                 /* Compressed file */
+                                 /* Number of level to consider in wavelet 
 				  * transform */
-float        thres;              /* Initial threshold */
-float       *rate;               /* Target bit rate for background */
-float       *psnr;               /* Target psnr for background */
-Polygons     selectarea;         /* Polygnal regions to be encoded with 
+                                 /* Initial threshold */
+                                 /* Target bit rate for background */
+                                 /* Target psnr for background */
+                                 /* Polygnal regions to be encoded with 
 				  * a special rate or PSNR */
-int         *printfull;          /* Flag for information printing */
-int         *distrate;           /* Flag for computation of dist. rate curve */
+                                 /* Flag for information printing */
+                                 /* Flag for computation of dist. rate curve */
 
 {
   int              i;                /* Index for orientation in wav. trans. */
@@ -1875,22 +1835,22 @@ int         *distrate;           /* Flag for computation of dist. rate curve */
 
 
 void
-ezw(PrintFull, NumRec, WeightFac, Thres, Max_Count_AC, DistRate, Rate, PSNR, SelectedArea, Compress, Wtrans, Output, PtrDRC)
+ezw(int *PrintFull, int *NumRec, float *WeightFac, float *Thres, int *Max_Count_AC, int *DistRate, float *Rate, float *PSNR, Polygons SelectedArea, Cimage Compress, Wtrans2d Wtrans, Wtrans2d Output, char *PtrDRC)
 
-int            *PrintFull;       /* Print full set of information */
-int            *NumRec;		 /* Consider only *Numrec level */
-float          *WeightFac;       /* Weighting factor for wavelet coeff. */
-float          *Thres;           /* Initial value for theshold */
-int            *Max_Count_AC;    /* Capacity of histogram for ar. coding */
-int            *DistRate;        /* Compute distortion-rate function */
-float          *Rate;            /* Target Rate */
-float          *PSNR;            /* Target PSNR */
-Polygons        SelectedArea;    /* Polygnal regions to be encoded with 
+                                 /* Print full set of information */
+                       		 /* Consider only *Numrec level */
+                                 /* Weighting factor for wavelet coeff. */
+                                 /* Initial value for theshold */
+                                 /* Capacity of histogram for ar. coding */
+                                 /* Compute distortion-rate function */
+                                 /* Target Rate */
+                                 /* Target PSNR */
+                                 /* Polygnal regions to be encoded with 
 				  * a special rate or PSNR */
-Cimage          Compress;	 /* Compressed `Image` */
-Wtrans2d        Wtrans;          /* Input wavelet transform */
-Wtrans2d        Output;          /* Quantized wavelet transform */
-char           *PtrDRC;          /* Distorsion rate curve */
+                         	 /* Compressed `Image` */
+                                 /* Input wavelet transform */
+                                 /* Quantized wavelet transform */
+                                 /* Distorsion rate curve */
 
 {
   int             NRec;

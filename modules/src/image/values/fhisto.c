@@ -28,13 +28,7 @@
 
 #define DEFAULT_NUMBER_OF_CELLS 100
 
-Fsignal fhisto(in,out,l,r,n,s,t,w)
-     Fimage   in,w;
-     Fsignal  out;
-     float    *l,*r;
-     int      *n;
-     float    *s;
-     char     *t;
+Fsignal fhisto(Fimage in, Fsignal out, float *l, float *r, int *n, float *s, char *t, Fimage w)
 {
   float min,max,size,v;
   int num,i,cell;

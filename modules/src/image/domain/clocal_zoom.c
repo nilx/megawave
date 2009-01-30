@@ -22,11 +22,7 @@
 #include <string.h>
 #include "mw.h"
 
-Cimage clocal_zoom(Input, X, Y, W, factor)
-     
-     int *X,*Y,*W,*factor;
-     Cimage Input;
-     
+Cimage clocal_zoom(Cimage Input, int *X, int *Y, int *W, int *factor)
 {
   unsigned char *square,c;
   register unsigned char *ptr;

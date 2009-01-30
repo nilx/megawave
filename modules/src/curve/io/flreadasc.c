@@ -13,8 +13,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-Flists flreadasc(dim)
-     int dim;
+Flists flreadasc(int dim)
 {
   Flists ls;
   Flist l;

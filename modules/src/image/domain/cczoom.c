@@ -27,11 +27,7 @@
 
 /* NB : calling this module with out=in is possible */
 
-Ccimage cczoom(in,out,x_flg,y_flg,zoom,o,i_flg)
-     Ccimage in,out;
-     char *x_flg,*y_flg,*i_flg;
-     float *zoom;
-     int *o;
+Ccimage cczoom(Ccimage in, Ccimage out, char *x_flg, char *y_flg, float *zoom, int *o, char *i_flg)
 {
   Cimage aux_in,aux_out;
 

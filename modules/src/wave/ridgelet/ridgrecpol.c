@@ -33,9 +33,7 @@
 */
 
 
-void ridgrecpol(in_re, in_im, out_re, out_im)
-     Fimage in_re, in_im;
-     Fimage out_re, out_im;
+void ridgrecpol(Fimage in_re, Fimage in_im, Fimage out_re, Fimage out_im)
 {
   int     indic1, indic2, j;
   long n,i,j1;

@@ -64,14 +64,7 @@
 /*------------------------------------------------------------*/
 
 
-void vpsegplot(image,allsegs,vpoints,vsegs,n,crv,lines)
-     Fimage image;
-     Fimage allsegs;
-     Flist  vpoints;
-     Flists vsegs;
-     int    n;
-     Flists crv;
-     char   *lines;
+void vpsegplot(Fimage image, Fimage allsegs, Flist vpoints, Flists vsegs, int n, Flists crv, char *lines)
 {
   int i,j, m, seg_idx, *ismember;
   double R,X0,Y0,dx,dy;

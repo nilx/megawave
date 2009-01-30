@@ -39,20 +39,20 @@ static int PROLONG=0;		/* Index for inverse preconditionning */
 
 
 static void
-COMMENT(result, image, edge, filternorm, ri1, ri2)
+COMMENT(Wtrans2d result, Fimage image, int edge, int *filternorm, Fsignal ri1, Fsignal ri2)
 
 	/*--- Fill comment and other fields for result ---*/
 
-    Wtrans2d    result;		/* Wavelet transform of the image `Image` */
-    Fimage      image;		/* Input image */
-    int 	edge;		/* Type of edge processing 
+                       		/* Wavelet transform of the image `Image` */
+                      		/* Input image */
+        	     		/* Type of edge processing 
 				 * (see `Edge` in `biowave2`) */
-    int	       *filternorm;	/* Type of normalisation :
+       	                   	/* Type of normalisation :
 				 * equal 0 if normalisation of the sum of 
 				 *         `ri`'s coefficients to 1.0
 			 	 *       1 if normalisation of the squares' sum 
 			 	 *         `ri`'s coefficients to 1.0 */
-    Fsignal	ri1, ri2;	/* Impulse responses of the low-pass filters */
+           	         	/* Impulse responses of the low-pass filters */
 
 {
     result->edges = edge;
@@ -70,15 +70,15 @@ COMMENT(result, image, edge, filternorm, ri1, ri2)
 
 
 static void
-COMLINE_ERR(ri1, ri2, edge, numrec, dy, dx)
+COMLINE_ERR(Fsignal ri1, Fsignal ri2, int edge, short int numrec, long int dy, long int dx)
 
 	/*--- Detects errors and contradiction in command line ---*/
 
-    Fsignal	ri1, ri2;	/* Impulse responses of the low-pass filters */
-    int 	edge;		/* Type of edge processing 
+           	         	/* Impulse responses of the low-pass filters */
+        	     		/* Type of edge processing 
 				 * (see `Edge` in biowave2) */
-    short	numrec;		/* Number of levels for decomposition */
-    long	dx, dy;		/* Size of the image */
+         	       		/* Number of levels for decomposition */
+        	       		/* Size of the image */
 
 {
 
@@ -99,13 +99,7 @@ COMLINE_ERR(ri1, ri2, edge, numrec, dy, dx)
 
 
 static void
-ALLOC_WAV(wtrans, image, numrec, stopdecim)
-
-Wtrans2d    wtrans;
-Fimage      image;
-int         numrec;
-int         stopdecim;
-
+ALLOC_WAV(Wtrans2d wtrans, Fimage image, int numrec, int stopdecim)
 {
   int             i, J;
   int             nrow, ncol;
@@ -142,14 +136,14 @@ int         stopdecim;
 
 
 static void
-NORM_FIL(ri1, ri2, filternorm)
+NORM_FIL(Fsignal ri1, Fsignal ri2, int *filternorm)
 
 	/*--- Normalisation of the coefficients of the filter impulse 
 	 *--- responses ---*/
 
-    Fsignal	ri1, ri2;	/* Impulse response of the low-pass filter 
+           	         	/* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
-    int		*filternorm;	/* Type of normalisation :
+       		            	/* Type of normalisation :
 				 * equal 0 if normalisation of the sum of 
 				 *         `ri`'s coefficients to 1.0
 			 	 *       1 if normalisation of the squares' sum 
@@ -237,18 +231,18 @@ NORM_FIL(ri1, ri2, filternorm)
 
 
 static void
-COLUMN_WAVEL(Im, Im1, Im2, decim, nsubim, edge, ri1, ri2)
+COLUMN_WAVEL(Fimage Im, Fimage Im1, Fimage Im2, int decim, int nsubim, int *edge, Fsignal ri1, Fsignal ri2)
 
 	/*--- Computes the 1-D wavelet transform of each column  ---*
 	 *--- in image "Tab", puts the result in "Im1" and "Im2" ---*/
 
-Fimage	    Im;		/* Input (wavelet transform along the lines
+      	       		/* Input (wavelet transform along the lines
 			 * of image or resume at level J-1) */
-Fimage      Im1, Im2;	/* Low and high-pass filtered sub-images */
-int         decim;      /* Flag of decimation for sconvolve */
-int         nsubim;     /* Number of subimages */
-int        *edge;	/* Type of edge processing (see `Edge` in biowave2) */
-Fsignal     ri1, ri2;	/* Impulse responses of the low-pass filters */
+                     	/* Low and high-pass filtered sub-images */
+                        /* Flag of decimation for sconvolve */
+                        /* Number of subimages */
+                 	/* Type of edge processing (see `Edge` in biowave2) */
+                     	/* Impulse responses of the low-pass filters */
 
 {
   long        c, l;	/* Variables for line and column in resume or detail */
@@ -332,16 +326,16 @@ Fsignal     ri1, ri2;	/* Impulse responses of the low-pass filters */
 
 
 static void
-WAVEL(wtrans, J, stopdecim, ortho, ri1, ri2, edge)
+WAVEL(Wtrans2d wtrans, int J, int stopdecim, int *ortho, Fsignal ri1, Fsignal ri2, int *edge)
 
 	/*----- Computes the wavelet decomposition of S -----*/
 
-Wtrans2d    wtrans;		/* Wavelet transform */
-int         J;		        /* Level of decomposition */
-int         stopdecim;          /* Level where decimation is cancelled */
-int        *ortho;              /* Computes orthogonal coefficients */
-Fsignal     ri1, ri2;	        /* Impulse responses of the low-pass filters */
-int        *edge;		/* Type of edge processing (see `Edge`
+                   		/* Wavelet transform */
+              		        /* Level of decomposition */
+                                /* Level where decimation is cancelled */
+                                /* Computes orthogonal coefficients */
+                     	        /* Impulse responses of the low-pass filters */
+                 		/* Type of edge processing (see `Edge`
 				 * in biowave2) */
 
 {
@@ -457,21 +451,21 @@ int        *edge;		/* Type of edge processing (see `Edge`
 
 
 void
-dybiowave2(NumRec, StopDecim, Ortho, Edge, FilterNorm, Image, Output, Ri1, Ri2)
+dybiowave2(int *NumRec, int *StopDecim, int *Ortho, int *Edge, int *FilterNorm, Fimage Image, Wtrans2d Output, Fsignal Ri1, Fsignal Ri2)
 
   /*--- Computes the biorthogonal wavelet coefficients of image `Image` ---*/
 
-int        *NumRec;	    /* Number of iteration (-j) */
-int        *StopDecim;      /* Level where decimation is cancelled */
-int        *Ortho;          /* Computes orthogonal coefficients */
-int        *Edge;	    /* Equal 0 (default) if extension with 0 */
+                   	    /* Number of iteration (-j) */
+                            /* Level where decimation is cancelled */
+                            /* Computes orthogonal coefficients */
+                 	    /* Equal 0 (default) if extension with 0 */
 			    /* 1 if periodization */
 			    /* 2 if reflexion */
-int        *FilterNorm;	    /* Equal 1 if normalisation of filter's
+                       	    /* Equal 1 if normalisation of filter's
 				 * impulse responses (sum = 1.0) */
-Fimage      Image;	    /* Input image */
-Wtrans2d    Output;	    /* Wavelet transform of the image `Image` */
-Fsignal     Ri1, Ri2;	    /* Impulse responses of the low pass filters */
+                  	    /* Input image */
+                   	    /* Wavelet transform of the image `Image` */
+                     	    /* Impulse responses of the low pass filters */
 
 {
   int         J;	      /* Current level of decomposition */

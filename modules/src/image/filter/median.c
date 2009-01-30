@@ -23,15 +23,12 @@
 
 /*--------------- Median of a cimage : one iteration  -------------*/
 
-static int comp(i,j)
-     int *i,*j;
+static int comp(int *i, int *j)
 { 
   return ((int)*((unsigned char *)i)-(int)*((unsigned char *)j));
 }
 
-static int median1(u,v,s)
-     Cimage u,v;
-     Curve  s;
+static int median1(Cimage u, Cimage v, Curve s)
 {
   int           changed;
   register int  i,x,y,nx,ny,xx,yy;
@@ -61,11 +58,7 @@ static int median1(u,v,s)
 
 /*---------------------- Main function : median --------------------*/
 
-Cimage median(u, v, r, s, n)
-     Cimage u,v;
-     float  *r;
-     Curve  s;
-     int    *n;
+Cimage median(Cimage u, Cimage v, float *r, Curve s, int *n)
 {
   Cimage w,*src;
   int    i,changed;

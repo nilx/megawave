@@ -21,8 +21,7 @@
 
 /* NB : calling this module with out=in is possible */
 
-Fimage fftconvol(in,filter,out)
-     Fimage in,filter,out;
+Fimage fftconvol(Fimage in, Fimage filter, Fimage out)
 {
   int i,nx,ny;
   Fimage re,im;

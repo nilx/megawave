@@ -21,12 +21,7 @@
 #include <math.h>
 #include "mw.h"
 
-void sconst(size,A,signal)
-     
-     int *size;
-     float *A;
-     Fsignal signal;
-     
+void sconst(int *size, float *A, Fsignal signal)
 {
 
   signal = mw_change_fsignal(signal, *size);

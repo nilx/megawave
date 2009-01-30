@@ -35,22 +35,22 @@ static int PROLONG=0;		/* Index for inverse preconditionning */
 
 
 static void
-COMMENT(result, wtrans, edge, filternorm, ri1, ri2)
+COMMENT(Fsignal result, Wtrans1d wtrans, int edge, int *filternorm, Fsignal ri1, Fsignal ri2)
 
 	/*--- Fill comment and other fields for result ---*/
 
-Fsignal     result;		/* Inverse wavelet transform of `wtrans` */
-Wtrans1d    wtrans;		/* Input wavelet transform */
-int 	    edge;		/* Type of edge processing 
+                   		/* Inverse wavelet transform of `wtrans` */
+                   		/* Input wavelet transform */
+    	         		/* Type of edge processing 
 				 * (see `Edge` in `ibiowave1`) */
-int	   *filternorm;	        /* Type of normalisation :
+   	               	        /* Type of normalisation :
 				 * equal 0 if normalisation of the sum of 
 				 *         `ri`'s coefficients to 1.0
 			 	 *       1 if normalisation of the squares' sum 
 			 	 *         `ri`'s coefficients to 1.0 */
-Fsignal     ri1;		/* Impulse response of the low-pass filter 
+                		/* Impulse response of the low-pass filter 
 			 	 * for decomposition */
-Fsignal     ri2;		/* Impulse responses of the low-pass filter 
+                		/* Impulse responses of the low-pass filter 
 			 	 * for synthesis */
 
 {
@@ -73,19 +73,19 @@ Fsignal     ri2;		/* Impulse responses of the low-pass filter
 
 
 static void
-COMLINE_ERR(wtrans, ri1, ri2, edge, numrec, size)
+COMLINE_ERR(Wtrans1d wtrans, Fsignal ri1, Fsignal ri2, int edge, int *numrec, long int size)
 
      /*--- Detects errors and contradiction in command line ---*/
 
-Wtrans1d    wtrans;             /* Input wavelet transform */
-Fsignal     ri1;		/* Impulse response of the low-pass filter 
+                                /* Input wavelet transform */
+                		/* Impulse response of the low-pass filter 
 			 	 * for decomposition */
-Fsignal     ri2;		/* Impulse responses of the low-pass filter 
+                		/* Impulse responses of the low-pass filter 
 			 	 * for synthesis */
-int 	    edge;		/* Type of edge processing 
+    	         		/* Type of edge processing 
 				 * (see `Edge` in ibiowave1) */
-int        *numrec;   	        /* Number of levels for decomposition */
-long	    size;		/* Size of the signal */
+                      	        /* Number of levels for decomposition */
+    	         		/* Size of the signal */
 
 {
 
@@ -110,14 +110,14 @@ long	    size;		/* Size of the signal */
 
 
 static void
-NORM_FIL(ri1, ri2, filternorm)
+NORM_FIL(Fsignal ri1, Fsignal ri2, int filternorm)
 
 	/*--- Normalisation of the coefficients of the filter impulse 
 	 *--- responses ---*/
 
-Fsignal	ri1, ri2;	        /* Impulse response of the low-pass filter 
+       	         	        /* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
-int    	filternorm;	        /* Type of normalisation :
+       	           	        /* Type of normalisation :
 				 * equal 0 if normalisation of the sum of 
 				 *         `ri`'s coefficients to 1.0
 			 	 *       1 if normalisation of the squares' sum 
@@ -223,17 +223,17 @@ int    	filternorm;	        /* Type of normalisation :
 
 
 static void
-INV_WAVEL(J, wtrans, S, ri1, ri2, edge)	
+INV_WAVEL(int J, Wtrans1d wtrans, Fsignal S, Fsignal ri1, Fsignal ri2, int *edge)	
 
 	/*----- Computes average at level J-1 
 	  ----- from average and details at level J -----*/
 
-int         J;		        /* Current level of recomposition */
-Wtrans1d    wtrans;		/* Wavelet transform */
-Fsignal	    S;		        /* Reconstructed resume */
-Fsignal	    ri1, ri2;	        /* Impulse response of the low-pass filter 
+              		        /* Current level of recomposition */
+                   		/* Wavelet transform */
+       	      		        /* Reconstructed resume */
+       	             	        /* Impulse response of the low-pass filter 
 			 * (computation of the inner wavelet coefficients) */
-int        *edge;		/* Type of edge processing (see `Edge`
+                 		/* Type of edge processing (see `Edge`
 				 * in ibiowave1) */
 
 {
@@ -270,21 +270,21 @@ int        *edge;		/* Type of edge processing (see `Edge`
 
 
 void
-ibiowave1(NumRec, Edge, FilterNorm, Wtrans, Output, Ri1, Ri2)
+ibiowave1(int *NumRec, int *Edge, int *FilterNorm, Wtrans1d Wtrans, Fsignal Output, Fsignal Ri1, Fsignal Ri2)
 	
      /*--- Reconstructs an image from the wavelet teansform Wtrans ---*/
 
-int        *NumRec;	        /* Number of recursion (-j) */
-int        *Edge;		/* Equal 0 (default) if extension with 0 
+                   	        /* Number of recursion (-j) */
+                 		/* Equal 0 (default) if extension with 0 
 				 * 1 if periodization */
 				/* 2 if reflexion */
-int        *FilterNorm;	        /* Equal 1 if normalisation of filter's
+                       	        /* Equal 1 if normalisation of filter's
 				 * impulse responses (sum = 1.0) */
-Wtrans1d    Wtrans;		/* Wavelet transform (input) */
-Fsignal     Output;		/* reconstructed signal (output) */
-Fsignal     Ri1;		/* Impulse response of the low pass filter 
+                   		/* Wavelet transform (input) */
+                   		/* reconstructed signal (output) */
+                		/* Impulse response of the low pass filter 
 				 * for decomposition */
-Fsignal     Ri2;		/* Impulse response of the low pass filter 
+                		/* Impulse response of the low pass filter 
 				 * for synthesis */
 
 {

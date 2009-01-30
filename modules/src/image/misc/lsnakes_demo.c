@@ -22,12 +22,12 @@
 #include "mw-modules.h" /* for readpoly(), fillpolys(), emptypoly()
 			 * fmask(), lsnakes() */
 
-void lsnakes_demo(u,out,Niter,Nframes,thre,force)
+void lsnakes_demo(Cimage u, Cmovie out, int *Niter, int *Nframes, float *thre, float *force)
 
-     Cimage u; /* Original input image */
-     Cmovie out; /* Output movie */
-     float *force,*thre;
-     int *Niter,*Nframes;
+               /* Original input image */
+                 /* Output movie */
+                        
+                         
 {
   Polygons polys; 
   Fimage fimage_org,fimage,fimage_polys0,fimage_polys1; 

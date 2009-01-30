@@ -23,11 +23,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for fvalues(), ridgelet(), iridgelet() */
 
-void ridgthres(in_re,in_im,np,out_re,out_im,pourcent)
-  int np,pourcent;
-  Fimage in_re,in_im;
-  Fimage out_re,out_im;
-
+void ridgthres(Fimage in_re, Fimage in_im, int np, Fimage out_re, Fimage out_im, int pourcent)
 {
   int N,i,s,somme=0;
   float seuil_im,seuil_re;

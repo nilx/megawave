@@ -16,9 +16,9 @@
 #include <math.h>
 #include  "mw.h"
 
-void cfgetchannels(Image, RImage, GImage, BImage)
-     Cfimage     Image;		            /* Input color image */
-     Fimage      RImage, GImage, BImage;    /* Output channel images */
+void cfgetchannels(Cfimage Image, Fimage RImage, Fimage GImage, Fimage BImage)
+                       		            /* Input color image */
+                                            /* Output channel images */
      
 {
   register float      *ptri, *ptrc;         /* Pointers to red, green and blue 

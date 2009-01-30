@@ -21,9 +21,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-static Point_fcurve new_point(p,x,y)
-Point_fcurve p;
-float x,y;
+static Point_fcurve new_point(Point_fcurve p, float x, float y)
 {
   Point_fcurve q;
   
@@ -38,11 +36,7 @@ float x,y;
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void fkbox(cs,xmin,ymin,xmax,ymax,z,box)
-Fcurves cs;
-float *xmin,*ymin,*xmax,*ymax;
-float *z;
-Fcurve box;
+void fkbox(Fcurves cs, float *xmin, float *ymin, float *xmax, float *ymax, float *z, Fcurve box)
 {
   Fcurve        c;
   Point_fcurve  p;

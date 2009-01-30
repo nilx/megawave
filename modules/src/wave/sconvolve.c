@@ -65,11 +65,11 @@ static Fsignal  ri;		/* Low-pass filter for computation inner
 
 
 static double
-h(n)
+h(short int n)
 
   /*----- Low-pass imulse response function -----*/
 
-short           n;
+                  
 
 {
   if ((n < lhshift) || (n > rhshift))
@@ -82,11 +82,11 @@ short           n;
 
 
 static double
-hr(n)
+hr(short int n)
 
   /*----- Reflected low-pass imulse response function -----*/
 
-short           n;
+                  
 
 {
   return (h(-n));
@@ -95,11 +95,11 @@ short           n;
 
 
 static double
-g(n)
+g(short int n)
 
   /*----- High-pass imulse response function -----*/
 
-short           n;
+                  
 
 {
   if ((n & 1) == 1)
@@ -110,11 +110,11 @@ short           n;
 
 
 static double
-gr(n)
+gr(short int n)
 
   /*----- Reflected high-pass imulse response function -----*/
 
-short           n;
+                  
 
 {
   return (g(-n));
@@ -123,19 +123,19 @@ short           n;
 
 
 static void
-INIT_RI(signal, Ri, band, Prolong, edge, reflir, uprate, downrate)
+INIT_RI(Fsignal signal, Fsignal Ri, int *band, int *Prolong, int edge, int *reflir, int uprate, int downrate)
 
 	/*----- Initializes RI (low or high-pass filtering) -----*/
 
-Fsignal         signal;	        /* original signal */
-Fsignal         Ri;		/* Pointer to h or g */
-int            *band;	        /* Indicates low or high-pass filtering */
-int            *Prolong;	/* Indicates prolongation or shrinkage of
+                       	        /* original signal */
+                   		/* Pointer to h or g */
+                     	        /* Indicates low or high-pass filtering */
+                        	/* Indicates prolongation or shrinkage of
 				 * edges */
-int             edge;           /* Edge processing mode */
-int            *reflir;	        /* Indicates reflexion of filter's ir */
-int             uprate;	        /* upsampling rate of signal */
-int             downrate;	/* downsampling rate of result */
+                                /* Edge processing mode */
+                       	        /* Indicates reflexion of filter's ir */
+                       	        /* upsampling rate of signal */
+                         	/* downsampling rate of result */
 
 {
   long            sshift;
@@ -210,18 +210,18 @@ int             downrate;	/* downsampling rate of result */
 
 
 static void
-INIT_EDGE_RI(edge_ri, left_ri, right_ri, band)
+INIT_EDGE_RI(Fimage edge_ri, Fimage left_ri, Fimage right_ri, int *band)
 
 	/*----- Create separated buffers -----*/
 	/*----- for left and right edge processing -----*/
 
-Fimage          edge_ri;	/* Buffer containing impulse responses of all
+                        	/* Buffer containing impulse responses of all
 				 * edge filters */
-Fimage          left_ri;	/* Buffer containing impulse responses of all
+                        	/* Buffer containing impulse responses of all
 				 * left edge filters */
-Fimage          right_ri;	/* Buffer containing impulse responses of all
+                         	/* Buffer containing impulse responses of all
 				 * right edge filters */
-int            *band;	        /* Indicates low or high-pass filtering */
+                     	        /* Indicates low or high-pass filtering */
 
 {
   int             N;
@@ -250,15 +250,15 @@ int            *band;	        /* Indicates low or high-pass filtering */
 
 
 static void
-CONV_0(signal, result, uprate, downrate)
+CONV_0(Fsignal signal, Fsignal result, int uprate, int downrate)
 
 		/*--- Convolution of the input 'signal' ---*/
 	/*--- with filter 'RI' and prolongation on edges with 0 ---*/
 
-Fsignal         signal;	        /* original signal */
-Fsignal         result;	        /* filtered signal */
-int             uprate;	        /* upsampling rate of signal */
-int             downrate;	/* downsampling rate of result */
+                       	        /* original signal */
+                       	        /* filtered signal */
+                       	        /* upsampling rate of signal */
+                         	/* downsampling rate of result */
 
 {
   long            cs;	       	/* Index of the current point in signal */
@@ -293,15 +293,15 @@ int             downrate;	/* downsampling rate of result */
 
 
 static void
-CONV_PER(signal, result, uprate, downrate)
+CONV_PER(Fsignal signal, Fsignal result, int uprate, int downrate)
 
 		/*--- Convolution of the input 'signal' ---*/
 	      /*--- with filter 'RI' and edges periodized ---*/
 
-Fsignal         signal;	        /* original signal */
-Fsignal         result;	        /* filtered signal */
-int             uprate;	        /* upsampling rate of signal */
-int             downrate;	/* downsampling rate of result */
+                       	        /* original signal */
+                       	        /* filtered signal */
+                       	        /* upsampling rate of signal */
+                         	/* downsampling rate of result */
 
 {
   long            cs;	       	/* Index of the current point in signal */
@@ -347,16 +347,16 @@ int             downrate;	/* downsampling rate of result */
 
 
 static void
-CONV_REFL(signal, result, uprate, downrate, band)
+CONV_REFL(Fsignal signal, Fsignal result, int uprate, int downrate, int *band)
 
 		/*--- Convolution of the input ---*/
 	/*--- 'signal' with filter 'RI' and edges reflected ---*/
 
-Fsignal         signal;	        /* original signal */
-Fsignal         result;	        /* filtered signal */
-int             uprate;	        /* upsampling rate of signal */
-int             downrate;	/* downsampling rate of result */
-int            *band;	        /* Low/High-pass filtering */
+                       	        /* original signal */
+                       	        /* filtered signal */
+                       	        /* upsampling rate of signal */
+                         	/* downsampling rate of result */
+                     	        /* Low/High-pass filtering */
 
 {
   long            cs;		    /* Index of the current point in result */
@@ -449,15 +449,15 @@ int            *band;	        /* Low/High-pass filtering */
 
 
 static void
-CONV_DEC_SPE(signal, result, downrate, left_ri, right_ri)
+CONV_DEC_SPE(Fsignal signal, Fsignal result, int downrate, Fimage left_ri, Fimage right_ri)
 
 	/*--- Convolution and decimation of the input 'signal' ---*/
 	  /*--- with filter 'RI' and special edge processing ---*/
 
-Fsignal         signal;	        /* original signal */
-Fsignal         result;	        /* filtered signal */
-int             downrate;	/* downrateation of result */
-Fimage          left_ri, right_ri;	/* Impulse responses for left and
+                       	        /* original signal */
+                       	        /* filtered signal */
+                         	/* downrateation of result */
+                                  	/* Impulse responses for left and
 					 * right filters */
 
 {
@@ -508,15 +508,15 @@ Fimage          left_ri, right_ri;	/* Impulse responses for left and
 
 
 static void
-CONV_INT_SPE(signal, result, uprate, left_ri, right_ri)
+CONV_INT_SPE(Fsignal signal, Fsignal result, int uprate, Fimage left_ri, Fimage right_ri)
 
 	/*--- Interpolation and convolution of the input 'signal' ---*/
 	   /*--- with filter 'RI' and special edge processing ---*/
 
-    Fsignal         signal;	/* original signal */
-    Fsignal         result;	/* filtered signal */
-    int             uprate;	/* upsampling rate of signal */
-    Fimage          left_ri, right_ri;	/* Impulse responses for left and
+                           	/* original signal */
+                           	/* filtered signal */
+                           	/* upsampling rate of signal */
+                                      	/* Impulse responses for left and
 					 * right filters */
 
 {
@@ -566,17 +566,17 @@ CONV_INT_SPE(signal, result, uprate, left_ri, right_ri)
 
 
 static void
-CONV_SPE(signal, result, uprate, downrate, band, left_ri, right_ri)
+CONV_SPE(Fsignal signal, Fsignal result, int uprate, int downrate, int *band, Fimage left_ri, Fimage right_ri)
 
 /*--- Interpolation and convolution of row number '' of the input ---*/
 /*--- 'signal' with filter 'RI' and special edge processing ---*/
 
-    Fsignal         signal;	/* original signal */
-    Fsignal         result;	/* filtered signal */
-    int             uprate;	/* upsampling rate of signal */
-    int             downrate;	/* downrateation of result */
-    int            *band;	/* Low/High-pass filtering */
-    Fimage          left_ri, right_ri;	/* Impulse responses for left and
+                           	/* original signal */
+                           	/* filtered signal */
+                           	/* upsampling rate of signal */
+                             	/* downrateation of result */
+                         	/* Low/High-pass filtering */
+                                      	/* Impulse responses for left and
 					 * right filters */
 
 {
@@ -592,28 +592,28 @@ CONV_SPE(signal, result, uprate, downrate, band, left_ri, right_ri)
 
 
 void
-sconvolve(Signal, Output, DownRate, UpRate, ReflIR, Band, Edge, Prolong, Ri, Edge_Ri)
+sconvolve(Fsignal Signal, Fsignal Output, int *DownRate, int *UpRate, int *ReflIR, int *Band, int *Edge, int *Prolong, Fsignal Ri, Fimage Edge_Ri)
 
   /*----- Convolves `Signal` with `Ri`, eventually after interpolation -----*/
 		/*----- and/or before decimation -----*/
 
-Fsignal         Signal;	        /* Input signal */
-Fsignal         Output;	        /* Output : convolved signal */
-int            *DownRate;	/* Indicates the rate of decimation */
-int            *UpRate;	        /* Indicates the rate of interpolation */
-int            *ReflIR;	        /* Indicates reflexion of the filter's IR */
-int            *Edge;	        /* Equal 0 if extension with 0 */
+                       	        /* Input signal */
+                       	        /* Output : convolved signal */
+                         	/* Indicates the rate of decimation */
+                       	        /* Indicates the rate of interpolation */
+                       	        /* Indicates reflexion of the filter's IR */
+                     	        /* Equal 0 if extension with 0 */
                                 /* 1 if periodization */
                                 /* 2 if reflexion */
                                 /* 3 (default) if special treatment of edges */
-int            *Band;	        /* Indicates convolution with low or
+                     	        /* Indicates convolution with low or
 			         * high-pass filter */
-int            *Prolong;	/* Equals 0 (default) if 
+                        	/* Equals 0 (default) if 
 				 * sizeres = signal->size * uprate / downrate
 				 * 1 if prolongation of `Output` at edges 
 				 * 2 if shrinkage of `Output` at edges */
-Fsignal         Ri;		/* Impulse response of the low pass filter */
-Fimage          Edge_Ri;	/* Impulse responses of filters for special
+                   		/* Impulse response of the low pass filter */
+                        	/* Impulse responses of filters for special
 				 * edge processing */
 
 {

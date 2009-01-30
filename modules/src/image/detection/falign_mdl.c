@@ -49,10 +49,7 @@ struct one_segment
 /***   compute P(k,l) : array out[] of size n+1 * n+1   ***/
 /**********************************************************/
 
-static double* tab(n,p,m)
-int n;
-double p;
-double m;
+static double* tab(int n, double p, double m)
 {
   double *out;
   int adr1,adr2,x,y;
@@ -88,9 +85,9 @@ double m;
 /***   compute the direction of the level line at each point ***/
 /***************************************************************/
 
-static Fimage ll_angle(a,threshold)
-     Fimage a; /* input image of gray levels */
-     float threshold;
+static Fimage ll_angle(Fimage a, float threshold)
+               /* input image of gray levels */
+                     
 {
   Fimage g; /* output image of angles */
   int n,p,x,y,adr;
@@ -133,12 +130,7 @@ static Fimage ll_angle(a,threshold)
 /***************************************************************/
 
 
-Fimage falign_mdl(u,d,nd,no_mdl,nl,eps,g,crv)
-Fimage u;
-int    *d,*nd,*nl,*no_mdl;
-double *eps;
-float  *g;
-Flists crv;
+Fimage falign_mdl(Fimage u, int *d, int *nd, int *no_mdl, int *nl, double *eps, float *g, Flists crv)
 {
   Fimage angle,res;
   struct one_segment *seg;

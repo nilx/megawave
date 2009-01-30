@@ -27,17 +27,14 @@
 #define IN(i,j) (ptrIN[(j)*ncIN + (i)])
 
 
-static  int compare(k,l)
-     float *k, *l;
+static  int compare(float *k, float *l)
 {
   if (*k > *l) return(1);
   if (*k < *l) return(-1);
   return(0);
 }
 
-void forder(e,N,in,out)
-     Fimage in,out;
-     int *e,*N;        
+void forder(int *e, int *N, Fimage in, Fimage out)
 {
  float *a;
  int n;

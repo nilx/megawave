@@ -14,10 +14,7 @@ usage = {
 #include "mw.h"
 #include "mw-modules.h" /* for arencode2(), fentropy() */
 
-double fencode(U)
-
-Fimage U;
-
+double fencode(Fimage U)
 {
   int optdef;    /* to set the option */
   double arate;  /* Arithmetic coding rate */

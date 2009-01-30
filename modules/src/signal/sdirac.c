@@ -19,12 +19,7 @@
 #include <math.h>
 #include "mw.h"
 
-void sdirac(size,A,signal)
-
-     int *size;
-     float *A;
-     Fsignal signal;
-     
+void sdirac(int *size, float *A, Fsignal signal)
 {
   int i,med;
 

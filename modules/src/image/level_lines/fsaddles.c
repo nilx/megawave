@@ -21,8 +21,7 @@ systematically defined in 'math.h'. */
 #define NOT_A_SADDLE FLT_MAX
 
 /* Compute the saddle values and return the number of saddle points */
-int fsaddles(pImage, pSaddlesImage)
-Fimage pImage, pSaddlesImage;
+int fsaddles(Fimage pImage, Fimage pSaddlesImage)
 {
   int i, j, iNumber;
   double minDiag1, maxDiag1, minDiag2, maxDiag2, temp;

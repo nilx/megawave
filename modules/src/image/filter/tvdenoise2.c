@@ -31,8 +31,7 @@ unsigned char *image; /* image plane for display */
 Wframe *win;          /* display window */
 
 
-static void init_display(str)
-char *str;
+static void init_display(char *str)
 {
   win = (Wframe *)mw_get_window(NULL,nx,ny+15,10,10,str);
   if (!win) mwerror(INTERNAL,1,"NULL window returned by mw_get_window\n");
@@ -44,9 +43,7 @@ char *str;
   WFlushWindow(win);
 }
 
-static void display(gray,str)
-     double *gray;
-     char *str;
+static void display(double *gray, char *str)
 {
   double v;
   int adr;
@@ -66,9 +63,7 @@ static void display(gray,str)
 }
 
 /* compute u = ref-div(p), E=||u||^2 and update p */
-static double energy_evol(px,py,ref,u,lambda,s)
-     double *px,*py,*u,lambda,s;
-     float *ref;
+static double energy_evol(double *px, double *py, float *ref, double *u, double lambda, double s)
 {
   double d,E,gx,gy,norm;
   int x,y,adr;
@@ -101,10 +96,7 @@ static double energy_evol(px,py,ref,u,lambda,s)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-Fimage tvdenoise2(in,out,s,v,n,r,W,V)
-     Fimage in,out;
-     double *s,*r,*W;
-     int *v,*n,*V;
+Fimage tvdenoise2(Fimage in, Fimage out, double *s, int *v, int *n, double *r, double *W, int *V)
 {
   double *px,*py,*u,E,oldE;
   int adr,i,cont,stop,key;

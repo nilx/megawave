@@ -22,12 +22,12 @@ usage = {
 
 
 
-void owtrans_fimage(Wtrans, Output, NumRec, Contrast)
+void owtrans_fimage(Wtrans2d Wtrans, Fimage Output, int *NumRec, double *Contrast)
      
-     Wtrans2d        Wtrans;	/* Wavelet transform (input) */
-     Fimage          Output;	/* visualization image (output) */
-     int            *NumRec;	/* Number de recursion (-j) */
-     double         *Contrast;	/* Multiplicative constant for details */
+                            	/* Wavelet transform (input) */
+                            	/* visualization image (output) */
+                            	/* Number de recursion (-j) */
+                              	/* Multiplicative constant for details */
      
 
 {

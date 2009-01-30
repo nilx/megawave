@@ -16,15 +16,15 @@
 #include  "mw.h"
 
 
-void fline_extract(cflag, Image, Signal, Index)
+void fline_extract(char *cflag, Fimage Image, Fsignal Signal, long int Index)
 
 	/*--- Extract line `LineIndex` or column `ColumnIndex` in `Image` ---*/
 
-    char        *cflag;
-    long	Index;	/* Indices of the line or the column 
+                       
+        	      	/* Indices of the line or the column 
 					 * to be extracted */
-    Fimage	Image;			/* Input image */
-    Fsignal	Signal;		/* Output, extracted line or column */
+          	      			/* Input image */
+           	       		/* Output, extracted line or column */
 
 {
 

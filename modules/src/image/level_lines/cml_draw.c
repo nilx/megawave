@@ -21,11 +21,7 @@
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))
 
-static void draw_cmlines(mline,image,NL,NC,border)
-     Cmorpho_line mline;
-     Ccimage image;
-     int NL,NC;
-     unsigned char *border;
+static void draw_cmlines(Cmorpho_line mline, Ccimage image, int NL, int NC, unsigned char *border)
 {
   Point_curve point_ptr;
   int BNL,BNC,l,c,dl,dc;
@@ -86,10 +82,7 @@ static void draw_cmlines(mline,image,NL,NC,border)
    mlimage
 */
 
-static void  setimage(border,bimage,mlimage)
-     char *border;
-     Ccimage bimage;
-     Ccimage mlimage;
+static void  setimage(char *border, Ccimage bimage, Ccimage mlimage)
 {
   int NCb,NLb,NCml,NLml;
   int xb,yb,xml,yml,x0,x1,y0,y1;
@@ -126,11 +119,7 @@ static void  setimage(border,bimage,mlimage)
       }
 }
 
-Ccimage cml_draw(cmimage,bimage,border,movie)
-     Cmimage cmimage;
-     Ccimage bimage;
-     char *border;
-     Ccmovie movie;
+Ccimage cml_draw(Cmimage cmimage, Ccimage bimage, char *border, Ccmovie movie)
 { 
   Ccimage cb=NULL,newcb,oldcb;
   Cmorpho_line mline_list,mline;

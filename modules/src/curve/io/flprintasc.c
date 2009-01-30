@@ -17,10 +17,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-void flprintasc(in,v,n)
-     char *v;
-     int *n;
-     Flists in;
+void flprintasc(Flists in, char *v, int *n)
 {
   Flist l;
   int i,j,k;

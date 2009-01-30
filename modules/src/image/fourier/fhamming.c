@@ -16,8 +16,7 @@
 
 /* NB: Calling this module with out=in is possible */
 
-void fhamming(in,out)
-     Fimage in,out;
+void fhamming(Fimage in, Fimage out)
 {
   int     n,p,i,j;
   double  alpha,x,y,w;

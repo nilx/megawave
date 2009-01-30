@@ -26,10 +26,7 @@ usage = {
 #include <math.h>
 #include "mw.h"
 
-static void Final(pict,sortie)
-
-Fimage pict;
-Cmovie sortie;
+static void Final(Fimage pict, Cmovie sortie)
 {
 register int i;
 Cimage image1, image2;
@@ -64,32 +61,22 @@ for(i=0;i<Size;i++) {
 }
 }
 
-static int circle(x,y)
-     float x,y;
+static int circle(float x, float y)
 {
   if ((x*x+y*y)< 1) return(1); else return(0);
 }
 
-static int rect(x,y)
-     float x,y;
+static int rect(float x, float y)
 {
   if ((x<0.4)&&(x>-0.4)&&(y<0.4)&&(y>-0.4)) return(1); else return(0);
 }
 
-static int srect(x,y)
-     float x,y;
+static int srect(float x, float y)
 {
   if ((x<0.4)&&(x>=0)&&(y<0.1)&&(y>-0.1)) return(1); else return(0);
 }
 
-void rotaffin(Nrota,Naffi,Size,Type,Area,Definition,OptSym,Factor,cimage,cmovie)
-     int *Nrota,*Naffi,*Size,*Type,*Definition;
-     float *Area;
-     float *Factor;
-     double *OptSym;
-     Cmovie cmovie;
-     Cimage cimage;
-     
+void rotaffin(int *Nrota, int *Naffi, int *Size, int *Type, float *Area, int *Definition, double *OptSym, float *Factor, Cimage cimage, Cmovie cmovie)
 {
   int size;
   Fimage pict;

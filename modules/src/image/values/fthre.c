@@ -40,10 +40,7 @@ static int compare(const void *a,const void *b)
 }
 
 
-Fimage fthre(in,out,norm,N,min,max,p,q,d,aff,linear)
-     Fimage  in,out;
-     char    *norm,*N,*aff,*linear;
-     float   *min,*max,*p,*q,*d;
+Fimage fthre(Fimage in, Fimage out, char *norm, char *N, float *min, float *max, float *p, float *q, float *d, char *aff, char *linear)
 {
   float m0,m1,a,b,w,bestw,*v;
   int i,k,bestk,l,n,adr;

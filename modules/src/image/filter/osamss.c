@@ -27,15 +27,15 @@
 #include "mw.h"
 #include "mw-modules.h" /* for amss(), fvalues() */
 
-void osamss(isotrop,power,Step,MinGrad,firstScale,lastScale,input,output)
-char *isotrop;		/* isotropic diffusion if Grad==0 & isotrop != NULL */
-char *power;		/* power 1, if == NULL ; power 1/3, if != NULL 	    */
-float *Step;		/* Step of the scale				    */
-float *MinGrad;         /* Minimum value of the gradient                    */
-float *firstScale; 	/* first scale, equal to zero if not used	    */
-float *lastScale;	/* scale of the last iteration   		    */
-Fimage input;		/* Initial Picture 				    */
-Fimage output;		/* Result         				    */
+void osamss(char *isotrop, char *power, float *Step, float *MinGrad, float *firstScale, float *lastScale, Fimage input, Fimage output)
+              		/* isotropic diffusion if Grad==0 & isotrop != NULL */
+            		/* power 1, if == NULL ; power 1/3, if != NULL 	    */
+            		/* Step of the scale				    */
+                        /* Minimum value of the gradient                    */
+                   	/* first scale, equal to zero if not used	    */
+                 	/* scale of the last iteration   		    */
+             		/* Initial Picture 				    */
+              		/* Result         				    */
 
 {
   Fsignal levels;

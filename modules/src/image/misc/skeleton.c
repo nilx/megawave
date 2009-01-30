@@ -35,10 +35,7 @@
 #define   MIN3(A,B,C)       (A) < (TMP= ((B)<(C)) ? (B):(C)) ? (A) : TMP
 
 
-static void Final(pict,sortie)
-
-Cimage pict;
-Cmovie sortie;
+static void Final(Cimage pict, Cmovie sortie)
 {
 register int i;
 Cimage image1, image2;
@@ -76,10 +73,7 @@ for(i=0;i<taille;i++) {
                                  /* test de largeur			     */
                                  /* on a central element                     */
 
-static int test_mcm(im,a)
-Cimage im;
-unsigned  long a;
-
+static int test_mcm(Cimage im, long unsigned int a)
 {
   int test;
   int dx,dy;
@@ -216,11 +210,7 @@ return(test);
   
 }
 
-static int test_thinning(im,a,l_min)
-Cimage im;
-unsigned  long a;
-int l_min;
-
+static int test_thinning(Cimage im, long unsigned int a, int l_min)
 {
   int test;
   int dx,dy;
@@ -316,11 +306,7 @@ return(test);
 }
 
 
-static int test_carda(im,a,l_min)
-Cimage im;
-unsigned  long a;
-int l_min;
-
+static int test_carda(Cimage im, long unsigned int a, int l_min)
 {
   int ll,cc;
   int l,c,dl,dc;
@@ -379,10 +365,7 @@ return(test);
 
                                  /* compute erosion			     */
                                  /* on a central element                     */
-static int image_erosion(im,a,r)
-Cimage im;
-unsigned long a;
-float r;
+static int image_erosion(Cimage im, long unsigned int a, float r)
 {
   int dl,dc,ll,cc,ir;
   int sup,new;
@@ -422,17 +405,7 @@ float r;
   
 }
 
-Cmovie skeleton(iteration,infsup_iter,extremite,average,cmovie,image,output)
-
-int *iteration;
-int *infsup_iter;
-int *extremite;
-char *average;
-Fmovie cmovie;
-Cimage image;
-Cmovie output;
-
-
+Cmovie skeleton(int *iteration, int *infsup_iter, int *extremite, char *average, Fmovie cmovie, Cimage image, Cmovie output)
 { 
   Cimage pict=NULL;
   Cimage im_final=NULL;

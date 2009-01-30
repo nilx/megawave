@@ -18,10 +18,7 @@
 #include <stdio.h>
 #include  "mw.h"
 
-Fsignal chisto(A,S,i_flag)
-     Cimage A;
-     Fsignal S;
-     char *i_flag;
+Fsignal chisto(Cimage A, Fsignal S, char *i_flag)
 {
   int n;
   register float *ptrS;

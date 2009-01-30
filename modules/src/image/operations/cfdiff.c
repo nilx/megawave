@@ -16,9 +16,7 @@
 #include <math.h>
 #include  "mw.h"
 
-void cfdiff(absd,A,B,O)
-     char *absd;
-     Cfimage	A,B,O;
+void cfdiff(char *absd, Cfimage A, Cfimage B, Cfimage O)
 {
   long l;
   long	dx, dy;		/* Size of image */

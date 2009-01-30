@@ -20,10 +20,7 @@
 #include <math.h>
 #include "mw.h"
 
-Fsignal sgauss(std,out,size,prec)
-     Fsignal out;
-     float std,*prec;
-     int *size;
+Fsignal sgauss(float std, Fsignal out, int *size, float *prec)
 {
   int i,n;
   double sum,v;

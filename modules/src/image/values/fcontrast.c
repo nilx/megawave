@@ -14,9 +14,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-static float apply_g(g,v)
-     Flist g;
-     float v;
+static float apply_g(Flist g, float v)
 {
   int i,j,k;
   float a,b,s;
@@ -41,9 +39,7 @@ static float apply_g(g,v)
   return ((1-s)*g->values[j*2+1]+s*g->values[i*2+1]);
 }
 
-Fimage fcontrast(in,g)
-     Fimage in;
-     Flist g;
+Fimage fcontrast(Fimage in, Flist g)
 {
   int adr;
   

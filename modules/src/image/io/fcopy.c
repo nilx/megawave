@@ -13,8 +13,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-void fcopy(Input,Output)
-     Fimage Input,*Output;
+void fcopy(Fimage Input, Fimage *Output)
 {
   if (*Output == NULL) mwerror(USAGE,1,"At least one Output requested\n");
   *Output = Input; 

@@ -21,11 +21,7 @@
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))
 
-static void draw_mlines(mline,im,NL,NC,border)
-     Morpho_line mline;
-     unsigned char **im;
-     int NL,NC;
-     unsigned char *border;
+static void draw_mlines(Morpho_line mline, unsigned char **im, int NL, int NC, unsigned char *border)
 {
   Point_curve point_ptr;
   int BNL,BNC,l,c,dl,dc;
@@ -79,9 +75,7 @@ static void draw_mlines(mline,im,NL,NC,border)
    mlimage
 */
 
-static void  setimage(border,bimage,mlimage)
-     char *border;
-     Cimage bimage,mlimage;
+static void  setimage(char *border, Cimage bimage, Cimage mlimage)
 {
   int NCb,NLb,NCml,NLml;
   int xb,yb,xml,yml,x0,x1,y0,y1;
@@ -118,11 +112,7 @@ static void  setimage(border,bimage,mlimage)
       }
 }
 
-Cimage ml_draw(m_image,bimage,border,movie)
-     Mimage m_image;
-     Cimage bimage;
-     char *border;
-     Cmovie movie;
+Cimage ml_draw(Mimage m_image, Cimage bimage, char *border, Cmovie movie)
 { 
   Cimage cb=NULL,newcb,oldcb;
   Morpho_line mline_list,mline;

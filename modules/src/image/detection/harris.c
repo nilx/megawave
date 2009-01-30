@@ -26,11 +26,7 @@ usage = {
 
 #define _(A,i,j) ((A)->gray[(i)*(A)->ncol+(j)])
 
-Flist harris(in,k,g,size,t)
-     Fimage in;
-     float *k,*g;
-     double *t;
-     int *size;
+Flist harris(Fimage in, float *k, float *g, int *size, double *t)
 {
   Fimage gradx,grady,ux2,uy2,uxuy,corner;
   Fimage Sux2,Suy2,Suxuy;

@@ -30,9 +30,7 @@
        is possible (if you are not interested on one of these outputs)
 */
 
-void fft2dpol(in_re, in_im, out1, out2, i_flag)
-     Fimage in_re, in_im, out1, out2;
-     char *i_flag;
+void fft2dpol(Fimage in_re, Fimage in_im, Fimage out1, Fimage out2, char *i_flag)
 {
   int    i;
   float  rho,theta;

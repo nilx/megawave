@@ -13,8 +13,7 @@
 #include <stdio.h>
 #include "mw.h"
 
-Ccimage cccopy(Input,Output)
-     Ccimage Input,*Output;
+Ccimage cccopy(Ccimage Input, Ccimage *Output)
 {
   if (*Output == NULL) mwerror(USAGE,1,"At least one Output requested\n");
   *Output = Input;  

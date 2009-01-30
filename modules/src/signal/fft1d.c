@@ -192,9 +192,7 @@ static void old_fft1d(Fsignal Xr,Fsignal Xi,Fsignal Yr,Fsignal Yi,char *inverse)
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
-void fft1d(Xr,Xi,Yr,Yi,inverse)
-Fsignal Xr,Xi,Yr,Yi;
-char *inverse;
+void fft1d(Fsignal Xr, Fsignal Xi, Fsignal Yr, Fsignal Yi, char *inverse)
 {
   int n,tab[32],t,i,j,k,e,l,p,m,idxd,idxs,nsmp,mp;
   float *tra,*s,*d,*tmpf,wljx,wljy,*mc,*ms,isign;

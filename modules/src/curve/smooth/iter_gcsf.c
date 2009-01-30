@@ -28,12 +28,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for gcsf() */
 
-Dlists iter_gcsf(in,out,gam,last,area,eps,n,N,v)
-     Dlist   in;
-     Dlists  out;
-     double  *gam,*area,*eps,*last;
-     int     *N,*n;
-     char    *v;
+Dlists iter_gcsf(Dlist in, Dlists out, double *gam, double *last, double *area, double *eps, int *n, int *N, char *v)
 {
   Dlists aux,res;
   double scale1,scale2,rad,rmax,x,y;

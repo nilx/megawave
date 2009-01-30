@@ -14,9 +14,7 @@
 #include <stdio.h>
 #include "mw.h"
  
-void creadasc(u,dx,dy)
-     Cimage u;
-     int dx,dy;
+void creadasc(Cimage u, int dx, int dy)
 {
   register unsigned char *ptr;
   int i,c;

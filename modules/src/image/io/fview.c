@@ -51,8 +51,7 @@ typedef struct fview_SParam {
 int GLprint;  /* Toggle to print the Gray Level values */
 int oldx1,oldy1,oldevent,zfactor,cscale_shown;
 
-static void fview_notify_help()
-
+static void fview_notify_help(void)
 {
   printf("\n\t\tHelp on line\n");
 
@@ -75,10 +74,10 @@ static void fview_notify_help()
 /*     > 0 if there was an event catched (but Destroy) */
 /*      -1 if the event Destroy was catched (or 'Q')   */
 
-static int fview_notify(ImageWindow,param)
+static int fview_notify(Wframe *ImageWindow, void *param)
 
-Wframe *ImageWindow;
-void *param;          /* Users's parameters: don't forget the cast ! */
+                    
+                      /* Users's parameters: don't forget the cast ! */
 
 {
   int x1,y1,wz,event,button_mask,ret,c;
@@ -307,9 +306,7 @@ void *param;          /* Users's parameters: don't forget the cast ! */
 }
 
 
-static Cimage fimage_to_cimage(in,out)
-     Fimage in;
-     Cimage out;
+static Cimage fimage_to_cimage(Fimage in, Cimage out)
 {
   int n;
   float v;
@@ -329,12 +326,7 @@ static Cimage fimage_to_cimage(in,out)
 /*------------------------------ MAIN MODULE ------------------------------*/
 /* TODO: no Wframe in the parameters */
 
-void fview(input,x0,y0,zoom,order,no_refresh,window,linear,m,M,d)
-     int    *x0,*y0,*no_refresh,*order;
-     float  *zoom,*m,*M,*d;
-     Fimage input;
-     Wframe *window;
-     char   *linear;
+void fview(Fimage input, int *x0, int *y0, float *zoom, int *order, int *no_refresh, Wframe *window, char *linear, float *m, float *M, float *d)
 {
   Wframe *ImageWindow;
   Fimage fimage,tmp;

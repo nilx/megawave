@@ -15,10 +15,7 @@
 
 #include "mw.h"
 
-Fimage fpset(in,x,y,g)
-     Fimage in;
-     int x,y;
-     float g;
+Fimage fpset(Fimage in, int x, int y, float g)
 {
   mw_plot_fimage(in,x,y,g);
   return(in);
