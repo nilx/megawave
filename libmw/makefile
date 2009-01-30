@@ -96,7 +96,6 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         ascii_file.c    \
         basic_conv.c    \
         file_type.c     \
-        \
         libmw.c         \
         mwio.c          \
         type_conv.c     \

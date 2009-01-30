@@ -77,7 +77,7 @@ static char temp_char;
    beginning by the string <a>.
 */
 
-int _mw_get_range_array(char * a, char * b, char * A[])
+static int _mw_get_range_array(char * a, char * b, char * A[])
 {
      int i,j;
 
@@ -98,7 +98,7 @@ int _mw_get_range_array(char * a, char * b, char * A[])
    Return 0 if string <a> is not found.
 */
 
-int _mw_get_max_range_array(char * a, char * A[])
+static int _mw_get_max_range_array(char * a, char * A[])
 {
      int i,j;
 
@@ -116,7 +116,7 @@ int _mw_get_max_range_array(char * a, char * A[])
    beginning by the string <a>.
 */
 
-void _mw_put_range_array(char * a, char * b, int r, char * A[])
+static void _mw_put_range_array(char * a, char * b, int r, char * A[])
 {
      int i,j;
 
@@ -141,7 +141,7 @@ void _mw_put_range_array(char * a, char * b, int r, char * A[])
     check before the keyword ':' only.
 */
 
-int _mw_exist_array(char * a, char * b, char * A[])
+static int _mw_exist_array(char * a, char * b, char * A[])
 {
      int i,j,n;
 
@@ -188,7 +188,7 @@ void _mw_lower_type(char type[])
    external type <type> in the line <mtype> 
 */
 
-int _mw_get_range_type(char type[], char * mtype)
+static int _mw_get_range_type(char type[], char * mtype)
 {
      return(_mw_get_range_array(mtype,type,mw_native_ftypes));
 }
@@ -208,7 +208,7 @@ void _mw_put_range_type(char type[], char * mtype, int r)
     Return 1 if it exists, 0 if not.
 */
 
-int _mw_native_ftype_exists(char type[], char * mtype)
+static int _mw_native_ftype_exists(char type[], char * mtype)
 {
      return(_mw_exist_array(mtype,type,mw_native_ftypes));
 }
@@ -218,7 +218,7 @@ int _mw_native_ftype_exists(char type[], char * mtype)
      Return 1 if it exists, 0 if not.
 */
 
-int _mw_ftype_exists_for_output(char * ftype, char * mtype)
+static int _mw_ftype_exists_for_output(char * ftype, char * mtype)
 {
      int i,r;
      char convmtype[mw_mtype_size];
@@ -257,7 +257,7 @@ void _mw_make_type(char type[], char type_in[], char * mtype)
    <mtype>.
 */
 
-void _mw_print_available_ftype_for_output(char * mtype)
+static void _mw_print_available_ftype_for_output(char * mtype)
 {
      int i,r,j,s;
      char convmtype[mw_mtype_size];
@@ -353,7 +353,7 @@ char *_mw_get_ftype_opt(char * ftype)
    For this input, the function will return JFIFC.
 */
 
-char *_mw_get_ftype_only(char * ftype)
+static char *_mw_get_ftype_only(char * ftype)
 {
      int i,l;
      char *out;
@@ -1127,7 +1127,7 @@ static int what_kind_of_MW2(char * file, char * subtype,
        no type found. 
 */
 
-int _mw_get_binary_file_type(char * fname, char * ftype, char * mtype,
+static int _mw_get_binary_file_type(char * fname, char * ftype, char * mtype,
 			     int * hsize, float * version)
 {
      short fd;
@@ -1298,7 +1298,7 @@ int _mw_get_binary_file_type(char * fname, char * ftype, char * mtype,
        associated MegaWave2 memory structure.
 */
 
-int _mw_get_ascii_file_type(char * fname, char * ftype, char * mtype,
+static int _mw_get_ascii_file_type(char * fname, char * ftype, char * mtype,
 			    int * hsize, float * version)
 {
      FILE *fd;
