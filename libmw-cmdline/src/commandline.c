@@ -52,7 +52,6 @@ extern int help_flg;
 extern int vers_flg;
 
 char _mwoptlist[BUFSIZ] = {'\0'};
-int mwerrcnt = 0;
 
 int   _mwoptind = 1;
 char *_mwoptarg = NULL;
@@ -425,9 +424,6 @@ int _mw_main(int argc, char *argv[], char *envp[])
     /* Group */
     mwgroup = mwicmd[mwind].group;
     
-    /* This current main function is executed in run-time mode only */
-    mwrunmode = 1;
-
     /* If MW_CHECK_HIDDEN set, check for hidden module */
     chm=getenv("MW_CHECK_HIDDEN");
     if ((chm) && (chm[0]=='1'))

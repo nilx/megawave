@@ -38,9 +38,6 @@ void *mw_ptr_param[mw_nmax_windows]; /* ptr to each user's parameter */
 /* ptr to each notify proc associated to a window */
 int (*mw_ptr_window_notify[mw_nmax_windows])(Wframe *, void *);
 
-/* record the mwrunmode of each window */
-int mw_window_runmode[mw_nmax_windows]; 
-
 /* Filled by Wdevice: Maps bitmap pixel values to X pixel vals */
 unsigned long _W_cols[256];
 
@@ -103,7 +100,6 @@ void mw_window_notify(Wframe * Win, void * param,
      mw_ptr_window[mw_n_windows] = Win;
      mw_ptr_window_notify[mw_n_windows] = proc;
      mw_ptr_param[mw_n_windows] = param;
-     mw_window_runmode[mw_n_windows] = mwrunmode;
      mw_n_windows++;
 }
 
@@ -113,56 +109,49 @@ void mw_window_main_loop(void)
 {
     int i,j,r,cont,event_occured;
     
-    if (mwrunmode <= 2)
+    /* Code for modules for which the window events have to be managed */
+    cont=1;
+    while ((mw_n_windows > 0) && (cont==1))
     {
-	/* Code for modules for which the window events have to be managed */
-	cont=1;
-	while ((mw_n_windows > 0) && (cont==1))
-	{
-	    cont=event_occured=0;
-	    for (i=0; i<mw_n_windows; i++)
-		if (mw_ptr_window[i] && mw_ptr_window_notify[i] && 
-		    (mw_window_runmode[i] <= 2))
+	cont=event_occured=0;
+	for (i=0; i<mw_n_windows; i++)
+	    if (mw_ptr_window[i] && mw_ptr_window_notify[i])
+	    {
+		r = mw_ptr_window_notify[i](mw_ptr_window[i],
+					    mw_ptr_param[i]);
+		/*     A notify function must return a value ....      */
+		/*       0 if there was no event catched               */
+		/*     > 0 if there was an event catched (but Destroy) */
+		/*      -1 if the event Destroy was catched (or 'Q')   */
+		if (r == -1) /* the window has to be destroyed */
 		{
-		    r = mw_ptr_window_notify[i](mw_ptr_window[i],
-						mw_ptr_param[i]);
-		    /*     A notify function must return a value ....      */
-		    /*       0 if there was no event catched               */
-		    /*     > 0 if there was an event catched (but Destroy) */
-		    /*      -1 if the event Destroy was catched (or 'Q')   */
-		    if (r == -1) /* the window has to be destroyed */
+		    WDestroyWindow(mw_ptr_window[i]);	
+		    mw_n_windows--;
+		    if (mw_n_windows > 0 )
 		    {
-			WDestroyWindow(mw_ptr_window[i]);	
-			mw_n_windows--;
-			if (mw_n_windows > 0 )
+			for (j=mw_n_windows-1; j>=i; j--)
 			{
-			    for (j=mw_n_windows-1; j>=i; j--)
-			    {
-				mw_ptr_window[j] = mw_ptr_window[j+1];
-				mw_ptr_param[j] = mw_ptr_param[j+1];
-				mw_ptr_window_notify[j] = 
-				    mw_ptr_window_notify[j+1];
-				mw_window_runmode[j] = 
-				    mw_window_runmode[j+1];
-			    }
+			    mw_ptr_window[j] = mw_ptr_window[j+1];
+			    mw_ptr_param[j] = mw_ptr_param[j+1];
+			    mw_ptr_window_notify[j] = 
+				mw_ptr_window_notify[j+1];
 			}
-			else 
-			{
-			    mw_ptr_window[mw_n_windows] = NULL;
-			    mw_ptr_param[mw_n_windows] = NULL;
-			    mw_ptr_window_notify[mw_n_windows] = NULL;
-			    mw_window_runmode[mw_n_windows] = 0;
-			}
-			i--;
-			event_occured=1;
 		    }
 		    else 
 		    {
-			cont=1;
-			if (r != 0) event_occured=1;
+			mw_ptr_window[mw_n_windows] = NULL;
+			mw_ptr_param[mw_n_windows] = NULL;
+			mw_ptr_window_notify[mw_n_windows] = NULL;
 		    }
+		    i--;
+		    event_occured=1;
 		}
-	    if (event_occured==0) usleep(mwwindelay);
-	}
+		else 
+		{
+		    cont=1;
+		    if (r != 0) event_occured=1;
+		}
+	    }
+	if (event_occured==0) usleep(mwwindelay);
     }
 }

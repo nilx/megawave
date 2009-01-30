@@ -959,8 +959,6 @@ extern char * mw_type_conv_in[];
 extern char * mwname;
 extern char * mwgroup;
 
-extern int mwrunmode;
-
 /* Types of the wtrans1d performed */
 
 #define mw_orthogonal 1

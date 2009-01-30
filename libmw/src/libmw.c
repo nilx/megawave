@@ -425,7 +425,3 @@ char * mw_type_conv_in[] =
 
 char * mwname = NULL;         /* Name of the module */
 char * mwgroup = NULL;        /* Group of the module */
-
-/* Mode in which the library is running */
-/* 1 :  Unix command */
-int mwrunmode = 0;
