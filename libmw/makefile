@@ -77,9 +77,6 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         \
         error.c         \
 	\
-        module.c        \
-        module_io.c     \
-	\
         rawdata.c       \
         rawdata_io.c    \
         \

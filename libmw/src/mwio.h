@@ -53,8 +53,6 @@ short _mwload_ccimage(char *name, char type[], char comment[], Ccimage *im);
 short _mwsave_ccimage(char *name, char type[], char type_force[], char comment[], Ccimage im);
 short _mwload_cfimage(char *name, char type[], char comment[], Cfimage *im);
 short _mwsave_cfimage(char *name, char type[], char type_force[], char comment[], Cfimage im);
-short _mwload_modules(char *name, char type[], char comment[], Modules *modules);
-short _mwsave_modules(char *name, char type[], char type_force[], char comment[], Modules modules);
 short _mwload_morpho_line(char *name, char type[], char comment[], Morpho_line *ll);
 short _mwsave_morpho_line(char *name, char type[], char type_force[], char comment[], Morpho_line ll);
 short _mwload_fmorpho_line(char *name, char type[], char comment[], Fmorpho_line *fll);

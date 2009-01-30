@@ -22,8 +22,7 @@ distclean	: distclean-bin distclean-doc #distclean-test
 SRCDIR	= src
 SRC	= $(addprefix $(SRCDIR)/,				\
 	tree.c parser.c instruction.c io.c header.c usage.c	\
-	executable.c interface.c library.c documentation.c	\
-	mwp.c)
+	executable.c library.c documentation.c mwp.c)
 CMDLINE	= $(SRCDIR)/mwp_cmdline.c
 
 AUTOHDR	= $(SRC:.c=.h)

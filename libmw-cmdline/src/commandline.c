@@ -6,7 +6,6 @@
  */
 
 /* TODO: cleanup #includes */
-/* TODO: remove Xmegawave stuff */
 
 /* TODO: remove, unix-centric */
 #include <sys/file.h>
@@ -30,9 +29,6 @@
  */
 
 /* TODO : move to config.h */
-
-/* for MegaWave interpretor (XMegaWave2) */
-jmp_buf *_mwienv = NULL;
 
 /* TODO: drop, unix-centric */
 #define FNULL "/dev/null"
@@ -197,31 +193,6 @@ static void restoreout(void)
      }
 }
 
-/**
- * megawave exit
- */
-void mwexit(int n)
-{
-     restoreout();
-     if (_mwienv == NULL)
-	  exit(n);
-     else
-	  longjmp(*_mwienv, n);
-}
-
-/**
- * megawave _exit
- */
-/* TODO: remove redundancy */
-void mw_exit(int n)
-{
-     restoreout();
-     if (_mwienv == NULL) 
-	  _exit(n);
-     else
-	  longjmp(*_mwienv, n);
-}
-
 /* TODO: drop, unused? */
 void *mwmalloc(size_t size)
 { return (void *)malloc(size); }
@@ -336,7 +307,7 @@ static void call_vers(void)
 static void call_fsum(void)
 {
      printf("%s", mwicmd[mwind].fsummary);
-     mwexit(0);
+     exit(0);
 }
 
 /*
@@ -405,7 +376,7 @@ static void call_proto(void)
      }
      printf(");\n");
 
-     mwexit(0);
+     exit(0);
 }
 
 static void call_ftypelist(void)
@@ -419,7 +390,7 @@ static void call_ftypelist(void)
      {
 	 printf("%s \t\t %s\n", A[i], A[i+1]);
      }
-     mwexit(0);
+     exit(0);
 }
 
 static struct mwargs *lookup(char *s)
@@ -441,9 +412,6 @@ int _mw_main(int argc, char *argv[], char *envp[])
     struct mwargs *p;
     char command[BUFSIZ],*chm;
     int retcommand;
-#ifdef XMWP
-    char *mw_xmw;
-#endif
     
     /* FIXME: unused parameter */
     envp = envp;
@@ -459,7 +427,7 @@ int _mw_main(int argc, char *argv[], char *envp[])
     
     /* This current main function is executed in run-time mode only */
     mwrunmode = 1;
-    
+
     /* If MW_CHECK_HIDDEN set, check for hidden module */
     chm=getenv("MW_CHECK_HIDDEN");
     if ((chm) && (chm[0]=='1'))
@@ -469,39 +437,6 @@ int _mw_main(int argc, char *argv[], char *envp[])
 	if (retcommand == 2)
 	    mwerror(WARNING,1,"Module of same name hidden by this one !\n");
     }
-#ifdef XMWP
-     /*
-      * if module is executed without any argument
-      * and if shell variable MW_XMW is set
-      * then the module tries to exec the XMegaWave2 main program.
-      */
-     if (argc == 1  && (mw_xmw = getenv("MW_XMW")) != NULL) {
-	  char xmw2_path[BUFSIZ], xmw2_name[BUFSIZ], module_path[BUFSIZ], *ind;
-  
-	  if ((ind = strrchr(mw_xmw, '/')) != NULL) {
-	       *ind = '\0';
-	       strcpy(xmw2_path, mw_xmw);
-	       strcpy(xmw2_name, ind + 1);
-	       *ind = '/';
-	  }
-	  else {
-	       sprintf(xmw2_path, "./%s", mw_xmw);
-	       strcpy(xmw2_name, mw_xmw);
-	  }
-    
-	  sprintf(module_path, "%s/%s", mwgroup, mwname);
-	  execle(mw_xmw, xmw2_name, "-x", module_path, NULL, envp);
-	  /*
-	   * the following instructions are executed 
-	   * if the module cannot execute the XMegaWave2 main program.
-	   */
-	  mwerror(WARNING, 0, 
-		  "Cannot find or exec XMegaWave2 main program \"%s/%s\".\n",
-		  xmw2_path, xmw2_name);
-	  mwerror(WARNING, 0, 
-		  "Continue without the window-oriented environment.\n");
-     }
-#endif
   
      /* make default option buf for usage */
      for (p=mwargs; p->name != NULL; p++) {
@@ -538,7 +473,7 @@ int _mw_main(int argc, char *argv[], char *envp[])
 
      setnewout();
      mwicmd[mwind].mwarg(userargc, userargv);
-     mwexit(0);
+     exit(0);
      return 0;
 }
 
@@ -551,7 +486,7 @@ void MegaWaveDefOpt(char *vers)
      if (vers_flg == TRUE)
      {
 	  printf("%s\n",vers);
-	  mwexit(0);
+	  exit(0);
      }
 
      /* Help flag */

@@ -137,7 +137,7 @@ static char * Cmwdatatype[] = {"Cimage", "Fimage", "Cmovie", "Fmovie",  \
                                "Dcurves", "Fsignal","Wtrans1d",         \
                                "Wtrans2d", "Vchain_wmax",               \
                                "Vchains_wmax", "Ccimage", "Cfimage",    \
-                               "Modules", "Ccmovie", "Cfmovie",         \
+                               "Ccmovie", "Cfmovie",			\
                                "Morpho_line", "Fmorpho_line",           \
                                "Morpho_set", "Morpho_sets",             \
                                "Mimage", "Cmorpho_line",                \

@@ -878,43 +878,6 @@ typedef struct vchains_wmax
 
 
 
-
-/** megawave2 module(s)
- * this structure may contain true module or a group name, organized
- * in the hierarchy of sub-directories in the src directory
- * this structure is basically used to generates the menu panels of
- * xmegawave
- */
-typedef struct module
-{
-     char name[mw_namesize]; /**< name of the module or of the group (node) */
-     char type;              /**< type of the node :
-			      * - 'G' for main groups
-			      * - 'g' for subgroups
-			      * - 'm' for modules
-			      */
-  
-     struct module * previous; /**< pointer to the prev node */
-     struct module * next;     /**< pointer to the next node
-				* (same level in the directory)
-				*/
-     struct module * down;     /**< pointer to the first node
-				* (in the subdirectory)
-				*/
-     struct module * up;       /**< pointer to the first node
-				* (in the parent directory)
-				*/
-} * Module;
-typedef struct modules
-{
-     char cmt[mw_cmtsize];   /**< comments                                 */
-     char name[mw_namesize]; /**< name of the file                         */
-     struct module *first;   /**< pointer to the first module of the chain */
-} * Modules;
-
-
-
-
 /** point in the plane */
 typedef struct point_plane
 {
@@ -995,7 +958,6 @@ extern char * mw_type_conv_in[];
 
 extern char * mwname;
 extern char * mwgroup;
-extern char * mwerrormessage;
 
 extern int mwrunmode;
 
@@ -2032,36 +1994,6 @@ void mwerror(int code, int exit_code, char *fmt, ...);
 
 #endif /* !_ERROR_H_ */
 /*
- * module.h
- */
-
-#ifndef _MODULE_H_
-#define _MODULE_H_
-
-/* src/module.c */
-Module mw_new_module(void);
-Module mw_change_module(Module module);
-void mw_delete_module(Module module);
-Modules mw_new_modules(void);
-Modules mw_change_modules(Modules modules);
-void mw_delete_modules(Modules modules);
-
-#endif /* !_MODULE_H_ */
-/*
- * module_io.h
- */
-
-#ifndef _MODULE_IO_H_
-#define _MODULE_IO_H_
-
-/* src/module_io.c */
-short _mw_load_submodules(FILE *fp, Module upm, char *line);
-Modules _mw_load_modules(char *fname);
-void _mw_write_submodules(FILE *fp, Module levelm, char *groupid);
-short _mw_create_modules(char *fname, Modules modules);
-
-#endif /* !_MODULE_IO_H_ */
-/*
  * rawdata.h
  */
 
@@ -2422,8 +2354,6 @@ short _mwload_ccimage(char *name, char type[], char comment[], Ccimage *im);
 short _mwsave_ccimage(char *name, char type[], char type_force[], char comment[], Ccimage im);
 short _mwload_cfimage(char *name, char type[], char comment[], Cfimage *im);
 short _mwsave_cfimage(char *name, char type[], char type_force[], char comment[], Cfimage im);
-short _mwload_modules(char *name, char type[], char comment[], Modules *modules);
-short _mwsave_modules(char *name, char type[], char type_force[], char comment[], Modules modules);
 short _mwload_morpho_line(char *name, char type[], char comment[], Morpho_line *ll);
 short _mwsave_morpho_line(char *name, char type[], char type_force[], char comment[], Morpho_line ll);
 short _mwload_fmorpho_line(char *name, char type[], char comment[], Fmorpho_line *fll);

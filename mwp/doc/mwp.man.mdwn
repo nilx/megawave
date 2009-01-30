@@ -45,8 +45,6 @@ These options are optional.
 :	executable code file name
 -D, -\-documentation=filename
 :	documentation file name
--I, -\-interface=filename
-:	interface file
 -N, -\-name=filename
 :	name file name
 
@@ -78,7 +76,7 @@ path to the files.
 
 This program is part of the megawave framework.  
 See http://megawave.cmla.ens-cachan.fr/ for details.  
-(C) 2008 CMLA, ENS Cachan, 94235 Cachan cedex, France.  
+(C) 2005-2009 CMLA, ENS Cachan, 94235 Cachan cedex, France.  
 
 # SEE ALSO
 

@@ -1751,7 +1751,7 @@ static void writeusage(FILE * afile)
                     fprintf(afile, "\");\n");
                }
 
-     fprintf(afile, "  mwexit(1);\n");
+     fprintf(afile, "  exit(1);\n");
      fprintf(afile, "  return 0;\n");
      fprintf(afile, "}\n");
 
@@ -1791,7 +1791,7 @@ static void writebody(FILE * afile)
      print_write_output(afile);
 
      /* exit from main function */
-     fprintf(afile, "\n  mwexit(0);\n");
+     fprintf(afile, "\n  exit(0);\n");
      fprintf(afile, "\n  return 0;\n");
      fprintf(afile, "}\n\n");
 

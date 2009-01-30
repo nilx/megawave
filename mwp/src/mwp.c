@@ -4,7 +4,7 @@
  * main() function for mwp, the megawave modules preprocessor
  *
  * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
- *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008-2009)
  */
 
 /**
@@ -22,8 +22,6 @@
  *   module;
  * * a documentation file, documenting the module syntax (interface) \
  *   in TeX;
- * * an interface file, describing the module io, to design the \
- *   interface for some external code;
  * * a name file, containing the name and group of the module.
  *
  * Author: Jacques Froment <jacques.froment@univ-ubs.fr>
@@ -41,9 +39,6 @@
  *         string              typestr="filename"
  *
  * option "documentation"  D  "documentation file name"   optional
- *         string              typestr="filename"
- *
- * option "interface"      I  "interface file"            optional
  *         string              typestr="filename"
  *
  * option "name"           N  "name file name"            optional
@@ -68,7 +63,7 @@
  *
  * This program is part of the megawave framework.
  * See http://megawave.cmla.ens-cachan.fr/ for details.
- * (C) 2008 CMLA, ENS Cachan, 94235 Cachan cedex, France."
+ * (C) 2005-2009 CMLA, ENS Cachan, 94235 Cachan cedex, France."
  * GENGETOPT END
  */
 
@@ -82,7 +77,6 @@
 #include "parser.h"
 #include "library.h"
 #include "executable.h"
-#include "interface.h"
 #include "documentation.h"
 
 #include "mwp.h"
@@ -163,6 +157,62 @@ static char * strclone(const char * str)
      return clone;
 }
 
+/*
+ * Set the <protobuf> variable from the content of C->mfunc :
+ * prototype the main function using K&R convention.
+ *
+ * This text is to be set in the fsummary field of the Mwiline
+ * structure (see kernel/lib/include/mwi.h). From this, a
+ * full K&R and ANSI C compliant prototype can be derived
+ * using call_proto() (in kernel/lib/src/mw.c).
+ * When the traditional mwp processor would be removed,
+ * this should be simplified by getting a protobuf with
+ * both K&R and ANSI C declaration. Then call_proto could
+ * be removed and in the M-file, the default main function
+ * declaration (usually not ANSI compliant) could be replaced
+ * by this one (update mfile.c). So, prototypes would become
+ * fully ANSI compliant without having to change the source of modules.
+ */
+
+/* TODO: review, drop K&R parts */
+/* TODO: no if/then in a macro */
+#define ADDPROTO(a)                                             \
+     {                                                          \
+          char tmp[BUFSIZ];                                     \
+          sprintf(tmp, "%s%s", protobuf, a);                    \
+          strcpy(protobuf, tmp);                                \
+     }
+
+static void setprotobuf(void)
+{
+     t_varfunc * f;
+     t_variable * p;
+     char buf[STRSIZE];
+
+     if (C == NULL)
+          error("NULL C tree. Need C body to be parsed");
+     f = C->mfunc;
+     if (f == NULL)
+          error("NULL main function");
+
+     /* function name and arguments list */
+     sprintf(protobuf, "%s %s ( ", f->v->Ftype, f->v->Name);
+     for (p = f->param; p; p = p->next)
+     {
+          if (p != f->param)
+               strcat(protobuf," , ");
+          ADDPROTO(p->Name);
+     }
+     ADDPROTO(" )\\n");
+
+     /* Type of arguments */
+     for (p = f->param; p; p = p->next)
+     {
+          sprintf(buf, "%s %s ;\\n", p->Ftype,p->Name);
+          ADDPROTO(buf);
+     }
+     ADDPROTO("\\n");
+}
 
 extern char * module_name;
 extern char * group_name;
@@ -178,7 +228,6 @@ int main( int argc, char **argv)
      FILE * exec_file   = NULL; /* executable    */
      FILE * lib_file    = NULL; /* library       */
      FILE * doc_file    = NULL; /* documentation */
-     FILE * int_file    = NULL; /* interface     */
      FILE * name_file   = NULL; /* name          */
 
      int c;
@@ -281,16 +330,6 @@ int main( int argc, char **argv)
           doc_file = open_file(mw_args_info.documentation_arg, "w", stdout);
           gen_doc_file(doc_file);
           fclose(doc_file);
-     }
-
-     /*
-      * generate the interface
-      */
-     if (mw_args_info.interface_given)
-     {
-          int_file = open_file(mw_args_info.interface_arg, "w", stdout);
-          gen_int_file(int_file);
-          fclose(int_file);
      }
 
      /*

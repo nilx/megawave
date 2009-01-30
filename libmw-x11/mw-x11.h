@@ -171,8 +171,8 @@ typedef struct wpanel {
 } *Wpanel;
 
 /* TODO: drop? */
-extern int mwrunmode;
 extern int mwwindelay;
+extern int mwrunmode;
 
 #endif /* !_DEFINITIONS_H_ */
 
@@ -201,8 +201,6 @@ void Wp_main_loop(Wpanel wp);
 #define _WINDOW_H_
 
 /* src/window.c */
-unsigned char mw_CeldaGris(unsigned char gris);
-unsigned char mw_CeldaColor(unsigned char *color);
 Wframe *mw_get_window(Wframe *window, int dx, int dy, int x0, int y0, char *title);
 void mw_window_notify(Wframe *Win, void *param, int (*proc)(Wframe *, void *));
 void mw_window_main_loop(void);

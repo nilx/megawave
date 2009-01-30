@@ -51,45 +51,17 @@ void mwerror(int code, int exit_code, char *fmt, ...)
 	fprintf(stderr, "megawave fatal (%s) : ", mwname);
 	vfprintf(stderr, fmt, marker);
 	fprintf(stderr, "Exit.\n");
-	if (mwrunmode == 2)
-	{ /* Send error message to Xmegawave */
-	    (void) vsprintf(message, fmt, marker);
-	    if (mwerrormessage) free(mwerrormessage);
-	    mwerrormessage = (char *) malloc(strlen(message)+1);
-	    strcpy(mwerrormessage,message);
-	}
-	/* TODO: make clear */
-	/* mwexit(exit_code); */
 	exit(exit_code);
 	break;
     case INTERNAL:
 	fprintf(stderr, "megawave internal (%s) : ", mwname);
 	vfprintf(stderr, fmt, marker);
 	fprintf(stderr, "Exit.\n");
-	if (mwrunmode == 2)
-	{ /* Send error message to Xmegawave */
-	    (void) vsprintf(message, fmt, marker);
-	    if (mwerrormessage) free(mwerrormessage);
-	    mwerrormessage = (char *) malloc(strlen(message)+1);
-	    strcpy(mwerrormessage,message);
-	}
-	/* TODO: make clear */
-	/* mwexit(exit_code); */
 	exit(exit_code);
 	break;
     case USAGE:
 	(void) vsprintf(message, fmt, marker);
-	if (mwrunmode == 1)
-	    mwicmd[mwind].mwuse(message);
-	else
-	{ /* Send error message to Xmegawave */
-	    if (mwerrormessage) free(mwerrormessage);
-	    mwerrormessage = (char *) malloc(strlen(message)+1);
-	    strcpy(mwerrormessage,message);
-	    /* TODO: make clear */
-	    /* longjmp(*_mwienv,1); */	
-	    exit(exit_code);
-	}
+	mwicmd[mwind].mwuse(message);
 	break;
     default:
 	mwerror(FATAL, 1, "Bad usage of mwerror : code %d is unknown\n", code);

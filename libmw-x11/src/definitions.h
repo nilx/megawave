@@ -164,8 +164,8 @@ typedef struct wpanel {
 } *Wpanel;
 
 /* TODO: drop? */
-extern int mwrunmode;
 extern int mwwindelay;
+extern int mwrunmode;
 
 #endif /* !_DEFINITIONS_H_ */
 

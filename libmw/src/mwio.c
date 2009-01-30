@@ -51,7 +51,6 @@
 #include "wtrans2d_io.h"
 #include "wmax2d_io.h"
 #include "wpack2d_io.h"
-#include "module_io.h"
 #include "mimage_io.h"
 #include "cmimage_io.h"
 #include "shape_io.h"
@@ -1096,49 +1095,6 @@ short _mwsave_cfimage(char * name, char type[], char type_force[],
 	  return(-1);
 }
 
-
-/*===== Internal type : Modules =====*/
-
-#include "module.h"
-
-short _mwload_modules(char * name, char type[], char comment[],
-		      Modules * modules)
-{
-     char comment_in[BUFSIZ];
-     char fname[BUFSIZ];
-
-     /* FIXME : unused parameter */
-     type = type;
-
-     strcpy(fname,name);      /* Do Not Change the value of name */
-
-     /* Load a new image */
-     search_filename(fname);
-     *modules = (Modules) _mw_load_modules(fname);
-     if (*modules == NULL) return(-1);  
-
-     format_filename((*modules)->name,fname);
-
-     strcpy(comment_in,(*modules)->cmt);
-     _mw_make_comment(comment,comment_in);
-
-     return(0);
-}
-
-short _mwsave_modules(char * name, char type[], char type_force[],
-		      char comment[], Modules modules)
-{
-     /* FIXME : unused parameter */
-     comment = comment;
-
-     if (type_force[0] != '?') strcpy(type,type_force);
-     if (modules->cmt[0] == '?') sprintf(modules->cmt,"%s(%s)",mwname,comment);
-
-     if (_mw_create_modules(name,modules) >= 0)
-	  return(0);
-     else
-	  return(-1);
-}
 
 /*===== Internal type : Morpho_line  =====*/
 
