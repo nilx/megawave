@@ -1,0 +1,7 @@
+#!/usr/bin/make -f
+#
+# specific settings for Debian 3.x
+#
+# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2009)
+
+LPATH	+= /usr/X11R6/lib

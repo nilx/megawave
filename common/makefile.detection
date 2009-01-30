@@ -1,9 +1,0 @@
-#!/usr/bin/make -f
-#
-# platform detecton tools for megawave; should be handled by automake
-#
-# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
-
-default :
-.SUFFIXES	:
-

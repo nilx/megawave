@@ -50,9 +50,10 @@ SYSTEM_ARCH	:= $(shell [ -x /usr/bin/dpkg ] \
 			&& dpkg --print-architecture \
 			|| ( file /bin/ls | cut -d: -f2 | cut -d, -f2 ))
 
-# for non-linux targets, uncomment the relevant line
+# for specific targets, uncomment the relevant line
 #include $(COMMONDIR)/makefile.osx
 #include $(COMMONDIR)/makefile.cygwin
+#include $(COMMONDIR)/makefile.debian3
 
 # CC OPTIONS
 # C language version
