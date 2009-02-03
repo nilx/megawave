@@ -29,10 +29,11 @@ distclean-doc	: clean-doc
 	$(RM) $(DOCDIR)/doxygen-html.conf $(DOCDIR)/doxygen-latex.conf
 
 $(DOCDIR)/doxygen-html.conf	:
+	$(CAT) $(COMMONDIR)/$(DOXYCONF) > $@
 	$(ECHO) -e "\
-@INCLUDE	= $(COMMONDIR)/$(DOXYCONF)\n\
 PROJECT_NAME 	= $(DOCNAME)\n\
 INPUT		= $(SRCDIR)\n\
+STRIP_FROM_PATH = $(SRCDIR)\n\
 GENERATE_HTML	= YES\n\
 HTML_OUTPUT	= $(DOCDIR)/html\n\
 HTML_HEADER	= $(COMMONDIR)/doxygen-header.html\n\
@@ -43,18 +44,19 @@ INCLUDED_BY_GRAPH = YES\n\
 CALL_GRAPH	= YES\n\
 CALLER_GRAPH	= YES\n\
 $(DOXY_OVERRIDE)\
-" > $@
+" >> $@
 
 $(DOCDIR)/doxygen-latex.conf	:
+	$(CAT) $(COMMONDIR)/$(DOXYCONF) > $@
 	$(ECHO) -e "\
-@INCLUDE_PATH	= $(COMMONDIR)/$(DOXYCONF)\n\
 PROJECT_NAME 	= $(DOCNAME)\n\
 INPUT		= $(SRCDIR)\n\
+STRIP_FROM_PATH = $(SRCDIR)\n\
 GENERATE_LATEX	= YES\n\
 LATEX_OUTPUT	= $(DOCDIR)/latex\n\
 LATEX_HEADER	= $(COMMONDIR)/doxygen-header.tex\n\
 $(DOXY_OVERRIDE)\
-" > $@
+" >> $@
 
 .PHONY	: srcdoc
 srcdoc	: prebuild $(DOCDIR)/html/index.html $(DOCDIR)/$(DOCNAME).pdf
