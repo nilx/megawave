@@ -3,10 +3,10 @@
  *
  * structures and declarations for the megawave wdevice library
  *
- * @author John Bradley for XV <xv@trilon.com> (1989 - 1994),
- *         Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2001).
- *         Simon Masnou <masnou@ann.jussieu.fr>(1991 - 2001),
- *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author John Bradley for XV <xv@trilon.com> (1989 - 1994)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2001)
+ * @author Simon Masnou <masnou@ann.jussieu.fr>(1991 - 2001)
+ * @author Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 /*

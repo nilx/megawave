@@ -12,7 +12,8 @@
  * @file commandline.c
  *
  * @version 1.14
- * @author Jacques Froment, Sylvain Parrino (1995-2005)
+ * @author Jacques Froment (1995-2005)
+ * @author Sylvain Parrino (1995-2005)
  */
 
 /* TODO: cleanup #includes */

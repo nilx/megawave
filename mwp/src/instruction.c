@@ -3,8 +3,8 @@
  *
  * analyse some instructions in the body of a megawave module
  *
- * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2009), \
- *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2009)
+ * @author Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 /* TODO : enforce ANSI only, drop K&R */

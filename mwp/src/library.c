@@ -3,8 +3,8 @@
  *
  * generate the library code for a megawave module
  *
- * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
- *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007)
+ * @author Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 /* TODO: move to ANSI-only code */

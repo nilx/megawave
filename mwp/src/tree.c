@@ -3,8 +3,8 @@
  *
  * syntax tree tools for the megawave parser
  *
- * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2009), \
- *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2009)
+ * @author Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 #include <stdio.h>

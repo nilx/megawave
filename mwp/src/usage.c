@@ -3,8 +3,8 @@
  *
  * generate the usage text fort a megawave module
  *
- * @author Jacques Froment <jacques.froment@univ-ubs.fr> (1994 - 2005), \
- *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (1994 - 2005)
+ * @author Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
 /* TODO: simplify, make parseable and clean */
