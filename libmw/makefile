@@ -15,9 +15,9 @@ include	$(COMMONDIR)/makefile
 .PHONY	: default all clean distclean
 default	: lib api
 all	: beautify lint lib api test man
-lint	: lint-bin lint-test lint-doc
-clean 	: clean-bin clean-doc
-distclean	: distclean-bin distclean-doc
+lint	: lint-bin lint-test
+clean 	: clean-bin
+distclean	: distclean-bin
 
 # TODO: drop unused or unwanted (module, unix_bsd, ...)
 # TODO: split libmw/libmw-cmdline
@@ -188,44 +188,9 @@ autohdr	: $(AUTOHDR)
 
 .PHONY	: test
 
-
 #
 # DOC
 #
 
-DOCDIR	= doc
-MAN	= $(DOCDIR)/lib$(LIBNAME).man
-MANHTML	= $(DOCDIR)/lib$(LIBNAME).man
-
-.PHONY	: man
-man	: $(MAN) $(MANHTML)
-
-.PHONY	: clean-doc
-clean-doc	:
-	$(RM) $(DOCDIR)/html/*.md5 $(DOCDIR)/html/*.dot
-	$(RRM) $(DOCDIR)/latex
-
-.PHONY	: distclean-doc
-distclean-doc	: clean-doc
-	$(RM) $(MAN) $(MANHTML)
-	$(RRM) $(DOCDIR)/html
-	$(RRM) $(DOCDIR)/srcdoc.pdf
-
-.PHONY	: srcdoc
-srcdoc	: prebuild $(DOCDIR)/html/index.html $(DOCDIR)/srcdoc.pdf
-$(DOCDIR)/html/index.html	: $(SRC) $(HDR)
-	$(MKDIR) $(DOCDIR)/html
-	(cat $(DOXYCONF); \
-		echo "INPUT = $(SRCDIR), $(IPATH)"; \
-		echo "GENERATE_HTML = YES"; \
-		echo "HTML_OUTPUT = $(DOCDIR)/html";) | $(DOXYGEN) -
-$(DOCDIR)/latex/refman.tex	: $(SRC) $(HDR)
-	$(MKDIR) $(DOCDIR)/latex
-	(cat $(DOXYCONF); \
-		echo "INPUT = $(SRCDIR), $(IPATH)"; \
-		echo "GENERATE_LATEX = YES"; \
-		echo "LATEX_OUTPUT = $(DOCDIR)/latex";) | $(DOXYGEN) -
-$(DOCDIR)/srcdoc.pdf : $(DOCDIR)/latex/refman.tex
-	$(MAKE) -C $(DOCDIR)/latex refman.pdf
-	mv $(DOCDIR)/latex/refman.pdf $(DOCDIR)/srcdoc.pdf
-
+DOCNAME	= lib$(LIBNAME)
+include	$(COMMONDIR)/makefile.doc

@@ -15,8 +15,8 @@ include $(COMMONDIR)/makefile
 .PHONY	: default all lint clean distclean
 default	: lib api modules
 all	: lib api modules doc test
-clean	: clean-bin clean-doc
-distclean	: distclean-bin distclean-doc
+clean	: clean-bin
+distclean	: distclean-bin
 
 #
 # BIN
@@ -185,44 +185,9 @@ test	: $(MODULES)
 # DOC
 #
 
-DOCDIR	= ./doc
-MAN	= $(DOCDIR)/$(LIBNAME).man
-MANHTML	= $(MAN).html
+DOCNAME	= lib$(LIBNAME)
+DOXY_OVERRIDE	= \
+RECURSIVE        = YES\nSHOW_DIRECTORIES = YES\nSTRIP_FROM_PATH = $(SRCDIR)\n
 
-.PHONY	: doc
-doc	: man
+include	$(COMMONDIR)/makefile.doc
 
-.PHONY	: man
-man	: $(MAN) $(MANHTML)
-
-.PHONY	: srcdoc
-srcdoc	: $(DOCDIR)/html/index.html $(DOCDIR)/srcdoc.pdf
-$(DOCDIR)/html/index.html	: $(SRC)
-	$(MKDIR) $(DOCDIR)/html
-	(cat $(DOXYCONF); \
-		echo "INPUT         = $(SRCDIR)"; \
-		echo "FILE_PATTERNS = *.c"; \
-		echo "RECURSIVE     = YES"; \
-		echo "GENERATE_HTML = YES"; \
-		echo "HTML_OUTPUT   = $(DOCDIR)/html";) | $(DOXYGEN) -
-$(DOCDIR)/latex/refman.tex	: $(SRC)
-	$(MKDIR) $(DOCDIR)/latex
-	(cat $(DOXYCONF); \
-		echo "INPUT          = $(SRCDIR)"; \
-		echo "FILE_PATTERNS = *.c"; \
-		echo "RECURSIVE      = YES"; \
-		echo "GENERATE_LATEX = YES"; \
-		echo "LATEX_OUTPUT   = $(DOCDIR)/latex";) | $(DOXYGEN) -
-$(DOCDIR)/srcdoc.pdf : $(DOCDIR)/latex/refman.tex
-	$(MAKE) -C $(DOCDIR)/latex refman.pdf
-	mv $(DOCDIR)/latex/refman.pdf $(DOCDIR)/srcdoc.pdf
-
-# TODO fixme
-.PHONY	: clean-doc
-clean-doc	:
-
-.PHONY	: distclean-doc
-distclean-doc	: clean-doc
-	$(RM) $(MAN) $(MANHTML)
-	$(RM) $(DOCDIR)/srcdoc.pdf
-	$(RRM) $(DOCDIR)/html $(DOCDIR)/latex

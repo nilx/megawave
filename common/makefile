@@ -152,7 +152,7 @@ LDFLAGS_SHARED	?= -shared $(LDFLAGS)
 
 LINT_FLAGS	?= -posixlib -weak -ansi89limits
 PANDOC_FLAGS	?= --standalone --reference-links --smart
-DOXYCONF	?= $(COMMONDIR)/doxygen.conf
+DOXYCONF	?= doxygen.conf
 GENGETOPT_FLAGS	?= --func-name=mw_cmdline --arg-struct=mw_args_info	\
 	--no-handle-error 						\
 	--no-handle-help --no-help					\

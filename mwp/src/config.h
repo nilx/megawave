@@ -1,4 +1,19 @@
 /**
+ * @mainpage mwp
+ *
+ * @section Introduction
+ *
+ * This program reads the megawave header of a module. It can produce:
+ * @li a library file, with a modified version of the module C code for
+ *     inclusion in the megawave modules library;
+ * @li a main file, with a main() function in C, for the stand-alone
+ *     module;
+ * @li a documentation file, documenting the module syntax (interface)
+ *     in TeX;
+ * @li a name file, containing the name and group of the module.
+ */
+
+/**
  * @file config.h
  *
  * common configuration for mwp
@@ -6,8 +21,6 @@
  * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005-2009), \
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
-
-/* TODO: distribute */
 
 #ifndef _CONFIG_H
 #define _CONFIG_H

@@ -1,0 +1,69 @@
+#!/usr/bin/make -f
+#
+# common makefile for megawave, documentation targets
+#
+# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2009)
+
+default :
+
+clean 	: clean-doc
+distclean	: distclean-doc
+
+DOCDIR	= doc
+MAN	= $(DOCDIR)/$(DOCNAME).man
+MANHTML	= $(MAN).html
+
+.PHONY	: man
+man	: $(MAN) $(MANHTML)
+
+.PHONY	: clean-doc
+clean-doc	:
+	$(RM) $(DOCDIR)/html/*.md5 $(DOCDIR)/html/*.dot
+	$(RRM) $(DOCDIR)/latex
+
+.PHONY	: distclean-doc
+distclean-doc	: clean-doc
+	$(RM) $(MAN) $(MANHTML)
+	$(RRM) $(DOCDIR)/html
+	$(RRM) $(DOCDIR)/lib$(LIBNAME).pdf
+	$(RM) $(DOCDIR)/doxygen-html.conf $(DOCDIR)/doxygen-latex.conf
+
+$(DOCDIR)/doxygen-html.conf	:
+	$(ECHO) -e "\
+@INCLUDE	= $(COMMONDIR)/$(DOXYCONF)\n\
+PROJECT_NAME 	= $(DOCNAME)\n\
+INPUT		= $(SRCDIR)\n\
+GENERATE_HTML	= YES\n\
+HTML_OUTPUT	= $(DOCDIR)/html\n\
+HTML_HEADER	= $(COMMONDIR)/doxygen-header.html\n\
+HTML_FOOTER	= $(COMMONDIR)/doxygen-footer.html\n\
+HTML_STYLESHEET	= $(COMMONDIR)/doxygen.css\n\
+INCLUDE_GRAPH	= YES\n\
+INCLUDED_BY_GRAPH = YES\n\
+CALL_GRAPH	= YES\n\
+CALLER_GRAPH	= YES\n\
+$(DOXY_OVERRIDE)\
+" > $@
+
+$(DOCDIR)/doxygen-latex.conf	:
+	$(ECHO) -e "\
+@INCLUDE_PATH	= $(COMMONDIR)/$(DOXYCONF)\n\
+PROJECT_NAME 	= $(DOCNAME)\n\
+INPUT		= $(SRCDIR)\n\
+GENERATE_LATEX	= YES\n\
+LATEX_OUTPUT	= $(DOCDIR)/latex\n\
+LATEX_HEADER	= $(COMMONDIR)/doxygen-header.tex\n\
+$(DOXY_OVERRIDE)\
+" > $@
+
+.PHONY	: srcdoc
+srcdoc	: prebuild $(DOCDIR)/html/index.html $(DOCDIR)/$(DOCNAME).pdf
+$(DOCDIR)/html/index.html	: $(DOCDIR)/doxygen-html.conf $(SRC) $(HDR)
+	$(MKDIR) $(DOCDIR)/html
+	$(DOXYGEN) $<
+$(DOCDIR)/latex/refman.tex	: $(DOCDIR)/doxygen-latex.conf $(SRC) $(HDR)
+	$(MKDIR) $(DOCDIR)/latex
+	$(DOXYGEN) $<
+$(DOCDIR)/$(DOCNAME).pdf : $(DOCDIR)/latex/refman.tex
+	$(MAKE) -C $(DOCDIR)/latex refman.pdf
+	mv $(DOCDIR)/latex/refman.pdf $@

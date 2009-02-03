@@ -1,9 +1,18 @@
 /**
+ * @mainpage libmw-x11
+ *
+ * @section Introduction
+ *
+ * This library provides all the tools to handle X11-based wpanel
+ * GUI widgets.
+ */
+
+/**
  * @file config.h
  *
- * settings for the megawave wpanel library
+ * settings for the megawave libmw-x11 library
  *
- * @author Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2002), \
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2002),
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 

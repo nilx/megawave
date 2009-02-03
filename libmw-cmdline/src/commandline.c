@@ -1,4 +1,14 @@
 /**
+ * @mainpage libmw-cmdline
+ *
+ * @section Introduction
+ *
+ * This library provides all the tools used for command-line parsing
+ * and automated structures allocation/deallocation and input/output
+ * in the executable versions of the megawave modules.
+ */
+
+/**
  * @file commandline.c
  *
  * @version 1.14

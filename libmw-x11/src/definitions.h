@@ -3,14 +3,12 @@
  *
  * structures and declarations for the megawave wpanel library
  *
- * @author John Bradley for XV <xv@trilon.com> (1989 - 1994),		\
- *         Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2006), \
+ * @author John Bradley for XV <xv@trilon.com> (1989 - 1994),
+ *         Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2006),
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
- */
-
-/*
- * FIXME: non-free origin (see http://www.trilon.com/xv/pricing.html)
- *        replace by a free alternative
+ *
+ * @todo non-free origin (see http://www.trilon.com/xv/pricing.html),
+ *       replace by a free alternative 
  */
 
 #ifndef _DEFINITIONS_H_
