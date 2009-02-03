@@ -12,20 +12,16 @@
  *
  * package "mwp"
  * version "1.01"
- * purpose "Parse a megawave module"
- * usage   "mwp [-s module-source] [output-options]"
- * description "This parser reads the megawave header of a module. It \
- * can produce:
+ * purpose "Parse a megawave module
+ *
+ * This parser reads the megawave header of a module. It can produce:
  * * a library file, with a modified version of the module C code for \
  *   inclusion in the megawave modules library;
  * * a main file, with a main() function in C, for the stand-alone \
  *   module;
  * * a documentation file, documenting the module syntax (interface) \
  *   in TeX;
- * * a name file, containing the name and group of the module.
- *
- * Author: Jacques Froment <jacques.froment@univ-ubs.fr>
- * "
+ * * a name file, containing the name and group of the module."
  *
  * section "Input"
  * option "source"         S "module source file name"    optional
@@ -60,6 +56,8 @@
  * Use '-' for standard input/output. The default behaviour is to read
  * from stdin and write on stdout. The output order doesn't follow the
  * options order (in case of multiple output to a single file/pipe).
+ *
+ * Author: Jacques Froment <jacques.froment@univ-ubs.fr>
  *
  * This program is part of the megawave framework.
  * See http://megawave.cmla.ens-cachan.fr/ for details.
@@ -250,12 +248,13 @@ int main( int argc, char **argv)
 
      /* OK, use the params now */
      debug_flag = mw_args_info.debug_flag;
-     if (debug_flag)
-     {
-          debug("command-line parameters:");
-          mw_cmdline_dump(stdout, &mw_args_info);
-     }
-
+/* not yet, not backward-compatible for gengetopt */
+/*    if (debug_flag)
+ *    {
+ *         debug("command-line parameters:");
+ *         mw_cmdline_dump(stdout, &mw_args_info);
+ *    }
+ */
      /*
       * if the module name was not given from the command-line (thus
       * having its default value) and the source file is not stdin,
