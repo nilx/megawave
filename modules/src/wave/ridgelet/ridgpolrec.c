@@ -85,8 +85,8 @@ void ridgpolrec(out_re, out_im, in_re, in_im)
   }
   
   /*** Convert rectangular to polar coordinates ***/
-  /** i : ième ligne de la transformée de Radon **/
-  /** j : jième colonne de la ième ligne **/
+  /** i : ieme ligne de la transformee de Radon **/
+  /** j : jieme colonne de la ieme ligne **/
 
   for (i=0; i<(n+1); i++) {
     for (j=0; j<(n+1); j++) {
