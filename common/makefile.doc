@@ -31,30 +31,30 @@ distclean-doc	: clean-doc
 $(DOCDIR)/doxygen-html.conf	:
 	$(CAT) $(COMMONDIR)/$(DOXYCONF) > $@
 	$(ECHO) -e "\
-PROJECT_NAME 	= $(DOCNAME)\n\
-INPUT		= $(SRCDIR)\n\
-STRIP_FROM_PATH = $(SRCDIR)\n\
-GENERATE_HTML	= YES\n\
-HTML_OUTPUT	= $(DOCDIR)/html\n\
-HTML_HEADER	= $(COMMONDIR)/doxygen-header.html\n\
-HTML_FOOTER	= $(COMMONDIR)/doxygen-footer.html\n\
-HTML_STYLESHEET	= $(COMMONDIR)/doxygen.css\n\
-INCLUDE_GRAPH	= YES\n\
-INCLUDED_BY_GRAPH = YES\n\
-CALL_GRAPH	= YES\n\
-CALLER_GRAPH	= YES\n\
+PROJECT_NAME		= $(DOCNAME)\n\
+INPUT			= $(SRCDIR)\n\
+STRIP_FROM_PATH		= $(SRCDIR)\n\
+GENERATE_HTML		= YES\n\
+HTML_OUTPUT		= $(DOCDIR)/html\n\
+HTML_HEADER		= $(COMMONDIR)/doxygen-header.html\n\
+HTML_FOOTER		= $(COMMONDIR)/doxygen-footer.html\n\
+HTML_STYLESHEET		= $(COMMONDIR)/doxygen.css\n\
+#INCLUDE_GRAPH		= YES\n\
+#INCLUDED_BY_GRAPH	= YES\n\
+#CALL_GRAPH		= YES\n\
+#CALLER_GRAPH		= YES\n\
 $(DOXY_OVERRIDE)\
 " >> $@
 
 $(DOCDIR)/doxygen-latex.conf	:
 	$(CAT) $(COMMONDIR)/$(DOXYCONF) > $@
 	$(ECHO) -e "\
-PROJECT_NAME 	= $(DOCNAME)\n\
-INPUT		= $(SRCDIR)\n\
-STRIP_FROM_PATH = $(SRCDIR)\n\
-GENERATE_LATEX	= YES\n\
-LATEX_OUTPUT	= $(DOCDIR)/latex\n\
-LATEX_HEADER	= $(COMMONDIR)/doxygen-header.tex\n\
+PROJECT_NAME		= $(DOCNAME)\n\
+INPUT			= $(SRCDIR)\n\
+STRIP_FROM_PATH		= $(SRCDIR)\n\
+GENERATE_LATEX		= YES\n\
+LATEX_OUTPUT		= $(DOCDIR)/latex\n\
+LATEX_HEADER		= $(COMMONDIR)/doxygen-header.tex\n\
 $(DOXY_OVERRIDE)\
 " >> $@
 
