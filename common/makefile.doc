@@ -28,8 +28,10 @@ distclean-doc	: clean-doc
 	$(RRM) $(DOCDIR)/$(DOCNAME).pdf
 	$(RM) $(DOCDIR)/doxygen-html.conf $(DOCDIR)/doxygen-latex.conf
 
-$(DOCDIR)/doxygen-html.conf	:
-	$(CAT) $(COMMONDIR)/$(DOXYCONF) > $@
+.PHONY	: srcdoc
+srcdoc	: prebuild $(DOCDIR)/html/index.html $(DOCDIR)/$(DOCNAME).pdf
+$(DOCDIR)/html/index.html	: $(SRC) $(HDR)
+	$(CAT) $(COMMONDIR)/$(DOXYCONF) > $(DOCDIR)/doxygen-html.conf
 	$(ECHO) -e "\
 PROJECT_NAME		= $(DOCNAME)\n\
 INPUT			= $(SRCDIR)\n\
@@ -44,10 +46,12 @@ HTML_STYLESHEET		= $(COMMONDIR)/doxygen.css\n\
 #CALL_GRAPH		= YES\n\
 #CALLER_GRAPH		= YES\n\
 $(DOXY_OVERRIDE)\
-" >> $@
+" >> $(DOCDIR)/doxygen-html.conf
+	$(MKDIR) $(DOCDIR)/html
+	$(DOXYGEN) $(DOCDIR)/doxygen-html.conf
 
-$(DOCDIR)/doxygen-latex.conf	:
-	$(CAT) $(COMMONDIR)/$(DOXYCONF) > $@
+$(DOCDIR)/latex/refman.tex	: $(SRC) $(HDR)
+	$(CAT) $(COMMONDIR)/$(DOXYCONF) > $(DOCDIR)/doxygen-latex.conf
 	$(ECHO) -e "\
 PROJECT_NAME		= $(DOCNAME)\n\
 INPUT			= $(SRCDIR)\n\
@@ -56,16 +60,10 @@ GENERATE_LATEX		= YES\n\
 LATEX_OUTPUT		= $(DOCDIR)/latex\n\
 LATEX_HEADER		= $(COMMONDIR)/doxygen-header.tex\n\
 $(DOXY_OVERRIDE)\
-" >> $@
-
-.PHONY	: srcdoc
-srcdoc	: prebuild $(DOCDIR)/html/index.html $(DOCDIR)/$(DOCNAME).pdf
-$(DOCDIR)/html/index.html	: $(DOCDIR)/doxygen-html.conf $(SRC) $(HDR)
-	$(MKDIR) $(DOCDIR)/html
-	$(DOXYGEN) $<
-$(DOCDIR)/latex/refman.tex	: $(DOCDIR)/doxygen-latex.conf $(SRC) $(HDR)
+" >> $(DOCDIR)/doxygen-latex.conf
 	$(MKDIR) $(DOCDIR)/latex
-	$(DOXYGEN) $<
+	$(DOXYGEN) $(DOCDIR)/doxygen-latex.conf
+
 $(DOCDIR)/$(DOCNAME).pdf : $(DOCDIR)/latex/refman.tex
 	$(MAKE) -C $(DOCDIR)/latex refman.pdf
 	mv $(DOCDIR)/latex/refman.pdf $@
