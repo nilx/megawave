@@ -25,7 +25,7 @@ clean-doc	:
 distclean-doc	: clean-doc
 	$(RM) $(MAN) $(MANHTML)
 	$(RRM) $(DOCDIR)/html
-	$(RRM) $(DOCDIR)/lib$(LIBNAME).pdf
+	$(RRM) $(DOCDIR)/$(DOCNAME).pdf
 	$(RM) $(DOCDIR)/doxygen-html.conf $(DOCDIR)/doxygen-latex.conf
 
 $(DOCDIR)/doxygen-html.conf	:
