@@ -50,8 +50,11 @@ LIBMW_CMDLINE	= $(BASEDIR)/libmw-cmdline/libmw-cmdline
 MWP	= $(BASEDIR)/mwp/mwp
 
 ifeq	($(LINK), static)
-SHLIBS	= c m dl X11
-STLIBS	= tiff jpeg z
+SHLIBS	= c m X11 tiff
+STLIBS	=
+# for "heavy" static:
+#SHLIBS	= c m dl X11
+#STLIBS	= tiff jpeg z
 else
 SHLIBS	= c m X11 tiff
 STLIBS	=
