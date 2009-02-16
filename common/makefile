@@ -85,17 +85,18 @@ endif
 # MODE can be "normal", "opti", "debug" or "profile" 
 MODE	?= normal
 
+# normal
+ifeq	($(MODE), normal)
+endif
+
 # debug
 ifeq	($(MODE), debug)
 CMISC	+= -g
-PROF	= 0
 endif
 
 # profiling
 ifeq	($(MODE), profile)
 CMISC	+= -pg
-CMISC	+= -O2 -funroll-loops -finline-functions	\
-	-ffunction-sections -fdata-sections
 endif
 
 # optimisation
@@ -107,11 +108,13 @@ endif
 # compiler flags
 IPATH	?= .
 CFLAGS_NOWARN	?= $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
-CFLAGS	?= -fPIC -ffunction-sections $(CWARN) $(CFLAGS_NOWARN)
+CFLAGS	?= -fPIC $(CWARN) $(CFLAGS_NOWARN)
 
 # linking option
 # LINK can be "dynamic" or "static"
 LINK	?= dynamic
+
+LDMISC	?=
 
 # include and link paths
 LPATH	?= .
@@ -133,9 +136,15 @@ endif
 # debug
 ifeq	($(MODE), debug)
 LPREFIX	?= debug/
+LDMISC	+= -g
 endif
 
-LDFLAGS	?= -Wl,--gc-sections $(LDDEBUG) $(CPROF)			\
+# debug
+ifeq	($(MODE), profile)
+LDMISC	+= -pg
+endif
+
+LDFLAGS	?= -Wl,--gc-sections $(LDMISC)					\
 	$(addprefix -L, $(LPATH)) $(addprefix -l$(LPREFIX), $(SHLIBS))
 LDFLAGS_SHARED	?= -shared $(LDFLAGS)
 
