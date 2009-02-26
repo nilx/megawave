@@ -8,7 +8,7 @@ See `../README.txt` for generic instructions.
   The result is `./libmw-cmdline.so` and `./libmw-cmdline.a`.
     make lib
 * compile the library api header
-  The result is `./libmw-cmdline.h`.
+  The result is `./mw-cmdline.h`.
     make api
 * cleanup the compilation headers, objects, ...
     make clean

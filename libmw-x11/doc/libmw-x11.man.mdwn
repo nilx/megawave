@@ -32,7 +32,7 @@ library "libmw-mwplight"
 
 # FILES
 
-/usr/include/libmw-x11.h
+/usr/include/mw-x11.h
 
 # COPYRIGHT
 
@@ -42,4 +42,6 @@ See http://megawave.cmla.ens-cachan.fr/ for details.
 
 # SEE ALSO
 
-**megawave(7)**, **libmw(3)**, **megawave-modules(7)**
+**megawave(7)**, **megawave-modules(7)**,
+**libmw(3)**, **libmw-cmdline(3)**, **libmw-io(3)**
+

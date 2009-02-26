@@ -21,7 +21,7 @@ library "libmw-cmdline"
 
 # FILES
 
-/usr/include/libmw-cmdline.h
+/usr/include/mw-cmdline.h
 
 # COPYRIGHT
 
@@ -31,4 +31,5 @@ See http://megawave.cmla.ens-cachan.fr/ for details.
 
 # SEE ALSO
 
-**megawave(7)**, **megawave-modules(7)**, **libmw(3)**, **libmw-x11(3)**
+**megawave(7)**, **megawave-modules(7)**,
+**libmw(3)**, **libmw-x11(3)**, **libmw-io(3)**
