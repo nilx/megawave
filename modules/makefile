@@ -31,6 +31,7 @@ OBJ	= $(SRC:.c=$(.O))
 
 CMDSRC	= $(SRC:.c=.cmd.c)
 CMDOBJ	= $(CMDSRC:.c=$(.O))
+CMDBIN	= $(CMDSRC:.c=)
 
 LIBNAME	= mw-modules
 API	= $(LIBNAME).h
@@ -141,6 +142,8 @@ clean-bin :
 distclean-bin : clean-bin
 	@echo '$(RM) $$(MODULES)'
 	@$(RM) $(MODULES)
+	@echo '$(RM) $$(CMDBIN)'
+	@$(RM) $(CMDBIN)
 	$(RM) lib$(LIBNAME)$(.A)
 	$(RM) lib$(LIBNAME)$(.SO)
 	$(RM) $(BUILDDIR)/*
