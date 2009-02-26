@@ -476,18 +476,6 @@ static void writeargdecl(FILE * afile)
 
      fprintf(afile, "\n/* ~~~ [writeargdecl] Argument declarations ~~~*/\n\n");
 
-     /* prototype of the main function */
-     fprintf(afile, "  /* Prototype of the main function */\n");
-
-     /*
-      * beware:
-      * at this time, the M-file does not add the ANSI syntax
-      * and modules are written without using the ANSI declaration
-      * of functions. Therefore, we don't generate function's
-      * prototype with ANSI format.
-      */
-     WriteFuncPrototype(afile, C->mfunc, 0);
-
      /* variables for options */
      if (H->NbOption > 0)
      {

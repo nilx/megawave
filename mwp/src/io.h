@@ -23,7 +23,6 @@ int getword(char *s, char *w);
 int getCid(char *s, char *cid);
 int getInterval(char *s, char *min, char *max, int *ai);
 int IsStringCid(char *s);
-void WriteFuncPrototype(FILE *fd, t_varfunc *f, int ansi);
 void fprinttex(FILE *fd, char *fmt, ...);
 
 #endif /* !_IO_H_ */

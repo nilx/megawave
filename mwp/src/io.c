@@ -38,12 +38,6 @@
      "Left bound of interval \"%s\" exceeds maximum size length of %d char"
 #define MSG_ERROR_RIGHT_BOUND \
      "Right bound of interval \"%s\" exceeds maximum size length of %d char"
-#define MSG_ERROR_WRITEFUNCPROTOTYPE_NULL_DESC \
-     "[WriteFuncPrototype] Cannot prototype f : NULL file descriptor"
-#define MSG_ERROR_WRITEFUNCPROTOTYPE_NULL_FUNCTION \
-     "[WriteFuncPrototype] Cannot prototype f : NULL function"
-#define MSG_ERROR_WRITEFUNCPROTOTYPE_NOT_FUCTION \
-     "[WriteFuncPrototype] Cannot prototype f : not a function"
 #define MSG_DEBUG_GETINSTRUCTION \
      "[getinstruction] s='%s'"
 
@@ -884,57 +878,6 @@ int IsStringCid(char * s)
           if (!IS_CID(c))
                return(0);
      return 1;
-}
-
-/*
- * write in file <fd> the prototype of the function in <f>.
- * if <ansi>=1, the prototype generates the ANSI prototype syntax
- * (and the K&R ones for backward compatibility with old compilers).
- * if not, the K&R prototype format is generated for all compilers.
- */
-/* TODO: drop K&R */
-void WriteFuncPrototype(FILE * fd, t_varfunc * f, int ansi)
-{
-     t_variable * p;
-
-     /*
-      * beware :
-      * ANSI prototype for an external function
-      * has to be used IF AND ONLY IF the declaration
-      * of the function has been made following the ANSI syntax.
-      * For the module's main function, that means that
-      * the ANSI prototype as to be called IF AND ONLY IF
-      * the module's main function definition in the M-file
-      * follows the ANSI syntax.
-      * so if the user does not use the ANSI syntax inside the module,
-      * the light preprocessor
-      * would have to generate the M-file by adding the ANSI syntax
-      * (see mfile.c)
-      */
-
-     if (!fd)
-          error(MSG_ERROR_WRITEFUNCPROTOTYPE_NULL_DESC);
-     if (!f || !f->v)
-          error(MSG_ERROR_WRITEFUNCPROTOTYPE_NULL_FUNCTION);
-     if (!ISCI_FUNCTION(f))
-          error(MSG_ERROR_WRITEFUNCPROTOTYPE_NOT_FUCTION);
-
-     if (ansi == 1)
-     {
-          fprintf(fd, "#ifdef __STDC__\n");
-          fprintf(fd, "  extern %s %s(", f->v->Ftype, f->v->Name);
-          for (p = f->param; p; p = p->next)
-          {
-               fprintf(fd, "%s", p->Ftype);
-               if (p->next) fprintf(fd, ",");
-          }
-          fprintf(fd, ");\n");
-          fprintf(fd, "#else\n");
-          fprintf(fd, "  extern %s %s();\n", f->v->Ftype, f->v->Name);
-          fprintf(fd, "#endif\n");
-     }
-     else
-          fprintf(fd, "  extern %s %s();\n", f->v->Ftype, f->v->Name);
 }
 
 /*
