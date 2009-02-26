@@ -151,7 +151,7 @@ static Fcurves Sample(Fcurves cs, float close)
 
   css = mw_new_fcurves();
   white = WHITE;
-  css->first = cimage_fcurve(image_close,&white);
+  css->first = cimage_fcurve(image_close);
   
   mw_delete_cimage(image_close);
   

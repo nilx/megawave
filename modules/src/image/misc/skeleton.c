@@ -210,7 +210,7 @@ return(test);
   
 }
 
-static int test_thinning(Cimage im, long unsigned int a, int l_min)
+static int test_thinning(Cimage im, long unsigned int a)
 {
   int test;
   int dx,dy;

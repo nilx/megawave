@@ -60,7 +60,7 @@ float snorm(Fsignal in, Fsignal ref, float *p, char *s, char *v, int *b, char *n
   if (!s) {
     if (num) sum /= (double)num; else sum=0.0;
   }
-  if (n) sum /= (double)snorm(ref,NULL,p,s,v,b,NULL);
+  if (n) sum /= (double)snorm(ref,NULL,p,s,v,b,NULL,NULL);
   if (t) if (sum<=*t) sum=0.0;
   if (p) sum = pow(sum,1.0/(double)(*p));
 

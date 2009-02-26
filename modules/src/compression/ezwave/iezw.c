@@ -490,13 +490,13 @@ READ_HEADER(Cimage compress, int *nrec, int *nrow, int *ncol, float *thres)
 
   garbage_bits = 0;
   effnbitar = 0;
-  DECODE_INT(nrec, 1 << (NBIT_NREC - 1), ptrc);
+  DECODE_INT(nrec, 1 << (NBIT_NREC - 1));
   printf("Number of levels : %d\n", *nrec);
-  DECODE_INT(nrow, 1 << (NBIT_SIZEIM - 1), ptrc);
+  DECODE_INT(nrow, 1 << (NBIT_SIZEIM - 1));
   printf("Number of rows of image : %d\n", *nrow);
-  DECODE_INT(ncol, 1 << (NBIT_SIZEIM - 1), ptrc);
+  DECODE_INT(ncol, 1 << (NBIT_SIZEIM - 1));
   printf("Number of columns of image : %d\n", *ncol);
-  DECODE_INT(&thressymb, 1 << (nbit_thressymb - 1), ptrc);
+  DECODE_INT(&thressymb, 1 << (nbit_thressymb - 1));
   effnbit = effnbitar;
 
   /*--- Computes exact threshold ---*/
@@ -505,7 +505,7 @@ READ_HEADER(Cimage compress, int *nrec, int *nrow, int *ncol, float *thres)
 
   /*--- Decode number of polygons ---*/ 
 
-  DECODE_INT(&npolyg, 1 << (NBIT_NPOLYG - 1), compress);
+  DECODE_INT(&npolyg, 1 << (NBIT_NPOLYG - 1));
   printf("Number of selected areas : %d\n", npolyg);
 
   if (npolyg > 0) {
@@ -536,7 +536,7 @@ READ_HEADER(Cimage compress, int *nrec, int *nrow, int *ncol, float *thres)
 
       /*--- Decode number of vertices in polygons ---*/
 
-      DECODE_INT(&c, 1 << (NBIT_NPOINTS - 1), compress);
+      DECODE_INT(&c, 1 << (NBIT_NPOINTS - 1));
       npoints[p] = c + 1;
       npoints_total += c + 1;
     }
@@ -568,9 +568,9 @@ READ_HEADER(Cimage compress, int *nrec, int *nrow, int *ncol, float *thres)
       
       ptr_point = ptr_polyg->first;
       while (ptr_point) {
-	DECODE_INT(&c, 1 << (NBIT_SIZEIM - 1), compress);
+	DECODE_INT(&c, 1 << (NBIT_SIZEIM - 1));
 	ptr_point->x = c;
-	DECODE_INT(&c, 1 << (NBIT_SIZEIM - 1), compress);
+	DECODE_INT(&c, 1 << (NBIT_SIZEIM - 1));
 	ptr_point->y = c;
 	ptr_point = ptr_point->next;
       }

@@ -304,7 +304,7 @@ void motionseg(int *n, float *prec, float *e, float *alphac, float *alphabr, flo
     v=N->first;
     for(l=0; l<n_images;l++,u=u->next,v=v->next){
       mw_copy_fimage(u,Anterior);
-      calcula_D(u,D1);
+      calcula_D(u,D1,*e);
       calcula_Ch(u,D1,B,v,*alphac,*alphacr);
       ptrfilm=u->gray;
       ptrAnt=Anterior->gray;

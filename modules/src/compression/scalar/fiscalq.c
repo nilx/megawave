@@ -202,7 +202,7 @@ READ_HEADER_FIMAGE(int *print, int *nrow, int *ncol, int *nrow1, int *ncol1, flo
 
       /*--- Read sign of lower quantization step ---*/
     
-      DECODE_INT_FIMAGE(&n, 1, compress);
+      DECODE_INT_FIMAGE(&n, 1);
 
       /*--- Read index of lower quantization step ---*/
     
@@ -223,7 +223,7 @@ READ_HEADER_FIMAGE(int *print, int *nrow, int *ncol, int *nrow1, int *ncol1, flo
 
       /*--- Read sign of shift of lower quantization step  ---*/
       
-      DECODE_INT_FIMAGE(&n, 1, compress);
+      DECODE_INT_FIMAGE(&n, 1);
 
       /*--- Read index of shift of lower quantization step  ---*/
       

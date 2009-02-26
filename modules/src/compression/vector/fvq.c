@@ -2173,7 +2173,7 @@ fvq(int *PrintSNR, int *SmallHeader, int *BitMapCode, int *RateDist, int *NCB1, 
 
       ninit2 = 1;
       for (n3 = ninit3; n3 < nfin3; n3++) {
-	VQ(PrintSNR, NULL, BitMapCode, Image, testmulticb, ninit1, ninit2, n3, ninit4, CodeBook1, CodeBook2, CodeBook3, NULL, nres1, nres2, nres3, nres4, ResCodeBook1, ResCodeBook2, ResCodeBook3, NULL, nresres1, nresres2, ResResCodeBook1, ResResCodeBook2, NULL, Result, &mse, &snr, &Rate, &Ratearc, &ent);
+	VQ(PrintSNR, BitMapCode, Image, testmulticb, ninit1, ninit2, n3, ninit4, CodeBook1, CodeBook2, CodeBook3, NULL, nres1, nres2, nres3, nres4, ResCodeBook1, ResCodeBook2, ResCodeBook3, NULL, nresres1, nresres2, ResResCodeBook1, ResResCodeBook2, NULL, Result, &mse, &snr, &Rate, &Ratearc, &ent);
 	if (PrintSNR) 
 	  if (*PrintSNR != 1)
 	    printf("%.4f  %.4f  %.4f  %.2f\n", Rate, Ratearc, ent, snr);
