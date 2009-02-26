@@ -3,7 +3,7 @@
  *
  * common configuration for mwp
  *
- * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005), \
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005-2009), \
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
@@ -21,7 +21,7 @@
  * any strings, lines, sentences,...
  * in the source module must have smaller size.
  */
-#define STRSIZE 4096
+#define STRSIZE 8192
 
 /* end of header mark */
 #define EOH -2

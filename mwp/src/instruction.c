@@ -3,7 +3,7 @@
  *
  * analyse some instructions in the body of a megawave module
  *
- * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007), \
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2009), \
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
@@ -113,7 +113,7 @@
 /* C data type. Put also most common types defined in include files */
 static char * Cdatatype[] = {"char", "double", "float", "int", "long",  \
                              "short", "void", "time_t", "bool", "byte", ""};
-
+static char * Cvoiddatatype[] = {"void",""};
 static char * Cmodifier[]      = {"long", "short", "signed", "unsigned", ""};
 static char * Cpointer[]       = {"*", ""};      /* notice : [] not allowed */
 static char * Cqualifier[]     = {"const", "volatile", ""};
@@ -146,7 +146,9 @@ static char * Cmwdatatype[] = {"Cimage", "Fimage", "Cmovie", "Fmovie",  \
                                "Shapes", "Rawdata", "Flist", "Flists",  \
                                "Dlist", "Dlists", "Wpack2d",            \
                                "Point_curve", "Point_fcurve", "Wframe", \
-                               "Color", "Point_plane", "Wpanel", ""};
+                               "Color", "Point_plane", "Wpanel",        \
+			       "Point_type",                            \
+			       ""};
 
 /* data type defined by the user in the C body */
 static char * Cuserdatatype[MAXDT];
@@ -154,6 +156,7 @@ static char * Cuserdatatype[MAXDT];
 static int Nudt = 0;
 
 #define Is_Cdatatype(x)      (Is_Ctype((x), Cdatatype))
+#define Is_Cvoiddatatype(x)  (Is_Ctype((x), Cvoiddatatype))
 #define Is_Cmodifier(x)      (Is_Ctype((x), Cmodifier))
 #define Is_Cpointer(x)       (Is_Ctype((x), Cpointer))
 #define Is_Cqualifier(x)     (Is_Ctype((x), Cqualifier))
@@ -234,6 +237,23 @@ static int Is_Ctype(char * s, char * type[])
 }
 
 
+/* 
+ * return 1 if the Cword <w> is preceded by a datatype, 0 elsewhere.
+ * Instructions preceding <w> must be previously analyzed (field Wtype filled).
+ */
+   
+static int Is_previousCword_datatype(t_token *w)
+{
+  t_token *wp;
+
+  if (!w) return(0);
+
+  for (wp = w->previous; wp && (wp->Wtype != W_SEPARATOR); wp = wp->previous)
+    if (wp->Wtype == W_DATATYPE) return(1);
+  
+  return(0);
+}
+
 /*
  * from the chain of words in <c>,
  * analyse the instruction and set the other fields of <c>.
@@ -245,8 +265,10 @@ static int AnalyseInstruction(t_statement * c)
      char * w;
      /* number of non-interpreted parenthesis */
      int nipar;
+     /* 1 if void encountered in the current function parameter */
+     int voidencountered;
 
-     nipar = 0;
+     nipar = voidencountered = 0;
      c->nparam = -1;
      c->nvar   =  0;
 
@@ -325,15 +347,26 @@ static int AnalyseInstruction(t_statement * c)
                continue;
           }
           if (Is_Cdatatype(w))
-          {
-               /* data type : char, double, ... */
-               cw->Wtype = W_DATATYPE;
-               if (debug_flag)
-                    debug("W_DATATYPE");
-               if (c->Itype == I_FUNC_IN)
-                    c->ndatatype++;
-               continue;
-          }
+	    {
+	      /* data type : char, double, ... */
+	      cw->Wtype = W_DATATYPE;
+	      if (debug_flag)
+		debug("W_DATATYPE");
+	      if (c->Itype == I_FUNC_IN) /* If inside function declaration, count number of data types */
+		{
+		  if (Is_Cvoiddatatype(w)) voidencountered=1; /* data type void */
+		  else
+		    /* do not count void data type as it is not associated to a parameter 
+		       (case of "void *toto" recognized below)
+		    */
+		    if (Is_previousCword_datatype(cw)!=1) /* do not count 2 times composed type such as long unsigned int */
+		      {
+			c->ndatatype++;
+			if (debug_flag) debug("Number of data types incremented (1); now %d",c->ndatatype);
+		      }
+		}
+	      continue;
+	    }
           if (Is_Cmodifier(w))
           {
                /* C modifier : long, unsigned, ... */
@@ -344,10 +377,17 @@ static int AnalyseInstruction(t_statement * c)
           }
           if (Is_Cpointer(w))
           {
-               /* C pointer : *, [] */
+               /* C pointer : * */
                cw->Wtype = W_CPOINTER;
                if (debug_flag)
                     debug("W_CPOINTER");
+	       if ( (c->Itype == I_FUNC_IN) /* If inside function declaration, increment data type in case of "void *toto" */
+		    && (voidencountered==1)
+		    )
+		 {
+		   c->ndatatype++;
+		   if (debug_flag) debug("Number of data types incremented (2); now %d",c->ndatatype);
+		 }
                continue;
           }
           if (Is_Cmwdatatype(w))
@@ -357,7 +397,10 @@ static int AnalyseInstruction(t_statement * c)
                if (debug_flag)
                     debug("W_CMWDATATYPE");
                if (c->Itype == I_FUNC_IN)
-                    c->ndatatype++;
+		 {
+		   c->ndatatype++;
+		   if (debug_flag) debug("Number of data types incremented (3); now %d",c->ndatatype);
+		 }
                continue;
           }
           if (Is_Cuserdatatype(w))
@@ -367,7 +410,10 @@ static int AnalyseInstruction(t_statement * c)
                if (debug_flag)
                     debug("W_USERDATATYPE");
                if (c->Itype==I_FUNC_IN)
-                    c->ndatatype++;
+		 {
+		   c->ndatatype++;
+		   if (debug_flag)debug("Number of data types incremented (4); now %d",c->ndatatype);
+		 }
                continue;
           }
 
@@ -484,10 +530,11 @@ static int AnalyseInstruction(t_statement * c)
                          continue;
                     }
                     else
-                    {
+		      {
                          /* don't know what it is : skip it */
-                         nipar++;
-                         continue;
+			nipar++;
+			if (debug_flag) debug("nipar=%d",nipar);
+			continue;
                     }
                }
                if (strcmp(w, ")") == 0)
@@ -495,17 +542,20 @@ static int AnalyseInstruction(t_statement * c)
                     cw->Wtype = W_SEPARATOR;
                     if (debug_flag)
                          debug("W_SEPARATOR");
-                    if (c->Itype != I_FUNC_IN)
-                    {
-                         nipar--;
-                         if (nipar < 0)
-                              error(MSG_ERROR_UNEXPECTED_PAREN);
-                         /*
-                          * see image/io/cfchgchannels.c
-                          * and wave/sconvolve.c
-                          */
-                         continue;
-                    }
+
+
+		    if (nipar > 0) 
+		       {
+			 nipar--;
+			 if (debug_flag) debug("nipar=%d",nipar);
+			 continue;
+		       }
+		    else
+		      if (c->Itype != I_FUNC_IN)
+			error(MSG_ERROR_UNEXPECTED_PAREN);
+		    
+
+		    /* Inside function, check if it's the end of a prototype or a declaration */
                     if ((cw->next) &&                          \
                         ((strcmp(cw->next->Name, ";") == 0) || \
                          (strcmp(cw->next->Name, ",") == 0)))
@@ -534,25 +584,28 @@ static int AnalyseInstruction(t_statement * c)
                          }
                     }
                     else
-                    {
-                         /* this is a function declaration */
-                         if (c->ndatatype > 0)
-                         {
-                              if (c->ndatatype != c->nparam)
-                                   error(MSG_ERROR_TYPES_NUMBER, \
-                                         c->phrase, c->ndatatype, c->nparam);
-                              c->Itype = I_FUNCDECL_ANSI;
-                              if (debug_flag)
-                                   debug("I_FUNCDECL_ANSI");
-                              c->nvar = c->ndatatype;
-                         }
-                         else
-                         {
-                              c->Itype = I_FUNCDECL_KR;
-                              if (debug_flag)
-                                   debug("I_FUNCDECL_KR");
-                         }
-                    }
+		      {
+			/* this is a function declaration */
+			if (c->ndatatype > 0)
+			  /* If the function declaration contains data type,
+			     declaration follows ANSI rules */
+			  {
+			    if (c->ndatatype != c->nparam)
+			      error(MSG_ERROR_TYPES_NUMBER, \
+				    c->phrase, c->ndatatype, c->nparam);
+			    c->Itype = I_FUNCDECL_ANSI;
+			    if (debug_flag)
+			      debug("I_FUNCDECL_ANSI");
+			    c->nvar = c->ndatatype;
+			  }
+			else
+			  /* No data type : K&R rules */
+			  {
+			    c->Itype = I_FUNCDECL_KR;
+			    if (debug_flag)
+			      debug("I_FUNCDECL_KR");
+			  }
+		      }
                     continue;
                }
 
@@ -562,6 +615,7 @@ static int AnalyseInstruction(t_statement * c)
                     cw->Wtype = W_SEPARATOR;
                     if (debug_flag)
                          debug("W_SEPARATOR");
+		    voidencountered=0;        /* next parameter */
                     if ((c->Itype == I_FUNCPROTO_ANSI) || \
                         (c->Itype == I_FUNCPROTO_KR))
                          /*
@@ -583,14 +637,12 @@ static int AnalyseInstruction(t_statement * c)
                      */
                     if (c->Itype == I_UNDEFINED)
                     {
-                         c->Itype = I_VARDECL;
-                         if (debug_flag)
-                              debug("I_VARDECL");
+		      c->Itype = I_VARDECL;
+		      if (debug_flag)
+			debug("I_VARDECL");
                     }
-                    /* FIXME: cw = ??? */
-/*                  for (cw; cw && (strcmp(cw->Name, ",") != 0);        \
- *                       cw0 = cw, cw = cw->next);                        */
-                    for ( ; cw && (strcmp(cw->Name, ",") != 0); \
+                    if (debug_flag) debug("Don't know what it is (1)... skip until next ',' or ')'");		    
+                    for ( ; cw && cw->next && (strcmp(cw->next->Name, ",") != 0) &&(strcmp(cw->next->Name, ")") != 0) ; \
                          cw0 = cw, cw = cw->next);
                     if (cw)
                          continue;
@@ -606,15 +658,13 @@ static int AnalyseInstruction(t_statement * c)
                 */
                if (c->Itype != I_UNDEFINED)
                {
-                 /* FIXME: cw = ??? */
-/*                  for (cw; cw && (strcmp(cw->Name, ",") != 0);        \
- *                       cw0=cw, cw=cw->next);                            */
-                    for ( ; cw && (strcmp(cw->Name, ",") != 0); \
+		 if (debug_flag) debug("Don't know what it is (2)... skip until next ',' or ')'");	
+                    for ( ; cw && cw->next && (strcmp(cw->next->Name, ",") != 0) &&(strcmp(cw->next->Name, ")") != 0) ; \
                          cw0=cw, cw=cw->next);
-                    if (cw)
-                         continue;
-                    else
-                         goto EndofPass1;
+		 if (cw)
+		   continue;
+		 else
+		   goto EndofPass1;
                }
 
                error(MSG_ERROR_INTERPRET_SYMBOL, w);
@@ -700,6 +750,7 @@ static int AnalyseInstruction(t_statement * c)
                if (debug_flag)
                     debug("W_FUNCPARAM");
                c->nparam++;
+	       if (debug_flag) debug("Number of parameters incremented; now %d",c->nparam);
                continue;
           }
 
@@ -1004,18 +1055,21 @@ static void FillParam_Funcdecl_Ansi(t_varfunc * f, t_statement * c, \
                cw = cw->next;
           if (!cw)
                break;
-          while (ISCWORD_FULLTYPE(cw))
+          while (ISCWORD_FULLTYPE(cw)||(strcmp(cw->Name,"(")==0))
           {
-               strcat(p->Ftype, cw->Name);
-               strcat(p->Ftype, " ");
-               if (cw->Wtype == W_CPOINTER)
-                    p->PtrDepth++;
-               else
-                    SetType(p, c, cw);
+	    if (strcmp(cw->Name,"(")!=0) /* avoid error such in "float (*bmse)[50]", but Ftype will be wrong */
+	      {
+		strcat(p->Ftype, cw->Name);
+		strcat(p->Ftype, " ");
+		if (cw->Wtype == W_CPOINTER)
+		  p->PtrDepth++;
+		else 
+		  SetType(p, c, cw);
+	      }
                cw = cw->next;
           }
           if (cw->Wtype != W_FUNCPARAM)
-               error(MSG_ERROR_WTYPE, c->phrase, cw->Name, cw->Wtype);
+	    error(MSG_ERROR_WTYPE, c->phrase, cw->Name, cw->Wtype);
           strcpy(p->Name, cw->Name);
 
           RemoveTerminatingSpace(p->Stype);

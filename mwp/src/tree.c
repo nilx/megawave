@@ -3,7 +3,7 @@
  *
  * syntax tree tools for the megawave parser
  *
- * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2006), \
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2009), \
  *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
  */
 
@@ -338,7 +338,7 @@ static void strdump_variable(char * str, t_variable * v)
     full type   = '%s'\n\
     ctype       = %d\n\
     ptrDepth    = %d\n\
-    cstorage    = '%s'", \
+    cstorage    = '%s'\n", \
                   (unsigned int) v,                                     \
                   (unsigned int) v->previous, (unsigned int) v->next,   \
                   v->Name, v->Stype, v->Ftype, v->Ctype, v->PtrDepth,   \
