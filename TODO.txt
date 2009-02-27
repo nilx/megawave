@@ -1,2 +1,0 @@
-* use indent for `make beautify`
-* remove the extern lines
