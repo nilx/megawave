@@ -1,0 +1,9 @@
+# file patterns excluded from commit
+
+# headers (rebuilt by cproto)
+
+*.h
+
+# command-line part of the modules
+*.cmd.[hc]
+*.cmd

@@ -1,0 +1,16 @@
+# file patterns excluded from commit
+
+# backups
+*~
+
+# objects
+*.[oa]
+*.so
+
+# documentation
+*/doc/html/
+*/doc/latex/
+*/doc/*.pdf
+*/doc/*.man
+*/doc/*.man.html
+ 
