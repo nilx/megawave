@@ -120,11 +120,11 @@ makefile.dep	: $(SRC)
 	$(RM) $@
 	$(TOUCH) $@
 	@echo 'for SRC in $$(SRC); do \
-		echo "$(BUILDDIR)/`basename $$SRC .c`\t: $${SRC%.c}.cmd" \
+		echo "$(BUILDDIR)/`basename $$SRC .c` : $${SRC%.c}.cmd" \
 		>> $@; \
 	done'
 	@for SRC in $^; do \
-		echo "$(BUILDDIR)/`basename $$SRC .c`\t: $${SRC%.c}.cmd" \
+		echo "$(BUILDDIR)/`basename $$SRC .c` : $${SRC%.c}.cmd" \
 		>> $@; \
 	done
 
