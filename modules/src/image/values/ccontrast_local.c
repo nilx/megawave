@@ -69,7 +69,7 @@ static void ccontrast_curve(Cimage image, Fimage fimage, Fcurve curve, int *lamb
 
 {
   unsigned int h, histo_distr;
-  unsigned int i, j, area, size;
+  unsigned int i, j, curve_area, size;
   float yd, epsilon;
   Point_fcurve p;
   
@@ -89,28 +89,28 @@ static void ccontrast_curve(Cimage image, Fimage fimage, Fcurve curve, int *lamb
   epsilon = 1.0 - epsilon;
   
   /* Compute the new histogram */
-  /* firstly distribution 'area' from 0 to i-1 */
-  area = 0;
+  /* firstly distribution 'curve_area' from 0 to i-1 */
+  curve_area = 0;
   histo_distr = 0;
   for (i = 0; i < 256; i++)
     if (0 != (h = histo_global[i])) {
-      newht_global[i] = (float) area;
-      area += h;
+      newht_global[i] = (float) curve_area;
+      curve_area += h;
       histo_distr ++;
     }
-  size = area;
-  /* secondly distribution 'area' from i+1 to 255 */
+  size = curve_area;
+  /* secondly distribution 'curve_area' from i+1 to 255 */
   /* and the linear conbination  of the two areas */
-  area = 0;
+  curve_area = 0;
   for (i = 0; i < 256; i++)
     {
       j = 255 - i;
       if (0 != (h = histo_global[j])) {
-	yd = (newht_global[j] - (float) area) / (float) size;
+	yd = (newht_global[j] - (float) curve_area) / (float) size;
 	yd = ((float) *lambda1) * (1.0 - yd) + ((float) *lambda2) * (1.0 + yd);
 	yd = yd * 0.5;
 	newht_global[j] = yd;
-	area += h;
+	curve_area += h;
       }
     }
   

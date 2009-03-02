@@ -129,13 +129,13 @@ static void reinit_neighborhood(Neighborhood *pNeighborhood, enum TypeOfTree typ
 }
 
 /* To allocate the structure representing the neighborhood of a region */
-static void init_neighborhood(Neighborhood *pNeighborhood, int iMaxArea)
+static void init_neighborhood(Neighborhood *pNeighborhood, int init_iMaxArea)
 {
-  iMaxArea = 4*(iMaxArea+1);
-  if(iMaxArea > iWidth*iHeight)
-    iMaxArea = iWidth*iHeight;
+  init_iMaxArea = 4*(init_iMaxArea+1);
+  if(init_iMaxArea > iWidth*iHeight)
+    init_iMaxArea = iWidth*iHeight;
 
-  pNeighborhood->tabPoints = (Neighbor*) malloc((iMaxArea+1)*sizeof(Neighbor));
+  pNeighborhood->tabPoints = (Neighbor*) malloc((init_iMaxArea+1)*sizeof(Neighbor));
   if(pNeighborhood->tabPoints == NULL)
     mwerror(FATAL, 1, "init_neighborhood --> neighbors allocation error\n");
   reinit_neighborhood(pNeighborhood, AMBIGUOUS);
@@ -301,9 +301,9 @@ static void free_output_image(float **tabtabPixelsOutput)
   free(tabtabPixelsOutput);
 }
 
-static void init_region(int iMaxArea)
+static void init_region(int init_region_iMaxArea)
 {
-  tabPointsInShape = (Point_plane) malloc(iMaxArea*sizeof(struct point_plane));
+  tabPointsInShape = (Point_plane) malloc(init_region_iMaxArea*sizeof(struct point_plane));
   if(tabPointsInShape == NULL)
     mwerror(FATAL, 1, "init_region --> impossible to allocate the array\n");
 }
@@ -542,11 +542,11 @@ static void store_8neighbors(float **ou, short int x, short int y, Neighborhood 
 }
 
 /* Add the points in the neighborhood of gray level currentGrayLevel to the
-region tabPointsInShape and return 1 if a new shape is (maybe) detected.
+region tabIsoPointsInShape and return 1 if a new shape is (maybe) detected.
 This "maybe" is linked to `pIgnoreHoles', indicating if we can count the
-holes. New points are added to `tabPointsInShape' from position `pCurrentArea'.
+holes. New points are added to `tabIsoPointsInShape' from position `pCurrentArea'.
 This value is changed at exit in case of success. */
-static char add_iso_level(Point_plane tabPointsInShape, int *pCurrentArea, float currentGrayLevel, Neighborhood *pNeighborhood, float **ou, int **tabtabVisitedPixels, char *p8Connected, char *pIgnoreHoles)
+static char add_iso_level(Point_plane tabIsoPointsInShape, int *pCurrentArea, float currentGrayLevel, Neighborhood *pNeighborhood, float **ou, int **tabtabVisitedPixels, char *p8Connected, char *pIgnoreHoles)
 {
   short int x, y;
   Neighbor* pNeighbor;
@@ -559,8 +559,8 @@ static char add_iso_level(Point_plane tabPointsInShape, int *pCurrentArea, float
   do { /* 1) Neighbor is added to the region */
     x = pNeighbor->point.x;
     y = pNeighbor->point.y;
-    tabPointsInShape[iCurrentArea].x = x;
-    tabPointsInShape[iCurrentArea++].y = y;
+    tabIsoPointsInShape[iCurrentArea].x = x;
+    tabIsoPointsInShape[iCurrentArea++].y = y;
     if(! *pIgnoreHoles) {
       cPattern = configuration(tabtabVisitedPixels, x, y);
       iNbHoles += tabPatterns[(int) *p8Connected][cPattern];

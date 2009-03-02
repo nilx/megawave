@@ -9,7 +9,7 @@
  'g':[g=1.]-> gam          "power of curvature",        
  'l':[l=1.]->last          "last scale",
  'e':[e=3.]->eps[2.,13.]   "(for gcsf) sampling precision",
- 'a':[a=4.]->area[2.,13.]  "(for gcsf) erosion area ",
+ 'a':[a=4.]->er_area[2.,13.]  "(for gcsf) erosion area ",
  'n':[n=1]->n              "(for gcsf) or minimal # of iterations",
  'N':[N=5]->N              "number of output curves",
  'v'->v                    "verbose mode",
@@ -28,7 +28,7 @@
 #include "mw.h"
 #include "mw-modules.h" /* for gcsf() */
 
-Dlists iter_gcsf(Dlist in, Dlists out, double *gam, double *last, double *area, double *eps, int *n, int *N, char *v)
+Dlists iter_gcsf(Dlist in, Dlists out, double *gam, double *last, double *er_area, double *eps, int *n, int *N, char *v)
 {
   Dlists aux,res;
   double scale1,scale2,rad,rmax,x,y;
@@ -52,7 +52,7 @@ Dlists iter_gcsf(Dlist in, Dlists out, double *gam, double *last, double *area, 
     scale1 = scale2;
     scale2 += *last/(double) *N;
     aux->list[0] = out->list[i];
-    res = gcsf(aux,res,gam,&scale1,&scale2,eps,area,n,&rad,v,NULL,NULL);
+    res = gcsf(aux,res,gam,&scale1,&scale2,eps,er_area,n,&rad,v,NULL,NULL);
     out->list[i+1] = mw_copy_dlist(res->list[0],NULL);
   }
   free(aux);

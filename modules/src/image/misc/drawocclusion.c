@@ -525,7 +525,7 @@ void drawocclusion(Cimage image, Fimage labelimage, Cimage *hole_image, char *wi
   Point_curve c;
   int i,j;
   Cimage image_zoom;
-  float fzoom;
+  float flt_zoom;
   register float *ptrlabel,*ptrinterlabel;
   register unsigned char *ptrhole;
   int interp=0;
@@ -551,8 +551,8 @@ void drawocclusion(Cimage image, Fimage labelimage, Cimage *hole_image, char *wi
 	mwerror(USAGE,1,"-z option parameter must be a stricly positive even integer !\n");
       if ((image_zoom=mw_new_cimage())==NULL)
 	mwerror(FATAL,0,"Not enough memory\n");
-      fzoom=(float)*zoom;
-      czoom(image,image_zoom,(char*)NULL,(char*)NULL,&fzoom,&interp,(char *)NULL);
+      flt_zoom=(float)*zoom;
+      czoom(image,image_zoom,(char*)NULL,(char*)NULL,&flt_zoom,&interp,(char *)NULL);
     }
 
   poly = mw_new_polygons();

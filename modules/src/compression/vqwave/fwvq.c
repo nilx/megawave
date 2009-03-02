@@ -471,12 +471,12 @@ RESIZE_COMPRESS_WTRANS(Cimage compress)
 {
   int              i;
   int              ncolo, nrowo;
-  long             size, ncodewords;
+  long             size, local_ncodewords;
   int              mindif;
 
 
   ncolo = 1;
-  nrowo = ncodewords = compress->firstcol;
+  nrowo = local_ncodewords = compress->firstcol;
   if (nrowo > MAX_SIZEO) {
     if ((int) sqrt((double) nrowo) + 1 > MAX_SIZEO)
       mwerror(FATAL, 2, "Number of codewords is too large!\n");
@@ -491,18 +491,18 @@ RESIZE_COMPRESS_WTRANS(Cimage compress)
     } else
       {
 	i = 2;
-	mindif = ncodewords;
+	mindif = local_ncodewords;
 	while (i <= nrowo / i) {
 	  if (nrowo / i <= MAX_SIZEO) 
-	    if ((nrowo / i + 1) * i - ncodewords < mindif) {
+	    if ((nrowo / i + 1) * i - local_ncodewords < mindif) {
 	      ncolo = i;
-	      mindif = (nrowo / i + 1) * i - ncodewords;
+	      mindif = (nrowo / i + 1) * i - local_ncodewords;
 	    }
 	  i++;
 	}
-	nrowo = ncodewords / ncolo + 1;
+	nrowo = local_ncodewords / ncolo + 1;
 	size = nrowo * ncolo;
-	if (ncodewords >= size)
+	if (local_ncodewords >= size)
 	  mwerror(WARNING, 0, "Something is wrong with output dimensions!\n");
       }
   }

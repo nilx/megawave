@@ -744,7 +744,7 @@ static double saturation(double *in, int size, double area)
 
 
 
-static int convexify(double *in, double *ch, double *remove, int size, double sign)
+static int convexify(double *in, double *ch, double *cvx_remove, int size, double sign)
 {
   double *p0,*p1,*q0,*q1,*pmax,*p;
   int j,pushp,is_closed,ok,stop,go_ahead,forward,removed=0;
@@ -752,14 +752,14 @@ static int convexify(double *in, double *ch, double *remove, int size, double si
   /* start by removing points where the direction of the
      curve and the tangent are opposed */
   for(j=2;j<2*size;j+=2)
-    removed += remove[j] = (sgdot(ch[j],ch[j+1],in[j]-in[j-2],in[j+1]-in[j-1])<0);
+    removed += cvx_remove[j] = (sgdot(ch[j],ch[j+1],in[j]-in[j-2],in[j+1]-in[j-1])<0);
   pmax = in+2*size;
   is_closed = (*in==*(pmax-2) && *(in+1)==*(pmax-1));
   if (is_closed) {
     pmax -= 2;
-    removed += remove[0] = (sgdot(ch[0],ch[1],in[0]-*(pmax-2),in[1]-*(pmax-1))<0);
+    removed += cvx_remove[0] = (sgdot(ch[0],ch[1],in[0]-*(pmax-2),in[1]-*(pmax-1))<0);
   }
-  else remove[0]=remove[2*size-2]=0; /* cannot remove extremal points*/
+  else cvx_remove[0]=cvx_remove[2*size-2]=0; /* cannot remove extremal points*/
 
   /*** return curve if size < 3 ***/
   if(size<3){
@@ -768,10 +768,10 @@ static int convexify(double *in, double *ch, double *remove, int size, double si
   }
   p1 = in+2;
   /* search first pairs of remaining points */
-  while(remove[p1-in] && p1+2!=pmax) p1+=2;
+  while(cvx_remove[p1-in] && p1+2!=pmax) p1+=2;
   p0 = p1-2;
   if (p1+2==pmax) q1 = in; else q1 = p1+2;
-  while(remove[q1-in] && q1+2!=pmax) q1+=2;
+  while(cvx_remove[q1-in] && q1+2!=pmax) q1+=2;
   q0 = q1-2;
   p =p1;
   forward = TRUE;
@@ -785,18 +785,18 @@ static int convexify(double *in, double *ch, double *remove, int size, double si
       if (sign*dir(*p0,*(p0+1),*p1,*(p1+1),*q1,*(q1+1))<0){
 	if(!is_closed){
 	  if(q1+2==pmax){/* cannot remove last point*/
-	    remove[p1-in]= 1; removed ++;
-	    while(remove[p1-in] && p1!=in) p1 -=2;
+	    cvx_remove[p1-in]= 1; removed ++;
+	    while(cvx_remove[p1-in] && p1!=in) p1 -=2;
 	    if(p1==in) stop = TRUE; else p0 = p1-2;
 	  } else {
-	    remove[q1-in] = 1; removed ++;
-	    while(remove[q1-in]&& q1+2!=pmax) q1 += 2;
+	    cvx_remove[q1-in] = 1; removed ++;
+	    while(cvx_remove[q1-in]&& q1+2!=pmax) q1 += 2;
 	    q0 = q1-2;
 	  }
 	} else {
-	  remove[q1-in] = 1; removed ++;
+	  cvx_remove[q1-in] = 1; removed ++;
 	  pushp = (q1==p);
-	  while(remove[q1-in] && q1!=p1){
+	  while(cvx_remove[q1-in] && q1!=p1){
 	    if(q1+2==pmax) q1 = in;  else q1 += 2;
 	  }
 	  if (q1==in) q0 = pmax-2; else q0 = q1-2;
@@ -813,27 +813,27 @@ static int convexify(double *in, double *ch, double *remove, int size, double si
 	  if(p1==in){/*cannot remove first point*/
 	    if(q1+2==pmax) stop = TRUE;
 	    else {
-	      remove[q1-in] = 1; removed++;
-	      while(remove[q1-in] && q1+2!=pmax) q1 +=2;
+	      cvx_remove[q1-in] = 1; removed++;
+	      while(cvx_remove[q1-in] && q1+2!=pmax) q1 +=2;
 	      q0 = q1-2;
 	      }
 	  } else {
-	    remove[p1-in]=1; removed++;
-	    while(remove[p1-in] && p1!=in) p1 -= 2;
+	    cvx_remove[p1-in]=1; removed++;
+	    while(cvx_remove[p1-in] && p1!=in) p1 -= 2;
 	    if(p1==in) { /*p1 is first point : force to go forward*/
 	      if(q1+2==pmax) stop = TRUE;
 	      else {
 		p1 = q1; p0 = p1-2;
 		q1 += 2;
-		while(q1+2!=pmax && remove[q1-in]) q1 += 2;
+		while(q1+2!=pmax && cvx_remove[q1-in]) q1 += 2;
 		q0 = q1-2;
 	      }
 	    } else p0 = p1-2;
 	  }
 	} else {
 	  pushp = (p1==p);
-	  remove[p1-in] = 1; removed++;
-	  while(remove[p1-in] && p1!=q0){
+	  cvx_remove[p1-in] = 1; removed++;
+	  while(cvx_remove[p1-in] && p1!=q0){
 	    if (p1==in) p1 = pmax-2; else p1 -= 2;
 	  }
 	  if(p1==in) p0 = pmax-2; else p0 = p1-2;
@@ -851,12 +851,12 @@ static int convexify(double *in, double *ch, double *remove, int size, double si
 	if(q1+2==pmax) stop = TRUE;
 	else {
 	  q1 += 2;
-	  while(remove[q1-in] && q1+2!=pmax) q1 +=2;
+	  while(cvx_remove[q1-in] && q1+2!=pmax) q1 +=2;
 	  q0 = q1-2;
 	}
       } else{
 	if (q1+2==pmax) q1 = in; else q1 += 2;
-	while(remove[q1-in] && q1!=p1){
+	while(cvx_remove[q1-in] && q1!=p1){
 	  if (q1+2==pmax) q1 = in; else q1 += 2;
 	}
 	if (q1==in) q0 = pmax-2; else q0 = q1-2;
@@ -872,7 +872,7 @@ static int convexify(double *in, double *ch, double *remove, int size, double si
   p = in;
   j = 0;
   while(p!=pmax){
-    if(remove[p-in]) p += 2;
+    if(cvx_remove[p-in]) p += 2;
     else {in[j++] = *(p++); in[j++] = *(p++);}
   }
   if(is_closed) {in[j++] = in[0]; in[j++] = in[1];}

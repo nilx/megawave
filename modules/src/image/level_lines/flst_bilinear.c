@@ -132,13 +132,13 @@ static void reinit_neighborhood(Neighborhood *pNeighborhood, enum TypeOfTree typ
 }
 
 /* To allocate the structure representing the neighborhood of a region */
-static void init_neighborhood(Neighborhood *pNeighborhood, int iMaxArea)
+static void init_neighborhood(Neighborhood *pNeighborhood, int init_neigh_iMaxArea)
 {
-  iMaxArea = 4*(iMaxArea+1);
-  if(iMaxArea > iWidth*iHeight)
-    iMaxArea = iWidth*iHeight;
+  init_neigh_iMaxArea = 4*(init_neigh_iMaxArea+1);
+  if(init_neigh_iMaxArea > iWidth*iHeight)
+    init_neigh_iMaxArea = iWidth*iHeight;
 
-  pNeighborhood->tabPoints = (Neighbor*) malloc((iMaxArea+1)*sizeof(Neighbor));
+  pNeighborhood->tabPoints = (Neighbor*) malloc((init_neigh_iMaxArea+1)*sizeof(Neighbor));
   if(pNeighborhood->tabPoints == NULL)
     mwerror(FATAL, 1, "init_neighborhood --> neighbors allocation error\n");
   reinit_neighborhood(pNeighborhood, AMBIGUOUS);
@@ -306,9 +306,9 @@ static void free_output_image(float **tabtabPixelsOutput)
   free(tabtabPixelsOutput);
 }
 
-static void init_region(int iMaxArea)
+static void init_region(int init_region_iMaxArea)
 {
-  tabPointsInShape = (PixelOrSaddle*)malloc(iMaxArea * sizeof(PixelOrSaddle));
+  tabPointsInShape = (PixelOrSaddle*)malloc(init_region_iMaxArea * sizeof(PixelOrSaddle));
   if(tabPointsInShape == NULL)
     mwerror(FATAL, 1, "init_region --> impossible to allocate the array\n");
 }
@@ -588,10 +588,10 @@ static char saddle_change(int **tabtabVisitedPixels, short int x, short int y)
 }
 
 /* Add the points in the neighborhood of gray level `currentGrayLevel' to the
-region `tabPointsInShape' and return 1 if a new shape is detected. New points
+region `tabIsoPointsInShape' and return 1 if a new shape is detected. New points
 are added from position `pCurrentArea'. This value is changed at exit in case
 of success. */
-static char add_iso_level(PixelOrSaddle *tabPointsInShape, int *pCurrentArea, int *pNbPixels, float currentGrayLevel, Neighborhood *pNeighborhood, float **ou, int **tabtabVisitedPixels, int **tabtabVisitedSaddles, float **tabtabSaddleValues)
+static char add_iso_level(PixelOrSaddle *tabIsoPointsInShape, int *pCurrentArea, int *pNbPixels, float currentGrayLevel, Neighborhood *pNeighborhood, float **ou, int **tabtabVisitedPixels, int **tabtabVisitedSaddles, float **tabtabSaddleValues)
 {
   short int x, y;
   Neighbor* pNeighbor;
@@ -602,9 +602,9 @@ static char add_iso_level(PixelOrSaddle *tabPointsInShape, int *pCurrentArea, in
   iCurrentArea = *pCurrentArea;
   pNeighbor = &pNeighborhood->tabPoints[1];
   do { /* 1) Neighbor is added to the region */
-    tabPointsInShape[iCurrentArea].x = x = pNeighbor->point.x;
-    tabPointsInShape[iCurrentArea].y = y = pNeighbor->point.y;
-    tabPointsInShape[iCurrentArea++].bSaddle = pNeighbor->point.bSaddle;
+    tabIsoPointsInShape[iCurrentArea].x = x = pNeighbor->point.x;
+    tabIsoPointsInShape[iCurrentArea].y = y = pNeighbor->point.y;
+    tabIsoPointsInShape[iCurrentArea++].bSaddle = pNeighbor->point.bSaddle;
     if(! pNeighbor->point.bSaddle) {
       ++ *pNbPixels;
       cPattern = configuration(tabtabVisitedPixels, tabtabVisitedSaddles, x,y);

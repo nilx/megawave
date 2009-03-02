@@ -9,7 +9,7 @@
    'o':offset->offset  "quantization offset (bilinear, default 0.5)",
    's':step->step      "quantization step (bilinear, default 1.0)",
    'p':[prec=5]->prec  "precision (# pts per unit length, bilinear case only)",
-   'a':area->area      "minimum area (parameter for the grain filter)",
+   'a':area->min_area  "minimum area (parameter for the grain filter)",
    't':tree->tree      "to use a previoulsy computed tree",
    'z'->z              "use zero order instead of bilinear interpolation",
    in->in              "input Fimage",
@@ -27,7 +27,7 @@
 #include "mw-modules.h" /* for flst_boundary(), flst(), flst_bilinear(),
 			 * flstb_quantize(), flstb_boundary(), fsaddles() */
 
-Flists ll_extract(Fimage in, Fsignal levels, float *offset, float *step, int *prec, int *area, Shapes tree, char *z)
+Flists ll_extract(Fimage in, Fsignal levels, float *offset, float *step, int *prec, int *min_area, Shapes tree, char *z)
 {
   Flists ls;
   Flist boundary;
@@ -55,9 +55,9 @@ Flists ll_extract(Fimage in, Fsignal levels, float *offset, float *step, int *pr
     if (!tree || !copy_in) mwerror(FATAL,1,"Not enough memory");
     mw_copy_fimage(in,copy_in);
     if (z) 
-      flst(area,copy_in,tree);
+      flst(min_area,copy_in,tree);
     else
-      flst_bilinear(area,copy_in,tree);
+      flst_bilinear(min_area,copy_in,tree);
     mw_delete_fimage(copy_in);
   } 
 

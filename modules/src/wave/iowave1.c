@@ -295,13 +295,13 @@ HAAR_INV_WAVEL1(Wtrans1d wtrans, int haar, int filternorm)
 {
   int          j;
   int          numrec;
-  int          size, sizeav;
+  int          size, size_av;
   int          c;
   Fsignal      Tab;
   double       cnorm;
 
   numrec = wtrans->nlevel;
-  size = sizeav = wtrans->A[numrec][0]->size;
+  size = size_av = wtrans->A[numrec][0]->size;
   for (j = numrec + 1; j <= haar; j++)
     size /= 2;
 
@@ -311,7 +311,7 @@ HAAR_INV_WAVEL1(Wtrans1d wtrans, int haar, int filternorm)
     cnorm = sqrt((double) 0.5);
 
   Tab = mw_new_fsignal();
-  if (mw_alloc_fsignal(Tab, sizeav) == NULL)
+  if (mw_alloc_fsignal(Tab, size_av) == NULL)
     mwerror(FATAL, 1, "Allocation for sum's separation buffer refused!\n");
 
 

@@ -52,10 +52,10 @@ static double ipow(double x, int n)
 static double binom(int k, int n)
 {
   int i;
-  double v;
+  double value;
 
-  for (i=0,v=1.;i<k;i++) v*=(double)(n-i)/(double)(k-i);
-  return v;
+  for (i=0,value=1.;i<k;i++) value*=(double)(n-i)/(double)(k-i);
+  return value;
 }
 
 
@@ -89,20 +89,20 @@ static int ppfind(Ppfunction f, double x)
 static double ppeval(Ppfunction f, double x)
 {
   int i,j;
-  double v;
+  double value;
 
   i = ppfind(f,x);
   if (i==-1) return(0.);
-  for (j=f->k,v=0.;j--;) 
-    v = v*x + f->a[i][j];
-  return(v);
+  for (j=f->k,value=0.;j--;) 
+    value = value*x + f->a[i][j];
+  return(value);
 }
     
 /* add integral between x[i] and t-w (sign=-1) 
              or between x[i] and t+w (sign=1) */
 static void ppaddint(Ppfunction f, Ppfunction g, int i, int sign, double w)
 {
-  double x,v;
+  double x,value;
   int n,j,i0,k;
   
   i0 = (sign==-1?i-1:i);
@@ -112,10 +112,10 @@ static void ppaddint(Ppfunction f, Ppfunction g, int i, int sign, double w)
   n = g->n-2;
   
   for (j=0;j<f->k;j++) {
-    v = (double)sign*(double)(f->a[i0][j])/(double)(j+1);
+    value = (double)sign*(double)(f->a[i0][j])/(double)(j+1);
     for (k=0;k<=j+1;k++) 
-       g->a[n][k] += v*binom(k,j+1)*ipow(w*(double)sign,j+1-k);
-    g->a[n][0] -= v*ipow(x,j+1);
+       g->a[n][k] += value*binom(k,j+1)*ipow(w*(double)sign,j+1-k);
+    g->a[n][0] -= value*ipow(x,j+1);
   }
 }
 
