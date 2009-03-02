@@ -114,7 +114,7 @@ REALLOCATE_OUTPUT(Cimage output)
 
 
 static void
-START_MODEL(Fsignal histo, int *cap_histo, int *predic, Fimage input, long int size)
+START_MODEL(Fsignal histo, long int *cap_histo, int *predic, Fimage input, long int size)
 {
   float  *ptri;
   float  *ptrl;

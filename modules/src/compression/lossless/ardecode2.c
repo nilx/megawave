@@ -86,7 +86,7 @@ REALLOCATE_OUTPUT(Fimage output)
 
 
 static void
-START_MODEL(Fsignal histo, int *cap_histo, int predict)
+START_MODEL(Fsignal histo, long int * cap_histo, long predict)
 {
   int     y, z;
 

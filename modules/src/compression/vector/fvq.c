@@ -82,7 +82,7 @@ static int      nadapcb;          /* Number of levels for adaptive
 
 
 static void
-CHECK_INPUT(int ratedist, int *ncb1, Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, int *nrescb1, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, int *nresrescb1, Fimage resrescodebook1, Fimage resrescodebook2, Fimage image)
+CHECK_INPUT(int *ratedist, int *ncb1, Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, int *nrescb1, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, int *nresrescb1, Fimage resrescodebook1, Fimage resrescodebook2, Fimage image)
 
                          
                      
