@@ -43,7 +43,7 @@
  * emulate a simple isupper() without handling localization
  * to avoid glibc dependencies
  */
-static int isupper(int c)
+static int simple_isupper(int c)
 {
      return ((c >= 'A') && (c <= 'Z'));
 }
@@ -52,9 +52,9 @@ static int isupper(int c)
  * emulate a simple tolower() without handling localization
  * to avoid glibc dependencies
  */
-static int tolower(int c)
+static int simple_tolower(int c)
 {
-     return (isupper(c) ? (c + 'a' - 'A') : c);
+     return (simple_isupper(c) ? (c + 'a' - 'A') : c);
 }
 
 /* 
@@ -180,7 +180,7 @@ void _mw_lower_type(char type[])
 {
      int i;
 
-     for (i=0; type[i] != '\0'; i++) type[i] = (char) tolower((int) type[i]);
+     for (i=0; type[i] != '\0'; i++) type[i] = (char) simple_tolower((int) type[i]);
 }
 
 

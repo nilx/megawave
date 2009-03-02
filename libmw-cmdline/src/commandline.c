@@ -118,7 +118,7 @@ struct mwargs mwargs[] = {
  * emulate a simple isdigit() without handling localization
  * to avoid glibc dependencies
  */
-static int isdigit(int c)
+static int simple_isdigit(int c)
 {
      return ((c >= '0') && (c <= '9'));
 }
@@ -616,7 +616,7 @@ int _mwgetopt(int argc, char **argv, char *optstring)
 	  if (*argv[_mwoptind] == '-') {
 	       if (*(argv[_mwoptind] + 1) != '.' 
 		   && *(argv[_mwoptind] + 1) != '-' &&
-		   !isdigit(*(argv[_mwoptind] + 1))) {
+		   !simple_isdigit(*(argv[_mwoptind] + 1))) {
 		    char *opt;
 		    opt = strchr(optstring, *(argv[_mwoptind] + 1));
 		    if (opt == NULL)
