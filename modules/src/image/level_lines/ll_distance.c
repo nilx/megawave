@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define MAX(x,y) ((x)>(y)?(x):(y))
 #define MIN(x,y) ((x)<(y)?(x):(y))

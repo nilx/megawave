@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "mw.h"
+#include "mw-modules.h"
 #include "mw-x11.h"
 
 /* Number of channels for the polygon: 1 (gray-level) */

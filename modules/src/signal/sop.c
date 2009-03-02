@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define ABS(x) ((x)>0?(x):(-(x)))
 

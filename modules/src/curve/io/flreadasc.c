@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Flists flreadasc(int dim)
 {

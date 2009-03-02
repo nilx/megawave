@@ -17,6 +17,7 @@ usage = {
 
 #include <stdlib.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /***************************************************************/
 static void switchOrder(Fsignal order)

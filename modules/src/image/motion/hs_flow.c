@@ -24,6 +24,7 @@
 #include <assert.h>
 
 #include "mw.h"
+#include "mw-modules.h"
 
 #define CARRE(X)((X)*(X))
 #define ABS(X)((X)<0?-(X):(X))

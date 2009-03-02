@@ -11,6 +11,7 @@
 */
 
 #include "mw.h"
+#include "mw-modules.h"
 
 /* determinant of an affine basis = det(b-a,c-a) */
 #define DET3(ax,ay,bx,by,cx,cy) ((bx-ax)*(cy-ay) - (by-ay)*(cx-ax))

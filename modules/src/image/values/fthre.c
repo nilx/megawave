@@ -28,7 +28,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 
 static int compare(const void *a,const void *b)

@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Flists flscale(Flists in, Fsignal s)
 {

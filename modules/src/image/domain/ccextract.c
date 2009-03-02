@@ -24,7 +24,8 @@ usage = {
  v1.8 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 #define MAX(x,y) ((x)>(y)?(x):(y))
 

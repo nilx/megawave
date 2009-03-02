@@ -15,10 +15,10 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define ABS(x) ( (x)>0?(x):-(x) )
 #define SGN(x) (((x)==0.0)?0:(((x)>0.0)?(1):(-1)))
-
 
 /*** return +1, 0 or -1, the sign of det(b-a,c-b) modulo double precision ***/
 static int dir(double ax, double ay, double bx, double by, double cx, double cy, double eps)

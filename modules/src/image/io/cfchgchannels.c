@@ -19,7 +19,8 @@
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 /* Define DEGRES to compute HUE in degres (else computed in radian) */
 

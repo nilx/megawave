@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 void sderiv(Fsignal A, Fsignal B)
 {

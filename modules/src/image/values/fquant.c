@@ -20,7 +20,8 @@
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 float fquant(Fimage A, Fimage Q, int M, char *left, float *min, float *max)
 {

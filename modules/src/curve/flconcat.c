@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Flists flconcat(Flists l1, Flists l2, Flists out)
 {

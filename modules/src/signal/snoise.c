@@ -26,6 +26,7 @@
 #include <math.h>
 #include <time.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /*** NB: Calling this module with in=out is possible ***/
 

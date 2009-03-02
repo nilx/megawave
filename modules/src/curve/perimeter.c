@@ -14,6 +14,7 @@
 
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 
 double perimeter(Dlist in, double *min, double *max)

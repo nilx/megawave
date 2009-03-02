@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Fimage fshift(Fimage in, Fimage out, int *x, int *y, int *h, int *i)
 {

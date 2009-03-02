@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 
 /* Compute the 4 neighbour pixels of the current pixel p              */

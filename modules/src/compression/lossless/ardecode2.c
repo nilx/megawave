@@ -21,7 +21,8 @@ Fimage<-Output           "Output string of codewords (fimage)"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 
 /*--- Constants ---*/

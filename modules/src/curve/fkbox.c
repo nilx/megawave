@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 static Point_fcurve new_point(Point_fcurve p, float x, float y)
 {

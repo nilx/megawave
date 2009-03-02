@@ -13,6 +13,7 @@
 */
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Fimage fconst(float g, int x, int y)
 {

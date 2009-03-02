@@ -47,6 +47,7 @@ usage = {
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define IRAC8    0.35355339  /* 1/sqrt(1/8)   */
 #define IRAC2P2  0.29289322  /* 1/(sqrt(2)+2) */
@@ -257,7 +258,7 @@ void amss(char *isotrop, char *power, float *Step, float *MinGrad, float *output
   int n_iter;		/* number of iterations	*/
   float kkk,outputStepk;
   int k,i,need_movies;
-  Fimage tmp,grad,curv,flip[2];
+  Fimage tmp,grad,curv,flip_img[2];
   
   /* check that options are correct */
   
@@ -293,8 +294,8 @@ void amss(char *isotrop, char *power, float *Step, float *MinGrad, float *output
   mwdebug("Number of iterations = %i\n",n_iter);
   
   i = 0;
-  flip[0] = image;
-  flip[1] = tmp;
+  flip_img[0] = image;
+  flip_img[1] = tmp;
   kkk=0.5/ *Step;
   outputStepk= *outputStep;
   
@@ -308,14 +309,14 @@ void amss(char *isotrop, char *power, float *Step, float *MinGrad, float *output
       fflush(stdout);*/
     
     /* one-step evolution */
-    one_step(flip[i],flip[1-i],grad,curv,
+    one_step(flip_img[i],flip_img[1-i],grad,curv,
 	     *Step,*MinGrad,isotrop,power,no_norm);
     i = 1-i;
     
     if (need_movies && (k>=kkk || k==n_iter)) {
       outputStepk=outputStepk+ *outputStep;
       if (k<n_iter) {
-	if (cmovieD) FINAL(flip[i],cmovieD);
+	if (cmovieD) FINAL(flip_img[i],cmovieD);
 	if (cmovieG) FINAL(grad,cmovieG);
 	if (cmovieC) FINAL(curv,cmovieC);
       }

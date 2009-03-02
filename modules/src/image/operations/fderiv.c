@@ -9,7 +9,7 @@
       "curvature:      D2u ( Du+ , Du+ ) / |Du|^3",
 'a':anti<-anti   
       "anticurvature:  D2u ( Du  , Du+ ) / |Du|^3",
-'c':canny<-canny 
+'c':canny<-canny_img 
       "Canny operator: D2u ( Du  , Du  ) / |Du|^3",
 'l':laplacian<-laplacian
       "Laplacian:      Trace ( D2u )",
@@ -37,6 +37,7 @@ in->in
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define IRAC8    0.35355339  /* 1/sqrt(8)   */
 #define IRAC2P2  0.29289322  /* 1/(sqrt(2)+2) */
@@ -45,7 +46,7 @@ in->in
 #define RADIANS_TO_DEGREES (180.0/M_PI)
 
 
-void fderiv(Fimage in, Fimage curv, Fimage anti, Fimage canny, Fimage laplacian, Fimage gradx, Fimage grady, Fimage gradn, Fimage gradp, float *MinGrad, int *nsize)
+void fderiv(Fimage in, Fimage curv, Fimage anti, Fimage canny_img, Fimage laplacian, Fimage gradx, Fimage grady, Fimage gradn, Fimage gradp, float *MinGrad, int *nsize)
 {
   int y,nx,ny;
   register int x,xm,x1,Ym,Y0,Y1;
@@ -68,11 +69,11 @@ void fderiv(Fimage in, Fimage curv, Fimage anti, Fimage canny, Fimage laplacian,
       mwerror(FATAL,1,"Not enough Memory.\n");
     else mw_clear_fimage(anti,0.0);
   }
-  if (canny) 
+  if (canny_img) 
   {
-    if (!mw_change_fimage(canny,ny,nx))
+    if (!mw_change_fimage(canny_img,ny,nx))
       mwerror(FATAL,1,"Not enough Memory.\n");
-    else mw_clear_fimage(canny,0.0);
+    else mw_clear_fimage(canny_img,0.0);
   }
   if (laplacian) 
   {
@@ -169,11 +170,11 @@ void fderiv(Fimage in, Fimage curv, Fimage anti, Fimage canny, Fimage laplacian,
 /* Laplacian : Trace ( D2u ) */
 ( IRAC2*(amm+am1+a1m+a11) + (a0m+am0+a10+a01) - RAC8P4*a00 ) / RAC8P4;
 
-      if (gradn || canny || curv || anti) {
+      if (gradn || canny_img || curv || anti) {
 	an = sqrt((double) ax * (double) ax
 		  + (double) ay * (double) ay);
 	if (gradn) gradn->gray[x+Y0] = an;
-	if ((an > *MinGrad) && (canny || curv || anti)) {
+	if ((an > *MinGrad) && (canny_img || curv || anti)) {
 	  ax /= an; ay /= an;
 	  axy = ax*ay; ax *= ax; ay *= ay; 
 	  l0 = 0.5 - axy*axy;
@@ -199,7 +200,7 @@ void fderiv(Fimage in, Fimage curv, Fimage anti, Fimage canny, Fimage laplacian,
 + (am1+a1m) * ( -l0 + 0.5 * (           - (ax-ay) ) ) ) / an;
 
 
-	  if (canny) canny->gray[x+Y0] = 
+	  if (canny_img) canny_img->gray[x+Y0] = 
 
 /* Canny operator: D2u ( Du  , Du  ) / |Du|^3 */
 

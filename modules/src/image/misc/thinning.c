@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define VOID -1 /* not a gray level value */
 

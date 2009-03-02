@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define DEFAULT_NUMBER_OF_CELLS 100
 

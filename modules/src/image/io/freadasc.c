@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
  
 void freadasc(Fimage u, int *Dx, int *Dy)
 {

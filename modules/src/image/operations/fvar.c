@@ -17,7 +17,8 @@
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 float fvar(Fimage A, char *e, char *s)
 {

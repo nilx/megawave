@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Cimage emptypoly(Cimage A, Cimage B)
 {

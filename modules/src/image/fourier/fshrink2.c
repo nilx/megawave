@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 
 /* NB : calling this module with out=in is nonsense */

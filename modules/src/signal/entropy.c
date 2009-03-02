@@ -11,7 +11,8 @@ usage = {
  */
 
 #include <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 
 void entropy(Fsignal Histo, double *Entropy)

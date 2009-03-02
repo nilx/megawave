@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /*create a movie with value 0.0 with the same number of images as the input*/
 

@@ -15,7 +15,8 @@ usage = {
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 /* Floating point filter bank */
 typedef struct filbank {

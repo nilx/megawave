@@ -30,6 +30,7 @@
 #include <math.h>
  
 #include "mw.h"
+#include "mw-modules.h"
                                       
 /* Define the max,min of two quantities */
 #define   MAX(A,B)          ((A) > (B)) ?  (A) : (B)

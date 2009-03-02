@@ -14,7 +14,7 @@
  'r':r->r                   "bounding box radius (default: minimal)",
  'i':i->iter                "number of iterations",
  'c'->conv                  "do not convexify last iteration",
- 'a':[a=4.]->area[2.,13.]   "relative eroded area (-log10 area)",
+ 'a':[a=4.]->area_sz[2.,13.] "relative eroded area (-log10 area)",
  'v'->v                     "verbose mode",
  in->in                     "input (Dlists)",
  out<-out                   "output (Dlists)"
@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-
+#include "mw-modules.h"
 
 /*--- Global Variables ---*/
 double **pts1,**pts2,**chord1,**chord2;
@@ -71,13 +71,13 @@ static double dot3(double *u, double *v, double *w)
 /*** signed area of a polygonal sector p-q1-q2-p ***/
 static double area_pol(double *p, double *q1, double *q2)
 {
-  double area,*q;
+  double area_sz,*q;
 
-  area = 0.;
+  area_sz = 0.;
   for (q=q1;q!=q2;q+=2) {
-    area += DET3(q,q+2,p);
+    area_sz += DET3(q,q+2,p);
   }
-  return(area/2.0);
+  return(area_sz/2.0);
 }
 
 /*** return +1, 0 or -1, the sign of det(b-a,c-b) modulo double precision ***/
@@ -439,7 +439,7 @@ static void gamma_point(double *ext1, double *ext2, double *far, double height, 
 
 /*-------------------- Gamma CONVEX erosion --------------------*/
 /* return the number of created points */
-static int gaceros(double *in, double *ch, int size, double *out, double gam, double area, double a, double alpha, double eps2, double *sign)
+static int gaceros(double *in, double *ch, int size, double *out, double gam, double area_sz, double a, double alpha, double eps2, double *sign)
 {
   double     *p,*p0,*p1,*p2,*pmax,*q0,*q1,*v,*w,*far,*prevfar,*gp;
   double     tot_area,cur_area,inc_area,height,lambda,eps;
@@ -465,7 +465,7 @@ static int gaceros(double *in, double *ch, int size, double *out, double gam, do
   if(size<4 && is_closed) return(0);
 
   /* return input if segment or area==0 */
-  if(size==2 || area==0.){
+  if(size==2 || area_sz==0.){
     while(p<pmax) out[j++]=*(p++);
     return(j/2);
   }
@@ -477,11 +477,11 @@ static int gaceros(double *in, double *ch, int size, double *out, double gam, do
 
   /*** check extinction ***/
   if (is_closed) {
-    if (area>=tot_area/2.0) {
+    if (area_sz>=tot_area/2.0) {
       mwdebug("Effective extinction area = %f\n",tot_area/2.0);
       return(0);
     }
-  } else if (area>=tot_area) {
+  } else if (area_sz>=tot_area) {
     /* output has two points : the end points of the input*/
     /* the chords are the segment itself */
     out[j] = *p; ch[j++] = *(pmax-2)-*p;
@@ -506,14 +506,14 @@ static int gaceros(double *in, double *ch, int size, double *out, double gam, do
   far=prevfar=p;
   firstmove=TRUE;
   do {
-    if (cur_area<=area) {
+    if (cur_area<=area_sz) {
       inc_area = area3(q0,q1,p0);
 
-      if (cur_area+inc_area>=area) {
+      if (cur_area+inc_area>=area_sz) {
 	/*** compute "middle" point ***/
-	/* it may happen that cur_area=area and inc_area=0.
+	/* it may happen that cur_area=area_sz and inc_area=0.
 	   In this case we choose the middle point of the segment*/
-	if (inc_area>0) lambda = (double)( (area - cur_area)/inc_area );
+	if (inc_area>0) lambda = (double)( (area_sz - cur_area)/inc_area );
 	else lambda=0.5;
 	*v = ((1-lambda)**q0+lambda**q1);
 	*(v+1) = ((1-lambda)**(q0+1)+lambda**(q1+1));
@@ -529,7 +529,7 @@ static int gaceros(double *in, double *ch, int size, double *out, double gam, do
 	}
 	firstmove=TRUE;
       }
-      if (cur_area+inc_area-area3(p0,p1,q1)>area) {
+      if (cur_area+inc_area-area3(p0,p1,q1)>area_sz) {
 	cur_area -= area3(p0,p1,q0);
 	p0 = p1; p1 += 2; if(is_closed && p1>=pmax) p1-=n;
 	/*force furthest point to stay between extremal points*/
@@ -544,11 +544,11 @@ static int gaceros(double *in, double *ch, int size, double *out, double gam, do
       }
     } else {
       inc_area = area3(p0,p1,q0);
-      if (cur_area-inc_area<=area) {
+      if (cur_area-inc_area<=area_sz) {
 	/*** compute middle point ***/
-	/* if we are here, this means that cur_area>area.
+	/* if we are here, this means that cur_area>area_sz.
 	   Then inc_area cannot be 0*/
-	lambda = (double)( (cur_area - area)/inc_area );
+	lambda = (double)( (cur_area - area_sz)/inc_area );
 	*w = ((1-lambda)**p0+lambda**p1);
 	*(w+1) = ((1-lambda)**(p0+1)+lambda**(p1+1));
 	height=-searchfar(p,pmax,is_closed,p1,q1,q0,w,&far,&prevfar,&firstfar);
@@ -561,7 +561,7 @@ static int gaceros(double *in, double *ch, int size, double *out, double gam, do
 	}
 	firstmove=FALSE;
       }
-      if (cur_area-inc_area+area3(p1,q0,q1)<area) {
+      if (cur_area-inc_area+area3(p1,q0,q1)<area_sz) {
 	cur_area+=area3(p0,q0,q1);
 	q0 = q1 ;
 	if(is_closed) {if (q1+2==pmax) q1 = p; else q1 +=2;}
@@ -582,7 +582,7 @@ static int gaceros(double *in, double *ch, int size, double *out, double gam, do
     if(p2==q0) cur_area = area3(p0,p1,q0);
 
     if (is_closed) stop = (okq && okp && p0==p+2);
-    else stop = ((q0+2==pmax) && (cur_area-inc_area<=area));
+    else stop = ((q0+2==pmax) && (cur_area-inc_area<=area_sz));
   } while (!stop);
 
   /*** if the curve is closed make it loop
@@ -643,7 +643,7 @@ static double height(double *in, double *pmax, int is_closed, double *first, dou
 
 
 /*** compute tha max chord arc distance when the area is known***/
-static double saturation(double *in, int size, double area)
+static double saturation(double *in, int size, double area_sz)
 {
   double *p0,*p1,*q0,*q1,*p,*p2,*pt,*pmax,*far;
   int okp,okq,stop,is_closed;
@@ -671,7 +671,7 @@ static double saturation(double *in, int size, double area)
 
   /* if the area of the convex component is too small,
      return total height of the component */
-  if (tot_area<=area) {
+  if (tot_area<=area_sz) {
     return height(in,pmax,is_closed,p,pmax,p,pmax,&far,&firstfar);
   }
 
@@ -682,10 +682,10 @@ static double saturation(double *in, int size, double area)
   a=h=0.0;
   okp = okq = !TRUE;
   do {
-    if (cur_area<=area) {
+    if (cur_area<=area_sz) {
       inc_area = area3(q0,q1,p0);
-      if (cur_area+inc_area>=area) {
-	lambda = (double)( (area - cur_area)/inc_area );
+      if (cur_area+inc_area>=area_sz) {
+	lambda = (double)( (area_sz - cur_area)/inc_area );
 	*pt = ((1-lambda)**q0+lambda**q1);
 	*(pt+1) = ((1-lambda)**(q0+1)+lambda**(q1+1));
 	/*** search the furthest point on the arc ***/
@@ -693,7 +693,7 @@ static double saturation(double *in, int size, double area)
 	if (a>h) h=a;
       }
 
-      if (cur_area+inc_area-area3(p0,p1,q1)>area) {
+      if (cur_area+inc_area-area3(p0,p1,q1)>area_sz) {
         cur_area -= area3(p0,p1,q0);
         p0 = p1; p1 += 2; if (is_closed && p1 >= pmax) p1 -= n;
         if (p0==in) okp=TRUE;
@@ -704,14 +704,14 @@ static double saturation(double *in, int size, double area)
       }
     } else {
       inc_area = area3(p0,p1,q0);
-      if (cur_area-inc_area<=area) {
-	lambda = (double)( (cur_area - area)/inc_area );
+      if (cur_area-inc_area<=area_sz) {
+	lambda = (double)( (cur_area - area_sz)/inc_area );
 	*pt = ((1-lambda)**p0+lambda**p1);
 	*(pt+1) = ((1-lambda)**(p0+1)+lambda**(p1+1));
 	a=height(in,pmax,is_closed,p0,q0,q0,pt,&far,&firstfar);
 	if (a>h) h=a;
       }
-      if (!is_closed && q1!=pmax && cur_area-inc_area+area3(p1,q0,q1)<area) {
+      if (!is_closed && q1!=pmax && cur_area-inc_area+area3(p1,q0,q1)<area_sz) {
         cur_area+=area3(p0,q0,q1);
         q0 = q1; q1 += 2; if (is_closed && q1>=pmax) q1 -= n;
         if (q0==in+2) okq=TRUE;
@@ -731,7 +731,7 @@ static double saturation(double *in, int size, double area)
     if(p2==q0) cur_area=area3(p0,p1,q0);
 
     if (is_closed) stop = (okq && okp);
-    else stop = ((q0+2==pmax) && (cur_area-inc_area<=area));
+    else stop = ((q0+2==pmax) && (cur_area-inc_area<=area_sz));
   } while (!stop);
   free(pt);
   return h;
@@ -888,7 +888,7 @@ static int convexify(double *in, double *ch, double *cvx_remove, int size, doubl
 /*------------ Gamma erosion -------------*/
 /* global variables explicitly appear */
 
-static void g_eros(Dlist li, double gam, double *scale, double *area, double eps2, int *ncc, int conv)
+static void g_eros(Dlist li, double gam, double *scale, double *area_sz, double eps2, int *ncc, int conv)
                       /* input/output Dlist */
                       /* relative precision squared */
                       /* power of the curvature*/
@@ -908,8 +908,8 @@ static void g_eros(Dlist li, double gam, double *scale, double *area, double eps
 
   npt = (int *) malloc(nc*sizeof(int));
   /*** compute minimal area ***/
-  min_area = *area/8.0;    /*** critical area for effective erosion ***/
-  narea = *area;
+  min_area = *area_sz/8.0;    /*** critical area for effective erosion ***/
+  narea = *area_sz;
   for (i=0;i<nc;i++) {
     /*** resample curve ***/
     first = pts2[i];
@@ -925,7 +925,7 @@ static void g_eros(Dlist li, double gam, double *scale, double *area, double eps
     if (*first==*last && *(first+1)==*(last+1)) a = narea;
     if (a>min_area && a<narea) narea = a;
   }
-  if (narea<*area)  *area = narea;
+  if (narea<*area_sz)  *area_sz = narea;
 
   alpha=pow(1.0/(3*gam),1.0/(3*gam-1));
 
@@ -933,7 +933,7 @@ static void g_eros(Dlist li, double gam, double *scale, double *area, double eps
      distance on all the C-C */
   a=0.0;
   for(i=0;i<nc;i++) {
-    b=saturation(pts2[i],npt[i],*area);
+    b=saturation(pts2[i],npt[i],*area_sz);
     if (b>a) a=b;
   }
 
@@ -941,10 +941,10 @@ static void g_eros(Dlist li, double gam, double *scale, double *area, double eps
   a=a*1.01/alpha; /* to secure the saturation */
   /*fit the parameters ensures inclusion principle without saturation*/
   if (a>0){
-    delta=pow(*area,2.0*gam)*pow(a,1.-3.*gam);
+    delta=pow(*area_sz,2.0*gam)*pow(a,1.-3.*gam);
     if (delta>*scale){
       delta=*scale;
-      a=pow(pow(*area,2.*gam)/delta,1./(3.*gam-1.));
+      a=pow(pow(*area_sz,2.*gam)/delta,1./(3.*gam-1.));
     } else *scale=delta;
   }
 
@@ -965,7 +965,7 @@ static void g_eros(Dlist li, double gam, double *scale, double *area, double eps
 /*------------------------------ MAIN MODULE  ------------------------------*/
 /* global variables explicitly appear*/
 
-Dlists gcsf(Dlists in, Dlists out, double *gam, double *first, double *last, double *eps, double *area, int *n, double *r, char *v, int *iter, char *conv)
+Dlists gcsf(Dlists in, Dlists out, double *gam, double *first, double *last, double *eps, double *area_sz, int *n, double *r, char *v, int *iter, char *conv)
 {
   int       i,j,ncc,MAX_PTS,MAX_CC,npts,maxsize,collapsed;
   double    a,are,remaining,newlast,rad,eps2,omega,t,step;
@@ -1017,7 +1017,7 @@ Dlists gcsf(Dlists in, Dlists out, double *gam, double *first, double *last, dou
 
   /*** absolute precision (squared) ***/
   eps2 = pow(10.0,-2.0*(*eps))*rad*rad;
-  are = pow(10.,-(*area))*rad*rad;
+  are = pow(10.,-(*area_sz))*rad*rad;
 
   /* allocate memory */
   /* max number of points of filtered curve = 2* number of points
@@ -1067,7 +1067,7 @@ Dlists gcsf(Dlists in, Dlists out, double *gam, double *first, double *last, dou
     /*----- SECOND LOOP (iterations) -----*/
 
     for (i=1; out->list[j]->size && remaining>0.0 ;i++) {
-      are = pow(10.,-(*area))*rad*rad;
+      are = pow(10.,-(*area_sz))*rad*rad;
       a = (remaining<step?remaining:step);
       /*** one step ***/
       g_eros(out->list[j],*gam,&a,&are,eps2,&ncc,conv && iter && (i==*iter));

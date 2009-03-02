@@ -17,7 +17,8 @@ usage = {
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 
 Fimage fsharpen(Fimage A, Fimage B, float *p)

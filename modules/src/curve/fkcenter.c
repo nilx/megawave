@@ -13,7 +13,7 @@
 
 #include <stdio.h>
 #include "mw.h"
-
+#include "mw-modules.h"
 
 void fkcenter(Fcurves cs, float *xg, float *yg)
 {

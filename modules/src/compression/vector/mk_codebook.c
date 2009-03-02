@@ -23,7 +23,8 @@ usage = {
 #include <sys/stat.h>
 #include <math.h>
 #include <time.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 
 static double ran0(long int *initseed)

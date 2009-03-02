@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
  
 Fsignal sreadasc(Fsignal out, int *n, float *s, float *t, float *g)
 {

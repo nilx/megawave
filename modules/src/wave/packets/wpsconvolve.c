@@ -23,7 +23,8 @@ signal_out<-Output
  v1.1: adaptation from my_sconvolve v1.0 (fpack) (JF)
 ----------------------------------------------------------------------*/
 
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 /************************************************************/
 static void barFilter(Fsignal filter, Fsignal modifiedFilter)

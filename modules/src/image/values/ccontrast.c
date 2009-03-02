@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
  
 /***** gamma correction [0,1]->[0,1] *****/

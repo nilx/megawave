@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Cimage cdisc(Cimage out, int nx, int ny, float *x, float *y, float *r)
 {

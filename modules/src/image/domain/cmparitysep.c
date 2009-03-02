@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
+#include "mw-modules.h"
  
 
 /*---------- Linear Interpolation ----------*/

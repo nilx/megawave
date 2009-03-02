@@ -19,7 +19,8 @@
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 Fimage fadd(Fimage A, Fimage B, Fimage C, float *min, float *max, char *a)
 {

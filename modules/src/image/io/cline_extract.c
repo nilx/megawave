@@ -19,7 +19,8 @@
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 
 void cline_extract(char *cflag, Cimage Image, Fsignal Signal, long int Index, Cimage OutImage)

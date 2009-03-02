@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 static double initcausal(double *c, int n, double z)
 {

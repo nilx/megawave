@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Fimage flocal_zoom(Fimage Input, int *X, int *Y, int *W, int *factor)
 {

@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 static void bound(int x, int y, float ca, float sa, int *xmin, int *xmax, int *ymin, int *ymax)
 {   

@@ -14,7 +14,8 @@
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 void cfgetchannels(Cfimage Image, Fimage RImage, Fimage GImage, Fimage BImage)
                        		            /* Input color image */

@@ -13,7 +13,8 @@
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 void frthre(Fimage A, Fimage B, float *noise)
 {

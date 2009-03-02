@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 
 Fmorpho_line ml_fml(Morpho_line lline)

@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define min(A,B)     (((A)>(B)) ? (B) : (A))
 #define max(A,B)     (((A)>(B)) ? (A) : (B))

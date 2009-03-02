@@ -25,6 +25,7 @@ usage = {
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define EPSILON 0.5
 #define norm sqrt(dr*dr + dg*dg + db*db)

@@ -13,8 +13,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include <mw.h>
-
+#include "mw.h"
+#include "mw-modules.h"
 
 Morpho_line fml_ml(Fmorpho_line flline)
 { 

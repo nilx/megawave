@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 static void iter(Fimage u, Fimage v, float s)
 {

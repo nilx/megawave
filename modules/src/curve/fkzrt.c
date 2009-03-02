@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Fcurves fkzrt(Fcurves cs, float zoom, float angle, float x, float y, char *sym)
 {

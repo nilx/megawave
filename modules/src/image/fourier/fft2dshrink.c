@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define SIZE_PRIME 460
 

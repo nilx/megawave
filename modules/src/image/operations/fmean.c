@@ -11,7 +11,8 @@
 */
 
 #include <stdio.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 float fmean(Fimage A)
 {

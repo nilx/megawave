@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /* NB : calling this module with out=in is possible */
 

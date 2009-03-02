@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 void fkprintasc(Fcurves fcvs)
 {

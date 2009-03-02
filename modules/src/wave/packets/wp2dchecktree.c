@@ -15,6 +15,7 @@ usage = {
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 int wp2dchecktree(Cimage tree, char *display_on_flag)
 {

@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 static float apply_g(Flist g, float v)
 {

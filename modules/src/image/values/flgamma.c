@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Flist flgamma(Flist out, float *g, float *s, int *n, float *f)
 {

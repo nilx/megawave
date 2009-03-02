@@ -13,6 +13,7 @@
 */
 
 #include "mw.h"
+#include "mw-modules.h"
 
 Fsignal sintegral(Fsignal in, char *n, char *r)
 {

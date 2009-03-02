@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /* Type of borders */
 #define VOID 255

@@ -20,6 +20,7 @@
 #include <string.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 void sconst(int *size, float *A, Fsignal signal)
 {

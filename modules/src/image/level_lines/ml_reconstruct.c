@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 struct fill_segment {
           int y, xl, xr, dy ;

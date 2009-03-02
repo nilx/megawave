@@ -16,7 +16,8 @@
 
 
 #include <stdio.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 
 Cimage cextcenter(int *Fact, Cimage Image)

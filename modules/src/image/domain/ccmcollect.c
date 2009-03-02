@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Ccimage ccmcollect(Ccmovie in, Ccimage out, int *n, int *i, int *o, int *c, int *x, int *y)
 {

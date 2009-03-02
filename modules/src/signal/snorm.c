@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 float snorm(Fsignal in, Fsignal ref, float *p, char *s, char *v, int *b, char *n, float *t)
 {

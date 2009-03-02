@@ -18,6 +18,7 @@
 #include <string.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 void sdirac(int *size, float *A, Fsignal signal)
 {

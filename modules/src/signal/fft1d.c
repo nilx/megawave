@@ -22,7 +22,8 @@
 #include <stdlib.h> 
 #include <stdio.h> 
 #include  <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 #define SIZE_PRIME 460
 #define MAX_PRIME 3257

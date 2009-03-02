@@ -29,6 +29,7 @@
 #include <stdlib.h> 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 
 #define VRAI        1                     /*      Valeurs                     */

@@ -31,7 +31,8 @@ usage = {
   #include <assert.h>
 */
 
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 
 #define Max(x,y) ((x) >= (y) ? (x) : (y))

@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /* Optimization parameters. Probably should depend on image size, but these
 values seem good for most images. */

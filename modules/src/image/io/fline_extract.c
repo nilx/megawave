@@ -13,7 +13,8 @@
 */
 
 #include <stdio.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 
 void fline_extract(char *cflag, Fimage Image, Fsignal Signal, long int Index)

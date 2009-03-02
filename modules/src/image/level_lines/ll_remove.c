@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 static void remove_ll(Mimage mimage, Morpho_line ll)
 {

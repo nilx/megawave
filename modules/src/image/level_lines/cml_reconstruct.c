@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 struct closest_lline {
          Cmorpho_line  lline;

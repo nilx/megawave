@@ -28,77 +28,78 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /*----- Module mscarea customised to speed up the computations -----*/
 
-static void compute_area(char *connex8, unsigned char *U, unsigned char *M, int *P, int nrow, int ncol, int a, int b, int x, int y, int l, int stoparea, int *area)
+static void compute_area(char *connex8, unsigned char *U, unsigned char *M, int *P, int nrow, int ncol, int a, int b, int x, int y, int l, int stoparea, int *area_sz)
 {
   int k;
 
-  if (stoparea <= *area) return;
+  if (stoparea <= *area_sz) return;
 
-  P[(*area)++]=l;   /* The area - 1 is obtained at the point (x,y)=l */
+  P[(*area_sz)++]=l;   /* The area - 1 is obtained at the point (x,y)=l */
   M[l]=1;           /* This point is marked */
 
   /* Left neighbor */
   k=l-1;
   if ((x>0) && (M[k]==0) && (a<=U[k]) && (U[k]<=b))
-    compute_area(connex8, U,M,P, nrow, ncol, a, b, x-1, y, k, stoparea, area);
+    compute_area(connex8, U,M,P, nrow, ncol, a, b, x-1, y, k, stoparea, area_sz);
 
   /* Upper neighbor */
   k=l-ncol;
   if ((y>0) && (M[k]==0) && (a<=U[k]) && (U[k]<=b))
-    compute_area(connex8, U,M,P, nrow, ncol, a, b, x, y-1, k, stoparea, area);
+    compute_area(connex8, U,M,P, nrow, ncol, a, b, x, y-1, k, stoparea, area_sz);
 
   /* Right neighbor */
   k=l+1;
   if ((x<ncol-1) && (M[k]==0) && (a<=U[k]) && (U[k]<=b))
-    compute_area(connex8, U,M,P, nrow, ncol, a, b, x+1, y, k, stoparea, area);
+    compute_area(connex8, U,M,P, nrow, ncol, a, b, x+1, y, k, stoparea, area_sz);
 
   /* Lower neighbor */
   k=l+ncol;
   if ((y<nrow-1) && (M[k]==0) && (a<=U[k]) && (U[k]<=b))
-    compute_area(connex8, U,M,P, nrow, ncol, a, b, x, y+1, k, stoparea, area);
+    compute_area(connex8, U,M,P, nrow, ncol, a, b, x, y+1, k, stoparea, area_sz);
 
   if (connex8 != NULL)
     {
       /* Upper left neighbor */
       k=l-ncol-1;
       if ((x>0) && (y>0) && (M[k]==0) && (a<=U[k]) && (U[k]<=b))
-	compute_area(connex8, U,M,P, nrow, ncol, a, b, x-1, y-1, k, stoparea, area);
+	compute_area(connex8, U,M,P, nrow, ncol, a, b, x-1, y-1, k, stoparea, area_sz);
       /* Upper right neighbor */      
       k=l-ncol+1;
       if ((x<ncol-1) && (y>0) && (M[k]==0) && (a<=U[k]) && (U[k]<=b))
-	compute_area(connex8, U,M,P, nrow, ncol, a, b, x+1, y-1, k, stoparea, area);
+	compute_area(connex8, U,M,P, nrow, ncol, a, b, x+1, y-1, k, stoparea, area_sz);
       /* Lower left neighbor */
       k=l+ncol-1;
       if ((x>0) && (y<nrow-1) && (M[k]==0) && (a<=U[k]) && (U[k]<=b))
-	compute_area(connex8, U,M,P, nrow, ncol, a, b, x-1, y+1, k, stoparea, area);
+	compute_area(connex8, U,M,P, nrow, ncol, a, b, x-1, y+1, k, stoparea, area_sz);
       /* Lower right neighbor */      
       k=l+ncol+1;
       if ((x<ncol-1) && (y<nrow-1) && (M[k]==0) && (a<=U[k]) && (U[k]<=b))
-	compute_area(connex8, U,M,P, nrow, ncol, a, b, x+1, y+1, k, stoparea, area);
+	compute_area(connex8, U,M,P, nrow, ncol, a, b, x+1, y+1, k, stoparea, area_sz);
     }
 }
 
 static int fast_mscarea(char *connex8, Cimage U, unsigned char *M, int *P, int stoparea, int a, int b, int x0, int y0)
 {
-  int area,c;
+  int area_sz,c;
   int l;
 
   l=y0*U->ncol+x0;
   c = U->gray[l];
   if ((a > c) || (c > b)) return(0);
 
-  area=0;
+  area_sz=0;
   compute_area(connex8, U->gray, M, P, U->nrow, U->ncol, 
-	       a, b, x0, y0, l, stoparea, &area);
+	       a, b, x0, y0, l, stoparea, &area_sz);
 
   /* Reset the marks */
   for (l=0;l<stoparea;l++)
     if (P[l]>0) M[P[l]]=0;
 
-  return(area);
+  return(area_sz);
 }
 
 

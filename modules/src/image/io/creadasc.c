@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
  
 void creadasc(Cimage u, int dx, int dy)
 {

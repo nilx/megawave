@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Cimage cmcollect(Cmovie in, Cimage out, int *n, int *i, int *o, int *c, int *x, int *y)
 {

@@ -14,6 +14,7 @@
 */
 
 #include "mw.h"
+#include "mw-modules.h"
 
 Fimage fpset(Fimage in, int x, int y, float g)
 {

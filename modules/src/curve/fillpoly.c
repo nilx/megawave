@@ -20,7 +20,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "mw.h"
-
+#include "mw-modules.h"
 
 #define NCHANNEL_POLYG 1   /* Nuber of channels in polygons */
 #define BG_SYMB 255        /* Symbol for background in bitmap */

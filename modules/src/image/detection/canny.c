@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 
 static void gradient (Fimage IN, Fimage gradx, Fimage grady, float *alpha)

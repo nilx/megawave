@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <float.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /* The value set at a pixel that is not a saddle point. The most appropriate
 value would be NAN ('Not A Number'); unfortunately, this constant is not

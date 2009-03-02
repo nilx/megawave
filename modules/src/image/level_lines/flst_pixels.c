@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 
 /* For each shape, find its number of proper pixels */

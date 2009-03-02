@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
  
 void binarize(Fimage in, Cimage out, float *t, char *i)
 {

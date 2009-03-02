@@ -21,6 +21,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 static void init_nodes(int *X, int j, int n)   /* Init the node vector */
 

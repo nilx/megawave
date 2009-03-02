@@ -10,7 +10,8 @@
 }; 
 */ 
 
-#include "mw.h" 
+#include "mw.h"
+#include "mw-modules.h" 
 
  
 void flst_reconstruct(Shapes pTree, Fimage pFloatImageOutput)

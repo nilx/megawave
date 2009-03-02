@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 void flprintasc(Flists in, char *v, int *n)
 {

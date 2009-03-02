@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define ABS(x) ((x)>0?(x):(-(x)))
 

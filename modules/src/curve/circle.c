@@ -16,6 +16,7 @@
 
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Dlist circle(Dlist out, double *r, int *n)
 {

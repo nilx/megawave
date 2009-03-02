@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 void fcopy(Fimage Input, Fimage *Output)
 {

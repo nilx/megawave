@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /*--- One iteration of u<-u+s*Laplacian ---*/
 static void iter(Fimage u, Fimage v, float s)

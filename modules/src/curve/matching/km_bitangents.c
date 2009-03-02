@@ -12,7 +12,8 @@ usage = {
 */
 
 #include<math.h>
-#include "mw.h" 
+#include "mw.h"
+#include "mw-modules.h" 
 
 
 #define qnorm(a,b) ((a)*(a)+(b)*(b))

@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
  
 void fprintasc(Fimage u, int *x1, int *y1, int *x2, int *y2, char *verbose)
 {

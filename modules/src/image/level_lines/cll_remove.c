@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 static void remove_cll(Cmimage cmimage, Cmorpho_line ll)
 {

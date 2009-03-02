@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /* Compute the 4 neighbour pixels of the current pixel p              */
 /* When p touches the border of the image, a mirror effect is applied */

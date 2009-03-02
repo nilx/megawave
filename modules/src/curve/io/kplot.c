@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /* Compute the bounding box of a Curves */
 

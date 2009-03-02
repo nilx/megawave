@@ -24,6 +24,7 @@ usage = {
 #include <string.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 #include "mw-x11.h"
 
 int nx,ny;            /* image size (global variable, never changes) */

@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define near(x) ((((x)-floor(x))>.5)?(ceil(x)):(floor(x)))
 

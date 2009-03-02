@@ -10,7 +10,8 @@ usage = {
         };
 */
 
-#include "mw.h" 
+#include "mw.h"
+#include "mw-modules.h" 
 
 
 #define _(a,i,j) ((a)->values[(i)*((a)->dim)+(j)])

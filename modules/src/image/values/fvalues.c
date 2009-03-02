@@ -28,7 +28,8 @@
 
 #define NDEBUG    /* comment this line out/in to en/disable assert() */
 #include <assert.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 #ifndef u_long
 #define u_long unsigned long int

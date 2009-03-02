@@ -16,7 +16,8 @@
 ----------------------------------------------------------------------*/
 
 #include <stdio.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 Fsignal chisto(Cimage A, Fsignal S, char *i_flag)
 {

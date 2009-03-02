@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 
 #define _(a,i,j)  ((a)->gray[(j)*(a)->ncol+(i)])

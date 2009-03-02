@@ -23,6 +23,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /***************************************************************************/
 /** This program performs disocclusion of simply connected sets. Any set with

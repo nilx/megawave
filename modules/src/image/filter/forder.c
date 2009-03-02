@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
  
 #define MAXSIZE 9
 #define IN(i,j) (ptrIN[(j)*ncIN + (i)])

@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define OUT(i,j) (ptrOUT[(j)*ncOUT + (i)])
 #define TMP(i,j) (ptrTMP[(j)*ncOUT + (i)])

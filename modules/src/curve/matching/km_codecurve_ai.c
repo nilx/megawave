@@ -22,7 +22,8 @@ usage = {
 
 #include <stdlib.h>
 #include <math.h>
-#include "mw.h" 
+#include "mw.h"
+#include "mw-modules.h"
 
 #define FABSF(x) ((float)fabs((double)(x)))
 
@@ -468,7 +469,7 @@ static int get_normalized_arcAI(Flist fcrvN, Flist fcrv, int iFirst, int iLast, 
 static int codeAI_aux(Flist arc_code_AI, Flist curve, float xC, float yC, int i_left, int i_right, float xR1, float yR1, float xR2, float yR2, float xR3, float yR3)
 {
   Flist fcrvAI_left, fcrvAI_right;
-  float disc, xN, yN, xP, yP;
+  float disc_sz, xN, yN, xP, yP;
   int iN, iP, iN_max, iP_max, m;
   int i_max_left, i_max_right;
   struct NormDataAI *my_data;
@@ -487,7 +488,7 @@ static int codeAI_aux(Flist arc_code_AI, Flist curve, float xC, float yC, int i_
     return 0;
   }
 
-  disc = FNorm/((float) (NNorm-1)); /*Nnorm must be an odd number*/
+  disc_sz = FNorm/((float) (NNorm-1)); /*Nnorm must be an odd number*/
     
   add_codeAI(arc_code_AI, xC, yC, (NNorm-1)/2);
   xN=xC; yN=yC;
@@ -501,10 +502,10 @@ static int codeAI_aux(Flist arc_code_AI, Flist curve, float xC, float yC, int i_
   iP_max=((int) fcrvAI_left->size)-1;
   
   for (m=0; m < (NNorm-1)/2; m++) {
-    iN=get_next_point_length(fcrvAI_right, &xN, &yN, iN, iN_max, disc, 1);
+    iN=get_next_point_length(fcrvAI_right, &xN, &yN, iN, iN_max, disc_sz, 1);
     _(arc_code_AI,(NNorm-1)/2+m+1,0)=xN;
     _(arc_code_AI,(NNorm-1)/2+m+1,1)=yN;
-    iP=get_next_point_length(fcrvAI_left, &xP, &yP, iP, iP_max, disc, 1); 
+    iP=get_next_point_length(fcrvAI_left, &xP, &yP, iP, iP_max, disc_sz, 1); 
     _(arc_code_AI,(NNorm-1)/2-m-1,0)=xP;
     _(arc_code_AI,(NNorm-1)/2-m-1,1)=yP;
   }
@@ -522,7 +523,7 @@ static int codeAI_aux(Flist arc_code_AI, Flist curve, float xC, float yC, int i_
   my_data->xR1 = xR1; my_data->yR1 = yR1;
   my_data->xR2 = xR2; my_data->yR2 = yR2;
   my_data->xR3 = xR3; my_data->yR3 = yR3;
-  my_data->disc = disc;
+  my_data->disc = disc_sz;
 
   arc_code_AI->data_size = sizeof(struct NormDataAI);
   arc_code_AI->data = (void*)my_data;

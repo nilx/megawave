@@ -25,6 +25,7 @@ usage = {
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 static void Final(Fimage pict, Cmovie sortie)
 {
@@ -61,17 +62,17 @@ for(i=0;i<Size;i++) {
 }
 }
 
-static int circle(float x, float y)
+static int in_circle(float x, float y)
 {
   if ((x*x+y*y)< 1) return(1); else return(0);
 }
 
-static int rect(float x, float y)
+static int in_rect(float x, float y)
 {
   if ((x<0.4)&&(x>-0.4)&&(y<0.4)&&(y>-0.4)) return(1); else return(0);
 }
 
-static int srect(float x, float y)
+static int in_srect(float x, float y)
 {
   if ((x<0.4)&&(x>=0)&&(y<0.1)&&(y>-0.1)) return(1); else return(0);
 }
@@ -152,9 +153,9 @@ void rotaffin(int *Nrota, int *Naffi, int *Size, int *Type, float *Area, int *De
 		      printf(" x2=%f y2=%f \n ",x2,y2); */
 	  		
 		      
-		      if (*Type==0)  somme += rect(x2,y2);
-		      if (*Type==1)  somme += circle(x2,y2);
-		      if (*Type==2)  somme += srect(x2,y2);
+		      if (*Type==0)  somme += in_rect(x2,y2);
+		      if (*Type==1)  somme += in_circle(x2,y2);
+		      if (*Type==2)  somme += in_srect(x2,y2);
 		      if (*Type==3)  somme ++;
 		      if (*Type==5)
 			{

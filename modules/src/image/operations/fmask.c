@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 void fmask(Fimage mask, Fimage A, Fimage B, Fimage out, char *i_flag, int *v, float *c)
 {

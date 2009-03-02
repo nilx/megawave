@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 void ccopy(Cimage Input, Cimage *Output)
 {

@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /* maximum number of connected components */
 #define MAXSHAPES 10000

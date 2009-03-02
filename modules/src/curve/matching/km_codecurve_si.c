@@ -18,8 +18,8 @@ usage = {
 
 #include <stdlib.h>
 #include <math.h>
-#include "mw.h" 
-
+#include "mw.h"
+#include "mw-modules.h"
 
 #define qnorm(a,b) ((a)*(a)+(b)*(b))
 
@@ -256,7 +256,7 @@ static int get_code_SI(Flist arc_code_SI, Flist curve, float xC, float yC, int i
 {
   float x,y,xN,yN,xP,yP;
   int iN, iP, m; 
-  float x0,y0,L0,vux,vuy,disc;
+  float x0,y0,L0,vux,vuy,disc_sz;
   struct NormDataSIconcat *my_data;
   int iNtotal, iPtotal;
   double dx, dy;
@@ -279,7 +279,7 @@ static int get_code_SI(Flist arc_code_SI, Flist curve, float xC, float yC, int i
   iPtotal=get_next_point_length(curve, &x, &y, i_left, iNtotal, L0*FNorm/2.0f, 0);
   if (iPtotal < 0) return -1;
 
-  disc=(L0*FNorm)/((float) (NNorm-1)); /* Nnorm must be an odd number */
+  disc_sz=(L0*FNorm)/((float) (NNorm-1)); /* Nnorm must be an odd number */
   add_codeSI(arc_code_SI, xC, yC,NNorm2,x0,y0,vux,vuy,L0);
   
   xN=xC; yN=yC;
@@ -288,9 +288,9 @@ static int get_code_SI(Flist arc_code_SI, Flist curve, float xC, float yC, int i
   iP=i_left; 
 
   for (m=0; m < NNorm2; m++) {
-    iN=get_next_point_length(curve, &xN, &yN, iN, iPtotal, disc, 1);
+    iN=get_next_point_length(curve, &xN, &yN, iN, iPtotal, disc_sz, 1);
     add_codeSI(arc_code_SI,xN,yN,NNorm2+m+1,x0,y0,vux,vuy,L0);
-    iP=get_next_point_length(curve, &xP, &yP, iP, iNtotal, disc, 0);
+    iP=get_next_point_length(curve, &xP, &yP, iP, iNtotal, disc_sz, 0);
     add_codeSI(arc_code_SI,xP,yP,NNorm2-m-1,x0,y0,vux,vuy,L0);
   } 
   
@@ -306,7 +306,7 @@ static int get_code_SI(Flist arc_code_SI, Flist curve, float xC, float yC, int i
   my_data->yC = yC;
   my_data->xR1 = xR1; my_data->yR1 = yR1;
   my_data->xR2 = xR2; my_data->yR2 = yR2;
-  my_data->disc = disc;
+  my_data->disc = disc_sz;
   arc_code_SI->data_size=sizeof(struct NormDataSIconcat);
   arc_code_SI->data=(void*)my_data;
   return 1;

@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include "mw.h"
+#include "mw-modules.h"
  
 void sprintasc(Fsignal s, int *i1, int *i2, char *verbose)
 {

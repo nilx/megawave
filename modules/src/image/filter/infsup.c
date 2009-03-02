@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 
 static int diff(const void *a, const void *b)

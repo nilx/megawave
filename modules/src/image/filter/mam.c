@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 #define MinAccel 1.0
 #define MaxAccel 256.0

@@ -14,7 +14,8 @@
 
 #include <stdio.h>
 #include <math.h>
-#include  "mw.h"
+#include "mw.h"
+#include "mw-modules.h"
 
 
 void cfputchannels(Fimage RImage, Fimage GImage, Fimage BImage, Cfimage Image)

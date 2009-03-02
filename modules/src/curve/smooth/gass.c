@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /*--- Global Variables ---*/
 double **pts1,**pts2;
@@ -234,17 +235,17 @@ static double *sample(double *in, int size, double *out, double eps2)
 /*** signed area of a polygonal sector p-q1-q2-p ***/
 static double area_pol(double *p, double *q1, double *q2)
 {
-  double area,*q;
+  double area_sz,*q;
 
-  area = 0.;
+  area_sz = 0.;
   for (q=q1;q!=q2;q+=2) {
-    area += DET3(q,q+2,p);
+    area_sz += DET3(q,q+2,p);
   }
-  return(area/2.0);
+  return(area_sz/2.0);
 }
 
 /*------------------------- AFFINE CONVEX EROSION -------------------------*/
-static int aceros(double *in, int size, double *out, double area)
+static int aceros(double *in, int size, double *out, double area_sz)
 {
   int     j,n,is_closed,stop,okp,okq;
   double  tot_area,cur_area,inc_area,lambda;
@@ -264,8 +265,8 @@ static int aceros(double *in, int size, double *out, double area)
   /* deal with singular cases (2 or 3 points, closed) */
   if (size<4 && is_closed) return(0);
 
-  /* return input if segment or area=0 */
-  if (size==2 || area==0.) {
+  /* return input if segment or area_sz=0 */
+  if (size==2 || area_sz==0.) {
     while (p<pmax) out[j++]=*(p++);
     return(j/2);
   }
@@ -276,14 +277,14 @@ static int aceros(double *in, int size, double *out, double area)
 
   /*** check extinction ***/
   if (is_closed) {
-    if (area>=tot_area/2.1) { /*** theoretically : 2.0 ***/
+    if (area_sz>=tot_area/2.1) { /*** theoretically : 2.0 ***/
       mwdebug("Effective extinction area = %g\n",tot_area/2.0);
       return(0);
     }
-  } else if (area>=tot_area) {
+  } else if (area_sz>=tot_area) {
     out[j++] = *p;        out[j++] = *(p+1);
     out[j++] = *(pmax-2); out[j++] = *(pmax-1);
-    mwdebug("Effective extinction area = %f\n",tot_area);
+    mwdebug("Effective extinction area_sz = %f\n",tot_area);
     return(j/2);
   }      
 
@@ -300,16 +301,16 @@ static int aceros(double *in, int size, double *out, double area)
   /*** MAIN LOOP : compute the middle points of significative chords ***/
   do {
 
-    if (cur_area<=area) {
+    if (cur_area<=area_sz) {
       inc_area = area3(q0,q1,p0);
 
-      if (cur_area+inc_area>=area) {
+      if (cur_area+inc_area>=area_sz) {
 	/*** compute middle point ***/
-	lambda = (double)( (area - cur_area)/inc_area );
+	lambda = (double)( (area_sz - cur_area)/inc_area );
 	out[j++] = .5*(*p0     + (1-lambda)**q0    +lambda**q1);
 	out[j++] = .5*(*(p0+1) + (1-lambda)**(q0+1)+lambda**(q1+1));
       }
-      if (cur_area+inc_area-area3(p0,p1,q1)>area) {
+      if (cur_area+inc_area-area3(p0,p1,q1)>area_sz) {
 	cur_area -= area3(p0,p1,q0);
 	p0 = p1; p1 += 2; if (is_closed && p1>=pmax) p1-=n;
 	if (p0==p) okp=TRUE;
@@ -320,13 +321,13 @@ static int aceros(double *in, int size, double *out, double area)
       }
     } else {
       inc_area = area3(p0,p1,q0);
-      if (cur_area-inc_area<=area) {
+      if (cur_area-inc_area<=area_sz) {
 	/*** compute middle point ***/
-	lambda = (double)( (cur_area - area)/inc_area );
+	lambda = (double)( (cur_area - area_sz)/inc_area );
 	out[j++] = .5*(*q0     + (1-lambda)**p0    +lambda**p1);
 	out[j++] = .5*(*(q0+1) + (1-lambda)**(p0+1)+lambda**(p1+1));
       }
-      if (!is_closed && q1!=pmax && cur_area-inc_area+area3(p1,q0,q1)<area) {
+      if (!is_closed && q1!=pmax && cur_area-inc_area+area3(p1,q0,q1)<area_sz) {
 	cur_area+=area3(p0,q0,q1);
 	q0 = q1; q1 += 2; if (is_closed && q1>=pmax) q1-=n;
 	if (q0==p+2) okq=TRUE;
@@ -343,7 +344,7 @@ static int aceros(double *in, int size, double *out, double area)
     if (p2==q0) cur_area=area3(p0,p1,q0);   
 
     if (is_closed) stop = (okq && okp);      
-    else stop = ((q0+2==pmax) && (cur_area<=area));
+    else stop = ((q0+2==pmax) && (cur_area<=area_sz));
 
   } while (!stop);
 
@@ -362,7 +363,7 @@ static int aceros(double *in, int size, double *out, double area)
 
 /*----------------------- DISCRETE AFFINE EROSION  -----------------------*/
 
-static void dafferos(Dlist l, double *area, double eps2, int *ncc)
+static void dafferos(Dlist l, double *area_sz, double eps2, int *ncc)
                       /* input/output curve */
                       /* desired absolute area step (real one is returned) */
                       /* absolute precision squared */
@@ -372,13 +373,13 @@ static void dafferos(Dlist l, double *area, double eps2, int *ncc)
   double        a,narea,min_area,*first,*last;
   int           i,nc;
 
-  min_area = *area/8.0;    /*** critical area for effective erosion ***/
+  min_area = *area_sz/8.0;    /*** critical area for effective erosion ***/
 
   /*** compute convex components ***/
   nc = my_split_convex(l,pts1,ncc);
 
   /*** compute minimal area ***/
-  narea = *area;
+  narea = *area_sz;
   for (i=0;i<nc;i++) {
 
     /*** resample curve ***/
@@ -390,7 +391,7 @@ static void dafferos(Dlist l, double *area, double eps2, int *ncc)
     if (*first==*last && *(first+1)==*(last+1)) a = narea;
     if (a>min_area && a<narea) narea = a;
   }
-  if (narea<*area)  *area = narea;
+  if (narea<*area_sz)  *area_sz = narea;
 
   /*** apply aceros to convex components and link result ***/
   l->size = 0;

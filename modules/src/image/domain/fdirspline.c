@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 /* extract image value (symmetrize outside image domain) */
 static float v(Fimage in, int x, int y)

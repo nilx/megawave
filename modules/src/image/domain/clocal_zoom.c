@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
+#include "mw-modules.h"
 
 Cimage clocal_zoom(Cimage Input, int *X, int *Y, int *W, int *factor)
 {
