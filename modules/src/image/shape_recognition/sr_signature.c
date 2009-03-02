@@ -54,8 +54,9 @@ static void thickness(Fcurves cs, float *thick, int **Distance)
   Point_fcurve  p;
   Fcurve        c;
   float         d1,d2,d3,d4,xg,yg,xmin,ymin,xmax,ymax,radius,distf;
-  long           surf,diametre,distance,*pdist;
-  long           i,nb,dx,dy,XG,YG;
+  long          surf,diametre,distance;
+  int           *pdist;
+  long          i,nb,dx,dy,XG,YG;
   double        x,y;
   
   fkbox(cs,&xmin,&ymin,&xmax,&ymax,NULL,NULL);
