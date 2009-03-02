@@ -770,7 +770,7 @@ ADD_BUF_TO_COMPRESS_FIMAGE(Cimage compress, Cimage bufcomp)
 
 
 static void
-compute_rates(Fimage symbol, int sizec, int *recfl, Fsignal histo, double *rate, double *ratearc, double *ent, Cimage compress)
+compute_rates(Fimage symbol, int sizec, Fsignal histo, double *rate, double *ratearc, double *ent, Cimage compress)
 
                        
                       
@@ -1256,11 +1256,11 @@ FULLSEARCH(Fimage image, Fimage codebook, Fimage rescodebook, Fimage resrescodeb
 
   *mse /= (float) nrow * ncol;
 
-  compute_rates(symbol, sizec, NULL, histo, rate, ratearc, ent, compress);
+  compute_rates(symbol, sizec, histo, rate, ratearc, ent, compress);
   if (rescodebook) {
-    compute_rates(symbres, sizecres, NULL, reshisto, rate, ratearc, ent, compress);
+    compute_rates(symbres, sizecres, reshisto, rate, ratearc, ent, compress);
     if (resrescodebook) { 
-      compute_rates(symbresres, sizecresres, NULL, resreshisto, rate, ratearc, ent, compress);
+      compute_rates(symbresres, sizecresres, resreshisto, rate, ratearc, ent, compress);
       mw_delete_fimage(symbresres);
       mw_delete_fsignal(resreshisto);
     }
@@ -1628,16 +1628,16 @@ FULLSEARCH_ADAP(int *printsnr, int *bitmapcode, Fimage image, Fimage codebook1, 
       recfac = 0;
       if (resrescodebook1) {
 	extract_symbol(symbresres, symbex, indexcb, 1.0, num1, NULL, recfac);
-	compute_rates(symbex, resrescodebook1->nrow - 4, NULL, resreshisto1, rate, ratearc, ent, compress);
+	compute_rates(symbex, resrescodebook1->nrow - 4, resreshisto1, rate, ratearc, ent, compress);
 	mw_delete_fsignal(resreshisto1);
       } 
       if (rescodebook1) {
 	extract_symbol(symbres, symbex, indexcb, 1.0, num1, NULL, recfac);
-	compute_rates(symbex, rescodebook1->nrow - 4, NULL, reshisto1, rate, ratearc, ent, compress);
+	compute_rates(symbex, rescodebook1->nrow - 4, reshisto1, rate, ratearc, ent, compress);
 	mw_delete_fsignal(reshisto1);
       } 
       extract_symbol(symbol, symbex, indexcb, 1.0, num1, NULL, recfac);
-      compute_rates(symbex, sizec1, NULL, histo1, rate, ratearc, ent, compress);
+      compute_rates(symbex, sizec1, histo1, rate, ratearc, ent, compress);
       mw_delete_fsignal(histo1);
 
       mse1 /= (float) num1 * sizev;
@@ -1656,16 +1656,16 @@ FULLSEARCH_ADAP(int *printsnr, int *bitmapcode, Fimage image, Fimage codebook1, 
 	recfac = 0;
 	if (resrescodebook2) {
 	  extract_symbol(symbresres, symbex, indexcb, indexcbval[2], num2, NULL, recfac);
-	  compute_rates(symbex, resrescodebook2->nrow - 4, NULL, resreshisto2, rate, ratearc, ent, compress);
+	  compute_rates(symbex, resrescodebook2->nrow - 4, resreshisto2, rate, ratearc, ent, compress);
 	  mw_delete_fsignal(resreshisto2);
 	} 
 	if (rescodebook2) {
 	  extract_symbol(symbres, symbex, indexcb, indexcbval[2], num2, NULL, recfac);
-	  compute_rates(symbex, rescodebook2->nrow - 4, NULL, reshisto2, rate, ratearc, ent, compress);
+	  compute_rates(symbex, rescodebook2->nrow - 4, reshisto2, rate, ratearc, ent, compress);
 	  mw_delete_fsignal(reshisto2);
 	}
 	extract_symbol(symbol, symbex, indexcb, indexcbval[2], num2, NULL, recfac);
-	compute_rates(symbex, sizec2, NULL, histo2, rate, ratearc, ent, compress);
+	compute_rates(symbex, sizec2, histo2, rate, ratearc, ent, compress);
 
 	mse2 /= (float) num2 * sizev;
       }
@@ -1685,11 +1685,11 @@ FULLSEARCH_ADAP(int *printsnr, int *bitmapcode, Fimage image, Fimage codebook1, 
 	recfac = 0;
 	if (rescodebook3) {
 	  extract_symbol(symbres, symbex, indexcb, indexcbval[3], num3, NULL, recfac);
-	  compute_rates(symbex, rescodebook3->nrow - 4, NULL, reshisto3, rate, ratearc, ent, compress);
+	  compute_rates(symbex, rescodebook3->nrow - 4, reshisto3, rate, ratearc, ent, compress);
 	  mw_delete_fsignal(reshisto3);
 	}
 	extract_symbol(symbol, symbex, indexcb, indexcbval[3], num3, NULL, recfac);
-	compute_rates(symbex, sizec3, NULL, histo3, rate, ratearc, ent, compress);
+	compute_rates(symbex, sizec3, histo3, rate, ratearc, ent, compress);
 
 	mse3 /= (float) num3 * sizev;
       }
@@ -1709,11 +1709,11 @@ FULLSEARCH_ADAP(int *printsnr, int *bitmapcode, Fimage image, Fimage codebook1, 
 	recfac = 0;
 	if (rescodebook4) {
 	  extract_symbol(symbres, symbex, indexcb, 0.0, num4, NULL, recfac);
-	  compute_rates(symbex, rescodebook4->nrow - 4, NULL, reshisto4, rate, ratearc, ent, compress);
+	  compute_rates(symbex, rescodebook4->nrow - 4, reshisto4, rate, ratearc, ent, compress);
 	  mw_delete_fsignal(reshisto4);
 	}
 	extract_symbol(symbol, symbex, indexcb, 0.0, num4, NULL, recfac);
-	compute_rates(symbex, sizec4, NULL, histo4, rate, ratearc, ent, compress);
+	compute_rates(symbex, sizec4, histo4, rate, ratearc, ent, compress);
 
 	mse4 /= (float) num4 * sizev;
       }

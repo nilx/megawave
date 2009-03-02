@@ -175,7 +175,7 @@ FCB2WCB(Fimage fcb, Wtrans2d wcb)
 
 
 static void
-INIT_TARGNBIT_DR(Wtrans2d wtrans)
+INIT_TARGNBIT_DR(void)
 {
 
   targrate_dr[0] = 0.008;
@@ -700,7 +700,7 @@ count_cb(Fimage codebook)
 
 
 static void
-compute_indexcb(int (*indcb)[6][4], float targrate, float rateheader, int numrec, int test_dr, int multicb)
+compute_indexcb(int (*indcb)[6][4], float targrate, float rateheader, int numrec)
 
                                 /* Index of codebooks to be used */
                    
@@ -1349,7 +1349,7 @@ wvq_loc(int *NumRec, float *ScaleWeight, int *NumRecScal, int *NStep, int *Multi
 
 	  /*--- Compute indices of codebooks for optimal allocation ---*/ 
 
-	  compute_indexcb(indcb, targrate_dr[q], rateheader, *NumRec, test_dr, *MultiCB);
+	  compute_indexcb(indcb, targrate_dr[q], rateheader, *NumRec);
 
 	  /*--- Compute resulting m.s.e. and rate ---*/
 
@@ -1377,7 +1377,7 @@ wvq_loc(int *NumRec, float *ScaleWeight, int *NumRecScal, int *NStep, int *Multi
 	        /*--- and for a specified target bitrate ---*/
 
 	test_dr = 0;
-	compute_indexcb(indcb, *TargRate, rateheader, *NumRec, test_dr, *MultiCB);
+	compute_indexcb(indcb, *TargRate, rateheader, *NumRec);
 
       }
   }
@@ -1825,7 +1825,7 @@ fwvq_wcb(int *NumRec, Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *Weigh
   /*--- Set target bit rates for R-D curve ---*/ 
 
   if (DistRate) 
-    INIT_TARGNBIT_DR(Wtrans);    
+    INIT_TARGNBIT_DR();    
 
   if (DistRate && (Ri2 || (multicb_dr == 4) || WeightFac || (FiltNorm == 1))) {
 

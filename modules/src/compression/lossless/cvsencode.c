@@ -51,7 +51,7 @@ static void Get_Size_Image(Curves C, int *ncol, int *nrow, int *mincol, int *min
    p0->next and the next non-successive point p1.
 */
 
-static int Seek_Non_Multiple_Point(Curves C, Cimage bitmap, int mincol, int minrow, Point_curve p0, Point_curve *p1)
+static int Seek_Non_Multiple_Point(Cimage bitmap, int mincol, int minrow, Point_curve p0, Point_curve *p1)
 {
   Point_curve p;
   int n,ncol;
@@ -136,7 +136,7 @@ static Curves Split_Curves(Curves O, Curves C, int L, Cimage bitmap, int mincol,
       p0 = begp->next;
       while (p0)
 	{
-	  if (Seek_Non_Multiple_Point(C,bitmap,mincol,minrow,p0,&p1) >= L)
+	  if (Seek_Non_Multiple_Point(bitmap,mincol,minrow,p0,&p1) >= L)
 	    {
 	      Add_Curve(O,begp,p0,bitmap,mincol,minrow);
 	      begp = p1;

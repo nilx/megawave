@@ -229,7 +229,7 @@ READ_HEADER_WTRANS(int *nrow, int *ncol, int *nlevel, int (*scalvec)[4], Cimage 
 
 
 static void
-wivq_loc(float *ScaleWeight, Wtrans2d CodeBook2, Wtrans2d CodeBook3, Wtrans2d ResCodeBook1, Wtrans2d ResCodeBook2, Wtrans2d ResCodeBook3, Wtrans2d ResResCodeBook1, Wtrans2d ResResCodeBook2, Cimage Compress, Wtrans2d CodeBook1, Wtrans2d Output)
+wivq_loc(Wtrans2d CodeBook2, Wtrans2d CodeBook3, Wtrans2d ResCodeBook1, Wtrans2d ResCodeBook2, Wtrans2d ResCodeBook3, Wtrans2d ResResCodeBook1, Wtrans2d ResResCodeBook2, Cimage Compress, Wtrans2d CodeBook1, Wtrans2d Output)
 
                                       /* Apply a weighting of coefficients 
 				       * before quantization */
@@ -350,7 +350,7 @@ wivq_loc(float *ScaleWeight, Wtrans2d CodeBook2, Wtrans2d CodeBook3, Wtrans2d Re
 
 
 static void
-fwivq_wcb(Wtrans2d CodeBook2, Wtrans2d CodeBook3, Wtrans2d ResCodeBook1, Wtrans2d ResCodeBook2, Wtrans2d ResCodeBook3, Wtrans2d ResResCodeBook1, Wtrans2d ResResCodeBook2, Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *WeightFac, Cimage Compress, Wtrans2d CodeBook1, Fimage Output, Fsignal Ri)
+fwivq_wcb(Wtrans2d CodeBook2, Wtrans2d CodeBook3, Wtrans2d ResCodeBook1, Wtrans2d ResCodeBook2, Wtrans2d ResCodeBook3, Wtrans2d ResResCodeBook1, Wtrans2d ResResCodeBook2, Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, Cimage Compress, Wtrans2d CodeBook1, Fimage Output, Fsignal Ri)
 
 	/*--- Computes the orthogonal wavelet transform of image `Image` ---*/
 
@@ -396,7 +396,7 @@ fwivq_wcb(Wtrans2d CodeBook2, Wtrans2d CodeBook3, Wtrans2d ResCodeBook1, Wtrans2
 
   QWtrans = mw_new_wtrans2d();
 
-  wivq_loc(WeightFac, CodeBook2, CodeBook3, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResResCodeBook1, ResResCodeBook2, Compress, CodeBook1, QWtrans);
+  wivq_loc(CodeBook2, CodeBook3, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResResCodeBook1, ResResCodeBook2, Compress, CodeBook1, QWtrans);
 
   /*--- Inverse wavelet transform ---*/
   
@@ -475,6 +475,9 @@ fwivq(Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *WeightFac, Fimage Cod
                                  * codebooks extracted form ResResCodeBook1, 
 				 * and ResResCodeBook2 */ 
 
+  /* FIXME : unused parameter */
+  WeightFac = WeightFac;
+
   /*--- Modification of format for codebooks ---*/
 
   WCodeBook2 = WCodeBook3 = NULL;
@@ -514,6 +517,6 @@ fwivq(Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *WeightFac, Fimage Cod
 
   /*--- Reconstruction of the image from the Compress file ---*/
 
-  fwivq_wcb(WCodeBook2, WCodeBook3, WResCodeBook1, WResCodeBook2, WResCodeBook3, WResResCodeBook1, WResResCodeBook2, Edge_Ri, Ri2, FilterNorm, WeightFac, Compress, WCodeBook1, Output, Ri);
+  fwivq_wcb(WCodeBook2, WCodeBook3, WResCodeBook1, WResCodeBook2, WResCodeBook3, WResResCodeBook1, WResResCodeBook2, Edge_Ri, Ri2, FilterNorm, Compress, WCodeBook1, Output, Ri);
 
 }

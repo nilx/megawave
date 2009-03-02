@@ -676,7 +676,7 @@ BLOCK_RECONSTRUCT(int i, int j, Fimage codebook, Fimage rescodebook, Fimage resr
 
 
 static void
-PLAIN_RECONSTRUCT(int *losslesscode, Fimage codebook, Fimage rescodebook, Fimage resrescodebook, Cimage compress, Fimage result, double *rate)
+PLAIN_RECONSTRUCT(Fimage codebook, Fimage rescodebook, Fimage resrescodebook, Cimage compress, Fimage result, double *rate)
 
                                 /* Type of lossless encoding applied 
 				 * to symbols*/
@@ -781,7 +781,7 @@ PLAIN_RECONSTRUCT(int *losslesscode, Fimage codebook, Fimage rescodebook, Fimage
 
 
 static void
-ADAP_RECONSTRUCT(int *losslesscode, Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, Fimage resrescodebook1, Fimage resrescodebook2, Cimage compress, Fimage result, double *rate)
+ADAP_RECONSTRUCT(Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, Fimage resrescodebook1, Fimage resrescodebook2, Cimage compress, Fimage result, double *rate)
 
                                 /* Type of lossless encoding applied 
 				 * to symbols*/
@@ -1170,7 +1170,7 @@ ADAP_RECONSTRUCT(int *losslesscode, Fimage codebook1, Fimage codebook2, Fimage c
 
 
 static void
-VECT_RECONSTRUCT(int *losslesscode, int testmulticb, int *indcb, Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, Fimage resrescodebook1, Fimage resrescodebook2, Cimage compress, Fimage result, double *rate)
+VECT_RECONSTRUCT(int testmulticb, int *indcb, Fimage codebook1, Fimage codebook2, Fimage codebook3, Fimage codebook4, Fimage rescodebook1, Fimage rescodebook2, Fimage rescodebook3, Fimage rescodebook4, Fimage resrescodebook1, Fimage resrescodebook2, Cimage compress, Fimage result, double *rate)
 
                              
                                 /* Control for multiple codebooks */
@@ -1359,9 +1359,9 @@ VECT_RECONSTRUCT(int *losslesscode, int testmulticb, int *indcb, Fimage codebook
 
 
     if (cb1->gray[(cb1->nrow - 3) * cb1->ncol] == 0.0)
-      PLAIN_RECONSTRUCT(losslesscode, cb1, rescb1, resrescb1, compress, result, rate);
+      PLAIN_RECONSTRUCT(cb1, rescb1, resrescb1, compress, result, rate);
     else
-      ADAP_RECONSTRUCT(losslesscode, cb1, cb2, cb3, cb4, rescb1, rescb2, rescb3, rescb4, resrescb1, resrescb2, compress, result, rate);
+      ADAP_RECONSTRUCT(cb1, cb2, cb3, cb4, rescb1, rescb2, rescb3, rescb4, resrescb1, resrescb2, compress, result, rate);
 
     if (rescb4)
       mw_delete_fimage(rescb4);
@@ -1387,9 +1387,9 @@ VECT_RECONSTRUCT(int *losslesscode, int testmulticb, int *indcb, Fimage codebook
   } else
     {
       if (codebook1->gray[(codebook1->nrow - 3) * codebook1->ncol] == 0.0)
-	PLAIN_RECONSTRUCT(losslesscode, codebook1, rescodebook1, resrescodebook1, compress, result, rate);
+	PLAIN_RECONSTRUCT(codebook1, rescodebook1, resrescodebook1, compress, result, rate);
       else
-	ADAP_RECONSTRUCT(losslesscode, codebook1, codebook2, codebook3, codebook4, rescodebook1, rescodebook2, rescodebook3, rescodebook4, resrescodebook1, resrescodebook2, compress, result, rate);
+	ADAP_RECONSTRUCT(codebook1, codebook2, codebook3, codebook4, rescodebook1, rescodebook2, rescodebook3, rescodebook4, resrescodebook1, resrescodebook2, compress, result, rate);
     }
 
 }
@@ -1418,7 +1418,6 @@ fivq(int *Print, int *NRow, int *NCol, Fimage CodeBook2, Fimage CodeBook3, Fimag
   bufind          indcb;        /* Indices of codebook for each class */
   int             nrow1, ncol1; /* Size of image */
   int             r, c;         /* Indeices for row and column in image */
-  int            *LossLessCode; /* Not used */
 
   /*--- Read information in heaeder of compressed file ---*/
 
@@ -1439,6 +1438,6 @@ fivq(int *Print, int *NRow, int *NCol, Fimage CodeBook2, Fimage CodeBook3, Fimag
 
   /*--- Recoonstruct image ---*/
 
-  VECT_RECONSTRUCT(LossLessCode, testmulticb, indcb, CodeBook1, CodeBook2, CodeBook3, CodeBook4, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResCodeBook4, ResResCodeBook1, ResResCodeBook2, Compress, Result, Rate);
+  VECT_RECONSTRUCT(testmulticb, indcb, CodeBook1, CodeBook2, CodeBook3, CodeBook4, ResCodeBook1, ResCodeBook2, ResCodeBook3, ResCodeBook4, ResResCodeBook1, ResResCodeBook2, Compress, Result, Rate);
 
 }

@@ -104,7 +104,7 @@ DECODE_INT_FIMAGE(int *symb, int max)
 
 
 static float
-INT2FLOAT(int n, int nbitlog, int nbitstep)
+INT2FLOAT(int n, int nbitstep)
 {
   float f;
   int logf;
@@ -228,7 +228,7 @@ READ_HEADER_FIMAGE(int *print, int *nrow, int *ncol, int *nrow1, int *ncol1, flo
       /*--- Read index of shift of lower quantization step  ---*/
       
       DECODE_INT_FIMAGE(&c_ashift, 1 << (NBIT_LOG + NBIT_STEP - 1));
-      *ashift = INT2FLOAT(c_ashift, NBIT_LOG, NBIT_STEP);
+      *ashift = INT2FLOAT(c_ashift, NBIT_STEP);
 
       if (n == 1)
 	*ashift = - *ashift;
@@ -245,7 +245,7 @@ READ_HEADER_FIMAGE(int *print, int *nrow, int *ncol, int *nrow1, int *ncol1, flo
     /*--- Read quantization step width ---*/
   
     DECODE_INT_FIMAGE(&c_stepsize, 1 << (NBIT_LOG + NBIT_STEP - 1));
-    *stepsize = INT2FLOAT(c_stepsize, NBIT_LOG, NBIT_STEP);
+    *stepsize = INT2FLOAT(c_stepsize, NBIT_STEP);
 
     if (!print) 
       printf("Step width : %.6f\n", *stepsize);

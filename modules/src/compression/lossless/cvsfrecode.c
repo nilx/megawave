@@ -26,7 +26,7 @@ usage = {
    for the second point (which always exists) : down, up, right, left;
    for other points : straight, right, left and end_of_curve.
 */
-static unsigned int Freeman(Curves C, Fimage dirchg, unsigned int npts, unsigned int ncvs)
+static unsigned int Freeman(Curves C, Fimage dirchg)
 {
   Curve cv;
   Point_curve point, secondpoint;
@@ -124,7 +124,7 @@ double cvsfrecode(Curves C, unsigned int *N, double *B)
   mw_clear_fimage(dirchg,0.0);
 
   /* Fill dirchg by Freeman algorithm */
-  size=Freeman(C,dirchg,npts,ncvs);
+  size=Freeman(C,dirchg);
   dirchg->ncol = size;
   mwdebug("Length of the Freeman buffer = %d\n",size);
   
