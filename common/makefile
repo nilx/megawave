@@ -63,9 +63,8 @@ CWARN	?= -Wall
 # compiler miscellaneous flags
 CMISC	?=
 
-CCVERSION	:= $(shell $(CC) --version | head -n 1 | cut -d ' ' -f 3)
-
-CSTRICT_4_1	:= $(shell if [ "$(CCVERSION)" \> "4.1" ]; then   \
+CCVERSION	:= $(shell $(CC) --version | head -n 1 | cut -d' ' -f 3)
+CSTRICT_4_1	:= $(shell if [ ! "$(CCVERSION)" \< "4.1" ]; then   \
                              echo "-Wc++-compat -Wextra";         \
                            fi) # available from gcc 4.1
 # code ckecking options
@@ -154,9 +153,9 @@ LINT_FLAGS	?= -posixlib -weak -ansi89limits
 PANDOC_FLAGS	?= --standalone --reference-links --smart
 DOXYCONF	?= doxygen.conf
 
-GGOVERSION	:= $(shell $(GENGETOPT) --version | head -n 1 | cut -d ' ' -f 3)
-GGO_FLAGS_2_22	:= $(shell if [ "$(GGOVERSION)" \> "2.22" ]; then   \
-                             echo "--no-help --no-version";         \
+GGOVERSION	:= $(shell $(GENGETOPT) --version | head -n 1 | cut -d' ' -f 3)
+GGO_FLAGS_2_22	:= $(shell if [ ! "$(GGOVERSION)" \< "2.22" ]; then   \
+                             echo "--no-help --no-version";           \
                            fi) # available from gengetopt 2.22
 
 GENGETOPT_FLAGS	?= --func-name=mw_cmdline --arg-struct=mw_args_info	\
