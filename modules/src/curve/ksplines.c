@@ -30,7 +30,7 @@ ksplines<-splines          "B-spline curves (curves output)"
 static int give_max_number_of_points_in_curves(Curves curves)
 {
   Curve cv;
-  int n;
+  unsigned int n;
 
   n=0;
   for (cv=curves->first; cv; cv=cv->next)
@@ -59,7 +59,7 @@ static void init_nodes(int *X, int j, int n)   /* Init the node vector */
 
 /* Compute the spline */
 
-static void compute_spline(Curve S, Curve P, int *X, Fimage N, int C, int M, int NPC, float Step)
+static void compute_spline(Curve S, Curve P, int *X, Fimage N, int C, int NPC, float Step)
      
                  /* Spline to compute */
                  /* Control points */
@@ -241,7 +241,7 @@ void ksplines(int *C, float *Step, Curves ctrl_pts, Curves splines)
 	  /* Resize the array N(i,j) */
 	  N = mw_change_fimage(N,*C+1,M+*C);	  
 	  /* Compute the spline */
-	  compute_spline(newsp,P,X,N,*C,M,NPC,*Step);
+	  compute_spline(newsp,P,X,N,*C,NPC,*Step);
 	}
     }
 

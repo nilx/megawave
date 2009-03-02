@@ -362,7 +362,7 @@ static int aceros(double *in, int size, double *out, double area)
 
 /*----------------------- DISCRETE AFFINE EROSION  -----------------------*/
 
-static void dafferos(Dlist l, double *area, double eps2, double rad, int *ncc)
+static void dafferos(Dlist l, double *area, double eps2, int *ncc)
                       /* input/output curve */
                       /* desired absolute area step (real one is returned) */
                       /* absolute precision squared */
@@ -483,7 +483,7 @@ Dlists gass(Dlists in, Dlists out, double *first, double *last, double *eps, dou
       a = (remaining_a<step_a?remaining_a:step_a);
       
       /*** one step ***/
-      dafferos(out->list[j],&a,eps2,rad,&ncc);    
+      dafferos(out->list[j],&a,eps2,&ncc);    
       
       remaining_h -= pow(a,2.0/3.0);
       

@@ -94,7 +94,7 @@ static void bitmap_curve_with_lines(Curve curve, Cimage A, Cimage B, int xmin, i
       }
 }
 
-static void bitmap_curve(Curve curve, Cimage A, Cimage B, int xmin, int ymin)
+static void bitmap_curve(Curve curve, Cimage B, int xmin, int ymin)
 { 
   register Point_curve p;
 
@@ -149,7 +149,7 @@ void kplot(Cimage A, char *line, Curves curves, Cimage B, int *d)
     for (curve=curves->first, i=1; curve; curve=curve->next,i++)
       {
 	mwdebug("Curve #%d\n",i);
-	if (curve->first != NULL)  bitmap_curve(curve,A,B,xmin,ymin);
+	if (curve->first != NULL)  bitmap_curve(curve,B,xmin,ymin);
 	else mwdebug("Empty curve found !\n");
       }
 }

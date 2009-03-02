@@ -465,7 +465,7 @@ static int get_normalized_arcAI(Flist fcrvN, Flist fcrv, int iFirst, int iLast, 
 }
 
 
-static int codeAI_aux(Flist arc_code_AI, Flist curve, float xC, float yC, int i_left, int i_right, float xR1, float yR1, float xR2, float yR2, float xR3, float yR3, float xR4, float yR4)
+static int codeAI_aux(Flist arc_code_AI, Flist curve, float xC, float yC, int i_left, int i_right, float xR1, float yR1, float xR2, float yR2, float xR3, float yR3)
 {
   Flist fcrvAI_left, fcrvAI_right;
   float disc, xN, yN, xP, yP;
@@ -576,7 +576,7 @@ static int codeAI(Flist arc_code_AI, Flist curve, int i1, int i2, float MinAngle
   get_cross_parallel(curve, i1, i2, iP, xP1, yP1, xP2, yP2, 
 		     1.0f/2.0f, &xC, &yC, &i_left, &i_right);
 
-  return codeAI_aux(arc_code_AI, curve, xC, yC, i_left, i_right, xR1, yR1, xR2, yR2, xR3, yR3, xR4, yR4);
+  return codeAI_aux(arc_code_AI, curve, xC, yC, i_left, i_right, xR1, yR1, xR2, yR2, xR3, yR3);
 
 }
 

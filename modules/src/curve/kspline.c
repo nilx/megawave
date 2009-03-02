@@ -42,7 +42,7 @@ static void init_nodes(int *X, int j, int n)   /* Init the node vector */
 
 /* Compute the spline */
 
-static void compute_spline(Curve S, Curve P, int *X, Fimage N, int C, int M, int NPC, float Step)
+static void compute_spline(Curve S, Curve P, int *X, Fimage N, int C, int NPC, float Step)
      
                  /* Spline to compute */
                  /* Control points */
@@ -199,7 +199,7 @@ void kspline(int *C, float *Step, Curve P, Curve spline)
   init_nodes(X,*C,NPC);
   
   /* Compute the spline */
-  compute_spline(spline,P,X,N,*C,M,NPC,*Step);
+  compute_spline(spline,P,X,N,*C,NPC,*Step);
 
   mw_delete_fimage(N);
   free(X);

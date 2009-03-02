@@ -534,6 +534,9 @@ static int win_notify(Wframe *window, void *param)
   int c; /* Key code must be int and not char to handle non-printable keys */
   char mess[80]; 
 
+  /* FIXME: unused param */
+  param = param;
+
   event = WUserEvent(window);
   if (event<0) ret=1; else ret=event;
   WGetStateMouse(window,&x,&y,&button_mask);

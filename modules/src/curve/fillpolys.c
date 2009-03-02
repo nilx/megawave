@@ -30,7 +30,7 @@ static int     fac;
 
 
 static void
-UPDATE_BITMAP(Cimage bitmap, Cimage bitmap_poly, unsigned char p)
+UPDATE_BITMAP(Cimage bitmap, Cimage bitmap_poly)
 
                                  /* Global bitmap image */
                                  /* bitmap image for one polygon */
@@ -111,7 +111,7 @@ fillpolys(int *dx, int *dy, Polygons polys, Cimage bitmap)
 
     /*--- Copy result on global bitmap ---*/ 
 
-    UPDATE_BITMAP(bitmap, bitmap_poly, p);
+    UPDATE_BITMAP(bitmap, bitmap_poly);
 
     ptr_polyg = ptr_polyg->next;
     p++;

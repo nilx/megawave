@@ -571,7 +571,7 @@ DRAW_CONTOUR(Cimage bitmap, Polygon contour)
 
 
 static void
-ADD_SEGMENT(int x1, int y1, int x2, int y2, Point_curve *cont_point, Point_curve *p)
+ADD_SEGMENT(int x1, int y1, int x2, int y2, Point_curve *cont_point)
 
                                  /* Coordinate of first extremity */
                                  /* Coordinate of second extremity */
@@ -732,7 +732,7 @@ MAKE_CONTOUR(Cimage bitmap, Polygon poly, Polygon contour, Point_curve *p)
     x2 = poly_point->x;
     y2 = poly_point->y;
 
-    ADD_SEGMENT(x1, y1, x2, y2, &cont_point, p);
+    ADD_SEGMENT(x1, y1, x2, y2, &cont_point);
 
     x1 = poly_point->x;
     y1 = poly_point->y;
@@ -744,7 +744,7 @@ MAKE_CONTOUR(Cimage bitmap, Polygon poly, Polygon contour, Point_curve *p)
   x2 = poly->first->x;
   y2 = poly->first->y;
   
-  ADD_SEGMENT(x1, y1, x2, y2, &cont_point, p);
+  ADD_SEGMENT(x1, y1, x2, y2, &cont_point);
 
   DRAW_CONTOUR(bitmap, contour);
 }
