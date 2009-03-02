@@ -27,10 +27,15 @@
 #define IN(i,j) (ptrIN[(j)*ncIN + (i)])
 
 
-static  int compare(float *k, float *l)
+static  int compare(const void *k, const void *l)
 {
-  if (*k > *l) return(1);
-  if (*k < *l) return(-1);
+  float fk, fl;
+
+  fk = *(float *)k;
+  fl = *(float *)l;
+
+  if (fk > fl) return(1);
+  if (fk < fl) return(-1);
   return(0);
 }
 

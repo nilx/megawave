@@ -23,7 +23,7 @@
 
 /*--------------- Median of a cimage : one iteration  -------------*/
 
-static int comp(int *i, int *j)
+static int comp(const void *i, const void *j)
 { 
   return ((int)*((unsigned char *)i)-(int)*((unsigned char *)j));
 }

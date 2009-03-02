@@ -25,9 +25,14 @@
 #include "mw.h"
 
 
-static int diff(unsigned char *a, unsigned char *b)
+static int diff(const void *a, const void *b)
 {
-  if ((*a)<(*b)) {
+  unsigned char ca, cb;
+
+  ca = *(unsigned char *)a;
+  cb = *(unsigned char *)b;
+
+  if ((ca)<(cb)) {
     return (-1);
   }
   else {
