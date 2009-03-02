@@ -29,7 +29,7 @@
 #define VERTICAL 1
 
 /* Perform a shear to the image. The two images can be the same */
-static void yr_shear(double dAmountOfShear, Fimage pFloatImageInput, Fimage pFloatImageOutput, int iAxis, float fDelta, int PleaseDoNotCenter)
+static void yr_shear(double dAmountOfShear, Fimage pFloatImageInput, Fimage pFloatImageOutput, int iAxis, float fDelta, char * PleaseDoNotCenter)
 {
   int i, j, iSize, iHalfSize, iOtherSize, iHalfOtherSize;
   Fsignal pRealSignal, pImaginarySignal, pRealSignalTransformed, pImaginarySignalTransformed;
@@ -76,7 +76,7 @@ static void yr_shear(double dAmountOfShear, Fimage pFloatImageInput, Fimage pFlo
       fft1d(pRealSignal, pImaginarySignal, 
 	    pRealSignalTransformed, pImaginarySignalTransformed, 0);
 
-      if (PleaseDoNotCenter) 
+      if (NULL != PleaseDoNotCenter) 
 	dTranslation = - (i * dAmountOfShear + fDelta) * 2. * M_PI;
       else 
 	if (oddOther)
@@ -141,8 +141,8 @@ void fftrot(Fimage in, Fimage out, float *a, float *x, float *y, char *o_flag)
   /* The rotation is decomposed into three shears :
      two horizontal and one vertical */
   yr_shear(  tan(angle * .5), in,  out, HORIZONTAL, 0.,    o_flag);
-  yr_shear(- sin(angle     ), out, out, VERTICAL,   -(*y), o_flag );
-  yr_shear(  tan(angle * .5), out, out, HORIZONTAL, -(*x), o_flag );
+  yr_shear(- sin(angle     ), out, out, VERTICAL,   -(*y), o_flag);
+  yr_shear(  tan(angle * .5), out, out, HORIZONTAL, -(*x), o_flag);
 }
 
 
