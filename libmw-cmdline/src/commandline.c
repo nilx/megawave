@@ -180,29 +180,6 @@ static void setnewout(void)
      }
 }
 
-/**
- * restore, if needed, stdout and/or stderr
- */
-/* TODO: use freopen() */
-static void restoreout(void)
-{
-     if (out_sav >= 0) {
-	  fflush(stdout);
-	  close(fd_out);
-	  fd_out = dup(out_sav);
-	  out_sav = -1;
-	  close(out_sav);
-     }
-
-     if (err_sav >= 0) {
-	  fflush(stderr);
-	  close(fd_err);
-	  fd_err = dup(err_sav);
-	  err_sav = -1;
-	  close(err_sav);
-     }
-}
-
 /* TODO: drop, unused? */
 void *mwmalloc(size_t size)
 { return (void *)malloc(size); }
