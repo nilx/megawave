@@ -51,7 +51,7 @@ static long             ncodewords;
 static unsigned char   *ptro;            /* Pointer to output buffer */
 static int             *list;            /* List of different symbol */
 static int              EOF_symb;
-static int              (*symb_ind) ();
+static int              (*symb_ind) (int);
 static int              teststop = 0;
 
 

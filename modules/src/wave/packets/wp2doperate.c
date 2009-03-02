@@ -116,10 +116,7 @@ static void test_input(Cimage tree, Fimage pfilter, int *translation, float *thr
  
 }
 /******************************************************************/
-static int modulo(r,n)
-     
-     int n,r;
-     
+static int modulo(int r, int n)
 {if(0<=r && r<n)
   return(r);
  else if (r<0)

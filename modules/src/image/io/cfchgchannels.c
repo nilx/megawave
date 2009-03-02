@@ -348,7 +348,9 @@ HSV_RGB(float *r, float *g, float *b, float *tr, float *tg, float *tb)
 /* ----------------------- */
 
 static void
-COLOR_CONVERT(Cfimage image, Cfimage timage, void (*convert_point) (/* ??? */))
+COLOR_CONVERT(Cfimage image, Cfimage timage, 
+	      void (*convert_point) (float*, float*, float*,
+				     float*, float*, float*))
 
                   		/* Input color image */
                    		/* Output transformed image */
@@ -390,8 +392,9 @@ cfchgchannels(int *Conv, int *Inverse, int *Norm, Cfimage Image, Cfimage TImage)
                    		/* Output transformed image */
 
 {
-  void        (*convert_point) ();  /* Pointer to the conversion
-				        * function */
+    /* Pointer to the conversion function */
+    void (*convert_point) (float*, float*, float*,
+			   float*, float*, float*);
 
   /*--- Memory allocation for transformed color image ---*/
 

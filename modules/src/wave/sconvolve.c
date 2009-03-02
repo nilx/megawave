@@ -621,8 +621,6 @@ sconvolve(Fsignal Signal, Fsignal Output, int *DownRate, int *UpRate, int *ReflI
 				 * edge processing */
 
 {
-  void            (*CONVOL) ();	       /* Pointer to the convolution
-				        * function */
   Fimage          Left_Ri, Right_Ri;   /* Buffer containing impulse
 				        * responses of all left and right
 				        * edge filters */
@@ -647,26 +645,6 @@ sconvolve(Fsignal Signal, Fsignal Output, int *DownRate, int *UpRate, int *ReflI
     INIT_EDGE_RI(Edge_Ri, Left_Ri, Right_Ri, Band);
   }
 
-  /*----- Selection of the type of edge processing -----*/
-
-  switch (*Edge) {
- case 0:
-    CONVOL = CONV_0;
-    break;
-
- case 1:
-    CONVOL = CONV_PER;
-    break;
-
- case 2:
-    CONVOL = CONV_REFL;
-    break;
-
- case 3:
-    CONVOL = CONV_SPE;
-    break;
-  }
-
   /*----- Initialization of `Output` -----*/
 
   Output = mw_change_fsignal(Output, sizeres);
@@ -679,7 +657,20 @@ sconvolve(Fsignal Signal, Fsignal Output, int *DownRate, int *UpRate, int *ReflI
 
   /*----- Convolution of Signal -----*/
 
-  CONVOL(Signal, Output, *UpRate, *DownRate, Band, Left_Ri, Right_Ri);
+  switch (*Edge) {
+  case 0:
+    CONV_0(Signal, Output, *UpRate, *DownRate);
+    break;
+  case 1:
+    CONV_PER(Signal, Output, *UpRate, *DownRate);
+    break;
+  case 2:
+    CONV_REFL(Signal, Output, *UpRate, *DownRate, Band);
+    break;
+  case 3:
+    CONV_SPE(Signal, Output, *UpRate, *DownRate, Band, Left_Ri, Right_Ri);
+    break;
+  }
 
   if (*Edge == 3) {
     mw_delete_fimage(Left_Ri);

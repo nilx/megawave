@@ -43,8 +43,7 @@ static int my_log(int n)
  return count;
 }
 /***************************************************************/
-static float signedSquare(input)   
-     float input;
+static float signedSquare(float input)   
 {if(input>0) return(input*input);
  else return(-input*input);
 }
