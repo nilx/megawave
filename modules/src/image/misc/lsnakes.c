@@ -461,7 +461,7 @@ Fimage lsnakes(Fimage in, Fimage ref, int *Niter, float *thre, float *force)
       fgradient(in,Dx,Dy);
       fsqrtmod(Dx,Dy,ng);
       build(in,g0,Dx,Dy, Dxy,Dyx,g);
-      solve(in,Dx,Dy,Dxy,Dyx,g,f,ng,i,Niter);
+      solve(in,Dx,Dy,Dxy,Dyx,g,f,ng,i,*Niter);
  
       mwdebug("End of iteration : %d\n",i);
     }

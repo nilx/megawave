@@ -34,11 +34,15 @@ usage = {
  (before updating) */
 #define LABELS_NUMBER 100000
 
-static int u_compar_i(int *u, int *v)  /*  Called by function qsort for sorting decreasingly */
+static int u_compar_i(const void *u, const void *v)  /*  Called by function qsort for sorting decreasingly */
           
   {
-    if ((*u)<(*v)) return (1);
-    if ((*u)==(*v)) return (0);
+    int iu, iv;
+
+    iu = *(int*)u;
+    iv = *(int*)v;
+    if ((iu)<(iv)) return (1);
+    if ((iu)==(iv)) return (0);
     return (-1);
   }
 
@@ -334,11 +338,15 @@ static void Redraw(Wframe *ImageWindow)
 /*     > 0 if there was an event caught (but Destroy) */
 /*      -1 if the event Destroy was caught (or 'Q')   */
 
-static int readpoly_notify(Wframe *ImageWindow)
+static int readpoly_notify(Wframe *ImageWindow, void * foo)
 {
   int ret;
   int event,button_mask;
   
+  /* FIXME: foo is just here to comply with the definition of
+     mw_window_notify */
+  foo = foo;
+
   oldx1=x1; oldy1=y1;
 
   event = WUserEvent(ImageWindow); /* User's event on ImageWindow */

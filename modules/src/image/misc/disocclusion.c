@@ -41,11 +41,15 @@
  (before updating) */
 #define LABELS_NUMBER 100000
 
-static int u_compar_i(int *u, int *v)  /*  Called by function qsort for sorting decreasingly */
+static int u_compar_i(const void *u, const void *v)  /*  Called by function qsort for sorting decreasingly */
           
   {
-    if ((*u)<(*v)) return (1);
-    if ((*u)==(*v)) return (0);
+    int iu, iv;
+
+    iu = *(int*)u;
+    iv = *(int*)v;
+    if ((iu)<(iv)) return (1);
+    if ((iu)==(iv)) return (0);
     return (-1);
   }
 
@@ -251,10 +255,14 @@ typedef struct a_jordan {  /* structure used to describe the T-junctions */
 
 	
 /*  Called by function qsort for sorting unsigned char values by increasing values */
-static int compar_uc(unsigned char *u, unsigned char *v)
+static int compar_uc(const void * u, const void * v)
 {
-  if ((*u)>(*v)) return (1);
-  if ((*u)==(*v)) return (0);
+  unsigned char cu, cv;
+
+  cu = *(unsigned char *)u;
+  cv = *(unsigned char *)v;
+  if ((cu)>(cv)) return (1);
+  if ((cu)==(cv)) return (0);
   return (-1);
 }
 
