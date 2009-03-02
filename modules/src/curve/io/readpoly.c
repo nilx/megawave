@@ -117,11 +117,15 @@ static void Redraw(Wframe *ImageWindow)
 /*     > 0 if there was an event catched (but Destroy) */
 /*      -1 if the event Destroy was catched (or 'Q')   */
 
-static int readpoly_notify(Wframe *ImageWindow)
+static int readpoly_notify(Wframe *ImageWindow, void * foo)
 {
   int ret;
   int event,button_mask;
   
+  /* FIXME: foo is just here to comply with the definition of
+     mw_window_notify */
+  foo = foo;
+
   oldx1=x1; oldy1=y1;
 
   event = WUserEvent(ImageWindow); /* User's event on ImageWindow */

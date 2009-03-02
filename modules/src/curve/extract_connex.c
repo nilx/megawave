@@ -46,9 +46,11 @@ static void add_fpoint(Fcurve c, float x, float y)
 
 /* put together two shapes
 */
-static void MemeForme(long int *tab, long int fold, long int fnew, long int start, long int lg)
+static void MemeForme(unsigned long *tab, unsigned long fold,
+		      unsigned long fnew, unsigned long start,
+		      unsigned long lg)
 {
-  long *end;
+  unsigned long *end;
 
   end = tab+lg;
   tab += start;
