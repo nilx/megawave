@@ -1232,7 +1232,7 @@ one_levelset(float *level, Cimage cb, Fpolygons pb, Fimage fu, Cimage cu, Fimage
   if(cu) {
     printf("\n Constructing b/w levelset picture.");
     cu=mw_change_cimage(cu,image_org->ncol,image_org->nrow);
-    cDess_u_LS(boundary,cu,*level,0,255);
+    cDess_u_LS(boundary,cu,*level,(char) 0,(char) 255);
   }
 
   if(fu) {
