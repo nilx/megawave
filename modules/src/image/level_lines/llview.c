@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
+#include "mw-x11.h"
 #include "mw-modules.h" /* for fcrop() */
 
 /*------------------- GLOBAL VARIABLES -------------------*/
@@ -133,7 +134,7 @@ static void my_llmap(Fimage in, Ccimage out, float ofs, float step)
 }
 
 
-static int redisplay(Wp_toggle wt, short int n)
+static int redisplay(Wp_toggle wt, int n)
 {
   my_llmap(ref,image,(float)b4.value,(float)b5.value);
   WLoadBitMapColorImage(win2,image->red,image->green,image->blue,nx,ny);
@@ -142,14 +143,14 @@ static int redisplay(Wp_toggle wt, short int n)
   return(0);
 }
 
-static int grey_level(Wp_int wi, short int n)
+static int grey_level(Wp_int wi, int n)
 {
   wi->value = (wi->value+256)%256;
   redisplay(NULL,0);
   return(0);
 }
 
-static int step(Wp_int wi, short int n)
+static int step(Wp_int wi, int n)
 {
   if (wi->value<1) wi->value = 1;
   if (wi->value>255) wi->value = 255;
@@ -157,7 +158,7 @@ static int step(Wp_int wi, short int n)
   return(0);
 }
 
-static int quit(Wp_toggle wt, short int n)
+static int quit(Wp_toggle wt, int n)
 {
   wp->state = -1;
   return(wp->state);

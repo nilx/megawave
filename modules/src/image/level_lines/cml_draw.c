@@ -21,7 +21,7 @@
 #define POINT_OK(P,Y,X)  (((P)->x>=0)&&((P)->x<=X)&&((P)->y>=0)&&((P)->y<=Y))
 #define BAD_POINT(P,Y,X) (!POINT_OK(P,Y,X))
 
-static void draw_cmlines(Cmorpho_line mline, Ccimage image, int NL, int NC, unsigned char *border)
+static void draw_cmlines(Cmorpho_line mline, Ccimage image, int NL, int NC, char *border)
 {
   Point_curve point_ptr;
   int BNL,BNC,l,c,dl,dc;

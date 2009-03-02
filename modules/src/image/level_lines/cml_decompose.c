@@ -37,8 +37,13 @@ static int ascending_order=1;
    ------------------------------------------------------------------ */
 
 
-static int cmpcolor(Color *c1, Color *c2)
+static int cmpcolor(const void  *c1p, const void *c2p)
 {
+
+  Color *c1, *c2;
+
+  c1 = (Color *)c1p;
+  c2 = (Color *)c2p;
   if (c1->model != c2->model)
     mwerror(INTERNAL,1,"[cmpcolor] Two different color models %d and %d !\n",
 	    c1->model,c2->model);
@@ -303,7 +308,7 @@ follow_open_line(unsigned int NL, unsigned int NC, unsigned char **H, unsigned c
   p1->x=(cc<0)? 0:((cc==NC-1)? NC:cc+1);
 }
 
-static void get_open_lines(Cfimage im, unsigned int NL, unsigned int NC, Color minvalue, Color maxvalue, unsigned char **H, unsigned char **V, Cmorpho_line *lline, int L, int *Nll, int *Nllrm)
+static void get_open_lines(Cfimage im, unsigned int NL, unsigned int NC, Color minvalue, Color maxvalue, unsigned char **H, unsigned char **V, Cmorpho_line *lline, int L, unsigned long *Nll, unsigned long *Nllrm)
 {
   Cmorpho_line oldll,newll=NULL;
   Point_curve p;
@@ -469,7 +474,7 @@ follow_closed_line(unsigned char **H, unsigned char **V, int ll, int cc, int sum
   } /* end while */
 }
 
-static void get_closed_lines(Cfimage im, unsigned int NL, unsigned int NC, Color minvalue, Color maxvalue, unsigned char **H, unsigned char **V, Cmorpho_line *lline, int L, int *Nll, int *Nllrm)
+static void get_closed_lines(Cfimage im, unsigned int NL, unsigned int NC, Color minvalue, Color maxvalue, unsigned char **H, unsigned char **V, Cmorpho_line *lline, int L, unsigned long *Nll, unsigned long *Nllrm)
 {
   Cmorpho_line oldll,newll=NULL;
   Point_curve p;

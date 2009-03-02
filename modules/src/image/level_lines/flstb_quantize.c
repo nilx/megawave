@@ -24,7 +24,7 @@
 #include "mw-modules.h" /* for flst_pixels() */
 
 
-static int compare_floats(void *p1, void *p2)
+static int compare_floats(const void *p1, const void *p2)
 {
   float f1= *(float*)p1, f2 = *(float*)p2;
   if(f1 == f2) return 0;
