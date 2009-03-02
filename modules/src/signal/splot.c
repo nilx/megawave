@@ -313,7 +313,7 @@ static void init_sxy(void)
   rescale_sy();
 }
 
-static void zoom_sx(int x, int y)
+static void zoom_sx(int x)
 {
   double d,m;
   
@@ -398,6 +398,8 @@ static int win_notify(Wframe *window, void *param)
   int event,ret,x,y,button_mask,redisplay_flag;
   int c; /* Key code must be int and not char to handle non-printable keys */
   
+  /* FIXME: unused parameter */
+  param = param;
   event = WUserEvent(window); 
   if (event<0) ret=1; else ret=event;
   WGetStateMouse(window,&x,&y,&button_mask);
@@ -425,7 +427,7 @@ static int win_notify(Wframe *window, void *param)
       break;
 
     case W_MS_RIGHT: 
-      if (selrect) selrect=0; else zoom_sx(x,y); break;
+      if (selrect) selrect=0; else zoom_sx(x); break;
 
     case W_MS_MIDDLE:       
       if (selrect) selrect=0; else init_sxy(); break;
