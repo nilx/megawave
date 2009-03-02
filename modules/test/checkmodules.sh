@@ -1668,7 +1668,7 @@ iowave1 -e 0 $TMP/1 $TMP/2 $DATA/wave/ortho/da02.ir \
     && exact $VAL 0 \
     && pass || fail owave1
 
-biowave1 $SAMPLES/signals/fsignal $TMP/1 \
+biowave1 -n 2 $SAMPLES/signals/fsignal $TMP/1 \
     $DATA/wave/biortho/h/sp02.ir $DATA/wave/biortho/htilde/sl05.ir \
     && VAL=`grep size $TMP/1_01_A.wtrans1d | cut -d":" -f2` \
     && exact $VAL 1104 \
@@ -1676,7 +1676,7 @@ biowave1 $SAMPLES/signals/fsignal $TMP/1 \
     && exact $VAL 1104 \
     && pass || fail biowave1
 
-ibiowave1 -e 0 $TMP/1 $TMP/2 \
+ibiowave1 -e 0 -n 2 $TMP/1 $TMP/2 \
     $DATA/wave/biortho/h/sp02.ir $DATA/wave/biortho/htilde/sl05.ir \
     && VAL=`snorm -t 0.001 -b 2 -p 2 -c $SAMPLES/signals/fsignal $TMP/2 | cut -d"=" -f2` \
     && exact $VAL 0 \

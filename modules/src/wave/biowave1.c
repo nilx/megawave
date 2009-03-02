@@ -271,7 +271,7 @@ biowave1(int *NumRec, int *Edge, int *FilterNorm, Fsignal Signal, Wtrans1d Outpu
 
   /*--- Normalisation of filter banks ---*/
 
-  NORM_FIL(Ri1, Ri2, FilterNorm);
+  NORM_FIL(Ri1, Ri2, *FilterNorm);
 
   /*--- Memory allocation for wavelet transform Output ---*/
 

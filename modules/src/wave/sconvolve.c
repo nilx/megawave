@@ -58,7 +58,7 @@ static int      prolong;	/* Equals 0 (default) if
 				 * sizeres = signal->size * uprate / downrate
 				 * 1 if prolongation of `result` at edges 
 				 * 2 if shrinkage of `result` at edges */
-static double   (*RI) ();	/* Pointer to low or high-pass impulse
+static double   (*RI) (short int);	/* Pointer to low or high-pass impulse
 				 * response function */
 static Fsignal  ri;		/* Low-pass filter for computation inner
 				 * coefficients */

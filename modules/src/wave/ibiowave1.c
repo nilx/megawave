@@ -303,7 +303,7 @@ ibiowave1(int *NumRec, int *Edge, int *FilterNorm, Wtrans1d Wtrans, Fsignal Outp
 
   /*--- Normalisation of filter banks ---*/
 
-  NORM_FIL(Ri1, Ri2, FilterNorm);
+  NORM_FIL(Ri1, Ri2, *FilterNorm);
 
 
   /*--- Wavelet recomposition ---*/
