@@ -581,6 +581,9 @@ CONV_SPE(Fsignal signal, Fsignal result, int uprate, int downrate, int *band, Fi
 
 {
 
+    /* FIXME: unused parameter */
+    band = band;
+
     if (downrate >= 2)
 	CONV_DEC_SPE(signal, result, downrate, left_ri, right_ri);
     else

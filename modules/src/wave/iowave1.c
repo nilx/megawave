@@ -116,7 +116,7 @@ COMLINE_ERR(Wtrans1d wtrans, Fsignal ri, Fimage edge_ri, int edge, int *inverse,
 
 
 static void
-COMMENT(Fsignal result, Wtrans1d wtrans, int edge, int precond, int *filternorm, Fsignal ri)
+COMMENT(Fsignal result, Wtrans1d wtrans, int edge, int precond, int *filternorm)
 
 	/*--- Fill comment and other fields for result ---*/
 
@@ -495,6 +495,6 @@ iowave1(int *NumRec, int *Haar, int *Edge, int *Precond, int *Inverse, int *Filt
 
     /*--- Write commentary for Output ---*/
 
-    COMMENT(Output, Wtrans, *Edge, *Precond, FilterNorm, Ri);
+    COMMENT(Output, Wtrans, *Edge, *Precond, FilterNorm);
 
 }

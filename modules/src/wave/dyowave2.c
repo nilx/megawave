@@ -30,7 +30,7 @@ usage = {
 #include "mw-modules.h" /* for owave2() */
 
 static void
-ALLOC_WAV(Wtrans2d wtrans, Fimage image, int numrec, int stopdecim, int edge)
+ALLOC_WAV(Wtrans2d wtrans, Fimage image, int numrec, int stopdecim)
 {
   int             i, J;
   long            nrow, ncol;
@@ -81,7 +81,7 @@ ALLOC_WAV(Wtrans2d wtrans, Fimage image, int numrec, int stopdecim, int edge)
 
 
 static void
-WAVEL(Wtrans2d wtrans, int *numrec, int stopdecim, int *ortho, int *filternorm, Fsignal ri, Fimage edge_ri, int *edge, int *precond)
+WAVEL(Wtrans2d wtrans, int *numrec, int stopdecim, int *filternorm, Fsignal ri, Fimage edge_ri, int *edge, int *precond)
 
 	/*----- Computes the wavelet decomposition of S -----*/
 
@@ -216,17 +216,20 @@ dyowave2(int *NumRec, int *StopDecim, int *Ortho, int *Edge, int *Precond, int *
 
 {
 
+  /* FIXME: unused parameter */
+  Ortho = Ortho;
+
   /*--- Detection of errors in command line ---*/
 
 
   /*--- Memory allocation for wavelet transform Output ---*/
 
-  ALLOC_WAV(Output, Image, *NumRec, *StopDecim, *Edge);
+  ALLOC_WAV(Output, Image, *NumRec, *StopDecim);
 
   /*--- Write commentary for Output ---*/
 
 
   /*--- Wavelet decomposition ---*/
 
-    WAVEL(Output, NumRec, *StopDecim, Ortho, FilterNorm, Ri, Edge_Ri, Edge, Precond);
+    WAVEL(Output, NumRec, *StopDecim, FilterNorm, Ri, Edge_Ri, Edge, Precond);
 }

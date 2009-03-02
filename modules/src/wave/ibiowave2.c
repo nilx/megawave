@@ -46,7 +46,7 @@ static double	    shaar;      /* Sums of coefficients of haar filter */
 
 
 static void
-COMLINE_ERR(Wtrans2d wtrans, Fsignal ri1, Fsignal ri2, int edge, int *numrec, int *haar, int *haar_test)
+COMLINE_ERR(Wtrans2d wtrans, Fsignal ri1, Fsignal ri2, int *numrec, int *haar, int *haar_test)
 
 	/*--- Detects errors and contradiction in command line ---*/
 
@@ -107,7 +107,7 @@ COMLINE_ERR(Wtrans2d wtrans, Fsignal ri1, Fsignal ri2, int edge, int *numrec, in
 
 
 static void
-COMMENT(Fimage result, Wtrans2d wtrans, int edge, int *filternorm, Fsignal ri1, Fsignal ri2)
+COMMENT(Fimage result, Wtrans2d wtrans, int edge, int *filternorm)
 
 	/*--- Fill comment and other fields for result ---*/
 
@@ -283,7 +283,7 @@ NORM_FIL(Fsignal ri1, Fsignal ri2, int filternorm, int haar_test)
 
 
 static void
-HAAR_INV_WAVEL2(Wtrans2d wtrans, int numrec, int haar, int filternorm)
+HAAR_INV_WAVEL2(Wtrans2d wtrans, int numrec, int haar)
 
                    		/* Wavelet transform */
                                 /* Use average sub-image at level numrec */
@@ -381,7 +381,7 @@ HAAR_INV_WAVEL2(Wtrans2d wtrans, int numrec, int haar, int filternorm)
 
 
 static void
-RECOMP_LINES(Fimage Tab, Fimage A, int J, int haarx, int *band, Fsignal ri, int *edge)
+RECOMP_LINES(Fimage Tab, Fimage A, int haarx, int *band, Fsignal ri, int *edge)
 
      /*--- Computes the inverse wavelet transform of `S` along the lines ---*/
 
@@ -460,7 +460,7 @@ RECOMP_LINES(Fimage Tab, Fimage A, int J, int haarx, int *band, Fsignal ri, int 
 
 
 static void
-RECOMP_COLUMNS(Fimage Tab, Fimage AD, int J, int haary, int *band, Fsignal ri, int *edge)
+RECOMP_COLUMNS(Fimage Tab, Fimage AD, int haary, int *band, Fsignal ri, int *edge)
 
      /*--- Computes the inverse wavelet transform along the lines ---*/
 
@@ -540,7 +540,7 @@ RECOMP_COLUMNS(Fimage Tab, Fimage AD, int J, int haary, int *band, Fsignal ri, i
 
 
 static void
-INV_WAVEL(int J, int *haar, Wtrans2d wtrans, Fimage A, Fsignal ri1, Fsignal ri2, int *edge)	
+INV_WAVEL(int J, Wtrans2d wtrans, Fimage A, Fsignal ri1, Fsignal ri2, int *edge)	
 
 	/*----- Computes average at level J-1 
 	  ----- from average and details at level J -----*/
@@ -608,11 +608,11 @@ INV_WAVEL(int J, int *haar, Wtrans2d wtrans, Fimage A, Fsignal ri1, Fsignal ri2,
 
   /*--- Reconstruction along the columns from the average ---*/
 
-  RECOMP_COLUMNS(Tab, wtrans->images[J][0], J, haarflag, NULL, ri1, edge);
+  RECOMP_COLUMNS(Tab, wtrans->images[J][0], haarflag, NULL, ri1, edge);
 
   /*--- Reconstruction along the columns from the detail D1 ---*/
 
-  RECOMP_COLUMNS(Tab, wtrans->images[J][1], J, haarflag, &HIGH, ri2, edge);
+  RECOMP_COLUMNS(Tab, wtrans->images[J][1], haarflag, &HIGH, ri2, edge);
 
   /*--- Reconstruction along the lines from average and detail D1 ---*/
 
@@ -621,7 +621,7 @@ INV_WAVEL(int J, int *haar, Wtrans2d wtrans, Fimage A, Fsignal ri1, Fsignal ri2,
   else 
     haarflag = 0;
 
-  RECOMP_LINES(Tab, A, J, haarflag, NULL, ri1, edge);
+  RECOMP_LINES(Tab, A, haarflag, NULL, ri1, edge);
 
 
   /*--- Initialization of Tab ---*/
@@ -646,11 +646,11 @@ INV_WAVEL(int J, int *haar, Wtrans2d wtrans, Fimage A, Fsignal ri1, Fsignal ri2,
 
   /*--- Reconstruction along the columns from the detail D2 ---*/
 
-  RECOMP_COLUMNS(Tab, wtrans->images[J][2], J, haarflag, NULL, ri1, edge);
+  RECOMP_COLUMNS(Tab, wtrans->images[J][2], haarflag, NULL, ri1, edge);
 
   /*--- Reconstruction along the columns from the detail D3 ---*/
 
-  RECOMP_COLUMNS(Tab, wtrans->images[J][3], J, haarflag, &HIGH, ri2, edge);
+  RECOMP_COLUMNS(Tab, wtrans->images[J][3], haarflag, &HIGH, ri2, edge);
 
   /*--- Reconstruction along the lines from details D2 and D3 ---*/
 
@@ -659,7 +659,7 @@ INV_WAVEL(int J, int *haar, Wtrans2d wtrans, Fimage A, Fsignal ri1, Fsignal ri2,
   else 
     haarflag = 0;
 
-  RECOMP_LINES(Tab, A, J, haarflag, &HIGH, ri2, edge);
+  RECOMP_LINES(Tab, A, haarflag, &HIGH, ri2, edge);
 
   mw_delete_fimage(Tab);
 
@@ -695,7 +695,7 @@ ibiowave2(int *NumRec, int *Haar, int *Edge, int *FilterNorm, Wtrans2d Wtrans, F
 
     /*--- Detection of errors in command line ---*/
 
-  COMLINE_ERR(Wtrans, Ri1, Ri2, *Edge, NumRec, Haar, &haar_test);
+  COMLINE_ERR(Wtrans, Ri1, Ri2, NumRec, Haar, &haar_test);
 
   /*--- Memory allocation for Haar filter ---*/
 
@@ -722,18 +722,18 @@ ibiowave2(int *NumRec, int *Haar, int *Edge, int *FilterNorm, Wtrans2d Wtrans, F
 
   if (Haar) 
     if (*Haar > *NumRec)
-      HAAR_INV_WAVEL2(Wtrans, *NumRec, *Haar, *FilterNorm);
+      HAAR_INV_WAVEL2(Wtrans, *NumRec, *Haar);
 
   for (J = *NumRec; J > 1; J--)
-    INV_WAVEL(J, Haar, Wtrans, Wtrans->images[J-1][0], Ri1, Ri2, Edge);
+    INV_WAVEL(J, Wtrans, Wtrans->images[J-1][0], Ri1, Ri2, Edge);
 
-  INV_WAVEL(J, Haar, Wtrans, Output, Ri1, Ri2, Edge);
+  INV_WAVEL(J, Wtrans, Output, Ri1, Ri2, Edge);
 
   if (Haar) 
     mw_delete_fsignal(haar_ri);
 
     /*--- Write commentary for Output ---*/
 
-  COMMENT(Output, Wtrans, *Edge, FilterNorm, Ri1, Ri2);
+  COMMENT(Output, Wtrans, *Edge, FilterNorm);
 
 }

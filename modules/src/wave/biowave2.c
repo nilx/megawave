@@ -256,7 +256,7 @@ NORM_FIL(Fsignal ri1, Fsignal ri2, int filternorm, int *haar)
 
 
 static void
-HAAR_WAVEL2(Wtrans2d wtrans, int numrec, int haar, int filternorm)
+HAAR_WAVEL2(Wtrans2d wtrans, int numrec, int haar)
 
                     		/* Wavelet transform */
                                 /* Level of average */
@@ -342,7 +342,7 @@ HAAR_WAVEL2(Wtrans2d wtrans, int numrec, int haar, int filternorm)
 
 
 static void
-COLUMN_WAVEL(Fimage Im, Fimage Im1, Fimage Im2, int J, int *haar, int *edge, Fsignal ri1, Fsignal ri2)
+COLUMN_WAVEL(Fimage Im, Fimage Im1, Fimage Im2, int *haar, int *edge, Fsignal ri1, Fsignal ri2)
 
 	/*--- Computes the 1-D wavelet transform of each column  ---*
 	 *--- in image "Tab", puts the result in "Im1" and "Im2" ---*/
@@ -554,7 +554,7 @@ WAVEL(Wtrans2d wtrans, int J, int *haar, Fsignal ri1, Fsignal ri2, int *edge)
 
   /*--- Convolution of column with low and high-pass filters ---*/
 
-  COLUMN_WAVEL(Tab, wtrans->images[J][0], wtrans->images[J][1], J, haar, edge, ri1, ri2);
+  COLUMN_WAVEL(Tab, wtrans->images[J][0], wtrans->images[J][1], haar, edge, ri1, ri2);
 
 
 
@@ -588,7 +588,7 @@ WAVEL(Wtrans2d wtrans, int J, int *haar, Fsignal ri1, Fsignal ri2, int *edge)
 
   /*--- Convolution of columns with low and high-pass filters ---*/
 
-  COLUMN_WAVEL(Tab, wtrans->images[J][2], wtrans->images[J][3], J, haar, edge, ri1, ri2);
+  COLUMN_WAVEL(Tab, wtrans->images[J][2], wtrans->images[J][3], haar, edge, ri1, ri2);
 
   mw_delete_fimage(Tab);
   mw_delete_fsignal(Tabin);
@@ -654,7 +654,7 @@ biowave2(int *NumRec, int *Haar, int *Edge, int *FilterNorm, Fimage Image, Wtran
 
   if (Haar) {
     if (*Haar > *NumRec)
-      HAAR_WAVEL2(Output, *NumRec, *Haar, *FilterNorm);
+      HAAR_WAVEL2(Output, *NumRec, *Haar);
     mw_delete_fsignal(haar_ri);
   }
 

@@ -70,7 +70,7 @@ COMMENT(Wtrans2d result, Fimage image, int edge, int *filternorm, Fsignal ri1, F
 
 
 static void
-COMLINE_ERR(Fsignal ri1, Fsignal ri2, int edge, short int numrec, long int dy, long int dx)
+COMLINE_ERR(Fsignal ri1, Fsignal ri2, short int numrec, long int dy, long int dx)
 
 	/*--- Detects errors and contradiction in command line ---*/
 
@@ -472,7 +472,7 @@ dybiowave2(int *NumRec, int *StopDecim, int *Ortho, int *Edge, int *FilterNorm, 
 
   /*--- Detection of errors in command line ---*/
 
-  COMLINE_ERR(Ri1, Ri2, *Edge, *NumRec, Image->nrow, Image->ncol);
+  COMLINE_ERR(Ri1, Ri2, *NumRec, Image->nrow, Image->ncol);
 
   /*--- Normalisation of filter banks ---*/
 

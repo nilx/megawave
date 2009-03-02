@@ -35,7 +35,7 @@ static int PROLONG=0;		/* Index for inverse preconditionning */
 
 
 static void
-COMMENT(Fsignal result, Wtrans1d wtrans, int edge, int *filternorm, Fsignal ri1, Fsignal ri2)
+COMMENT(Fsignal result, Wtrans1d wtrans, int edge, int *filternorm)
 
 	/*--- Fill comment and other fields for result ---*/
 
@@ -315,5 +315,5 @@ ibiowave1(int *NumRec, int *Edge, int *FilterNorm, Wtrans1d Wtrans, Fsignal Outp
 
   /*--- Write commentary for Output ---*/
 
-  COMMENT(Output, Wtrans, *Edge, FilterNorm, Ri1, Ri2);
+  COMMENT(Output, Wtrans, *Edge, FilterNorm);
 }

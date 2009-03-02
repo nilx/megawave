@@ -309,7 +309,7 @@ HAAR_WAVEL2(Wtrans2d wtrans, int numrec, int haar, int filternorm)
 
 
 static void
-COLUMN_WAVEL(Fimage Im, Fimage Im1, Fimage Im2, int J, int *haar, int *edge, int prolong, Fsignal int_ri, Fimage edge_ri)
+COLUMN_WAVEL(Fimage Im, Fimage Im1, Fimage Im2, int *haar, int *edge, int prolong, Fsignal int_ri, Fimage edge_ri)
 
 	/*--- Computes the 1-D wavelet transform of each column  ---*
 	 *--- in image "Tab", puts the result in "Im1" and "Im2" ---*/
@@ -574,7 +574,7 @@ WAVEL(Wtrans2d wtrans, int J, Fsignal int_ri, Fimage edge_ri, int *edge, int *in
 
   Tab->lastcol = Tabout->size;
 
-  COLUMN_WAVEL(Tab, wtrans->images[J][0], wtrans->images[J][1], J, haar, edge, prolong, int_ri, edge_ri);
+  COLUMN_WAVEL(Tab, wtrans->images[J][0], wtrans->images[J][1], haar, edge, prolong, int_ri, edge_ri);
 
   if (prolong == 1) {
     wtrans->images[J][0]->firstcol = wtrans->images[J][1]->firstcol = Tabout->firstp;
@@ -613,7 +613,7 @@ WAVEL(Wtrans2d wtrans, int J, Fsignal int_ri, Fimage edge_ri, int *edge, int *in
 
   Tab->lastcol = Tabout->size;
 
-  COLUMN_WAVEL(Tab, wtrans->images[J][2], wtrans->images[J][3], J, haar, edge, prolong, int_ri, edge_ri);
+  COLUMN_WAVEL(Tab, wtrans->images[J][2], wtrans->images[J][3], haar, edge, prolong, int_ri, edge_ri);
 
   if (prolong == 1) {
     wtrans->images[J][2]->firstcol = wtrans->images[J][3]->firstcol = Tabout->firstp;

@@ -157,7 +157,7 @@ static void increaseSize(Wpack2d pack, float backgroundColor)
 
 
 /***************************************************************/
-static void glue(Wpack2d pack, int img, int img11, int img12, int img21, int img22, float backgroundColor, int level)
+static void glue(Wpack2d pack, int img, int img11, int img12, int img21, int img22, float backgroundColor)
      /* glue four images together */
 
                    
@@ -315,7 +315,7 @@ static void  wpack2dGlue(Wpack2d pack, float backgroundColor, char *do_not_reord
 
 	if(pack->images[img11] && pack->images[img21] 
 	   && pack->images[img12] && pack->images[img22])
-	  glue(pack, img, img11, img12, img21, img22, backgroundColor,level);
+	  glue(pack, img, img11, img12, img21, img22, backgroundColor);
 	  
 	}
     jump_2*=2;
