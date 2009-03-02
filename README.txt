@@ -11,23 +11,12 @@ INSTRUCTIONS FOR COMPILING MEGAWAVE
 
     make prebuild
 
-* Compile everything: the preprocessor, `libmw`, `libmw-wdevice`,
-  `libmw-modules`, and the executable modules.
+* Compile everything: the `mwp` preprocessor, `libmw`,
+  `libmw-cmdline`, `libmw-io`, `libmw-modules`, and the executable
+  modules.
   Required tools: `make`, `gcc`.
 
     make
-
-* Compile the system and user documentation manuals.
-  This target is not thoroughly tested.
-  Required tools: `pdflatex`, `hevea`, `hacha`, `html2text`.
-
-    make doc
-
-* Compile source documentation (warning: needs time)
-  This target is not thoroughly tested.
-  Required tools: `doxygen`, `graphviz`, `pdflatex`.
-
-    make srcdoc
 
 * Cleanup the compilation headers and objects.
 
@@ -104,6 +93,20 @@ Some extra targets are available from the subfolders, mainly for
 development purpose (code linting, syntax cleanup, ...). They are not
 extensively tested.
 
+
+# documentation
+
+* Compile the system and user documentation manuals.
+  This target is not thoroughly tested.
+  Required tools: `pdflatex`, `hevea`, `hacha`, `html2text`.
+
+    make doc
+
+* Compile source documentation (warning: needs time)
+  This target is not thoroughly tested.
+  Required tools: `doxygen`, `graphviz`, `pdflatex`.
+
+    make srcdoc
 
 
 # configuration
