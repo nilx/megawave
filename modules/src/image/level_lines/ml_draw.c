@@ -117,7 +117,7 @@ Cimage ml_draw(Mimage m_image, Cimage bimage, char *border, Cmovie movie)
   Cimage cb=NULL,newcb,oldcb;
   Morpho_line mline_list,mline;
   int NC,NCO,NL,NLO,nm;
-  unsigned long l;
+  long l;
   unsigned char **im;
 
   if(m_image==NULL)

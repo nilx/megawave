@@ -67,7 +67,11 @@ Cmimage cll_remove(Cmimage cmimage, int *L)
 	mwerror(FATAL,1,"Input cmimage contains mixed types of level lines !\n");
       ll_next = ll->next;
       /*  check_ll(ll);*/
-      if (mw_length_cmorpho_line(ll) < *L) {remove_cll(cmimage,ll); Nrm++; }
+      if (mw_length_cmorpho_line(ll) < (unsigned int) *L)
+      {
+	remove_cll(cmimage,ll);
+	Nrm++;
+      }
     }
 
   if (ll_type == 0)

@@ -171,8 +171,8 @@ Initialisation(Fimage image_org)
 {                      /* aux regions,bords et sommets,... ; Grace a un codage*/
                        /* des places memoire on peut facilement initialiser   */
   unsigned short i,j;  /* les pointeurs des differentes structures.           */
-  unsigned long  l,
-                 dbreg,dbbor,dbsom,dblibor,dblipix,   /* Dimensions des blocs */
+  long  l;
+  unsigned long  dbreg,dbbor,dbsom,dblibor,dblipix,   /* Dimensions des blocs */
                  lbreg,lbbor,lbsom;                   /* Largeur des blocs    */
 
   REGIONPTR       block_reg,                /* Espace pour les regions        */
@@ -1102,7 +1102,7 @@ static void cDess_u_LS(Cimage boundary, Cimage u, float level, char inside, char
 }
 
 
-static void fDess_u_LS(Cimage boundary, Fimage u, float level)  
+static void fDess_u_LS(Cimage boundary, Fimage u)  
             
                           /* Balayage de l'image gauche/droite et haut/bas   */
                           /* Determine s'il ya un bord ou non                */
@@ -1201,7 +1201,7 @@ void
 one_levelset(float *level, Cimage cb, Fpolygons pb, Fimage fu, Cimage cu, Fimage image_org)
 {
   Cimage boundary=NULL;
-  unsigned long l;
+  long l;
   REGIONPTR rptr;
   LI_BORDSPTR lbptr;
   int number_lreg=0,number_points=0,number_cbords=0;
@@ -1240,7 +1240,7 @@ one_levelset(float *level, Cimage cb, Fpolygons pb, Fimage fu, Cimage cu, Fimage
    MIN(*image.tete->Lbords->bord->rg->canal,*image.tete->Lbords->bord->rd->canal),
    MAX(*image.tete->Lbords->bord->rg->canal,*image.tete->Lbords->bord->rd->canal) );
     fu=mw_change_fimage(fu,image_org->ncol,image_org->nrow);
-    fDess_u_LS(boundary,fu,*level);
+    fDess_u_LS(boundary,fu);
   }
 
   if(cb) 

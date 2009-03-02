@@ -107,7 +107,7 @@ produce_lline(Morpho_line old_lline, float minvalue, float maxvalue, Point_curve
 
 
 static void
-follow_open_line(unsigned int NL, unsigned int NC, unsigned char **H, unsigned char **V, int ll, int cc, int sum, Point_curve *p, Point_type *t)
+follow_open_line(int NL, int NC, unsigned char **H, unsigned char **V, int ll, int cc, int sum, Point_curve *p, Point_type *t)
 {
   Point_curve current_point=*p;
   Point_type  current_type=*t;
@@ -145,7 +145,7 @@ follow_open_line(unsigned int NL, unsigned int NC, unsigned char **H, unsigned c
 }
 
 static void
-get_open_lines(float **im, unsigned int NL, unsigned int NC, float minvalue, float maxvalue, unsigned char **H, unsigned char **V, Morpho_line *lline, Point_curve *p, Point_type *t)
+get_open_lines(float **im, int NL, int NC, float minvalue, float maxvalue, unsigned char **H, unsigned char **V, Morpho_line *lline, Point_curve *p, Point_type *t)
 {
   Morpho_line old_lline;
   Point_curve current_point=*p;
@@ -267,7 +267,7 @@ follow_closed_line(unsigned char **H, unsigned char **V, int ll, int cc, int sum
 }
 
 static void
-get_closed_lines(float **im, unsigned int NL, unsigned int NC, float minvalue, float maxvalue, unsigned char **H, unsigned char **V, Morpho_line *lline, Point_curve *p, Point_type *t)
+get_closed_lines(float **im, int NL, int NC, float minvalue, float maxvalue, unsigned char **H, unsigned char **V, Morpho_line *lline, Point_curve *p, Point_type *t)
 {
   Morpho_line old_lline;
   Point_curve current_point=*p;
@@ -321,7 +321,7 @@ ml_extract(float *level, Fsignal levels, int *opt, Cimage c_out, char *m_flag, F
   Point_curve current_point, next_point;
   Point_type  current_type , next_type;
   unsigned long nb_points, l;
-  unsigned int NL=image_org->nrow, NC=image_org->ncol;
+  int NL=image_org->nrow, NC=image_org->ncol;
   unsigned char **V, **H, *cptr;
   int i,ml_opt=*opt;
   float **im, minvalue, maxvalue;

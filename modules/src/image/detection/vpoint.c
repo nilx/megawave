@@ -180,7 +180,7 @@ static double pext(double beta1, double beta2, double theta)
   return ( 2.0*theta + f2-f1 ) / (double) M_PI;
 }
 
-static double pext_prime(double beta2, double theta)
+static double pext_prime(double beta2)
 {
   double fp2;
   if (cos(beta2)<EPS*1.0e5)
@@ -215,7 +215,7 @@ static double fzero_convex(double a0, double b0, double tolx, double tolf, doubl
 
   mwdebug("Iterating fzero_convex...\n");
   while (fabs(fb-fa)>tolf && fabs(b-a)>tolx) {
-    fpb = pext_prime(b,dtheta); /* == myfunprime(b); */
+    fpb = pext_prime(b); /* == myfunprime(b); */
     a = a-fa/fpb; fa =  pext(beta1,a,dtheta)-p; /* == myfun(a); */
     b = b-fb/fpb; fb =  pext(beta1,b,dtheta)-p; /* == myfun(b); */
     mwdebug(".");
@@ -770,7 +770,7 @@ static Flist FlistFlush(Flist l1)
    per segment, precision level. The size of ls is at most 2*nx+4*ny).
    Observe that this implementation ignores the last argument j.
 */
-static void STilesAddUnique(Flist L, Tiling **Tilings, int i, int ie, int ix, int iy, int j)
+static void STilesAddUnique(Flist L, Tiling **Tilings, int i, int ie, int ix, int iy)
                 /* 4-Flist containing the tiles met by the j-th segment */
                       
                      /* 4-tuple representing the tile to be added */
@@ -911,11 +911,11 @@ static int TAddSegment(Tiling **Tilings, int i, Flists S, int j, double R, doubl
     /*  Add tiles touching both intersection points
 	(theta1,d[id]) and (theta2,d[id])
 	to the list L, avoiding duplicates */
-    STilesAddUnique(L,Tilings,i,ie,itheta1,id  ,j);
-    STilesAddUnique(L,Tilings,i,ie,itheta2,id  ,j);
+    STilesAddUnique(L,Tilings,i,ie,itheta1,id);
+    STilesAddUnique(L,Tilings,i,ie,itheta2,id);
     if (id>0) {
-      STilesAddUnique(L,Tilings,i,ie,itheta1,id-1,j);
-      STilesAddUnique(L,Tilings,i,ie,itheta2,id-1,j);
+      STilesAddUnique(L,Tilings,i,ie,itheta1,id-1);
+      STilesAddUnique(L,Tilings,i,ie,itheta2,id-1);
     }
   };
   /* Find intersection point of line (rho,phi) with each radius */
@@ -928,11 +928,11 @@ static int TAddSegment(Tiling **Tilings, int i, Flists S, int j, double R, doubl
       if (id1>0) id1--;
       /*  Add tiles touching the intersection point (theta[itheta],d1)
 	  to the list L, avoiding duplicates */
-      STilesAddUnique(L,  Tilings,i,ie,itheta,  id1,j);
+      STilesAddUnique(L,  Tilings,i,ie,itheta,  id1);
       if (itheta>0)
-	STilesAddUnique(L,Tilings,i,ie,itheta-1,id1,j);
+	STilesAddUnique(L,Tilings,i,ie,itheta-1,id1);
       else /* itheta==0, its circular neighbour is ntheta-1 */
-	STilesAddUnique(L,Tilings,i,ie,ntheta-1,id1,j);
+	STilesAddUnique(L,Tilings,i,ie,ntheta-1,id1);
     }
   }
 
@@ -962,9 +962,9 @@ static int TAddSegment(Tiling **Tilings, int i, Flists S, int j, double R, doubl
       xx = -(l[1]*yy+l[2])/l[0];
       ix = (int) floor((xx-xmin)/dx);
       if (TIsValid2(T,ie,ix,iy  ))
-	STilesAddUnique(L, Tilings,i,ie,ix,iy  ,j);
+	STilesAddUnique(L, Tilings,i,ie,ix,iy  );
       if (TIsValid2(T,ie,ix,iy-1))
-	STilesAddUnique(L, Tilings,i,ie,ix,iy-1,j);
+	STilesAddUnique(L, Tilings,i,ie,ix,iy-1);
     }
   } else {
     /* Rather "horizontal line" :
@@ -974,9 +974,9 @@ static int TAddSegment(Tiling **Tilings, int i, Flists S, int j, double R, doubl
       yy = -(l[0]*xx+l[2])/l[1];
       iy = (int) floor((yy-ymin)/dy);
       if (TIsValid2(T,ie,ix  ,iy))
-	STilesAddUnique(L, Tilings,i,ie,ix  ,iy,j);
+	STilesAddUnique(L, Tilings,i,ie,ix  ,iy);
       if (TIsValid2(T,ie,ix-1,iy))
-	STilesAddUnique(L, Tilings,i,ie,ix-1,iy,j);
+	STilesAddUnique(L, Tilings,i,ie,ix-1,iy);
     }
   }
 #ifndef HasSTL

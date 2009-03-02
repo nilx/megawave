@@ -143,7 +143,8 @@ static int getdotfont(int v, int x, int y)
 
 Ccimage ccputstring(Ccimage in, int x, int y, int *c, int *C, float *r, char *str)
 {
-  int nx,ny,cx,cy,dx,dy,adr,i,v,adr2;
+  int nx,ny,cx,cy,dx,dy,adr,v,adr2;
+  unsigned int i;
   Curve thedisc;
   Point_curve p;
 

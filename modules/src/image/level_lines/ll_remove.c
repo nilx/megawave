@@ -62,7 +62,8 @@ Mimage ll_remove(Mimage mimage, int *L)
 	  ((ll_type == 1)&&(ll->minvalue != -infty)) )
 	mwerror(FATAL,1,"Input mimage contains mixed types of level lines !\n");
       ll_next = ll->next;
-      if (mw_length_morpho_line(ll) < *L) {remove_ll(mimage,ll); Nrm++; }
+      if (mw_length_morpho_line(ll) < (unsigned int) *L)
+        {remove_ll(mimage,ll); Nrm++; }
     }
 
   if (ll_type == 0)

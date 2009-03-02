@@ -380,7 +380,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
 }
 
 /* Fill pBoundary, the level line boundary of pShape */
-static void extract_line(int iPrecision, Fimage pImage, Shapes pTree, Shape pShape, Flist pDualchain, Flist pBoundary)
+static void extract_line(int iPrecision, Fimage pImage, Shape pShape, Flist pDualchain, Flist pBoundary)
 {
   point_t *pPoint, *pPointCurve;
   float x1, y1, x2, y2;
@@ -464,7 +464,7 @@ Flist flstb_boundary(int *pPrecision, Fimage pImage, Shapes pTree, Shape pShape,
   if(pBoundary == NULL)
     mwerror(FATAL, 1, "Points allocation error");
   
-  extract_line(*pPrecision, pImage, pTree, pShape, pDualchain, pBoundary);
+  extract_line(*pPrecision, pImage, pShape, pDualchain, pBoundary);
   assert(pBoundary->size < iNbPoints); /* Otherwise, memory error happened */
   
   /* free over-allocated bytes if pBoundary was created in this module) */

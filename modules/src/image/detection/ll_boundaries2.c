@@ -69,7 +69,7 @@ struct myglobal{
 
 
 /* store meaningful boundaries */
-static void store_boundaries(Flists cs, Shapes tree, Fimage image, int *prec, float **tabsaddles, int visit, char *all, Fimage NormofDu, float eps2)
+static void store_boundaries(Flists cs, Shapes tree, Fimage image, int *prec, float **tabsaddles, char *all, float eps2)
 {
   Shape s;
   Flist l;
@@ -712,8 +712,7 @@ Flists ll_boundaries2(Fimage in, float *eps, Shapes tree, float *step, int *prec
   
   lognbtests = -threshold-(*eps);
   eps2 = -(*eps)-(float)log10((float)sumsqper);
-  store_boundaries(boundaries,ref_tree,in,prec,tabsaddles,*visit,all,
-		   NormofDu,eps2);
+  store_boundaries(boundaries,ref_tree,in,prec,tabsaddles,all,eps2);
 
   printf("%d %s boundaries detected over %d\n",boundaries->size,(all?"":"maximal"),ref_tree->nb_shapes);
   

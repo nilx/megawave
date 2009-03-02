@@ -139,7 +139,7 @@ static float SomGris(Fmovie orig_data, short unsigned int i, short unsigned int 
 static void LiBordsUnion(REGIONPTR reg, REGIONPTR regvois, BORDPTR bordcom),ElimBordeSom(BORDPTR bord),DegreSommet(SOMMETPTR som);
 static void ElimLiReg(REGIONPTR regvois),UnionBordCnxe(REGIONPTR reg);
 static void Union1Bord(SOMMETPTR som),Union2Bords(SOMMETPTR som);
-static void InitPixel(LI_PIXELSPTR pixelptr, char dir),RegCanalInit(Fmovie orig_data, short unsigned int i, short unsigned int j, float *canal),BorCanalInit(short unsigned int i, short unsigned int j, float *canal);
+static void InitPixel(LI_PIXELSPTR pixelptr, char dir),RegCanalInit(Fmovie orig_data, short unsigned int i, short unsigned int j, float *canal),BorCanalInit(float *canal);
 static void Repointer(SOMMETPTR som, BORDPTR newbord, BORDPTR oldbord),ElimBordeReg(REGIONPTR reg, BORDPTR bord),RegMerge(REGIONPTR reg, REGIONPTR regvois, BORDPTR bordcom);
 static LI_PIXELSPTR LiPixelsUnion(LI_PIXELSPTR liste1, LI_PIXELSPTR liste2);
 static REGIONPTR RegAdjD(REGIONPTR reg, short int i, short int j),RegAdjB(REGIONPTR reg, short int i, short int j);
@@ -185,7 +185,7 @@ static float SomGris(Fmovie orig_data, short unsigned int i, short unsigned int 
 }
 
 
-static void BorCanalInit(short unsigned int i, short unsigned int j, float *canal)     /* Initialise les canaux associes aux bords */
+static void BorCanalInit(float *canal)     /* Initialise les canaux associes aux bords */
                                  /* de la region [i,j]                       */
                                  /* Si i est pair c'est le bord du dessous,  */
 {                                /* si i est impair c'est le bord de droite  */
@@ -436,7 +436,7 @@ Initialisation(Fmovie orig_data)
   for (i=0;i<image.gx;i++) {                            /*******************/
     if (j!=image.gy-1) {                                /*       rg        */
       l=(long) 2*i  +lbbor*j;                           /* sb --------> sa */
-      BorCanalInit(i,j,block_bor[l].canal);             /*       rd        */
+      BorCanalInit(block_bor[l].canal);                 /*       rd        */
       block_bor[l].rg=block_reg + (long) i + lbreg* j ; /*******************/
       block_bor[l].rd=block_reg + (long) i + lbreg*(j+1); 
       block_bor[l].cnxe= block_borcnxe + l;                    /**************/
@@ -450,7 +450,7 @@ Initialisation(Fmovie orig_data)
     }
     if (i!=image.gx-1) {                                         /*********/
        l=(long) 2*i+1+lbbor*j;                                   /*  sa   */
-       BorCanalInit(i,j,block_bor[l].canal);                     /*   ^   */
+       BorCanalInit(block_bor[l].canal);                         /*   ^   */
        block_bor[l].rg=block_reg + (long) i   +lbreg* j ;        /*   |   */
        block_bor[l].rd=block_reg + (long)(i+1)+lbreg* j ;        /* rg|   */
        block_bor[l].cnxe= block_borcnxe + l;                     /*   |rd */
@@ -1329,7 +1329,7 @@ Cimage msegct(Fsignal weight, int *sgrid, int *nb_of_regions, float *lambda, Cur
 {
   Cimage boundary;
   Fimage im;
-  unsigned long l;
+  long l;
   short ncols,nrows;
 
   if((nb_of_regions==NULL)==(lambda==NULL))
@@ -1376,7 +1376,7 @@ Cimage msegct(Fsignal weight, int *sgrid, int *nb_of_regions, float *lambda, Cur
   printf("\nElastic energie = %.4g , boundary length= %ld.",image.energie.e,image.energie.l);
   printf("\nNumber of regions: %lu. \n", image.nbregions);
   if(lambda==NULL) 
-    while(*nb_of_regions<image.nbregions) segment();
+      while(*nb_of_regions < (int) image.nbregions) segment();
   else 
     while(*lambda>=h_lambda(h_root)) segment(); /* h_lambda(h_root) contains   */
                                       /* the next value for which we will merge*/

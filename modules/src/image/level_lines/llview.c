@@ -136,6 +136,9 @@ static void my_llmap(Fimage in, Ccimage out, float ofs, float step)
 
 static int redisplay(Wp_toggle wt, int n)
 {
+  /* FIXME: unused parameters */
+  wt = wt;
+  n = n;
   my_llmap(ref,image,(float)b4.value,(float)b5.value);
   WLoadBitMapColorImage(win2,image->red,image->green,image->blue,nx,ny);
   WRestoreImageWindow(win2,0,0,nx,ny);
@@ -145,6 +148,8 @@ static int redisplay(Wp_toggle wt, int n)
 
 static int grey_level(Wp_int wi, int n)
 {
+  /* FIXME: unused parameter */
+  n = n;
   wi->value = (wi->value+256)%256;
   redisplay(NULL,0);
   return(0);
@@ -152,6 +157,8 @@ static int grey_level(Wp_int wi, int n)
 
 static int step(Wp_int wi, int n)
 {
+  /* FIXME: unused parameter */
+  n = n;
   if (wi->value<1) wi->value = 1;
   if (wi->value>255) wi->value = 255;
   redisplay(NULL,0);
@@ -160,6 +167,9 @@ static int step(Wp_int wi, int n)
 
 static int quit(Wp_toggle wt, int n)
 {
+  /* FIXME: unused parameters */
+  wt = wt;
+  n = n;
   wp->state = -1;
   return(wp->state);
 }
@@ -188,6 +198,8 @@ static int win2_notify(Wframe *window, void *param)
   float nc,nd;
   int c; /* Key code must be int and not char to handle non-printable keys */
 
+  /* FIXME: unused parameter */
+  param = param;
   event = WUserEvent(window); 
   if (event<0) ret=1; else ret=event;
   WGetStateMouse(window,&x,&y,&button_mask);
