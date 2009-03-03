@@ -346,34 +346,6 @@ char *_mw_get_ftype_opt(char * ftype)
 }
 
 
-/* Return the ftype part only associated to the full ftype text <ftype>.
-   Indeed since V 2.19, one may add to the ftype one (or several) options
-   using the syntax type:opt_1:opt_2:...:opt_n.
-   Example : JFIFC:50 means JPEG/JFIF 24 bits color with compression quality 50.
-   For this input, the function will return JFIFC.
-*/
-
-static char *_mw_get_ftype_only(char * ftype)
-{
-     int i,l;
-     char *out;
-
-     l=strlen(ftype);
-     out=(char *) malloc(l*sizeof(char));
-     if (!out) mwerror(FATAL,1,"[_mw_get_ftype_only] Not enough memory !\n");
-
-     /* FIXME: wrong types, dirty temporary fix */
-     for (i=1; i< (int) strlen(ftype); i++)
-	  if (ftype[i]==':') 
-	  {
-	       strncpy(out,ftype,i);
-	       return(out);
-	  }
-     strcpy(out,ftype);
-     return(out);
-}
-
-
 /* Check if ftype <in> is of type <type>, that is
    <in>:opt_1:opt_2...:opt_n = <type>.
    Return 1 if true, 0 elsewhere.
