@@ -20,6 +20,19 @@ git archive --format=tar --prefix=megawave_${DATE}/ \
 git log --no-color \
     > ${MWDEV_SNAPSHOT_TMPDIR}/megawave_${DATE}/CHANGES.gitlog.txt
 
+cd ${MWDEV_SNAPSHOT_TMPDIR}/megawave_${DATE}
+
+sloccount --addlangall \
+    common mwp libmw libmw-x11 libmw-cmdline modules \
+    > ../sloccount_${DATE}.txt
+
+echo -e "\n\nDetails:\n" >> ../sloccount_${DATE}.txt
+
+sloccount --addlangall --cached --details \
+    common mwp libmw libmw-x11 libmw-cmdline modules \
+    | sed "s,${MWDEV_SNAPSHOT_TMPDIR}/megawave_${DATE}/,," \
+    >> ../sloccount_${DATE}.txt
+
 cd ${MWDEV_SNAPSHOT_TMPDIR}
 
 tar czf megawave_${DATE}_rawsrc.tgz megawave_${DATE}
@@ -42,5 +55,7 @@ for EXT in t7z tbz tgz zip; do
 	    upload/megawave_latest_${SRC}.${EXT};
     done;
 done
+
+mv sloccount_${DATE}.txt upload
 
 rsync -av --rsh=ssh upload/ ${DEST}
