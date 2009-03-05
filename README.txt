@@ -33,17 +33,18 @@ INSTRUCTIONS FOR COMPILING MEGAWAVE
 Different options are available. Include these options in the
 command-line to use them.
 
-* MODE      The compilation mode can be
-  - normal  : default standatd behaviour
-  - opti    : use optimisation options
-  - profile : include profiling instructions, for use with gprof
-  - debug   : include debugging symbols
-* LINK      The linking method can be
-  - dynamic : default dynamic linking
-  - static  : link statically
-* CHECK     The code checking mode can be
-  - relax   : default ansi mode
-  - strict  : strict ansi confirmance with extra code quality check
+* MODE       The compilation mode can be
+  - normal   : default standatd behaviour
+  - opti     : use optimisation options
+  - profile  : include profiling instructions, for use with gprof
+  - coverage : include code coverage instructions, for use with gcov
+  - debug    : include debugging symbols
+* LINK       The linking method can be
+  - dynamic  : default dynamic linking
+  - static   : link statically
+* CHECK      The code checking mode can be
+  - relax    : default ansi mode
+  - strict   : strict ansi confirmance with extra code quality check
 
 Example:
 

@@ -168,6 +168,8 @@ prebuild	: $(HDR) $(API) makefile.dep
 # TEST
 #
 
+# TODO: add profiling/coverage wrappers
+
 TEST	= test/checkmodules.sh
 LIBPATH	= ./:$(BASEDIR)/libmw:$(BASEDIR)/libmw-x11:$(BASEDIR)/libmw-cmdline
 

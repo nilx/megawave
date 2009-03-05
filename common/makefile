@@ -93,7 +93,12 @@ ifeq	($(MODE), debug)
 CMISC	+= -g
 endif
 
-# profiling
+# coverage
+ifeq	($(MODE), coverage)
+CMISC	+= -fprofile-arcs -ftest-coverage
+endif
+
+# profile
 ifeq	($(MODE), profile)
 CMISC	+= -pg
 endif
@@ -138,7 +143,12 @@ LPREFIX	?= debug/
 LDMISC	+= -g
 endif
 
-# debug
+# coverage
+ifeq	($(MODE), coverage)
+LDMISC	+= -fprofile-arcs -ftest-coverage
+endif
+
+# profile
 ifeq	($(MODE), profile)
 LDMISC	+= -pg
 endif
