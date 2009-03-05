@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdarg.h>
 
 #include "definitions.h"
@@ -48,6 +47,26 @@
                    (((x) >= 'a') && ((x) <= 'z')) ||    \
                    (((x) >= '0') && ((x) <= '9')) ||    \
                    ((x)=='_'))
+
+/*#include <ctype.h> */
+/**
+ * emulate a simple isupper() without handling localization
+ * to avoid glibc dependencies
+ */
+static int simple_isupper(int c)
+{
+     return ((c >= 'A') && (c <= 'Z'));
+}
+
+/**
+ * emulate a simple tolower() without handling localization
+ * to avoid glibc dependencies
+ */
+static int simple_tolower(int c)
+{
+     return (simple_isupper(c) ? (c + 'a' - 'A') : c);
+}
+
 
 /*
  * compute the line nb and char nb of the current <posfile> file
@@ -200,8 +219,8 @@ int lowerstring(char * in)
 
      for ( ; * in != '\0'; in++)
      {
-          if (isupper(* in))
-               * in = tolower(* in);
+          if (simple_isupper(* in))
+               * in = simple_tolower(* in);
           else
                if (* in == ' ')
                     ns++;
