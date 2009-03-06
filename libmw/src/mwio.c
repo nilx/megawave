@@ -1,35 +1,18 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  mwio.c
-   
-  Vers. 2.17
-  Author : Jacques Froment
-  Input/Output functions as a link between External and Internal Types.
-
-  Version history
-  2.17 (JF, march 2006) : 
-  - I/O function for wpack2d added
-  - data directory path search changed (see _search_filename_in_dir())
-
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
-  MegaWave2 is a "soft-publication" for the scientific community. It has
-  been developed for research purposes and it comes without any warranty.
-  The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-  CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/* FIXME : UNIX-centric */
-#define _XOPEN_SOURCE
-#include <sys/stat.h>
-#undef _XOPEN_SOURCE
+/**
+ * @file mwio.c
+ *
+ * @version 2.17
+ *
+ * @author Jacques Froment ( - 2006)
+ * @author Nicolas Limare (2008 - 2009)
+ *
+ * input/output functions as a link between External and Internal
+ * types
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-/* FIXME : UNIX-centric */
-#include <dirent.h>
-#include <unistd.h>
 
 #include "libmw-defs.h"
 #include "error.h"
@@ -150,139 +133,90 @@ FILE *_mw_write_header_file(char * fname, char * type, float IDvers)
 /*===== Default paths for seeking input files =====*/
 
 
-/* Get the file status of <fname> : return
-   0 if some errors occur (file probably isn't readable),
-   1 if file is a regular file or a link,
-   2 if file is a directory,
-   3 if file is not readable,
-   4 if file is of other type.
-*/
-
-static int _get_file_status(char * fname)
-{
-     struct stat statbuf;
-
-     if (stat(fname,&statbuf) != 0) return(0);
-     if ((statbuf.st_mode & S_IFDIR) == S_IFDIR) 
-     {
-	  mwerror(WARNING,1,"'%s' is a directory, trying another match...\n",fname);
-	  return(2); /* directory */
-     }
-     if ((statbuf.st_mode & S_IRUSR) != S_IRUSR) 
-     {
-	  mwerror(WARNING,1,"no read permission on '%s', trying another match...\n",fname);
-	  return(3); /* not readable */
-     }
-
-     if ((statbuf.st_mode & S_IFREG) == S_IFREG) return(1); /* regular */
-     if ((statbuf.st_mode & S_IFLNK) == S_IFLNK) return(1); /* link */
-
-     mwerror(WARNING,1,"'%s' is not a regular nor a link file, trying another match...\n",
-	     fname);
-     return(4);
-}
-
-
-/* Search fname in searchdir, recursively in each subdirectories.
-   Return 1 if found and the found directory in founddir, 0 elsewhere.
-*/
-
-static int _search_filename_in_dir(char *fname, char *searchdir, char *founddir)
-{
-     char dname[BUFSIZ];
-     DIR *D;
-     struct dirent *dirbuf; 
-     struct stat statbuf;
-     char newdir[BUFSIZ];
-
-     sprintf(dname,"%s/%s",searchdir,fname);
-
-     if (_get_file_status(dname)==1)  /* searchdir/fname is found */
-     {
-	  strcpy(founddir,searchdir);
-	  return(TRUE);
-     }
-     /* Not found : list the subdir in searchdir */
-     if ((D=opendir(searchdir))==NULL) return(FALSE); /* cannot open searchdir */
-  
-     while ((dirbuf=readdir(D))!=NULL)
-     {
-	  if ((strcmp(dirbuf->d_name,".")==0) ||
-	      strcmp(dirbuf->d_name,"..")==0) continue;
-      
-	  sprintf(newdir,"%s/%s",searchdir,dirbuf->d_name);	      
-	  if ((stat(newdir,&statbuf) == 0) &&
-	      ((statbuf.st_mode & S_IFDIR) == S_IFDIR))
-	       /* dirbuf->d_name is a directory */
-	       if (_search_filename_in_dir(fname,newdir,founddir)==TRUE)
-		    return(TRUE);
-     }
-     closedir(D);
-     return(FALSE);
-}	     
-
 /* Search fname in this order, <mwgroup> being the module's group :
    1) fname
-   2) fname in $MY_MEGAWAVE2/data/<mwgroup>/ (including subdirectories)
-   3) fname in all $MY_MEGAWAVE2/data/ (including subdirectories)
-   4) fname in $MEGAWAVE2/data/<mwgroup> (including subdirectories)
-   5) fname in all $MEGAWAVE2/data/ (including subdirectories)
+   2) fname in $MY_MEGAWAVE2/data/<mwgroup>/
+   3) fname in $MY_MEGAWAVE2/data/
+   4) fname in $MEGAWAVE2/data/<mwgroup>
+   5) fname in $MEGAWAVE2/data/
+   6) fname in $MEGAWAVE2_DATAPATH ($MEGAWAVE2_DATAPATH is a
+      colon-separated list of directories)
 */
 
 int _search_filename(char * fname)  /* Return 1 if found, 0 else */
 {
-     char *path,searchdir[BUFSIZ],founddir[BUFSIZ],newfname[BUFSIZ];
+     char *path, filepath[BUFSIZ];
+     FILE *fp;
 
-     *founddir = '\0';
-     if (_get_file_status(fname)==1) /* fname is found */
-	  return(TRUE);
+     if (NULL != (fp = fopen(fname, "r")))
+     {
+	 fclose(fp);
+	 return(TRUE);
+     }
 
      /* Not found : see if fname contains absolute pathname. 
 	If yes, return not found.
      */
-     if (fname[0]=='/') return(FALSE);
+     if ('/' == fname[0])
+	 return(FALSE);
 
-     /* Search in subdirs of $MY_MEGAWAVE2/data */
-     if ((path = getenv("MY_MEGAWAVE2")) != NULL)
+     /* Search in $MY_MEGAWAVE2/data */
+     if (NULL != (path = getenv("MY_MEGAWAVE2")))
      {
-	  sprintf(searchdir,"%s/data/%s",path,mwgroup);  
-	  if (_search_filename_in_dir(fname,searchdir,founddir)==TRUE)
-	  {
-	       /* founddir/fname found ! */
-	       sprintf(newfname,"%s/%s",founddir,fname);  	  
-	       strcpy(fname,newfname);
-	       return(TRUE);
-	  }
-	  sprintf(searchdir,"%s/data",path);  
-	  if (_search_filename_in_dir(fname,searchdir,founddir)==TRUE)
-	  {
-	       /* founddir/fname found ! */
-	       sprintf(newfname,"%s/%s",founddir,fname);  	  
-	       strcpy(fname,newfname);
-	       return(TRUE);
-	  }
+	 sprintf(filepath, "%s/data/%s/%s", path, mwgroup, fname);
+	 if (NULL != (fp = fopen(filepath, "r")))
+	 {
+	     fclose(fp);
+	     strcpy(fname, filepath);
+	     return(TRUE);
+	 }
+	 sprintf(filepath, "%s/data/%s", path, fname);
+	 if (NULL != (fp = fopen(filepath, "r")))
+	 {
+	     fclose(fp);
+	     strcpy(fname, filepath);
+	     return(TRUE);
+	 }
      }
-
-     /* Search in subdirs of $MEGAWAVE2/data */
-     if ((path = getenv("MEGAWAVE2")) != NULL)
+     /* Search in $MEGAWAVE2/data */
+     if (NULL != (path = getenv("MEGAWAVE2")))
      {
-	  sprintf(searchdir,"%s/data/%s",path,mwgroup);  
-	  if (_search_filename_in_dir(fname,searchdir,founddir)==TRUE)
-	  {
-	       /* founddir/fname found ! */
-	       sprintf(newfname,"%s/%s",founddir,fname);  	  
-	       strcpy(fname,newfname);
-	       return(TRUE);
-	  }
-	  sprintf(searchdir,"%s/data",path);  
-	  if (_search_filename_in_dir(fname,searchdir,founddir)==TRUE)
-	  {
-	       /* founddir/fname found ! */
-	       sprintf(newfname,"%s/%s",founddir,fname);  	  
-	       strcpy(fname,newfname);
-	       return(TRUE);
-	  }
-      
+	 sprintf(filepath, "%s/data/%s/%s", path, mwgroup, fname);
+	 if (NULL != (fp = fopen(filepath, "r")))
+	 {
+	     fclose(fp);
+	     strcpy(fname, filepath);
+	     return(TRUE);
+	 }
+	 sprintf(filepath, "%s/data/%s", path, fname);
+	 if (NULL != (fp = fopen(filepath, "r")))
+	 {
+	     fclose(fp);
+	     strcpy(fname, filepath);
+	     return(TRUE);
+	 }
+     }
+     if (NULL != (path = getenv("MEGAWAVE2_DATAPATH")))
+     {
+	 char *path_start;
+	 size_t length;
+
+	 path_start = path;
+	 while (path_start < path + strlen(path))
+	 {
+	     length = strcspn(path_start, ":");
+	     if (0 < length)
+	     {
+		 sprintf(filepath, "%.*s/%s", length, path_start, fname);
+		 if (NULL != (fp = fopen(filepath, "r")))
+		 {
+		     fclose(fp);
+		     strcpy(fname, filepath);
+		     return(TRUE);
+		 }
+	     }
+	     path_start += length + 1;
+	 }
      }
      return(FALSE);
 }
