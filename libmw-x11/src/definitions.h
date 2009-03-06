@@ -161,8 +161,13 @@ typedef struct wpanel {
   short *button;         /* bitmap (associated button number) */
 } *Wpanel;
 
-/* TODO: drop? */
+/**
+ * window main loop delay
+ * modified by some modules (cmview, ccmview)
+ */
 extern int mwwindelay;
+
+/* TODO: drop? */
 extern int mwrunmode;
 
 #endif /* !_DEFINITIONS_H_ */

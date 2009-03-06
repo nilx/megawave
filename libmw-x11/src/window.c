@@ -7,23 +7,26 @@
  * Interconnexion between the Wdevice Library and Megawave.
  */
 
-/* usleep() */
-#define _BSD_SOURCE
+/* FIXME: search for a portable implementation, if possible
+ * see vlc msleep() 
+ * http://www.videolan.org/developers/vlc/doc/doxygen/html/mtime_8c.html
+ */
+#define _POSIX_C_SOURCE 199309L
+#include <time.h>
+#undef _POSIX_C_SOURCE
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-/* TODO: drop */
-#include <unistd.h>
 
 #include "definitions.h"
 #include "wdevice.h"
 #include "window.h"
-/*#include "utils.h" */
+
 
 #define mw_nmax_windows 10 /* Max Numbers of windows */
 
-int mwwindelay=100; /* Delay to refresh windows (in microseconds) */
+int mwwindelay = 100; /* Delay to refresh windows (milliseconds) */
 int mw_n_windows=0; /* Current Number of windows */
 
 Wframe *mw_ptr_window[mw_nmax_windows]; /* ptr to each window */
@@ -102,7 +105,11 @@ void mw_window_notify(Wframe * Win, void * param,
 void mw_window_main_loop(void)
 {
     int i,j,r,cont,event_occured;
-    
+    struct timespec sleep_time;
+
+    sleep_time.tv_sec = 0;
+    sleep_time.tv_nsec = 1000 * 1000 * mwwindelay;
+
     /* Code for modules for which the window events have to be managed */
     cont=1;
     while ((mw_n_windows > 0) && (cont==1))
@@ -146,6 +153,6 @@ void mw_window_main_loop(void)
 		    if (r != 0) event_occured=1;
 		}
 	    }
-	if (event_occured==0) usleep(mwwindelay);
+	if (event_occured==0) nanosleep(&sleep_time, NULL);
     }
 }
