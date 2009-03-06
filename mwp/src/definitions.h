@@ -3,15 +3,12 @@
  *
  * common definitions for mwp
  *
- * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005), \
- *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005)
+ * @author Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008 - 2009)
  */
 
 #ifndef _DEFINITIONS_H
 #define _DEFINITIONS_H
-
-/* FIXME: drop */
-#include <sys/types.h>
 
 #include "config.h"
 

@@ -4,14 +4,11 @@
  * generate the documentation file for a megawave module
  *
  * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007)
- * @author Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008 - 2009)
  */
 
 /* TODO: simplify */
 /* TODO: use markdown and/or doxygen? */
-
-/* FIXME: drop */
-#include <sys/types.h>
 
 #include <stdio.h>
 #include <stdlib.h>
