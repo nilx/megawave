@@ -130,12 +130,12 @@ static int ccmview_notify(Wframe *ImageWindow, void *param)
 	      direction = -1; go=1;	  
 	      break;
 	    case '+':
-	      mwwindelay-=10;	      
-	      if (mwwindelay < 0) mwwindelay=0;
+	      mwwindelay -= 10;
+	      if (mwwindelay < 10) mwwindelay = 10;
 	      break;
 	    case '-':
-	      mwwindelay+=10;	      
-	      if (mwwindelay > 1000) mwwindelay=1000;
+	      mwwindelay += 10;
+	      if (mwwindelay > 1000) mwwindelay = 1000;
 	      break;
 	    }
 	  break;
@@ -187,7 +187,7 @@ void ccmview(Ccmovie input, int *x0, int *y0, float *zoom, int *order, int *loop
   char text[BUFSIZ];
   float inverse_zoom;
 
-  mwwindelay=100;
+  mwwindelay = 100;
 
   step_mode = (pause?1:0);
 
