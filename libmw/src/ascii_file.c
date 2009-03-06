@@ -22,11 +22,8 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <sys/file.h>
-
 #include "libmw-defs.h"
 #include "error.h"
-
 
 #include "ascii_file.h"
 
