@@ -12,15 +12,13 @@
  * @file commandline.c
  *
  * @version 1.14
- * @author Jacques Froment (1995-2005)
- * @author Sylvain Parrino (1995-2005)
+ * @author Jacques Froment (1995 - 2005)
+ * @author Sylvain Parrino (1995 - 2005)
+ * @author Nicolas Limare (2009)
  */
 
-/* TODO: cleanup #includes */
-
 /* TODO: remove, unix-centric */
-#include <sys/file.h>
-#include <unistd.h> /* for execle() */
+#include <unistd.h> /* for dup() */
 #include <fcntl.h>
 
 #include <stdlib.h>
@@ -45,7 +43,9 @@
 #define FNULL "/dev/null"
 
 /* for redirection of stdout and stderr*/
-static int out_sav = -1, fd_out, err_sav = -1, fd_err;
+/* TODO: use FILE * */
+static int out_sav = -1, fd_out;
+static int err_sav = -1, fd_err;
 int verbose_flg = FALSE;
 
 /**
