@@ -6,11 +6,6 @@
 #define _COMMANDLINE_H_
 
 /* src/commandline.c */
-void *mwmalloc(size_t size);
-void mwfree(void *ptr);
-void *mwrealloc(void *ptr, size_t size);
-void *mwcalloc(size_t nelem, size_t elsize);
-void mwcfree(void *ptr);
 int _mw_main(int argc, char *argv[], char *envp[]);
 void MegaWaveDefOpt(char *vers);
 int mw_opt_used(char c);

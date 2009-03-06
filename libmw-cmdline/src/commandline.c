@@ -180,18 +180,6 @@ static void setnewout(void)
      }
 }
 
-/* TODO: drop, unused? */
-void *mwmalloc(size_t size)
-{ return (void *)malloc(size); }
-void mwfree(void *ptr)
-{ free(ptr); }
-void *mwrealloc(void *ptr, size_t size)
-{ return (void *)realloc(ptr, size); }
-void *mwcalloc(size_t nelem, size_t elsize) 
-{ return (void *)calloc(nelem, elsize); }
-void mwcfree(void *ptr)
-{ free(ptr); }
-
 static void find_type(char * fdecl,char * var, char * type)
 {
      char vtype[BUFSIZ]; /* current variable type */
