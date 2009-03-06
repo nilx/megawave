@@ -1,30 +1,18 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  wpack2d_io.c
-   
-  Vers. 1.0
-  Authors : Adrien Costagliola, David Serre, Francois Malgouyres, Jacques Froment
-  Input/Output private functions for the Wpack2d structure
-
-  Version history :
-  v1.0 (JF, April 2007): main revision; ready for 1st external release.
-
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
-  MegaWave2 is a "soft-publication" for the scientific community. It has
-  been developed for research purposes and it comes without any warranty.
-  The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-  CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/**
+ * @file wpack2d_io.c
+ *
+ * @version 1.0
+ * @author Adrien Costagliola (2007)
+ * @author David Serre (2007)
+ * @author Francois Malgouyres (2007)
+ * @author Jacques Froment (2007)
+ * @author Nicolas Limare (2008 - 2009)
+ *
+ * input/output private functions for the Wpack2d structure
+ */
 
 #include <stdio.h>
 #include <string.h>
-/* FIXME : UNIX-centric */
-#include <sys/stat.h>
-
-/*
-#include <fcntl.h>
-*/
 
 #include "libmw-defs.h"
 #include "error.h"
@@ -49,7 +37,7 @@ extern int _mw_convert_struct_warning;
 
 Wpack2d _mw_load_wpack2d_ascii(char *fname)
 {
-     FILE    *fp;
+     FILE    *fp, *fp2;
      Wpack2d pack=NULL;
      int fformat=0;
      char buffer[BUFSIZ];
@@ -61,7 +49,6 @@ Wpack2d _mw_load_wpack2d_ascii(char *fname)
      Cimage tree;
      char type[mw_ftype_size];
      char comment[mw_cmtsize];
-     struct stat statbuf;
 
      fp = _mw_open_data_ascii_file(fname);
      if (fp == NULL) return(NULL);
@@ -166,8 +153,14 @@ Wpack2d _mw_load_wpack2d_ascii(char *fname)
      else /* Relative pathname : add pathname of fname and see if signal 1 is found here*/
      {
 	  sprintf(fn,"%s%s",pn,ns1);
-	  if (stat(fn,&statbuf) != 0) /* not found : do not add pathname (file is probably in $MEGAWAV2/data) */
-	       strcpy(fn,ns1);	
+	  if (NULL != (fp2 = fopen(fn, "r")))
+          /* not found : do not add pathname 
+	   * (file is probably in $MEGAWAV2/data) */
+	  {
+	      strcpy(fn,ns1);
+	      fclose(fp2);
+	  }
+	      
      }
 
      if (_mwload_fsignal(fn, type, comment, &signal1) != 0)
@@ -185,8 +178,13 @@ Wpack2d _mw_load_wpack2d_ascii(char *fname)
      else /* Relative pathname : add pathname of fname and see if signal 2 is found here*/
      {
 	  sprintf(fn,"%s%s",pn,ns2);
-	  if (stat(fn,&statbuf) != 0) /* not found : do not add pathname (file is probably in $MEGAWAV2/data) */
+	  if (NULL != (fp2 = fopen(fn, "r")))
+          /* not found : do not add pathname
+	   * (file is probably in $MEGAWAV2/data) */
+	  {
 	       strcpy(fn,ns2);	
+	       fclose(fp2);
+	  }
      }
 
      if (_mwload_fsignal(fn, type, comment, &signal2) != 0)
