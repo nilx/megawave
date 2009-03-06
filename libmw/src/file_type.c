@@ -1,29 +1,20 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  file_type.c
-  
-  Vers. 2.23
-  Author : Jacques Froment
-  Give the type of MegaWave2 external (file) structures and (addition of
-  the 2.0 version) the associated type in MegaWave2 internal (C) structures.
+/**
+ * @file file_type.c
+ *
+ * @version 2.23
+ * @author Jacques Froment ( - 2006)
+ * @author Nicolas Limare (2008 - 2009)
+ *
+ * give the type of MegaWave2 external (file) structures and (addition
+ * of the 2.0 version) the associated type in MegaWave2 internal (C)
+ * structures
+ */
 
-  Versions history :
-  2.23 (JF, March, 2006) : add wpack2d
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
-  MegaWave2 is a "soft-publication" for the scientific community. It has
-  been developed for research purposes and it comes without any warranty.
-  The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-  CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 /* FIXME : avoid */
 #include <setjmp.h>
-/* FIXME : UNIX-centric */
-#include <fcntl.h>
-#include <unistd.h>
 
 #include "libmw-defs.h"
 #include "error.h"
@@ -855,20 +846,20 @@ static int what_kind_of_MW2(char * file, char * subtype,
 			    char * mtype, int * hsize, float * version)
 {
      int need_flipping;
-     short fd;
+     FILE * fp;
      char header[h_X_maxsize + SIZE_OF_MW2_BIN_TYPE_ID];      /* read after "MW_2" */
      char h2[3];                    /* read "_2" */
-     unsigned short bytesread;      /* Nbre de bytes lus */
+     size_t bytesread;      /* Nbre de bytes lus */
      unsigned short first2bytes;    /* The first 2 bytes (MW) */
 
      strcpy(subtype,"MW2?");
      strcpy(mtype,"?");
 
      /* Read first 2 bytes (MW) to check flipping */
-     fd = open(file, O_RDONLY);
-     if (fd == -1) 
+     if (NULL == (fp = fopen(file, "r")))
 	  mwerror(FATAL, 0,"File \"%s\" not found or unreadable\n",file);
-     bytesread = read(fd,&first2bytes,2) + read(fd,h2,2);
+     bytesread = fread(&first2bytes, sizeof(char), 2, fp)
+	 + fread(h2, sizeof(char), 2, fp);
      h2[2]='\0';
      if (bytesread != 4) return(0);
      switch (first2bytes)
@@ -880,13 +871,15 @@ static int what_kind_of_MW2(char * file, char * subtype,
 	  need_flipping=1;
 	  if (strcmp(h2,"2_")==0) break;
      default:
-	  mwerror(INTERNAL,1,"[what_kind_of_MW2] file %s is not of MW2 type !\n",file);
+	  mwerror(INTERNAL, 1, "[what_kind_of_MW2] file %s is not "
+		  "of MW2 type !\n", file);
      }     
 
      /* Read end of header format */
-     bytesread = read(fd,header,h_X_maxsize + SIZE_OF_MW2_BIN_TYPE_ID);
+     bytesread = fread(header, sizeof(char), 
+		       h_X_maxsize + SIZE_OF_MW2_BIN_TYPE_ID, fp);
      if (bytesread <= h_X_minsize) return(0);
-     close(fd);
+     fclose(fp);
 
      /* WARNING : check long name before shorter with same root !
 	e.g. CURVES before CURVE.
@@ -1102,25 +1095,24 @@ static int what_kind_of_MW2(char * file, char * subtype,
 static int _mw_get_binary_file_type(char * fname, char * ftype, char * mtype,
 			     int * hsize, float * version)
 {
-     short fd;
+     FILE * fp;
      unsigned short bytes1_2;    /* The first 2 bytes (magic number) */
      unsigned short bytes3_4;    /* bytes 3 and 4 */
-     unsigned short br1_2,br3_4; /* Number of read bytes */
+     size_t br1_2,br3_4; /* Number of read bytes */
 
      strcpy(ftype,"?");
      strcpy(mtype,"?");
 
-     fd = open(fname, O_RDONLY);
-     if (fd == -1) 
+     if (NULL == (fp = fopen(fname, "r")))
 	  mwerror(FATAL, 0,"File \"%s\" not found or unreadable\n",fname);
 
      *hsize=0;
      *version=0.0;
 
-     br1_2 = read(fd,&bytes1_2,2);
-     br3_4 = read(fd,&bytes3_4,2);
+     br1_2 = fread(&bytes1_2, sizeof(char), 2, fp);
+     br3_4 = fread(&bytes3_4, sizeof(char), 2, fp);
 
-     close(fd);
+     fclose(fp);
      if ((br1_2 != 2)||(br3_4 != 2)) return(0);
 
      switch (bytes1_2)
