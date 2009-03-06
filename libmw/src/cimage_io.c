@@ -1,26 +1,16 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  cimage_io.c
-  
-  Vers. 1.12
-  (C) 1993-2002 Jacques Froment
-  Input/Output private functions for the Cimage structure
+/**
+ * @file cimage_io.c
+ *
+ * @version 1.12
+ * @author Jacques Froment (1993 - 2002)
+ * @author Nicolas Limare (2008 - 2009)
+ *
+ * input/output private functions for the Cimage structure
+ */
 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
-  MegaWave2 is a "soft-publication" for the scientific community. It has
-  been developed for research purposes and it comes without any warranty.
-  The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-  CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
+#include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include <stdio.h>
-/* FIXME : UNIX-centric */
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 
 #include "libmw-defs.h"
 #include "error.h"
@@ -39,14 +29,20 @@
 
 #include "cimage_io.h"
 
-
-static long fsize(int fd)  /* Return the size of the file */
+static long fsize(FILE * fp)  /* Return the size of the file */
 {
-     struct stat stbuf;
+    fpos_t position;
+    long file_size;
 
-     if (fstat(fd, &stbuf) < 0)
-	  mwerror(INTERNAL,0,"[fsize] Cannot get stat from the opened file\n");
-     return (stbuf.st_size);
+    if (0 != fgetpos(fp, &position))
+	mwerror(INTERNAL,0,"[fsize] Cannot get the position in the file\n");
+    if (0 != fseek(fp, 0, SEEK_END))
+	mwerror(INTERNAL,0,"[fsize] Cannot change the position in the file\n");
+    if (-1L == (file_size = ftell(fp)))
+	mwerror(INTERNAL,0,"[fsize] Cannot get the position in the file\n");
+    if (0 != fsetpos(fp, &position))
+	mwerror(INTERNAL,0,"[fsize] Cannot set the position in the file\n");
+    return file_size;
 }                        
 
 
@@ -62,16 +58,15 @@ static long fsize(int fd)  /* Return the size of the file */
 static short _MAKEHEADER_IMG(char * NomFic, short dx, short dy, 
 			     char * comment)
 {
-     short fic;
+     FILE * fp;
      unsigned short BufferEntete[160];       /* Buffer de lecture de l'entete */
      short i;
-     unsigned short byteswrite;
-     unsigned short header = 64;             /* Nbre de bytes entete du fichier */
-     short lencomm;
+     size_t byteswrite;
+     size_t header = 64;             /* Nbre de bytes entete du fichier */
+     size_t lencomm;
 
-     fic = open(NomFic,O_WRONLY | O_CREAT | O_TRUNC,PROTECT_NORMAL);
-     if (fic == -1) return(-1);
-
+     if (NULL == (fp = fopen(NomFic, "w")))
+	 return(-1);
      BufferEntete[0] = 0x494D;
      lencomm = strlen(comment);
      BufferEntete[1] = _mw_get_flip_b2(lencomm);
@@ -79,9 +74,11 @@ static short _MAKEHEADER_IMG(char * NomFic, short dx, short dy,
      BufferEntete[3] = _mw_get_flip_b2(dy);
      for (i=4;i<32; i++) BufferEntete[i] = 0;
      memcpy(&BufferEntete[32],comment,lencomm);
-     byteswrite = write(fic,BufferEntete,header+lencomm);
-     close(fic);
-     if (byteswrite != header+lencomm) return(-1);
+     byteswrite = fwrite(BufferEntete, sizeof(char), 
+			 header + lencomm, fp);
+     fclose(fp);
+     if (byteswrite != header + lencomm)
+	 return(-1);
      return(0);
 }
  
@@ -91,26 +88,25 @@ static short _MAKEHEADER_IMG(char * NomFic, short dx, short dy,
 /* Retourne 0 si OK, -1 si creation impossible ou erreur d'ecriture   */
 static short MAKE_INR_HEADER(char *NomFic, short dx, short dy)
 {
-     short fic;
-     unsigned short BufferEntete[128];       /* Buffer de lecture de l'entete */
-     unsigned short byteswrite;
-     unsigned short header = 256;            /* Nbre de bytes entete du fichier */
+     FILE * fp;
+     unsigned short BufferEntete[128];  /* Buffer de lecture de l'entete */
+     size_t byteswrite;
+     size_t header = 256;       /* Nbre de bytes entete du fichier */
      unsigned short i;
 
-     fic = open(NomFic,O_WRONLY | O_CREAT | O_TRUNC, PROTECT_NORMAL);
-     if (fic == -1) return(-1);
-
-     for (i=0;i<header/2;i++) BufferEntete[i] = 0;
-
+     if (NULL == (fp = fopen(NomFic, "w")))
+	 return(-1);
+     for (i=0;i<header/2;i++)
+	 BufferEntete[i] = 0;
      BufferEntete[0] = BufferEntete[5] = dx;
      BufferEntete[1] = dy;
      BufferEntete[2] = 256;
      BufferEntete[3] = BufferEntete[4] = 1;
      BufferEntete[12] = 200;
-
-     byteswrite = write(fic,BufferEntete,header);
-     close(fic);
-     if (byteswrite != header) return(-1);
+     byteswrite = fwrite(BufferEntete, sizeof(char), header, fp);
+     fclose(fp);
+     if (byteswrite != header)
+	 return(-1);
      return(0);
 }
 
@@ -120,22 +116,21 @@ static short MAKE_INR_HEADER(char *NomFic, short dx, short dy)
 
 static short MAKE_MTI_HEADER(char *NomFic, short dx, short dy)
 {
-     short fic;
-     unsigned short BufferEntete[4];       /* Buffer de lecture de l'entete */
-     unsigned short byteswrite;
-     unsigned short header = 8;             /* Nbre de bytes entete du fichier */
+     FILE * fp;
+     unsigned short BufferEntete[4]; /* Buffer de lecture de l'entete */
+     size_t byteswrite;
+     size_t header = 8;              /* Nbre de bytes entete du fichier */
 
-     fic = open(NomFic,O_WRONLY | O_CREAT | O_TRUNC, PROTECT_NORMAL);
-     if (fic == -1) return(-1);
-
-
+     if (NULL == (fp = fopen(NomFic, "w")))
+	 return(-1);
      BufferEntete[0] = dx;
      BufferEntete[1] = dy;
      BufferEntete[2] = 8;
      BufferEntete[3] = 0;
-     byteswrite = write(fic,BufferEntete,header);
-     close(fic);
-     if (byteswrite != header) return(-1);
+     byteswrite = fwrite(BufferEntete, sizeof(char), header, fp);
+     fclose(fp);
+     if (byteswrite != header)
+	 return(-1);
      return(0);
 }
  
@@ -143,15 +138,15 @@ static short MAKE_MTI_HEADER(char *NomFic, short dx, short dy)
 
 Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
 {
-     short   fic;                            /* fichier */
-     unsigned short BufferEntete[4];         /* Buffer de lecture de l'entete */
-     unsigned short bytesread;               /* Nbre de bytes lus */
-     unsigned short minheader = 8; /* Nbre de bytes entete minimale du fichier */
-     unsigned short header;        /* Nbre de bytes entete du format du fichier */
-     unsigned short dx,dy;                 /* Taille de l'image du fichier */
-     unsigned short taillezc;              /* Taille de la zone de commentaires */
-     unsigned short n;                       /* Nbre de bytes a lire */
-     long i,L;                               /* Indices courants sur l'image */
+     FILE * fp;                      /* fichier */
+     unsigned short BufferEntete[4]; /* Buffer de lecture de l'entete */
+     size_t bytesread;               /* Nbre de bytes lus */
+     size_t minheader = 8;           /* Nbre de bytes entete minimale */
+     size_t header;                  /* Nbre de bytes entete du format */
+     unsigned short dx,dy;           /* Taille de l'image du fichier */
+     size_t taillezc;                /* Taille de la zone de commentaires */
+     size_t n;                       /* Nbre de bytes a lire */
+     long i,L;                       /* Indices courants sur l'image */
      double sqrt_fsize;
 
      Cimage image;                /* Buffer memoire */
@@ -163,16 +158,14 @@ Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
 
      /* Ouverture du fichier */
 
-     fic = open(NomFic, /* O_BINARY | */ O_RDONLY);
-     if (fic == -1) mwerror(FATAL, 0,"File \"%s\" not found or unreadable\n",NomFic);
-
+     if (NULL == (fp = fopen(NomFic, "r")))
+	 mwerror(FATAL, 0, "File \"%s\" not found or unreadable\n", NomFic);
      /* Lecture entete */
-     bytesread = read(fic,BufferEntete,minheader);
-     if (bytesread != minheader) 
-	  mwerror(FATAL, 0,"Error while reading header of file \"%s\" (may be corrupted)\n",NomFic);
-
+     if (minheader != (bytesread = fread(BufferEntete, sizeof(char), 
+					 minheader, fp)))
+	 mwerror(FATAL, 0, "Error while reading header of file \"%s\" "
+		 "(may be corrupted)\n", NomFic);
      /* Tests entete */
-
      if ((bytesread == minheader) && 
 	 ((BufferEntete[0] == 0x494D)||(BufferEntete[0] == 0x4D49)))
      {  /* IMG */
@@ -194,12 +187,14 @@ Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
 	  /* Read the comments */
 	  if (taillezc > 0)
 	  {
-	       if (lseek(fic,64,SEEK_SET) == -1L) 
-		    mwerror(FATAL, 0,"IMG image header file \"%s\" is corrupted\n",NomFic);
-	       bytesread = read(fic,Comment,taillezc);
-	       if (bytesread != taillezc) 
-		    mwerror(FATAL, 0,"IMG image header file \"%s\" is corrupted\n",NomFic);
-	       Comment[taillezc] = '\0';
+	      if (-1L == fseek(fp, 64, SEEK_SET)) 
+		  mwerror(FATAL, 0, "IMG image header file \"%s\" "
+			  "is corrupted\n", NomFic);
+	      if (taillezc != (bytesread = fread(Comment, sizeof(char), 
+						 taillezc, fp)))
+		  mwerror(FATAL, 0, "IMG image header file \"%s\" "
+			  "is corrupted\n",NomFic);
+	      Comment[taillezc] = '\0';
 	  }
 	  else Comment[0] = '\0';
      }
@@ -226,37 +221,39 @@ Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
 	       else 
 	       {  /* May be BIN */
 		    /* FIXME: wrong types, dirty temporary fix */
-		    sqrt_fsize = sqrt((long int) fsize(fic));
-		    L = (int) sqrt_fsize;
-		    if ( ((double) L - sqrt_fsize) == 0.0 ) /* Size is a square */
-		    {
-			 /* Assume to be BIN */
-			 strcpy(Type,"BIN");
-			 dx = dy = L;
-			 header = 0;
-			 Comment[0] = '\0';
-			 mwerror(WARNING,0,
-				 "Unrecognized header for the file \"%s\": assume BINary 8 bpp format.\n",NomFic);
-		    }
-		    else
-			 mwerror(FATAL, 0,"Format of the image file \"%s\" unknown\n",NomFic);
+		   sqrt_fsize = sqrt(fsize(fp));
+		   L = (int) sqrt_fsize;
+		   if ( ((double) L - sqrt_fsize) == 0.0 ) 
+                   /* Size is a square */
+                   /* FIXME : 100x100 == 10x1000... */
+		   {
+		       /* Assume to be BIN */
+		       strcpy(Type,"BIN");
+		       dx = dy = L;
+		       header = 0;
+		       Comment[0] = '\0';
+		       mwerror(WARNING, 0,
+			       "Unrecognized header for the file \"%s\": "
+			       "assume BINary 8 bpp format.\n", NomFic);
+		   }
+		   else
+		       mwerror(FATAL, 0, "Format of the image file \"%s\" "
+			       "unknown\n", NomFic);
 	       }
 
      /* Reservation memoire */
-
      image = mw_change_cimage(NULL,dy,dx);
      if (image == NULL)
-	  mwerror(FATAL,0,"Not enough memory to load the image \"%s\"\n",NomFic);
-
+	  mwerror(FATAL, 0, "Not enough memory "
+		  "to load the image \"%s\"\n", NomFic);
      strcpy(image->cmt,Comment);
-
      /* On se positionne sur le debut de la zone pixel (0,0) */
-
-     if (lseek(fic,header,SEEK_SET) == -1L) 
+     if (-1L == fseek(fp, header, SEEK_SET)) 
      {
 	  mw_delete_cimage(image);
 	  image = NULL;
-	  mwerror(ERROR, 0,"Format of the image file \"%s\" unknown or file corrupted\n",NomFic);
+	  mwerror(ERROR, 0, "Format of the image file \"%s\" "
+		  "unknown or file corrupted\n", NomFic);
 	  return(image);
      }
 
@@ -264,20 +261,20 @@ Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
      i = 0;
      L = ( (long) dx ) * dy;
      while (L>0) {
-	  if (L > 65000L) n = 65000; else n = L;
-	  L -= n;
-	  bytesread = read(fic,ptr+i,n);
-	  if (bytesread != n) 
-	  {
-	       mw_delete_cimage(image);
-	       image = NULL;
-	       mwerror(ERROR, 0,"Error while reading file \"%s\" (file may be corrupted)\n",NomFic); 
-	       return(image);
-	  }
-	  i += bytesread;
+	 if (L > 65000L) n = 65000; else n = L;
+	 L -= n;
+	 if (n != (bytesread = fread(ptr+i, sizeof(char), n, fp)))
+	 {
+	     mw_delete_cimage(image);
+	     image = NULL;
+	     mwerror(ERROR, 0, "Error while reading file \"%s\" "
+		     "(file may be corrupted)\n", NomFic); 
+	     return(image);
+	 }
+	 i += bytesread;
      }
 
-     close(fic);
+     fclose(fp);
 
      _mw_flip_image((unsigned char *) ptr,sizeof(char),dx,dy, FALSE);
      return(image);
@@ -286,13 +283,13 @@ Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
 short _mw_cimage_create_megawave1(char * NomFic, Cimage image,
 				  char * Type)
 {
-     int   fic;                            /* fichier */
-     unsigned short byteswrite;            /* Nbre de bytes ecrits */
-     unsigned short header;                /* Nbre de bytes entete du fichier */
-     unsigned short dx,dy;                          /* Taille de l'image */
-     unsigned short taillezc;              /* Taille de la zone de commentaires */
-     unsigned short n;                     /* Nbre de bytes a lire */
-     long i,l;                             /* Indices courants sur l'image */
+     FILE * fp;                    /* fichier */
+     size_t byteswrite;            /* Nbre de bytes ecrits */
+     size_t header;                /* Nbre de bytes entete du fichier */
+     unsigned short dx,dy;         /* Taille de l'image */
+     size_t taillezc;              /* Taille de la zone de commentaires */
+     unsigned short n;             /* Nbre de bytes a lire */
+     long i, l;                    /* Indices courants sur l'image */
      unsigned char *ptr; 
 
      if ((image->ncol>=65536)||(image->nrow>=65536))
@@ -346,17 +343,18 @@ short _mw_cimage_create_megawave1(char * NomFic, Cimage image,
 
      if (taillezc + header <= 0) /* No header at all */
      {
-	  if ((fic=open(NomFic,O_WRONLY | O_CREAT | O_TRUNC, 
-			PROTECT_NORMAL)) == -1)
-	       mwerror(FATAL,1,"Unable to create the file \"%s\"\n",NomFic);
+	 if (NULL == (fp = fopen(NomFic, "w")))
+	     mwerror(FATAL, 1, "Unable to create the file \"%s\"\n",NomFic);
      }
      else
 	  /* Header already written */
      {
-	  if ( ((fic = open(NomFic,O_WRONLY)) == -1) || 
-	       (lseek(fic,(long)taillezc+header,SEEK_SET) != taillezc+header) )
-	       mwerror(FATAL,1,"Unable to write in the file \"%s\"\n",NomFic);
+	 if (NULL == (fp = fopen(NomFic, "r+")))
+	     mwerror(FATAL,1,"Unable to write in the file \"%s\"\n",NomFic);
+	 if (0 != fseek(fp, (long)taillezc+header, SEEK_SET))
+	     mwerror(FATAL,1,"Unable to write in the file \"%s\"\n",NomFic);
      }
+
 
      l = ((long) dx) * dy;
   
@@ -364,17 +362,20 @@ short _mw_cimage_create_megawave1(char * NomFic, Cimage image,
      ptr = image->gray;
      while (l>0) 
      {
-	  if (l > 65000L) n = 65000; else n = l;
+	  if (l > 65000L) 
+	      n = 65000; 
+	  else 
+	      n = l;
 	  l -= n;
-	  byteswrite = write(fic,ptr+i,n);
-	  if (byteswrite != n) 
+	  if (n != (byteswrite = fwrite(ptr+i, sizeof(char), n, fp)))
 	  {
-	       mwerror(FATAL,1,"Error while writing in the file \"%s\"\n",NomFic);
+	       mwerror(FATAL, 1, "Error while writing "
+		       "in the file \"%s\"\n", NomFic);
 	       return(-1);
 	  }
 	  i += n;
      }
-     close(fic);
+     fclose(fp);
      return(0);
 }
 
