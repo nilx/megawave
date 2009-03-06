@@ -1,26 +1,15 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  fimage_io.c
-   
-  Vers. 1.12
-  Author : Jacques Froment
-  Input/Output private functions for the Fimage structure
+/**
+ * @file cimage_io.c
+ *
+ * @version 1.12
+ * @author Jacques Froment (1993 - 2002)
+ * @author Nicolas Limare (2008 - 2009)
+ *
+ * input/output private functions for the Cimage structure
+ */
 
-  Main changes :
-  v1.12 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-/*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
-  MegaWave2 is a "soft-publication" for the scientific community. It has
-  been developed for research purposes and it comes without any warranty.
-  The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-  CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <string.h>
 #include <stdio.h>
-/* FIXME : UNIX-centric */
-#include <fcntl.h>
-#include <unistd.h>
 
 #include "libmw-defs.h"
 #include "error.h"
@@ -34,8 +23,6 @@
 
 /*~~~~~~ MegaWaveI formats ~~~~~*/
 
-#define PROTECT_NORMAL 0644  /* rw- pour l'utilisateur, r-- pour les autres */
-
 /*--- Cree l'entete d'un fichier <NomFic> au format RIM, ayant      ---*/
 /*--- pour dimension d'image <dx>,<dy>, pour commentaires <comment> ---*/
 /*--- et pour bornes d'abcisse [a,b].                               ---*/
@@ -47,50 +34,47 @@ static short _MAKEHEADER_RIM(char *NomFic,
 			     short int dx, short int dy, 
 			     char *comment, float a, float b)
 {
-     short fic;
-     unsigned short BufferEntete[160];       /* Buffer de lecture de l'entete */
+     FILE * fp;
+     unsigned short BufferEntete[160];  /* Buffer de lecture de l'entete */
      short i;
-     unsigned short byteswrite;
-     unsigned short header = 64;             /* Nbre de bytes entete du fichier */
+     size_t byteswrite;
+     size_t header = 64;        /* Nbre de bytes entete du fichier */
      short lencomm;
      char A[20],B[20];     /* forme Ascii de a,b */
      short lenfloat = 14;  /* Longueur en bytes d'un float sous forme Ascii */
 
-     fic = open(NomFic,O_WRONLY | O_CREAT | O_TRUNC,PROTECT_NORMAL);
-     if (fic == -1) return(-1);
-
+     if (NULL == (fp = fopen(NomFic, "w")))
+	 return(-1);
      BufferEntete[0] = 0x5249;
      lencomm = strlen(comment);
      BufferEntete[1] = _mw_get_flip_b2(lencomm);
      BufferEntete[2] = _mw_get_flip_b2(dx);
      BufferEntete[3] = _mw_get_flip_b2(dy);
-
      sprintf(A,"%f",a);
      sprintf(B,"%f",b);
      memcpy(&BufferEntete[4],A,lenfloat);
      memcpy(&BufferEntete[4+lenfloat/2],B,lenfloat);
-
      for (i=4+lenfloat;i<32; i++) BufferEntete[i] = 0;
-
      memcpy(&BufferEntete[32],comment,lencomm);
-     byteswrite = write(fic,BufferEntete,header+lencomm);
-     close(fic);
-     if (byteswrite != header+lencomm) return(-1);
+     byteswrite = fwrite(BufferEntete, sizeof(char), header + lencomm, fp);
+     fclose(fp);
+     if (byteswrite != header+lencomm)
+	 return(-1);
      return(0);
 }
 
 
 Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
 {
-     short   fic;                            /* fichier */
-     unsigned short BufferEntete[4];         /* Buffer de lecture de l'entete */
-     unsigned short bytesread;               /* Nbre de bytes lus */
-     unsigned short minheader = 8; /* Nbre de bytes entete minimale du fichier */
-     unsigned short header;        /* Nbre de bytes entete du format du fichier */
-     unsigned short dx,dy;                 /* Taille de l'image du fichier */
-     unsigned short taillezc;              /* Taille de la zone de commentaires */
-     unsigned short n;                     /* Nbre de bytes a lire */
-     long i,L;                             /* Indices courants sur l'image */
+     FILE * fp;                     /* fichier */
+     unsigned short BufferEntete[4]; /* Buffer de lecture de l'entete */
+     size_t bytesread;               /* Nbre de bytes lus */
+     size_t minheader = 8;           /* Nbre de bytes entete minimale */
+     size_t header;                  /* Nbre de bytes entete du format */
+     unsigned short dx,dy;           /* Taille de l'image du fichier */
+     size_t taillezc;                /* Taille de la zone de commentaires */
+     unsigned short n;               /* Nbre de bytes a lire */
+     long i,L;                       /* Indices courants sur l'image */
   
      Fimage image;                /* Buffer memoire */
      char  Comment[mw_cmtsize];   /* Commentaires */
@@ -103,17 +87,16 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
 
      /* Ouverture du fichier */
 
-     fic = open(NomFic, /* O_BINARY | */ O_RDONLY);
-     if (fic == -1) 
-	  mwerror(FATAL,1,"File \"%s\" not found or unreadable\n",NomFic);
+     if (NULL == (fp = fopen(NomFic, "r")))
+	 mwerror(FATAL, 1, "File \"%s\" not found or unreadable\n", NomFic);
 
      /* Lecture entete */
-     bytesread = read(fic,BufferEntete,minheader);
-     if (bytesread != minheader) 
-	  mwerror(FATAL,1,"Error while reading header of file \"%s\" (may be corrupted)\n",NomFic);
+     if (minheader != (bytesread = fread(BufferEntete, sizeof(char), 
+					 minheader, fp)))
+	 mwerror(FATAL, 1, "Error while reading header "
+		 "of file \"%s\" (may be corrupted)\n", NomFic);
 
      /* Tests entete */
-
      if ((bytesread == minheader) && 
 	 ((BufferEntete[0] == 0x5249)||(BufferEntete[0] == 0x4952)))
      {  
@@ -132,16 +115,18 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
 	       dy = BufferEntete[3];
 	       need_flipping = TRUE;
 	  }
-	  header=64+taillezc;
+	  header = 64 + taillezc;
 
 	  /* Read the comments */
 	  if (taillezc > 0)
 	  {
-	       if (lseek(fic,64,SEEK_SET) == -1L) 
-		    mwerror(FATAL,1,"RIM image header file \"%s\" is corrupted\n",NomFic);
-	       bytesread = read(fic,Comment,taillezc);
-	       if (bytesread != taillezc) 
-		    mwerror(FATAL,1,"RIM image header file \"%s\" is corrupted\n",NomFic);
+	      if (0 != fseek(fp, 64, SEEK_SET)) 
+		  mwerror(FATAL, 1, "RIM image header file \"%s\" "
+			  "is corrupted\n", NomFic);
+	      if (taillezc != (bytesread = fread(Comment, sizeof(char),
+						 taillezc, fp)))
+		  mwerror(FATAL, 1, "RIM image header file \"%s\" "
+			  "is corrupted\n", NomFic);
 	       Comment[taillezc] = '\0';
 	  }
 	  else Comment[0] = '\0';
@@ -152,33 +137,35 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
 	      ((BufferEntete[0] == 0x494D)||(BufferEntete[0] == 0x4D49)))
 	  {  /* IMG */
 	       strcpy(Type,"IMG");
-	       mwerror(FATAL,1,"The image file \"%s\" is not with FLOAT values\n",NomFic);
+	       mwerror(FATAL, 1, "The image file \"%s\" is not "
+		       "with FLOAT values\n", NomFic);
 	  }
 
 	  else
 	       if ((BufferEntete[3] == 1) && (BufferEntete[2] == 256))
 	       {  /* INR */
 		    strcpy(Type,"INR");
-		    mwerror(FATAL,1,"The image file \"%s\" is not with FLOAT values\n",NomFic);
+		    mwerror(FATAL, 1, "The image file \"%s\" is not "
+			    "with FLOAT values\n", NomFic);
 	       }
 
 	       else
 		    if ((BufferEntete[2] == 8) && (BufferEntete[3] == 0))
 		    {  /* MTI */
 			 strcpy(Type,"MTI");
-			 mwerror(FATAL,1,"The image file \"%s\" is not with FLOAT values\n",NomFic);
+			 mwerror(FATAL, 1, "The image file \"%s\" is not "
+				 "with FLOAT values\n", NomFic);
 		    }
 		    else 
-			 mwerror(FATAL,1,"Format of the image file \"%s\" unknown\n",NomFic);
+			 mwerror(FATAL, 1, "Format of the image file "
+				 "\"%s\" unknown\n", NomFic);
   
      /* Reservation memoire */
-
      image = mw_change_fimage(NULL,dy,dx);
      strcpy(image->cmt,Comment);
 
      /* On se positionne sur le debut de la zone pixel (0,0) */
-
-     if (lseek(fic,header,SEEK_SET) == -1L) 
+     if (0 != fseek(fp, header, SEEK_SET))
      {
 	  mw_delete_fimage(image);
 	  image = NULL;
@@ -192,39 +179,40 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
      while (L>0) {
 	  if (L > 65000L) n = (65000/sizeof(float))*sizeof(float); else n = L;
 	  L -= n;
-	  bytesread = read(fic,ptr+i,n);
-	  if (bytesread != n) 
+	  if (n != (bytesread = fread(ptr+i, sizeof(char), n, fp)))
 	  {
 	       mw_delete_fimage(image);
 	       image = NULL;
-	       mwerror(FATAL,1,"Error while reading file \"%s\" (file may be corrupted)\n",NomFic); 
+	       mwerror(FATAL, 1, "Error while reading file \"%s\" "
+		       "(file may be corrupted)\n", NomFic); 
 	       return(image);
 	  }
 	  i += (n/sizeof(float));
      }
 
-     close(fic);
+     fclose(fp);
 
-     _mw_flip_image((unsigned char *) ptr, sizeof(float), dx,dy, need_flipping);
+     _mw_flip_image((unsigned char *) ptr, sizeof(float), 
+		    dx, dy, need_flipping);
      return(image);
 }
 
 
 short _mw_fimage_create_megawave1(char *NomFic, Fimage image, char *Type)
 {
-     int   fic;                            /* fichier */
-     unsigned short byteswrite;            /* Nbre de bytes ecrits */
-     unsigned short header;                /* Nbre de bytes entete du fichier */
-     unsigned short dx,dy;                 /* Taille de l'image */
-     unsigned short taillezc;              /* Taille de la zone de commentaires */
-     unsigned short n;                     /* Nbre de bytes a lire */
-     long i,l;                             /* Indices courants sur l'image */
+     FILE * fp;                    /* fichier */
+     size_t byteswrite;            /* Nbre de bytes ecrits */
+     size_t header;                /* Nbre de bytes entete du fichier */
+     unsigned short dx,dy;         /* Taille de l'image */
+     size_t taillezc;              /* Taille de la zone de commentaires */
+     unsigned short n;             /* Nbre de bytes a lire */
+     long i,l;                     /* Indices courants sur l'image */
      float *ptr; 
 
-     if ((image->ncol>=65536)||(image->nrow>=65536))
+     if ((image->ncol >= 65536)||(image->nrow >= 65536))
      {
-	  mwerror(FATAL,1,"Image too big to be saved using %s external type !\n",
-		  Type);
+	  mwerror(FATAL, 1, "Image too big to be saved "
+		  "using %s external type !\n", Type);
 	  return(-1);
      }
 
@@ -243,34 +231,34 @@ short _mw_fimage_create_megawave1(char *NomFic, Fimage image, char *Type)
 	  header = 64;
      }
      else
-	  mwerror(INTERNAL,1,"[_mw_fimage_create_megawave1] Unknown format \"%s\"\n",
-		  Type);
+	  mwerror(INTERNAL, 1, "[_mw_fimage_create_megawave1] "
+		  "Unknown format \"%s\"\n", Type);
 
-     if ( ( (fic = open(NomFic,O_WRONLY)) == -1) || 
-	  (lseek(fic,(long)taillezc+header,SEEK_SET) != taillezc+header) )
+     if ((NULL == (fp = fopen(NomFic, "r+"))) || 
+	 (0 != fseek(fp, (long)taillezc+header, SEEK_SET)))
      {
-	  mwerror(FATAL,1,"Unable to write in the file \"%s\"\n",NomFic);
+	  mwerror(FATAL, 1, "Unable to write in the file \"%s\"\n", NomFic);
 	  return(-1);
      }
 
      l = sizeof(float)*((long) dx) * dy;
   
-     i=0;
+     i = 0;
      ptr = image->gray;
-     while (l>0) 
+     while (l > 0) 
      {
-	  if (l > 65000L)  n = (65000/sizeof(float))*sizeof(float);
-	  else n = l;
-	  l -= n;
-	  byteswrite = write(fic,ptr+i,n);
-	  if (byteswrite != n) 
-	  {
-	       mwerror(FATAL,1,"Error while writing in the file \"%s\"\n",NomFic);
-	       return(-1);
-	  }
-	  i +=(n/sizeof(float));
+	 if (l > 65000L)  n = (65000/sizeof(float))*sizeof(float);
+	 else n = l;
+	 l -= n;
+	 if (n != (byteswrite = fwrite(ptr+i, sizeof(char), n, fp)))
+	 {
+	     mwerror(FATAL, 1, "Error while writing "
+		     "in the file \"%s\"\n", NomFic);
+	     return(-1);
+	 }
+	 i += (n / sizeof(float));
      }
-     close(fic);
+     fclose(fp);
      return(0);
 }
 
