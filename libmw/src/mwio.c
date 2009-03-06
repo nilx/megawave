@@ -61,6 +61,22 @@
 
 #include "mwio.h"
 
+long mw_fsize(FILE * fp)  /* Return the size of the file */
+{
+    fpos_t position;
+    long file_size;
+
+    if (0 != fgetpos(fp, &position))
+	mwerror(INTERNAL,0,"[fsize] Cannot get the position in the file\n");
+    if (0 != fseek(fp, 0, SEEK_END))
+	mwerror(INTERNAL,0,"[fsize] Cannot change the position in the file\n");
+    if (-1L == (file_size = ftell(fp)))
+	mwerror(INTERNAL,0,"[fsize] Cannot get the position in the file\n");
+    if (0 != fsetpos(fp, &position))
+	mwerror(INTERNAL,0,"[fsize] Cannot set the position in the file\n");
+    return file_size;
+}                        
+
 /*===== Flip the image's buffer =====*/
 
 void _mw_flip_image(register unsigned char *ptr,

@@ -17,8 +17,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-/* FIXME : UNIX-centric */
-#include <sys/stat.h>
 
 #include "libmw-defs.h"
 #include "error.h"
@@ -62,8 +60,7 @@ Fcurve _mw_load_fcurve_mw2_fcurve(char *fname)
      FILE    *fp;
      Fcurve cv;
      Point_fcurve newcvc,oldcvc;
-     struct stat buf;
-     int fsize,buf_size,i;
+     int filesize,buf_size,i;
      int readsize,remainsize;
      float vx,vy,*buffer;
      register float *ptr;
@@ -78,7 +75,7 @@ Fcurve _mw_load_fcurve_mw2_fcurve(char *fname)
 
   
      if ( (need_flipping==-1) ||
-	  (!(fp = fopen(fname, "r"))) || (stat(fname,&buf) != 0) )
+	  (NULL == (fp = fopen(fname, "r"))))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -86,8 +83,8 @@ Fcurve _mw_load_fcurve_mw2_fcurve(char *fname)
      }
 
      /* Size of the file - size of the header, in bytes */
-     fsize = buf.st_size-hsize; 
-     remainsize = fsize / sizeof(float); /* Number of coordinates */
+     filesize = mw_fsize(fp) - hsize; 
+     remainsize = filesize / sizeof(float); /* Number of coordinates */
      if ((remainsize % 2) != 0)
      {
 	  mwerror(ERROR, 0,"Error into the file \"%s\": not an even number of coordinates !\n",fname);

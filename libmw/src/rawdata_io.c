@@ -15,12 +15,10 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
-/* FIXME : UNIX-centric */
-#include <sys/stat.h>
 
 #include "libmw-defs.h"
 #include "error.h"
-
+#include "mwio.h"
 #include "rawdata.h"
 
 #include "rawdata_io.h"
@@ -31,25 +29,24 @@ Rawdata _mw_load_rawdata(char *fname)
 {
      FILE    *fp;
      Rawdata rd;
-     struct stat buf;
-     int fsize;
+     int filesize;
 
-     if ( (!(fp = fopen(fname, "r"))) || (stat(fname,&buf) != 0) )
+     if (NULL == fopen(fname, "r"))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
 	  return(NULL);
      }
      /* Size of the file = size of the data, in bytes */
-     fsize = buf.st_size; 
-     if (!(rd=mw_change_rawdata(NULL,fsize)))
+     filesize = mw_fsize(fp); 
+     if (!(rd=mw_change_rawdata(NULL,filesize)))
      {
-	  mwerror(ERROR, 0,"Not enough memory to load rawdata file \"%s\" (%d bytes) !\n",fname,fsize);
+	  mwerror(ERROR, 0,"Not enough memory to load rawdata file \"%s\" (%d bytes) !\n",fname,filesize);
 	  fclose(fp);
 	  return(NULL);
      }
      /* FIXME: wrong types, dirty temporary fix */
-     if (fread(rd->data,1,fsize,fp) != (unsigned int) fsize)
+     if (fread(rd->data,1,filesize,fp) != (unsigned int) filesize)
      {
 	  mwerror(ERROR, 0,"Error while reading rawdata file \"%s\" !\n",fname);
 	  fclose(fp);

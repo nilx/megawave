@@ -16,8 +16,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-/* FIXME : UNIX-centric */
-#include <sys/stat.h>
 
 #include "libmw-defs.h"
 #include "error.h"
@@ -58,8 +56,7 @@ Curve _mw_load_curve_mw2_curve(char *fname)
      FILE    *fp;
      Curve cv;
      Point_curve newcvc,oldcvc;
-     struct stat buf;
-     int fsize,buf_size,i;
+     int filesize,buf_size,i;
      int readsize,remainsize;
      int vx,vy,*buffer;
      register int *ptr;
@@ -73,16 +70,16 @@ Curve _mw_load_curve_mw2_curve(char *fname)
 	  mwerror(INTERNAL, 0,"[_mw_load_curve_mw2_curve] File \"%s\" is not in the MW2_CURVE format\n",fname);
   
      if ( (need_flipping==-1) ||
-	  (!(fp = fopen(fname, "r"))) || (stat(fname,&buf) != 0) )
+	  (NULL == (fp = fopen(fname, "r"))))
      {
-	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  mwerror(ERROR, 0, "File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
 	  return(NULL);
      }
 
      /* Size of the file - size of the header, in bytes */
-     fsize = buf.st_size-hsize; 
-     remainsize = (fsize / sizeof(int));
+     filesize = mw_fsize(fp) - hsize; 
+     remainsize = (filesize / sizeof(int));
      if ((remainsize % 2) != 0)
      {
 	  mwerror(ERROR, 0,"Error into the file \"%s\": not an even number of coordinates !\n",fname);

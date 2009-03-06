@@ -1624,6 +1624,7 @@ void _mw_make_comment(char comment[], char comment_in[]);
 int _mw_get_file_type(char *fname, char *ftype, char *mtype, int *hsize, float *version);
 
 /* src/mwio.c */
+long mw_fsize(FILE * fp);
 void _mw_flip_image(register unsigned char *ptr, short size, short dx, short dy, char flip);
 FILE *_mw_write_header_file(char *fname, char *type, float IDvers);
 int _search_filename(char *fname);

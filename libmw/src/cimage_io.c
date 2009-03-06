@@ -29,23 +29,6 @@
 
 #include "cimage_io.h"
 
-static long fsize(FILE * fp)  /* Return the size of the file */
-{
-    fpos_t position;
-    long file_size;
-
-    if (0 != fgetpos(fp, &position))
-	mwerror(INTERNAL,0,"[fsize] Cannot get the position in the file\n");
-    if (0 != fseek(fp, 0, SEEK_END))
-	mwerror(INTERNAL,0,"[fsize] Cannot change the position in the file\n");
-    if (-1L == (file_size = ftell(fp)))
-	mwerror(INTERNAL,0,"[fsize] Cannot get the position in the file\n");
-    if (0 != fsetpos(fp, &position))
-	mwerror(INTERNAL,0,"[fsize] Cannot set the position in the file\n");
-    return file_size;
-}                        
-
-
 /*~~~~~~ MegaWaveI formats ~~~~~*/
 
 #define PROTECT_NORMAL 0644  /* rw- pour l'utilisateur, r-- pour les autres */
@@ -221,7 +204,7 @@ Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
 	       else 
 	       {  /* May be BIN */
 		    /* FIXME: wrong types, dirty temporary fix */
-		   sqrt_fsize = sqrt(fsize(fp));
+		   sqrt_fsize = sqrt(mw_fsize(fp));
 		   L = (int) sqrt_fsize;
 		   if ( ((double) L - sqrt_fsize) == 0.0 ) 
                    /* Size is a square */

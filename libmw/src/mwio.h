@@ -6,6 +6,7 @@
 #define _MWIO_H_
 
 /* src/mwio.c */
+long mw_fsize(FILE *fp);
 void _mw_flip_image(register unsigned char *ptr, short size, short dx, short dy, char flip);
 FILE *_mw_write_header_file(char *fname, char *type, float IDvers);
 int _search_filename(char *fname);
