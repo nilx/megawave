@@ -1,24 +1,15 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  cfmovie_io.c
-   
-  Vers. 1.4
-  (C) 1995-2004 Jacques Froment
-  Input/Output private functions for the Cfmovie structure
-
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
-  MegaWave2 is a "soft-publication" for the scientific community. It has
-  been developed for research purposes and it comes without any warranty.
-  The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
-  CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/**
+ * @file cfmovie_io.c
+ *
+ * @version 1.4
+ * @author Jacques Froment (1995 - 2004)
+ * @author Nicolas Limare (2008 - 2009)
+ *
+ * input/output private functions for the Cfmovie structure
+ */
 
 #include <stdio.h>
 #include <string.h>
-/* FIXME : UNIX-centric */
-#include <fcntl.h>
-#include <unistd.h>
 
 #include "libmw-defs.h"
 #include "error.h"
@@ -37,11 +28,12 @@ extern int _mw_convert_struct_warning;
 
 Cfmovie _mw_cfmovie_load_movie_old_format(char *NomFic, char *Type)
 {
+     FILE * fp;
      Cfmovie movie;               
      Cfimage image,image_next;
      char FicImage[BUFSIZ];
      char Ext[BUFSIZ];
-     short f,num;
+     short num;
      /* short i; */
       
      movie = NULL;
@@ -49,24 +41,10 @@ Cfmovie _mw_cfmovie_load_movie_old_format(char *NomFic, char *Type)
      Ext[0] = '\0';     /* Recherche d'une extension eventuelle */
 
      sprintf(FicImage,"%s_001",NomFic);
-     f = open(FicImage,O_RDONLY);
-     /*
-       if (f == -1) for (i=0; (cfimage_types[i] != NULL) && (f == -1); i++)
-       {
-       strcpy(Ext,cfimage_types[i]);
-       sprintf(FicImage,"%s_001.%s",NomFic,Ext);
-       f = open(FicImage,O_RDONLY);      
-       if (f == -1) 
-       {
-       _mw_lower_type(Ext);
-       sprintf(FicImage,"%s_001.%s",NomFic,Ext);
-       f = open(FicImage,O_RDONLY);      
-       }
-       }
-     */
-     if (f == -1) 
-	  mwerror(FATAL,1,"First image file \"%s\" not found or unreadable\n",FicImage);
-     close(f);
+     if (NULL == (fp = fopen(FicImage, "r")))
+	  mwerror(FATAL, 1, "First image file \"%s\" not found "
+		  "or unreadable\n", FicImage);
+     fclose(fp);
      image = (Cfimage) _mw_cfimage_load_image(FicImage,Type);
      if (image == NULL) return(movie);
 
@@ -80,10 +58,9 @@ Cfmovie _mw_cfmovie_load_movie_old_format(char *NomFic, char *Type)
 	       sprintf(FicImage,"%s_%3.3d",NomFic,num);
 	  else
 	       sprintf(FicImage,"%s_%3.3d.%s",NomFic,num,Ext);
-	  f = open(FicImage,O_RDONLY);
-	  if (f != -1) 
+	  if (NULL != (fp = fopen(FicImage, "r")))
 	  {
-	       close(f);
+	       fclose(fp);
 	       if (_mw_convert_struct_warning >= 3)
 		    _mw_convert_struct_warning = -1; /* Disable warnings */
 	       image_next = (Cfimage) _mw_cfimage_load_image(FicImage,Type);
@@ -94,7 +71,7 @@ Cfmovie _mw_cfmovie_load_movie_old_format(char *NomFic, char *Type)
 		    image = image_next;
 	       }
 	  }
-     } while (f != -1);
+     } while (NULL != fp);
 
      image->next = NULL;
      (movie->first)->previous = NULL;
@@ -109,14 +86,12 @@ Cfmovie _mw_cfmovie_load_movie_old_format(char *NomFic, char *Type)
 
 Cfmovie _mw_cfmovie_load_native(char *fname, char *Type)
 {
-     FILE    *fp;
-
+     FILE    *fp, *fp2;
      Cfmovie movie;               
      Cfimage image,image_next;
      char FicImage[BUFSIZ];
      char Fic[BUFSIZ];
      char PathName[BUFSIZ];
-     short f;
      int num,nimage;
      int ret,i;
 
@@ -137,9 +112,10 @@ Cfmovie _mw_cfmovie_load_native(char *fname, char *Type)
 	  fclose(fp);
 	  fp = fopen(fname, "r");
 	  if (_mw_fascii_search_string(fp,"def ??movie\n") == EOF)
-	       mwerror(ERROR,0,"MegaWave2 Data Ascii File \"%s\" does not contain a movie field !\n",fname);
+	       mwerror(ERROR, 0, "MegaWave2 Data Ascii File \"%s\" "
+		       "does not contain a movie field !\n", fname);
      }
-     if (_mw_fascii_get_field(fp,fname,"nimage:","%d\n",&nimage) != 1)
+     if (_mw_fascii_get_field(fp, fname, "nimage:","%d\n", &nimage) != 1)
      {
 	  fclose(fp);
 	  return(NULL);
@@ -165,14 +141,14 @@ Cfmovie _mw_cfmovie_load_native(char *fname, char *Type)
 		    strcpy(FicImage,Fic);
 	       else /* Relative pathname : add pathname of fname */
 		    sprintf(FicImage,"%s%s",PathName,Fic);
-	       f = open(FicImage,O_RDONLY);
-	       if (f != -1) 
+	       if (NULL != (fp2 = fopen(FicImage, "r")))
 	       {
-		    close(f);
+		    fclose(fp2);
 		    num++;
 		    if (num == 1)  /* 1st image */
 		    {
-			 image = (Cfimage) _mw_cfimage_load_image(FicImage,Type);
+			 image = (Cfimage)
+			     _mw_cfimage_load_image(FicImage, Type);
 			 if (image == NULL) return(movie);
 			 movie = (Cfmovie) mw_new_cfmovie();
 			 movie->first = image;
@@ -180,8 +156,10 @@ Cfmovie _mw_cfmovie_load_native(char *fname, char *Type)
 		    else
 		    {
 			 if (_mw_convert_struct_warning >= 3)
-			      _mw_convert_struct_warning = -1; /* Disable warnings */
-			 image_next = (Cfimage) _mw_cfimage_load_image(FicImage,Type);
+			      _mw_convert_struct_warning = -1;
+                              /* Disable warnings */
+			 image_next = (Cfimage) 
+			     _mw_cfimage_load_image(FicImage, Type);
 			 if (image_next != NULL) 
 			 {
 			      image->next = image_next;
@@ -191,7 +169,7 @@ Cfmovie _mw_cfmovie_load_native(char *fname, char *Type)
 		    }
 	       }
 	  } 
-     } while ((ret == 1) && (f != -1) && (num < nimage));
+     } while ((ret == 1) && (NULL != fp2) && (num < nimage));
 
      if (image) image->next = NULL;
      if (movie) (movie->first)->previous = NULL;
@@ -199,8 +177,9 @@ Cfmovie _mw_cfmovie_load_native(char *fname, char *Type)
      _mw_convert_struct_warning = 0;  /* Set to 0 previous warning account */
 
      if (num < nimage)
-	  mwerror(WARNING,0,"Only %d image(s) have been read (%d expected):\n\t\tFile \"%s\" not found\n",num,nimage,FicImage);
-
+	  mwerror(WARNING, 0, "Only %d image(s) have been read "
+		  "(%d expected):\n\t\tFile \"%s\" not found\n",
+		  num, nimage, FicImage);
      return(movie);
 }
 
@@ -225,9 +204,12 @@ Cfmovie _mw_cfmovie_load_movie(char *NomFic, char *Type)
      if (mov != NULL) return(mov);
 
      if (Type[0]=='?')
-	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",NomFic);
+	  mwerror(FATAL, 1, "Unknown external type "
+		  "for the file \"%s\"\n", NomFic);
      else
-	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Cfmovie !\n",NomFic,Type);
+	  mwerror(FATAL, 1, "External type of file \"%s\" is %s. "
+		  "I Don't know how to load such external "
+		  "type into a Cfmovie !\n", NomFic, Type);
      return NULL;
 }
 
@@ -247,7 +229,8 @@ short _mw_cfmovie_create_movie(char *NomFic, Cfmovie movie, char *Type)
 
      if (movie == NULL) 
      {
-	  mwerror(INTERNAL, 0,"[_mw_cfmovie_create_movie] Cannot create movie:  NULL cfmovie.\n");
+	  mwerror(INTERNAL, 0, "[_mw_cfmovie_create_movie] "
+		  "Cannot create movie:  NULL cfmovie.\n");
 	  return(-1);
      }
 
@@ -277,7 +260,8 @@ short _mw_cfmovie_create_movie(char *NomFic, Cfmovie movie, char *Type)
      }
      fprintf(fp,"nimage: %d\n",nimage);
      if (nimage > 99999)
-	  mwerror(INTERNAL,1,"[_mw_cfmovie_create_movie] Too many images !\n");
+	  mwerror(INTERNAL, 1, "[_mw_cfmovie_create_movie] "
+		  "Too many images !\n");
 
      num = 0;
      image = movie->first;
@@ -287,7 +271,8 @@ short _mw_cfmovie_create_movie(char *NomFic, Cfmovie movie, char *Type)
 	  sprintf(FicImage1,"%s_%5.5d",NomFic,num);
 	  sprintf(FicImage2,"%s_%5.5d",BaseName,num);
 	  _mw_cfimage_create_image(FicImage1,image,Type);
-	  if (_mw_convert_struct_warning >= 3) _mw_convert_struct_warning = -1;
+	  if (_mw_convert_struct_warning >= 3)
+	      _mw_convert_struct_warning = -1;
 	  fprintf(fp,"%s\n",FicImage2);
 	  image = image->next;
      }
