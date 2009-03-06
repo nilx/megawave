@@ -262,9 +262,6 @@ void parse(FILE * sfile)
      H = new_header();
      C = new_cbody();
 
-     /* store info about the module file */
-     /* TODO: check, missing headers */
-     fstat(fileno(sfile), &module_fstat);
      /* init variables */
      inside_comment = 0;
      inside_header = 0;

@@ -12,7 +12,6 @@
 
 /* FIXME: drop */
 #include <sys/types.h>
-#include <sys/stat.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -321,21 +320,18 @@ static void writeDescription(FILE * tfile)
 static void writeTfoot(FILE * tfile)
 {
      char User_DepFile[BUFSIZ];
-     char * lastmodifdate;
      char Auth[TREESTRSIZE], Lab[TREESTRSIZE];
      char An0[5], An1[5];
+     time_t current_time = time(NULL);
 
      /* see also */
      sprintf(User_DepFile, "%s.dep", module_name);
      fprintf(tfile, "\\input{obj/DEPENDENCIES/%s}\n\n", User_DepFile);
-     /* fet date of last modification of the module file */
-     lastmodifdate=ctime(&(module_fstat.st_mtime));
      /* version */
-     fprinttex(tfile, "\\Version{%T}{%s}\n", H->Version, lastmodifdate);
+     fprinttex(tfile, "\\Version{%T}\n", H->Version);
      /* author */
      strcpy(An0, "1993");
-     strncpy(An1, &lastmodifdate[strlen(lastmodifdate) - 5], 4);
-     An1[4]='\0';
+     strftime(An1, 5, "%Y", localtime(&current_time));
 
      if (H->Labo[0] != '\0')
           strcpy(Lab, getprintfstring(H->Labo));

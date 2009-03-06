@@ -12,7 +12,6 @@
 
 /* FIXME: drop */
 #include <sys/types.h>
-#include <sys/stat.h>
 
 #include "config.h"
 
@@ -167,7 +166,6 @@ FILE * source_file_global;
 int debug_flag;
 t_header * H;
 t_body * C;
-struct stat module_fstat;
 
 /* 
  * - 1 if parsing inside a comment, 0 elsewhere
