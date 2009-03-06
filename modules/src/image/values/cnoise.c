@@ -26,7 +26,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-#include <unistd.h> /* FIXME: unix-centric */
 #include "mw.h"
 #include "mw-modules.h"
 
@@ -47,7 +46,7 @@ void cnoise(Cimage u, Cimage v, float *std, float *p, float *q, char *n_flag)
     mwerror(FATAL,1,"Please select exactly one of the -g, -i and -q options.");
 
   /*** Initialize random seed if necessary ***/
-  if (!n_flag) srand( (unsigned int) time (NULL) + (unsigned int) getpid() );
+  if (!n_flag) srand( (unsigned int) time (NULL));
   
   /* Allocate memory */
   v = mw_change_cimage(v,u->nrow,u->ncol);

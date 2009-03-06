@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-#include <unistd.h> /* FIXME: unix-centric */
 #include "mw.h"
 #include "mw-modules.h" /* fft2d(), fmean(), fvar(), faxpb() */
 
@@ -38,7 +37,7 @@ void frandphase(Fimage in, Fimage out, char *i_flag)
   float  m,std;
 
   /*** Initialize random seed if necessary ***/
-  if (!i_flag) srand( (unsigned int) time (NULL) + (unsigned int) getpid() );
+  if (!i_flag) srand( (unsigned int) time (NULL));
 
   m = fmean(in);
   std = fvar(in, (char *) 1, (char *) 1);
