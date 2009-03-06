@@ -4,12 +4,8 @@
  * module parser for the megawave preprocessor
  *
  * @author Jacques Froment <jacques.froment@univ-ubs.fr> (2005 - 2007)
- * @author Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+ * @author Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008 - 2009)
  */
-
-/* FIXME: drop */
-#define _POSIX_SOURCE
-#include <unistd.h>
 
 #include <stdio.h>
 #include <stdlib.h>
