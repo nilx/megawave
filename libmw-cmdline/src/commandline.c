@@ -17,18 +17,12 @@
  * @author Nicolas Limare (2009)
  */
 
-/* TODO: remove, unix-centric */
-#include <unistd.h> /* for dup() */
-#include <fcntl.h>
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 #include <stdarg.h>
 #include <setjmp.h>
-
-/* #include "definitions.h" */
 
 #include "mw.h"
 #include "commandline.h"
@@ -37,15 +31,6 @@
  * global variables
  */
 
-/* TODO : move to config.h */
-
-/* TODO: drop, unix-centric */
-#define FNULL "/dev/null"
-
-/* for redirection of stdout and stderr*/
-/* TODO: use FILE * */
-static int out_sav = -1, fd_out;
-static int err_sav = -1, fd_err;
 int verbose_flg = FALSE;
 
 /**
@@ -126,57 +111,25 @@ static int simple_isdigit(int c)
 /**
  * change, if wanted, stdout and/or stderr
  */
-/* TODO: use freopen() */
+/* TODO: drop, use shell redirection instead? */
 static void setnewout(void)
 {
-     char *s;
+     char *fname;
 
-     if ((s = getenv("MW_STDOUT")) != NULL && verbose_flg == FALSE) {
-	  char buffer[BUFSIZ];
-	  int oflag, mode;
-	  out_sav = dup(1);
-	  close(1);
-	  if (!strcmp(s, "NULL") || !strcmp(s, "")) {
-	       strcpy(buffer, FNULL);
-	       oflag = O_WRONLY;
-	       mode = 0666;
-	  }
-	  else {
-	       strcpy(buffer, s);
-	       oflag = O_RDWR | O_CREAT;
-	       mode = 0644;
-	  }
-	  if ((fd_out = open(buffer, oflag, mode)) < 0) {
-	       fd_out = dup(out_sav);
-	       close(out_sav);
-	       out_sav = -1;
-	       fprintf(stderr, \
-		       "Cannot redirect standard output to \"%s\"\n", buffer);
-	  }
+     if (NULL != (fname = getenv("MW_STDOUT")) 
+	 && verbose_flg == FALSE)
+     {
+	 if (NULL == freopen(fname, "w", stdout))
+	     fprintf(stderr,						\
+		     "Cannot redirect standard output to \"%s\"\n", fname);
      }
 
-     if ((s = getenv("MW_STDERR")) != NULL && verbose_flg == FALSE) {
-	  char buffer[BUFSIZ];
-	  int oflag, mode;
-	  err_sav = dup(2);
-	  close(2);
-	  if (!strcmp(s, "NULL") || !strcmp(s, "")) {
-	       strcpy(buffer, FNULL);
-	       oflag = O_WRONLY;
-	       mode = 0666;
-	  }
-	  else {
-	       strcpy(buffer, s);
-	       oflag = O_RDWR | O_CREAT;
-	       mode = 0644;
-	  }
-	  if ((fd_err = open(buffer, oflag, mode)) < 0) {
-	       fd_err = dup(err_sav);
-	       close(err_sav);
-	       err_sav = -1;
-	       fprintf(stderr, \
-		       "Cannot redirect standard error to \"%s\"\n", buffer);
-	  }
+     if (NULL != (fname = getenv("MW_STDERR"))
+	 && verbose_flg == FALSE)
+     {
+	 if (NULL == freopen(fname, "w", stderr))
+	     fprintf(stderr,						\
+		     "Cannot redirect standard error to \"%s\"\n", fname);
      }
 }
 
