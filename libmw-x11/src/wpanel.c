@@ -24,9 +24,9 @@
 #include "wdevice.h"
 
 #include "wpanel.h"
-/*#include "utils.h"*/
 
 /* FIXME: unsafe snprintf() hack */
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 static int snprintf(char * dest, int nb, const char * fmt, ...)
 {
      /* arbitrary length, this isn't safe */
@@ -40,6 +40,7 @@ static int snprintf(char * dest, int nb, const char * fmt, ...)
      strncat(dest, tmp, nb);
      return strlen(dest);
 }
+#pragma GCC diagnostic error "-Wformat-nonliteral"
  
 /* draw button and return width (height is 16) */
 int Wp_DrawButton(Wframe *window, int x, int y, char *str, int color)
