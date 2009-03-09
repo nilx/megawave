@@ -79,7 +79,7 @@ CWARN 	+= -pedantic -Werror $(CSTRICT_4_1)		\
 	-Waggregate-return 				\
 	-Wstrict-prototypes -Wmissing-prototypes	\
 	-Wmissing-declarations -Wnested-externs 	\
-#	-Wformat -Wformat-nonliteral -Wformat-security	\
+	-Wformat -Wformat-nonliteral -Wformat-security	\
 #	-Wfloat-equal
 endif
 
