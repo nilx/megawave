@@ -101,6 +101,9 @@ $(API) 	: $(HDR)
 
 %.cmd.c	: %.c $(MWP)
 	$(MWP) --source $< --exec $@
+#	 $(CPP) -C -E -P -nostdinc $< | \
+#		$(MWP) --module-name=$(basename $(notdir $<)) \
+#		--source - --exec $@
 
 ifeq	($(LINK), static)
 # order of the libraries matters

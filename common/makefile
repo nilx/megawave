@@ -25,6 +25,7 @@ LD	= $(CC)
 LDWRAP	= 
 AR	= /usr/bin/ar
 MAKEDEP	= /usr/bin/gcc -MM
+CPP	= /usr/bin/cpp
 CPROTO	= /usr/bin/cproto
 GENGETOPT	= /usr/bin/gengetopt
 
