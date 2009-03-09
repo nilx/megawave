@@ -522,7 +522,7 @@ RESIZE_COMPRESS_FIMAGE(Cimage compress)
   ncolo = 1;
   nrowo = ncodewords;
   if (nrowo > MAX_SIZEIM) {
-    if ((int) sqrt((double) nrowo) + 1 > MAX_SIZEIM)
+    if (sqrt((double) nrowo) + 1 > MAX_SIZEIM)
       mwerror(FATAL, 2, "Number of codewords is too large!\n");
     i = 2;
     while (nrowo / i > MAX_SIZEIM)
@@ -859,10 +859,10 @@ extract_symbol(Fimage symbol, Fimage symbex, Fimage indcb, float index, long int
   {
     if (recfl)
       for (x = 0; x < size; x++, ptrse++)
-	*ptrse = (float) ((int) floor(*ptrse + .5) / recfac);
+	  *ptrse = (float) (floor(*ptrse + .5) / recfac);
     else
       for (x = 0; x < size; x++, ptrse++)
-	*ptrse = (float) ((int) floor(*ptrse + .5) % recfac);
+	  *ptrse = (float) (fmod(floor(*ptrse + .5),recfac));
   } 
 }
 

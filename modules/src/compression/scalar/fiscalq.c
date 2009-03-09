@@ -279,7 +279,7 @@ SCALAR_RECONSTRUCT(int *print, int *nrow, int *ncol, Cimage compress, Fimage res
   int           center;          /* Flag for centering of quantization step */
   float         stepsize;	 /* Cell width */
   float         ashift;  
-  int           step, minstep;   /* Index of cell / min cell */
+  int           step, minstep;   /* Index of cell, min cell */
   int           nstep;           /* Number of quantization level */
   long          i;
   long          isize;	         /* Number of pixel in `image` */
@@ -322,13 +322,13 @@ SCALAR_RECONSTRUCT(int *print, int *nrow, int *ncol, Cimage compress, Fimage res
   if (nstep > 1)
     if (center) {
       for(i=0;i<isize;i++) {
-	step = (int) floor(symbol->gray[i] + .5) + minstep;
+	step = floor(symbol->gray[i] + .5) + minstep;
 	result->gray[i] = (float) step * stepsize;
       }
     } else
       {
 	for(i=0;i<isize;i++)  {
-	  step = (int) floor(symbol->gray[i] + .5);
+	  step = floor(symbol->gray[i] + .5);
 	  result->gray[i] = step * stepsize + ashift;
 	}
       }

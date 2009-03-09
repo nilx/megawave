@@ -478,7 +478,7 @@ RESIZE_COMPRESS_WTRANS(Cimage compress)
   ncolo = 1;
   nrowo = local_ncodewords = compress->firstcol;
   if (nrowo > MAX_SIZEO) {
-    if ((int) sqrt((double) nrowo) + 1 > MAX_SIZEO)
+    if (sqrt((double) nrowo) + 1 > MAX_SIZEO)
       mwerror(FATAL, 2, "Number of codewords is too large!\n");
     i = 2;
     while (nrowo / i > MAX_SIZEO)

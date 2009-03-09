@@ -90,7 +90,7 @@ RESIZE_COMPRESS_FIMAGE(Cimage compress)
   ncolo = 1;
   nrowo = ncodewords;
   if (nrowo > MAX_SIZEIM) {
-    if ((int) sqrt((double) nrowo) + 1 > MAX_SIZEIM)
+    if (sqrt((double) nrowo) + 1 > MAX_SIZEIM)
       mwerror(FATAL, 2, "Number of codewords is too large!\n");
     i = 2;
     while (nrowo / i > MAX_SIZEIM)

@@ -90,7 +90,7 @@ RESIZE_COMPRESS_FIMAGE(Cimage compress)
   ncolo = 1;
   nrowo = ncodewords;
   if (nrowo > MAX_SIZEO) {
-    if ((int) sqrt((double) nrowo) + 1 > MAX_SIZEO)
+    if (sqrt((double) nrowo) + 1 > MAX_SIZEO)
       mwerror(FATAL, 2, "Number of codewords is too large!\n");
     i = 2;
     while (nrowo / i > MAX_SIZEO)
@@ -230,7 +230,7 @@ FLOAT2INT(float *f, int nbitlog, int nbitstep, int *testoverflow)
   } else
     {
       logstep = LOG_STEP;
-      logf = (int) floor(log((double) fabsf) / log((double) 2.0) / logstep) + 1;
+      logf = floor(log((double) fabsf) / log((double) 2.0) / logstep) + 1;
       if (logf >= 1<<nbitlog) {
 	logf = (1 << nbitlog) - 1;
 	*testoverflow = 1;
@@ -435,7 +435,7 @@ unif_quant(int *printsnr, int *smallheader, int *nstep, float *sstep, int *cente
 {
   float         stepsize;	 /* Cell width */
   float         ashift, sshift;  
-  int           step, minstep;   /* Index of cell / min cell */
+  int           step, minstep, maxstep;  /* Index of cell / min cell */
   int           hsize;           /* Number of quantization level */
   int           c_ashift, c_stepsize;
   long          i;
@@ -482,7 +482,7 @@ unif_quant(int *printsnr, int *smallheader, int *nstep, float *sstep, int *cente
 	ashift = sshift + stepsize / 2.0; 
       }
 
-    hsize = (int) floor(test + .5);
+    hsize = floor(test + .5);
     if (hsize > MAX_NSTEP)
       mwerror(FATAL, 2, "StepSize is to small => nstep is too large!\n");
 
@@ -548,14 +548,16 @@ unif_quant(int *printsnr, int *smallheader, int *nstep, float *sstep, int *cente
   /*--- Quantization of image ---*/
 
   if (center) {
-    minstep = (long) floor(min/stepsize + .5);
+    minstep = floor(min/stepsize + .5);
     if ((minstep < - MAX_MINSTEP) || (minstep > MAX_MINSTEP))
       mwerror(FATAL, 3, "Bad value for minstep!\n");
     if (!printsnr)
-      printf("Lowest / highest steps : %d / %d\n", minstep, 
-	     (int) floor(max/stepsize + .5));
+    {
+      maxstep = floor(max/stepsize + .5);
+      printf("Lowest / highest steps : %d / %d\n", minstep, maxstep);
+    }
     for(i=0;i<isize;i++) {
-      step = (int) floor(image->gray[i] / stepsize + .5);
+      step = floor(image->gray[i] / stepsize + .5);
       result->gray[i] = (float) step * stepsize;
       step -= minstep;
       if ((step<0)||(step>=hsize)) {

@@ -30,7 +30,7 @@ usage = {
 static double ran0(long int *initseed)
 {
   static double y, v[97];
-  float dum;
+  int dum;
   static int iff=0; 
   int j; 
   
@@ -39,17 +39,17 @@ static double ran0(long int *initseed)
     srand((unsigned int) *initseed);
     *initseed=1;
     for(j=0;j<97;j++)
-      dum = (float) ((double) rand() / RAND_MAX);
+      dum = rand();
     for(j=0;j<97;j++)
-      v[j] = (double) rand() / RAND_MAX;
-    y = (double) rand() / RAND_MAX;
+      v[j] = (rand() * 1.) / RAND_MAX;
+    y = (rand() * 1.) / RAND_MAX;
   }
 
   j = y * 98.0;
   if ((j<0)||(j>97))
     mwerror(FATAL, 1, "Valeur impossible pour j : %d, (y=%.5f)", j, y);
-  y = v[j]; 
-  v[j] = (double) rand() / RAND_MAX;
+  y = v[j];
+  v[j] = (rand() * 1.) / RAND_MAX;
   return(y);
 }
 
