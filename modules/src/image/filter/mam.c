@@ -162,7 +162,7 @@ void mam(Cmovie in, Cmovie out, float *ptime, float *ppower, int *n_iter, short 
       val = a[l*(nx*ny)+adr];
       if (val<0.0) val=0.0;
       if (val>255.0) val=255.0;
-      u->gray[adr] = (unsigned short) floor(val + .5);
+      u->gray[adr] = floor(val + .5);
     }
 
   free(ani); free(accel); free(inter); free(grad); free(curv); free(a);
