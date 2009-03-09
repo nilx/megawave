@@ -153,8 +153,8 @@ Fimage falign_mdl(Fimage u, int *d, int *nd, int *no_mdl, int *nl, double *eps, 
   nx = u->ncol;
   ny = u->nrow;
   /* maximal length for a line */
-  n = (int) ceil(sqrt((double) nx * (double) nx 
-		      + (double) ny * (double) ny)) + 1;
+  n = ceil(sqrt((double) nx * (double) nx 
+		+ (double) ny * (double) ny)) + 1;
 
   /******************** memory allocation ********************/
 
@@ -186,7 +186,7 @@ Fimage falign_mdl(Fimage u, int *d, int *nd, int *no_mdl, int *nl, double *eps, 
   /******************** zeroth loop : precision level ********************/
   for (precision=0; precision<*nd; precision++) {
 
-    ngrad = (*d) * (int) pow(2.0,(double) precision);
+    ngrad = (int) ((*d) * pow(2.0,(double) precision));
     r = rmin+(double)precision;
 
     printf("*** Precision %d/%d (%d gradient directions)\n",precision+1,*nd,ngrad);

@@ -51,7 +51,7 @@ static int contrast_and_length(Flist c, char open)
 {
   double per;
   float x,y,ox,oy,min;
-  int i0,i,j,n,ix,iy;
+  int i0,i,j,n, ix, iy;
 
   n = c->size;
 
@@ -66,8 +66,8 @@ static int contrast_and_length(Flist c, char open)
 
   /* contrast[] */
   for (i=0;i<n;i++) {
-    ix = (int) floor(c->values[i * 2] + .5) - 1;
-    iy = (int) floor(c->values[i * 2 + 1] + .5) - 1;
+    ix = floor(c->values[i * 2] + .5) - 1;
+    iy = floor(c->values[i * 2 + 1] + .5) - 1;
     if (ix>=0 && iy>=0 && ix<NormOfDu->ncol && iy<NormOfDu->nrow) 
       contrast[i] = NormOfDu->gray[NormOfDu->ncol*iy+ix];
     else contrast[i] = 0.;

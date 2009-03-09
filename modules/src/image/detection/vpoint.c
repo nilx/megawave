@@ -439,7 +439,7 @@ static Tiling* newTiling(int ntheta, double *p, double *p_inf, int *M)
   /* Compute boundaries of internal tiles in
      normalized pixel coordinates x,y. */
   dxy = 2*sin(dtheta);
-  nx = ny = (int) ceil(2.0/dxy);
+  nx = ny = ceil(2.0/dxy);
   xx = malloc((nx+1)*sizeof(double));
   for (t=0;t<=nx;t++)
     xx[t] = -1.0+dxy*t;
@@ -476,9 +476,9 @@ static Tiling* newTiling(int ntheta, double *p, double *p_inf, int *M)
 
 
   /* Initial size for segs Flists = expected number of segments at each tile */
-  max_size = (int) floor(max(((double) *M) 
-			     / sqrt((double) (nx * ny + ntheta * nq)), 1.0)
-			 + .5);
+  max_size = floor(max(((double) *M) 
+		       / sqrt((double) (nx * ny + ntheta * nq)), 1.0)
+		   + .5);
 
   /* Initialize all tiles */
   *M=0;
@@ -907,8 +907,8 @@ static int TAddSegment(Tiling **Tilings, int i, Flists S, int j, double R, doubl
     theta1 = theta1+((theta1<      0.0)? 2*M_PI : 0.0);
     theta2 = acos(rho/d[id])+phi;
     theta2 = theta2-((theta2>=2.0*M_PI)? 2*M_PI : 0.0);
-    itheta1 = (int) floor((theta1-theta0)/dtheta);
-    itheta2 = (int) floor((theta2-theta0)/dtheta);
+    itheta1 = floor((theta1-theta0)/dtheta);
+    itheta2 = floor((theta2-theta0)/dtheta);
     /*  Add tiles touching both intersection points
 	(theta1,d[id]) and (theta2,d[id])
 	to the list L, avoiding duplicates */
@@ -961,7 +961,7 @@ static int TAddSegment(Tiling **Tilings, int i, Flists S, int j, double R, doubl
     for (iy=0; iy<ny; iy++) {
       yy = y[iy];
       xx = -(l[1]*yy+l[2])/l[0];
-      ix = (int) floor((xx-xmin)/dx);
+      ix = floor((xx-xmin)/dx);
       if (TIsValid2(T,ie,ix,iy  ))
 	STilesAddUnique(L, Tilings,i,ie,ix,iy  );
       if (TIsValid2(T,ie,ix,iy-1))
@@ -973,7 +973,7 @@ static int TAddSegment(Tiling **Tilings, int i, Flists S, int j, double R, doubl
     for (ix=0; ix<ny; ix++) {
       xx = x[ix];
       yy = -(l[0]*xx+l[2])/l[1];
-      iy = (int) floor((yy-ymin)/dy);
+      iy = floor((yy-ymin)/dy);
       if (TIsValid2(T,ie,ix  ,iy))
 	STilesAddUnique(L, Tilings,i,ie,ix  ,iy);
       if (TIsValid2(T,ie,ix-1,iy))
@@ -1037,9 +1037,9 @@ static int FindIntersection(Tiling *T, int ie, int ix, int iy, Tiling *TT, int *
 
   for (k=0,n=0; k<4; k++) {
     IE2 = ie2[n] = ie;
-    IX2 = ix2[n] = (int) floor((x[ix+DX[k]]-xmin2)/dx2);
+    IX2 = ix2[n] = floor((x[ix+DX[k]]-xmin2)/dx2);
     if (ie==INTERIOR_TILING)
-      IY2 = iy2[n] = (int) floor((y[iy+DY[k]]-ymin2)/dy2);
+      IY2 = iy2[n] = floor((y[iy+DY[k]]-ymin2)/dy2);
     else {
       /* y = "distance to center" is not regularly spaced */
       /* if (y[iy]>=y2[0]) not necessary as in TAddSegment */
@@ -1155,10 +1155,10 @@ int vpoint(Fimage imagein, Fimage allsegs, Flist output, Flists segs, double *ep
      /*** For each angular precision level ... ***/
      for(i=0; i<n_pl; i++) {
        /* Number of orientations */
-       ntheta = (int) floor(pow(2.0, (double) (min_pl + i)) + .5);
+       ntheta = floor(pow(2.0, (double) (min_pl + i)) + .5);
        if (verbose) fprintf(stderr,
 	       "\nBuilding data structure for angular precision = pi/%d\n",
-	       ntheta);	       
+			    ntheta);	       
 
        /* Create the tiling for this precision level */
        M[i]=N;

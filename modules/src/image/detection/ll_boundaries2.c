@@ -119,7 +119,7 @@ static float min_contrast(Flist l, float *length, Fimage NormofDu)
 {
   double per;
   float mu,minmu,x,y,ox,oy;
-  int i,ix,iy,minx,miny;
+  int i,minx,miny, ix, iy;
 
   per = 0.;
   minmu = FLT_MAX;
@@ -132,8 +132,8 @@ static float min_contrast(Flist l, float *length, Fimage NormofDu)
     if (i>0) per += sqrt((double)(x-ox)*(x-ox)+(y-oy)*(y-oy));
     ox = x; oy = y;
     
-    ix = (int) floor((double) x + .5) - 1;
-    iy = (int) floor((double) y + .5) - 1;
+    ix = floor((double) x + .5) - 1;
+    iy = floor((double) y + .5) - 1;
     if (ix>=0 && iy>=0 && ix<NormofDu->ncol && iy<NormofDu->nrow) {
       mu = NormofDu->gray[NormofDu->ncol*iy+ix];
       if (mu<minmu) {
@@ -278,7 +278,7 @@ static void update_root_histo(Shape local_root, Fsignal local_histo, Fimage Norm
 {
   Shape s;
   Mydata sdata;
-  int ncol,nrow,x,y,ox,oy,i,k,tmp;
+  int ncol,nrow,x,y,ox,oy,i,k;
   float *tabvalues,value;
   
   ncol = NormofDu->ncol;
@@ -294,15 +294,11 @@ static void update_root_histo(Shape local_root, Fsignal local_histo, Fimage Norm
   /*remove root boundary points from histogram (unless shape is absolut root)*/
   if(local_root->boundary){
     tabvalues = local_root->boundary->values;
-    tmp = (int) floor(tabvalues[0] + .5);
-    ox = MIN(ncol - 1, MAX(0, tmp - 1));
-    tmp = (int) floor(tabvalues[1] + .5);
-    oy = MIN(nrow - 1, MAX(0, tmp - 1));
+    ox = MIN(ncol - 1, MAX(0, (int)(floor(tabvalues[0] + .5) - 1)));
+    oy = MIN(nrow - 1, MAX(0, (int)(floor(tabvalues[1] + .5) - 1)));
     for(i=0;i<local_root->boundary->size;i++){
-      tmp = (int) floor(tabvalues[2 * i] + .5);
-      x = MIN(ncol - 1, MAX(0, tmp - 1));  
-      tmp = (int) floor(tabvalues[2 * i + 1] + .5);
-      y = MIN(nrow - 1, MAX(0, tmp - 1));
+      x = MIN(ncol - 1, MAX(0, (int)(floor(tabvalues[2 * i] + .5) - 1)));  
+      y = MIN(nrow - 1, MAX(0, (int)(floor(tabvalues[2 * i + 1] + .5) - 1)));
       if(x!= ox || y!=oy){
 	ox = x; oy = y;
 	value = NormofDu->gray[x+ncol*y]/local_histo->scale;
@@ -676,7 +672,7 @@ Flists ll_boundaries2(Fimage in, float *eps, Shapes tree, float *step, int *prec
   pixels_and_data(ref_tree,NormofDu,in,prec,tabsaddles,&sumsqper);
 
   maxDu = image_max(NormofDu);
-  hsize = 1+(int) floor((double) maxDu/(*hstep));
+  hsize = (int) (1 + floor((double) maxDu/(*hstep)));
 
   local_histo = mw_new_fsignal();
   local_repart = mw_new_fsignal();
