@@ -39,7 +39,7 @@ Fsignal fft2drad(Fimage in_re, Fimage in_im, Fsignal out, char *l_flag, int *siz
   ny = rho->nrow;
 
   if (size) n=*size; 
-  else n=(int)ceil((double)(nx<ny?nx:ny)*sqrt(0.5));
+  else n=ceil((double)(nx<ny?nx:ny)*sqrt(0.5));
   out = mw_change_fsignal(out,n+1);
   if (!out) mwerror(FATAL,1,"Not enough memory\n");
 

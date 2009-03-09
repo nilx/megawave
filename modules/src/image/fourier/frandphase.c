@@ -62,7 +62,7 @@ void frandphase(Fimage in, Fimage out, char *i_flag)
 	re->gray[ad] = (float)rho;
 	im->gray[ad] = 0.0;
       } else {
-	theta = 2.0 * M_PI * (double) rand() / RAND_MAX;
+        theta = 2.0 * M_PI * (double) ((rand() * 1.) / RAND_MAX);
 	re->gray[ad] = (float)( rho*cos( theta ) );
 	im->gray[ad] = (float)( rho*sin( theta ) );
 	ad = ((-y+ny)%ny)*ny + (-x+nx)%nx;
