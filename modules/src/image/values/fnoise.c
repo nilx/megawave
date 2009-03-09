@@ -52,8 +52,8 @@ void fnoise(Fimage u, Fimage v, float *std, float *p, float *q, char *n_flag)
 
     /* Gaussian noise */
     for (i=u->ncol*u->nrow;i--;) {
-      a = (double) rand() / RAND_MAX;
-      b = (double) rand() / RAND_MAX;
+      a = (rand() * 1.)/ RAND_MAX;
+      b = (rand() * 1.)/ RAND_MAX;
       z = (double)(*std)*sqrt(-2.0*log(a))*cos(2.0*M_PI*b);
       v->gray[i] = u->gray[i] + (float)z;
     }
@@ -68,9 +68,9 @@ void fnoise(Fimage u, Fimage v, float *std, float *p, float *q, char *n_flag)
       if (c>max) max=c;
     }
     for (i=u->ncol*u->nrow;i--;)
-      if ((double) rand() / RAND_MAX * 100.0 < *p)
+      if ((rand() * 1.)/ RAND_MAX * 100.0 < *p)
 	   v->gray[i] = (float) (min + (max - min) 
-				 * (double) rand() / RAND_MAX);
+				 * (rand() * 1.)/ RAND_MAX);
     else v->gray[i] = u->gray[i];
     
   } else {
@@ -78,7 +78,7 @@ void fnoise(Fimage u, Fimage v, float *std, float *p, float *q, char *n_flag)
     /* uniform (quantization) noise */
    for (i=u->ncol*u->nrow;i--;)
      v->gray[i] =  u->gray[i] + *q 
-	  * (float) ((double) rand() / RAND_MAX - 0.5);
+	 * (float) ((rand() * 1.)/ RAND_MAX - 0.5);
   }
 }
 

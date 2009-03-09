@@ -57,9 +57,9 @@ void cnoise(Cimage u, Cimage v, float *std, float *p, float *q, char *n_flag)
 
     /* Gaussian noise */
     for (i=u->ncol*u->nrow;i--;) {
-      a = (double) rand() / RAND_MAX;
-      b = (double) rand() / RAND_MAX;
-      z = (double)(*std)*sqrt(-2.0*log(a))*cos(2.0*M_PI*b);
+      a = (rand() * 1.) / RAND_MAX;
+      b = (rand() * 1.) / RAND_MAX;
+      z = (*std)*sqrt(-2.0*log(a))*cos(2.0*M_PI*b);
       v->gray[i] = truncation( u->gray[i] + (float)z );
     }
 
@@ -67,9 +67,9 @@ void cnoise(Cimage u, Cimage v, float *std, float *p, float *q, char *n_flag)
 
     /* impulse noise */
     for (i=u->ncol*u->nrow;i--;)
-      if ((double) rand() / RAND_MAX * 100.0 < *p) 
+      if ((rand() * 1.)/ RAND_MAX * 100.0 < *p) 
 	v->gray[i] = truncation( (float)(255.999 
-					 * (double) rand() / RAND_MAX));
+					 * (rand() * 1.)/ RAND_MAX));
     else v->gray[i] = u->gray[i];
     
   } else {
@@ -77,7 +77,7 @@ void cnoise(Cimage u, Cimage v, float *std, float *p, float *q, char *n_flag)
     /* uniform (quantization) noise */
    for (i=u->ncol*u->nrow;i--;)
      v->gray[i] = truncation( u->gray[i] + *q 
-			      * (float) ((double) rand() / RAND_MAX - 0.5));
+			      * (float) ((rand() * 1.)/ RAND_MAX - 0.5));
   }
 }
 

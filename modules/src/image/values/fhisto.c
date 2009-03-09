@@ -61,8 +61,8 @@ Fsignal fhisto(Fimage in, Fsignal out, float *l, float *r, int *n, float *s, cha
 
   case 1:
     if (s) {
-      min = size * (float)floor((double)(min/size));
-      num = 1+(int)floor((double)((max-min)/size));
+      min = size * floor((double)(min/size));
+      num = 1 + floor((double)((max-min)/size));
     } 
     break;
     
