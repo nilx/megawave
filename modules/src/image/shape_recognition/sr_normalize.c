@@ -169,7 +169,7 @@ static int Normalize_affine_step1(Fcurves cs, float *determinant)
     float a,b,c,surface;
     float A,B,C;
     
-    surface = (float)size_fcvs(cs);
+    surface = size_fcvs(cs);
     
     a = moment_pq(cs,2,0);
     b = moment_pq(cs,0,2);
