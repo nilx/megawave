@@ -229,13 +229,13 @@ Fimage funzoom(Fimage in, Fimage out, float *z, int *o, float *tx, float *ty)
     mwerror(USAGE,0,"spline space order should be in [0..5]\n");
 
   nx = in->ncol; ny = in->nrow;
-  nsx = (int) floor((double) nx / (double) (*z) + .5);
-  nsy = (int) floor((double) ny / (double) (*z) + .5);
+  nsx = floor((double) nx / (double) (*z) + .5);
+  nsy = floor((double) ny / (double) (*z) + .5);
   out = mw_change_fimage(out,nsy,nsx);
   
   tmp = mw_change_fimage(NULL,ny,nsx);
   
-  n = (int)ceil(0.5*(double)(*z+1.)*(float)(*o+1));
+  n = ceil(0.5*(double)(*z+1.)*(float)(*o+1));
   c = (float *)malloc((2*n+1)*sizeof(float));
 
 
@@ -260,7 +260,7 @@ Fimage funzoom(Fimage in, Fimage out, float *z, int *o, float *tx, float *ty)
   delta = (tx?*tx:0.);
   for (x=0;x<nsx;x++) {
     p = *z*((float)x+0.5)-0.5-delta;
-    i = (int)floor((double)p); 
+    i = floor((double)p); 
     u = p-(float)i;
     for (d=-n;d<=n;d++) 
       c[n+d]=(float)ppeval(&xi,u+(float)d);
@@ -281,7 +281,7 @@ Fimage funzoom(Fimage in, Fimage out, float *z, int *o, float *tx, float *ty)
   delta = (ty?*ty:0.);
   for (y=0;y<nsy;y++) {
     p = *z*((float)y+0.5)-0.5-delta;
-    i = (int)floor((double)p); 
+    i = floor((double)p); 
     u = p-(float)i;
     for (d=-n;d<=n;d++) 
       c[n+d]=(float)ppeval(&xi,u+(float)d);

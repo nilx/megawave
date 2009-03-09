@@ -35,12 +35,13 @@ Fimage fsample(Fimage in, Fimage out, double step, double *delta, int *norm)
   int nc;
   int nr1;
   int nc1;
+  int istep, jstep;
 
   coeff = (norm?(float)(step*step):1.);
   nr = in->nrow;
   nc = in->ncol;
-  nr1 = nr; while ((int)(floor(*delta+(double)(nr1-1)*step))+1>nr) nr1--;
-  nc1 = nc; while ((int)(floor(*delta+(double)(nc1-1)*step))+1>nc) nc1--;
+  nr1 = nr; while ((floor(*delta+(double)(nr1-1)*step))+1>nr) nr1--;
+  nc1 = nc; while ((floor(*delta+(double)(nc1-1)*step))+1>nc) nc1--;
 
   mwdebug("Input size: nr = %d \t nc = %d\n", nr,nc);
   mwdebug("Output size: nr1 = %d \t nc1 = %d\n", nr1,nc1);
@@ -49,9 +50,12 @@ Fimage fsample(Fimage in, Fimage out, double step, double *delta, int *norm)
   if (out == NULL) mwerror(FATAL,1,"not enough memory.\n");
 
   for (i=0 ; i<  nr1; i++)
-    for (j=0 ; j<  nc1; j++) 
-      _(out,i,j) = coeff * _(in,(int)floor(*delta+(double)i*step),(int)floor(*delta+(double)j*step));
-
+    for (j=0 ; j<  nc1; j++)
+    {
+      istep = floor(*delta+(double)i*step);
+      jstep = floor(*delta+(double)j*step);
+      _(out,i,j) = coeff * _(in,istep,jstep);
+    }
   return(out);
 }
 

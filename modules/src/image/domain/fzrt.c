@@ -48,7 +48,7 @@ void fzrt(Fimage in, Fimage out, float zoom, float angle, float x, float y, int 
   x /= zoom; y /= zoom;
   X1 -= x; X2 -= x; X3 -= x; 
   Y1 -= y; Y2 -= y; Y3 -= y;
-  sx = (int)ceil((double)zoom*(double)nx);
-  sy = (int)ceil((double)zoom*(double)ny);
+  sx = ceil((double)zoom*(double)nx);
+  sy = ceil((double)zoom*(double)ny);
   fproj(in,out,&sx,&sy,b,o,p,NULL,X1,Y1,X2,Y2,X3,Y3,NULL,NULL);
 }

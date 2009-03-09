@@ -25,8 +25,8 @@ static void bound(int x, int y, float ca, float sa, int *xmin, int *xmax, int *y
 {   
     int rx,ry;
 
-    rx = (int)floor(ca*(float)x+sa*(float)y);
-    ry = (int)floor(-sa*(float)x+ca*(float)y);
+    rx = floor(ca*(float)x+sa*(float)y);
+    ry = floor(-sa*(float)x+ca*(float)y);
     if (rx<*xmin) *xmin=rx; if (rx>*xmax) *xmax=rx;
     if (ry<*ymin) *ymin=ry; if (ry>*ymax) *ymax=ry;
 }
@@ -71,8 +71,8 @@ void frot(Fimage in, Fimage out, float *a, float *b, char *k_flag)
       for (y=ymin;y<=ymax;y++) {
 	xp = ca*(float)x-sa*(float)y + xtrans;
 	yp = sa*(float)x+ca*(float)y + ytrans;
-	x1 = (int)floor(xp); 
-	y1 = (int)floor(yp); 
+	x1 = floor(xp); 
+	y1 = floor(yp); 
 	ux = xp-(float)x1;
 	uy = yp-(float)y1;
 	adr = y1*nx+x1;

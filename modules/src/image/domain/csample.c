@@ -30,11 +30,12 @@ Cimage csample(Cimage in, Cimage out, double step)
   int nc;
   int nr1;
   int nc1;
+  int istep, jstep;
   
   nr = in->nrow;
   nc = in->ncol;
-  nr1 = nr; while ((int)(floor((double)(nr1-1)*step))+1>nr) nr1--;
-  nc1 = nc; while ((int)(floor((double)(nc1-1)*step))+1>nc) nc1--;
+  nr1 = nr; while ((floor((double)(nr1-1)*step))+1>nr) nr1--;
+  nc1 = nc; while ((floor((double)(nc1-1)*step))+1>nc) nc1--;
 
   mwdebug("Input size: nr = %d \t nc = %d\n", nr,nc);
   mwdebug("Output size: nr1 = %d \t nc1 = %d\n", nr1,nc1);
@@ -44,8 +45,12 @@ Cimage csample(Cimage in, Cimage out, double step)
 
   for (i=0 ; i<  nr1; i++)
     for (j=0 ; j<  nc1; j++) 
-      _(out,i,j) = _(in,(int)floor((double)i*step),(int)floor((double)j*step));
-  
+    {
+      istep = floor((double)i*step);
+      jstep = floor((double)j*step);
+      _(out,i,j) = _(in, istep, jstep);
+    }
+
   return(out);
 }
 

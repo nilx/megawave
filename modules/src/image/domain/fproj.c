@@ -185,8 +185,8 @@ void fproj(Fimage in, Fimage out, int *sx, int *sy, float *bg, int *o, float *p,
       if (*o==0) { 
 	
 	/* zero order interpolation (pixel replication) */
-	xi = (int)floor((double)xp); 
-	yi = (int)floor((double)yp);
+	xi = floor((double)xp); 
+	yi = floor((double)yp);
 	if (xi<0 || xi>=in->ncol || yi<0 || yi>=in->nrow)
 	  res = *bg; else res = in->gray[yi*in->ncol+xi];
 	
@@ -196,8 +196,8 @@ void fproj(Fimage in, Fimage out, int *sx, int *sy, float *bg, int *o, float *p,
 	if (xp<0. || xp>(float)nx || yp<0. || yp>(float)ny) res=*bg; 
 	else {
 	  xp -= 0.5; yp -= 0.5;
-	  xi = (int)floor((double)xp); 
-	  yi = (int)floor((double)yp);
+	  xi = floor((double)xp); 
+	  yi = floor((double)yp);
 	  ux = xp-(float)xi;
 	  uy = yp-(float)yi;
 	  switch (*o) 

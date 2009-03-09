@@ -125,8 +125,8 @@ Fimage fcrop(Fimage in, Fimage out, float *sx, float *sy, float *z, float *bg, i
   if (sx && !sy) zy = zx;
   if (!sx && sy) zx = zy;
   if (z) zx = zy = *z;
-  nsx = (int)floor((double)zx*(double)(X2-X1) + .5);
-  nsy = (int)floor((double)zy*(double)(Y2-Y1) + .5);
+  nsx = floor((double)zx*(double)(X2-X1) + .5);
+  nsy = floor((double)zy*(double)(Y2-Y1) + .5);
   mwdebug("Output size is %d x %d\n",nsx,nsy);
   if (nsx<0 || nsy<0) mwerror(FATAL,1,"illegal window specification.\n");
 
@@ -152,10 +152,10 @@ Fimage fcrop(Fimage in, Fimage out, float *sx, float *sy, float *z, float *bg, i
 
     if (*o==0) { /* zero order interpolation (pixel replication) */
 
-      xi = (int)floor((double)xp); 
+      xi = floor((double)xp); 
       if (xi<0 || xi>=nx)
 	for (y=0;y<ny;y++) tmp->gray[y*nsx+x] = *bg; 
-      else for (y=0;y<ny;y++) tmp->gray[y*nsx+x] = ref->gray[y*nx+xi];
+      else for (y=0;y<ny;y++) tmp->gray[y*nsx+x] = ref->gray[y*nx+(int)xi];
       
     } else { /* higher order interpolations */
 
@@ -165,7 +165,7 @@ Fimage fcrop(Fimage in, Fimage out, float *sx, float *sy, float *z, float *bg, i
       else {
 
 	xp -= 0.5;
-	xi = (int)floor((double)xp); 
+	xi = floor((double)xp); 
 	u = xp-(float)xi;
 	switch (*o) 
 	  {
@@ -187,13 +187,13 @@ Fimage fcrop(Fimage in, Fimage out, float *sx, float *sy, float *z, float *bg, i
 	if (xi+n1>=0 && xi+n2<nx) {
 	  for (y=0;y<ny;y++) {
 	    for (d=n1,res=0.;d<=n2;d++) 
-	      res += c[n2-d]*ref->gray[y*nx+xi+d];
+		res += c[n2-d]*ref->gray[y*nx+(int)xi+d];
 	    tmp->gray[y*nsx+x] = res;
 	  }
 	} else 
 	  for (y=0;y<ny;y++) {
 	    for (d=n1,res=0.;d<=n2;d++) 
-	      res += c[n2-d]*v(ref,xi+d,y,*bg);
+		res += c[n2-d]*v(ref,(int)xi+d,y,*bg);
 	    tmp->gray[y*nsx+x] = res;
 	  }
       }
@@ -212,10 +212,10 @@ Fimage fcrop(Fimage in, Fimage out, float *sx, float *sy, float *z, float *bg, i
 
     if (*o==0) { /* zero order interpolation (pixel replication) */
 
-      yi = (int)floor((double)yp); 
+      yi = floor((double)yp); 
       if (yi<0 || yi>=ny)
 	for (x=0;x<nsx;x++) out->gray[y*nsx+x] = *bg; 
-      else for (x=0;x<nsx;x++) out->gray[y*nsx+x] = ref->gray[yi*nsx+x];
+      else for (x=0;x<nsx;x++) out->gray[y*nsx+x] = ref->gray[(int)yi*nsx+x];
       
     } else { /* higher order interpolations */
 
@@ -225,7 +225,7 @@ Fimage fcrop(Fimage in, Fimage out, float *sx, float *sy, float *z, float *bg, i
       else {
 
 	yp -= 0.5;
-	yi = (int)floor((double)yp); 
+	yi = floor((double)yp); 
 	u = yp-(float)yi;
 	switch (*o) 
 	  {
@@ -247,13 +247,13 @@ Fimage fcrop(Fimage in, Fimage out, float *sx, float *sy, float *z, float *bg, i
 	if (yi+n1>=0 && yi+n2<ny) {
 	  for (x=0;x<nsx;x++) {
 	    for (d=n1,res=0.;d<=n2;d++) 
-	      res += c[n2-d]*ref->gray[(yi+d)*nsx+x];
+		res += c[n2-d]*ref->gray[((int)yi+d)*nsx+x];
 	    out->gray[y*nsx+x] = res;
 	  }
 	} else 
 	  for (x=0;x<nsx;x++) {
 	    for (d=n1,res=0.;d<=n2;d++) 
-	      res += c[n2-d]*v(ref,x,yi+d,*bg);
+		res += c[n2-d]*v(ref,x,(int)yi+d,*bg);
 	    out->gray[y*nsx+x] = res;
 	  }
       }
