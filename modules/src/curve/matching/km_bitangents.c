@@ -11,7 +11,7 @@ usage = {
         };
 */
 
-#include<math.h>
+#include <math.h>
 #include "mw.h"
 #include "mw-modules.h" 
 

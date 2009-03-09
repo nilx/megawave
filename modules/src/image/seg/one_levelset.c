@@ -24,7 +24,7 @@
  v1.2 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>

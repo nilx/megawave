@@ -38,7 +38,7 @@ usage = {
  v2.1 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
-#include <math.h> 
+#include <math.h>
 #include "mw.h"
 #include "mw-modules.h" /* for flbg(), flbg_adap() */
 

@@ -20,8 +20,8 @@
  v1.5 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
-#include <stdio.h> 
-#include <stdlib.h> 
+#include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include "mw.h"
 #include "mw-modules.h" /* for fsmooth() */

@@ -16,7 +16,7 @@
 };
 */
 
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
 #include "mw-modules.h" /* for fvalues() */
