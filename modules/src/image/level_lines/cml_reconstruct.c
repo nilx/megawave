@@ -245,8 +245,7 @@ fill_lline(unsigned char **V, unsigned char *H1, Color level, unsigned char insi
 Cfimage
 cml_reconstruct(char *v_flag, Cmimage m_image)
 { 
-  unsigned char **V,*H1,*cptr,inc_val,inside,
-      zero_inside(struct closest_lline *);
+  unsigned char **V,*H1,*cptr,inc_val,inside;
   int NC,NL,i;
   Color current_level;
   Cfimage image_out=NULL;
