@@ -62,7 +62,7 @@ Fimage fdirspline(Fimage in, int n, Fimage out)
 
   /* compute spline coefficients c[0..n2] */
   n2 = n/2;
-  c = calloc(n2+1,sizeof(float));
+  c = (float *) calloc(n2+1,sizeof(float));
   for (a=1.,k=2;k<=n;k++) a/=(float)k;
   for (k=0;k<=n+1;k++) {
     for (i=0;i<=n2;i++) {

@@ -443,7 +443,8 @@ static Shape new_shape(int iCurrentArea, float currentGrayLevel, char bOfInferio
   pNewShape->area = iCurrentArea;
   pNewShape->removed = 0;
   pNewShape->pixels = NULL;
-  pNewShape->boundary = pNewShape->data = NULL;
+  pNewShape->data = NULL;
+  pNewShape->boundary = (Flist) NULL;
   pNewShape->data_size = 0;
   /* Make links */
   pNewShape->parent = NULL;

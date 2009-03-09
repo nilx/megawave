@@ -234,12 +234,12 @@ static double* qtile(double p, double dtheta, int *nq, double *p_inf)
   tol = 1.0e-8;
   
   *nq  = 1;
-  beta = malloc(sizeof(double));
+  beta = (double *) malloc(sizeof(double));
   beta[0] = b = 0.0;
 
   while ((*p_inf=pinf(b,dtheta))>p) {
     b = fzero_convex(b,M_PI_2,tol,tol,b,dtheta,p);
-    beta = realloc(beta,((*nq)+1)*sizeof(double));
+    beta = (double *) realloc(beta,((*nq)+1)*sizeof(double));
     beta[(*nq)++] = b;
   }
 
@@ -280,7 +280,7 @@ static double *tab2(int n, double p)
   double q;
 
   q = 1.0-p;
-  out = (double *)calloc((n+1)*(n+1),sizeof(double));
+  out = (double *) calloc((n+1)*(n+1),sizeof(double));
 
   /*** compute proba (>=x among y) ***/
   out[0] = 1.0;                                      /* P(0,0) = 1 */
@@ -307,7 +307,7 @@ static double* binomial_tail(int n, double p)
   int x;
 
   in = tab2(n,p);
-  out = calloc(n+1,sizeof(double));
+  out = (double *) calloc(n+1,sizeof(double));
 
   for (x=0;x<=n;x++)
     out[x] = in[(n+1)*n+x];
@@ -431,7 +431,7 @@ static Tiling* newTiling(int ntheta, double *p, double *p_inf, int *M)
 
   /* Compute boundaries of external tiles in
      normalized polar coordinates (theta,q) */
-  theta = malloc((ntheta+1)*sizeof(double));
+  theta = (double *) malloc((ntheta+1)*sizeof(double));
   for(t=0;t<=ntheta;t++) theta[t] = 2.0*dtheta*(double)t;
   q = qtile(pint,dtheta,&nq,p_inf);
 
@@ -440,10 +440,10 @@ static Tiling* newTiling(int ntheta, double *p, double *p_inf, int *M)
      normalized pixel coordinates x,y. */
   dxy = 2*sin(dtheta);
   nx = ny = ceil(2.0/dxy);
-  xx = malloc((nx+1)*sizeof(double));
+  xx = (double *) malloc((nx+1)*sizeof(double));
   for (t=0;t<=nx;t++)
     xx[t] = -1.0+dxy*t;
-  yy = malloc((ny+1)*sizeof(double));
+  yy = (double *) malloc((ny+1)*sizeof(double));
   for (t=0;t<=ny;t++)
     yy[t] = -1.0+dxy*t;
 
@@ -584,7 +584,7 @@ static Flists newSegments(Fimage allsegs)
   for(i=0;i<N;i++) {
     s = Segments->list[i] = mw_change_flist(NULL,0,0,4);
     s->data = calloc(dim+1,sizeof(float));
-    s->data_size = (dim+1)*sizeof(float);
+    s->data_size = (dim+1) * sizeof(float);
     ((float*) (s->data))[0] = 1.0; /* isvalid field */
     for(j=0;j<dim;j++)
       ((float*) (s->data))[j+1]=allsegs->gray[i*dim+j];
@@ -1132,11 +1132,11 @@ int vpoint(Fimage imagein, Fimage allsegs, Flist output, Flists segs, double *ep
      min_pl = 4;
      max_pl = 9;
      n_pl = max_pl-min_pl+1;
-     M = calloc(n_pl,sizeof(int));
-     B = calloc(n_pl,sizeof(double*));
-     Binf = calloc(n_pl,sizeof(double*));
-     p = calloc(n_pl,sizeof(double));
-     p_inf = calloc(n_pl,sizeof(double));
+     M = (int *) calloc(n_pl,sizeof(int));
+     B = (double **) calloc(n_pl,sizeof(double*));
+     Binf = (double **) calloc(n_pl,sizeof(double*));
+     p = (double *) calloc(n_pl,sizeof(double));
+     p_inf = (double *) calloc(n_pl,sizeof(double));
  
   /* Detection threshold for NFA is epsilon
      divided by the number of precision levels.
@@ -1145,7 +1145,7 @@ int vpoint(Fimage imagein, Fimage allsegs, Flist output, Flists segs, double *ep
   */
      threshold = *eps + log10(n_pl);
 
-     Tilings = malloc(n_pl*sizeof(Tiling**));
+     Tilings = (Tiling **) malloc(n_pl*sizeof(Tiling**));
 
 
   /*

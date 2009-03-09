@@ -153,7 +153,7 @@ Ccimage ccputstring(Ccimage in, int x, int y, int *c, int *C, float *r, char *st
 
   /* get string */
   if (!str) {
-    str = malloc(1001*sizeof(char));
+      str = (char *) malloc(1001*sizeof(char));
     for (i=0;i<1000 && ((v=getchar())!=EOF);i++) str[i] = v;
     if (v!=EOF) 
       mwerror(WARNING,0,"string too long: only 1000 characters kept.");
