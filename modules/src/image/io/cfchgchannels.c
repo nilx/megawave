@@ -303,7 +303,7 @@ HSV_RGB(float *r, float *g, float *b, float *tr, float *tg, float *tb)
 #else
       h = *r/P3;      
 #endif
-      sector=(int) floor(h);
+      sector = floor(h);
       if (sector < 0) sector=0;
       x=h-sector;
       y = *b * (1.0 - *g);
