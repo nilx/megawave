@@ -141,7 +141,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
      (-EPSILON <= beta && beta <= EPSILON) ||
      (-EPSILON <= delta && delta <= EPSILON)) /* Straight line */
     if(ABS(alpha) > ABS(beta)) {
-      n = (int)ceil(ABS(alpha)*iPrecision)-1;
+      n = ceil(ABS(alpha)*iPrecision)-1;
       if(n != 0) {
 	fStep = ABS(alpha)/(n+1);
 	gamma = beta/alpha;
@@ -160,7 +160,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
 	  }
       }
     } else {
-      n = (int)ceil(ABS(beta)*iPrecision)-1;
+      n = ceil(ABS(beta)*iPrecision)-1;
       if(n != 0) {
 	fStep = ABS(beta)/(n+1);
 	gamma = alpha/beta;
@@ -183,7 +183,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
     gamma = (VALUE(iIndex+pImage->ncol)-VALUE(iIndex))/delta -
       xDualPixel+(float)0.5;
     if(x1+gamma + EPSILON >= 0 && x1+gamma <= EPSILON) { /* Saddle */
-      n = (int)ceil(ABS(beta)*iPrecision)-1;
+      n = ceil(ABS(beta)*iPrecision)-1;
       if(n != 0) {
 	fStep = ABS(beta)/(n+1);
 	if(beta > 0)
@@ -201,7 +201,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
       }
       pPoint[iNbPoints].x = x1; /* Position of saddle point */
       pPoint[iNbPoints++].y = y2;
-      n = (int)ceil(ABS(alpha)*iPrecision)-1;
+      n = ceil(ABS(alpha)*iPrecision)-1;
       if(n != 0) {
 	fStep = ABS(alpha)/(n+1);
 	if(alpha > 0)
@@ -218,7 +218,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
 	  }
       }
     } else if(x2+gamma + EPSILON >= 0 && x2+gamma <= EPSILON) { /* Saddle */
-      n = (int)ceil(ABS(alpha)*iPrecision)-1;
+      n = ceil(ABS(alpha)*iPrecision)-1;
       if(n != 0) {
 	fStep = ABS(alpha)/(n+1);
 	if(alpha > 0)
@@ -236,7 +236,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
       }
       pPoint[iNbPoints].x = x2; /* Position of saddle point */
       pPoint[iNbPoints++].y = y1;
-      n = (int)ceil(ABS(beta)*iPrecision)-1;
+      n = ceil(ABS(beta)*iPrecision)-1;
       if(n != 0) {
 	fStep = ABS(beta)/(n+1);
 	if(beta > 0)
@@ -257,7 +257,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
       alpha = y2 - beta/(x2+gamma);
       if(ABS(beta) <= (x1+gamma)*(x1+gamma) &&
 	 ABS(beta) <= (x2+gamma)*(x2+gamma)) {
-	n = (int)ceil(ABS(x2-x1)*iPrecision)-1;
+	n = ceil(ABS(x2-x1)*iPrecision)-1;
 	if(n != 0) {
 	  fStep = ABS(x2-x1)/(n+1);
 	  if(x1 < x2)
@@ -275,7 +275,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
 	}
       } else if(ABS(beta) >= (x1+gamma)*(x1+gamma) &&
 		ABS(beta) >= (x2+gamma)*(x2+gamma)) {
-	n = (int)ceil(ABS(y2-y1)*iPrecision)-1;
+	n = ceil(ABS(y2-y1)*iPrecision)-1;
 	if(n != 0) {
 	  fStep = ABS(y2-y1)/(n+1);
 	  if(y1 < y2)
@@ -300,7 +300,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
 	xMaxCurvature -= gamma;
 	if((x1 > xMaxCurvature && x1+gamma > 0) ||
 	   (x1 < xMaxCurvature && x1+gamma < 0)) {
-	  n = (int)ceil(ABS(xMaxCurvature-x1)*iPrecision)-1;
+	  n = ceil(ABS(xMaxCurvature-x1)*iPrecision)-1;
 	  if(n != 0) {
 	    fStep = ABS(xMaxCurvature-x1)/(n+1);
 	    if(x1 < xMaxCurvature)
@@ -318,7 +318,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
 	  }
 	  pPoint[iNbPoints].x = xMaxCurvature;
 	  pPoint[iNbPoints++].y = yMaxCurvature;
-	  n = (int)ceil(ABS(y2-yMaxCurvature)*iPrecision)-1;
+	  n = ceil(ABS(y2-yMaxCurvature)*iPrecision)-1;
 	  if(n != 0) {
 	    fStep = ABS(y2-yMaxCurvature)/(n+1);
 	    y1 = yMaxCurvature;
@@ -336,7 +336,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
 	      }
 	  }
 	} else {
-	  n = (int)ceil(ABS(yMaxCurvature-y1)*iPrecision)-1;
+	  n = ceil(ABS(yMaxCurvature-y1)*iPrecision)-1;
 	  if(n != 0) {
 	    fStep = ABS(yMaxCurvature-y1)/(n+1);
 	    if(y1 < yMaxCurvature)
@@ -354,7 +354,7 @@ static int discretize(int iPrecision, Fimage pImage, point_t *pPoint, int xDualP
 	  }
 	  pPoint[iNbPoints].x = xMaxCurvature;
 	  pPoint[iNbPoints++].y = yMaxCurvature;
-	  n = (int)ceil(ABS(x2-xMaxCurvature)*iPrecision)-1;
+	  n = ceil(ABS(x2-xMaxCurvature)*iPrecision)-1;
 	  if(n != 0) {
 	    fStep = ABS(x2-xMaxCurvature)/(n+1);
 	    x1 = xMaxCurvature;

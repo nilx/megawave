@@ -53,8 +53,8 @@ static Fsignal build_signal(Shapes pTree, float *pOffset, float *pStep)
   find_bounds(pTree, &fMin, &fMax);
   fOffset = (pOffset == NULL) ? 0.5    : *pOffset;
   fStep =   (pStep == NULL)   ? (float)1.0 : *pStep;
-  iMin = (int) ceil ((double)((fMin-fOffset)/fStep));
-  iMax = (int) floor((double)((fMax-fOffset)/fStep));
+  iMin = ceil ((double)((fMin-fOffset)/fStep));
+  iMax = floor((double)((fMax-fOffset)/fStep));
 
   pLevels = mw_change_fsignal(NULL, iMax-iMin+1);
   if(pLevels == NULL)
