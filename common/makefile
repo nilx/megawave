@@ -74,11 +74,13 @@ CHECK	?= relax
 # strict compilation switch
 ifeq	($(CHECK), strict)
 CWARN 	+= -pedantic -Werror $(CSTRICT_4_1)		\
-	-Wfloat-equal -Wundef -Wshadow -Wpointer-arith	\
+	-Wundef -Wshadow -Wpointer-arith		\
 	-Wbad-function-cast -Wcast-qual -Wcast-align	\
-	-Waggregate-return -Wstrict-prototypes		\
-	-Wmissing-prototypes				\
-	-Wmissing-declarations -Wnested-externs
+	-Waggregate-return 				\
+	-Wstrict-prototypes -Wmissing-prototypes	\
+	-Wmissing-declarations -Wnested-externs 	\
+#	-Wformat -Wformat-nonliteral -Wformat-security	\
+#	-Wfloat-equal
 endif
 
 # compilation mode options
