@@ -61,15 +61,12 @@ static Fimage compute_distance(Fimage sg, Fimage param)
 
 static int comparefloat(const void *v1, const void *v2)
 {
-  float fv1, fv2;
   double a,b;
 
-  fv1 = *(float*)v1;
-  fv2 = *(float*)v2;
-  a = (double)(fv1);
-  a -= floor((double)(fv1));
-  b = (double)(fv2);
-  b -= floor((double)(fv2));
+  a = (double)*(const float*)v1;
+  a -= floor((double)*(const float*)v1);
+  b = (double)*(const float*)v2;
+  b -= floor((double)*(const float*)v2);
   
   return a>b?1:(a<b ? -1 : 0);
 }

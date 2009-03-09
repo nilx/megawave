@@ -41,10 +41,10 @@ static int ascending_order=1;
 static int cmpcolor(const void  *c1p, const void *c2p)
 {
 
-  Color *c1, *c2;
+  const Color *c1, *c2;
 
-  c1 = (Color *)c1p;
-  c2 = (Color *)c2p;
+  c1 = (const Color *)c1p;
+  c2 = (const Color *)c2p;
   if (c1->model != c2->model)
     mwerror(INTERNAL,1,"[cmpcolor] Two different color models %d and %d !\n",
 	    c1->model,c2->model);

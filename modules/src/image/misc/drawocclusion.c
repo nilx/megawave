@@ -37,12 +37,8 @@ usage = {
 static int u_compar_i(const void *u, const void *v)  /*  Called by function qsort for sorting decreasingly */
           
   {
-    int iu, iv;
-
-    iu = *(int*)u;
-    iv = *(int*)v;
-    if ((iu)<(iv)) return (1);
-    if ((iu)==(iv)) return (0);
+    if (*(const int*)u < *(const int*)v) return (1);
+    if (*(const int*)u == *(const int*)v) return (0);
     return (-1);
   }
 

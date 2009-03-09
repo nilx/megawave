@@ -30,13 +30,8 @@
 
 static  int compare(const void *k, const void *l)
 {
-  float fk, fl;
-
-  fk = *(float *)k;
-  fl = *(float *)l;
-
-  if (fk > fl) return(1);
-  if (fk < fl) return(-1);
+  if (*(const float*)k > *(const float*)l) return(1);
+  if (*(const float*)k < *(const float*)l) return(-1);
   return(0);
 }
 

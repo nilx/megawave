@@ -36,7 +36,7 @@ static int compare(const void *a,const void *b)
 {
   float v;
 
-  v = *((float *)a)-*((float *)b);
+  v = *(const float*)a - *(const float*)b;
   return(v>0.?1:(v<0.?-1:0));
 }
 

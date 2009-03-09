@@ -25,7 +25,7 @@
 
 static int comp(const void *i, const void *j)
 { 
-  return ((int)*((unsigned char *)i)-(int)*((unsigned char *)j));
+  return ((int)*(const unsigned char *)i - (int)*(const unsigned char *)j);
 }
 
 static int median1(Cimage u, Cimage v, Curve s)

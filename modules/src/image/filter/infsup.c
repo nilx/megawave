@@ -28,12 +28,7 @@
 
 static int diff(const void *a, const void *b)
 {
-  unsigned char ca, cb;
-
-  ca = *(unsigned char *)a;
-  cb = *(unsigned char *)b;
-
-  if ((ca)<(cb)) {
+  if (*(const unsigned char *)a < *(const unsigned char *)b) {
     return (-1);
   }
   else {

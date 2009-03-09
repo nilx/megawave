@@ -24,11 +24,10 @@
 #include "mw-modules.h" /* for flst_pixels() */
 
 
-static int compare_floats(const void *p1, const void *p2)
+static int compare_floats(const void *f1, const void *f2)
 {
-  float f1= *(float*)p1, f2 = *(float*)p2;
-  if(f1 == f2) return 0;
-  if(f1 > f2) return 1;
+  if(*(const float *)f1 == *(const float *)f2) return 0;
+  if(*(const float *)f1 > *(const float *)f2) return 1;
   return -1;
 }
 
