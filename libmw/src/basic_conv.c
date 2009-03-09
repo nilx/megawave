@@ -46,9 +46,6 @@
 
 #include "basic_conv.h"
 
-/* FIXME: clean casts */
-#pragma GCC diagnostic ignored "-Wbad-function-cast"
-
 int _mw_convert_struct_warning = 0;
 
 /*========================= IMAGES ================================*/
@@ -72,7 +69,7 @@ void _mw_float_to_uchar(register float *ptr_float,
 	  else if (f <= -0.5) {c=0; out++;}
 	  else 
 	  {
-	       c= (unsigned char) floor(f + .5);
+	       c = floor(f + .5);
 	       if (c != f) lost=1;
 	  }
 	  *ptr_uchar=c;
@@ -692,8 +689,8 @@ Curves mw_fcurves_to_curves(Fcurves fcurves, Curves curves)
 		    mwerror(ERROR, 0,"Not enough memory to create Curves\n");
 		    return(NULL);
 	       }
-	       new_point->x = (int) floor(pp->x + .5);
-	       new_point->y = (int) floor(pp->y + .5);
+	       new_point->x = floor(pp->x + .5);
+	       new_point->y = floor(pp->y + .5);
 	       if ((((float) new_point->x) != pp->x) || 
 		   (((float) new_point->y) != pp->y))
 		    lost = 1;
@@ -926,8 +923,8 @@ Polygons mw_fpolygons_to_polygons(Fpolygons fpolys, Polygons polys)
 		    mwerror(ERROR, 0,"Not enough memory to create Polys\n");
 		    return(NULL);
 	       }
-	       new_point->x = (int) floor(pp->x + .5);
-	       new_point->y = (int) floor(pp->y + .5);
+	       new_point->x = floor(pp->x + .5);
+	       new_point->y = floor(pp->y + .5);
 	       if ((((float) new_point->x) != pp->x) || 
 		   (((float) new_point->y) != pp->y))
 		    lost = 1;
@@ -1235,8 +1232,8 @@ Point_curve mw_point_fcurve_to_point_curve(Point_fcurve pfcurve,
 	       mwerror(ERROR, 0,"Not enough memory to create point_curve\n");
 	       return(NULL);
 	  }
-	  new_point->x = (int) floor(pp->x + .5);
-	  new_point->y = (int) floor(pp->y + .5);
+	  new_point->x = floor(pp->x + .5);
+	  new_point->y = floor(pp->y + .5);
 	  if ((((float) new_point->x) != pp->x) || 
 	      (((float) new_point->y) != pp->y))
 	       lost = 1;
@@ -1432,8 +1429,8 @@ Polygon mw_fpolygon_to_polygon(Fpolygon fpoly, Polygon poly)
 	       mwerror(ERROR, 0,"Not enough memory to create Poly\n");
 	       return(NULL);
 	  }
-	  new_point->x = (int) floor(pp->x + .5);
-	  new_point->y = (int) floor(pp->y + .5);
+	  new_point->x = floor(pp->x + .5);
+	  new_point->y = floor(pp->y + .5);
 	  if ((((float) new_point->x) != pp->x) || 
 	      (((float) new_point->y) != pp->y))
 	       lost = 1;
