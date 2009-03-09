@@ -132,6 +132,7 @@
  * - a function prototype (ANSI format) - list of parameters scanned
  * - a function prototype (K&R format) - list of parameters scanned
  * - a variable
+ * - a static definition
  */
 #define I_CDECLARETYPE 0
 #define I_FUNC_IN 1
@@ -140,6 +141,7 @@
 #define I_FUNCPROTO_ANSI 4
 #define I_FUNCPROTO_KR 5
 #define I_VARDECL 6
+#define I_STATICDEF 7
 
 /*
  * variable declaration types

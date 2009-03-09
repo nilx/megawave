@@ -72,6 +72,8 @@
     "function's name not found in \"%s\""
 #define MSG_ERROR_DUPLICATE_MAIN \
     "Duplicate main function in \"%s\""
+#define MSG_ERROR_NON_STATIC_FUNCTION \
+    "Non-static function definition is not allowed (but for the main one) : \"%s\""
 #define MSG_ERROR_FUNCTION_MISSING_PARAMS \
     "\"%s\" : no t_token after function's name while nparam=%d"
 #define MSG_ERROR_FUNCTION_ITYPE \
@@ -93,6 +95,8 @@
     "Word \"%s\": "
 #define MSG_DEBUG_SKIP_STRING \
     "skip string "
+#define MSG_DEBUG_SKIP_INSTRUCTION \
+    "skip instruction "
 #define MSG_DEBUG_NAME \
     "Name : %s"
 #define MSG_DEBUG_SKIP_CHAR \
@@ -328,7 +332,17 @@ static int AnalyseInstruction(t_statement * c)
                cw->Wtype=W_CSTORAGE;
                if (debug_flag)
                     debug("W_CSTORAGE");
-               continue;
+	       if ((c->Itype == I_UNDEFINED)&&(strcmp(cw->Name,"static")==0))
+		 /* static definition : useless to read them */
+		 {
+		 c->Itype = I_STATICDEF;
+		 if (debug_flag)
+		   debug("I_STATICDEF");		 
+		 if (debug_flag)
+		   debug(MSG_DEBUG_SKIP_INSTRUCTION);
+		 return(0);
+		 }
+	       continue;
           }
           if (Is_Cqualifier(w))
           {
@@ -1260,17 +1274,27 @@ static void FillNewFunction(t_varfunc * f, t_statement * c)
      RemoveTerminatingSpace(f->v->Stype);
      RemoveTerminatingSpace(f->v->Ftype);
 
-     /* check for main function */
-     if ( ((f->Itype == I_FUNCDECL_ANSI) ||             \
-           (f->Itype == I_FUNCDECL_KR)) &&              \
-          (strcmp(f->v->Name, module_name) == 0))
-     {
-          /* this is the main function */
-          if (C->mfunc)
+     if ((f->Itype == I_FUNCDECL_ANSI) || (f->Itype == I_FUNCDECL_KR))
+       {
+	 /* case of a function declaration */
+	 
+	 /* check for main function */
+	 if (strcmp(f->v->Name, module_name) == 0)
+	   {
+	     /* this is the main function */
+	     if (C->mfunc)
                error(MSG_ERROR_DUPLICATE_MAIN, c->phrase);
-          C->mfunc = f;
-     }
-
+	     C->mfunc = f;
+	   }
+	 else
+	   /* remember that static definition are not read (see I_STATICDEF).
+	      Therefore, we are here in case of a non-static function definition
+	      that is not the main function.
+	   */
+	   {
+	     error(MSG_ERROR_NON_STATIC_FUNCTION, c->phrase);
+	   }
+       }
 
      if (c->nparam == 0)
           /* if the function doesn't contain any parameter, we have finished */
@@ -1385,6 +1409,7 @@ ContinueInstruction:
      {
      case I_UNDEFINED:
      case I_CDECLARETYPE:
+     case I_STATICDEF:
           /* not an instruction to be recorded in C */
           return(1);
 
