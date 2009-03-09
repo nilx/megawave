@@ -210,7 +210,6 @@ short _mw_fmovie_create_movie(char *NomFic, Fmovie movie, char *Type)
      Fimage image;
      char FicImage1[BUFSIZ],FicImage2[BUFSIZ];
      char *BaseName,*c;
-     char field[10];
      int nimage,num;
      FILE *fp;
 
@@ -245,15 +244,7 @@ short _mw_fmovie_create_movie(char *NomFic, Fmovie movie, char *Type)
 	  image = image->next;
      }
      fprintf(fp,"nimage: %d\n",nimage);
-     if (nimage < 100)
-	  strcpy(field,"%s_%2.2d");
-     else if (nimage < 1000)
-	  strcpy(field,"%s_%3.3d");    
-     else if (nimage < 10000)
-	  strcpy(field,"%s_%4.4d");    
-     else if (nimage < 100000)
-	  strcpy(field,"%s_%5.5d");    
-     else 
+     if (nimage > 99999)
 	  mwerror(INTERNAL,1,"[_mw_fmovie_create_movie] Too many images !\n");
 
      num = 0;
@@ -261,8 +252,8 @@ short _mw_fmovie_create_movie(char *NomFic, Fmovie movie, char *Type)
      while (image != NULL)
      {
 	  num++;
-	  sprintf(FicImage1,field,NomFic,num);
-	  sprintf(FicImage2,field,BaseName,num);
+	  sprintf(FicImage1,"%s_%5.5d",NomFic,num);
+	  sprintf(FicImage2,"%s_%5.5d",BaseName,num);
 	  _mw_fimage_create_image(FicImage1,image,Type);
 	  if (_mw_convert_struct_warning >= 3) _mw_convert_struct_warning = -1;
 	  fprintf(fp,"%s\n",FicImage2);

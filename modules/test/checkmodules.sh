@@ -868,26 +868,26 @@ ccopy $SAMPLES/images/cimage $TMP/1_001 \
     && pass || fail mk-movie
 
 cmzoom -o 3 -X 2 $TMP/1 $TMP/2 2> /dev/null \
-    && fdiff $TMP/2_01 $TMP/2_02 $TMP/3 \
+    && fdiff $TMP/2_00001 $TMP/2_00002 $TMP/3 \
     && VAL=`fnorm -v $TMP/3 | cut -d"=" -f2` \
     && approx $VAL 9.81426 \
     && pass || fail cmzoom
 
 ccmzoom -o 3 -X 2 $TMP/1 $TMP/2 2> /dev/null \
-    && fdiff $TMP/2_01 $TMP/2_02 $TMP/3 \
+    && fdiff $TMP/2_00001 $TMP/2_00002 $TMP/3 \
     && VAL=`fnorm -v $TMP/3 | cut -d"=" -f2` \
     && approx $VAL 9.81426 \
     && pass || fail ccmzoom
 
 cmextract -b 0 $TMP/2 $TMP/3 30 30 1 170 170 1 $TMP/1 50 50 2 \
-    && fdiff $TMP/3_01 $TMP/3_02 $TMP/4 \
+    && fdiff $TMP/3_00001 $TMP/3_00002 $TMP/4 \
     && VAL=`fnorm -v $TMP/4 | cut -d"=" -f2` \
     && approx $VAL 8.09011 \
     && pass || fail cmextract
 
 cmparitysep -l $TMP/1 $TMP/2 \
-    && fdiff $TMP/2_01 $TMP/2_03 $TMP/3 \
-    && fdiff $TMP/2_02 $TMP/2_04 $TMP/4 \
+    && fdiff $TMP/2_00001 $TMP/2_00003 $TMP/3 \
+    && fdiff $TMP/2_00002 $TMP/2_00004 $TMP/4 \
     && VAL=`fnorm -v $TMP/3 | cut -d"=" -f2` \
     && approx $VAL 14.6972 \
     && VAL=`fnorm -v $TMP/4 | cut -d"=" -f2` \
@@ -912,9 +912,9 @@ cfunzoom -z 4 -o 0 $SAMPLES/images/ccimage $TMP/1 \
     && pass || fail cfunzoom
 
 cfmdiffuse -n 2 $TMP/1 $TMP/2 \
-    && VAL=`fnorm -v $TMP/2_01 2> /dev/null | cut -d"=" -f2` \
+    && VAL=`fnorm -v $TMP/2_00001 2> /dev/null | cut -d"=" -f2` \
     && approx $VAL 9.08767 \
-    && VAL=`fnorm -v $TMP/2_02 2> /dev/null | cut -d"=" -f2` \
+    && VAL=`fnorm -v $TMP/2_00002 2> /dev/null | cut -d"=" -f2` \
     && approx $VAL 7.25923 \
     && pass || fail cfmdiffuse
 
@@ -984,7 +984,7 @@ fsharpen -p 50 $TMP/1 $TMP/2 \
 rotaffin -r 5 -a 3 -t 3 -T 0 -A 5 $TMP/2 \
     && VAL=`grep nimage $TMP/2 | cut -d":" -f2` \
     && exact $VAL 15 \
-    && VAL=`fnorm -v $TMP/2_10 | cut -d"=" -f2` \
+    && VAL=`fnorm -v $TMP/2_00010 | cut -d"=" -f2` \
     && approx $VAL 29.1366 \
     && pass || fail rotaffin
 
@@ -1031,7 +1031,7 @@ fconvol $TMP/1 $DATA/image/blur3x3.ir $TMP/2 \
 
 cmextract $SAMPLES/movies/cmovie $TMP/1 128 128 3 140 140 7 \
     && mam -n 20 -a 0 $TMP/1 $TMP/2 > /dev/null \
-    && VAL=`fnorm -v $TMP/2_03 | cut -d"=" -f2` \
+    && VAL=`fnorm -v $TMP/2_00003 | cut -d"=" -f2` \
     && approx $VAL 8.49737 \
     && pass || fail cmextract
 
@@ -1332,7 +1332,7 @@ funzoom -z 4 -o 0 -ftype IMG $SAMPLES/images/cimage $TMP/1 2> /dev/null \
     && skeleton -n 10 $TMP/1 $DATA/image/seg_mask $TMP/2 > /dev/null \
     && VAL=`grep nimage $TMP/2 | cut -d":" -f2` \
     && exact $VAL 11 \
-    && VAL=`fnorm -v $TMP/2_11 | cut -d"=" -f2` \
+    && VAL=`fnorm -v $TMP/2_00011 | cut -d"=" -f2` \
     && approx $VAL 32.5981 \
     && pass || fail skeleton
 
@@ -1439,17 +1439,17 @@ amle $TMP/2 $TMP/3 2> /dev/null \
 cmextract $SAMPLES/movies/cmovie $TMP/1 40 170 3 80 210 7 \
     && for I in 1 2 3 4 5; do
         faxpb -ftype IMG -a 0.1 \
-	    $TMP/1_0$I $TMP/1_0$I 2> /dev/null
+	    $TMP/1_0000$I $TMP/1_0000$I 2> /dev/null
 	faxpb -ftype IMG -a 10 -b 5 \
-	    $TMP/1_0$I $TMP/1_0$I 2> /dev/null
+	    $TMP/1_0000$I $TMP/1_0000$I 2> /dev/null
     done \
     && amle3d_init $TMP/1 10 $TMP/2 \
-    && VAL=`fnorm -v $TMP/2_03 | cut -d"=" -f2` \
+    && VAL=`fnorm -v $TMP/2_00003 | cut -d"=" -f2` \
     && approx $VAL  26.1018 \
     && pass || fail amle_init
 
 amle3d $TMP/2 $TMP/3 \
-    && VAL=`fnorm -v $TMP/3_03 | cut -d"=" -f2` \
+    && VAL=`fnorm -v $TMP/3_00003 | cut -d"=" -f2` \
     && approx $VAL 4.03325 \
     && pass || fail amle3d
 
@@ -1486,7 +1486,7 @@ cmextract $SAMPLES/movies/cmovie $TMP/1 10 10 1 210 210 10 \
     && cmnoise -i 50 $TMP/1 $TMP/2 \
     && VAL=`grep nimage $TMP/2 | cut -d":" -f2` \
     && exact $VAL 10 \
-    && VAL=`fmean $TMP/2_05 | cut -d"=" -f2` \
+    && VAL=`fmean $TMP/2_00005 | cut -d"=" -f2` \
     && rand_approx $VAL 116 \
     && pass || fail cmnoise
 

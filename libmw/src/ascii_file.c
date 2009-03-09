@@ -110,7 +110,8 @@ void _mw_dirbasename(char *s, char *dname, char *bname)
 
 /*     Put in *ptr the value of a field named field_name. str_control gives */
 /*     the type of *ptr in the same way than in scanf.                      */
-
+/* FIXME: unsafe */
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 int _mw_fascii_get_field(FILE *fp, char *fname, char *field_name, char *str_control, void *ptr)
 {
      if (_mw_fascii_search_string(fp,field_name) != 1)
@@ -126,12 +127,14 @@ int _mw_fascii_get_field(FILE *fp, char *fname, char *field_name, char *str_cont
      }
      return(1);
 }
+#pragma GCC diagnostic error "-Wformat-nonliteral"
 
 
 /*     Same as _mw_fascii_get_field(), but do not generate error if the
        field is not found (this allows to read fields added in an extended format). 
 */
-
+/* FIXME: unsafe */
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 int _mw_fascii_get_optional_field(FILE *fp, char *fname, 
 				  char *field_name, char *str_control, 
 				  void *ptr)
@@ -144,6 +147,7 @@ int _mw_fascii_get_optional_field(FILE *fp, char *fname,
      }
      return(1);
 }
+#pragma GCC diagnostic error "-Wformat-nonliteral"
 
 
 FILE *_mw_open_data_ascii_file(char *fname)
