@@ -33,7 +33,7 @@ Curve disc(float r, float *i)
   next = &(c->first);
   prev = NULL;
 
-  ir = (int)ceil(r);
+  ir = ceil(r);
   r2 = r*r;
   i2 = (i?*i*(*i):-1.);
 

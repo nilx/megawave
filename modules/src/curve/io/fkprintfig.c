@@ -78,7 +78,7 @@ void fkprintfig(Fcurves in, int *d, char *e_flag, char *s_flag, float *m, float 
 
   /* compute zoom on y and radius of points */
   zoom_y = (s_flag?-1.0:1.0)*zoom_x;
-  radius = (int)ceil((double)(zoom_x*(*r)));
+  radius = ceil((double)(zoom_x*(*r)));
 
 
   /*----- Print XFIG header (default parameters) -----*/
@@ -104,9 +104,9 @@ void fkprintfig(Fcurves in, int *d, char *e_flag, char *s_flag, float *m, float 
 	printf(FIG_CLOSED_POLYGON(100,n));
       else printf(FIG_NONCLOSED_POLYGON(100,n));
       for (p=c->first;p;p=p->next) {
-	nx = (int) floor(zoom_x * (p->x - shift_x) + .5);
-	ny = (int) floor(zoom_y * (p->y - shift_y) + .5);
-	printf("%d %d ",nx,ny);
+	nx = floor(zoom_x * (p->x - shift_x) + .5);
+	ny = floor(zoom_y * (p->y - shift_y) + .5);
+	printf("%d %d ", nx, ny);
       }
       printf("\n");
     }
@@ -115,9 +115,9 @@ void fkprintfig(Fcurves in, int *d, char *e_flag, char *s_flag, float *m, float 
 
       /* POINTS */
       for (p=c->first;p;p=p->next) {
-	nx = (int) floor(zoom_x * (p->x - shift_x) + .5);
-	ny = (int) floor(zoom_y * (p->y - shift_y) + .5);
-	printf(FIG_DISC(101,nx,ny,radius));
+	nx = floor(zoom_x * (p->x - shift_x) + .5);
+	ny = floor(zoom_y * (p->y - shift_y) + .5);
+	printf(FIG_DISC(101, nx, ny, radius));
       }
 
     } 
@@ -126,14 +126,14 @@ void fkprintfig(Fcurves in, int *d, char *e_flag, char *s_flag, float *m, float 
 
       /* EXTREMAL POINTS */
       p=c->first;
-      nx = (int) floor(zoom_x * (p->x - shift_x) + .5);
-      ny = (int) floor(zoom_y * (p->y - shift_y) + .5);
-      printf(FIG_DISC(102,nx,ny,radius*4));
+      nx = floor(zoom_x * (p->x - shift_x) + .5);
+      ny = floor(zoom_y * (p->y - shift_y) + .5);
+      printf(FIG_DISC(102, nx, ny, radius*4));
 
       while (p->next) p=p->next;
-      nx = (int) floor(zoom_x * (p->x - shift_x) + .5);
-      ny = (int) floor(zoom_y * (p->y - shift_y) + .5);
-      printf(FIG_DISC(102,nx,ny,radius*4));
+      nx = floor(zoom_x * (p->x - shift_x) + .5);
+      ny = floor(zoom_y * (p->y - shift_y) + .5);
+      printf(FIG_DISC(102, nx, ny, radius*4));
 
     }
     

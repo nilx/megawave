@@ -139,10 +139,10 @@ static void draw_framed(int xa, int ya, int xb, int yb, unsigned char r, unsigne
     if (tya>txa) txa=tya;
     if (tyb<txb) txb=tyb;
     if (txa<txb) {
-      xb = xa + (int) floor(txb * dx + .5);
-      yb = ya + (int) floor(txb * dy + .5);
-      xa +=     (int) floor(txa * dx + .5);
-      ya +=     (int) floor(txa * dy + .5);
+      xb = xa + floor(txb * dx + .5);
+      yb = ya + floor(txb * dy + .5);
+      xa +=     floor(txa * dx + .5);
+      ya +=     floor(txa * dy + .5);
       if (xa>=xmin && xa<=xmax && ya>=ymin && ya<=ymax &&
 	  xb>=xmin && xb<=xmax && yb>=ymin && yb<=ymax) {
 	mw_draw_ccimage(image,xa,ya,xb,yb,r,g,b);

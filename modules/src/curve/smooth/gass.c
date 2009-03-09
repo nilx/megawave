@@ -198,7 +198,7 @@ static double *sample(double *in, int size, double *out, double eps2)
 
     if (d2>=2.*eps2) {
       /* insert n points */
-      n = (int)floor(sqrt(d2/eps2));
+      n = floor(sqrt(d2/eps2));
       dx /= (double)n;
       dy /= (double)n;
       for (k=1;k<n;k++) {

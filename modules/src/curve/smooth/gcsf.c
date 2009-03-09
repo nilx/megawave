@@ -257,7 +257,7 @@ static double *sample(double *in, int size, double *out, double eps2)
 
     if (d2>=2.*eps2) {
       /* insert n points */
-      n = (int)floor(sqrt(d2/eps2));
+      n = floor(sqrt(d2/eps2));
       dx /= (double)n;
       dy /= (double)n;
       for (k=1;k<n;k++) {
@@ -297,7 +297,6 @@ static int sample_chord(double *in, double *ch_in, int size, double *out, double
   double  x,y,ox,oy,d2,dx,dy,*p,*q,*pmax,*c,*d;
   int     i,j,k,n;
 
-
   /*--- return if the curve has less than 3 points ---*/
   if (size<3) {
     for(i=0;i<size*2;i++){
@@ -326,7 +325,7 @@ static int sample_chord(double *in, double *ch_in, int size, double *out, double
 
     if (d2>=2.*eps2) {
       /* insert n points */
-      n = (int)floor(sqrt(d2/eps2));
+      n = floor(sqrt(d2/eps2));
       dx /= (double)n;
       dy /= (double)n;
       for (k=1;k<n;k++) {

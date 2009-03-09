@@ -602,7 +602,7 @@ ADD_SEGMENT(int x1, int y1, int x2, int y2, Point_curve *cont_point)
 	for (x = x1 + 1; x <= x2; x++)
 	{
 	  z = m * x + c;
-	  y = (int) floor(z + .5);
+	  y = floor(z + .5);
 	  if (y != ptr_point->y)
 	  {
 	    ptr_point->next = ptr_point + 1;
@@ -623,7 +623,7 @@ ADD_SEGMENT(int x1, int y1, int x2, int y2, Point_curve *cont_point)
 	for (x = x1 - 1; x >= x2; x--)
 	{
 	  z = m * x + c;
-	  y = (int) floor(z + .5);
+	  y = floor(z + .5);
 	  if (y != ptr_point->y)
 	  {
 	    ptr_point->next = ptr_point + 1;
@@ -649,7 +649,7 @@ ADD_SEGMENT(int x1, int y1, int x2, int y2, Point_curve *cont_point)
 	for (y = y1 + 1; y <= y2; y++)
 	{
 	  z = m * y + c;
-	  x = (int) floor(z + .5);
+	  x = floor(z + .5);
 	  if (x != ptr_point->x)
 	  {
 	    ptr_point->next = ptr_point + 1;
@@ -670,7 +670,7 @@ ADD_SEGMENT(int x1, int y1, int x2, int y2, Point_curve *cont_point)
 	for (y = y1 - 1; y >= y2; y--)
 	{
 	  z = m * y + c;
-	  x = (int) floor(z + .5);
+	  x = floor(z + .5);
 	  if (x != ptr_point->x)
 	  {
 	    ptr_point->next = ptr_point + 1;
