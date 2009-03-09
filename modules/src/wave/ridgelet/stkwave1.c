@@ -215,7 +215,7 @@ void stkwave1(int np, Fsignal in, Fsignal out)
 
   for (j=1;j<np;j++)
     {
-      taille= (int) (N/((int) pow(2.0,(double)j)));
+      taille= (int) (N/(pow(2.0,(double)j)));
       temp=mw_change_fsignal(temp,taille);
      /*  printf("taille= %d \n",temp->size); */
       if (temp == NULL) mwerror(FATAL,1,"not enough memory !\n");
