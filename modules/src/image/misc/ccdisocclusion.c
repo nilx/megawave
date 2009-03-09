@@ -35,7 +35,7 @@
 #define COEFF_NORM_R ((float) 2.0 - 2.0 * COEFF_YR)
 
 #define Rint(u) floor((u)+0.5)
-#define Unorm(u) (((u)<0.0)?0:(((u)>255.0)?255:((unsigned char)(Rint(u)))))
+#define Unorm(u) (((u)<0.0)?0:(((u)>255.0)?255:((Rint(u)))))
 
 
 void ccdisocclusion(Ccimage Input, Ccimage Output, Fimage Holes, int *energy_type, char *angle)
@@ -70,9 +70,9 @@ void ccdisocclusion(Ccimage Input, Ccimage Output, Fimage Holes, int *energy_typ
   for (i=0;i<line_number*col_number;i++,r++,g++,b++,y++,u++,v++)
     {
       lum=COEFF_YR * (float)(*r) + COEFF_YG * (float)(*g) + COEFF_YB * (float)(*b);
-      *y=(unsigned char)(Rint(lum));
-      *u=(unsigned char)(Rint(((float)(*b) - lum) / COEFF_NORM_B + 128.0));
-      *v =(unsigned char)(Rint(((float)(*r) - lum) / COEFF_NORM_R + 128.0));
+      *y = (Rint(lum));
+      *u = (Rint(((float)(*b) - lum) / COEFF_NORM_B + 128.0));
+      *v = (Rint(((float)(*r) - lum) / COEFF_NORM_R + 128.0));
     }
   printf("Processing of the Y channel...\n");
   disocclusion(InputY,OutputY,Holes,energy_type,angle);

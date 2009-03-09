@@ -84,7 +84,8 @@ static double interpolate(Fimage u, double x, double y)
   float *p;
   
   x -= 0.5; y -= 0.5;
-  ix = (int)floor(x); iy = (int)floor(y);
+  ix = floor(x);
+  iy = floor(y);
   if (ix<0 || ix>=u->ncol || iy<0 || iy>=u->nrow) return(0);
   x -= (double)ix; y -= (double)iy;
   p = u->gray+iy*u->ncol+ix;
