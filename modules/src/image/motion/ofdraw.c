@@ -32,7 +32,7 @@ static void draw_arrow(Cimage u, int x, int y, double angle, unsigned char c)
   int n,i,j,dx,dy,a;
 
   n = u->ncol;
-  a = ((int)floor(angle*4./M_PI+8.5))%8;
+  a = fmod(floor(angle*4./M_PI+8.5),8);
   dx = dirx[a];
   dy = diry[a];
   
@@ -79,8 +79,8 @@ Cmovie ofdraw(Fmovie U, Fmovie V, int *a, float *m, int *p, int *z, float *h)
 	vx = X->gray[iy*nx+ix];
 	vy = Y->gray[iy*nx+ix];
 	if (vx*vx+vy*vy>*m*(*m)) {
-	  fx = *z*ix+(int)floor((double)(*h*vx+0.5));
-	  fy = *z*iy+(int)floor((double)(*h*vy+0.5));
+	  fx = *z*ix+floor((double)(*h*vx+0.5));
+	  fy = *z*iy+floor((double)(*h*vy+0.5));
 	  if (fx>=3 && fx<new->ncol-3 && fy>=3 && fy<new->nrow-3) {
 	    mw_draw_cimage(new,*z*ix,*z*iy,fx,fy,0);
 	    if (!a) draw_arrow(new,fx,fy,atan2((double)vy,(double)vx),0);
