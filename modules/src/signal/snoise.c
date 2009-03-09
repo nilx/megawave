@@ -50,8 +50,8 @@ Fsignal snoise(Fsignal in, Fsignal out, float *std, float *t, char *n_flag)
 
     /* Gaussian noise */
     for (i=in->size;i--;) {
-      a = (double) rand() / RAND_MAX;
-      b = (double) rand() / RAND_MAX;
+      a = (rand() * 1.)/ RAND_MAX;
+      b = (rand() * 1.)/ RAND_MAX;
       z = (double)(*std)*sqrt(-2.0*log(a))*cos(2.0*M_PI*b);
       out->values[i] = in->values[i] + (float)z;
     }
@@ -60,7 +60,7 @@ Fsignal snoise(Fsignal in, Fsignal out, float *std, float *t, char *n_flag)
 
     /* transmission noise */
     for (i=in->size;i--;)
-      if ((double) rand() / RAND_MAX * 100.0 < *t) out->values[i] = 0.;
+      if ((rand() * 1.)/ RAND_MAX * 100.0 < *t) out->values[i] = 0.;
       else out->values[i] = in->values[i];
     
   }

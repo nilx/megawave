@@ -32,7 +32,7 @@ Fsignal sgauss(float std, Fsignal out, int *size, float *prec)
     v = 0.5*v*v/log(10.);
     mwdebug("precision = %g\n",v);
   } else {
-    n = 1+2*(int)ceil((double)std*sqrt(*prec*2.*log(10.)));
+    n = 1+2*ceil((double)std*sqrt(*prec*2.*log(10.)));
     mwdebug("size = %d\n",n);
   }
 
