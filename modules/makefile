@@ -18,10 +18,6 @@ all	: lib api modules doc test
 clean	: clean-bin
 distclean	: distclean-bin
 
-#
-# BIN
-#
-
 SRCDIR	= ./src
 SRC	:= $(sort $(shell find $(SRCDIR) -type f	\
 	-name "*.c" ! -name "*.cmd.c"))
@@ -63,6 +59,13 @@ LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-x11 $(BASEDIR)/libmw-cmdline
 endif
 
 IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-x11 $(BASEDIR)/libmw-cmdline
+
+# FIXME: use clean float tests
+CWARN	+= -Wno-float-equal
+
+#
+# BIN
+#
 
 $(MWP)	:
 	$(MAKE) -C $(BASEDIR)/mwp $(notdir $<)

@@ -111,7 +111,7 @@ APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
 IPATH	+= $(BASEDIR)/libmw-x11
 
-# FIXME: hacks
+# FIXME: use clean float tests
 CWARN	+= -Wno-float-equal
 
 #

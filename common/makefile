@@ -80,7 +80,7 @@ CWARN 	+= -pedantic -Werror $(CSTRICT_4_1)		\
 	-Wstrict-prototypes -Wmissing-prototypes	\
 	-Wmissing-declarations -Wnested-externs 	\
 	-Wformat -Wformat-nonliteral -Wformat-security	\
-#	-Wfloat-equal
+	-Wfloat-equal
 endif
 
 # compilation mode options
