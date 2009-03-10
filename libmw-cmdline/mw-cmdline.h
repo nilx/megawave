@@ -5,6 +5,29 @@
 #ifndef _MW_CMDLINE_H_
 #define _MW_CMDLINE_H_
 
+/**
+ * @file definitions.h
+ */
+
+#ifndef _LIBMW_CMDLINE_DEFS_H_
+#define _LIBMW_CMDLINE_DEFS_H_
+
+struct Mwiline {
+  char *name;
+  int (*mwarg)(int, char**);
+  int (*mwuse)(char *);
+  char *group;
+  char *function;
+  char *usage;
+  char *fsummary;
+};
+
+typedef struct Mwiline Mwiline;
+
+extern Mwiline mwicmd[];
+extern int mwind;
+
+#endif /* !_LIBMW_CMDLINE_DEFS_H_ */
 /*
  * commandline.h
  */

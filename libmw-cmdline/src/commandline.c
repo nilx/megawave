@@ -25,6 +25,7 @@
 #include <setjmp.h>
 
 #include "mw.h"
+#include "definitions.h"
 #include "commandline.h"
 
 /*

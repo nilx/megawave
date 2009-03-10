@@ -23,7 +23,7 @@ SRCDIR	= src
 SRC	= $(addprefix $(SRCDIR)/, commandline.c)
 
 AUTOHDR	= $(SRC:.c=.h)
-HDR	= $(AUTOHDR) # $(SRCDIR)/definitions.h $(SRCDIR)/config.h
+HDR	= $(AUTOHDR) $(SRCDIR)/definitions.h
 OBJ	= $(SRC:.c=$(.O))
 DEP	= $(SRC:.c=.d)
 
@@ -52,7 +52,7 @@ api 	: $(API)
 $(API) 	: $(HDR)
 	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
 	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
-#	$(CAT) $(filter %definitions.h, $^) >> $@
+	$(CAT) $(filter %definitions.h, $^) >> $@
 	$(CAT) $(filter-out %definitions.h, $^) >> $@
 	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
 
