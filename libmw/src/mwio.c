@@ -18,15 +18,16 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/* FIXME : UNIX-centric */
+#define _XOPEN_SOURCE
+#include <sys/stat.h>
+#undef _XOPEN_SOURCE
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-/* FIXME : UNIX-centric and irregular */
-/* FIXME : dirty fix*/
-#define __USE_XOPEN
-#include <sys/stat.h>
-#undef __USE_XOPEN
+/* FIXME : UNIX-centric */
 #include <dirent.h>
 #include <unistd.h>
 
