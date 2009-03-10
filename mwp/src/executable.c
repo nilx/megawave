@@ -192,7 +192,6 @@
   _mwoptind = 1;\n\
   while ((%sc=_mwgetopt(argc, argv, \"%s\")) != -1)\n\
   {\n\
-    extern char _mwoptlist[];\n\
     switch (%sc) {\n"
 #define CODE_READ_INPUT_OPTION "\
         _mwload_%s(_mwoptarg, %stype, %scomment, &%s);\n"
@@ -370,11 +369,20 @@ static void writegendecl(FILE * afile)
      fprintf(afile, "int _%s(int argc, char * argv[]);\n", module_name);
      fprintf(afile, "int usage_%s(char *msg);\n\n", module_name);
 
+     /* external variables */
+     fprintf(afile, "extern char type_force[];\n");
+     fprintf(afile, "extern char *_mwoptarg;\n");
+     fprintf(afile, "extern int _mwoptind;\n");
+     fprintf(afile, "extern char _mwoptlist[];\n");
+     fprintf(afile, "extern char _mwdefoptbuf[];\n");
+     fprintf(afile, "extern int help_flg;\n");
+     fprintf(afile, "\n");
+
      fprintf(afile, "int mwind = 0;\n");
      fprintf(afile, "Mwiline mwicmd[] = { { "
-             "\"%s\", _%s, usage_%s, \"%s\", \"%s\", \"%s\", \"%s\"} };\n",
+             "\"%s\", _%s, usage_%s, \"%s\", \"%s\", \"%s\"} };\n",
              module_name, module_name, module_name,
-             group_name, H->Function, usagebuf, protobuf);
+             group_name, H->Function, usagebuf);
      fprintf(afile, "\n");
 
      fprintf(afile, "int _%s(int argc, char * argv[])\n", module_name);
@@ -394,10 +402,6 @@ static void writegendecl(FILE * afile)
           fprintf(afile, "  int %si;\n", MWPF);
      }
 
-     /* external variables */
-     fprintf(afile, "  extern char type_force[];\n");
-     fprintf(afile, "  extern char *_mwoptarg;\n");
-     fprintf(afile, "  extern int _mwoptind;\n");
      fprintf(afile, "\n");
 }
 
@@ -803,7 +807,7 @@ static char * str_chkint(/*@ out @*/char * str, t_argument * a, char * s)
      if (a->IOtype == READ)
      {
           strcat(str, "          char buffer[BUFSIZ];\n");
-          strcat(str, "          sprintf(buffer, \"input data %%s ");
+          strcat(str, "          sprintf(buffer, \"input data %s ");
           sprintf(tmp,                                                  \
                   "converted to type %s is out of %c%s, %s%c\", %s);\n", \
                   a->var->Stype, A, a->Min, a->Max, B, s);
@@ -1594,8 +1598,6 @@ static void writeusage(FILE * afile)
      fprintf(afile, " */\n");
      fprintf(afile, "int usage_%s(char *msg)\n", H->Name);
      fprintf(afile, "{\n");
-     fprintf(afile, "  extern char _mwdefoptbuf[];\n");
-     fprintf(afile, "  extern int help_flg;\n");
      strcpy(Auth, getprintfstring(H->Author));
      strcpy(Vers, getprintfstring(H->Version));
      strcpy(Func, getprintfstring(H->Function));
@@ -1749,6 +1751,9 @@ static void writebody(FILE * afile)
     fprintf(afile, "/*\n");
     fprintf(afile, " * BODY OF THE MAIN FUNCTION\n");
     fprintf(afile, " */\n\n");
+
+     fprintf(afile, "  /* FIXME: (sometimes) unused variable */\n");
+     fprintf(afile, "  %sc = 0;\n", MWPF);
 
      fprintf(afile, "  strcpy(%stype, \"?\");\n", MWPF);
      fprintf(afile, "  %scomment[0] = '\\0';\n\n", MWPF);

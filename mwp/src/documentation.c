@@ -262,8 +262,6 @@ static void writeArguments(FILE * tfile)
  * write Summary
  * Beware, with LaTeX 2e do not use macro \Argument but plain text in
  * order to allow \verb.
- * Code similar to the one in setprotobuf() (See ifile.c).
- * As with setprotobuf, both K&R and ANSI declaration should be implemented.
  */
 static void writeSummary(FILE * tfile)
 {

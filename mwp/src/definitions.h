@@ -186,12 +186,9 @@ char * module_name;
 char * group_name;
 
 /*
- * buffers storing
- * - the module's usage
- * - the module's main function prototype (in K&R format)
+ * buffers storing the module's usage
  */
 char usagebuf[STRSIZE];
-char protobuf[STRSIZE];
 
 /*
  * MACROS

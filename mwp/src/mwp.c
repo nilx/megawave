@@ -155,63 +155,6 @@ static char * strclone(const char * str)
      return clone;
 }
 
-/*
- * Set the <protobuf> variable from the content of C->mfunc :
- * prototype the main function using K&R convention.
- *
- * This text is to be set in the fsummary field of the Mwiline
- * structure (see kernel/lib/include/mwi.h). From this, a
- * full K&R and ANSI C compliant prototype can be derived
- * using call_proto() (in kernel/lib/src/mw.c).
- * When the traditional mwp processor would be removed,
- * this should be simplified by getting a protobuf with
- * both K&R and ANSI C declaration. Then call_proto could
- * be removed and in the M-file, the default main function
- * declaration (usually not ANSI compliant) could be replaced
- * by this one (update mfile.c). So, prototypes would become
- * fully ANSI compliant without having to change the source of modules.
- */
-
-/* TODO: review, drop K&R parts */
-/* TODO: no if/then in a macro */
-#define ADDPROTO(a)                                             \
-     {                                                          \
-          char tmp[BUFSIZ];                                     \
-          sprintf(tmp, "%s%s", protobuf, a);                    \
-          strcpy(protobuf, tmp);                                \
-     }
-
-static void setprotobuf(void)
-{
-     t_varfunc * f;
-     t_variable * p;
-     char buf[STRSIZE];
-
-     if (C == NULL)
-          error("NULL C tree. Need C body to be parsed");
-     f = C->mfunc;
-     if (f == NULL)
-          error("NULL main function");
-
-     /* function name and arguments list */
-     sprintf(protobuf, "%s %s ( ", f->v->Ftype, f->v->Name);
-     for (p = f->param; p; p = p->next)
-     {
-          if (p != f->param)
-               strcat(protobuf," , ");
-          ADDPROTO(p->Name);
-     }
-     ADDPROTO(" )\\n");
-
-     /* Type of arguments */
-     for (p = f->param; p; p = p->next)
-     {
-          sprintf(buf, "%s %s ;\\n", p->Ftype,p->Name);
-          ADDPROTO(buf);
-     }
-     ADDPROTO("\\n");
-}
-
 extern char * module_name;
 extern char * group_name;
 extern FILE * source_file_global;
@@ -293,13 +236,6 @@ int main( int argc, char **argv)
      source_file_global = source_file;
      parse(source_file);
      rewind(source_file);
-
-     /*
-      * set the <protobuf> variable (global) which prototypes the main
-      * function using K&R convention.
-      */
-     /* TODO: use only ANSI */
-     setprotobuf();
 
      /*
       * generate the library code
