@@ -1006,6 +1006,7 @@ extern char * mwgroup;
  * from error.h
  */
 
+extern int mwind;
 extern int mwdbg;
 
 #endif /* !_LIBMW_DEFS_H */

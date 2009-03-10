@@ -79,8 +79,6 @@ static void call_debug(void);
 static void call_help(void);
 static void call_verbose(void);
 static void call_vers(void);
-static void call_fsum(void);
-static void call_proto(void);
 static void call_ftypelist(void);
 static void call_ftype(void);
 
@@ -89,8 +87,6 @@ struct mwargs mwargs[] = {
     {"-help",      NULL, 0, NULL, call_help}, 
     {"-verbose",   NULL, 0, NULL, call_verbose}, 
     {"-vers",      NULL, 0, NULL, call_vers}, 
-    {"-fsum",      NULL, 0, NULL, call_fsum}, 
-    {"-proto",     NULL, 0, NULL, call_proto},
     {"-ftypelist", NULL, 0, NULL, call_ftypelist},
     {"-ftype",     type_force, sizeof(type_force), "<image type>", call_ftype}, 
     {NULL,         NULL, 0, NULL, NULL}
@@ -134,68 +130,6 @@ static void setnewout(void)
      }
 }
 
-static void find_type(char * fdecl,char * var, char * type)
-{
-     char vtype[BUFSIZ]; /* current variable type */
-     char v[BUFSIZ];     /* current variable name */
-     char pvar[BUFSIZ];  /* *<var> */
-     char pvars[BUFSIZ]; /* * <var> */
-     int i,j;
-
-     if (var[0] == '\0') mwerror(INTERNAL, 1,
-			       "[find_type] no variable specified !\n");  
-  
-     sprintf(pvar, "*%s", var);
-     sprintf(pvars, "* %s", var);
-     i=0;
-     while (1)
-     {
-	  j=i;
-	  /* TODO: change to human-readable code */
-	  for (; (fdecl[i] != '\0') && (fdecl[i] != ' '); i++)
-	      vtype[i-j] = fdecl[i];
-	  if (fdecl[i] == '\0')
-	       mwerror(INTERNAL, 1,
-		       "[find_type] cannot find <space> ! (1)\n");  
-	  vtype[i-j] = '\0';
-	  do
-	  {
-	       i++;
-	       j = i;
-	       /* TODO: change to human-readable code */
-	       for (; (fdecl[i] != '\0')
-			&&((fdecl[i] != ' ')
-			   ||(fdecl[i-1] == '*'))
-			&&(fdecl[i] != ';'); i++) 
-		    v[i-j] = fdecl[i];
-	       if (fdecl[i] == '\0')
-		    mwerror(INTERNAL, 1, 
-			    "[find_type] cannot find <space> ! (2)\n");  
-	       v[i-j] = '\0';
-	       if ((i > j) && (v[0] != ',')) 
-	       {
-		    if (strcmp(var, v) == 0) 
-		    {
-			 strcpy(type, vtype);
-			 return;
-		    }
-		    if ((strcmp(pvar,v) == 0) || (strcmp(pvars, v) == 0))
-		    {
-			 sprintf(type,"%s *", vtype);
-			 return;
-		    }
-	       }
-	  }
-	  while (i > j);
-
-	  for (; (fdecl[i] != '\0') && (fdecl[i] != '\n'); i++);
-	  if (fdecl[i] == '\0')
-	       mwerror(INTERNAL, 1,
-		       "[find_type] cannot find var='%s' !\n",var);
-	  i++;
-     }
-}
-
 /*
  * actions for default megawave options
  */
@@ -228,84 +162,6 @@ static void call_vers(void)
 {
      vers_flg = TRUE;
      return;
-}
-
-/**
- * write function summary
- */
-static void call_fsum(void)
-{
-     printf("%s", mwicmd[mwind].fsummary);
-     exit(0);
-}
-
-/*
- * write function prototype
- */
-static void call_proto(void)
-{
-     char type[BUFSIZ];  /* type of the function */
-     char name[BUFSIZ];  /* name of the function */
-     char var[BUFSIZ];   /* list of all variables */
-     char v[BUFSIZ];     /* current variable name */
-     char vtype[BUFSIZ]; /* current variable type */
-     char fdecl[BUFSIZ]; /* declaration of variables */
-     int i,j;
-
-     if (sscanf(mwicmd[mwind].fsummary, "%s%s%[^)]", type, name, var) != 3)
-	  mwerror(INTERNAL, 1,
-		  "[call_proto] cannot extract var field (3) !\n");
-     if ((var[0] != ' ') || (var[1] != '('))
-     {
-	 /* maybe function type forgotten */
-	 if (sscanf(mwicmd[mwind].fsummary, "%s%[^)]", name, var) != 2)
-	     mwerror(INTERNAL, 1,
-		     "[call_proto] cannot extract var field (2) !\n");
-	 if ((var[0] != ' ') || (var[1] != '('))      
-	     mwerror(INTERNAL, 1,
-		     "[call_proto] invalid extracted var field '%s'\n", var);
-	 strcpy(type, "int");
-	 mwerror(WARNING, 1, 
-		 "No type definition for function '%s';"
-		 "assuming <int> but the author probably meant <void>.\n",
-		 name);
-     }
-  
-     for (i = 0; (mwicmd[mwind].fsummary[i] != '\n') &&
-	      (mwicmd[mwind].fsummary[i] != '\0'); i++);
-     if (mwicmd[mwind].fsummary[i] == '\0')
-	 mwerror(INTERNAL, 1, "[call_proto] cannot find \\n !\n");    
-
-     /* get fdecl */
-     for (j = i + 1; mwicmd[mwind].fsummary[j] != '\0'; j++)
-	 fdecl[j-i-1] = mwicmd[mwind].fsummary[j];
-     fdecl[j-i-3]='\0';
-
-     printf("%s %s(", type, name);
-     for (i=2; var[i] != '\0'; )
-     {
-	  for (j = 0; (var[i+j] != '\0') 
-		   && (var[i+j] != ' '); j++) 
-	      v[j] = var[i+j];
-	  if (j == 0) 
-	      goto cont;
-	  if (var[i+j] == '\0')
-	       mwerror(INTERNAL, 1,
-		       "[call_proto] cannot find <space> !\n");    	
-	  v[j] = '\0';
-	  if (*v != ',')
-	  {
-	      find_type(fdecl, v, vtype);
-	      printf("%s", vtype);
-	  }
-	  else
-	       printf(",");
-     cont:
-	  i += j + 1;
-     }
-     printf(");\n");
-
-     exit(0);
 }
 
 static void call_ftypelist(void)

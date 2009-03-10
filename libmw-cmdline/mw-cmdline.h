@@ -19,13 +19,11 @@ struct Mwiline {
   char *group;
   char *function;
   char *usage;
-  char *fsummary;
 };
 
 typedef struct Mwiline Mwiline;
 
 extern Mwiline mwicmd[];
-extern int mwind;
 
 #endif /* !_LIBMW_CMDLINE_DEFS_H_ */
 /*

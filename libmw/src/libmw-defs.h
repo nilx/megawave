@@ -993,28 +993,10 @@ extern char * mwgroup;
 #define mw_edges_wadapted 4 /* adapted wavelet on edges */
 
 /*
- * MWI
- */
-
-struct Mwiline {
-  char *name;
-  int (*mwarg)(int, char**);
-  int (*mwuse)(char *);
-  char *group;
-  char *function;
-  char *usage;
-  char *fsummary;
-};
-
-typedef struct Mwiline Mwiline;
-
-extern Mwiline mwicmd[];
-extern int mwind;
-
-/*
  * from error.h
  */
 
+extern int mwind;
 extern int mwdbg;
 
 #endif /* !_LIBMW_DEFS_H */

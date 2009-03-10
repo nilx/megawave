@@ -33,7 +33,6 @@ void mwdebug(char *fmt, ...)
 void mwerror(int code, int exit_code, char *fmt, ...)
 {
     va_list marker;
-    char message[BUFSIZ];
     
     va_start(marker, fmt);
     
@@ -60,8 +59,8 @@ void mwerror(int code, int exit_code, char *fmt, ...)
 	exit(exit_code);
 	break;
     case USAGE:
-	(void) vsprintf(message, fmt, marker);
-	mwicmd[mwind].mwuse(message);
+	fprintf(stderr, "Bad parameter; use the '--help' option for details");
+	exit(exit_code);
 	break;
     default:
 	mwerror(FATAL, 1, "Bad usage of mwerror : code %d is unknown\n", code);
