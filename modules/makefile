@@ -130,7 +130,7 @@ makefile.dep	: $(SRC)
 		>> $@; \
 	done
 
-include makefile.dep
+-include makefile.dep
 $(MODULES)	:
 	$(CP) $< $@
 
