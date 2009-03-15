@@ -1,31 +1,17 @@
-/*
- * mw api header
+/**
+ * @file mw.h
+ *
+ * @author Nicolas Limare (2009)
+ *
+ * mw API header
  */
 
 #ifndef _MW_H_
 #define _MW_H_
 
+#include <stdio.h>
 
-#include <stdio.h> /* for FILE */
-
-/*
- * libmw.h
- *
- * common definitions for libmw
- */
-
-#ifndef _LIBMW_DEFS_H
-#define _LIBMW_DEFS_H
-
-/* FIXME : split libmw-common (#defines) and libmw-defs (typedef)*/
-/* FIXME : rename libmw3 */
-
-/* 
- * DEFINITIONS
- */
-
-/* booleans */
-/* TODO : remove?? */
+/* definitions.h */
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -33,8 +19,6 @@
 #define TRUE 1
 #endif
 
-/* M_PI is an Unix (XOPEN) specification */
-/* TODO : handle in modules? MW_PI? */
 #ifndef M_PI
 #define M_PI           3.14159265358979323846  /* pi */
 #endif
@@ -45,45 +29,22 @@
 #define M_PI_4         0.78539816339744830962  /* pi/4 */
 #endif
 
-/* error levels */
-/* TODO : rename MW_XX */
-/* TODO : use a better message lib */
 #define WARNING  0
 #define ERROR    1
 #define FATAL    2
 #define USAGE    3
 #define INTERNAL 4
 
-/* models of the color system */
 #define MODEL_RGB 0
 #define MODEL_YUV 1
-/* Hue, Saturation, Intensity */
 #define MODEL_HSI 2
-/* Hue, Saturation, Value */
-/* more or less same than above but without trigonometric transform */
 #define MODEL_HSV 3
 
-/* ASCII header */
 #define _MW_DATA_ASCII_FILE_HEADER "MegaWave2 - DATA ASCII file -\n"
 
-/* wmax */
-/* Preset value for an unknown argument */
 #define mw_not_an_argument 1.0e9
-
-/* Preset value for an unknown magnitude */
 #define mw_not_a_magnitude -1.0
 
-
-/*
- * SIZES
- */
-
-/* max size of
- * - the megawave memory types (such as "Cimage")
- * - the megawave file types (such as "IMG")
- * - some string fields
- */
-/* TODO : capital */
 #define mw_mtype_size 20
 #define mw_ftype_size 20
 #define mw_cmtsize 255
@@ -91,41 +52,24 @@
 
 #define SIZE_OF_MW2_BIN_TYPE_ID 6
 
-/*
- * MACROS
- */
-
-/* flip macros : invert bytes order */
-
-/* get flipped value */
-/* invert 2 bytes data : 01 -> 10 */
 #define _mw_get_flip_b2(b2) (((((unsigned short) (b2)) & 0xff00)>>8) +	\
 			     ((((unsigned short) (b2)) & 0x00ff)<<8) )
-
-/* invert 4 bytes data : 0123 -> 3210 */
 #define _mw_get_flip_b4(b4) (((((unsigned long) (b4)) & 0xff000000)>>24)+ \
 			     ((((unsigned long) (b4)) & 0x00ff0000)>>8) + \
 			     ((((unsigned long) (b4)) & 0x0000ff00)<<8) + \
 			     ((((unsigned long) (b4)) & 0x000000ff)<<24) ) 
 
-/* in-place flipping */
-/* invert 2 bytes data : 01 -> 10 */
 #define _mw_in_flip_b2(b2)  do			\
      {						\
 	  (b2) = _mw_get_flip_b2(b2);		\
      }						\
      while (0)
-
-/* invert 4 bytes data : 0123 -> 3210 */
 #define _mw_in_flip_b4(b4)  do			\
      {						\
 	  (b4) = _mw_get_flip_b4(b4);		\
      }						\
      while (0)
 
-/*
- * for float, need to perform the flip by means of an unsigned long buffer 
- */
 #define _mw_in_flip_float(b4) do		\
      {						\
 	  unsigned long * flip_float;		\
@@ -133,11 +77,6 @@
 	  _mw_in_flip_b4(* flip_float);		\
      }						\
      while (0)
-
-/*
- * for double=(u1, u2), performs (flip(u2),flip(u1)) 
- * where u1,u2 are long (b4 = 32 bits). 
- */
 #define _mw_in_flip_double(b4) do		\
      {						\
 	  unsigned long * flip_float, tmp;	\
@@ -156,7 +95,6 @@
      }			       \
      while (0)
 
-/* I/O conversion macros called by mwp (data_io.c) */
 #define	_mw_atoq_(S)	(S)
 #define	_mw_atoc_(S)	*(S)
 #define	_mw_atouc_(S)	(unsigned char) *(S)
@@ -169,18 +107,9 @@
 #define	_mw_atod_(S)	(double) atof(S)
 #define _mw_qtoa_(S)	(S)
 
-
 #define _mwis_readable(S)	_mwis_open(S, "r")
 #define _mwis_writable(S)	_mwis_open(S, "w")
 
-
-
-/*
- * STRUCTURES
- */
-
-/* TODO : unsigned, typedef, simplify */
-/** unsigned char (byte) gray level image */
 typedef struct cimage
 {
      int nrow;             /**< number of rows (dy)    */
@@ -203,7 +132,6 @@ typedef struct cimage
      struct cimage * next;     /**< pointer to the next image */
 } * Cimage;
 
-/** floating point gray level image */
 typedef struct fimage
 {
      int nrow;      /**< number of rows (dy)    */
@@ -226,9 +154,6 @@ typedef struct fimage
      struct fimage * next;     /**< pointer to the next image */
 } * Fimage;
 
-
-/* FIXME : abstract the color model */
-/** unsigned char (byte) color image */
 typedef struct ccimage
 {
      int nrow;              /**< number of rows (dy)    */
@@ -255,7 +180,6 @@ typedef struct ccimage
      struct ccimage * next;     /**< pointer to the next image */
 } * Ccimage;
 
-/** floating point color image */
 typedef struct cfimage {
      int nrow;      /**< number of rows (dy)    */
      int ncol;      /**< number of columns (dx) */
@@ -281,9 +205,6 @@ typedef struct cfimage {
      struct cfimage * next;     /**< pointer to the next image */
 } * Cfimage;
 
-
-
-/** point in a curve */
 typedef struct point_curve
 {
      int x, y; /**< coordinates of the point */
@@ -293,7 +214,6 @@ typedef struct point_curve
      struct point_curve * next;     /**< pointer to the next point */
 } * Point_curve;
 
-/** curve(s) */
 typedef struct curve
 {
      Point_curve first; /** pointer to the first point of the curve */
@@ -309,7 +229,6 @@ typedef struct curves
      Curve first;            /** pointer to the first curve */
 } * Curves;
 
-/** float point in a curve */
 typedef struct point_fcurve
 {
      float x, y; /**< coordinates of the point */
@@ -319,7 +238,6 @@ typedef struct point_fcurve
      struct point_fcurve * next;     /**< pointer to the next point */
 } * Point_fcurve;
 
-/** float curve(s) */
 typedef struct fcurve
 {
      Point_fcurve first; /** pointer to the first point of the fcurve */
@@ -335,7 +253,6 @@ typedef struct fcurves
      Fcurve first;            /** pointer to the first curve */
 } * Fcurves;
 
-/** double point in a curve */
 typedef struct point_dcurve
 {
      double x, y; /**< coordinates of the point */
@@ -345,7 +262,6 @@ typedef struct point_dcurve
      struct point_dcurve * next;     /**< pointer to the next point */
 } * Point_dcurve;
 
-/** double curve(s) */
 typedef struct dcurve
 {
      Point_dcurve first; /** pointer to the first point of the fcurve */
@@ -361,8 +277,6 @@ typedef struct dcurves
      Dcurve first;            /** pointer to the first curve */
 } * Dcurves;
 
-
-/** polygon(s) */
 typedef struct polygon
 {
      /* the number of elements is given by nb_channels */
@@ -381,7 +295,6 @@ typedef struct polygons
      Polygon first;          /**< pointer to the first polygon */
 } * Polygons;
 
-/** float polygon(s) */
 typedef struct fpolygon
 {
      /* the number of elements is given by nb_channels */
@@ -400,12 +313,8 @@ typedef struct fpolygons
      Fpolygon first;         /**< pointer to the first polygon */
 } * Fpolygons;
 
-
-
-/** type of a point in a curve */
 typedef struct point_type 
 {
-     /* TODO : enum? */
      unsigned char type; /**< Type of the point
 			  *   0 : regular point
 			  *   1 : point in the image's border
@@ -418,7 +327,6 @@ typedef struct point_type
      struct point_type * next;     /**< pointer to the next point */
 } * Point_type;
 
-/** morpho_line on the discrete grid */
 typedef struct morpho_line 
 {
      Point_curve first_point; /**< pointer to the first point
@@ -439,8 +347,6 @@ typedef struct morpho_line
      struct morpho_line * next;       /**< pointer to the next m.l.   */
 } * Morpho_line;
 
-/* TODO : morphosets? num? */
-/** morpho_line on a pseudo-continuous plane */
 typedef struct fmorpho_line 
 {
      Point_fcurve first_point; /**< pointer to the first point
@@ -459,7 +365,6 @@ typedef struct fmorpho_line
      struct fmorpho_line * next;       /**< pointer to the next m.l.   */
 } * Fmorpho_line;
 
-/** horizontal segment on the discrete grid */
 typedef struct hsegment
 {
      int xstart; /**< left  x-coordinate of the segment */
@@ -469,7 +374,6 @@ typedef struct hsegment
      struct hsegment * next;     /**< pointer to the next segment */
 } * Hsegment;
 
-/** morpho_set(s) on the discrete grid */
 typedef struct morpho_set
 {
      unsigned int num;       /**< morpho set number                */
@@ -493,7 +397,6 @@ typedef struct morpho_sets
      struct morpho_line * morpholine;  /**< pointer to the morpho line */
 } * Morpho_sets;
 
-/** morphological image */
 typedef struct mimage {
      char cmt[mw_cmtsize];   /**< comments                          */
      char name[mw_namesize]; /**< name of the set                   */
@@ -510,10 +413,6 @@ typedef struct mimage {
 #include <float.h>
 #define MORPHO_INFTY FLT_MAX
 
-
-/** color */
-/* TODO : abstract the model */
-/* TODO : n-channels         */
 typedef struct color {
      unsigned char model; /**< model of the colorimetric system   */
      float red;           /**< the red   value if model=MODEL_RGB */
@@ -521,7 +420,6 @@ typedef struct color {
      float blue;          /**< the blue  value if model=MODEL_RGB */  
 } Color;
 
-/** cmorpho_line on the discrete grid */
 typedef struct cmorpho_line 
 {
      Point_curve first_point; /**< pointer to the first point
@@ -542,7 +440,6 @@ typedef struct cmorpho_line
      struct cmorpho_line * next;        /**< pointer to the next cm.l.   */
 } * Cmorpho_line;
 
-/** cmorpho_line on a pseudo-continuous plane */
 typedef struct cfmorpho_line 
 {
      Point_fcurve first_point; /**< pointer to the first point
@@ -561,7 +458,6 @@ typedef struct cfmorpho_line
      struct cfmorpho_line * next;      /**< pointer to the next cm.l.  */
 } * Cfmorpho_line;
 
-/** cmorpho_set(s) on the discrete grid */
 typedef struct cmorpho_set
 {
      unsigned int num;       /**< cmorpho set number               */
@@ -598,10 +494,6 @@ typedef struct cmimage {
      Cmorpho_sets first_ms;   /**< Pointer to the first cmorpho sets */
 } * Cmimage;
 
-
-
-
-/** float list(s) */
 typedef struct flist
 {
      int size;       /**< size (number of elements)                     */
@@ -627,7 +519,7 @@ typedef struct flists
      int data_size;          /**< size of data[] in bytes    */
      void* data;             /**< user defined field (saved) */
 } * Flists;
-/** double list(s) */
+
 typedef struct dlist
 {
      int size;       /**< size (number of elements)                     */
@@ -654,9 +546,6 @@ typedef struct dlists
      void* data;             /**< user defined field (saved) */
 } * Dlists;
 
-
-
-/** movie of unsigned char (byte) gray level images */
 typedef struct cmovie 
 {
      float scale;            /**< time scale of the movie (should be 1) */
@@ -665,7 +554,6 @@ typedef struct cmovie
      Cimage first;           /**< pointer to the first image            */
 } * Cmovie;
 
-/** movie of unsigned char (byte) color images */
 typedef struct ccmovie
 {
      float scale;            /**< time scale of the movie (should be 1) */
@@ -674,7 +562,6 @@ typedef struct ccmovie
      Ccimage first;          /**< pointer to the first image            */
 } * Ccmovie;
 
-/** movie of floating point gray level images */
 typedef struct fmovie 
 {
      float scale;            /**< time scale of the movie (should be 1) */
@@ -683,7 +570,6 @@ typedef struct fmovie
      Fimage first;           /**< pointer to the first image            */
 } * Fmovie;
 
-/** movie of floating point color images */
 typedef struct cfmovie
 {
      float scale;            /**< time scale of the movie (should be 1) */
@@ -692,9 +578,6 @@ typedef struct cfmovie
      Cfimage first;          /**< pointer to the first image            */
 } * Cfmovie;
 
-
-
-/** floating Point Signal */
 typedef struct fsignal 
 {
      int size;       /**< number of samples                              */
@@ -716,21 +599,12 @@ typedef struct fsignal
      float param;    /**< distance between two succesive uncorrelated points */
 } * Fsignal;
    
-
-
-/** maximum Number of levels (octaves) in a wavelet decomposition  */
-/** # 0 is the original image                                      */
 #define mw_max_nlevel 20
-/** maximum Number of voices per octave in a wavelet decomposition */
 #define mw_max_nvoice 50
-/** maximum Number of filter file names (prefixs only)             */
 #define mw_max_nfilter_1d 4
-/** maximum Number of orientations in a wavelet decomposition      */
 #define mw_max_norient 5
-/** maximum Number of filter file names (prefixs only)             */
 #define mw_max_nfilter 6
 
-/** 1-dimensional wavelet representation */
 typedef struct wtrans1d 
 {
      char cmt[mw_cmtsize];   /**< comments             */
@@ -779,7 +653,6 @@ typedef struct wtrans1d
      int nfilter; /**< Number of filters used to compute the decomposition   */
 } * Wtrans1d;
 
-/** 2-dimensional wavelet representation */
 typedef struct wtrans2d
 {
      char cmt[mw_cmtsize];   /**< comments             */
@@ -810,8 +683,6 @@ typedef struct wtrans2d
      int nfilter; /**< number of filters used to compute the decomposition */
 } * Wtrans2d;
 
-
-/** 2-dimensional wavelet packets */
 typedef struct wpack2d 
 {
      char cmt[mw_cmtsize];   /**< comments            */
@@ -838,10 +709,6 @@ typedef struct wpack2d
      struct wpack2d * next;     /**< pointer to the next wpack2d */
 } * Wpack2d;
 
-
-
-
-/** virtual maxima point in a virtual chain */
 typedef struct vpoint_wmax
 {
      int x, y;                 /**< location of the point in the image */
@@ -851,7 +718,6 @@ typedef struct vpoint_wmax
      struct vpoint_wmax *previous, *next; /**< link to others vpoints */
 } * Vpoint_wmax;
 
-/** virtual chain of maxima points */
 typedef struct vchain_wmax
 {
      int size;          /**< number of vpoint in the vchain */
@@ -859,7 +725,6 @@ typedef struct vchain_wmax
      struct vchain_wmax *previous,*next; /**< link to others vchains */
 } * Vchain_wmax;
 
-/** set of virtual chains */
 typedef struct vchains_wmax
 {
   char cmt[mw_cmtsize];   /**< comments        */
@@ -876,15 +741,11 @@ typedef struct vchains_wmax
   struct vchain_wmax *first; /**< first vchain_wmax */
 } * Vchains_wmax;
 
-
-
-/** point in the plane */
 typedef struct point_plane
 {
      short x, y; /**< coordinates of the point */
 } * Point_plane;
 
-/** shape : a connected component of a level set, with filled holes */
 typedef struct shape
 {
      char inferior_type; /**< indicates if it is extracted from a superior 
@@ -911,7 +772,6 @@ typedef struct shape
      void* data;    /**< user defined field (saved) */
 } * Shape;
 
-/** set of shapes (complete representation of an image) */
 typedef struct shapes
 {
      char cmt[mw_cmtsize];   /**< comments                            */
@@ -936,20 +796,11 @@ typedef struct shapes
      void * data;   /**< user defined field (saved) */
 } * Shapes;
 
-
-
-
-/** raw data */
 typedef struct rawdata
 {
      int size;            /* number of samples */
      unsigned char *data; /* data field        */
 } * Rawdata;
-
-
-/*
- * GLOBALS
- */
 
 extern char * mw_native_ftypes[];
 extern char * mw_ftypes_description[];
@@ -959,63 +810,39 @@ extern char * mw_type_conv_in[];
 extern char * mwname;
 extern char * mwgroup;
 
-/* Types of the wtrans1d performed */
-
 #define mw_orthogonal 1
 #define mw_biorthogonal 2
 #define mw_dyadic 3
 #define mw_continuous 4
 
-/* Types of the edges statments */
-
 #define mw_edges_zeropad 1  /* image is Zero-padded (no statment) */
 #define mw_edges_periodic 2 /* image is made periodic */
 #define mw_edges_mirror 3   /* mirror effect */
 #define mw_edges_wadapted 4 /* adapted wavelet on edges */
 
-/* Maximum Number of levels in a Wavelet Decomposition */
-/* # 0 is the original image */
 #define mw_max_nlevel 20
 
-/* Meaning of the orientation # */
 #define mw_sample 0  /* Low-pass images */
 
-/* Orthogonal, biorthogonal and dyadic cases */
 #define mw_horizontal 1
 #define mw_vertical 2
 
-/* Orthogonal/biorthogonal cases only */
 #define mw_diagonal 3
 
-/* Dyadic case (polar coordinates representation) */
 #define mw_magnitude 3
 #define mw_argument 4
 
-/* Types of the wtrans2d performed */
 #define mw_orthogonal 1
 #define mw_biorthogonal 2
 #define mw_dyadic 3
 
-/* Types of the edges statments */
 #define mw_edges_zeropad 1  /* image is Zero-padded (no statment) */
 #define mw_edges_periodic 2 /* image is made periodic */
 #define mw_edges_mirror 3   /* mirror effect */
 #define mw_edges_wadapted 4 /* adapted wavelet on edges */
 
-/*
- * from error.h
- */
-
 extern int mwind;
 extern int mwdbg;
-
-#endif /* !_LIBMW_DEFS_H */
-/*
- * ccimage.h
- */
-
-#ifndef _CCIMAGE_H_
-#define _CCIMAGE_H_
 
 /* src/ccimage.c */
 Ccimage mw_new_ccimage(void);
@@ -1031,27 +858,11 @@ unsigned char **mw_newtab_red_ccimage(Ccimage image);
 unsigned char **mw_newtab_green_ccimage(Ccimage image);
 unsigned char **mw_newtab_blue_ccimage(Ccimage image);
 
-#endif /* !_CCIMAGE_H_ */
-/*
- * ccimage_io.h
- */
-
-#ifndef _CCIMAGE_IO_H_
-#define _CCIMAGE_IO_H_
-
 /* src/ccimage_io.c */
 Ccimage _mw_ccimage_load_native(char *NomFic, char *Type);
 short _mw_ccimage_create_native(char *NomFic, Ccimage image, char *Type);
 Ccimage _mw_ccimage_load_image(char *NomFic, char *Type);
 short _mw_ccimage_create_image(char *NomFic, Ccimage image, char *Type);
-
-#endif /* !_CCIMAGE_IO_H_ */
-/*
- * cfimage.h
- */
-
-#ifndef _CFIMAGE_H_
-#define _CFIMAGE_H_
 
 /* src/cfimage.c */
 Cfimage mw_new_cfimage(void);
@@ -1067,27 +878,11 @@ float **mw_newtab_red_cfimage(Cfimage image);
 float **mw_newtab_green_cfimage(Cfimage image);
 float **mw_newtab_blue_cfimage(Cfimage image);
 
-#endif /* !_CFIMAGE_H_ */
-/*
- * cfimage_io.h
- */
-
-#ifndef _CFIMAGE_IO_H_
-#define _CFIMAGE_IO_H_
-
 /* src/cfimage_io.c */
 Cfimage _mw_cfimage_load_native(char *NomFic, char *Type);
 short _mw_cfimage_create_native(char *NomFic, Cfimage image, char *Type);
 Cfimage _mw_cfimage_load_image(char *NomFic, char *Type);
 short _mw_cfimage_create_image(char *NomFic, Cfimage image, char *Type);
-
-#endif /* !_CFIMAGE_IO_H_ */
-/*
- * cimage.h
- */
-
-#ifndef _CIMAGE_H_
-#define _CIMAGE_H_
 
 /* src/cimage.c */
 Cimage mw_new_cimage(void);
@@ -1102,14 +897,6 @@ void mw_copy_cimage(Cimage in, Cimage out);
 unsigned char **mw_newtab_gray_cimage(Cimage image);
 unsigned char mw_isitbinary_cimage(Cimage image);
 
-#endif /* !_CIMAGE_H_ */
-/*
- * cimage_io.h
- */
-
-#ifndef _CIMAGE_IO_H_
-#define _CIMAGE_IO_H_
-
 /* src/cimage_io.c */
 Cimage _mw_cimage_load_megawave1(char *NomFic, char *Type);
 short _mw_cimage_create_megawave1(char *NomFic, Cimage image, char *Type);
@@ -1117,14 +904,6 @@ Cimage _mw_cimage_load_native(char *NomFic, char *Type);
 short _mw_cimage_create_native(char *NomFic, Cimage image, char *Type);
 Cimage _mw_cimage_load_image(char *NomFic, char *Type);
 short _mw_cimage_create_image(char *NomFic, Cimage image, char *Type);
-
-#endif /* !_CIMAGE_IO_H_ */
-/*
- * fimage.h
- */
-
-#ifndef _FIMAGE_H_
-#define _FIMAGE_H_
 
 /* src/fimage.c */
 Fimage mw_new_fimage(void);
@@ -1138,14 +917,6 @@ void mw_clear_fimage(Fimage image, float v);
 void mw_copy_fimage(Fimage in, Fimage out);
 float **mw_newtab_gray_fimage(Fimage image);
 
-#endif /* !_FIMAGE_H_ */
-/*
- * fimage_io.h
- */
-
-#ifndef _FIMAGE_IO_H_
-#define _FIMAGE_IO_H_
-
 /* src/fimage_io.c */
 Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type);
 short _mw_fimage_create_megawave1(char *NomFic, Fimage image, char *Type);
@@ -1154,26 +925,10 @@ short _mw_fimage_create_native(char *NomFic, Fimage image, char *Type);
 Fimage _mw_fimage_load_image(char *NomFic, char *Type);
 short _mw_fimage_create_image(char *NomFic, Fimage image, char *Type);
 
-#endif /* !_FIMAGE_IO_H_ */
-/*
- * ccmovie.h
- */
-
-#ifndef _CCMOVIE_H_
-#define _CCMOVIE_H_
-
 /* src/ccmovie.c */
 Ccmovie mw_new_ccmovie(void);
 void mw_delete_ccmovie(Ccmovie movie);
 Ccmovie mw_change_ccmovie(Ccmovie movie);
-
-#endif /* !_CCMOVIE_H_ */
-/*
- * ccmovie_io.h
- */
-
-#ifndef _CCMOVIE_IO_H_
-#define _CCMOVIE_IO_H_
 
 /* src/ccmovie_io.c */
 Ccmovie _mw_ccmovie_load_movie_old_format(char *NomFic, char *Type);
@@ -1181,26 +936,10 @@ Ccmovie _mw_ccmovie_load_native(char *fname, char *Type);
 Ccmovie _mw_ccmovie_load_movie(char *NomFic, char *Type);
 short _mw_ccmovie_create_movie(char *NomFic, Ccmovie movie, char *Type);
 
-#endif /* !_CCMOVIE_IO_H_ */
-/*
- * cfmovie.h
- */
-
-#ifndef _CFMOVIE_H_
-#define _CFMOVIE_H_
-
 /* src/cfmovie.c */
 Cfmovie mw_new_cfmovie(void);
 void mw_delete_cfmovie(Cfmovie movie);
 Cfmovie mw_change_cfmovie(Cfmovie movie);
-
-#endif /* !_CFMOVIE_H_ */
-/*
- * cfmovie_io.h
- */
-
-#ifndef _CFMOVIE_IO_H_
-#define _CFMOVIE_IO_H_
 
 /* src/cfmovie_io.c */
 Cfmovie _mw_cfmovie_load_movie_old_format(char *NomFic, char *Type);
@@ -1208,26 +947,10 @@ Cfmovie _mw_cfmovie_load_native(char *fname, char *Type);
 Cfmovie _mw_cfmovie_load_movie(char *NomFic, char *Type);
 short _mw_cfmovie_create_movie(char *NomFic, Cfmovie movie, char *Type);
 
-#endif /* !_CFMOVIE_IO_H_ */
-/*
- * cmovie.h
- */
-
-#ifndef _CMOVIE_H_
-#define _CMOVIE_H_
-
 /* src/cmovie.c */
 Cmovie mw_new_cmovie(void);
 void mw_delete_cmovie(Cmovie movie);
 Cmovie mw_change_cmovie(Cmovie movie);
-
-#endif /* !_CMOVIE_H_ */
-/*
- * cmovie_io.h
- */
-
-#ifndef _CMOVIE_IO_H_
-#define _CMOVIE_IO_H_
 
 /* src/cmovie_io.c */
 Cmovie _mw_cmovie_load_movie_old_format(char *NomFic, char *Type);
@@ -1235,39 +958,15 @@ Cmovie _mw_cmovie_load_native(char *fname, char *Type);
 Cmovie _mw_cmovie_load_movie(char *NomFic, char *Type);
 short _mw_cmovie_create_movie(char *NomFic, Cmovie movie, char *Type);
 
-#endif /* !_CMOVIE_IO_H_ */
-/*
- * fmovie.h
- */
-
-#ifndef _FMOVIE_H_
-#define _FMOVIE_H_
-
 /* src/fmovie.c */
 Fmovie mw_new_fmovie(void);
 void mw_delete_fmovie(Fmovie movie);
 Fmovie mw_change_fmovie(Fmovie movie);
 
-#endif /* !_FMOVIE_H_ */
-/*
- * fmovie_io.h
- */
-
-#ifndef _FMOVIE_IO_H_
-#define _FMOVIE_IO_H_
-
 /* src/fmovie_io.c */
 Fmovie _mw_fmovie_load_movie_old_format(char *NomFic, char *Type);
 Fmovie _mw_fmovie_load_movie(char *fname, char *Type);
 short _mw_fmovie_create_movie(char *NomFic, Fmovie movie, char *Type);
-
-#endif /* !_FMOVIE_IO_H_ */
-/*
- * cmimage.h
- */
-
-#ifndef _CMIMAGE_H_
-#define _CMIMAGE_H_
 
 /* src/cmimage.c */
 Cmorpho_line mw_new_cmorpho_line(void);
@@ -1300,14 +999,6 @@ Cmimage mw_copy_cmimage(Cmimage in, Cmimage out);
 unsigned int mw_length_ml_cmimage(Cmimage cmimage);
 unsigned int mw_length_fml_cmimage(Cmimage cmimage);
 unsigned int mw_length_ms_cmimage(Cmimage cmimage);
-
-#endif /* !_CMIMAGE_H_ */
-/*
- * cmimage_io.h
- */
-
-#ifndef _CMIMAGE_IO_H_
-#define _CMIMAGE_IO_H_
 
 /* src/cmimage_io.c */
 Cmorpho_line _mw_load_cml_mw2_cml(char *fname);
@@ -1346,14 +1037,6 @@ Cmimage _mw_load_cmimage(char *fname, char *type);
 short _mw_create_cmimage_mw2_cmimage(char *fname, Cmimage cmimage);
 short _mw_cmimage_create_native(char *fname, Cmimage cmimage, char *Type);
 short _mw_create_cmimage(char *fname, Cmimage cmimage, char *Type);
-
-#endif /* !_CMIMAGE_IO_H_ */
-/*
- * mimage.h
- */
-
-#ifndef _MIMAGE_H_
-#define _MIMAGE_H_
 
 /* src/mimage.c */
 Point_type mw_new_point_type(void);
@@ -1394,14 +1077,6 @@ unsigned int mw_length_ml_mimage(Mimage mimage);
 unsigned int mw_length_fml_mimage(Mimage mimage);
 unsigned int mw_length_ms_mimage(Mimage mimage);
 
-#endif /* !_MIMAGE_H_ */
-/*
- * mimage_io.h
- */
-
-#ifndef _MIMAGE_IO_H_
-#define _MIMAGE_IO_H_
-
 /* src/mimage_io.c */
 Morpho_line _mw_load_ml_mw2_ml(char *fname);
 Morpho_line _mw_morpho_line_load_native(char *fname, char *type);
@@ -1440,14 +1115,6 @@ short _mw_create_mimage_mw2_mimage(char *fname, Mimage mimage);
 short _mw_mimage_create_native(char *fname, Mimage mimage, char *Type);
 short _mw_create_mimage(char *fname, Mimage mimage, char *Type);
 
-#endif /* !_MIMAGE_IO_H_ */
-/*
- * curve.h
- */
-
-#ifndef _CURVE_H_
-#define _CURVE_H_
-
 /* src/curve.c */
 Point_curve mw_new_point_curve(void);
 Point_curve mw_change_point_curve(Point_curve point);
@@ -1464,14 +1131,6 @@ void mw_delete_curves(Curves curves);
 unsigned int mw_length_curves(Curves curves);
 unsigned int mw_npoints_curves(Curves curves);
 
-#endif /* !_CURVE_H_ */
-/*
- * curve_io.h
- */
-
-#ifndef _CURVE_IO_H_
-#define _CURVE_IO_H_
-
 /* src/curve_io.c */
 Point_curve _mw_point_curve_load_native(char *fname, char *type);
 Curve _mw_load_curve_mw2_curve(char *fname);
@@ -1486,14 +1145,6 @@ Curves _mw_load_curves(char *fname, char *type);
 short _mw_create_curves_mw2_curves(char *fname, Curves cvs);
 short _mw_curves_create_native(char *fname, Curves cvs, char *Type);
 short _mw_create_curves(char *fname, Curves cvs, char *Type);
-
-#endif /* !_CURVE_IO_H_ */
-/*
- * dcurve.h
- */
-
-#ifndef _DCURVE_H_
-#define _DCURVE_H_
 
 /* src/dcurve.c */
 Point_dcurve mw_new_point_dcurve(void);
@@ -1511,14 +1162,6 @@ void mw_delete_dcurves(Dcurves dcurves);
 unsigned int mw_length_dcurves(Dcurves dcurves);
 unsigned int mw_npoints_dcurves(Dcurves dcurves);
 
-#endif /* !_DCURVE_H_ */
-/*
- * dcurve_io.h
- */
-
-#ifndef _DCURVE_IO_H_
-#define _DCURVE_IO_H_
-
 /* src/dcurve_io.c */
 Point_dcurve _mw_point_dcurve_load_native(char *fname, char *type);
 Dcurve _mw_load_dcurve_mw2_dcurve(char *fname);
@@ -1534,14 +1177,6 @@ Dcurves _mw_load_dcurves(char *fname, char *type);
 short _mw_create_dcurves_mw2_dcurves(char *fname, Dcurves cvs);
 short _mw_dcurves_create_native(char *fname, Dcurves cvs, char *Type);
 short _mw_create_dcurves(char *fname, Dcurves cvs, char *Type);
-
-#endif /* !_DCURVE_IO_H_ */
-/*
- * fcurve.h
- */
-
-#ifndef _FCURVE_H_
-#define _FCURVE_H_
 
 /* src/fcurve.c */
 Point_fcurve mw_new_point_fcurve(void);
@@ -1559,14 +1194,6 @@ void mw_delete_fcurves(Fcurves fcurves);
 unsigned int mw_length_fcurves(Fcurves fcurves);
 unsigned int mw_npoints_fcurves(Fcurves fcurves);
 
-#endif /* !_FCURVE_H_ */
-/*
- * fcurve_io.h
- */
-
-#ifndef _FCURVE_IO_H_
-#define _FCURVE_IO_H_
-
 /* src/fcurve_io.c */
 Point_fcurve _mw_point_fcurve_load_native(char *fname, char *type);
 Fcurve _mw_load_fcurve_mw2_fcurve(char *fname);
@@ -1583,14 +1210,6 @@ short _mw_create_fcurves_mw2_fcurves(char *fname, Fcurves cvs);
 short _mw_fcurves_create_native(char *fname, Fcurves cvs, char *Type);
 short _mw_create_fcurves(char *fname, Fcurves cvs, char *Type);
 
-#endif /* !_FCURVE_IO_H_ */
-/*
- * fpolygon.h
- */
-
-#ifndef _FPOLYGON_H_
-#define _FPOLYGON_H_
-
 /* src/fpolygon.c */
 Fpolygon mw_new_fpolygon(void);
 Fpolygon mw_alloc_fpolygon(Fpolygon fpolygon, int nc);
@@ -1601,14 +1220,6 @@ Fpolygons mw_new_fpolygons(void);
 Fpolygons mw_change_fpolygons(Fpolygons poly);
 void mw_delete_fpolygons(Fpolygons fpolygons);
 unsigned int mw_length_fpolygons(Fpolygons fpolys);
-
-#endif /* !_FPOLYGON_H_ */
-/*
- * fpolygon_io.h
- */
-
-#ifndef _FPOLYGON_IO_H_
-#define _FPOLYGON_IO_H_
 
 /* src/fpolygon_io.c */
 Fpolygon _mw_load_fpolygon_a_fpoly(char *fname);
@@ -1624,14 +1235,6 @@ short _mw_create_fpolygons_a_fpoly(char *fname, Fpolygons poly);
 short _mw_fpolygons_create_native(char *fname, Fpolygons fpoly, char *Type);
 short _mw_create_fpolygons(char *fname, Fpolygons fpoly, char *Type);
 
-#endif /* !_FPOLYGON_IO_H_ */
-/*
- * polygon.h
- */
-
-#ifndef _POLYGON_H_
-#define _POLYGON_H_
-
 /* src/polygon.c */
 Polygon mw_new_polygon(void);
 Polygon mw_alloc_polygon(Polygon polygon, int nc);
@@ -1642,14 +1245,6 @@ Polygons mw_new_polygons(void);
 Polygons mw_change_polygons(Polygons poly);
 void mw_delete_polygons(Polygons polygons);
 unsigned int mw_length_polygons(Polygons polys);
-
-#endif /* !_POLYGON_H_ */
-/*
- * polygon_io.h
- */
-
-#ifndef _POLYGON_IO_H_
-#define _POLYGON_IO_H_
 
 /* src/polygon_io.c */
 Polygon _mw_load_polygon_a_poly(char *fname);
@@ -1664,14 +1259,6 @@ Polygons _mw_load_polygons(char *fname, char *type);
 short _mw_create_polygons_a_poly(char *fname, Polygons poly);
 short _mw_polygons_create_native(char *fname, Polygons poly, char *Type);
 short _mw_create_polygons(char *fname, Polygons poly, char *Type);
-
-#endif /* !_POLYGON_IO_H_ */
-/*
- * shape.h
- */
-
-#ifndef _SHAPE_H_
-#define _SHAPE_H_
 
 /* src/shape.c */
 Point_plane mw_new_point_plane(void);
@@ -1689,14 +1276,6 @@ Shapes mw_alloc_shapes(Shapes shs, int nrow, int ncol, float value);
 Shapes mw_change_shapes(Shapes shs, int nrow, int ncol, float value);
 void mw_delete_shapes(Shapes shs);
 
-#endif /* !_SHAPE_H_ */
-/*
- * shape_io.h
- */
-
-#ifndef _SHAPE_IO_H_
-#define _SHAPE_IO_H_
-
 /* src/shape_io.c */
 Shape _mw_load_mw2_shape(char *fname);
 Shape _mw_load_shape(char *fname, char *Type);
@@ -1709,14 +1288,6 @@ Shapes _mw_load_shapes(char *fname, char *Type);
 short _mw_create_mw2_shapes(char *fname, Shapes shs);
 short _mw_create_shapes(char *fname, Shapes shs, char *Type);
 
-#endif /* !_SHAPE_IO_H_ */
-/*
- * fsignal.h
- */
-
-#ifndef _FSIGNAL_H_
-#define _FSIGNAL_H_
-
 /* src/fsignal.c */
 Fsignal mw_new_fsignal(void);
 Fsignal mw_alloc_fsignal(Fsignal signal, int N);
@@ -1727,27 +1298,11 @@ void mw_copy_fsignal_values(Fsignal in, Fsignal out);
 void mw_copy_fsignal_header(Fsignal in, Fsignal out);
 void mw_copy_fsignal(Fsignal in, Fsignal out);
 
-#endif /* !_FSIGNAL_H_ */
-/*
- * fsignal_io.h
- */
-
-#ifndef _FSIGNAL_IO_H_
-#define _FSIGNAL_IO_H_
-
 /* src/fsignal_io.c */
 Fsignal _mw_load_fsignal_ascii(char *fname, Fsignal signal);
 short _mw_create_fsignal_ascii(char *fname, Fsignal signal);
 Fsignal _mw_load_fsignal(char *fname, char *type, Fsignal signal);
 short _mw_create_fsignal(char *fname, Fsignal signal, char *type);
-
-#endif /* !_FSIGNAL_IO_H_ */
-/*
- * list.h
- */
-
-#ifndef _LIST_H_
-#define _LIST_H_
 
 /* src/list.c */
 Flist mw_new_flist(void);
@@ -1776,14 +1331,6 @@ Dlists mw_enlarge_dlists(Dlists ls);
 Dlists mw_change_dlists(Dlists ls, int max_size, int size);
 void mw_delete_dlists(Dlists ls);
 Dlists mw_copy_dlists(Dlists in, Dlists out);
-
-#endif /* !_LIST_H_ */
-/*
- * list_io.h
- */
-
-#ifndef _LIST_IO_H_
-#define _LIST_IO_H_
 
 /* src/list_io.c */
 Flist _mw_read_mw2_flist(char *fname, FILE *fp, int need_flipping);
@@ -1814,25 +1361,9 @@ short _mw_create_mw2_dlists(char *fname, Dlists lsts);
 short _mw_dlists_create_native(char *fname, Dlists lsts, char *type);
 short _mw_create_dlists(char *fname, Dlists lsts, char *type);
 
-#endif /* !_LIST_IO_H_ */
-/*
- * wave_io.h
- */
-
-#ifndef _WAVE_IO_H_
-#define _WAVE_IO_H_
-
 /* src/wave_io.c */
 Fsignal _mw_fsignal_load_wave_pcm(char *fname, Fsignal signal, int need_flipping);
 short _mw_fsignal_create_wave_pcm(char *fname, Fsignal signal);
-
-#endif /* !_WAVE_IO_H_ */
-/*
- * wmax2d.h
- */
-
-#ifndef _WMAX2D_H_
-#define _WMAX2D_H_
 
 /* src/wmax2d.c */
 Vpoint_wmax mw_new_vpoint_wmax(void);
@@ -1848,27 +1379,11 @@ Vpoint_wmax mw_copy_vpoint_wmax(Vpoint_wmax vpoint1, Vpoint_wmax vpoint0);
 Vchain_wmax mw_copy_vchain_wmax(Vchain_wmax vchain1, Vchain_wmax vchain0);
 int mw_give_nlevel_vchain(Vchain_wmax vchain);
 
-#endif /* !_WMAX2D_H_ */
-/*
- * wmax2d_io.h
- */
-
-#ifndef _WMAX2D_IO_H_
-#define _WMAX2D_IO_H_
-
 /* src/wmax2d_io.c */
 Vchains_wmax _mw_load_vchains_wmax(char *fname);
 short _mw_create_vchains_wmax(char *fname, Vchains_wmax vchains);
 Vchain_wmax _mw_load_vchain_wmax(char *fname);
 short _mw_create_vchain_wmax(char *fname, Vchain_wmax vchain);
-
-#endif /* !_WMAX2D_IO_H_ */
-/*
- * wpack2d.h
- */
-
-#ifndef _WPACK2D_H_
-#define _WPACK2D_H_
 
 /* src/wpack2d.c */
 int mw_bandsize_wpack2d(int initial_size, int current_level);
@@ -1881,14 +1396,6 @@ void mw_copy_wpack2d(Wpack2d in, Wpack2d out, int new_tree_size);
 void mw_clear_wpack2d(Wpack2d pack, float v);
 void mw_prune_wpack2d(Wpack2d in, Wpack2d out, Cimage tree);
 
-#endif /* !_WPACK2D_H_ */
-/*
- * wpack2d_io.h
- */
-
-#ifndef _WPACK2D_IO_H_
-#define _WPACK2D_IO_H_
-
 /* src/wpack2d_io.c */
 Wpack2d _mw_load_wpack2d_ascii(char *fname);
 Wpack2d _mw_wpack2d_load_native(char *fname, char *type);
@@ -1896,14 +1403,6 @@ Wpack2d _mw_load_wpack2d(char *fname, char *type);
 short _mw_create_wpack2d_ascii(char *fname, Wpack2d pack);
 short _mw_wpack2d_create_native(char *fname, Wpack2d pack, char *Type);
 short _mw_create_wpack2d(char *fname, Wpack2d pack, char *Type);
-
-#endif /* !_WPACK2D_IO_H_ */
-/*
- * wtrans1d.h
- */
-
-#ifndef _WTRANS1D_H_
-#define _WTRANS1D_H_
 
 /* src/wtrans1d.c */
 Wtrans1d mw_new_wtrans1d(void);
@@ -1914,14 +1413,6 @@ void *mw_alloc_dyadic_wtrans1d(Wtrans1d wtrans, int level, int size);
 void *mw_alloc_continuous_wtrans1d(Wtrans1d wtrans, int level, int voice, int size, int complex);
 void mw_delete_wtrans1d(Wtrans1d wtrans);
 
-#endif /* !_WTRANS1D_H_ */
-/*
- * wtrans1d_io.h
- */
-
-#ifndef _WTRANS1D_IO_H_
-#define _WTRANS1D_IO_H_
-
 /* src/wtrans1d_io.c */
 Wtrans1d _mw_load_wtrans1d_header(char *fname);
 short _mw_create_wtrans1d_header(char *fname, Wtrans1d wtrans);
@@ -1929,14 +1420,6 @@ void *_mw_wtrans1d_load_signal_wtrans(char *fname, char *type, Wtrans1d wtrans, 
 Wtrans1d _mw_wtrans1d_load_wtrans(char *fname, char *type);
 void _mw_wtrans1d_create_signal_wtrans(char *fname, char *type, Wtrans1d wtrans, Fsignal (*S)[50], char *Sname);
 short _mw_wtrans1d_create_wtrans(char *fname, Wtrans1d wtrans, char *type);
-
-#endif /* !_WTRANS1D_IO_H_ */
-/*
- * wtrans2d.h
- */
-
-#ifndef _WTRANS2D_H_
-#define _WTRANS2D_H_
 
 /* src/wtrans2d.c */
 Wtrans2d mw_new_wtrans2d(void);
@@ -1946,39 +1429,15 @@ void *mw_alloc_biortho_wtrans2d(Wtrans2d wtrans, int level, int nrow, int ncol);
 void *mw_alloc_dyadic_wtrans2d(Wtrans2d wtrans, int level, int nrow, int ncol);
 void mw_delete_wtrans2d(Wtrans2d wtrans);
 
-#endif /* !_WTRANS2D_H_ */
-/*
- * wtrans2d_io.h
- */
-
-#ifndef _WTRANS2D_IO_H_
-#define _WTRANS2D_IO_H_
-
 /* src/wtrans2d_io.c */
 Wtrans2d _mw_load_wtrans2d_header(char *fname);
 short _mw_create_wtrans2d_header(char *fname, Wtrans2d wtrans);
 Wtrans2d _mw_wtrans2d_load_wtrans(char *fname, char *type);
 short _mw_wtrans2d_create_wtrans(char *fname, Wtrans2d wtrans, char *type);
 
-#endif /* !_WTRANS2D_IO_H_ */
-/*
- * error.h
- */
-
-#ifndef _ERROR_H_
-#define _ERROR_H_
-
 /* src/error.c */
 void mwdebug(char *fmt, ...);
 void mwerror(int code, int exit_code, char *fmt, ...);
-
-#endif /* !_ERROR_H_ */
-/*
- * rawdata.h
- */
-
-#ifndef _RAWDATA_H_
-#define _RAWDATA_H_
 
 /* src/rawdata.c */
 Rawdata mw_new_rawdata(void);
@@ -1987,25 +1446,9 @@ void mw_delete_rawdata(Rawdata rd);
 Rawdata mw_change_rawdata(Rawdata rd, int newsize);
 void mw_copy_rawdata(Rawdata in, Rawdata out);
 
-#endif /* !_RAWDATA_H_ */
-/*
- * rawdata_io.h
- */
-
-#ifndef _RAWDATA_IO_H_
-#define _RAWDATA_IO_H_
-
 /* src/rawdata_io.c */
 Rawdata _mw_load_rawdata(char *fname);
 short _mw_create_rawdata(char *fname, Rawdata rd);
-
-#endif /* !_RAWDATA_IO_H_ */
-/*
- * bmp_io.h
- */
-
-#ifndef _BMP_IO_H_
-#define _BMP_IO_H_
 
 /* src/bmp_io.c */
 FILE *_mw_read_bmp_header(char *fname, unsigned int *nx, unsigned int *ny, unsigned int *offset, unsigned int *size, unsigned int *planes, unsigned int *bitcount, unsigned int *compression);
@@ -2014,37 +1457,13 @@ short _mw_cimage_create_bmp(char *file, Cimage image);
 Ccimage _mw_ccimage_load_bmp(char *file);
 short _mw_ccimage_create_bmp(char *file, Ccimage image);
 
-#endif /* !_BMP_IO_H_ */
-/*
- * epsf_io.h
- */
-
-#ifndef _EPSF_IO_H_
-#define _EPSF_IO_H_
-
 /* src/epsf_io.c */
 Cimage _mw_cimage_load_epsf(char *fname);
 short _mw_cimage_create_epsf(char *fname, Cimage image);
 
-#endif /* !_EPSF_IO_H_ */
-/*
- * gif_io.h
- */
-
-#ifndef _GIF_IO_H_
-#define _GIF_IO_H_
-
 /* src/gif_io.c */
 Cimage _mw_cimage_load_gif(char *fname);
 short _mw_cimage_create_gif(char *fname, Cimage image);
-
-#endif /* !_GIF_IO_H_ */
-/*
- * jpeg_io.h
- */
-
-#ifndef _JPEG_IO_H_
-#define _JPEG_IO_H_
 
 /* src/jpeg_io.c */
 Cimage _mw_cimage_load_jpeg(char *fname);
@@ -2052,28 +1471,12 @@ Ccimage _mw_ccimage_load_jpeg(char *fname);
 short _mw_cimage_create_jpeg(char *fname, Cimage image, char *Quality);
 short _mw_ccimage_create_jpeg(char *fname, Ccimage image, char *Quality);
 
-#endif /* !_JPEG_IO_H_ */
-/*
- * pgm_io.h
- */
-
-#ifndef _PGM_IO_H_
-#define _PGM_IO_H_
-
 /* src/pgm_io.c */
 int _mw_pgm_get_next_item(FILE *fp, char *comment);
 Cimage _mw_cimage_load_pgma(char *file);
 short _mw_cimage_create_pgma(char *file, Cimage image);
 Cimage _mw_cimage_load_pgmr(char *file);
 short _mw_cimage_create_pgmr(char *file, Cimage image);
-
-#endif /* !_PGM_IO_H_ */
-/*
- * pm_io.h
- */
-
-#ifndef _PM_IO_H_
-#define _PM_IO_H_
 
 /* src/pm_io.c */
 Cimage _mw_cimage_load_pm(char *file);
@@ -2085,51 +1488,19 @@ short _mw_ccimage_create_pm(char *file, Ccimage image);
 Cfimage _mw_cfimage_load_pm(char *file);
 short _mw_cfimage_create_pm(char *file, Cfimage image);
 
-#endif /* !_PM_IO_H_ */
-/*
- * ppm_io.h
- */
-
-#ifndef _PPM_IO_H_
-#define _PPM_IO_H_
-
 /* src/ppm_io.c */
 Ccimage _mw_ccimage_load_ppmr(char *file);
 short _mw_ccimage_create_ppmr(char *file, Ccimage image);
 
-#endif /* !_PPM_IO_H_ */
-/*
- * ps_io.h
- */
-
-#ifndef _PS_IO_H_
-#define _PS_IO_H_
-
 /* src/ps_io.c */
 Cimage _mw_cimage_load_ps(char *fname);
 short _mw_cimage_create_ps(char *fname, Cimage image);
-
-#endif /* !_PS_IO_H_ */
-/*
- * tiff_io.h
- */
-
-#ifndef _TIFF_IO_H_
-#define _TIFF_IO_H_
 
 /* src/tiff_io.c */
 Ccimage _mw_ccimage_load_tiff(char *fname);
 Cimage _mw_cimage_load_tiff(char *fname);
 short _mw_ccimage_create_tiff(char *fname, Ccimage image);
 short _mw_cimage_create_tiff(char *fname, Cimage image);
-
-#endif /* !_TIFF_IO_H_ */
-/*
- * ascii_file.h
- */
-
-#ifndef _ASCII_FILE_H_
-#define _ASCII_FILE_H_
 
 /* src/ascii_file.c */
 int _mw_fascii_search_string(FILE *fp, char *str);
@@ -2140,14 +1511,6 @@ int _mw_fascii_get_field(FILE *fp, char *fname, char *field_name, char *str_cont
 int _mw_fascii_get_optional_field(FILE *fp, char *fname, char *field_name, char *str_control, void *ptr);
 FILE *_mw_open_data_ascii_file(char *fname);
 FILE *_mw_create_data_ascii_file(char *fname);
-
-#endif /* !_ASCII_FILE_H_ */
-/*
- * basic_conv.h
- */
-
-#ifndef _BASIC_CONV_H_
-#define _BASIC_CONV_H_
 
 /* src/basic_conv.c */
 void _mw_float_to_uchar(register float *ptr_float, register unsigned char *ptr_uchar, int N, char *data_name);
@@ -2250,14 +1613,6 @@ Flist mw_dlist_to_flist(Dlist in, Flist out);
 Dlists mw_flists_to_dlists(Flists in, Dlists out);
 Flists mw_dlists_to_flists(Dlists in, Flists out);
 
-#endif /* !_BASIC_CONV_H_ */
-/*
- * file_type.h
- */
-
-#ifndef _FILE_TYPE_H_
-#define _FILE_TYPE_H_
-
 /* src/file_type.c */
 void _mw_lower_type(char type[]);
 void _mw_put_range_type(char type[], char *mtype, int r);
@@ -2267,24 +1622,6 @@ char *_mw_get_ftype_opt(char *ftype);
 int _mw_is_of_ftype(char *in, char *type);
 void _mw_make_comment(char comment[], char comment_in[]);
 int _mw_get_file_type(char *fname, char *ftype, char *mtype, int *hsize, float *version);
-
-#endif /* !_FILE_TYPE_H_ */
-/*
- * libmw.h
- */
-
-#ifndef _LIBMW_H_
-#define _LIBMW_H_
-
-/* src/libmw.c */
-
-#endif /* !_LIBMW_H_ */
-/*
- * mwio.h
- */
-
-#ifndef _MWIO_H_
-#define _MWIO_H_
 
 /* src/mwio.c */
 void _mw_flip_image(register unsigned char *ptr, short size, short dx, short dy, char flip);
@@ -2375,19 +1712,9 @@ short _mwsave_dlists(char *name, char type[], char type_force[], char comment[],
 short _mwload_wpack2d(char *name, char type[], char comment[], Wpack2d *pack);
 short _mwsave_wpack2d(char *name, char type[], char type_force[], char comment[], Wpack2d pack);
 
-#endif /* !_MWIO_H_ */
-/*
- * type_conv.h
- */
-
-#ifndef _TYPE_CONV_H_
-#define _TYPE_CONV_H_
-
 /* src/type_conv.c */
 void *mw_conv_internal_type(void *mwstruct, char *typein, char *typeout);
 void *_mw_load_etype_to_itype(char *fname, char *typein, char *typeout, char *Type);
 short _mw_create_etype_from_itype(char *fname, void *mwstruct, char *typein, char *ftype);
-
-#endif /* !_TYPE_CONV_H_ */
 
 #endif /* !_MW_H_ */

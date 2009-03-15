@@ -130,13 +130,8 @@ lib$(LIBNAME)$(.SO)	: $(OBJ)
 
 .PHONY	: api
 api 	: $(API)
-$(API) 	: $(AUTOHDR) $(addprefix $(SRCDIR)/, libmw-defs.h)
-	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
-	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
-	$(ECHO) -e "\n#include <stdio.h> /* for FILE */\n" >> $@
-	$(CAT) $(filter %-defs.h, $^) >> $@
-	$(CAT) $(filter-out %-defs.h, $^) >> $@
-	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
+$(API) 	: $(SRCDIR)/$(API)
+	$(CP) $< $@
 
 .PHONY	: lint
 lint	: lint.flag
@@ -160,6 +155,7 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
+	$(RM) $(API)
 	$(RM) lib$(LIBNAME)$(.A)
 	$(RM) lib$(LIBNAME)$(.SO)
 
@@ -173,7 +169,7 @@ distclean-bin : clean-bin
 #
 
 .PHONY	: prebuild
-prebuild	: autohdr man #dep
+prebuild	: autohdr man api #dep
 
 .PHONY	: autohdr
 autohdr	: $(AUTOHDR)
