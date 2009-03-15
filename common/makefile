@@ -115,7 +115,7 @@ endif
 # compiler flags
 IPATH	?= .
 CFLAGS_NOWARN	?= $(CSTD) $(CMISC) $(addprefix -I, $(IPATH))
-CFLAGS	?= -fPIC $(CWARN) $(CFLAGS_NOWARN)
+CFLAGS	?= -pipe -fPIC $(CWARN) $(CFLAGS_NOWARN)
 
 # linking option
 # LINK can be "dynamic" or "static"
