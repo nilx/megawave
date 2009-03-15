@@ -1,0 +1,53 @@
+# BUILD AND EXECUTION STATUS
+#
+#          ,-----> prebuild
+# 0:OK     |,----> dynamic build
+# X:ERR    ||,---> dynamic run
+# N:ERR_NB |||,--> static build
+# .:?      ||||,-> static run
+#          |||||
+#          deb4.0   ubu08.04 ubu08.10 gen2008  cent5.2  sus11.1  slac12.1
+#          |||||
+YYYYMMDD   .....    .....    .....    .....    .....    .....    .....
+20090315   .....    .....    .....    .....    .....    .....    .....
+20090302   00706    00X0X    00X0X    .0706    .0706    .0706    .....
+20090228   .0706    .0X0X    .0X0X    .0706    .0706    .0706    .....
+
+#          deb3.0   deb3.1   osx10.4  osx10.5  win5.1   win6.0
+
+YYYYMMDD   .....    .....    .....    .....    .....    .....    .....
+
+#
+# CODE QUALITY AUDIT
+#
+#          ,------> make CHECK=relax  [1]
+# 0:OK     |,-----> make CHECK=strict [2]
+# X:ERR    ||,----> headers [3]
+# .:?      |||,---> splint
+#          ||||,--> indent
+#          |||||,-> inline doc
+#          ||||||
+#          mwp     mw-x11  mw      mw-cmd  mw-mod  mod
+#          ||||||
+
+YYYYMMDD   ......  ......  ......  ......  ......  ......
+20090315   ......  ......  ......  ......  ......  ......
+20090310   000...  00....  00....  000...  000...  00O...
+20090306   000...  00....  00....  000...  0X....  0X....
+20090305   00....  00....  00....  00....  0X....  0X....
+
+# [1] CHECK=relax
+#     gcc -ansi -Wall
+#
+# [2] CHECK=strict
+#     gcc -ansi -pedantic -Wall -Wextra -Werror -Wc++-compat
+#     -Wundef -Wshadow -Wpointer-arith
+#     -Wbad-function-cast -Wcast-qual -Wcast-align
+#     -Waggregate-return -Wstrict-prototypes
+#     -Wmissing-prototypes 
+#     -Wmissing-declarations -Wnested-externs
+#     -Wformat -Wformat-nonliteral -Wformat-security
+#     -Wfloat-equal
+#
+# [3] allowed headers
+#     ANSI standard library, tiff, X, mw
