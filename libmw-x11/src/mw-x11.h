@@ -1,36 +1,19 @@
-/*
- * mw-x11 api header
+/**
+ * @file mw-x11.h
+ *
+ * @author Nicolas Limare (2009)
+ *
+ * mw-x11 API header
  */
 
 #ifndef _MW_X11_H_
 #define _MW_X11_H_
 
-/**
- * @file definitions.h
- *
- * structures and declarations for the megawave wpanel library
- *
- * @author John Bradley for XV <xv@trilon.com> (1989 - 1994),
- *         Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2006),
- *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
- *
- * @todo non-free origin (see http://www.trilon.com/xv/pricing.html),
- *       replace by a free alternative 
- */
-
-#ifndef _DEFINITIONS_H_
-#define _DEFINITIONS_H_
-
+/* src/definitions.h */
 #include <X11/Xlib.h>
 #define  XK_MISCELLANY
 #include <X11/keysymdef.h>
 
-/**
- * @brief Wframe : main structure for a window
- *
- * This structure is device-dependent and the fields must NOT
- * be accessed by any program running the Wgraphics library.
- */
 typedef struct {
      Window win;               /*< X Window ID                             */
      int x,y;                  /*< Current Location of the Window          */
@@ -51,12 +34,6 @@ typedef struct {
      unsigned long event_mask; /*< Event Mask for this Window              */
 } Wframe;
 
-
-/*
- * MACROS
- */
-
-/* #define W_DEBUG_ON */
 #ifdef W_DEBUG_ON
 #define WDEBUG(Function) (fprintf(stderr,"\n>>> Function <<<\n"))
 #else
@@ -65,11 +42,6 @@ typedef struct {
 
 #define WLIB_ERROR (fprintf(stderr,"Wdevice Library error: "))
 
-/*
- * GLOBAL VARIABLES
- */
-
-/* defined in mw-wdevice_var.c */
 extern int             _W_XErrorOccured;
 extern Display         *_W_Display;
 extern int             _W_Screen;
@@ -91,11 +63,8 @@ extern XColor          _W_RGB[256];
 extern int             _W_KeyBuffer; 
 extern unsigned long   _W_cols[256];
 
-
 #define Wp_max_buttons 100  /* maximum number of buttons */
 #define WP_STRSIZE 1000  /* maximum string size */
-
-/* colors 64 grey levels + 5x5x5 */
 
 #define WP_BLACK    0
 #define WP_GREY    40
@@ -104,14 +73,10 @@ extern unsigned long   _W_cols[256];
 #define WP_BLUE    68
 #define WP_GREEN   84
 
-
-/* wp types */
-
 #define WP_NULL    0
 #define WP_TOGGLE  1
 #define WP_INT     2
 #define WP_FLOAT   3
-
 
 typedef struct wp_toggle {
   char *text;          /* text to display */
@@ -168,23 +133,8 @@ typedef struct wpanel {
   short *button;         /* bitmap (associated button number) */
 } *Wpanel;
 
-/**
- * window main loop delay
- * modified by some modules (cmview, ccmview)
- */
 extern int mwwindelay;
-
-/* TODO: drop? */
 extern int mwrunmode;
-
-#endif /* !_DEFINITIONS_H_ */
-
-/*
- * wpanel.h
- */
-
-#ifndef _WPANEL_H_
-#define _WPANEL_H_
 
 /* src/wpanel.c */
 int Wp_DrawButton(Wframe *window, int x, int y, char *str, int color);
@@ -195,26 +145,10 @@ int Wp_handle(Wpanel wp, int event, int x, int y);
 int Wp_notify(Wframe *window, void *wp);
 void Wp_main_loop(Wpanel wp);
 
-#endif /* !_WPANEL_H_ */
-/*
- * window.h
- */
-
-#ifndef _WINDOW_H_
-#define _WINDOW_H_
-
 /* src/window.c */
 Wframe *mw_get_window(Wframe *window, int dx, int dy, int x0, int y0, char *title);
 void mw_window_notify(Wframe *Win, void *param, int (*proc)(Wframe *, void *));
 void mw_window_main_loop(void);
-
-#endif /* !_WINDOW_H_ */
-/*
- * wdevice.h
- */
-
-#ifndef _WDEVICE_H_
-#define _WDEVICE_H_
 
 /* src/wdevice.c */
 int WIsAnActiveWindow(Wframe *window);
@@ -250,14 +184,6 @@ Wframe *WNewImageWindow(void);
 Wframe *WOpenImageWindow(int width, int height, int ltx, int lty, char *label);
 void WReOpenImageWindow(Wframe *window, int width, int height, int ltx, int lty, char *label);
 
-#endif /* !_WDEVICE_H_ */
-/*
- * wdevice-misc.h
- */
-
-#ifndef _WDEVICE_MISC_H_
-#define _WDEVICE_MISC_H_
-
 /* src/wdevice-misc.c */
 int WX_ErrorHandler(Display *display, XErrorEvent *error);
 int WX_Init(char *theDisplayName);
@@ -269,43 +195,12 @@ void WX_AllocXPixmap(Wframe *window, int dx, int dy);
 void WX_Ditherize(Wframe *window, int dx, int dy);
 int WX_KeyPress(XKeyEvent *event);
 
-#endif /* !_WDEVICE_MISC_H_ */
-/**
- * @mainpage libmw-x11
- *
- * @section Introduction
- *
- * This library provides all the tools to handle X11-based wpanel
- * GUI widgets.
- */
-
-/**
- * @file config.h
- *
- * settings for the megawave libmw-x11 library
- *
- * @author Jacques Froment <jacques.froment@univ-ubs.fr> (1991 - 2002),
- *         Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
- */
-
-#ifndef _CONFIG_H_
-#define _CONFIG_H_
-
-/*
- * FONTS
- */
-
+/* src/config.h */
 #define WFONT1 "-misc-fixed-medium-r-normal-*-13-*"
 #define WFONT2 "8x13"
 #define WFONT3 "-*-courier-medium-r-*-*-12-*"
-
-/*
- * WINDOW PARAMETERS
- */
-
 #define BORDER_WIDTH  2  /* width of the window border */
 
-/* plot window attributes */
 #define PLOT_RES_NAME   "Plot" /* name of the plot window icon           */
 #define PLOT_RES_CLASS  "Plot" /* resource class of the plot window icon */
 #define PLOT_MIN_WIDTH  50     /* minimum useful size of the plot window */
@@ -313,7 +208,6 @@ int WX_KeyPress(XKeyEvent *event);
 #define PLOT_MAX_WIDTH  2000   /* maximum useful size of the plot Window */
 #define PLOT_MAX_HEIGHT 2000
 
-/* image window qttributes */
 #define IMAGE_RES_NAME   "View" /* name of the image window icon           */
 #define IMAGE_RES_CLASS  "View" /* resource class of the image window icon */
 #define IMAGE_MIN_WIDTH  50     /* minimum useful size of the image window */
@@ -321,28 +215,11 @@ int WX_KeyPress(XKeyEvent *event);
 #define IMAGE_MAX_WIDTH  2000   /* maximum useful size of the image window */
 #define IMAGE_MAX_HEIGHT 2000
 
-/*
- * EVENTS
- */
-
-/*
- * Define which system events would be sent to the window.
- * The whole mask is created by a OR with this mask and the user
- * mask
- */ 
 #define SYSTEM_EVENT_MASK (ExposureMask			\
 			   | EnterWindowMask		\
 			   | LeaveWindowMask		\
 			   | StructureNotifyMask)
 
-/*
- * This is a list of user events as they can be set by WSetUserEvent()
- * and read with WUserEvent(). This list is a selection of most useful
- * events that are simultaneously defined in all of the various window
- * systems supported by Wdevice.
- */
-
-/* mouse */
 #define W_MS_LEFT    10 /* mouse buttons (not a mask) */
 #define W_MS_RIGHT   11 
 #define W_MS_MIDDLE  12
@@ -350,12 +227,6 @@ int WX_KeyPress(XKeyEvent *event);
 #define W_MS_DOWN    14
 #define W_MS_BUTTON  ButtonPressMask /* mask for button scanning */
 
-/*
- * For keyboard, non-printable characters: see X11 include file
- * keysymdef.h
- */ 
-
-/* window */
 #define W_REPAINT  ExposureMask        /* have to repaint the window    */
 #define W_RESIZE   ResizeRedirectMask  /* have to resize the window     */
 #define W_ENTER    EnterWindowMask     /* mouse enters the window       */
@@ -363,13 +234,7 @@ int WX_KeyPress(XKeyEvent *event);
 #define W_KEYPRESS KeyPressMask        /* a key has been pressed        */
 #define W_DESTROY  StructureNotifyMask /* the window has been destroyed */
 
-/*
- * PENCIL
- */
-
 #define W_COPY GXcopy
 #define W_XOR  GXequiv
-
-#endif /* !_CONFIG_H_ */
 
 #endif /* !_MW_X11_H_ */
