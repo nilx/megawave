@@ -39,15 +39,15 @@
 #define ABS(x)   ((x)>0?(x):(-(x)))
 
 /*------------------- GLOBAL VARIABLES -------------------*/
-Wframe *win;                  /* display window */
-Ccimage image;                /* image displayed */
-Ccimage copy_image;           /* temporary copy of image */
-int nx,ny;                    /* its dimensions */
-Fsignal signal;               /* input signal */
-double sx1,sx2,sy1,sy2;       /* signal part to be displayed */
-int X1,X2,Y1,Y2;              /* corresponding coordinates in the window */
-int draw_mode,grid_mode;      /* modes for plot_signal() */
-int selrect,fx1,fx2,fy1,fy2;  /* for rectangle selection */
+static Wframe *win;                  /* display window */
+static Ccimage image;                /* image displayed */
+static Ccimage copy_image;           /* temporary copy of image */
+static int nx,ny;                    /* its dimensions */
+static Fsignal signal;               /* input signal */
+static double sx1,sx2,sy1,sy2;       /* signal part to be displayed */
+static int X1,X2,Y1,Y2;              /* corresponding coordinates */
+static int draw_mode,grid_mode;      /* modes for plot_signal() */
+static int selrect,fx1,fx2,fy1,fy2;  /* for rectangle selection */
 /*--------------------------------------------------------*/
 
 /* compute the rule (graduations) associated to a given interval */
@@ -509,7 +509,9 @@ static int win_notify(Wframe *window, void *param)
 void splot(Fsignal in, int *x_0, int *y_0, int *sx, int *sy, int *no_refresh, char *window, Ccimage *out, char *n)
 {
   /* Initializations */
-  signal=in; nx=*sx; ny=*sy;
+  nx=*sx;
+  ny=*sy;
+  signal=in;
   init_sxy();
 
   image = mw_change_ccimage(NULL,ny,nx);
