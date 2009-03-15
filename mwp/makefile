@@ -54,8 +54,9 @@ autohdr	: $(AUTOHDR)
 #
 
 .PHONY	: bin
-bin 	: $(BINNAME)
-$(BINNAME) 	: $(OBJ)
+bin 	: $(BINDIR)/$(BINNAME)
+$(BINDIR)/$(BINNAME) 	: $(OBJ)
+	$(MKDIR) $(@D)
 	$(LDWRAP) $(LD) $(LDFLAGS) -o $@ $^
 
 # FIXME: unused parameters and long string
@@ -86,7 +87,7 @@ clean-bin :
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
 	$(RM) $(SRCDIR)/*.ggo
-	$(RM) $(BINNAME)
+	$(RM) $(BINDIR)/$(BINNAME)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing

@@ -5,13 +5,13 @@ See `../README.txt` for generic instructions.
 # basic
 
 * compile the library shared and static objects
-  The result is `./libmw-modules.so` and `./libmw-modules.a`.
+  The result is `libmw-modules.so` and `libmw-modules.a` in $LIBDIR.
     make lib
 * compile the library api header
-  The result is `./mw-modules.h`.
+  The result is `mw-modules.h` in $INCDIR.
     make api
 * compile the executable modules
-  The result is in `./build`.
+  The result is in $BINDIR.
     make modules
 * cleanup the compilation headers, objects, ...
     make clean

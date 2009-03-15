@@ -5,10 +5,10 @@ See `../README.txt` for generic instructions.
 # basic
 
 * compile the library shared and static objects
-  The result is `./libmw-x11.so` and `./libmw-x11.a`.
+  The result is `libmw-x11.so` and `libmw-x11.a` in $LIBDIR.
     make lib
 * compile the library api header
-  The result is `./libmw-x11.h`.
+  The result is `libmw-x11.h` in $INCDIR.
     make api
 * cleanup the compilation headers, objects, ...
     make clean

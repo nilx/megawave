@@ -56,6 +56,11 @@ SYSTEM_ARCH	:= $(shell [ -x /usr/bin/dpkg ] \
 #include $(COMMONDIR)/makefile.cygwin
 #include $(COMMONDIR)/makefile.debian3
 
+BUILDDIR	= $(BASEDIR)/build
+LIBDIR	= $(BUILDDIR)/lib
+BINDIR	= $(BUILDDIR)/bin
+INCDIR	= $(BUILDDIR)/include
+
 # CC OPTIONS
 # C language version
 CSTD	?= -ansi

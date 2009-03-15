@@ -5,7 +5,7 @@ See `../README.txt` for generic instructions.
 # basic
 
 * compile the executable
-  The result is `./mwplight`.
+  The result is `mwp` in $BINDIR.
     make bin
 * cleanup the compilation headers, objects, ...
     make clean

@@ -37,14 +37,13 @@ APITAG	:= _`echo -n $(LIBNAME) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 #.PHONY	: $(AUTOHDR:.h=.d)
 
 MODEXE	= $(SRC:.c=.cmd)
-BUILDDIR = build
-MODULES	= $(addprefix $(BUILDDIR)/, $(notdir $(SRC:.c=)))
+MODULES	= $(addprefix $(BINDIR)/, $(notdir $(SRC:.c=)))
 
-LIBMW_MODULES	= lib$(LIBNAME)
-LIBMW	= $(BASEDIR)/libmw/libmw
-LIBMW_X11	= $(BASEDIR)/libmw-x11/libmw-x11
-LIBMW_CMDLINE	= $(BASEDIR)/libmw-cmdline/libmw-cmdline
-MWP	= $(BASEDIR)/mwp/mwp
+LIBMW	= $(LIBDIR)/libmw
+LIBMW_X11	= $(LIBDIR)/libmw-x11
+LIBMW_CMDLINE	= $(LIBDIR)/libmw-cmdline
+LIBMW_MODULES	= $(LIBDIR)/lib$(LIBNAME)
+MWP	= $(BINDIR)/mwp
 
 ifeq	($(LINK), static)
 SHLIBS	= c m X11 tiff
@@ -55,10 +54,10 @@ STLIBS	=
 else
 SHLIBS	= c m X11 tiff
 STLIBS	=
-LPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-x11 $(BASEDIR)/libmw-cmdline
+LPATH	+= $(LIBDIR)
 endif
 
-IPATH	+= $(BASEDIR)/libmw $(BASEDIR)/libmw-x11 $(BASEDIR)/libmw-cmdline
+IPATH	+= $(INCDIR)
 
 # FIXME: use clean float tests
 CWARN	+= -Wno-float-equal
@@ -67,34 +66,28 @@ CWARN	+= -Wno-float-equal
 # BIN
 #
 
-$(MWP)	:
-	$(MAKE) -C $(BASEDIR)/mwp $(notdir $<)
-$(LIBMW).%	:
-	$(MAKE) -C $(BASEDIR)/libmw $(notdir $<)
-$(LIBMW_X11).%	:
-	$(MAKE) -C $(BASEDIR)/libmw-x11 $(notdir $<)
-$(LIBMW_CMDLINE).%	:
-	$(MAKE) -C $(BASEDIR)/libmw-cmdline $(notdir $<)
-
 .PHONY	: modules
 modules	: $(MODULES)
 
 .PHONY	: lib
-lib 	: lib$(LIBNAME)$(.A) lib$(LIBNAME)$(.SO)
+lib 	: $(LIBDIR)/lib$(LIBNAME)$(.A) $(LIBDIR)/lib$(LIBNAME)$(.SO)
 
-lib$(LIBNAME)$(.A)	: $(OBJ)
+$(LIBDIR)/lib$(LIBNAME)$(.A)	: $(OBJ)
+	$(MKDIR) $(@D)
 	@$(ECHO) '$(AR) ru $@ $$(OBJ)'
 	@$(AR) ru $@ $?
-lib$(LIBNAME)$(.SO)	: $(OBJ)
+$(LIBDIR)/lib$(LIBNAME)$(.SO)	: $(OBJ)
+	$(MKDIR) $(@D)
 	@$(ECHO) '$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $$(OBJ)'
 	@$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $^
 
 .PHONY	: api
-api	: $(API)
-$(API) 	: $(SRCDIR)/$(API)
+api	: $(INCDIR)/$(API)
+$(INCDIR)/$(API) 	: $(SRCDIR)/$(API)
+	$(MKDIR) $(@D)
 	$(CP) $< $@
 
-$(OBJ)	: $(API)
+$(OBJ)	: $(INCDIR)/$(API)
 
 # RULES
 
@@ -122,11 +115,11 @@ makefile.dep	: $(SRC)
 	$(RM) $@
 	$(TOUCH) $@
 	@echo 'for SRC in $$(SRC); do \
-		echo "$(BUILDDIR)/`basename $$SRC .c` : $${SRC%.c}.cmd" \
+		echo "$(BINDIR)/`basename $$SRC .c` : $${SRC%.c}.cmd" \
 		>> $@; \
 	done'
 	@for SRC in $^; do \
-		echo "$(BUILDDIR)/`basename $$SRC .c` : $${SRC%.c}.cmd" \
+		echo "$(BINDIR)/`basename $$SRC .c` : $${SRC%.c}.cmd" \
 		>> $@; \
 	done
 
@@ -148,10 +141,9 @@ distclean-bin : clean-bin
 	@$(RM) $(CMDBIN)
 	@echo '$(RM) $$(CMDSRC)'
 	@$(RM) $(CMDSRC)
-	$(RM) lib$(LIBNAME)$(.A)
-	$(RM) lib$(LIBNAME)$(.SO)
-	$(RM) $(BUILDDIR)/*
-	$(RM) $(API)
+	$(RM) $(LIBDIR)/lib$(LIBNAME)$(.A)
+	$(RM) $(LIBDIR)/lib$(LIBNAME)$(.SO)
+	$(RM) $(INCDIR)/$(API)
 	$(RM) makefile.dep
 
 # include the prerequisites files
@@ -163,7 +155,7 @@ distclean-bin : clean-bin
 #
 
 .PHONY	: prebuild
-prebuild	: $(API) makefile.dep
+prebuild	: api makefile.dep
 
 #.PHONY	: dep
 #dep	: $(DEP)
@@ -175,9 +167,9 @@ prebuild	: $(API) makefile.dep
 # TODO: add profiling/coverage wrappers
 
 TEST	= test/checkmodules.sh
-LIBPATH	= ./:$(BASEDIR)/libmw:$(BASEDIR)/libmw-x11:$(BASEDIR)/libmw-cmdline
+LIBPATH	= $(LIBDIR)
 
-TESTENV	= PATH=$(BUILDDIR):$$PATH	\
+TESTENV	= PATH=$(BINDIR):$$PATH	\
 	DATA=$(BASEDIR)/data		\
 	SAMPLES=$(BASEDIR)/data/PUBLIC	\
 	SCRIPTS=$(BASEDIR)/scripts

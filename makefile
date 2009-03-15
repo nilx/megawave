@@ -52,3 +52,4 @@ distclean	:
 	$(MAKE) -C ./libmw-cmdline distclean
 	$(MAKE) -C ./modules distclean
 	$(MAKE) -C ./doc distclean
+	rm -rf ./build

@@ -31,25 +31,28 @@ LIBNAME	= mw-cmdline
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
-IPATH	+= $(BASEDIR)/libmw
+IPATH	+= $(INCDIR)
 
 #
 # BIN
 #
 
 .PHONY	: lib
-lib 	: lib$(LIBNAME)$(.A) lib$(LIBNAME)$(.SO)
+lib 	: $(LIBDIR)/lib$(LIBNAME)$(.A) $(LIBDIR)/lib$(LIBNAME)$(.SO)
 
-lib$(LIBNAME)$(.A)	: $(OBJ)
-	@$(ECHO) '$(AR) ru $$(OBJ) $^'
+$(LIBDIR)/lib$(LIBNAME)$(.A)	: $(OBJ)
+	$(MKDIR) $(@D)
+	@$(ECHO) '$(AR) ru $@ $$(OBJ)'
 	@$(AR) ru $@ $?
-lib$(LIBNAME)$(.SO)	: $(OBJ)
+$(LIBDIR)/lib$(LIBNAME)$(.SO)	: $(OBJ)
+	$(MKDIR) $(@D)
 	@$(ECHO) '$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $$(OBJ)'
 	@$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $^
 
 .PHONY	: api
-api 	: $(API)
-$(API) 	: $(SRCDIR)/$(API)
+api 	: $(INCDIR)/$(API)
+$(INCDIR)/$(API) 	: $(SRCDIR)/$(API)
+	$(MKDIR) $(@D)
 	$(CP) $< $@
 
 .PHONY	: lint

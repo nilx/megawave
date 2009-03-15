@@ -109,7 +109,7 @@ LIBNAME	= mw
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
-IPATH	+= $(BASEDIR)/libmw-x11
+IPATH	+= $(INCDIR)
 
 # FIXME: use clean float tests
 CWARN	+= -Wno-float-equal
@@ -119,18 +119,21 @@ CWARN	+= -Wno-float-equal
 #
 
 .PHONY	: lib
-lib 	: lib$(LIBNAME)$(.A) lib$(LIBNAME)$(.SO)
+lib 	: $(LIBDIR)/lib$(LIBNAME)$(.A) $(LIBDIR)/lib$(LIBNAME)$(.SO)
 
-lib$(LIBNAME)$(.A)	: $(OBJ)
-	@$(ECHO) '$(AR) ru $$(OBJ)'
+$(LIBDIR)/lib$(LIBNAME)$(.A)	: $(OBJ)
+	$(MKDIR) $(@D)
+	@$(ECHO) '$(AR) ru $@ $$(OBJ)'
 	@$(AR) ru $@ $?
-lib$(LIBNAME)$(.SO)	: $(OBJ)
+$(LIBDIR)/lib$(LIBNAME)$(.SO)	: $(OBJ)
+	$(MKDIR) $(@D)
 	@$(ECHO) '$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $$(OBJ)'
 	@$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $^
 
 .PHONY	: api
-api 	: $(API)
-$(API) 	: $(SRCDIR)/$(API)
+api 	: $(INCDIR)/$(API)
+$(INCDIR)/$(API) 	: $(SRCDIR)/$(API)
+	$(MKDIR) $(@D)
 	$(CP) $< $@
 
 .PHONY	: lint
@@ -155,9 +158,9 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
-	$(RM) $(API)
-	$(RM) lib$(LIBNAME)$(.A)
-	$(RM) lib$(LIBNAME)$(.SO)
+	$(RM) $(INCDIR)/$(API)
+	$(RM) $(LIBDIR)/lib$(LIBNAME)$(.A)
+	$(RM) $(LIBDIR)/lib$(LIBNAME)$(.SO)
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
