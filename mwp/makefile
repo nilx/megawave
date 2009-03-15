@@ -86,8 +86,6 @@ clean-bin :
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
 	$(RM) $(SRCDIR)/*.ggo
-	$(RM) $(SRCDIR)/mwp_cmdline.c
-	$(RM) $(SRCDIR)/mwp_cmdline.h
 	$(RM) $(BINNAME)
 
 # include the prerequisites files
