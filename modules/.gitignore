@@ -2,7 +2,7 @@
 
 # headers (rebuilt by cproto)
 
-*.h
+src/*/*.h
 
 # command-line part of the modules
 *.cmd.[hc]

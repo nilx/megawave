@@ -91,14 +91,10 @@ lib$(LIBNAME)$(.SO)	: $(OBJ)
 
 .PHONY	: api
 api	: $(API)
-$(API) 	: $(HDR)
-	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
-	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
-	$(ECHO) -e "/* TODO: drop, only required by fview() */" >> $@
-	$(ECHO) -e "#include \"mw-x11.h\"\n" >> $@
-	@$(ECHO) '$(SED) "/#.*$$/d" $$(HDR) | $(SED) "/^$$/N;/\n$$/D" >> $@'
-	@$(SED) '/#.*$$/d' $^ | $(SED) '/^$$/N;/\n$$/D' >> $@
-	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
+$(API) 	: $(SRCDIR)/$(API)
+	$(CP) $< $@
+
+$(OBJ)	: $(API)
 
 # RULES
 
@@ -150,6 +146,8 @@ distclean-bin : clean-bin
 	@$(RM) $(MODULES)
 	@echo '$(RM) $$(CMDBIN)'
 	@$(RM) $(CMDBIN)
+	@echo '$(RM) $$(CMDSRC)'
+	@$(RM) $(CMDSRC)
 	$(RM) lib$(LIBNAME)$(.A)
 	$(RM) lib$(LIBNAME)$(.SO)
 	$(RM) $(BUILDDIR)/*
@@ -165,7 +163,7 @@ distclean-bin : clean-bin
 #
 
 .PHONY	: prebuild
-prebuild	: $(HDR) $(API) makefile.dep
+prebuild	: $(API) makefile.dep
 
 #.PHONY	: dep
 #dep	: $(DEP)
