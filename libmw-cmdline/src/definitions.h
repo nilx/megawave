@@ -2,8 +2,8 @@
  * @file definitions.h
  */
 
-#ifndef _LIBMW_CMDLINE_DEFS_H_
-#define _LIBMW_CMDLINE_DEFS_H_
+#ifndef _DEFINITIONS_H_
+#define _DEFINITIONS_H_
 
 struct Mwiline {
   char *name;
@@ -18,4 +18,4 @@ typedef struct Mwiline Mwiline;
 
 extern Mwiline mwicmd[];
 
-#endif /* !_LIBMW_CMDLINE_DEFS_H_ */
+#endif /* !_DEFINITIONS_ */

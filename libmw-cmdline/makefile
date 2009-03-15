@@ -49,13 +49,8 @@ lib$(LIBNAME)$(.SO)	: $(OBJ)
 
 .PHONY	: api
 api 	: $(API)
-$(API) 	: $(HDR)
-	$(ECHO) -e "/*\n * $(LIBNAME) api header\n */\n" > $@
-	$(ECHO) -e "#ifndef $(APITAG)\n#define $(APITAG)\n" >> $@
-	$(CAT) $(filter %definitions.h, $^) >> $@
-	$(CAT) $(filter-out %definitions.h, $^) >> $@
-	$(ECHO) -e "\n#endif /* !$(APITAG) */" >> $@
-
+$(API) 	: $(SRCDIR)/$(API)
+	$(CP) $< $@
 
 .PHONY	: lint
 lint	: lint.flag
@@ -79,6 +74,7 @@ clean-bin :
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin
+	$(RM) $(API)
 	$(RM) lib$(LIBNAME)$(.A)
 	$(RM) lib$(LIBNAME)$(.SO)
 

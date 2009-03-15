@@ -1,17 +1,15 @@
-/*
- * mw-cmdline api header
+/**
+ * @file mw-cmdline.h
+ *
+ * @author Nicolas Limare (2009)
+ *
+ * mw-cmdline API header
  */
 
 #ifndef _MW_CMDLINE_H_
 #define _MW_CMDLINE_H_
 
-/**
- * @file definitions.h
- */
-
-#ifndef _LIBMW_CMDLINE_DEFS_H_
-#define _LIBMW_CMDLINE_DEFS_H_
-
+/* src/definitions.h */
 struct Mwiline {
   char *name;
   int (*mwarg)(int, char**);
@@ -24,14 +22,6 @@ struct Mwiline {
 typedef struct Mwiline Mwiline;
 
 extern Mwiline mwicmd[];
-
-#endif /* !_LIBMW_CMDLINE_DEFS_H_ */
-/*
- * commandline.h
- */
-
-#ifndef _COMMANDLINE_H_
-#define _COMMANDLINE_H_
 
 /* src/commandline.c */
 int _mw_main(int argc, char *argv[], char *envp[]);
@@ -49,7 +39,5 @@ char *_mw_ftoa_(float f);
 char *_mw_dtoa_(double d);
 int _mwis_open(char *s, char *rw);
 int _mwgetopt(int argc, char **argv, char *optstring);
-
-#endif /* !_COMMANDLINE_H_ */
 
 #endif /* !_MW_CMDLINE_H_ */
