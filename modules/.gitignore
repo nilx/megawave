@@ -3,6 +3,8 @@
 # headers (rebuilt by cproto)
 
 src/*/*.h
+src/*/*/*.h
+src/*/*/*/*.h
 
 # command-line part of the modules
 *.cmd.[hc]
