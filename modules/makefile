@@ -155,7 +155,7 @@ distclean-bin : clean-bin
 #
 
 .PHONY	: prebuild
-prebuild	: api makefile.dep
+prebuild	: makefile.dep
 
 #.PHONY	: dep
 #dep	: $(DEP)
@@ -186,11 +186,11 @@ test	: $(MODULES)
 # DOC
 #
 
-DOCNAME	= lib$(LIBNAME)
 DOXY_OVERRIDE	= \
 	EXCLUDE_PATTERNS	= *.cmd.*\n\
 	RECURSIVE		= YES\n\
 	SHOW_DIRECTORIES	= YES\n
-
+DOCNAME	= lib$(LIBNAME)
+MANSECTION	= 3
 include	$(COMMONDIR)/makefile.doc
 

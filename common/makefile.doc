@@ -9,35 +9,43 @@ default :
 clean 	: clean-doc
 distclean	: distclean-doc
 
-DOCDIR	= doc
-MAN	= $(DOCDIR)/$(DOCNAME).man
+MAN	= $(DOCNAME).man
 MANHTML	= $(MAN).html
 
 .PHONY	: man
 man	: $(MAN) $(MANHTML)
-
-.PHONY	: clean-doc
-clean-doc	:
-	$(RM) $(DOCDIR)/html/*.md5 $(DOCDIR)/html/*.dot
-	$(RRM) $(DOCDIR)/latex
-
-.PHONY	: distclean-doc
-distclean-doc	: clean-doc
-	$(RM) $(MAN) $(MANHTML)
-	$(RRM) $(DOCDIR)/html
-	$(RRM) $(DOCDIR)/$(DOCNAME).pdf
-	$(RM) $(DOCDIR)/doxygen-html.conf $(DOCDIR)/doxygen-latex.conf
+	$(MKDIR) $(MANDIR)/man$(MANSECTION)
+	$(CP) $(MAN) $(MANDIR)/man$(MANSECTION)/$(DOCNAME).$(MANSECTION)
+	$(MKDIR) $(DOCDIR)
+	$(CP) $(MANHTML) $(DOCDIR)/$(DOCNAME).html
 
 .PHONY	: srcdoc
-srcdoc	: prebuild $(DOCDIR)/html/index.html $(DOCDIR)/$(DOCNAME).pdf
-$(DOCDIR)/html/index.html	: $(SRC) $(HDR)
-	$(CAT) $(COMMONDIR)/$(DOXYCONF) > $(DOCDIR)/doxygen-html.conf
+srcdoc	: html/index.html $(DOCNAME).pdf
+	$(MKDIR) $(DOCDIR)/srcdoc/$(DOCNAME)
+	$(CP) $(DOCNAME).pdf $(DOCDIR)/srcdoc/
+	$(RCP) html/*.html html/*.css html/*.gif html/*.png \
+		$(DOCDIR)/srcdoc/$(DOCNAME)/
+
+html/index.html	: doxygen-html.conf $(SRC) $(HDR)
+	$(MKDIR) html
+	$(DOXYGEN) $<
+
+$(DOCNAME).pdf : latex/refman.tex
+	$(MAKE) -C latex refman.pdf
+	mv latex/refman.pdf $@
+
+latex/refman.tex	: doxygen-latex.conf $(SRC) $(HDR)
+	$(MKDIR) latex
+	$(DOXYGEN) $<
+
+doxygen-html.conf	: $(COMMONDIR)/$(DOXYCONF)
+	$(CAT) $< > $@
 	$(ECHO) -e "\
 PROJECT_NAME		= $(DOCNAME)\n\
 INPUT			= $(SRCDIR)\n\
 STRIP_FROM_PATH		= $(SRCDIR)\n\
 GENERATE_HTML		= YES\n\
-HTML_OUTPUT		= $(DOCDIR)/html\n\
+HTML_OUTPUT		= ./html\n\
 HTML_HEADER		= $(COMMONDIR)/doxygen-header.html\n\
 HTML_FOOTER		= $(COMMONDIR)/doxygen-footer.html\n\
 HTML_STYLESHEET		= $(COMMONDIR)/doxygen.css\n\
@@ -46,24 +54,33 @@ HTML_STYLESHEET		= $(COMMONDIR)/doxygen.css\n\
 #CALL_GRAPH		= YES\n\
 #CALLER_GRAPH		= YES\n\
 $(DOXY_OVERRIDE)\
-" >> $(DOCDIR)/doxygen-html.conf
-	$(MKDIR) $(DOCDIR)/html
-	$(DOXYGEN) $(DOCDIR)/doxygen-html.conf
+" >> $@
 
-$(DOCDIR)/latex/refman.tex	: $(SRC) $(HDR)
-	$(CAT) $(COMMONDIR)/$(DOXYCONF) > $(DOCDIR)/doxygen-latex.conf
+doxygen-latex.conf	: $(COMMONDIR)/$(DOXYCONF)
+	$(CAT) $< > $@
 	$(ECHO) -e "\
 PROJECT_NAME		= $(DOCNAME)\n\
 INPUT			= $(SRCDIR)\n\
 STRIP_FROM_PATH		= $(SRCDIR)\n\
 GENERATE_LATEX		= YES\n\
-LATEX_OUTPUT		= $(DOCDIR)/latex\n\
+LATEX_OUTPUT		= ./latex\n\
 LATEX_HEADER		= $(COMMONDIR)/doxygen-header.tex\n\
 $(DOXY_OVERRIDE)\
-" >> $(DOCDIR)/doxygen-latex.conf
-	$(MKDIR) $(DOCDIR)/latex
-	$(DOXYGEN) $(DOCDIR)/doxygen-latex.conf
+" >> $@
 
-$(DOCDIR)/$(DOCNAME).pdf : $(DOCDIR)/latex/refman.tex
-	$(MAKE) -C $(DOCDIR)/latex refman.pdf
-	mv $(DOCDIR)/latex/refman.pdf $@
+.PHONY	: clean-doc
+clean-doc	:
+	$(RM) $(MAN) $(MANHTML)
+	$(RRM) html
+	$(RRM) latex
+	$(RM) $(DOCNAME).pdf
+	$(RM) doxygen-html.conf doxygen-latex.conf
+
+.PHONY	: distclean-doc
+distclean-doc	: clean-doc
+	$(RM) $(MANDIR)/man$(MANSECTION)/$(DOCNAME).$(MANSECTION)
+	$(RM) $(DOCDIR)/$(DOCNAME).html
+	$(RM) $(DOCDIR)/srcdoc/$(DOCNAME).pdf
+	$(RRM) $(DOCDIR)/srcdoc/$(DOCNAME)
+
+

@@ -38,7 +38,7 @@ BINNAME	= mwp
 #
 
 .PHONY	: prebuild
-prebuild	: autohdr cmdline man #dep
+prebuild	: autohdr cmdline #dep
 
 .PHONY	: cmdline
 cmdline	: $(SRCDIR)/mwp.c+cmdline
@@ -127,4 +127,6 @@ distclean-bin : clean-bin
 #
 
 DOCNAME	= $(BINNAME)
+MANSECTION	= 1
 include	$(COMMONDIR)/makefile.doc
+

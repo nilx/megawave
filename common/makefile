@@ -11,6 +11,7 @@ default :
 
 SH	= /bin/sh
 CP	= /bin/cp -f
+RCP	= /bin/cp -r -f
 RM	= /bin/rm -f
 RRM	= /bin/rm -r -f
 MV	= /bin/mv -f
@@ -60,6 +61,8 @@ BUILDDIR	= $(BASEDIR)/build
 LIBDIR	= $(BUILDDIR)/lib
 BINDIR	= $(BUILDDIR)/bin
 INCDIR	= $(BUILDDIR)/include
+MANDIR	= $(BUILDDIR)/share/man
+DOCDIR	= $(BUILDDIR)/share/doc/megawave
 
 # CC OPTIONS
 # C language version

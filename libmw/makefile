@@ -172,7 +172,7 @@ distclean-bin : clean-bin
 #
 
 .PHONY	: prebuild
-prebuild	: autohdr man api #dep
+prebuild	: autohdr #dep
 
 .PHONY	: autohdr
 autohdr	: $(AUTOHDR)
@@ -192,4 +192,5 @@ autohdr	: $(AUTOHDR)
 #
 
 DOCNAME	= lib$(LIBNAME)
+MANSECTION	= 3
 include	$(COMMONDIR)/makefile.doc
