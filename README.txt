@@ -6,8 +6,8 @@ INSTRUCTIONS FOR COMPILING MEGAWAVE
 
 * Prepare the source; this is only needed if you downloaded a "rawsrc"
   version of the source code. It will generate some automatic source
-  and header files and the manpages.
-  Required tools: `make`, `cproto`, `gengetopt`, `csplit` and `pandoc`.
+  and header files.
+  Required tools: `make`, `cproto`, `gengetopt` and `csplit`.
 
     make prebuild
 
@@ -102,6 +102,12 @@ extensively tested.
   Required tools: `pdflatex`, `hevea`, `hacha`, `html2text`.
 
     make doc
+
+* Compile the man pages.
+  This target is not thoroughly tested.
+  Required tools: `pandoc`.
+
+    make man
 
 * Compile source documentation (warning: needs time)
   This target is not thoroughly tested.

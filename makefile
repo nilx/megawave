@@ -30,6 +30,13 @@ test	: modules
 doc	:
 	$(MAKE) -C ./doc
 
+man	:
+	$(MAKE) -C ./libmw-x11 man
+	$(MAKE) -C ./libmw man
+	$(MAKE) -C ./libmw-cmdline man
+	$(MAKE) -C ./mwp man
+	$(MAKE) -C ./modules man
+
 srcdoc	:
 	$(MAKE) -C ./libmw-x11 srcdoc
 	$(MAKE) -C ./libmw srcdoc
