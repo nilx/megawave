@@ -351,7 +351,7 @@ REDRAW_AREAMAP(Wtrans2d wtrans, int nrec, unsigned char ***areamap, unsigned cha
   int              i;                /* Index for orientation in wav. trans. */
   int              jp;               /* Index for level in wav. trans. */
   register unsigned char  *ptra;     /* Pointer to area mask */
-  int              rp, cp;           /* Row and column indices for parent */
+  int              rp=0, cp=0;       /* Row and column indices for parent */
   long             x, xp;            /* Buffer index for current coefficient 
 				      * and its parent */
   long             size;             /* Size of subimages */
@@ -457,13 +457,13 @@ static void
 READ_HEADER(Cimage compress, int *nrec, int *nrow, int *ncol, float *thres)
 {
   int           thressymb;
-  Polygon       ptr_polyg;       /* Pointer to the current polygon */
-  Polygon       alloc_polyg;     /* Table of polygon for memory allocation */
-  Point_curve   ptr_point;       /* Pointer to the current point in current 
-				  * polygon */
-  Point_curve   nextp_point;     /* Pointer to the first point of next 
-				  * polygon */
-  Point_curve   alloc_point;     /* Table of points for memory allocation */ 
+  Polygon       ptr_polyg;        /* Pointer to the current polygon */
+  Polygon       alloc_polyg;      /* Table of polygon for memory allocation */
+  Point_curve   ptr_point;        /* Pointer to the current point in current 
+				   * polygon */
+  Point_curve   nextp_point=NULL; /* Pointer to the first point of next 
+				   * polygon */
+  Point_curve   alloc_point;      /* Table of points for memory allocation */ 
   int           p, v;
   int           c;
   int           npoints[MAX_NPOLYG], npoints_total;

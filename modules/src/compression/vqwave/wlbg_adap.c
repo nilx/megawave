@@ -139,7 +139,7 @@ wlbg_adap(int *NumRecMax, int *Level, int *Orient, int *Dyadic, int *Lap, int *E
   int		  numrec;
   long            nrow, ncol;
   float	          mse;
-  float           thres1, thres2, thres3;
+  float           thres1=0.0, thres2=0.0, thres3=0.0;
   Fimage          ResCB, ResResCB;  /* Residual codebooks for subimages */
   Fimage          AdapCB2, AdapCB3; /* Codebooks for adaptive quantization 
 				     * of details */

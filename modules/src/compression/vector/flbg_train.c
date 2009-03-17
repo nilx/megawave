@@ -207,7 +207,7 @@ trainset_vq(Fimage trainset, Fimage codebook, Fsignal bweight, int *printsnr)
                          
 
 {
-  long      t, t1, c, n, nc;
+  long      t, t1, c, n, nc=0;
   long      tsizeb, tsizet1;
   long      nsizeb;
   int       sizet, sizeb, sizec;  

@@ -278,8 +278,8 @@ SCALAR_RECONSTRUCT(int *print, int *nrow, int *ncol, Cimage compress, Fimage res
 {
   int           center;          /* Flag for centering of quantization step */
   float         stepsize;	 /* Cell width */
-  float         ashift;  
-  int           step, minstep;   /* Index of cell, min cell */
+  float         ashift=0.0;  
+  int           step, minstep=0; /* Index of cell, min cell */
   int           nstep;           /* Number of quantization level */
   long          i;
   long          isize;	         /* Number of pixel in `image` */

@@ -36,6 +36,7 @@ usage = {
 ----------------------------------------------------------------------*/
 
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
@@ -710,9 +711,9 @@ compute_indexcb(int (*indcb)[6][4], float targrate, float rateheader, int numrec
                   
 
 {
-  int      q, qmax;
+  int      q, qmax=0;
   int      j, i, nadap;
-  int      jmax, imax, nadapmax;
+  int      jmax=0, imax=0, nadapmax=0;
   float    effrate, diffrate, diffrate1;
   float    maxdiff, diff;
 
@@ -848,11 +849,11 @@ wvq_loc(int *NumRec, float *ScaleWeight, int *NumRecScal, int *NStep, int *Multi
 				       * for quantization */
   int             nresrescb1, nresrescb2; /* Indices of residual codebooks 
 				       * for quantization */
-  int            *ptrncb1, *ptrncb2, *ptrncb3; /* Pointers to indices 
+  int            *ptrncb1=NULL, *ptrncb2, *ptrncb3; /* Pointers to indices 
 				       * of codebooks for quantization */
-  int            *ptrnrescb1, *ptrnrescb2, *ptrnrescb3; /* Pointers to indices 
+  int            *ptrnrescb1=NULL, *ptrnrescb2, *ptrnrescb3; /* Pointers to indices 
 				       * of codebooks for quantization */
-  int            *ptrnresrescb1, *ptrnresrescb2; /* Pointers to indices 
+  int            *ptrnresrescb1=NULL, *ptrnresrescb2; /* Pointers to indices 
 				       * of codebooks for quantization */
   int             indext;
   int             test_dr;
@@ -1064,7 +1065,10 @@ wvq_loc(int *NumRec, float *ScaleWeight, int *NumRecScal, int *NStep, int *Multi
 		{
 		  num = num4;
 		  variance = num * var4 / (double) size;
-		  brl[3][J][i] = 0.0;
+		  /* FIXME: array subscript is above array bounds */
+		  /* brl[3][J][i] = 0.0; */
+		  fprintf(stderr, "abort, there is a bug in the code.");
+		  exit(EXIT_FAILURE);
 		}
 
 	  /*--- Compute approximate m.s.e. and rate for coding ---*/
@@ -1732,7 +1736,7 @@ fwvq_wcb(int *NumRec, Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *Weigh
   bufrl       loc_brl;          /* Local buffer for classes map rates for 
 				 * subimages and different codebooks */
   float       targrate;         /* Target rate for vector quantization */
-  Wtrans2d    Wtrans, QWtrans;  /* Wavelet transform of Image, quantized 
+  Wtrans2d    Wtrans=NULL, QWtrans;  /* Wavelet transform of Image, quantized 
 				 * wavelet transform */
   Fimage      QImage_dr;        /* Reconstructed image (for biorthogonal 
 				 * wavelet transform and dist.rate curve) */

@@ -621,7 +621,7 @@ REDRAW_AREAMAP(Wtrans2d wtrans, Wtrans2d output, int nrec, unsigned char ***area
   register unsigned char  *ptra;     /* Pointer to area mask */
   register float * ptrw, *ptro;      /* Pointers to wavelet coeff. in 
 				      * wtrans and output */
-  int              rp, cp;           /* Row and column indices for parent */
+  int              rp=0, cp=0;       /* Row and column indices for parent */
   long             x, xp;            /* Buffer index for current coefficient 
 				      * and its parent */
   long             size;             /* Size of subimages */

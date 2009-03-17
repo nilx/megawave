@@ -1092,7 +1092,7 @@ block_vq_adap(Fimage image, long int i, long int j, Fimage codebook, Fimage resc
   int             l;            /* Index of block in codebook */
   int             obcb, rbcol;	/* Index of the first component of
 				 * (the line of) a block in codebook */
-  int             index;        /* Index of reproducing block */
+  int             index=0;      /* Index of reproducing block */
   float           minerr, err, e; /* quantization error for one block */
   int             sizev, sizec; /* Size of block and codebook */
   int             nrow, ncol;   /* Size of image */
@@ -1197,12 +1197,12 @@ FULLSEARCH(Fimage image, Fimage codebook, Fimage rescodebook, Fimage resrescodeb
   int             r, c;
   int             nrow, ncol;
   int             nrowb, ncolb;
-  int             sizec, sizecres, sizecresres;
+  int             sizec, sizecres=0, sizecresres=0;
   long            size;
   Fsignal	  histo;
-  Fsignal         reshisto, resreshisto;
+  Fsignal         reshisto=NULL, resreshisto=NULL;
   float           bmse;
-  Fimage          symbol, symbres, symbresres;
+  Fimage          symbol, symbres=NULL, symbresres=NULL;
 
   nrow = image->nrow;
   ncol = image->ncol;
@@ -1314,9 +1314,10 @@ FULLSEARCH_ADAP(int *printsnr, int *bitmapcode, Fimage image, Fimage codebook1, 
   long	          num1, num2, num3, num4, numthres;
   float	          thres1, thres2, thres3;
   float	          benergy;			/* Block benergy */
-  Fsignal         histo1, histo2, histo3, histo4;
-  Fsignal         reshisto1, reshisto2, reshisto3, reshisto4;
-  Fsignal         resreshisto1, resreshisto2;
+  Fsignal         histo1, histo2=NULL, histo3=NULL, histo4=NULL;
+  Fsignal         reshisto1=NULL, reshisto2=NULL,
+      reshisto3=NULL, reshisto4=NULL;
+  Fsignal         resreshisto1=NULL, resreshisto2=NULL;
   float	          mse1, mse2, mse3, mse4, msethres;
   float	          bmse;			/* Block mean square error */
   double	  e;
@@ -1939,13 +1940,13 @@ fvq(int *PrintSNR, int *SmallHeader, int *BitMapCode, int *RateDist, int *NCB1, 
 {
   int             n1, n2, n3, n4;     /* Indices of codebooks for different 
 				       * classes */
-  int             ninit1, ninit2, ninit3, ninit4; /* Initial values for n1, 
+  int             ninit1=0, ninit2=0, ninit3=0, ninit4=0; /* Initial values for n1, 
                                        * n2, n3 and n4 */
-  int             nfin1, nfin2, nfin3, nfin4; /* Final values for n1, 
+  int             nfin1=0, nfin2=0, nfin3=0, nfin4=0; /* Final values for n1, 
                                        * n2, n3 and n4 */
-  int             nres1, nres2, nres3, nres4; /* Indices of residus codebooks 
+  int             nres1=0, nres2=0, nres3=0, nres4=0; /* Indices of residus codebooks 
 				       * for different classes */
-  int             nresres1, nresres2; /* Indices of residus codebooks 
+  int             nresres1=0, nresres2=0; /* Indices of residus codebooks 
 				       * for different classes */
   int             testmulticb;        /* Control for multiple codebooks and 
 				       * computation of dist. rate curve */
