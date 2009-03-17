@@ -96,6 +96,8 @@ SRC	:= $(addprefix $(SRCDIR)/, \
         libmw.c         \
         mwio.c          \
         type_conv.c     \
+	\
+	mt19937ar.c	\
 	)
 
 AUTOHDR	= $(SRC:.c=.h)

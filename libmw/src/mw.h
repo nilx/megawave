@@ -1718,4 +1718,10 @@ void *mw_conv_internal_type(void *mwstruct, char *typein, char *typeout);
 void *_mw_load_etype_to_itype(char *fname, char *typein, char *typeout, char *Type);
 short _mw_create_etype_from_itype(char *fname, void *mwstruct, char *typein, char *ftype);
 
+/* src/mt19937ar.c */
+void mw_srand_mt(unsigned long s);
+void mw_srand_mt_array(unsigned long init_key[], int key_length);
+unsigned long mw_rand32_mt(void);
+double mw_drand53_mt(void);
+
 #endif /* !_MW_H_ */
