@@ -37,7 +37,7 @@ Fcurves fkcrop(float X1, float Y1, float X2, float Y2, Fcurves cs, Fcurve box)
 {
   Fcurves out;
   Fcurve c,newc,cprev,*cnext;
-  Point_fcurve p,newp,pprev,*pnext;
+  Point_fcurve p,newp,pprev=NULL,*pnext=NULL;
   float tmp;
   int count_p,count_c,newc_flag,close_flag;
   

@@ -442,7 +442,7 @@ static int gaceros(double *in, double *ch, int size, double *out, double gam, do
 {
   double     *p,*p0,*p1,*p2,*pmax,*q0,*q1,*v,*w,*far,*prevfar,*gp;
   double     tot_area,cur_area,inc_area,height,lambda,eps;
-  int        j,n,is_closed,stop,okp,okq,firstfar,firstmove;
+  int        j,n=0,is_closed,stop,okp,okq,firstfar,firstmove;
 
 
   eps = sqrt(eps2);
@@ -968,7 +968,7 @@ Dlists gcsf(Dlists in, Dlists out, double *gam, double *first, double *last, dou
 {
   int       i,j,ncc,MAX_PTS,MAX_CC,npts,maxsize,collapsed;
   double    a,are,remaining,newlast,rad,eps2,omega,t,step;
-  double    x,y,ox,oy,r2,r2max,*per,maxper;
+  double    x,y,ox=0,oy=0,r2,r2max,*per,maxper;
   double    xmin,xmax,ymin,ymax,dx,dy;
 
   if (*n<0) mwerror(FATAL,1,"n must be positive\n");

@@ -48,7 +48,7 @@
 void fkprintfig(Fcurves in, int *d, char *e_flag, char *s_flag, float *m, float *r)
 {
   Fcurve c;
-  Point_fcurve p,last;
+  Point_fcurve p,last=NULL;
   float shift_x,shift_y,zoom_x,zoom_y,dx,dy;
   int nx,ny,n,radius;
 

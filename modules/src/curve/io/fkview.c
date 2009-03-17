@@ -35,6 +35,7 @@
  v2.4 (04/2007): simplified header (LM)
 ----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -203,7 +204,7 @@ static void put_bg(void)
 static void plot_one_curve(int i, int color, int pcolor, int mode)
 {
   Flist c;
-  int line,j,x,y,ox,oy;
+  int line,j,x,y,ox=0,oy=0;
   double v;
 
   c = curves->list[i];
@@ -238,7 +239,7 @@ static void plot_curves(void)
 {
   Flist c;
   double xofs,xstep,yofs,ystep,v,ssx1,ssx2,ssy1,ssy2,truncref;
-  int i,j,k,x,y,line,ox,oy,fgcolor,bgcolor,size0;
+  int i,j,k,x,y,line,ox=0,oy=0,fgcolor,bgcolor,size0;
   int xsub,ysub,pcolor,mode;
   char str[STRSIZE];
 
@@ -481,9 +482,11 @@ static int curve_selected(int x, int y)
 static void select_curve_index(void)
 {
   int index;
+  int retval;
+
   printf("Enter curve index: ");
   fflush(stdout);
-  scanf("%d",&index);
+  retval = scanf("%d",&index);
   if(index>=0 && index<curves->size){
     printf("Curve #%d selected.\n",index);
     cur_index = index;

@@ -10,6 +10,7 @@
    };
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
 #include "mw-modules.h"
@@ -21,6 +22,7 @@ Flists flreadasc(int dim)
   float x;
   char c;
   int i,end;
+  int retval;
 
   ls = mw_change_flists(NULL,10,0);
   
@@ -40,7 +42,7 @@ Flists flreadasc(int dim)
       }      
     } while (!end);
     l->size = (i+dim-1)/dim;
-    scanf("%c",&c);
+    retval = scanf("%c",&c);
     end = (c=='q' || c=='Q');
   } while (!end);
 

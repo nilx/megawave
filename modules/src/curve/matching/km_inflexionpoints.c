@@ -39,7 +39,7 @@ static int signdet(float ux, float uy, float vx, float vy)
 
 Flist km_inflexionpoints(Flist curve, Flist curve_IP)
 { 
-  int i,sign1,sign2,iaux,signaux,iauxinit,signauxinit;
+  int i,sign1,sign2,iaux=0,signaux,iauxinit=0,signauxinit;
   float x1,y1,x2,y2,x3,y3;
   
   if (curve->dim!=2) 

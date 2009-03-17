@@ -407,9 +407,9 @@ static void dafferos(Dlist l, double *area_sz, double eps2, int *ncc)
 
 Dlists gass(Dlists in, Dlists out, double *first, double *last, double *eps, double *step, int *n, double *r, char *v)
 {
-  int       i,j,ncc,MAX_PTS,MAX_CC,npts,maxsize;
+  int       i,j,ncc=0,MAX_PTS,MAX_CC,npts,maxsize;
   double    a,remaining_h,remaining_a,rad,eps2,omega,step_a,t;
-  double    x,y,ox,oy,r2,r2max,*per,maxper;
+  double    x,y,ox=0,oy=0,r2,r2max,*per,maxper;
 
   if (*n<0) mwerror(FATAL,1,"n must be positive\n");
 

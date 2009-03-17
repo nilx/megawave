@@ -462,7 +462,7 @@ void km_match_ai(float maxError1, float maxError2, float minLength, float minCom
 
   int t1,t2;
   float performance;
-  int code2match;
+  int code2match=0;
   int nbprematches;
 
   /* minComplex = 2.7925;*/ /*160 degres*/

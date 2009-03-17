@@ -9,6 +9,7 @@
    };
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
 #include "mw-modules.h" /* for fkprintasc() */
@@ -17,11 +18,12 @@ Fcurves fkreadasc(void)
 {
   Fcurves cvs;
   Fcurve newcv,cv_previous,*cv_next;
-  Point_fcurve newp,p_previous,*p_next;
+  Point_fcurve newp,p_previous=NULL,*p_next=NULL;
   float x,y;
   int nump,numcv,end;
   char c;
-  
+  int retval;
+
   printf("Type the coordinates of the points, ");
   printf("separated by <space> or <enter>\n");
   printf("End the current curve by 'e' and the whole Fcurves with 'q'\n");
@@ -52,11 +54,11 @@ Fcurves fkreadasc(void)
 	*p_next = p_previous = newp;
 	p_next = &(newp->next);	
 	y = 0.0;
-	scanf("%f",&y);
+	retval = scanf("%f",&y);
 	newp->y = y;
       }      
     } while (!end);
-    scanf("%c",&c);
+    retval = scanf("%c",&c);
     end = (nump==0 || c=='q' || c=='Q');
     if (!end) 
       *p_next = NULL;

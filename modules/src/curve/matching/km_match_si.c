@@ -425,7 +425,7 @@ void km_match_si(float maxError1, float maxError2, float minLength, float minCom
   
   int t1,t2;
   float performance;
-  int code2match;
+  int code2match=0;
   
   /*minComplex = 2.7925; */
   

@@ -9,6 +9,7 @@
    };
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
 #include "mw-modules.h"
@@ -19,6 +20,7 @@ Curves kreadfig(void)
   Curve        c,cprev,*cnext;
   Point_curve  p,pprev,*pnext;
   int          i,x,y,n,id1,id2,ok,nc;
+  int retval;
 
   cs = mw_new_curves();
   cprev = NULL;
@@ -26,14 +28,14 @@ Curves kreadfig(void)
   nc = 0;
   
   /*** skip XFIG 3.2 header ***/
-  scanf("%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s");
+  retval = scanf("%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s");
 
   do {
     id1 = 0;
-    scanf("%d %d",&id1,&id2);
+    retval = scanf("%d %d",&id1,&id2);
     ok = ((id1==2) && (id2==1 || id2==3));
     if (ok) {
-      scanf("%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%d",&n);
+      retval = scanf("%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%d",&n);
       c = mw_new_curve();
       nc++;
       c->previous = cprev;
@@ -42,7 +44,7 @@ Curves kreadfig(void)
       pprev = NULL;
       pnext = &(c->first);
       for (i=0;i<n;i++) {
-	scanf("%d%d",&x,&y);
+        retval = scanf("%d%d",&x,&y);
 	p = mw_new_point_curve();
 	p->x = x; p->y = y;
 	p->previous = pprev;

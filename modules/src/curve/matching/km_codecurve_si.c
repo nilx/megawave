@@ -318,8 +318,8 @@ static int get_code_SI(Flist arc_code_SI, Flist curve, float xC, float yC, int i
 
 static int codeSI(Flist arc_code_SI, Flist curve, int i1, int i2)
 {
-  int iN, iP, ileft, iright;
-  float xC, yC, xR1, yR1, xR2, yR2; 
+  int iN, iP, ileft=0, iright=0;
+  float xC=0.0, yC=0.0, xR1, yR1, xR2, yR2; 
 
   iN=get_next_point_angle(curve,i1,i2,i1,(float)PI/2,1); 
   if (iN<0) return -1; 
