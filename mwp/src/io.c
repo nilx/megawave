@@ -104,7 +104,8 @@ static char * str_fileposition(char * out, FILE * posfile)
       */
      nbchars -= linestart;
      fseek(posfile, linestart, SEEK_SET);
-     (void) fgets(line, LINE_LENGTH - 3, posfile);
+     if (NULL == fgets(line, LINE_LENGTH - 3, posfile))
+	 error("couldn't read the source file");
 
      if (nbchars > LINE_LENGTH)
      {
@@ -114,8 +115,8 @@ static char * str_fileposition(char * out, FILE * posfile)
      /* go back to the previous position in the file */
      fseek(posfile, position, SEEK_SET);
 
-     sprintf(out,                                                       \
-              "%i,%i:\n%s%*c\n",                                     \
+     sprintf(out,
+              "%i,%i:\n%s%*c\n",
               nblines, nbchars, line, nbchars, '^');
 
      return out;
