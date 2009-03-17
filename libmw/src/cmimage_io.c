@@ -22,6 +22,7 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -58,20 +59,18 @@ static Cmorpho_line _mw_read_cml_mw2_cml(char * fname, FILE * fp,
 	  return(NULL);
      }
 
-     if (
-	  (fread(&(ll->minvalue.model),sizeof(unsigned char),1,fp) == 0) || 
-	  (fread(&(ll->minvalue.red),sizeof(float),1,fp) == 0) || 
-	  (fread(&(ll->minvalue.green),sizeof(float),1,fp) == 0) || 
-	  (fread(&(ll->minvalue.blue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(ll->maxvalue.model),sizeof(unsigned char),1,fp) == 0) || 
-	  (fread(&(ll->maxvalue.red),sizeof(float),1,fp) == 0) || 
-	  (fread(&(ll->maxvalue.green),sizeof(float),1,fp) == 0) || 
-	  (fread(&(ll->maxvalue.blue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(ll->open),sizeof(unsigned char),1,fp) == 0) ||
-	  (fread(&(ll->data),sizeof(float),1,fp) == 0) ||
-	  (fread(&(npc),sizeof(unsigned int),1,fp) == 0) ||
-	  (fread(&(npt),sizeof(unsigned int),1,fp) == 0)
-	  )
+     if (1 > fread(&(ll->minvalue.model), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(ll->minvalue.red), sizeof(float), 1, fp)
+	 || 1 > fread(&(ll->minvalue.green), sizeof(float), 1, fp)
+	 || 1 > fread(&(ll->minvalue.blue), sizeof(float), 1, fp)
+	 || 1 > fread(&(ll->maxvalue.model), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(ll->maxvalue.red), sizeof(float), 1, fp)
+	 || 1 > fread(&(ll->maxvalue.green), sizeof(float), 1, fp)
+	 || 1 > fread(&(ll->maxvalue.blue), sizeof(float), 1, fp)
+	 || 1 > fread(&(ll->open), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(ll->data), sizeof(float), 1, fp)
+	 || 1 > fread(&(npc), sizeof(unsigned int), 1, fp)
+	 || 1 > fread(&(npt), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  return(NULL);
@@ -113,10 +112,8 @@ static Cmorpho_line _mw_read_cml_mw2_cml(char * fname, FILE * fp,
 	  if (oldpc != NULL) oldpc->next = newpc;
 	  newpc->previous = oldpc;
 	  newpc->next = NULL;
-	  if (
-	       (fread(&(newpc->x),sizeof(int),1,fp) == 0) || 
-	       (fread(&(newpc->y),sizeof(int),1,fp) == 0) 
-	       )
+	  if (1 > fread(&(newpc->x), sizeof(int), 1, fp)
+	      || 1 > fread(&(newpc->y), sizeof(int), 1, fp))
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       mw_delete_cmorpho_line(ll);
@@ -143,7 +140,7 @@ static Cmorpho_line _mw_read_cml_mw2_cml(char * fname, FILE * fp,
 	  if (oldpt != NULL) oldpt->next = newpt;
 	  newpt->previous = oldpt;
 	  newpt->next = NULL;
-	  if (fread(&(newpt->type),sizeof(unsigned char),1,fp) == 0)
+	  if (1 > fread(&(newpt->type), sizeof(unsigned char), 1, fp))
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       mw_delete_cmorpho_line(ll);
@@ -168,9 +165,17 @@ Cmorpho_line _mw_load_cml_mw2_cml(char *fname)
 
      need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
      if (strncmp(ftype,"MW2_CMORPHO_LINE",16) != 0)
-	  mwerror(INTERNAL, 0,"[_mw_load_cml_mw2_cml] File \"%s\" is not in the MW2_CMORPHO_LINE format\n",fname);
-
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     {
+	 mwerror(INTERNAL, 0, "[_mw_load_cml_mw2_cml] File \"%s\" is not "
+		 "in the MW2_CMORPHO_LINE format\n", fname);
+	 exit(EXIT_FAILURE);
+     }
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -178,7 +183,7 @@ Cmorpho_line _mw_load_cml_mw2_cml(char *fname)
      }
 
      /* read header = "MW2_CMORPHO_LINE" */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header,hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -240,17 +245,17 @@ void _mw_write_cml_mw2_cml(FILE *fp, Cmorpho_line ll, unsigned int nml)
      /* FIXME : unused param, dirty fix */
      nml = nml;
 
-     fwrite(&(ll->minvalue.model),sizeof(unsigned char),1,fp);
-     fwrite(&(ll->minvalue.red),sizeof(float),1,fp);
-     fwrite(&(ll->minvalue.green),sizeof(float),1,fp);
-     fwrite(&(ll->minvalue.blue),sizeof(float),1,fp);
-     fwrite(&(ll->maxvalue.model),sizeof(unsigned char),1,fp);
-     fwrite(&(ll->maxvalue.red),sizeof(float),1,fp);
-     fwrite(&(ll->maxvalue.green),sizeof(float),1,fp);
-     fwrite(&(ll->maxvalue.blue),sizeof(float),1,fp);
-     fwrite(&(ll->open),sizeof(unsigned char),1,fp);
-     fwrite(&(ll->data),sizeof(float),1,fp);
-
+     if (1 > fwrite(&(ll->minvalue.model), sizeof(unsigned char), 1, fp)
+	 || 1 > fwrite(&(ll->minvalue.red), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(ll->minvalue.green), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(ll->minvalue.blue), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(ll->maxvalue.model), sizeof(unsigned char), 1, fp)
+	 || 1 > fwrite(&(ll->maxvalue.red), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(ll->maxvalue.green), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(ll->maxvalue.blue), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(ll->open), sizeof(unsigned char), 1, fp)
+	 || 1 > fwrite(&(ll->data), sizeof(float), 1, fp))
+	 mwerror(ERROR, 0, "Error while writing to  file...\n");
      /* Record the number of point curve */
      npc=0;
      if (ll->first_point) for (pc=ll->first_point; pc; pc=pc->next, npc++);
@@ -270,8 +275,10 @@ void _mw_write_cml_mw2_cml(FILE *fp, Cmorpho_line ll, unsigned int nml)
      if ( (npc*npt != 0) && (npc != npt) )
 	  mwerror(INTERNAL,1,"[_mw_write_cml_mw2_cml] Cannot create file: inconsistent Cmorpho_line structure (# pt curve %d != # pt type %d)\n",npc,npt);
 
-     fwrite(&(npc),sizeof(unsigned int),1,fp);
-     fwrite(&(npt),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(npc), sizeof(unsigned int), 1, fp)
+	 || 1 > fwrite(&(npt), sizeof(unsigned int), 1, fp))
+	 mwerror(ERROR, 0, "Error while writing to  file...\n");
+
      /* debug 
 	if ((nml >= 422)&&(nml <=426))
 	{
@@ -281,8 +288,9 @@ void _mw_write_cml_mw2_cml(FILE *fp, Cmorpho_line ll, unsigned int nml)
 
      for (pc=ll->first_point; pc; pc=pc->next)
      {
-	  fwrite(&(pc->x),sizeof(int),1,fp);
-	  fwrite(&(pc->y),sizeof(int),1,fp);
+	 if (1 > fwrite(&(pc->x), sizeof(int), 1, fp)
+	     || 1 > fwrite(&(pc->y), sizeof(int), 1, fp))
+	     mwerror(ERROR, 0, "Error while writing to  file...\n");
 	  /* debug 
 	     if (((nml >= 422)&&(nml <=426))&&(pc==ll->first_point))
 	     {
@@ -292,7 +300,8 @@ void _mw_write_cml_mw2_cml(FILE *fp, Cmorpho_line ll, unsigned int nml)
      }
 
      for (pt=ll->first_type; pt; pt=pt->next)
-	  fwrite(&(pt->type),sizeof(unsigned char),1,fp);
+	 if (1 > fwrite(&(pt->type), sizeof(unsigned char), 1, fp))
+	     mwerror(ERROR, 0, "Error while writing to  file...\n");
 }
 
 /* Write file in MW2_CMORPHO_LINE format */  
@@ -365,20 +374,18 @@ static Cfmorpho_line _mw_read_cfml_mw2_cfml(char *fname, FILE *fp,
 	  return(NULL);
      }
 
-     if (
-	  (fread(&(fll->minvalue.model),sizeof(unsigned char),1,fp) == 0) || 
-	  (fread(&(fll->minvalue.red),sizeof(float),1,fp) == 0) || 
-	  (fread(&(fll->minvalue.green),sizeof(float),1,fp) == 0) || 
-	  (fread(&(fll->minvalue.blue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(fll->maxvalue.model),sizeof(unsigned char),1,fp) == 0) || 
-	  (fread(&(fll->maxvalue.red),sizeof(float),1,fp) == 0) || 
-	  (fread(&(fll->maxvalue.green),sizeof(float),1,fp) == 0) || 
-	  (fread(&(fll->maxvalue.blue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(fll->open),sizeof(unsigned char),1,fp) == 0) ||
-	  (fread(&(fll->data),sizeof(float),1,fp) == 0) ||
-	  (fread(&(npc),sizeof(unsigned int),1,fp) == 0) ||
-	  (fread(&(npt),sizeof(unsigned int),1,fp) == 0)
-	  )
+     if (1 > fread(&(fll->minvalue.model), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(fll->minvalue.red), sizeof(float), 1, fp)
+	 || 1 > fread(&(fll->minvalue.green), sizeof(float), 1, fp)
+	 || 1 > fread(&(fll->minvalue.blue), sizeof(float), 1, fp)
+	 || 1 > fread(&(fll->maxvalue.model), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(fll->maxvalue.red), sizeof(float), 1, fp)
+	 || 1 > fread(&(fll->maxvalue.green), sizeof(float), 1, fp)
+	 || 1 > fread(&(fll->maxvalue.blue), sizeof(float), 1, fp)
+	 || 1 > fread(&(fll->open), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(fll->data), sizeof(float), 1, fp)
+	 || 1 > fread(&(npc), sizeof(unsigned int), 1, fp)
+	 || 1 > fread(&(npt), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -415,10 +422,8 @@ static Cfmorpho_line _mw_read_cfml_mw2_cfml(char *fname, FILE *fp,
 	  if (oldpc != NULL) oldpc->next = newpc;
 	  newpc->previous = oldpc;
 	  newpc->next = NULL;
-	  if (
-	       (fread(&(newpc->x),sizeof(float),1,fp) == 0) || 
-	       (fread(&(newpc->y),sizeof(float),1,fp) == 0) 
-	       )
+	  if (1 > fread(&(newpc->x), sizeof(float), 1, fp)
+	      || 1 > fread(&(newpc->y), sizeof(float), 1, fp))
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       mw_delete_cfmorpho_line(fll);
@@ -445,7 +450,7 @@ static Cfmorpho_line _mw_read_cfml_mw2_cfml(char *fname, FILE *fp,
 	  if (oldpt != NULL) oldpt->next = newpt;
 	  newpt->previous = oldpt;
 	  newpt->next = NULL;
-	  if (fread(&(newpt->type),sizeof(unsigned char),1,fp) == 0)
+	  if (1 > fread(&(newpt->type), sizeof(unsigned char), 1, fp))
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       mw_delete_cfmorpho_line(fll);
@@ -470,9 +475,19 @@ Cfmorpho_line _mw_load_cfml_mw2_cfml(char *fname)
 
      need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
      if (strncmp(ftype,"MW2_CFMORPHO_LINE",17) != 0)
-	  mwerror(INTERNAL, 0,"[_mw_load_cfml_mw2_cfml] File \"%s\" is not in the MW2_CFMORPHO_LINE format\n",fname);
+     {
+	  mwerror(INTERNAL, 0,
+		  "[_mw_load_cfml_mw2_cfml] File \"%s\" is not "
+		  "in the MW2_CFMORPHO_LINE format\n", fname);
+	  exit(EXIT_FAILURE);
+     }
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -480,7 +495,7 @@ Cfmorpho_line _mw_load_cfml_mw2_cfml(char *fname)
      }
 
      /* read header = "MW2_CFMORPHO_LINE" */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header,hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -540,16 +555,17 @@ void _mw_write_cfml_mw2_cfml(FILE *fp, Cfmorpho_line fll)
      Point_type pt;
      unsigned int npc,npt;
 
-     fwrite(&(fll->minvalue.model),sizeof(unsigned char),1,fp);
-     fwrite(&(fll->minvalue.red),sizeof(float),1,fp);
-     fwrite(&(fll->minvalue.green),sizeof(float),1,fp);
-     fwrite(&(fll->minvalue.blue),sizeof(float),1,fp);
-     fwrite(&(fll->maxvalue.model),sizeof(unsigned char),1,fp);
-     fwrite(&(fll->maxvalue.red),sizeof(float),1,fp);
-     fwrite(&(fll->maxvalue.green),sizeof(float),1,fp);
-     fwrite(&(fll->maxvalue.blue),sizeof(float),1,fp);
-     fwrite(&(fll->open),sizeof(unsigned char),1,fp);
-     fwrite(&(fll->data),sizeof(float),1,fp);
+     if (1 > fwrite(&(fll->minvalue.model), sizeof(unsigned char), 1, fp)
+	 || 1 > fwrite(&(fll->minvalue.red), sizeof(float), 1, fp)
+         || 1 > fwrite(&(fll->minvalue.green), sizeof(float), 1, fp)
+         || 1 > fwrite(&(fll->minvalue.blue), sizeof(float), 1, fp)
+         || 1 > fwrite(&(fll->maxvalue.model), sizeof(unsigned char), 1, fp)
+         || 1 > fwrite(&(fll->maxvalue.red), sizeof(float), 1, fp)
+         || 1 > fwrite(&(fll->maxvalue.green), sizeof(float), 1, fp)
+         || 1 > fwrite(&(fll->maxvalue.blue), sizeof(float), 1, fp)
+         || 1 > fwrite(&(fll->open), sizeof(unsigned char), 1, fp)
+         || 1 > fwrite(&(fll->data), sizeof(float), 1, fp))
+	 mwerror(ERROR, 0, "Error while writing to  file...\n");
 
      /* Record the number of point fcurve */
      for (pc=fll->first_point, npc=0; pc; pc=pc->next, npc++);
@@ -568,17 +584,20 @@ void _mw_write_cfml_mw2_cfml(FILE *fp, Cfmorpho_line fll)
      if ( (npc*npt != 0) && (npc != npt) )
 	  mwerror(INTERNAL,1,"[_mw_write_cfml_mw2_cfml] Cannot create file: inconsistent Cfmorpho_line structure \n");
 
-     fwrite(&(npc),sizeof(unsigned int),1,fp);
-     fwrite(&(npt),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(npc), sizeof(unsigned int), 1, fp)
+         || 1 > fwrite(&(npt), sizeof(unsigned int), 1, fp))
+	 mwerror(ERROR, 0, "Error while writing to  file...\n");
 
      for (pc=fll->first_point; pc; pc=pc->next)
      {
-	  fwrite(&(pc->x),sizeof(float),1,fp);
-	  fwrite(&(pc->y),sizeof(float),1,fp);
+	 if (1 > fwrite(&(pc->x), sizeof(float), 1, fp)
+	     || 1 > fwrite(&(pc->y), sizeof(float), 1, fp))
+	     mwerror(ERROR, 0, "Error while writing to  file...\n");
      }
 
      for (pt=fll->first_type; pt; pt=pt->next)
-	  fwrite(&(pt->type),sizeof(unsigned char),1,fp);
+	 if (1 > fwrite(&(pt->type), sizeof(unsigned char), 1, fp))
+	     mwerror(ERROR, 0, "Error while writing to  file...\n");
 }
 
 /* Write file in MW2_CFMORPHO_LINE format */  
@@ -649,19 +668,17 @@ Cmorpho_set _mw_read_cms_mw2_cms(char *fname, FILE *fp, int need_flipping)
 	  return(NULL);
      }
 
-     if (
-	  (fread(&(is->minvalue.model),sizeof(unsigned char),1,fp) == 0) || 
-	  (fread(&(is->minvalue.red),sizeof(float),1,fp) == 0) || 
-	  (fread(&(is->minvalue.green),sizeof(float),1,fp) == 0) || 
-	  (fread(&(is->minvalue.blue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(is->maxvalue.model),sizeof(unsigned char),1,fp) == 0) || 
-	  (fread(&(is->maxvalue.red),sizeof(float),1,fp) == 0) || 
-	  (fread(&(is->maxvalue.green),sizeof(float),1,fp) == 0) || 
-	  (fread(&(is->maxvalue.blue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(is->stated),sizeof(unsigned char),1,fp) == 0) ||
-	  (fread(&(is->area),sizeof(int),1,fp) == 0) || 
-	  (fread(&(ns),sizeof(unsigned int),1,fp) == 0)
-	  )
+     if (1 > fread(&(is->minvalue.model), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(is->minvalue.red), sizeof(float), 1, fp)
+	 || 1 > fread(&(is->minvalue.green), sizeof(float), 1, fp)
+	 || 1 > fread(&(is->minvalue.blue), sizeof(float), 1, fp)
+	 || 1 > fread(&(is->maxvalue.model), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(is->maxvalue.red), sizeof(float), 1, fp)
+	 || 1 > fread(&(is->maxvalue.green), sizeof(float), 1, fp)
+	 || 1 > fread(&(is->maxvalue.blue), sizeof(float), 1, fp)
+	 || 1 > fread(&(is->stated), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(is->area), sizeof(int), 1, fp)
+	 || 1 > fread(&(ns), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  return(NULL);
@@ -694,11 +711,9 @@ Cmorpho_set _mw_read_cms_mw2_cms(char *fname, FILE *fp, int need_flipping)
 	  if (olds != NULL) olds->next = news;
 	  news->previous = olds;
 	  news->next = NULL;
-	  if (
-	       (fread(&(news->xstart),sizeof(int),1,fp) == 0) || 
-	       (fread(&(news->xend),sizeof(int),1,fp) == 0) || 
-	       (fread(&(news->y),sizeof(int),1,fp) == 0) 
-	       )
+	  if (1 > fread(&(news->xstart), sizeof(int), 1, fp)
+	      || 1 > fread(&(news->xend), sizeof(int), 1, fp)
+	      || 1 > fread(&(news->y), sizeof(int), 1, fp))
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       mw_delete_cmorpho_set(is);
@@ -731,9 +746,17 @@ Cmorpho_set _mw_load_cms_mw2_cms(char *fname)
 
      need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
      if (strncmp(ftype,"MW2_CMORPHO_SET",15) != 0)
-	  mwerror(INTERNAL, 0,"[_mw_load_cms_mw2_cms] File \"%s\" is not in the MW2_CMORPHO_SET format\n",fname);
-
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     {
+	  mwerror(INTERNAL, 0, "[_mw_load_cms_mw2_cms] File \"%s\" is not "
+		  "in the MW2_CMORPHO_SET format\n", fname);
+	  exit(EXIT_FAILURE);
+     }
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -741,7 +764,7 @@ Cmorpho_set _mw_load_cms_mw2_cms(char *fname)
      }
 
      /* read header = "MW2_CMORPHO_SET" */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header,hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -801,23 +824,25 @@ void _mw_write_cms_mw2_cms(FILE *fp, Cmorpho_set is)
      /* Record the number of segments */
      for (s=is->first_segment, ns=0; s; s=s->next, ns++);
 
-     fwrite(&(is->minvalue.model),sizeof(unsigned char),1,fp);
-     fwrite(&(is->minvalue.red),sizeof(float),1,fp);
-     fwrite(&(is->minvalue.green),sizeof(float),1,fp);
-     fwrite(&(is->minvalue.blue),sizeof(float),1,fp);
-     fwrite(&(is->maxvalue.model),sizeof(unsigned char),1,fp);
-     fwrite(&(is->maxvalue.red),sizeof(float),1,fp);
-     fwrite(&(is->maxvalue.green),sizeof(float),1,fp);
-     fwrite(&(is->maxvalue.blue),sizeof(float),1,fp);
-     fwrite(&(is->stated),sizeof(unsigned char),1,fp);
-     fwrite(&(is->area),sizeof(int),1,fp);
-     fwrite(&(ns),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(is->minvalue.model), sizeof(unsigned char), 1, fp)
+         || 1 > fwrite(&(is->minvalue.red), sizeof(float), 1, fp)
+         || 1 > fwrite(&(is->minvalue.green), sizeof(float), 1, fp)
+         || 1 > fwrite(&(is->minvalue.blue), sizeof(float), 1, fp)
+         || 1 > fwrite(&(is->maxvalue.model), sizeof(unsigned char), 1, fp)
+         || 1 > fwrite(&(is->maxvalue.red), sizeof(float), 1, fp)
+         || 1 > fwrite(&(is->maxvalue.green), sizeof(float), 1, fp)
+         || 1 > fwrite(&(is->maxvalue.blue), sizeof(float), 1, fp)
+         || 1 > fwrite(&(is->stated), sizeof(unsigned char), 1, fp)
+         || 1 > fwrite(&(is->area), sizeof(int), 1, fp)
+         || 1 > fwrite(&(ns), sizeof(unsigned int), 1, fp))
+	 mwerror(ERROR, 0, "Error while writing to  file...\n");
 
      for (s=is->first_segment; s; s=s->next)
      {
-	  fwrite(&(s->xstart),sizeof(int),1,fp);
-	  fwrite(&(s->xend),sizeof(int),1,fp);
-	  fwrite(&(s->y),sizeof(int),1,fp);
+	 if (1 > fwrite(&(s->xstart), sizeof(int), 1, fp)
+	     || 1 > fwrite(&(s->xend), sizeof(int), 1, fp)
+	     || 1 > fwrite(&(s->y), sizeof(int), 1, fp))
+	     mwerror(ERROR, 0, "Error while writing to  file...\n");
      }
 }
 
@@ -883,7 +908,7 @@ Cmorpho_sets _mw_read_cmss_mw2_cmss(char *fname, FILE *fp, int need_flipping)
      unsigned int i,n,num;
 
      /* Get the number of cmorpho sets */
-     if (fread(&(n),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(n), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  return(NULL);
@@ -933,14 +958,24 @@ Cmorpho_sets _mw_read_cmss_mw2_cmss(char *fname, FILE *fp, int need_flipping)
      {  
 	  oldiss=newiss=NULL;
 	  /* Read first the number of neighbors */
-	  fread(&(n),sizeof(unsigned int),1,fp);
+	  if (1 > fread(&(n), sizeof(unsigned int), 1, fp))
+	  {
+	      mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+	      return(NULL);
+	  }
+
 	  if (need_flipping == 1) _mw_in_flip_b4(n);
 	  /* 
 	     fprintf(stderr,"Number of neighbors = %d\n",n); 
 	  */
 	  for (i = 1; i <= n; i++)
 	  {
-	       fread(&(num),sizeof(unsigned int),1,fp);
+	      if (1 > fread(&(num), sizeof(unsigned int), 1, fp))
+	      {
+		  mwerror(ERROR, 0,
+			  "Error while reading file \"%s\"...\n", fname);
+		  return(NULL);
+	      }
 	       if (need_flipping == 1) _mw_in_flip_b4(num);
 	       /* Search the cmorpho sets containing the given Cmorpho set number */
 	       for (q=iss; q && q->cmorphoset && (q->cmorphoset->num != num); q=q->next);
@@ -980,16 +1015,24 @@ Cmorpho_sets _mw_load_cmss_mw2_cmss(char *fname)
 
      need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
      if (strncmp(ftype,"MW2_CMORPHO_SETS",16) != 0)
-	  mwerror(INTERNAL, 0,"[_mw_load_cmss_mw2_cmss] File \"%s\" is not in the MW2_CMORPHO_SETS format\n",fname);
-
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     {
+	  mwerror(INTERNAL, 0, "[_mw_load_cmss_mw2_cmss] File \"%s\" is not "
+		  "in the MW2_CMORPHO_SETS format\n", fname);
+	  exit(EXIT_FAILURE);
+     }
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
 	  return(NULL);
      }
      /* read header = "MW2_CMORPHO_SETS" */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header,hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -1051,7 +1094,9 @@ void _mw_write_cmss_mw2_cmss(FILE *fp, Cmorpho_sets iss)
      /* fprintf(stderr,"Number of cmorpho sets = %d\n",n); */
 
      /* Record the number of cmorpho sets */
-     fwrite(&(n),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(n), sizeof(unsigned int), 1, fp))
+	 mwerror(ERROR, 0, "Error while writing to  file...\n");
+
 
      if (!iss || !iss->cmorphoset) return;
 
@@ -1067,9 +1112,12 @@ void _mw_write_cmss_mw2_cmss(FILE *fp, Cmorpho_sets iss)
 	  /*
 	    fprintf(stderr,"Number of neighbors = %d\n",n);
 	  */
-	  fwrite(&(n),sizeof(unsigned int),1,fp);
+	  if (1 > fwrite(&(n), sizeof(unsigned int), 1, fp))
+	      mwerror(ERROR, 0, "Error while writing to  file...\n");
 	  for (q=neig; q; q=q->next)
-	       fwrite(&(q->cmorphoset->num),sizeof(unsigned int),1,fp);
+	      if (1 > fwrite(&(q->cmorphoset->num),
+			     sizeof(unsigned int), 1, fp))
+		  mwerror(ERROR, 0, "Error while writing to file...\n");
      }
 }
 
@@ -1144,16 +1192,25 @@ Cmimage _mw_load_cmimage_mw2_cmimage(char *fname)
 
      need_flipping =  _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
      if (strncmp(ftype,"MW2_CMIMAGE",11) != 0)
-	  mwerror(INTERNAL, 0,"[_mw_load_cmimage_mw2_cmimage] File \"%s\" is not in the MW2_CMIMAGE format\n",fname);
+     {
+	  mwerror(INTERNAL, 0, "[_mw_load_cmimage_mw2_cmimage] "
+		  "File \"%s\" is not in the MW2_CMIMAGE format\n", fname);
+	  exit(EXIT_FAILURE);
+     }
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
 	  return(NULL);
      }
      /* read header = "MW2_CMIMAGE" */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header,hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (header)...\n",fname);
 	  fclose(fp);
@@ -1169,14 +1226,14 @@ Cmimage _mw_load_cmimage_mw2_cmimage(char *fname)
      }
      /* Read the cmt field */
 
-     if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(size), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (cmt size)...\n",fname);
 	  fclose(fp);
 	  return(NULL);
      }
      if (need_flipping == 1) _mw_in_flip_b4(size);
-     if ((size > 0)&& (fread(cmimage->cmt,sizeof(char),size,fp) == 0))
+     if ((size > 0) && (1 > fread(cmimage->cmt,sizeof(char),size,fp)))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (cmt; cmt size=%d)...\n",fname,size);
 	  fclose(fp);
@@ -1185,14 +1242,14 @@ Cmimage _mw_load_cmimage_mw2_cmimage(char *fname)
 
      /* Read the name field */
 
-     if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(size), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (name size)...\n",fname);
 	  fclose(fp);
 	  return(NULL);
      }
      if (need_flipping == 1) _mw_in_flip_b4(size);
-     if ((size > 0)&&(fread(cmimage->name,sizeof(char),size,fp) == 0))
+     if ((size > 0) && (1 > fread(cmimage->name,sizeof(char),size,fp)))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (name)...\n",fname);
 	  fclose(fp);
@@ -1200,20 +1257,19 @@ Cmimage _mw_load_cmimage_mw2_cmimage(char *fname)
      }
 
      /* Read the other fields */
-     if (
-	  (fread(&(cmimage->nrow),sizeof(int),1,fp) == 0) || 
-	  (fread(&(cmimage->ncol),sizeof(int),1,fp) == 0) || 
-	  (fread(&(cmimage->minvalue.model),sizeof(unsigned char),1,fp) == 0) || 
-	  (fread(&(cmimage->minvalue.red),sizeof(float),1,fp) == 0) || 
-	  (fread(&(cmimage->minvalue.green),sizeof(float),1,fp) == 0) || 
-	  (fread(&(cmimage->minvalue.blue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(cmimage->maxvalue.model),sizeof(unsigned char),1,fp) == 0) || 
-	  (fread(&(cmimage->maxvalue.red),sizeof(float),1,fp) == 0) || 
-	  (fread(&(cmimage->maxvalue.green),sizeof(float),1,fp) == 0) || 
-	  (fread(&(cmimage->maxvalue.blue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(nll),sizeof(unsigned int),1,fp) == 0)
-	  )
-     {      mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+     if (1 > fread(&(cmimage->nrow), sizeof(int), 1, fp)
+	 || 1 > fread(&(cmimage->ncol), sizeof(int), 1, fp)
+	 || 1 > fread(&(cmimage->minvalue.model), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(cmimage->minvalue.red), sizeof(float), 1, fp)
+	 || 1 > fread(&(cmimage->minvalue.green), sizeof(float), 1, fp)
+	 || 1 > fread(&(cmimage->minvalue.blue), sizeof(float), 1, fp)
+	 || 1 > fread(&(cmimage->maxvalue.model), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(cmimage->maxvalue.red), sizeof(float), 1, fp)
+	 || 1 > fread(&(cmimage->maxvalue.green), sizeof(float), 1, fp)
+	 || 1 > fread(&(cmimage->maxvalue.blue), sizeof(float), 1, fp)
+	 || 1 > fread(&(nll), sizeof(unsigned int), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
 	  return(NULL);
      }
@@ -1255,7 +1311,7 @@ Cmimage _mw_load_cmimage_mw2_cmimage(char *fname)
 
      /* Read the Cfmorpho lines */
 
-     if (fread(&(nll),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(nll), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -1291,7 +1347,7 @@ Cmimage _mw_load_cmimage_mw2_cmimage(char *fname)
      {
 	  mw_num_cmorpho_line(cmimage->first_ml);
 	  /* First, read the number of couples */
-	  if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+	  if (1 > fread(&(size), sizeof(unsigned int), 1, fp))
 	  {
 	       mw_delete_cmimage(cmimage);
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
@@ -1301,8 +1357,8 @@ Cmimage _mw_load_cmimage_mw2_cmimage(char *fname)
 	  if (need_flipping == 1) _mw_in_flip_b4(size);
 	  for (i=1,ll=cmimage->first_ml; i<=size; i++)
 	  {
-	       if ((fread(&(mlnum),sizeof(unsigned int),1,fp) == 0) ||
-		   (fread(&(msnum),sizeof(unsigned int),1,fp) == 0))
+	       if (1 > fread(&(mlnum), sizeof(unsigned int), 1, fp)
+		   || 1 > fread(&(msnum), sizeof(unsigned int), 1, fp))
 	       {
 		    mw_delete_cmimage(cmimage);
 		    mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
@@ -1395,27 +1451,39 @@ short _mw_create_cmimage_mw2_cmimage(char *fname, Cmimage cmimage)
      if (fp == NULL) return(-1);
 
      size = strlen(cmimage->cmt);
-     fwrite(&(size),sizeof(unsigned int),1,fp);  
-     if (size > 0) fwrite(cmimage->cmt,sizeof(char),size,fp);
-     size = strlen(cmimage->name);
-     fwrite(&(size),sizeof(unsigned int),1,fp);  
-     if (size > 0) fwrite(cmimage->name,sizeof(char),size,fp);
+     if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+  	 mwerror(ERROR, 0, "Error while writing to  file \"%s\"...\n", fname);
 
-     fwrite(&(cmimage->nrow),sizeof(int),1,fp);
-     fwrite(&(cmimage->ncol),sizeof(int),1,fp);
-     fwrite(&(cmimage->minvalue.model),sizeof(unsigned char),1,fp);
-     fwrite(&(cmimage->minvalue.red),sizeof(float),1,fp);
-     fwrite(&(cmimage->minvalue.green),sizeof(float),1,fp);
-     fwrite(&(cmimage->minvalue.blue),sizeof(float),1,fp);
-     fwrite(&(cmimage->maxvalue.model),sizeof(unsigned char),1,fp);
-     fwrite(&(cmimage->maxvalue.red),sizeof(float),1,fp);
-     fwrite(&(cmimage->maxvalue.green),sizeof(float),1,fp);
-     fwrite(&(cmimage->maxvalue.blue),sizeof(float),1,fp);
+     if (size > 0)
+	 if (size > fwrite(cmimage->cmt,sizeof(char), size, fp))
+	     mwerror(ERROR, 0, "Error while writing to  file \"%s\"...\n",
+		     fname);
+     size = strlen(cmimage->name);
+     if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+	 mwerror(ERROR, 0, "Error while writing to  file \"%s\"...\n", fname);
+
+     if (size > 0)
+	 if (size > fwrite(cmimage->name,sizeof(char), size, fp))
+	     mwerror(ERROR, 0, "Error while writing to  file \"%s\"...\n",
+		     fname);
+
+     if (1 > fwrite(&(cmimage->nrow), sizeof(int), 1, fp)
+         || 1 > fwrite(&(cmimage->ncol), sizeof(int), 1, fp)
+         || 1 > fwrite(&(cmimage->minvalue.model), sizeof(unsigned char), 1, fp)
+         || 1 > fwrite(&(cmimage->minvalue.red), sizeof(float), 1, fp)
+         || 1 > fwrite(&(cmimage->minvalue.green), sizeof(float), 1, fp)
+         || 1 > fwrite(&(cmimage->minvalue.blue), sizeof(float), 1, fp)
+         || 1 > fwrite(&(cmimage->maxvalue.model), sizeof(unsigned char), 1, fp)
+         || 1 > fwrite(&(cmimage->maxvalue.red), sizeof(float), 1, fp)
+         || 1 > fwrite(&(cmimage->maxvalue.green), sizeof(float), 1, fp)
+         || 1 > fwrite(&(cmimage->maxvalue.blue), sizeof(float), 1, fp))
+	 mwerror(ERROR, 0, "Error while writing to  file \"%s\"...\n", fname);
 
      /* Record the number of cmorpho lines */
      for (ll=cmimage->first_ml, nll=0; ll; ll=ll->next, nll++);
 
-     fwrite(&(nll),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(nll), sizeof(unsigned int), 1, fp))
+	 mwerror(ERROR, 0, "Error while writing to  file \"%s\"...\n", fname);
 
      for (ll=cmimage->first_ml, n=1; ll; ll=ll->next, n++)
 	  _mw_write_cml_mw2_cml(fp,ll,n);
@@ -1423,7 +1491,8 @@ short _mw_create_cmimage_mw2_cmimage(char *fname, Cmimage cmimage)
      /* Record the number of cfmorpho lines */
      for (fll=cmimage->first_fml, nll=0; fll; fll=fll->next, nll++);
 
-     fwrite(&(nll),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(nll), sizeof(unsigned int), 1, fp))
+	 mwerror(ERROR, 0, "Error while writing to  file \"%s\"...\n", fname);
 
      for (fll=cmimage->first_fml; fll; fll=fll->next)
 	  _mw_write_cfml_mw2_cfml(fp,fll);
@@ -1439,13 +1508,19 @@ short _mw_create_cmimage_mw2_cmimage(char *fname, Cmimage cmimage)
 	  size=0;
 	  for (ll=cmimage->first_ml; ll; ll=ll->next)
 	       if ((ll->cmorphosets)&&(ll->cmorphosets->cmorphoset)) size++;
-	  fwrite(&(size),sizeof(unsigned int),1,fp);     
+	  if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+	      mwerror(ERROR, 0, "Error while writing to  file \"%s\"...\n",
+		      fname);
+     
 	  /* And now the couples (mlnum,msnum) */
 	  for (ll=cmimage->first_ml; ll; ll=ll->next)
 	       if ((ll->cmorphosets)&&(ll->cmorphosets->cmorphoset))
 	       {
-		    fwrite(&(ll->num),sizeof(unsigned int),1,fp);     
-		    fwrite(&(ll->cmorphosets->cmorphoset->num),sizeof(unsigned int),1,fp);     
+		   if (1 > fwrite(&(ll->num), sizeof(unsigned int), 1, fp)
+		       || 1 > fwrite(&(ll->cmorphosets->cmorphoset->num),
+				     sizeof(unsigned int), 1, fp))
+		       mwerror(ERROR, 0, "Error while writing to "
+			       "file \"%s\"...\n", fname);
 	       }
      }
      fclose(fp);

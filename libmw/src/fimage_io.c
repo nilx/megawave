@@ -8,6 +8,7 @@
  * input/output private functions for the Cimage structure
  */
 
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -88,13 +89,19 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
      /* Ouverture du fichier */
 
      if (NULL == (fp = fopen(NomFic, "r")))
+     {
 	 mwerror(FATAL, 1, "File \"%s\" not found or unreadable\n", NomFic);
+	 exit(EXIT_FAILURE);
+     }
 
      /* Lecture entete */
      if (minheader != (bytesread = fread(BufferEntete, sizeof(char), 
 					 minheader, fp)))
+     {
 	 mwerror(FATAL, 1, "Error while reading header "
 		 "of file \"%s\" (may be corrupted)\n", NomFic);
+	 exit(EXIT_FAILURE);
+     }
 
      /* Tests entete */
      if ((bytesread == minheader) && 
@@ -121,13 +128,19 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
 	  if (taillezc > 0)
 	  {
 	      if (0 != fseek(fp, 64, SEEK_SET)) 
+	      {
 		  mwerror(FATAL, 1, "RIM image header file \"%s\" "
 			  "is corrupted\n", NomFic);
+		  exit(EXIT_FAILURE);
+	      }
 	      if (taillezc != (bytesread = fread(Comment, sizeof(char),
 						 taillezc, fp)))
+	      {
 		  mwerror(FATAL, 1, "RIM image header file \"%s\" "
 			  "is corrupted\n", NomFic);
-	       Comment[taillezc] = '\0';
+		  exit(EXIT_FAILURE);
+	      }
+	      Comment[taillezc] = '\0';
 	  }
 	  else Comment[0] = '\0';
      }
@@ -139,6 +152,7 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
 	       strcpy(Type,"IMG");
 	       mwerror(FATAL, 1, "The image file \"%s\" is not "
 		       "with FLOAT values\n", NomFic);
+	       exit(EXIT_FAILURE);
 	  }
 
 	  else
@@ -147,6 +161,7 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
 		    strcpy(Type,"INR");
 		    mwerror(FATAL, 1, "The image file \"%s\" is not "
 			    "with FLOAT values\n", NomFic);
+		    exit(EXIT_FAILURE);
 	       }
 
 	       else
@@ -155,11 +170,15 @@ Fimage _mw_fimage_load_megawave1(char *NomFic, char *Type)
 			 strcpy(Type,"MTI");
 			 mwerror(FATAL, 1, "The image file \"%s\" is not "
 				 "with FLOAT values\n", NomFic);
+			 exit(EXIT_FAILURE);
 		    }
 		    else 
-			 mwerror(FATAL, 1, "Format of the image file "
-				 "\"%s\" unknown\n", NomFic);
-  
+		    {
+			mwerror(FATAL, 1, "Format of the image file "
+				"\"%s\" unknown\n", NomFic);
+			exit(EXIT_FAILURE);
+		    }
+
      /* Reservation memoire */
      image = mw_change_fimage(NULL,dy,dx);
      strcpy(image->cmt,Comment);
@@ -231,9 +250,11 @@ short _mw_fimage_create_megawave1(char *NomFic, Fimage image, char *Type)
 	  header = 64;
      }
      else
-	  mwerror(INTERNAL, 1, "[_mw_fimage_create_megawave1] "
-		  "Unknown format \"%s\"\n", Type);
-
+     {
+	 mwerror(INTERNAL, 1, "[_mw_fimage_create_megawave1] "
+		 "Unknown format \"%s\"\n", Type);
+	 exit(EXIT_FAILURE);
+     }
      if ((NULL == (fp = fopen(NomFic, "r+"))) || 
 	 (0 != fseek(fp, (long)taillezc+header, SEEK_SET)))
      {

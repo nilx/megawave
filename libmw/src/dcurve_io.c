@@ -82,8 +82,13 @@ Dcurve _mw_load_dcurve_mw2_dcurve(char *fname)
 	  mwerror(INTERNAL, 0,"[_mw_load_dcurve_mw2_dcurve] File \"%s\" is not in the MW2_DCURVE format\n",fname);
 
   
-     if ( (need_flipping==-1) ||
-	  (NULL == (fp = fopen(fname, "r"))))
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (NULL == (fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -236,8 +241,13 @@ short _mw_create_dcurve_mw2_dcurve(char *fname, Dcurve cv)
      {
 	  vx = pc->x;
 	  vy = pc->y;
-	  fwrite(&vx,sizeof(double),1,fp);
-	  fwrite(&vy,sizeof(double),1,fp);
+	  if (1 > fwrite(&vx, sizeof(double), 1, fp)
+	      || 1 > fwrite(&vy, sizeof(double), 1, fp))
+	  {
+	      mwerror(ERROR, 0, "Error while writing "
+		      "to file \"%s\" !\n", fname);
+	      exit(EXIT_FAILURE);
+	  }
      }
 
      fclose(fp);
@@ -290,7 +300,7 @@ Dcurves _mw_load_dcurves_mw2_dcurves_1_00(char *fname)
      FILE    *fp;
      Dcurves cvs;
      Dcurve newcv,oldcv;
-     Point_dcurve newcvc,oldcvc;
+     Point_dcurve newcvc,oldcvc = NULL;
      double x,y;
      unsigned long *px,*py;
      char new_dcurve;
@@ -306,8 +316,13 @@ Dcurves _mw_load_dcurves_mw2_dcurves_1_00(char *fname)
      if (strcmp(ftype,"MW2_DCURVES") != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_dcurves_mw2_dcurves] File \"%s\" is not in the MW2_DCURVES format\n",fname);
   
-  
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))))
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -431,7 +446,7 @@ Dcurves _mw_load_dcurves_mw2_dcurves(char *fname)
      FILE    *fp;
      Dcurves cvs;
      Dcurve newcv,oldcv;
-     Point_dcurve newcvc,oldcvc;
+     Point_dcurve newcvc, oldcvc=NULL;
      double X[2];
      int n;
      unsigned long *px;
@@ -449,7 +464,13 @@ Dcurves _mw_load_dcurves_mw2_dcurves(char *fname)
      /*printf("[_mw_load_dcurves_mw2_dcurves] version=%f\n",version);*/
      if (version==1.0) return(_mw_load_dcurves_mw2_dcurves_1_00(fname));
   
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))))
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -583,7 +604,13 @@ short _mw_create_dcurves_mw2_dcurves(char *fname, Dcurves cvs)
      fp=_mw_write_header_file(fname,"MW2_DCURVES",1.01);
      if (fp == NULL) return(-1);
 
-     if (cvs->first) fwrite(&end_of_dcurve,sizeof(double),1,fp);
+     if (cvs->first)
+	 if (1 > fwrite(&end_of_dcurve, sizeof(double), 1, fp))
+	 {
+	     mwerror(ERROR, 0, "Error while writing to file \"%s\" !\n", fname);
+	     exit(EXIT_FAILURE);
+	 }
+
      for (pl=cvs->first, n=1; pl; pl=pl->next, n++)
      {
 	  for (pc=pl->first; pc; pc=pc->next)
@@ -593,12 +620,29 @@ short _mw_create_dcurves_mw2_dcurves(char *fname, Dcurves cvs)
 		    mwerror(INTERNAL,1,"[_mw_create_dcurves_mw2_dcurves] Dcurve #%d has a point which coordinates (%f,%f) exceed double capacity\n",n,pc->x,pc->y);
 	       vx = pc->x;
 	       vy = pc->y;
-	       fwrite(&vx,sizeof(double),1,fp);
-	       fwrite(&vy,sizeof(double),1,fp);
+	       if (1 > fwrite(&vx, sizeof(double), 1, fp)
+		   || 1 > fwrite(&vy, sizeof(double), 1, fp))
+	       {
+		   mwerror(ERROR, 0, "Error while writing "
+			   "to file \"%s\" !\n", fname);
+		   exit(EXIT_FAILURE);
+	       }
 	  }
-	  if (pl->next) fwrite(&end_of_dcurve,sizeof(double),1,fp);
+	  if (pl->next)
+	      if (1 > fwrite(&end_of_dcurve, sizeof(double), 1, fp))
+	      {
+		  mwerror(ERROR, 0, "Error while writing "
+			  "to file \"%s\" !\n", fname);
+		  exit(EXIT_FAILURE);
+	      }
+
      }      
-     fwrite(&end_of_dcurves,sizeof(double),1,fp);
+     if (1 > fwrite(&end_of_dcurves, sizeof(double), 1, fp))
+     {
+	 mwerror(ERROR, 0, "Error while writing to file \"%s\" !\n", fname);
+	 exit(EXIT_FAILURE);
+     }
+
      fclose(fp);
      return(0);
 }

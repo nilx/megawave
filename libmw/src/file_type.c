@@ -430,7 +430,11 @@ static int what_kind_of_RIFF(char * file, char * subtype, char * mtype)
 		   ((bytes3_4==0x4658)||(bytes3_4==0x5846)))  /* RIFX identifier */
 		    need_flipping = 1;
 	       else 
-		    mwerror(INTERNAL,1,"[what_kind_of_RIFF] (little endian) '%s' is not a RIFF file !\n",file);
+	       {
+		   mwerror(INTERNAL, 1, "[what_kind_of_RIFF] "
+			   "(little endian) '%s' is not a RIFF file !\n", file);
+		   exit(EXIT_FAILURE);
+	       }
      }
      else
 	  /* Byte ordering is big endian */
@@ -443,7 +447,11 @@ static int what_kind_of_RIFF(char * file, char * subtype, char * mtype)
 		   ((bytes3_4==0x4658)||(bytes3_4==0x5846)))  /* RIFX identifier */
 		    need_flipping = 0;
 	       else 
-		    mwerror(INTERNAL,1,"[what_kind_of_RIFF] (big endian) '%s' is not a RIFF file !\n",file);
+	       {
+		   mwerror(INTERNAL, 1, "[what_kind_of_RIFF] "
+			   "(big endian) '%s' is not a RIFF file !\n",file);
+		   exit(EXIT_FAILURE);
+	       }
      }
  
      /* bytes 4-7 */

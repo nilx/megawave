@@ -22,6 +22,7 @@
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -56,14 +57,12 @@ static Morpho_line _mw_read_ml_mw2_ml(char *fname, FILE *fp, int need_flipping)
 	  return(NULL);
      }
 
-     if (
-	  (fread(&(ll->minvalue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(ll->maxvalue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(ll->open),sizeof(unsigned char),1,fp) == 0) ||
-	  (fread(&(ll->data),sizeof(float),1,fp) == 0) ||
-	  (fread(&(npc),sizeof(unsigned int),1,fp) == 0) ||
-	  (fread(&(npt),sizeof(unsigned int),1,fp) == 0)
-	  )
+     if (1 > fread(&(ll->minvalue), sizeof(float), 1, fp)
+	 || 1 > fread(&(ll->maxvalue), sizeof(float), 1, fp)
+	 || 1 > fread(&(ll->open), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(ll->data), sizeof(float), 1, fp)
+	 || 1 > fread(&(npc), sizeof(unsigned int), 1, fp)
+	 || 1 > fread(&(npt), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  return(NULL);
@@ -100,10 +99,8 @@ static Morpho_line _mw_read_ml_mw2_ml(char *fname, FILE *fp, int need_flipping)
 	  if (oldpc != NULL) oldpc->next = newpc;
 	  newpc->previous = oldpc;
 	  newpc->next = NULL;
-	  if (
-	       (fread(&(newpc->x),sizeof(int),1,fp) == 0) || 
-	       (fread(&(newpc->y),sizeof(int),1,fp) == 0) 
-	       )
+	  if (fread(&(newpc->x), sizeof(int), 1, fp)
+	      || 1 > fread(&(newpc->y), sizeof(int), 1, fp))
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       mw_delete_morpho_line(ll);
@@ -130,7 +127,7 @@ static Morpho_line _mw_read_ml_mw2_ml(char *fname, FILE *fp, int need_flipping)
 	  if (oldpt != NULL) oldpt->next = newpt;
 	  newpt->previous = oldpt;
 	  newpt->next = NULL;
-	  if (fread(&(newpt->type),sizeof(unsigned char),1,fp) == 0)
+	  if (1 > fread(&(newpt->type), sizeof(unsigned char), 1, fp))
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       mw_delete_morpho_line(ll);
@@ -157,7 +154,13 @@ Morpho_line _mw_load_ml_mw2_ml(char *fname)
      if (strncmp(ftype,"MW2_MORPHO_LINE",15) != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_ml_mw2_ml] File \"%s\" is not in the MW2_MORPHO_LINE format\n",fname);
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -165,7 +168,7 @@ Morpho_line _mw_load_ml_mw2_ml(char *fname)
      }
 
      /* read header */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header, hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -226,10 +229,14 @@ void _mw_write_ml_mw2_ml(FILE *fp, Morpho_line ll, unsigned int nml)
      /* FIXME : unused parameter */
      nml = nml;
 
-     fwrite(&(ll->minvalue),sizeof(float),1,fp);
-     fwrite(&(ll->maxvalue),sizeof(float),1,fp);
-     fwrite(&(ll->open),sizeof(unsigned char),1,fp);
-     fwrite(&(ll->data),sizeof(float),1,fp);
+     if (1 > fwrite(&(ll->minvalue), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(ll->maxvalue), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(ll->open), sizeof(unsigned char), 1, fp)
+	 || 1 > fwrite(&(ll->data), sizeof(float), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while writing file...\n");
+	  exit(EXIT_FAILURE);
+     }
 
      /* Record the number of point curve */
      npc=0;
@@ -250,8 +257,13 @@ void _mw_write_ml_mw2_ml(FILE *fp, Morpho_line ll, unsigned int nml)
      if ( (npc*npt != 0) && (npc != npt) )
 	  mwerror(INTERNAL,1,"[_mw_write_ml_mw2_ml] Cannot create file: inconsistent Morpho_line structure \n");
 
-     fwrite(&(npc),sizeof(unsigned int),1,fp);
-     fwrite(&(npt),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(npc), sizeof(unsigned int), 1, fp)
+	 || 1 > fwrite(&(npt), sizeof(unsigned int), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while writing file...\n");
+	  exit(EXIT_FAILURE);
+     }
+
      /* debug 
 	if ((nml >= 422)&&(nml <=426))
 	{
@@ -261,8 +273,13 @@ void _mw_write_ml_mw2_ml(FILE *fp, Morpho_line ll, unsigned int nml)
 
      for (pc=ll->first_point; pc; pc=pc->next)
      {
-	  fwrite(&(pc->x),sizeof(int),1,fp);
-	  fwrite(&(pc->y),sizeof(int),1,fp);
+	 if (1 > fwrite(&(pc->x), sizeof(int), 1, fp)
+	     || 1 > fwrite(&(pc->y), sizeof(int), 1, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing file...\n");
+	     exit(EXIT_FAILURE);
+	 }
+
 	  /* debug 
 	     if (((nml >= 422)&&(nml <=426))&&(pc==ll->first_point))
 	     {
@@ -272,7 +289,12 @@ void _mw_write_ml_mw2_ml(FILE *fp, Morpho_line ll, unsigned int nml)
      }
 
      for (pt=ll->first_type; pt; pt=pt->next)
-	  fwrite(&(pt->type),sizeof(unsigned char),1,fp);
+	 if (1 > fwrite(&(pt->type), sizeof(unsigned char), 1, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing file...\n");
+	     exit(EXIT_FAILURE);
+	 }
+
 }
 
 /* Write file in MW2_MORPHO_LINE format */  
@@ -343,14 +365,12 @@ static Fmorpho_line _mw_read_fml_mw2_fml(char *fname, FILE *fp,
 	  return(NULL);
      }
 
-     if (
-	  (fread(&(fll->minvalue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(fll->maxvalue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(fll->open),sizeof(unsigned char),1,fp) == 0) ||
-	  (fread(&(fll->data),sizeof(float),1,fp) == 0) ||
-	  (fread(&(npc),sizeof(unsigned int),1,fp) == 0) ||
-	  (fread(&(npt),sizeof(unsigned int),1,fp) == 0)
-	  )
+     if (1 > fread(&(fll->minvalue), sizeof(float), 1, fp)
+	 || 1 > fread(&(fll->maxvalue), sizeof(float), 1, fp)
+	 || 1 > fread(&(fll->open), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(fll->data), sizeof(float), 1, fp)
+	 || 1 > fread(&(npc), sizeof(unsigned int), 1, fp)
+	 || 1 > fread(&(npt), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -383,10 +403,8 @@ static Fmorpho_line _mw_read_fml_mw2_fml(char *fname, FILE *fp,
 	  if (oldpc != NULL) oldpc->next = newpc;
 	  newpc->previous = oldpc;
 	  newpc->next = NULL;
-	  if (
-	       (fread(&(newpc->x),sizeof(float),1,fp) == 0) || 
-	       (fread(&(newpc->y),sizeof(float),1,fp) == 0) 
-	       )
+	  if (1 > fread(&(newpc->x), sizeof(float), 1, fp)
+	      || 1 > fread(&(newpc->y), sizeof(float), 1, fp))
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       mw_delete_fmorpho_line(fll);
@@ -413,7 +431,7 @@ static Fmorpho_line _mw_read_fml_mw2_fml(char *fname, FILE *fp,
 	  if (oldpt != NULL) oldpt->next = newpt;
 	  newpt->previous = oldpt;
 	  newpt->next = NULL;
-	  if (fread(&(newpt->type),sizeof(unsigned char),1,fp) == 0)
+	  if (1 > fread(&(newpt->type), sizeof(unsigned char), 1, fp))
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       mw_delete_fmorpho_line(fll);
@@ -440,7 +458,13 @@ Fmorpho_line _mw_load_fml_mw2_fml(char *fname)
      if (strncmp(ftype,"MW2_FMORPHO_LINE",16) != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_fml_mw2_fml] File \"%s\" is not in the MW2_FMORPHO_LINE format\n",fname);
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -448,7 +472,7 @@ Fmorpho_line _mw_load_fml_mw2_fml(char *fname)
      }
 
      /* read header */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header, hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -506,10 +530,14 @@ void _mw_write_fml_mw2_fml(FILE *fp, Fmorpho_line fll)
      Point_type pt;
      unsigned int npc,npt;
 
-     fwrite(&(fll->minvalue),sizeof(float),1,fp);
-     fwrite(&(fll->maxvalue),sizeof(float),1,fp);
-     fwrite(&(fll->open),sizeof(unsigned char),1,fp);
-     fwrite(&(fll->data),sizeof(float),1,fp);
+     if (1 > fwrite(&(fll->minvalue), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(fll->maxvalue), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(fll->open), sizeof(unsigned char), 1, fp)
+	 || 1 > fwrite(&(fll->data), sizeof(float), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while reading file...\n");
+	  exit(EXIT_FAILURE);
+     }
 
      /* Record the number of point fcurve */
      for (pc=fll->first_point, npc=0; pc; pc=pc->next, npc++);
@@ -528,17 +556,29 @@ void _mw_write_fml_mw2_fml(FILE *fp, Fmorpho_line fll)
      if ( (npc*npt != 0) && (npc != npt) )
 	  mwerror(INTERNAL,1,"[_mw_write_fml_mw2_fml] Cannot create file: inconsistent Fmorpho_line structure \n");
 
-     fwrite(&(npc),sizeof(unsigned int),1,fp);
-     fwrite(&(npt),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(npc), sizeof(unsigned int), 1, fp)
+	 || 1 > fwrite(&(npt), sizeof(unsigned int), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while reading file...\n");
+	  exit(EXIT_FAILURE);
+     }
 
      for (pc=fll->first_point; pc; pc=pc->next)
      {
-	  fwrite(&(pc->x),sizeof(float),1,fp);
-	  fwrite(&(pc->y),sizeof(float),1,fp);
+	 if (1 > fwrite(&(pc->x), sizeof(float), 1, fp)
+	     || 1 > fwrite(&(pc->y), sizeof(float), 1, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while reading file...\n");
+	     exit(EXIT_FAILURE);
+	 }
      }
 
      for (pt=fll->first_type; pt; pt=pt->next)
-	  fwrite(&(pt->type),sizeof(unsigned char),1,fp);
+	 if (1 > fwrite(&(pt->type), sizeof(unsigned char), 1, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while reading file...\n");
+	     exit(EXIT_FAILURE);
+	 }
 }
 
 /* Write file in MW2_FMORPHO_LINE format */  
@@ -608,13 +648,11 @@ Morpho_set _mw_read_ms_mw2_ms(char *fname, FILE *fp, int need_flipping)
 	  return(NULL);
      }
 
-     if (
-	  (fread(&(is->minvalue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(is->maxvalue),sizeof(float),1,fp) == 0) || 
-	  (fread(&(is->stated),sizeof(unsigned char),1,fp) == 0) ||
-	  (fread(&(is->area),sizeof(int),1,fp) == 0) || 
-	  (fread(&(ns),sizeof(unsigned int),1,fp) == 0)
-	  )
+     if (1 > fread(&(is->minvalue), sizeof(float), 1, fp)
+	 || 1 > fread(&(is->maxvalue), sizeof(float), 1, fp)
+	 || 1 > fread(&(is->stated), sizeof(unsigned char), 1, fp)
+	 || 1 > fread(&(is->area), sizeof(int), 1, fp)
+	 || 1 > fread(&(ns), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  return(NULL);
@@ -643,11 +681,9 @@ Morpho_set _mw_read_ms_mw2_ms(char *fname, FILE *fp, int need_flipping)
 	  if (olds != NULL) olds->next = news;
 	  news->previous = olds;
 	  news->next = NULL;
-	  if (
-	       (fread(&(news->xstart),sizeof(int),1,fp) == 0) || 
-	       (fread(&(news->xend),sizeof(int),1,fp) == 0) || 
-	       (fread(&(news->y),sizeof(int),1,fp) == 0) 
-	       )
+	  if (1 > fread(&(news->xstart), sizeof(int), 1, fp)
+	      || 1 > fread(&(news->xend), sizeof(int), 1, fp)
+	      || 1 > fread(&(news->y), sizeof(int), 1, fp))
 	  {
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	       mw_delete_morpho_set(is);
@@ -682,7 +718,12 @@ Morpho_set _mw_load_ms_mw2_ms(char *fname)
      if (strncmp(ftype,"MW2_MORPHO_SET",14) != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_ms_mw2_ms] File \"%s\" is not in the MW2_MORPHO_SET format\n",fname);
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -690,7 +731,7 @@ Morpho_set _mw_load_ms_mw2_ms(char *fname)
      }
 
      /* read header */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header, hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -749,17 +790,25 @@ void _mw_write_ms_mw2_ms(FILE *fp, Morpho_set is)
      /* Record the number of segments */
      for (s=is->first_segment, ns=0; s; s=s->next, ns++);
 
-     fwrite(&(is->minvalue),sizeof(float),1,fp);
-     fwrite(&(is->maxvalue),sizeof(float),1,fp);
-     fwrite(&(is->stated),sizeof(unsigned char),1,fp);
-     fwrite(&(is->area),sizeof(int),1,fp);
-     fwrite(&(ns),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(is->minvalue), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(is->maxvalue), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(is->stated), sizeof(unsigned char), 1, fp)
+	 || 1 > fwrite(&(is->area), sizeof(int), 1, fp)
+	 || 1 > fwrite(&(ns), sizeof(unsigned int), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while writing file...\n");
+	  exit(EXIT_FAILURE);
+     }
 
      for (s=is->first_segment; s; s=s->next)
      {
-	  fwrite(&(s->xstart),sizeof(int),1,fp);
-	  fwrite(&(s->xend),sizeof(int),1,fp);
-	  fwrite(&(s->y),sizeof(int),1,fp);
+	 if (1 > fwrite(&(s->xstart), sizeof(int), 1, fp)
+	     || 1 > fwrite(&(s->xend), sizeof(int), 1, fp)
+	     || 1 > fwrite(&(s->y), sizeof(int), 1, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing file...\n");
+	     exit(EXIT_FAILURE);
+	 }
      }
 }
 
@@ -823,7 +872,7 @@ Morpho_sets _mw_read_mss_mw2_mss(char *fname, FILE *fp, int need_flipping)
      unsigned int i,n,num;
 
      /* Get the number of morpho sets */
-     if (fread(&(n),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(n), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  return(NULL);
@@ -873,14 +922,25 @@ Morpho_sets _mw_read_mss_mw2_mss(char *fname, FILE *fp, int need_flipping)
      {  
 	  oldiss=newiss=NULL;
 	  /* Read first the number of neighbors */
-	  fread(&(n),sizeof(unsigned int),1,fp);
+	  if (1 > fread(&(n), sizeof(unsigned int), 1, fp))
+	  {
+	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n", fname);
+	       return(NULL);
+	  }
+
 	  if (need_flipping == 1) _mw_in_flip_b4(n);
 	  /* 
 	     fprintf(stderr,"Number of neighbors = %d\n",n); 
 	  */
 	  for (i = 1; i <= n; i++)
 	  {
-	       fread(&(num),sizeof(unsigned int),1,fp);
+	       if (1 > fread(&(num), sizeof(unsigned int), 1, fp))
+	       {
+		   mwerror(ERROR, 0,"Error while reading file "
+			   "\"%s\"...\n", fname);
+		   return(NULL);
+	       }
+
 	       if (need_flipping == 1) _mw_in_flip_b4(num);
 	       /* Search the morpho sets containing the given Morpho set number */
 	       for (q=iss; q && q->morphoset && (q->morphoset->num != num); q=q->next);
@@ -922,14 +982,20 @@ Morpho_sets _mw_load_mss_mw2_mss(char *fname)
      if (strncmp(ftype,"MW2_MORPHO_SETS",15) != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_mss_mw2_mss] File \"%s\" is not in the MW2_MORPHO_SETS format\n",fname);
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
 	  return(NULL);
      }
      /* read header */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header,hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -991,7 +1057,11 @@ void _mw_write_mss_mw2_mss(FILE *fp, Morpho_sets iss)
      /* fprintf(stderr,"Number of morpho sets = %d\n",n); */
 
      /* Record the number of morpho sets */
-     fwrite(&(n),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(n), sizeof(unsigned int), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while writing file...\n");
+	  exit(EXIT_FAILURE);
+     }
 
      if (!iss || !iss->morphoset) return;
 
@@ -1007,9 +1077,19 @@ void _mw_write_mss_mw2_mss(FILE *fp, Morpho_sets iss)
 	  /*
 	    fprintf(stderr,"Number of neighbors = %d\n",n);
 	  */
-	  fwrite(&(n),sizeof(unsigned int),1,fp);
+	  if (1 > fwrite(&(n), sizeof(unsigned int), 1, fp))
+	  {
+	      mwerror(ERROR, 0,"Error while writing file...\n");
+	      exit(EXIT_FAILURE);
+	  }
 	  for (q=neig; q; q=q->next)
-	       fwrite(&(q->morphoset->num),sizeof(unsigned int),1,fp);
+	      if (1 > fwrite(&(q->morphoset->num),
+			     sizeof(unsigned int), 1, fp))
+	      {
+		  mwerror(ERROR, 0,"Error while writing file...\n");
+		  exit(EXIT_FAILURE);
+	      }
+
      }
 }
 
@@ -1086,14 +1166,19 @@ Mimage _mw_load_mimage_mw2_mimage(char *fname)
      if (strncmp(ftype,"MW2_MIMAGE",10) != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_mimage_mw2_mimage] File \"%s\" is not in the MW2_MIMAGE format\n",fname);
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
 	  return(NULL);
      }
      /* read header = "MW2_MIMAGE" */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header,hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (header)...\n",fname);
 	  fclose(fp);
@@ -1108,14 +1193,14 @@ Mimage _mw_load_mimage_mw2_mimage(char *fname)
      }
      /* Read the cmt field */
 
-     if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(size), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (cmt size)...\n",fname);
 	  fclose(fp);
 	  return(NULL);
      }
      if (need_flipping == 1) _mw_in_flip_b4(size);
-     if ((size > 0)&& (fread(mimage->cmt,sizeof(char),size,fp) == 0))
+     if ((size > 0) && (size > fread(mimage->cmt, sizeof(char), size, fp)))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (cmt; cmt size=%d)...\n",fname,size);
 	  fclose(fp);
@@ -1124,14 +1209,14 @@ Mimage _mw_load_mimage_mw2_mimage(char *fname)
 
      /* Read the name field */
 
-     if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(size), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (name size)...\n",fname);
 	  fclose(fp);
 	  return(NULL);
      }
      if (need_flipping == 1) _mw_in_flip_b4(size);
-     if ((size > 0)&&(fread(mimage->name,sizeof(char),size,fp) == 0))
+     if ((size > 0) && (size > fread(mimage->name, sizeof(char), size, fp)))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (name)...\n",fname);
 	  fclose(fp);
@@ -1139,13 +1224,11 @@ Mimage _mw_load_mimage_mw2_mimage(char *fname)
      }
 
      /* Read the other fields */
-     if (
-	  (fread(&(mimage->nrow),sizeof(int),1,fp) == 0) || 
-	  (fread(&(mimage->ncol),sizeof(int),1,fp) == 0) || 
-	  (fread(&(mimage->minvalue),sizeof(float),1,fp) == 0) ||
-	  (fread(&(mimage->maxvalue),sizeof(float),1,fp) == 0) ||
-	  (fread(&(nll),sizeof(unsigned int),1,fp) == 0)
-	  )
+     if (1 > fread(&(mimage->nrow), sizeof(int), 1, fp)
+	 || 1 > fread(&(mimage->ncol), sizeof(int), 1, fp)
+	 || 1 > fread(&(mimage->minvalue), sizeof(float), 1, fp)
+	 || 1 > fread(&(mimage->maxvalue), sizeof(float), 1, fp)
+	 || 1 > fread(&(nll), sizeof(unsigned int), 1, fp))
      {      mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
 	  return(NULL);
@@ -1184,7 +1267,7 @@ Mimage _mw_load_mimage_mw2_mimage(char *fname)
 
      /* Read the Fmorpho lines */
 
-     if (fread(&(nll),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(nll), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -1220,7 +1303,7 @@ Mimage _mw_load_mimage_mw2_mimage(char *fname)
      {
 	  mw_num_morpho_line(mimage->first_ml);
 	  /* First, read the number of couples */
-	  if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+	  if (1 > fread(&(size), sizeof(unsigned int), 1, fp))
 	  {
 	       mw_delete_mimage(mimage);
 	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
@@ -1230,8 +1313,8 @@ Mimage _mw_load_mimage_mw2_mimage(char *fname)
 	  if (need_flipping == 1) _mw_in_flip_b4(size);
 	  for (i=1,ll=mimage->first_ml; i<=size; i++)
 	  {
-	       if ((fread(&(mlnum),sizeof(unsigned int),1,fp) == 0) ||
-		   (fread(&(msnum),sizeof(unsigned int),1,fp) == 0))
+	       if (1 > fread(&(mlnum), sizeof(unsigned int), 1, fp)
+		   || 1 > fread(&(msnum), sizeof(unsigned int), 1, fp))
 	       {
 		    mw_delete_mimage(mimage);
 		    mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
@@ -1323,21 +1406,49 @@ short _mw_create_mimage_mw2_mimage(char *fname, Mimage mimage)
      if (fp == NULL) return(-1);
 
      size = strlen(mimage->cmt);
-     fwrite(&(size),sizeof(unsigned int),1,fp);  
-     if (size > 0) fwrite(mimage->cmt,sizeof(char),size,fp);
-     size = strlen(mimage->name);
-     fwrite(&(size),sizeof(unsigned int),1,fp);  
-     if (size > 0) fwrite(mimage->name,sizeof(char),size,fp);
+     if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while writing file...\n");
+	  exit(EXIT_FAILURE);
+     }
 
-     fwrite(&(mimage->nrow),sizeof(int),1,fp);
-     fwrite(&(mimage->ncol),sizeof(int),1,fp);
-     fwrite(&(mimage->minvalue),sizeof(float),1,fp);
-     fwrite(&(mimage->maxvalue),sizeof(float),1,fp);
+     if (size > 0) 
+	 if (size > fwrite(mimage->cmt, sizeof(char), size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing file...\n");
+	     exit(EXIT_FAILURE);
+	 }
+
+     size = strlen(mimage->name);
+     if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while writing file...\n");
+	  exit(EXIT_FAILURE);
+     }
+     if (size > 0)
+	 if (size > fwrite(mimage->name, sizeof(char), size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing file...\n");
+	     exit(EXIT_FAILURE);
+	 }
+
+     if (1 < fwrite(&(mimage->nrow), sizeof(int), 1, fp)
+	 || 1 > fwrite(&(mimage->ncol), sizeof(int), 1, fp)
+	 || 1 > fwrite(&(mimage->minvalue), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(mimage->maxvalue), sizeof(float), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while writing file...\n");
+	  exit(EXIT_FAILURE);
+     }
 
      /* Record the number of morpho lines */
      for (ll=mimage->first_ml, nll=0; ll; ll=ll->next, nll++);
 
-     fwrite(&(nll),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(nll), sizeof(unsigned int), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while writing file...\n");
+	  exit(EXIT_FAILURE);
+     }
 
      for (ll=mimage->first_ml, n=1; ll; ll=ll->next, n++)
 	  _mw_write_ml_mw2_ml(fp,ll,n);
@@ -1345,7 +1456,11 @@ short _mw_create_mimage_mw2_mimage(char *fname, Mimage mimage)
      /* Record the number of fmorpho lines */
      for (fll=mimage->first_fml, nll=0; fll; fll=fll->next, nll++);
 
-     fwrite(&(nll),sizeof(unsigned int),1,fp);
+     if (1 > fwrite(&(nll), sizeof(unsigned int), 1, fp))
+     {
+	  mwerror(ERROR, 0,"Error while writing file...\n");
+	  exit(EXIT_FAILURE);
+     }
 
      for (fll=mimage->first_fml; fll; fll=fll->next)
 	  _mw_write_fml_mw2_fml(fp,fll);
@@ -1361,14 +1476,22 @@ short _mw_create_mimage_mw2_mimage(char *fname, Mimage mimage)
 	  size=0;
 	  for (ll=mimage->first_ml; ll; ll=ll->next)
 	       if ((ll->morphosets)&&(ll->morphosets->morphoset)) size++;
-	  fwrite(&(size),sizeof(unsigned int),1,fp);     
+	  if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+	  {
+	      mwerror(ERROR, 0,"Error while writing file...\n");
+	      exit(EXIT_FAILURE);
+	  }
+
 	  /* And now the couples (mlnum,msnum) */
 	  for (ll=mimage->first_ml; ll; ll=ll->next)
 	       if ((ll->morphosets)&&(ll->morphosets->morphoset))
-	       {
-		    fwrite(&(ll->num),sizeof(unsigned int),1,fp);     
-		    fwrite(&(ll->morphosets->morphoset->num),sizeof(unsigned int),1,fp);     
-	       }
+		   if (1 > fwrite(&(ll->num), sizeof(unsigned int), 1, fp)
+		       || 1 > fwrite(&(ll->morphosets->morphoset->num),
+				     sizeof(unsigned int), 1, fp))
+		   {
+		       mwerror(ERROR, 0,"Error while writing file...\n");
+		       exit(EXIT_FAILURE);
+		   }
      }
      fclose(fp);
      return(0);

@@ -48,11 +48,9 @@ Flist _mw_read_mw2_flist(char *fname, FILE *fp, int need_flipping)
 	  return(NULL);
      }
   
-     if (
-	  (fread(&(lst->size),sizeof(int),1,fp) == 0) ||
-	  (fread(&(lst->dim),sizeof(int),1,fp) == 0) ||
-	  (fread(&(lst->data_size),sizeof(int),1,fp) == 0)
-	  )
+     if (1 > fread(&(lst->size), sizeof(int), 1, fp)
+	 || 1 > fread(&(lst->dim),sizeof(int),1,fp)
+	 || 1 > fread(&(lst->data_size),sizeof(int),1,fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  mw_delete_flist(lst);
@@ -79,7 +77,12 @@ Flist _mw_read_mw2_flist(char *fname, FILE *fp, int need_flipping)
   
      /* Read the array values */
      n=lst->size * lst->dim;
-     if (n > 0) fread(lst->values,sizeof(float),n,fp);
+     if (n > 0)
+	 if (n > fread(lst->values, sizeof(float), n, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+	     return(NULL);
+	 }
 
      if (need_flipping == 1) /* Strange that we need {} here to avoid run-time errors ! */
      {
@@ -87,7 +90,13 @@ Flist _mw_read_mw2_flist(char *fname, FILE *fp, int need_flipping)
      }
 
      /* Read the array data */
-     if (lst->data_size > 0) fread((char *)lst->data,sizeof(char),lst->data_size,fp);
+     if (lst->data_size > 0)
+	 if ((size_t) lst->data_size > fread((char *)lst->data, sizeof(char),
+					     lst->data_size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+	     return(NULL);
+	 }
 
      return(lst);
 }
@@ -108,7 +117,13 @@ Flist _mw_load_mw2_flist(char *fname)
      if (strncmp(ftype,"MW2_FLIST",9) != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_mw2_flist] File \"%s\" is not in the MW2_FLIST format\n",fname);
   
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -116,7 +131,7 @@ Flist _mw_load_mw2_flist(char *fname)
      }
 
      /* read header */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header, hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -171,19 +186,24 @@ int _mw_write_mw2_flist(FILE *fp, Flist lst)
 {
      unsigned int n;
 
-     if (fwrite(&(lst->size),sizeof(int),1,fp)!=1) return(1);
-     if (fwrite(&(lst->dim),sizeof(int),1,fp)!=1) return(1);
-     if (fwrite(&(lst->data_size),sizeof(int),1,fp)!=1) return(1);
+     if (1 > fwrite(&(lst->size), sizeof(int), 1, fp))
+	 return(1);
+     if (1 > fwrite(&(lst->dim),sizeof(int),1,fp))
+	 return(1);
+     if (1 > fwrite(&(lst->data_size),sizeof(int),1,fp))
+	 return(1);
 
      n=lst->size * lst->dim;
      if (n > 0) 
-	  if (fwrite(lst->values,sizeof(float),n,fp)!=
-	      n) return(1);
+	  if (n > fwrite(lst->values,sizeof(float),n,fp))
+	      return(1);
 
      if (lst->data_size > 0) 
           /* FIXME: wrong types, dirty temporary fix */
-	  if (fwrite((char *)lst->data,sizeof(char),lst->data_size,fp) != 
-	      (unsigned int) lst->data_size) return(1);
+	 if ((size_t) lst->data_size > fwrite((char *)lst->data,
+					      sizeof(char),
+					      lst->data_size, fp))
+	     return(1);
 
      return(0);
 }
@@ -261,7 +281,13 @@ Flists _mw_load_mw2_flists(char *fname)
      if (strncmp(ftype,"MW2_FLISTS",10) != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_mw2_flists] File \"%s\" is not in the MW2_FLISTS format\n",fname);
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -269,7 +295,7 @@ Flists _mw_load_mw2_flists(char *fname)
      }
 
      /* read header */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header,hsize,1,fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -285,24 +311,26 @@ Flists _mw_load_mw2_flists(char *fname)
      }
 
      /* Read the cmt field */
-     if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(size),sizeof(unsigned int),1,fp))
      {
-	  mwerror(ERROR, 0,"Error while reading file \"%s\" (cmt size)...\n",fname);
-	  mw_delete_flists(lsts);
-	  fclose(fp);
-	  return(NULL);
+	 mwerror(ERROR, 0,"Error while reading file \"%s\" (cmt size)...\n",
+		 fname);
+	 mw_delete_flists(lsts);
+	 fclose(fp);
+	 return(NULL);
      }
      if (need_flipping == 1) _mw_in_flip_b4(size);
-     if ((size > 0)&& (fread(lsts->cmt,sizeof(char),size,fp) == 0))
+     if ((size > 0) && (size > fread(lsts->cmt,sizeof(char),size,fp)))
      {
-	  mwerror(ERROR, 0,"Error while reading file \"%s\" (cmt; cmt size=%d)...\n",fname,size);
+	 mwerror(ERROR, 0, "Error while reading file \"%s\" "
+		 "(cmt; cmt size=%d)...\n",fname,size);
 	  mw_delete_flists(lsts);
 	  fclose(fp);
 	  return(NULL);
      }
 
      /* Read the name field */
-     if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(size),sizeof(unsigned int),1,fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (name size)...\n",fname);
 	  mw_delete_flists(lsts);
@@ -310,7 +338,7 @@ Flists _mw_load_mw2_flists(char *fname)
 	  return(NULL);
      }
      if (need_flipping == 1) _mw_in_flip_b4(size);
-     if ((size > 0)&&(fread(lsts->name,sizeof(char),size,fp) == 0))
+     if ((size > 0) && (size > fread(lsts->name,sizeof(char),size,fp)))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (name)...\n",fname);
 	  mw_delete_flists(lsts);
@@ -319,9 +347,8 @@ Flists _mw_load_mw2_flists(char *fname)
      }
 
      /* Read the other fields */
-     if (
-	  (fread(&(lsts->size),sizeof(int),1,fp) == 0) || 
-	  (fread(&(lsts->data_size),sizeof(int),1,fp) == 0))
+     if (1 > fread(&(lsts->size),sizeof(int),1,fp)
+	 || 1 > fread(&(lsts->data_size),sizeof(int),1,fp))
      {      
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  mw_delete_flists(lsts);
@@ -363,7 +390,13 @@ Flists _mw_load_mw2_flists(char *fname)
 
      /* Read the array data */
      if (lsts->data_size > 0) 
-	  fread((char *)lsts->data,sizeof(char),lsts->data_size,fp);
+	 if ((size_t) lsts->data_size > fread((char *)lsts->data,
+					      sizeof(char),
+					      lsts->data_size, fp))
+     {      
+	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+	  exit(EXIT_FAILURE);
+     }
 
      fclose(fp);
      return(lsts);
@@ -422,15 +455,39 @@ short _mw_create_mw2_flists(char *fname, Flists lsts)
      if (fp == NULL) return(-1);
   
      size = strlen(lsts->cmt);
-     fwrite(&(size),sizeof(unsigned int),1,fp);  
-     if (size > 0) fwrite(lsts->cmt,sizeof(char),size,fp);
+     if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
+  
+     if (size > 0) 
+	 if (size > fwrite(lsts->cmt, sizeof(char), size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	     exit(EXIT_FAILURE);
+	 }
 
      size = strlen(lsts->name);
-     fwrite(&(size),sizeof(unsigned int),1,fp);  
-     if (size > 0) fwrite(lsts->name,sizeof(char),size,fp);
+     if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
+  
+     if (size > 0)
+	 if (size > fwrite(lsts->name, sizeof(char), size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	     exit(EXIT_FAILURE);
+	 }
 
-     fwrite(&(lsts->size),sizeof(int),1,fp);
-     fwrite(&(lsts->data_size),sizeof(int),1,fp);
+     if (1 > fwrite(&(lsts->size), sizeof(int), 1, fp)
+	 || 1 > fwrite(&(lsts->data_size), sizeof(int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
 
      /* Write the lists */
      for (i=0; i<lsts->size; i++)
@@ -442,12 +499,13 @@ short _mw_create_mw2_flists(char *fname, Flists lsts)
 
      if (lsts->data_size > 0) 
           /* FIXME: wrong types, dirty temporary fix */
-	  if (fwrite((char *)lsts->data,sizeof(char),lsts->data_size,fp)!=
-	      (unsigned int) lsts->data_size) 
-	  {
-	       mwerror(ERROR,1,"Error while writing file %s !\n",fname);
-	       return(1);
-	  }
+	 if ((size_t) lsts->data_size > fwrite((char *)lsts->data,
+					       sizeof(char),
+					       lsts->data_size, fp)) 
+	 {
+	     mwerror(ERROR,1,"Error while writing file %s !\n",fname);
+	     return(1);
+	 }
 
      fclose(fp);
      return(0);
@@ -505,11 +563,9 @@ static Dlist _mw_read_mw2_dlist(char *fname, FILE *fp, int need_flipping)
 	  return(NULL);
      }
   
-     if (
-	  (fread(&(lst->size),sizeof(int),1,fp) == 0) ||
-	  (fread(&(lst->dim),sizeof(int),1,fp) == 0) ||
-	  (fread(&(lst->data_size),sizeof(int),1,fp) == 0)
-	  )
+     if (1 > fread(&(lst->size), sizeof(int), 1, fp)
+	 || 1 > fread(&(lst->dim),sizeof(int),1,fp)
+	 || 1 > fread(&(lst->data_size),sizeof(int),1,fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  mw_delete_dlist(lst);
@@ -536,7 +592,13 @@ static Dlist _mw_read_mw2_dlist(char *fname, FILE *fp, int need_flipping)
   
      /* Read the array values */
      n=lst->size * lst->dim;
-     if (n > 0) fread(lst->values,sizeof(double),n,fp);
+     if (n > 0)
+	 if (n > fread(lst->values, sizeof(double), n, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+	     exit(EXIT_FAILURE);
+	 }
+
      if (need_flipping == 1)
 	  for (i=0;i<n;i++) 
 	  {
@@ -547,7 +609,14 @@ static Dlist _mw_read_mw2_dlist(char *fname, FILE *fp, int need_flipping)
 
 
      /* Read the array data */
-     if (lst->data_size > 0) fread((char *)lst->data,sizeof(char),lst->data_size,fp);
+     if (lst->data_size > 0)
+	 if ((size_t) lst->data_size > fread((char *)lst->data,
+					     sizeof(char),
+					     lst->data_size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+	     exit(EXIT_FAILURE);
+	 }
 
      return(lst);
 }
@@ -568,7 +637,13 @@ Dlist _mw_load_mw2_dlist(char *fname)
      if (strncmp(ftype,"MW2_DLIST",9) != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_mw2_dlist] File \"%s\" is not in the MW2_DLIST format\n",fname);
   
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -576,7 +651,7 @@ Dlist _mw_load_mw2_dlist(char *fname)
      }
 
      /* read header */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header, hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -613,7 +688,7 @@ Dlist _mw_load_dlist(char *fname, char *type)
      lst = _mw_dlist_load_native(fname,type);
      if (lst != NULL) return(lst);
 
-     /* If failed, try other formats with memory conversion */
+     /* If failed, 264try other formats with memory conversion */
      lst = (Dlist) _mw_load_etype_to_itype(fname,mtype,"dlist",type);
      if (lst != NULL) return(lst);
 
@@ -632,17 +707,23 @@ int _mw_write_mw2_dlist(FILE *fp, Dlist lst)
 {
      unsigned int n;
 
-     if (fwrite(&(lst->size),sizeof(int),1,fp)!=1) return(1);
-     if (fwrite(&(lst->dim),sizeof(int),1,fp)!=1) return(1);
-     if (fwrite(&(lst->data_size),sizeof(int),1,fp)!=1) return(1);
+     if (1 > fwrite(&(lst->size), sizeof(int), 1, fp))
+	 return(1);
+     if (1 > fwrite(&(lst->dim), sizeof(int), 1, fp))
+	 return(1);
+     if (1 > fwrite(&(lst->data_size), sizeof(int), 1, fp))
+	 return(1);
 
      n=lst->size * lst->dim;
      if (n > 0) 
-	  if (fwrite(lst->values,sizeof(double),n,fp)!=n) return(1);
+	  if (n > fwrite(lst->values, sizeof(double), n, fp))
+	      return(1);
      if (lst->data_size > 0) 
           /* FIXME: wrong types, dirty temporary fix */
-	  if (fwrite((char *)lst->data,sizeof(char),lst->data_size,fp)!=
-	      (unsigned int) lst->data_size) return(1);
+	 if ((size_t) lst->data_size > fwrite((char *)lst->data,
+					      sizeof(char),
+					      lst->data_size, fp))
+	     return(1);
 
      return(0);
 }
@@ -719,7 +800,13 @@ Dlists _mw_load_mw2_dlists(char *fname)
      if (strncmp(ftype,"MW2_DLISTS",10) != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_mw2_dlists] File \"%s\" is not in the MW2_DLISTS format\n",fname);
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -727,7 +814,7 @@ Dlists _mw_load_mw2_dlists(char *fname)
      }
 
      /* read header */
-     if (fread(header,hsize,1,fp) == 0)
+     if (1 > fread(header, hsize, 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  fclose(fp);
@@ -743,7 +830,7 @@ Dlists _mw_load_mw2_dlists(char *fname)
      }
 
      /* Read the cmt field */
-     if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(size), sizeof(unsigned int), 1, fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (cmt size)...\n",fname);
 	  mw_delete_dlists(lsts);
@@ -751,7 +838,7 @@ Dlists _mw_load_mw2_dlists(char *fname)
 	  return(NULL);
      }
      if (need_flipping == 1) _mw_in_flip_b4(size);
-     if ((size > 0)&& (fread(lsts->cmt,sizeof(char),size,fp) == 0))
+     if ((size > 0)&& (size > fread(lsts->cmt, sizeof(char), size, fp)))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (cmt; cmt size=%d)...\n",fname,size);
 	  mw_delete_dlists(lsts);
@@ -760,7 +847,7 @@ Dlists _mw_load_mw2_dlists(char *fname)
      }
 
      /* Read the name field */
-     if (fread(&(size),sizeof(unsigned int),1,fp) == 0)
+     if (1 > fread(&(size),sizeof(unsigned int),1,fp))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (name size)...\n",fname);
 	  mw_delete_dlists(lsts);
@@ -768,7 +855,7 @@ Dlists _mw_load_mw2_dlists(char *fname)
 	  return(NULL);
      }
      if (need_flipping == 1) _mw_in_flip_b4(size);
-     if ((size > 0)&&(fread(lsts->name,sizeof(char),size,fp) == 0))
+     if ((size > 0) && (size > fread(lsts->name,sizeof(char),size,fp)))
      {
 	  mwerror(ERROR, 0,"Error while reading file \"%s\" (name)...\n",fname);
 	  mw_delete_dlists(lsts);
@@ -777,9 +864,8 @@ Dlists _mw_load_mw2_dlists(char *fname)
      }
 
      /* Read the other fields */
-     if (
-	  (fread(&(lsts->size),sizeof(int),1,fp) == 0) || 
-	  (fread(&(lsts->data_size),sizeof(int),1,fp) == 0))
+     if (1 > fread(&(lsts->size),sizeof(int),1,fp)
+	 || 1 > fread(&(lsts->data_size),sizeof(int),1,fp))
      {      
 	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
 	  mw_delete_dlists(lsts);
@@ -821,7 +907,13 @@ Dlists _mw_load_mw2_dlists(char *fname)
 
      /* Read the array data */
      if (lsts->data_size > 0) 
-	  fread((char *)lsts->data,sizeof(char),lsts->data_size,fp);
+	 if ((size_t) lsts->data_size > fread((char *)lsts->data,
+					      sizeof(char),
+					      lsts->data_size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
+	     exit(EXIT_FAILURE);
+	 }
 
      fclose(fp);
      return(lsts);
@@ -880,15 +972,39 @@ short _mw_create_mw2_dlists(char *fname, Dlists lsts)
      if (fp == NULL) return(-1);
   
      size = strlen(lsts->cmt);
-     fwrite(&(size),sizeof(unsigned int),1,fp);  
-     if (size > 0) fwrite(lsts->cmt,sizeof(char),size,fp);
+     if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
+  
+     if (size > 0)
+	 if (size > fwrite(lsts->cmt, sizeof(char), size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	     exit(EXIT_FAILURE);
+	 }
 
      size = strlen(lsts->name);
-     fwrite(&(size),sizeof(unsigned int),1,fp);  
-     if (size > 0) fwrite(lsts->name,sizeof(char),size,fp);
+     if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
+  
+     if (size > 0)
+	 if (size > fwrite(lsts->name, sizeof(char), size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	     exit(EXIT_FAILURE);
+	 }
 
-     fwrite(&(lsts->size),sizeof(int),1,fp);
-     fwrite(&(lsts->data_size),sizeof(int),1,fp);
+     if (1 > fwrite(&(lsts->size), sizeof(int), 1, fp)
+	 || 1 > fwrite(&(lsts->data_size), sizeof(int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
 
      /* Write the lists */
      for (i=0; i<lsts->size; i++)
@@ -900,8 +1016,9 @@ short _mw_create_mw2_dlists(char *fname, Dlists lsts)
 
      if (lsts->data_size > 0) 
           /* FIXME: wrong types, dirty temporary fix */
-	  if (fwrite((char *)lsts->data,sizeof(char),lsts->data_size,fp)!=
-	      (unsigned int) lsts->data_size)
+	 if ((size_t) lsts->data_size > fwrite((char *)lsts->data,
+					       sizeof(char),
+					       lsts->data_size, fp))
 	  {
 	       mwerror(ERROR,1,"Error while writing file %s !\n",fname);
 	       return(1);

@@ -86,7 +86,7 @@ Cmovie _mw_cmovie_load_movie_old_format(char *NomFic, char *Type)
 
 Cmovie _mw_cmovie_load_native(char *fname, char *Type)
 {
-     FILE * fp, * fp2;
+     FILE * fp, * fp2 = NULL;
      Cmovie movie;               
      Cimage image,image_next;
      char FicImage[BUFSIZ];

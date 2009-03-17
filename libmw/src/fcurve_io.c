@@ -74,8 +74,13 @@ Fcurve _mw_load_fcurve_mw2_fcurve(char *fname)
 	  mwerror(INTERNAL, 0,"[_mw_load_fcurve_mw2_fcurve] File \"%s\" is not in the MW2_FCURVE format\n",fname);
 
   
-     if ( (need_flipping==-1) ||
-	  (NULL == (fp = fopen(fname, "r"))))
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (NULL == (fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -227,8 +232,13 @@ short _mw_create_fcurve_mw2_fcurve(char *fname, Fcurve cv)
      {
 	  vx = pc->x;
 	  vy = pc->y;
-	  fwrite(&vx,sizeof(float),1,fp);
-	  fwrite(&vy,sizeof(float),1,fp);
+	  if (1 > fwrite(&vx, sizeof(float), 1, fp)
+	      || 1 > fwrite(&vy, sizeof(float), 1, fp))
+	  {
+	      mwerror(ERROR, 0, "Error while writing "
+		      "to file \"%s\"...\n", fname);
+	      exit(EXIT_FAILURE);
+	  }
      }
 
      fclose(fp);
@@ -280,7 +290,7 @@ Fcurves _mw_load_fcurves_mw2_fcurves_1_00(char *fname)
      FILE    *fp;
      Fcurves cvs;
      Fcurve newcv,oldcv;
-     Point_fcurve newcvc,oldcvc;
+     Point_fcurve newcvc,oldcvc = NULL;
      float x,y;
      float *px,*py;
      char new_fcurve;
@@ -297,7 +307,13 @@ Fcurves _mw_load_fcurves_mw2_fcurves_1_00(char *fname)
 	  mwerror(INTERNAL, 0,"[_mw_load_fcurves_mw2_fcurves] File \"%s\" is not in the MW2_FCURVES format\n",fname);
   
   
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))))
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -417,7 +433,7 @@ Fcurves _mw_load_fcurves_mw2_fcurves(char *fname)
      FILE    *fp;
      Fcurves cvs;
      Fcurve newcv,oldcv;
-     Point_fcurve newcvc,oldcvc;
+     Point_fcurve newcvc,oldcvc = NULL;
      float X[2];
      int n;
      float *px;
@@ -435,7 +451,13 @@ Fcurves _mw_load_fcurves_mw2_fcurves(char *fname)
      /*printf("[_mw_load_fcurves_mw2_fcurves] version=%f\n",version);*/
      if (version==1.0) return(_mw_load_fcurves_mw2_fcurves_1_00(fname));
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))))
+     if (!(fp = fopen(fname, "r")))
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (need_flipping==-1)
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -566,7 +588,14 @@ short _mw_create_fcurves_mw2_fcurves(char *fname, Fcurves cvs)
      fp=_mw_write_header_file(fname,"MW2_FCURVES",1.01);
      if (fp == NULL) return(-1);
   
-     if (cvs->first) fwrite(&end_of_fcurve,sizeof(float),1,fp);
+     if (cvs->first)
+	 if (1 > fwrite(&end_of_fcurve, sizeof(float), 1, fp))
+	 {
+	     mwerror(ERROR, 0, "Error while writing "
+		     "to file \"%s\"...\n", fname);
+	     exit(EXIT_FAILURE);
+	 }
+
      for (pl=cvs->first, n=1; pl; pl=pl->next, n++)
      {
 	  for (pc=pl->first; pc; pc=pc->next)
@@ -576,12 +605,29 @@ short _mw_create_fcurves_mw2_fcurves(char *fname, Fcurves cvs)
 		    mwerror(INTERNAL,1,"[_mw_create_fcurves_mw2_fcurves] Fcurve #%d has a point which coordinates (%f,%f) exceed float capacity\n",n,pc->x,pc->y);
 	       vx = pc->x;
 	       vy = pc->y;
-	       fwrite(&vx,sizeof(float),1,fp);
-	       fwrite(&vy,sizeof(float),1,fp);
+	       if (1 > fwrite(&vx, sizeof(float), 1, fp)
+		   || 1 > fwrite(&vy, sizeof(float), 1, fp))
+	       {
+		   mwerror(ERROR, 0, "Error while writing "
+			   "to file \"%s\"...\n", fname);
+		   exit(EXIT_FAILURE);
+	       }
+
 	  }
-	  if (pl->next) fwrite(&end_of_fcurve,sizeof(float),1,fp);
+	  if (pl->next)
+	      if (1 > fwrite(&end_of_fcurve, sizeof(float), 1, fp))
+	      {
+		  mwerror(ERROR, 0, "Error while writing "
+			  "to file \"%s\"...\n", fname);
+		  exit(EXIT_FAILURE);
+	      }
      }      
-     fwrite(&end_of_fcurves,sizeof(float),1,fp);
+     if (1 > fwrite(&end_of_fcurves, sizeof(float), 1, fp))
+     {
+	 mwerror(ERROR, 0, "Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
+
      fclose(fp);
      return(0);
 }

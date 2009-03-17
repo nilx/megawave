@@ -16,6 +16,7 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
@@ -182,7 +183,11 @@ short _mw_cimage_create_ps(char *fname, Cimage image)
 
 
      PSfcmd = strlen(headbuf);
-     fwrite(headbuf, sizeof(char), PSfcmd, fp);
+     if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
+     {
+	 fprintf(stderr, "error while writing to disk");
+	 exit(EXIT_FAILURE);
+     }
   
      /* Comments */
      strcpy(headbuf,"/Times-BoldItalic findfont 10 scalefont setfont\n");
@@ -205,7 +210,11 @@ short _mw_cimage_create_ps(char *fname, Cimage image)
 	  lg -= 10;
      }
      PSfcmd = strlen(headbuf);
-     fwrite(headbuf, sizeof(char), PSfcmd, fp);
+     if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
+     {
+	 fprintf(stderr, "error while writing to disk");
+	 exit(EXIT_FAILURE);
+     }
  
      /* DATA */
 
@@ -284,7 +293,11 @@ short _mw_cimage_create_ps(char *fname, Cimage image)
 	  strcat (headbuf ,hbuf);
       
 	  PSfcmd = strlen(headbuf);
-	  fwrite(headbuf, sizeof(char), PSfcmd, fp);
+	  if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
+	  {
+	      fprintf(stderr, "error while writing to disk");
+	      exit(EXIT_FAILURE);
+	  }
 
 	  /* Lecture des pixels de l'image et conversion PostScript */
 
@@ -295,13 +308,22 @@ short _mw_cimage_create_ps(char *fname, Cimage image)
 	       PSfbuf[j] = hval[image->gray[pixoffs]>>4];
 	       PSfbuf[j+1]=hval[image->gray[pixoffs++]&15];
 	  }
-	  fwrite(PSfbuf, sizeof(unsigned char), pixcnt, fp);
+	  if ((size_t) pixcnt > fwrite(PSfbuf, sizeof(unsigned char),
+				       pixcnt, fp))
+	  {
+	      fprintf(stderr, "error while writing to disk");
+	      exit(EXIT_FAILURE);
+	  }
       
 	  /* Fin commandes PostScript */	
 
 	  sprintf (headbuf, "> image\n");
 	  PSfcmd = strlen(headbuf);
-	  fwrite(headbuf, sizeof(char), PSfcmd, fp);
+	  if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
+	  {
+	      fprintf(stderr, "error while writing to disk");
+	      exit(EXIT_FAILURE);
+	  }
 	  headbuf[0] = '\0';
 	  cntdy += bdy;
 
@@ -309,7 +331,11 @@ short _mw_cimage_create_ps(char *fname, Cimage image)
      /* Show the page and Restore original state */
      sprintf(headbuf,"showpage\norigstate restore\n");
      PSfcmd = strlen(headbuf);
-     fwrite(headbuf, sizeof(char), PSfcmd, fp);
+     if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
+     {
+	 fprintf(stderr, "error while writing to disk");
+	 exit(EXIT_FAILURE);
+     }
     
      fclose (fp);
      return (0);

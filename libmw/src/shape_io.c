@@ -213,7 +213,14 @@ static Shape _mw_read_mw2_shape(char * fname, FILE * fp,
 
      /* Read the array data */
      if (sh->data_size > 0) 
-	  fread((char *)sh->data,sizeof(char),sh->data_size,fp);
+     {
+	 if ((size_t) sh->data_size > fread((char *)sh->data, sizeof(char),
+					    sh->data_size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while reading file \"%s\"...\n", fname);
+	     exit(EXIT_FAILURE);
+	 }
+     }
      else sh->data = NULL;
 
      return(sh);
@@ -236,7 +243,13 @@ Shape _mw_load_mw2_shape(char * fname)
      if (strncmp(ftype,"MW2_SHAPE",9) != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_mw2_shape] File \"%s\" is not in the MW2_SHAPE format\n",fname);
   
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -291,21 +304,35 @@ void _mw_write_mw2_shape(FILE * fp, Shape sh, int iparent)
 {
      char bound; /* 1 if boundary defined (non NULL), 0 elsewhere */
 
-     fwrite(&(sh->inferior_type),sizeof(char),1,fp);
-     fwrite(&(sh->value),sizeof(float),1,fp);
-     fwrite(&(sh->open),sizeof(char),1,fp);
-     fwrite(&(sh->area),sizeof(int),1,fp);
-     fwrite(&iparent,sizeof(int),1,fp);
+     if (1 > fwrite(&(sh->inferior_type), sizeof(char), 1, fp)
+	 || 1 > fwrite(&(sh->value), sizeof(float), 1, fp)
+	 || 1 > fwrite(&(sh->open), sizeof(char), 1, fp)
+	 || 1 > fwrite(&(sh->area), sizeof(int), 1, fp)
+	 || 1 > fwrite(&iparent, sizeof(int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file...\n");
+	 exit(EXIT_FAILURE);
+     }
+
      if (sh->boundary) bound=1; else bound=0;
-     fwrite(&bound,sizeof(char),1,fp);  
-     fwrite(&(sh->data_size),sizeof(int),1,fp);  
+     if (1 > fwrite(&bound, sizeof(char), 1, fp)
+	 || 1 > fwrite(&(sh->data_size), sizeof(int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file...\n");
+	 exit(EXIT_FAILURE);
+     }
 
      /* Record the boundary, now a list rather than a curve */
      if (sh->boundary) _mw_write_mw2_flist(fp,sh->boundary);
 
      /* Record data field */
      if (sh->data_size > 0) 
-	  fwrite((char *)sh->data,sizeof(char),sh->data_size,fp);
+	 if ((size_t) sh->data_size > fwrite((char *)sh->data,
+					     sizeof(char), sh->data_size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing to file...\n");
+	     exit(EXIT_FAILURE);
+	 }
 }
 
 /* Write file in MW2_SHAPE format */  
@@ -362,7 +389,13 @@ Shapes _mw_load_mw2_shapes_1_00(char * fname)
 	  mwerror(INTERNAL, 0,"[_mw_load_mw2_shapes] File \"%s\" is not in the MW2_SHAPES format\n",fname);
 
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -521,7 +554,13 @@ Shapes _mw_load_mw2_shapes(char * fname)
 
      if (version==1.00) return(_mw_load_mw2_shapes_1_00(fname));
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))) )
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -671,8 +710,14 @@ Shapes _mw_load_mw2_shapes(char * fname)
      }
 
      /* Read the array data */
-     if (shapes->data_size > 0) 
-	  fread((char *)shapes->data,sizeof(char),shapes->data_size,fp);
+     if (shapes->data_size > 0)
+	 if ((size_t) shapes->data_size > fread((char *)shapes->data,
+						sizeof(char),
+						shapes->data_size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while reading file \"%s\"...\n", fname);
+	     exit(EXIT_FAILURE);
+	 }
   
      fclose(fp);
 
@@ -719,17 +764,42 @@ short _mw_create_mw2_shapes(char * fname, Shapes shs)
      if (fp == NULL) return(-1);
 
      size = strlen(shs->cmt);
-     fwrite(&(size),sizeof(unsigned int),1,fp);  
-     if (size > 0) fwrite(shs->cmt,sizeof(char),size,fp);
+     if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
+  
+     if (size > 0)
+	 if (size > fwrite(shs->cmt, sizeof(char), size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	     exit(EXIT_FAILURE);
+	 }
 
      size = strlen(shs->name);
-     fwrite(&(size),sizeof(unsigned int),1,fp);  
-     if (size > 0) fwrite(shs->name,sizeof(char),size,fp);
+     if (1 > fwrite(&(size), sizeof(unsigned int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
+  
+     if (size > 0)
+	 if (size > fwrite(shs->name, sizeof(char), size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	     exit(EXIT_FAILURE);
+	 }
 
-     fwrite(&(shs->nrow),sizeof(int),1,fp);
-     fwrite(&(shs->ncol),sizeof(int),1,fp);
-     fwrite(&(shs->interpolation),sizeof(int),1,fp);
-     fwrite(&(shs->data_size),sizeof(int),1,fp);    
+
+     if (1 > fwrite(&(shs->nrow), sizeof(int), 1, fp)
+	 || 1 > fwrite(&(shs->ncol), sizeof(int), 1, fp)
+	 || 1 > fwrite(&(shs->interpolation), sizeof(int), 1, fp)
+	 || 1 > fwrite(&(shs->data_size), sizeof(int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
 
      tabIDs = (int*)malloc(sizeof(int) * shs->nb_shapes);
      if(tabIDs == NULL)
@@ -742,7 +812,11 @@ short _mw_create_mw2_shapes(char * fname, Shapes shs)
 	  if(! shs->the_shapes[i].removed)
 	       tabIDs[i] = new_nb_shapes++;
   
-     fwrite(&new_nb_shapes,sizeof(int),1,fp);
+     if (1 > fwrite(&new_nb_shapes, sizeof(int), 1, fp))
+     {
+	 mwerror(ERROR, 0,"Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
 
      /* write info for smallest_shape */
      absolute=0;
@@ -750,7 +824,12 @@ short _mw_create_mw2_shapes(char * fname, Shapes shs)
      {
 	  sh=shs->smallest_shape[absolute];
 	  if (sh->removed) sh=mw_get_parent_shape(sh);
-	  fwrite(&tabIDs[sh-shs->the_shapes],sizeof(int),1,fp);
+	  if (1 > fwrite(&tabIDs[sh-shs->the_shapes], sizeof(int), 1, fp))
+	  {
+	      mwerror(ERROR, 0,"Error while writing to file "
+		      "\"%s\"...\n", fname);
+	      exit(EXIT_FAILURE);
+	  }
      }
 
      /* write the shapes */
@@ -777,7 +856,13 @@ short _mw_create_mw2_shapes(char * fname, Shapes shs)
 
      /* Record data field */
      if (shs->data_size > 0) 
-	  fwrite((char *)shs->data,sizeof(char),shs->data_size,fp);
+	 if ((size_t) shs->data_size > fwrite((char *)shs->data, sizeof(char),
+					      shs->data_size, fp))
+	 {
+	     mwerror(ERROR, 0,"Error while writing to file "
+		     "\"%s\"...\n", fname);
+	     exit(EXIT_FAILURE);
+	 }
 
      fclose(fp);
      return(0);

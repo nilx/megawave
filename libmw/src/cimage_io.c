@@ -8,6 +8,7 @@
  * input/output private functions for the Cimage structure
  */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -220,15 +221,22 @@ Cimage _mw_cimage_load_megawave1(char * NomFic, char * Type)
 			       "assume BINary 8 bpp format.\n", NomFic);
 		   }
 		   else
+		   {
 		       mwerror(FATAL, 0, "Format of the image file \"%s\" "
 			       "unknown\n", NomFic);
+		       exit(EXIT_FAILURE);
+		   }
 	       }
 
      /* Reservation memoire */
      image = mw_change_cimage(NULL,dy,dx);
      if (image == NULL)
+     {
 	  mwerror(FATAL, 0, "Not enough memory "
 		  "to load the image \"%s\"\n", NomFic);
+	  exit(EXIT_FAILURE);
+     }
+
      strcpy(image->cmt,Comment);
      /* On se positionne sur le debut de la zone pixel (0,0) */
      if (-1L == fseek(fp, header, SEEK_SET)) 
@@ -321,21 +329,34 @@ short _mw_cimage_create_megawave1(char * NomFic, Cimage image,
 	  header = 0;
      }
      else
-	  mwerror(INTERNAL,1,"[_mw_cimage_create_megawave1] Unknown format \"%s\"\n",
+     {
+	  mwerror(INTERNAL, 1, 
+		  "[_mw_cimage_create_megawave1] Unknown format \"%s\"\n",
 		  Type);
+	  exit(EXIT_FAILURE);
+     }
 
      if (taillezc + header <= 0) /* No header at all */
      {
 	 if (NULL == (fp = fopen(NomFic, "w")))
+	 {
 	     mwerror(FATAL, 1, "Unable to create the file \"%s\"\n",NomFic);
+	     exit(EXIT_FAILURE);
+	 }
      }
      else
 	  /* Header already written */
      {
 	 if (NULL == (fp = fopen(NomFic, "r+")))
+	 {
 	     mwerror(FATAL,1,"Unable to write in the file \"%s\"\n",NomFic);
+	     exit(EXIT_FAILURE);
+	 }
 	 if (0 != fseek(fp, (long)taillezc+header, SEEK_SET))
+	 {
 	     mwerror(FATAL,1,"Unable to write in the file \"%s\"\n",NomFic);
+	     exit(EXIT_FAILURE);
+	 }
      }
 
 

@@ -125,7 +125,11 @@ short _mw_ccimage_create_ppmr(char *file, Ccimage image)
 	  return(-3);
      }
      _mw_3x8_to_1x24XV_ucharplanes(image->red,image->green,image->blue,pic,size);
-     fwrite(pic,1,size,fp);
+     if ((size_t) size > fwrite(pic, 1, size, fp))
+     {
+	 fprintf(stderr, "error while writing to disk");
+	 exit(EXIT_FAILURE);
+     }
      fclose(fp);
 
      free(pic);

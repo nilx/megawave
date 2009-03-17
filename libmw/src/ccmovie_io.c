@@ -8,6 +8,7 @@
  * input/output private functions for the Ccmovie structure
  */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -42,8 +43,11 @@ Ccmovie _mw_ccmovie_load_movie_old_format(char *NomFic, char *Type)
 
      sprintf(FicImage,"%s_001",NomFic);
      if (NULL == (fp = fopen(FicImage, "r")))
+     {
 	 mwerror(FATAL, 1, "First image file \"%s\" not found "
 		 "or unreadable\n", FicImage);
+	 exit(EXIT_FAILURE);
+     }
      fclose(fp);
      image = (Ccimage) _mw_ccimage_load_image(FicImage,Type);
      if (image == NULL) return(movie);
@@ -86,7 +90,7 @@ Ccmovie _mw_ccmovie_load_movie_old_format(char *NomFic, char *Type)
 
 Ccmovie _mw_ccmovie_load_native(char *fname, char *Type)
 {
-     FILE *fp, *fp2;
+     FILE *fp, *fp2 = NULL;
      Ccmovie movie;               
      Ccimage image,image_next;
      char FicImage[BUFSIZ];

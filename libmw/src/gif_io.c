@@ -565,8 +565,11 @@ short _mw_cimage_create_gif(char * fname, Cimage image)
 
      curx = cury = 0;
 
-     fwrite("GIF87a", 1, 6, fp);    /* the GIF magic number */
-
+     if (6 > fwrite("GIF87a", 1, 6, fp))    /* the GIF magic number */
+     {
+	 fprintf(stderr, "error while writing to disk");
+	 exit(EXIT_FAILURE);
+     }
      putword(_RWidth, fp);           /* screen descriptor */
      putword(_RHeight, fp);
 
@@ -976,7 +979,11 @@ static void flush_char()
 {
      if( a_count > 0 ) {
 	  fputc( a_count, g_outfile );
-	  fwrite( accum, 1, a_count, g_outfile );
+	  if ((size_t) a_count > fwrite( accum, 1, a_count, g_outfile ))
+	  {
+	      fprintf(stderr, "error while writing to disk");
+	      exit(EXIT_FAILURE);
+	  }
 	  a_count = 0;
      }
 }	

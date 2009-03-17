@@ -85,7 +85,7 @@ Fmovie _mw_fmovie_load_movie_old_format(char *NomFic, char *Type)
 
 Fmovie _mw_fmovie_load_movie(char *fname, char *Type)
 {
-     FILE *fp, *fp2;
+     FILE *fp, *fp2 = NULL;
      Fmovie movie;               
      Fimage image,image_next;
      char FicImage[BUFSIZ];

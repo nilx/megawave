@@ -13,6 +13,7 @@
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
   94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -233,7 +234,11 @@ short _mw_cimage_create_pgmr(char *file, Cimage image)
      fprintf(fp,"255\n");
 
      size = image->ncol * image->nrow;
-     fwrite(image->gray,1,size,fp);
+     if ((size_t) size > fwrite(image->gray,1,size,fp))
+     {
+	 fprintf(stderr, "error while writing to disk");
+	 exit(EXIT_FAILURE);
+     }
      return(0);
 }
 

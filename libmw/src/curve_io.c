@@ -69,8 +69,13 @@ Curve _mw_load_curve_mw2_curve(char *fname)
      if (strcmp(ftype,"MW2_CURVE") != 0)
 	  mwerror(INTERNAL, 0,"[_mw_load_curve_mw2_curve] File \"%s\" is not in the MW2_CURVE format\n",fname);
   
-     if ( (need_flipping==-1) ||
-	  (NULL == (fp = fopen(fname, "r"))))
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0, "File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (NULL == (fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0, "File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -217,10 +222,13 @@ short _mw_create_curve_mw2_curve(char *fname, Curve cv)
      */
 
      for (pc=cv->first; pc; pc=pc->next)
-     {
-	  fwrite(&(pc->x),sizeof(int),1,fp);
-	  fwrite(&(pc->y),sizeof(int),1,fp);
-     }
+	 if (1 > fwrite(&(pc->x),sizeof(int), 1, fp)
+	     || 1 > fwrite(&(pc->y),sizeof(int),1,fp))
+	 {
+	       mwerror(ERROR, 0, "Error while writing "
+		       "to file \"%s\"...\n", fname);
+	       exit(EXIT_FAILURE);
+	 }
 
      fclose(fp);
      return(0);
@@ -394,8 +402,8 @@ Curves _mw_load_curves_mw2_curves(char *fname)
 {
      FILE    *fp;
      Curves cvs;
-     Curve newcv,oldcv;
-     Point_curve newcvc,oldcvc;
+     Curve newcv, oldcv;
+     Point_curve newcvc, oldcvc = NULL;
      int n,X[2];
      char ftype[mw_ftype_size],mtype[mw_mtype_size];
      int need_flipping;
@@ -411,7 +419,13 @@ Curves _mw_load_curves_mw2_curves(char *fname)
      /*printf("[_mw_load_curves_mw2_curves] version=%f\n",version);*/
      if (version==1.0) return(_mw_load_curves_mw2_curves_1_00(fname));
 
-     if ( (need_flipping==-1) || (!(fp = fopen(fname, "r"))))
+     if (need_flipping==-1)
+     {
+	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
+	  return(NULL);
+     }
+
+     if (!(fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);
@@ -539,7 +553,14 @@ short _mw_create_curves_mw2_curves(char *fname, Curves cvs)
      fp=_mw_write_header_file(fname,"MW2_CURVES",1.01);
      if (fp == NULL) return(-1);
 
-     if (cvs->first) fwrite(&end_of_curve,sizeof(int),1,fp);
+     if (cvs->first) 
+	 if (1 > fwrite(&end_of_curve, sizeof(int), 1, fp))
+	 {
+	       mwerror(ERROR, 0, "Error while writing "
+		       "to file \"%s\"...\n", fname);
+	       exit(EXIT_FAILURE);
+	 }
+
      for (pl=cvs->first, n=1; pl; pl=pl->next, n++)
      {
 	  for (pc=pl->first; pc; pc=pc->next)
@@ -547,12 +568,28 @@ short _mw_create_curves_mw2_curves(char *fname, Curves cvs)
 	       if ((pc->x == END_OF_CURVE) ||
 		   (pc->y == END_OF_CURVE))
 		    mwerror(INTERNAL,1,"[_mw_create_curves_mw2_curves] Curve #%d has a point which coordinates (%d,%d) has reserved value. Sorry !\n",n,pc->x,pc->y);	    
-	       fwrite(&(pc->x),sizeof(int),1,fp);
-	       fwrite(&(pc->y),sizeof(int),1,fp);
+	       if (1 > fwrite(&(pc->x), sizeof(int), 1, fp)
+		   || 1 > fwrite(&(pc->y), sizeof(int), 1, fp))
+	       {
+		   mwerror(ERROR, 0, "Error while writing "
+			   "to file \"%s\"...\n", fname);
+		   exit(EXIT_FAILURE);
+	       }
 	  }
-	  if (pl->next) fwrite(&end_of_curve,sizeof(int),1,fp);
+	  if (pl->next) 
+	      if (1 > fwrite(&end_of_curve, sizeof(int), 1, fp))
+	      {
+		  mwerror(ERROR, 0, "Error while writing "
+			  "to file \"%s\"...\n", fname);
+		  exit(EXIT_FAILURE);
+	      }
      }      
-     fwrite(&end_of_curves,sizeof(int),1,fp);
+     if (1 > fwrite(&end_of_curves, sizeof(int), 1, fp))
+     {
+	 mwerror(ERROR, 0, "Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
+
      fclose(fp);
      return(0);
 }

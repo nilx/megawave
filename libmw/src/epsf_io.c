@@ -195,6 +195,7 @@ short _mw_cimage_create_epsf(char *fname, Cimage image)
 	  fprintf(fp,"[%d 0 0 %d 0 %d]\t\t%% mapping matrix\n", dx, -dy, dy);
 	  fprintf(fp,"{currentfile pix readhexstring pop}\n");
 	  fprintf(fp,"image\n");
+	  err = !EOF;
 	  for (i=0, G=image->gray; i<dy && err != EOF; i++) 
 	  {
 	       lwidth = 0;

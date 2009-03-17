@@ -31,7 +31,7 @@ Rawdata _mw_load_rawdata(char *fname)
      Rawdata rd;
      int filesize;
 
-     if (NULL == fopen(fname, "r"))
+     if (NULL == (fp = fopen(fname, "r")))
      {
 	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
 	  fclose(fp);

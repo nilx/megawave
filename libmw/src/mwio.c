@@ -120,13 +120,20 @@ FILE *_mw_write_header_file(char * fname, char * type, float IDvers)
      if (fp == NULL) return(fp);
      /* On Intel processors, char order will be inversed */
      first2bytes=0x4D57; /* MW */
-     fwrite(&first2bytes,2,1,fp);
-     /* Normal char order on every processors */
-     fwrite(type+2,strlen(type)-2,1,fp);
+     if (1 > fwrite(&first2bytes, 2, 1, fp)
+	 || 1 > fwrite(type+2, strlen(type)-2, 1, fp))
+     {
+	 mwerror(FATAL, 0, "Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
 
      /* write the header id */
      sprintf(HID,"/%.2f/",IDvers);
-     fwrite(HID,strlen(HID),1,fp);
+     if (1 > fwrite(HID, strlen(HID), 1, fp))
+     {
+	 mwerror(FATAL, 0, "Error while writing to file \"%s\"...\n", fname);
+	 exit(EXIT_FAILURE);
+     }
      return(fp);
 }     
 
