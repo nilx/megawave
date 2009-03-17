@@ -38,7 +38,7 @@
 void sop(Fsignal B, Fsignal out, Fsignal A, float *a, char *plus, char *minus, char *times, char *divide, char *dist, char *norm, char *inf, char *sup, char *less, char *greater, char *equal)
 {
   int i;
-  float left,res;
+  float left,res=0.0;
 
   /* check options */
   if ( (plus?1:0) + (minus?1:0) + (times?1:0) + (divide?1:0) 

@@ -136,7 +136,7 @@ void w1threshold(float *P, float *T, float *D, char *s, char *o, Fsignal M, Wtra
                    /* Output wavelet transform */
      
 {
-  float t;
+  float t=0.0;
   
   if (in->nvoice > 1) mwerror(FATAL,1,"Does not work with more than one voice per octave !\n");
   if (in->complex > 0) mwerror(FATAL,1,"Does not work with complex wavelet transform !\n");  

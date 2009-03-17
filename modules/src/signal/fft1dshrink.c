@@ -90,7 +90,7 @@ static int comp(int n)
 
 Fsignal fft1dshrink(Fsignal in, Fsignal out, float *p, char *v)
 {
-  int n,k,delta,bestk,c,bestc;
+  int n,k,delta,bestk=0,c=0,bestc;
 
   if (*p<0. || *p>100.) mwerror(FATAL,1,"p should be between 0 and 100\n");
 

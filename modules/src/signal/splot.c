@@ -138,7 +138,7 @@ static void draw_framed_ccimage(Ccimage u, int xa, int ya, int xb, int yb, unsig
 static void plot_signal(void)
 {
   double xofs,xstep,yofs,ystep,v,truncref;
-  int i,k,x,y,n1,n2,line,zero,x1,x2,ox,oy,fgcolor,bgcolor,max,xsub,ysub;
+  int i,k,x,y,n1,n2,line,zero,x1,x2,ox=0,oy=0,fgcolor,bgcolor,max,xsub,ysub;
   char str[STRSIZE];
 
   mw_clear_ccimage(image,255,255,255);

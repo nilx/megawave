@@ -231,7 +231,7 @@ Fsignal stvrestore(char *relax, int *Niter, double *alpha, Fsignal O, Fimage I, 
 
 {
   int n,r,i,minNiter;
-  double tv,tv0,mintv,t;
+  double tv=0.0,tv0,mintv,t;
   double t0=5e-2;/* Initial fixed step */
   Fsignal dJ=NULL;
 
