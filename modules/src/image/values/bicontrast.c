@@ -26,7 +26,7 @@ void bicontrast(Fimage u, Fimage v, char *verb, Flist r, Flist g, Fimage out)
   Fsignal values;
   Fimage rank;
   int adr,i,size,n,k,nx,ny;
-  float *ubar,*unum,min,max,*a,*b,*o,*t,tbar;
+  float *ubar,*unum,min=0.0,max=0.0,*a,*b,*o,*t,tbar;
 
   nx = v->ncol;
   ny = v->nrow;

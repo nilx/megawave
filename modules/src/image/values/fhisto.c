@@ -31,7 +31,7 @@
 
 Fsignal fhisto(Fimage in, Fsignal out, float *l, float *r, int *n, float *s, char *t, Fimage w)
 {
-  float min,max,size,v;
+  float min,max,size=0.0,v;
   int num,i,cell;
 
   /* compute min and max */

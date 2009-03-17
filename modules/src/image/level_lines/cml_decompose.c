@@ -542,6 +542,9 @@ static void cml_extract(Cfsignal levels, int *opt, unsigned int L, Cfimage image
   int i,ml_opt=*opt;
   Color minvalue, maxvalue;
 
+  minvalue.red = 0;
+  minvalue.model = MODEL_RGB;
+
   /* memory for horizontal boundaries */
   H=(unsigned char **)malloc((NL-1)*sizeof(unsigned char*));
   H[0]=(unsigned char *)malloc((NL-1)*NC*sizeof(unsigned char));

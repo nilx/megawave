@@ -145,7 +145,7 @@ Ccimage ccputstring(Ccimage in, int x, int y, int *c, int *C, float *r, char *st
 {
   int nx,ny,cx,cy,dx,dy,adr,v,adr2;
   unsigned int i;
-  Curve thedisc;
+  Curve thedisc=NULL;
   Point_curve p;
 
   nx = in->ncol; ny = in->nrow;

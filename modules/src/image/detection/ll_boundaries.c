@@ -104,7 +104,7 @@ static float logH(float mu)
 static void update_mydata(Shape s, float threshold, char type)
 { 
   Shape t;
-  float mu,length;
+  float mu=0.0,length=0.0;
   struct mydata *sdata, *tdata;
 
   if (!s) return;
@@ -289,7 +289,7 @@ static void add_boundary_weak(Shape s, float threshold, float *bestnfa_inf, floa
 
 Flists ll_boundaries(Fimage in, Shapes tree, float *eps, char *all, float *step, int *precision, char *z, char *weak)
 {
-  Fimage saddles,copy_in;
+  Fimage saddles=NULL,copy_in;
   float threshold,nfa_inf,nfa_sup,offset,histo_step,fzero;
   int newtree=0,nsize,i;
 

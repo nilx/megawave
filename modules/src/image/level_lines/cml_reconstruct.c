@@ -249,8 +249,11 @@ cml_reconstruct(char *v_flag, Cmimage m_image)
   int NC,NL,i;
   Color current_level;
   Cfimage image_out=NULL;
-  Cmorpho_line lline_ptr;
+  Cmorpho_line lline_ptr=NULL;
   struct closest_lline c_lline;
+
+  c_lline.point = NULL;
+  c_lline.lline = NULL;
 
   if(m_image==NULL) {
     mwerror(WARNING,1,"Cmimage is NULL.");

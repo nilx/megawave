@@ -33,9 +33,9 @@ Flists ll_extract(Fimage in, Fsignal levels, float *offset, float *step, int *pr
   Flist boundary;
   Shapes ref_tree;
   Shape s;
-  Fimage saddles,copy_in;
+  Fimage saddles=NULL,copy_in;
   int newtree=0,i;
-  float **tabsaddles;
+  float **tabsaddles=NULL;
 
   /* check consistency */
   if (tree) {

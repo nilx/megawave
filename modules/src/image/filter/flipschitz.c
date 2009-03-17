@@ -77,7 +77,7 @@ Fimage flipschitz(Fimage in, float lip, Fimage out, float *r, Curve s, int *n, c
 {
   Fimage w,*src,*dst,*new;
   Curve  shape;
-  int    niter,k;
+  int    niter=0,k;
   float  *delta;
   Point_curve p;
   

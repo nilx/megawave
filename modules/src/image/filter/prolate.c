@@ -27,7 +27,7 @@ float prolate(int s, float d, int *m, Fimage ker)
   Fimage re,im,tmp;
   int n,i,x,y,xx,yy,cont;
   float v,rad2;
-  double norm,energy,last_energy;
+  double norm,energy,last_energy=0.0;
 
   n = *m;
   rad2 = (float)(n*n)*d*d*0.25;

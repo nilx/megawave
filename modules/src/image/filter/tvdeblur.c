@@ -151,7 +151,7 @@ Fimage tvdeblur(Fimage in, Fimage out, Fimage ker, double *s, char *c, char *v, 
 {
   Fimage dE,aux,tmp,cur,prev;
   double energy,old_energy,step;
-  float two,norm2;
+  float two,norm2=0.0;
   int i,j,border,cont,prevok,nx,ny;
 
   /* initialization */

@@ -19,7 +19,7 @@
 
 Fmorpho_line ml_fml(Morpho_line lline)
 { 
-  Fmorpho_line  flline=NULL,old_flline,first_flline;
+  Fmorpho_line  flline=NULL,old_flline,first_flline=NULL;
   Point_fcurve fpoint;
   Point_curve point;
   Point_type type,ftype;

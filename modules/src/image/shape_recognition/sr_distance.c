@@ -74,7 +74,7 @@ static int Product_curves_rot(Cimage image, float XG, float YG, Fcurves the_shap
 {
   Point_fcurve  pixel;
   Fcurve        curve;
-  float         x,y,cs,sn,theta,theta_min;
+  float         x,y,cs,sn,theta,theta_min=0.0;
   long           xx,yy,i,dx,dy,k,l,prod,prod_min;
   
   prod_min = 100000;

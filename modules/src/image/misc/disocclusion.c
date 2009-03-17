@@ -450,23 +450,22 @@ static int isdiagonal (int pnli, int pnlip2, int pnln)
 
 /****************************************************************************/
 
-static void growtris (int newtrin)
+static void growtris (unsigned int newtrin)
 {
-    if (newtrin <= trin) return;
     if (!tris) {
-        if (!(tris = (triangle_t *) malloc (TRIANGLESIZE * newtrin))) {
-            prerror ("cannot malloc tris");
-            abort ();
-        }
+	if (!(tris = (triangle_t *) malloc (TRIANGLESIZE * newtrin))) {
+	    prerror ("cannot malloc tris");
+	    abort ();
+	}
     } else {
-        if (!(tris = (triangle_t *) realloc ((void *) tris,
-                TRIANGLESIZE * newtrin))) {
-            prerror ("cannot realloc tris");
-            abort ();
-        }
+	if (!(tris = (triangle_t *) realloc ((void *) tris,
+					     TRIANGLESIZE * newtrin))) {
+	    prerror ("cannot realloc tris");
+	    abort ();
+	}
     }
     trin = newtrin;
-  }
+}
 
 /****************************************************************************/
 

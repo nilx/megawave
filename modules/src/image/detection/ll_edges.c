@@ -118,8 +118,8 @@ static float logH(float mu)
 static float add_edge(Flist c, float bestnfa, int i, int j)
 {
   Flist  l;
-  int    k,mink,n;
-  float  min,lg,nfa,nfa0,nfa1,nfa2,*p;
+  int    k,mink=0,n;
+  float  min=0.0,lg,nfa,nfa0,nfa1,nfa2,*p;
 
   n = c->size;
   if (j<=i) return(bestnfa+1.);
@@ -164,9 +164,9 @@ Flists ll_edges(Fimage in, Shapes tree, float *eps, float *step, int *precision,
   Shapes   ref_tree;
   Shape    s;
   Flist    boundary;
-  Fimage   saddles,copy_in;
+  Fimage   saddles=NULL,copy_in;
   float    threshold,offset,histo_step,fzero;
-  float    **tabsaddles;
+  float    **tabsaddles=NULL;
   int      newtree=0,nsize,i,i0;
 
   /* check consistency */

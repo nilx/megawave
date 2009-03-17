@@ -30,7 +30,7 @@ float prolatef(int s, float d, int *n, Fimage ker, int *p, int *c)
   Fimage sker,tmp;
   int m,i,x,y,xx,yy,cont,out_domain;
   float rad2,side;
-  double norm,energy,last_energy;
+  double norm,energy,last_energy=0.0;
 
   m = *n;
   rad2 = (float)(m*m)*d*d*0.25;

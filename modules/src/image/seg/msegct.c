@@ -815,10 +815,10 @@ static void Union2Bords(SOMMETPTR som)              /* Si som est entre deux bor
                                    /*  on reunit ces bords en un bord unique */
 {
   int i;
-  short dir_bcnxe1,dir_bcnxe2;
+  short dir_bcnxe1=0,dir_bcnxe2=0;
   SOMMETPTR sa_old;
   BORDPTR bord1,bord2,bord;
-  BORDCONNEXEPTR bcnxe1,bcnxe2,bcnxe;
+  BORDCONNEXEPTR bcnxe1=NULL,bcnxe2=NULL,bcnxe;
   LI_BORDSPTR li;
   LI_PIXELSPTR lab_old;
 

@@ -176,7 +176,7 @@ static void ResolutionInfSup(Cimage image, Cimage A, unsigned char *G, float t1,
 {
   Fimage maskn;
   int i,j,l;
-  register int k;
+  register int k=0;
   int dx,dy;                /* size of the image  */
   int n,Num;
   int Mdx,Mdy;              /* size of a mask     */
@@ -217,7 +217,10 @@ static void ResolutionInfSup(Cimage image, Cimage A, unsigned char *G, float t1,
 	if ((t1>0.02)&&(t1<0.98))  /* -> median of level t1 */ 
 	  {
 	    vmax=Histogram( image,maskn,i,j,Hist);  /* Histogramm */
-	    Hist[257]=100000.0;
+	    /* FIXME : array subscript is above array bounds */
+	    /* Hist[257]=100000.0; */
+	    fprintf(stderr, "there is a bug in the code");
+	    exit(EXIT_FAILURE);
 	    vmax=vmax*t1;
 	    v=presquezero; k=0; l=0;
 	    while(Hist[k]<presquezero) k++; 

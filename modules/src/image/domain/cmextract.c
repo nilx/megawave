@@ -36,8 +36,8 @@ usage = {
 Cmovie cmextract(int *b, Cmovie in, Cmovie bg, int X1, int Y1, int T1, int X2, int Y2, int T2, int *Xc, int *Yc, int *Tc, char *r)
 {
   Cmovie out;
-  Cimage u,*u1,*u2,new,prev,*next,im1,im2;
-  int i1,i2,i3,j1,j2,j3;
+  Cimage u,*u1,*u2=NULL,new,prev,*next,im1,im2;
+  int i1,i2=0,i3,j1,j2,j3;
 
   /* put input movie(s) into array(s) */
   for (i1=0,u=in->first;u;u=u->next) i1++;

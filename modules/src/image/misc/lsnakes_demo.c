@@ -30,8 +30,8 @@ void lsnakes_demo(Cimage u, Cmovie out, int *Niter, int *Nframes, float *thre, f
                          
 {
   Polygons polys; 
-  Fimage fimage_org,fimage,fimage_polys0,fimage_polys1; 
-  Cimage cimage_polys0,cimage_polys1,cimage0,cimage1;
+  Fimage fimage_org,fimage=NULL,fimage_polys0=NULL,fimage_polys1; 
+  Cimage cimage_polys0,cimage_polys1=NULL,cimage0,cimage1;
   int DX = u->ncol;
   int DY = u->nrow;
   int fmaskopt1=255;

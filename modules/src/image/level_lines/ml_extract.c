@@ -318,13 +318,13 @@ void
 ml_extract(float *level, Fsignal levels, int *opt, Cimage c_out, char *m_flag, Fimage image_org, Mimage m_image)
 {
   Morpho_line current_lline=NULL;
-  Point_curve current_point, next_point;
-  Point_type  current_type , next_type;
+  Point_curve current_point=NULL, next_point;
+  Point_type  current_type=NULL, next_type;
   unsigned long nb_points, l;
   int NL=image_org->nrow, NC=image_org->ncol;
   unsigned char **V, **H, *cptr;
   int i,ml_opt=*opt;
-  float **im, minvalue, maxvalue;
+  float **im, minvalue=0.0, maxvalue=0.0;
 
   if((level==NULL)==(levels==NULL))
          mwerror(USAGE,1,"Bad level values input.");

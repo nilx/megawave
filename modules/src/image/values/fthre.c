@@ -43,8 +43,8 @@ static int compare(const void *a,const void *b)
 
 Fimage fthre(Fimage in, Fimage out, char *norm, char *N, float *min, float *max, float *p, float *q, float *d, char *aff, char *linear)
 {
-  float m0,m1,a,b,w,bestw,*v;
-  int i,k,bestk,l,n,adr;
+  float m0=0.0,m1=0.0,a,b,w,bestw=0.0,*v;
+  int i,k,bestk=0,l,n,adr;
 
   n = in->nrow*in->ncol;
   out = mw_change_fimage(out,in->nrow,in->ncol);

@@ -116,7 +116,7 @@ static void  setimage(char *border, Cimage bimage, Cimage mlimage)
 Cimage ml_draw(Mimage m_image, Cimage bimage, char *border, Cmovie movie)
 { 
   Cimage cb=NULL,newcb,oldcb;
-  Morpho_line mline_list,mline;
+  Morpho_line mline_list=NULL,mline;
   int NC,NCO,NL,NLO,nm;
   long l;
   unsigned char **im;

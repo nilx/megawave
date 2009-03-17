@@ -294,7 +294,7 @@ void ws_flow(float *percent, int *n, float *tau, float *lambda, float *eps, floa
   int l;
   long adr;
   char normflag=1;
-  Fimage u,uU,uV,ud,nd;
+  Fimage u,uU,uV,ud,nd=NULL;
   
   
   nz=1;

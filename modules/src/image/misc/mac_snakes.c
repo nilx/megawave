@@ -50,7 +50,7 @@ static void gdgh(double t, double *g, double *dg, double *h)
 /* reparameterize a curve with respect to arclength */
 static void param(double *c, int size)
 {
-  double length,cur,norm,x,y;
+  double length,cur,norm,x,y=0.0;
   int k,i;
 
   for (k=0;k<size;k++) {

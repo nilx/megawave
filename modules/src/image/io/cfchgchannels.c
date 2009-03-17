@@ -17,6 +17,7 @@
 ----------------------------------------------------------------------*/
 
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
@@ -290,7 +291,7 @@ HSV_RGB(float *r, float *g, float *b, float *tr, float *tg, float *tb)
 				   * channels in transformed image */
 
 {
-  float R,G,B,x,y,z,t;
+  float R=0.0,G=0.0,B=0.0,x,y,z,t;
   double h;
   int sector;
 
@@ -431,6 +432,8 @@ cfchgchannels(int *Conv, int *Inverse, int *Norm, Cfimage Image, Cfimage TImage)
        TImage->model=MODEL_RGB;
        convert_point = HSV_RGB;
       break;    
+  default:
+      exit(EXIT_FAILURE);
     }
   else
     switch (*Conv) {
@@ -457,6 +460,8 @@ cfchgchannels(int *Conv, int *Inverse, int *Norm, Cfimage Image, Cfimage TImage)
        TImage->model=MODEL_HSV;
        convert_point = RGB_HSV;
       break;
+  default:
+      exit(EXIT_FAILURE);
     }
 
   COLOR_CONVERT(Image, TImage, convert_point);

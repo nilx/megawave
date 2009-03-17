@@ -52,7 +52,7 @@ static void llcheck(Mimage mimage)
 Mimage ml_decompose(Mimage m_image_in, int *ml_opt, char *m_flag, Fimage image_in)
 {
   Mimage m_image=NULL;
-  Fsignal levels,tmp_levels;
+  Fsignal levels=NULL,tmp_levels;
   long l;
   char i_flag; /* for values */
   

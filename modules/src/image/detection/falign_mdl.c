@@ -143,7 +143,7 @@ Fimage falign_mdl(Fimage u, int *d, int *nd, int *no_mdl, int *nl, double *eps, 
   int jseg,xx,yy,pos,posmax,nblocs,inbloc,max_nblocs;
   int cur,i,j,k,side,l,length,D;
   int itheta,ntheta;
-  float theta,theta0,dtheta,dx,dy,prec,error;
+  float theta,theta0,dtheta=0.0,dx,dy,prec,error;
   double g_threshold;
   int precision, ngrad;
   double r,rmin,rmax;

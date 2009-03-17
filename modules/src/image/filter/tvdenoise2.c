@@ -99,7 +99,7 @@ static double energy_evol(double *px, double *py, float *ref, double *u, double 
 
 Fimage tvdenoise2(Fimage in, Fimage out, double *s, int *v, int *n, double *r, double *W, int *V)
 {
-  double *px,*py,*u,E,oldE;
+  double *px,*py,*u,E,oldE=0.0;
   int adr,i,cont,stop,key;
   char str[100];
 

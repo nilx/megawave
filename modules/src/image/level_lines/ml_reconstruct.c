@@ -251,7 +251,7 @@ ml_reconstruct(char *v_flag, Mimage m_image)
   int NC,NL,i,size_ST;
   float **im,current_level,p_level;
   Fimage image_out=NULL;
-  Morpho_line lline_ptr,lline2;
+  Morpho_line lline_ptr=NULL,lline2;
   struct fill_segment *ST;
 
   if(m_image==NULL) {

@@ -87,8 +87,8 @@ void rotaffin(int *Nrota, int *Naffi, int *Size, int *Type, float *Area, int *De
   double theta;
   int somme;
   int pos;
-  int fact_x, fact_y;
-  float f_x,f_y;
+  int fact_x=0, fact_y;
+  float f_x=0.0,f_y=0.0;
   int ii,jj;
   
   if (cimage!=NULL) *Type=5;

@@ -91,7 +91,7 @@ Fimage tvdenoise(Fimage in, Fimage out, double *s, char *c, char *v, double *e, 
 {
   Fimage dE,aux,tmp,cur,prev;
   double energy,old_energy,step;
-  float two,norm1,norm2;
+  float two,norm1,norm2=0.0;
   int i,j,border,cont,prevok,nx,ny;
 
   /* initialization */

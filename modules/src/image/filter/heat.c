@@ -49,7 +49,7 @@ static void iter(Fimage u, Fimage v, float s)
 Fimage heat(Fimage in, Fimage out, int *n, float *s)
 {
   Fimage w,*src,*dst,*new;
-  int niter;
+  int niter=0;
 
   if (*n<=0) mwerror(FATAL,1,"The -n option parameter must be positive.");
   else niter=*n;

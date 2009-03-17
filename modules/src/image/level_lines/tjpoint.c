@@ -279,7 +279,7 @@ int tjpoint(char *connex8, int *tarea, int *tquant, Cimage U, int x0, int y0, in
 
 {
   int l,tj,dn; 
-  int min,max,xmin,ymin,xmax,ymax;
+  int min,max,xmin=0,ymin=0,xmax=0,ymax=0;
   unsigned char delM,delP;
 
   /* Initialisations, if needed */

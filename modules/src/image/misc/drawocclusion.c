@@ -520,7 +520,7 @@ void drawocclusion(Cimage image, Fimage labelimage, Cimage *hole_image, char *wi
   Polygon p;
   Point_curve c;
   int i,j;
-  Cimage image_zoom;
+  Cimage image_zoom=NULL;
   float flt_zoom;
   register float *ptrlabel,*ptrinterlabel;
   register unsigned char *ptrhole;

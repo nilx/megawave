@@ -38,7 +38,7 @@ Cmimage cll_remove(Cmimage cmimage, int *L)
   Cmorpho_line ll,ll_next;
   unsigned long N,Nrm;
   float infty = MORPHO_INFTY;
-  int ll_type;
+  int ll_type=0;
 
   if((ll=cmimage->first_ml)==NULL)
     mwerror(FATAL,1,"No cmorpho_lines in cmimage.\n");

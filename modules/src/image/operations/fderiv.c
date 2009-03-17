@@ -50,7 +50,7 @@ void fderiv(Fimage in, Fimage curv, Fimage anti, Fimage canny_img, Fimage laplac
 {
   int y,nx,ny;
   register int x,xm,x1,Ym,Y0,Y1;
-  float c1,d1,l0,ax,ay,axy,an;
+  float c1,d1,l0,ax=0.0,ay=0.0,axy,an;
   /* fixme: x86 architecture can't keep all these values as registers... */
   register float a11,amm,am1,a1m,a00,a01,a10,a0m,am0;
 

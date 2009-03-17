@@ -1092,7 +1092,7 @@ int vpoint(Fimage imagein, Fimage allsegs, Flist output, Flists segs, double *ep
 {
   int N,*M,min_pl,max_pl,n_pl,i,j,k,ntheta,itn;
   int    ie, ix, iy;
-  int max_i,max_ie,max_ix,max_iy;
+  int max_i=0,max_ie=0,max_ix=0,max_iy=0;
   float max_meaning;
   int    IE[9],IX[9],IY[9]; /* used to hold the output of FindIntersection */
   int    n;

@@ -123,7 +123,7 @@ static void  setimage(char *border, Ccimage bimage, Ccimage mlimage)
 Ccimage cml_draw(Cmimage cmimage, Ccimage bimage, char *border, Ccmovie movie)
 { 
   Ccimage cb=NULL,newcb,oldcb;
-  Cmorpho_line mline_list,mline;
+  Cmorpho_line mline_list=NULL,mline;
   int NC,NCO,NL,NLO,nm;
 
   if(cmimage==NULL)

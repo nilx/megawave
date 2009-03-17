@@ -74,7 +74,7 @@ void vpsegplot(Fimage image, Fimage allsegs, Flist vpoints, Flists vsegs, int n,
   float x0,x1;
   float y0,y1;
   int vdim, sdim;
-  double xbar, ybar, vp_xbar, vp_ybar, fact, target_length;
+  double xbar, ybar, vp_xbar, vp_ybar, fact, target_length=0.0;
   
   /* Radius and center of circumscribed circle containing image domain */
      R = sqrt((double) image->nrow * (double) image->nrow

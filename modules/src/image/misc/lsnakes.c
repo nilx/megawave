@@ -47,7 +47,7 @@
 static void smooth_image(Fimage image)
 {
   int i,j;
-  float s0,s1;
+  float s0=0.0,s1=0.0;
 
   /* x direction */
 

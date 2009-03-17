@@ -27,7 +27,7 @@
 
 float fnorm(Fimage in, Fimage ref, float *p, char *s, char *v, int *b, char *n, float *t)
 {
-  Fimage diff, gradn;
+  Fimage diff=NULL, gradn=NULL;
   int x,y,num,four;
   float zero;
   double sum,val;

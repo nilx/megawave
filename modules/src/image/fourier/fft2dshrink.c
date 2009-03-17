@@ -90,7 +90,7 @@ static int comp(int n)
 
 Fimage fft2dshrink(Fimage in, Fimage out, float *p, char *v)
 {
-  int nx,ny,x,y,dx,dy,bestx,besty,c,bestc,initc,finalc;
+  int nx,ny,x,y,dx,dy,bestx=0,besty=0,c=0,bestc,initc,finalc;
 
   if (*p<0. || *p>100.) mwerror(FATAL,1,"p should be between 0 and 100\n");
 

@@ -60,7 +60,7 @@ Cimage erosion(Cimage u, Cimage v, float *r, Curve s, int *n, char *i)
   Cimage w,*src,*dst,*new;
   Curve  shape;
   short  action;
-  int    niter;
+  int    niter=0;
   
   /* check options and allocate memory */
   

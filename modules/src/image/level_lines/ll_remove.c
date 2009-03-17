@@ -41,7 +41,7 @@ Mimage ll_remove(Mimage mimage, int *L)
   Morpho_line ll,ll_next;
   unsigned long N,Nrm;
   float infty = MORPHO_INFTY;
-  int ll_type;
+  int ll_type=0;
 
   if((ll=mimage->first_ml)==NULL)
     mwerror(FATAL,1,"No morpho_lines in mimage.\n");
