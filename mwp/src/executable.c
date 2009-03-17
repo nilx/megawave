@@ -367,7 +367,7 @@ static void writegendecl(FILE * afile)
      fprintf(afile, "#define FALSE 0\n\n");
 
      fprintf(afile, "int _%s(int argc, char * argv[]);\n", module_name);
-     fprintf(afile, "int usage_%s(char *msg);\n\n", module_name);
+     fprintf(afile, "void usage_%s(char *msg);\n\n", module_name);
 
      /* external variables */
      fprintf(afile, "extern char type_force[];\n");
@@ -1596,7 +1596,7 @@ static void writeusage(FILE * afile)
      fprintf(afile, "/**\n");
      fprintf(afile, " * usage information for the module executable\n");
      fprintf(afile, " */\n");
-     fprintf(afile, "int usage_%s(char *msg)\n", H->Name);
+     fprintf(afile, "void usage_%s(char *msg)\n", H->Name);
      fprintf(afile, "{\n");
      strcpy(Auth, getprintfstring(H->Author));
      strcpy(Vers, getprintfstring(H->Version));
@@ -1737,7 +1737,7 @@ static void writeusage(FILE * afile)
                }
 
      /* FIXME: this function should exit(1), not return(0) */
-     fprintf(afile, "  return 0;\n");
+     fprintf(afile, "  exit(EXIT_FAILURE);\n");
      fprintf(afile, "}\n");
      fprintf(afile, "\n");
 }

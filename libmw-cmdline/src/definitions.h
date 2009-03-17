@@ -8,7 +8,7 @@
 struct Mwiline {
   char *name;
   int (*mwarg)(int, char**);
-  int (*mwuse)(char *);
+  void (*mwuse)(char *);
   char *group;
   char *function;
   char *usage;
