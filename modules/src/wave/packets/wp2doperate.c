@@ -514,7 +514,7 @@ static void noise_tracking(Wpack2d pack, int *track_noise_level, float *track_no
 
 void wp2doperate(Fimage input, Fsignal Ri, Fsignal Ri_biortho, Cimage tree, Fimage output, float *threshold_hard, float *threshold_soft, int *translation, float *track_noise_hard, float *track_noise_soft, int *track_noise_level, Fimage pfilter, int *convolution_level)
 {
- Wpack2d pack;
+ Wpack2d pack=NULL;
  Fimage work1,work2;
  Cimage tempTree;
  Fimage pfilter_remaining=NULL;

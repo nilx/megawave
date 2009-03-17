@@ -139,7 +139,7 @@ INIT_RI(Fsignal signal, Fsignal Ri, int *band, int *Prolong, int edge, int *refl
                          	/* downsampling rate of result */
 
 {
-  long            sshift;
+  long            sshift=0;
 
   if ((*Prolong >= 1) && ((edge == 1) || (edge == 3)))
     *Prolong = 0;
@@ -621,7 +621,7 @@ sconvolve(Fsignal Signal, Fsignal Output, int *DownRate, int *UpRate, int *ReflI
 				 * edge processing */
 
 {
-  Fimage          Left_Ri, Right_Ri;   /* Buffer containing impulse
+  Fimage          Left_Ri=NULL, Right_Ri=NULL;   /* Buffer containing impulse
 				        * responses of all left and right
 				        * edge filters */
   long            l;		       /* Index of current point in `Output` */

@@ -345,6 +345,7 @@ void wp2dview(Fimage A, Fsignal Ri, Fsignal Ri_biortho, Cimage tree, char *do_no
   Wpack2d pack;
   float backgroundColor;
   char command[256],name[]="AAAAAAAAAAAAAAA";
+  int retval;
 
   if (input_pack)
     /* the wavelet packet is given */
@@ -391,8 +392,8 @@ void wp2dview(Fimage A, Fsignal Ri, Fsignal Ri_biortho, Cimage tree, char *do_no
   else
     {
       _mw_fimage_create_image(name,pack->images[0],"RIM");
-      sprintf(command,"(xv %s ;  rm -f %s) &",name,name);
-      system(command); 
+      sprintf(command,"(see %s ;  rm -f %s) &",name,name);
+      retval = system(command); 
     }
 
   if (pack!=input_pack) mw_delete_wpack2d(pack);
