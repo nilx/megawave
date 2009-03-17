@@ -39,7 +39,7 @@ Fsignal snoise(Fsignal in, Fsignal out, float *std, float *t, char *n_flag)
     mwerror(USAGE,0,"Please select exactly one of the -g and -t options.");
 
   /*** Initialize random seed if necessary ***/
-  if (!n_flag) srand( (unsigned int) time (NULL) );
+  if (!n_flag) mw_srand_mt( (unsigned long) time (NULL) );
   
   /* Allocate memory */
   out = mw_change_fsignal(out,in->size);
@@ -50,8 +50,8 @@ Fsignal snoise(Fsignal in, Fsignal out, float *std, float *t, char *n_flag)
 
     /* Gaussian noise */
     for (i=in->size;i--;) {
-      a = (rand() * 1.)/ RAND_MAX;
-      b = (rand() * 1.)/ RAND_MAX;
+      a = mw_drand53_mt();
+      b = mw_drand53_mt();
       z = (double)(*std)*sqrt(-2.0*log(a))*cos(2.0*M_PI*b);
       out->values[i] = in->values[i] + (float)z;
     }
@@ -60,7 +60,7 @@ Fsignal snoise(Fsignal in, Fsignal out, float *std, float *t, char *n_flag)
 
     /* transmission noise */
     for (i=in->size;i--;)
-      if ((rand() * 1.)/ RAND_MAX * 100.0 < *t) out->values[i] = 0.;
+      if (mw_drand53_mt() * 100.0 < *t) out->values[i] = 0.;
       else out->values[i] = in->values[i];
     
   }

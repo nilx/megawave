@@ -46,7 +46,7 @@ void cnoise(Cimage u, Cimage v, float *std, float *p, float *q, char *n_flag)
     mwerror(FATAL,1,"Please select exactly one of the -g, -i and -q options.");
 
   /*** Initialize random seed if necessary ***/
-  if (!n_flag) srand( (unsigned int) time (NULL));
+  if (!n_flag) mw_srand_mt( (unsigned long) time (NULL));
   
   /* Allocate memory */
   v = mw_change_cimage(v,u->nrow,u->ncol);
@@ -56,8 +56,8 @@ void cnoise(Cimage u, Cimage v, float *std, float *p, float *q, char *n_flag)
 
     /* Gaussian noise */
     for (i=u->ncol*u->nrow;i--;) {
-      a = (rand() * 1.) / RAND_MAX;
-      b = (rand() * 1.) / RAND_MAX;
+      a = mw_drand53_mt();
+      b = mw_drand53_mt();
       z = (*std)*sqrt(-2.0*log(a))*cos(2.0*M_PI*b);
       v->gray[i] = truncation( u->gray[i] + (float)z );
     }
@@ -66,17 +66,15 @@ void cnoise(Cimage u, Cimage v, float *std, float *p, float *q, char *n_flag)
 
     /* impulse noise */
     for (i=u->ncol*u->nrow;i--;)
-      if ((rand() * 1.)/ RAND_MAX * 100.0 < *p) 
-	v->gray[i] = truncation( (float)(255.999 
-					 * (rand() * 1.)/ RAND_MAX));
+      if (mw_drand53_mt() * 100.0 < *p) 
+        v->gray[i] = truncation( (float)(255.999 * mw_drand53_mt()));
     else v->gray[i] = u->gray[i];
     
   } else {
 
     /* uniform (quantization) noise */
    for (i=u->ncol*u->nrow;i--;)
-     v->gray[i] = truncation( u->gray[i] + *q 
-			      * (float) ((rand() * 1.)/ RAND_MAX - 0.5));
+     v->gray[i] = truncation( u->gray[i] + *q * (mw_drand53_mt() - 0.5));
   }
 }
 

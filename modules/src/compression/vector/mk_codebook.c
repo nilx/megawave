@@ -24,30 +24,27 @@ usage = {
 #include "mw.h"
 #include "mw-modules.h"
 
-
+/* TODO: check if these functions are really needed */
 static double ran0(long int *initseed)
 {
   static double y, v[97];
-  int dum;
   static int iff=0; 
   int j; 
   
   if (*initseed < 0 || iff == 0) {
     iff=1;
-    srand((unsigned int) *initseed);
+    mw_srand_mt((unsigned long) *initseed);
     *initseed=1;
     for(j=0;j<97;j++)
-      dum = rand();
-    for(j=0;j<97;j++)
-      v[j] = (rand() * 1.) / RAND_MAX;
-    y = (rand() * 1.) / RAND_MAX;
+      v[j] = mw_drand53_mt();
+    y = mw_drand53_mt();
   }
 
   j = y * 98.0;
   if ((j<0)||(j>97))
     mwerror(FATAL, 1, "Valeur impossible pour j : %d, (y=%.5f)", j, y);
   y = v[j];
-  v[j] = (rand() * 1.) / RAND_MAX;
+  v[j] = mw_drand53_mt();
   return(y);
 }
 
