@@ -1,40 +1,23 @@
-# BUILD AND EXECUTION STATUS
-#
-#          ,-----> prebuild
-# 0:OK     |,----> dynamic build
-# X:ERR    ||,---> dynamic run
-# N:ERR_NB |||,--> static build
-# .:?      ||||,-> static run
-#          |||||
-#          deb4.0   ubu08.04 ubu08.10 gen2008  cent5.2  sus11.1
-#          |||||
-YYYYMMDD   .....    .....    .....    .....    .....    .....
-20090316   .0000    .0X0X    .0X0X    .0000    .0000    .0000
-20090302   00706    00X0X    00X0X    .0706    .0706    .0706
-20090228   .0706    .0X0X    .0X0X    .0706    .0706    .0706
-
-#          deb3.0   deb3.1  slac12.1  osx10.4  osx10.5  win5.1   win6.0
-
-YYYYMMDD   .....    .....    .....    .....    .....    .....    .....
-
 #
 # CODE QUALITY STATUS
 #
-#          ,------> make CHECK=relax  [1]
-# 0:OK     |,-----> make CHECK=strict [2]
-# X:ERR    ||,----> headers [3]
-# .:?      |||,---> splint
-#          ||||,--> indent
-#          |||||,-> inline doc
-#          ||||||
-#          mwp     mw-x11  mw      mw-cmd  mw-mod  mod
-#          ||||||
+#          ,-------> make CHECK=relax  [1]
+# 0:OK     |,------> make CHECK=strict [2]
+# X:ERR    ||,-----> headers [3]
+# .:?      |||,----> splint -weak
+#          ||||,---> splint -standard
+#          |||||,--> indent
+#          ||||||,-> inline doc
+#          |||||||
+#          mwp      mw-x11   mw       mw-cmd   mw-mod   mod
+#          |||||||
 
-YYYYMMDD   ......  ......  ......  ......  ......  ......
-20090316   000...  00....  00....  000...  000...  000...
-20090310   000...  00....  00....  000...  000...  000...
-20090306   000...  00....  00....  000...  0X....  0X....
-20090305   00....  00....  00....  00....  0X....  0X....
+YYYYMMDD   .......  .......  .......  .......  .......  .......
+20090317   000....  00*....  000....  000....  000....  000....
+20090316   000....  00*....  00.....  000....  000....  000....
+20090310   000....  00.....  00.....  000....  000....  000....
+20090306   000....  00.....  00.....  000....  0X.....  0X.....
+20090305   00.....  00.....  00.....  00.....  0X.....  0X.....
 
 # [1] CHECK=relax
 #     gcc -ansi -Wall
@@ -51,11 +34,31 @@ YYYYMMDD   ......  ......  ......  ......  ......  ......
 #
 # [3] allowed headers
 #     ANSI standard library, tiff, X, mw
+#     * : uses the POSIX version of time.h
 
+########################################################################
+
+# CROSS-PLATFORM BUILD AND EXECUTION STATUS
 #
-# PORTABILITY TESTS
+#          ,-----> prebuild
+# 0:OK     |,----> dynamic build
+# X:ERR    ||,---> dynamic run
+# N:ERR_NB |||,--> static build
+# .:?      ||||,-> static run
+#          |||||
+#          deb4.0   ubu08.04 ubu08.10 gen2008  cent5.2  sus11.1
+#          |||||
+
+YYYYMMDD   .....    .....    .....    .....    .....    .....
+20090316   .0000    .0X0X    .0X0X    .0000    .0000    .0000
+20090302   00706    00X0X    00X0X    .0706    .0706    .0706
+20090228   .0706    .0X0X    .0X0X    .0706    .0706    .0706
+
+########################################################################
+
+# CROSS-COMPILER PORTABILITY TESTS
 #
-#         gcc4.3 gcc4.2 gcc4.1 icc    tcc
+#         gcc4.3 gcc4.2 gcc4.1 gcc3.4 icc    tcc
 #
 
 YYYYMMDD  ..     ..     ..     ..     ..     ..
