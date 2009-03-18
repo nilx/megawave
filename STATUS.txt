@@ -1,23 +1,25 @@
 #
 # CODE QUALITY STATUS
 #
-#          ,-------> make CHECK=relax  [1]
-# 0:OK     |,------> make CHECK=strict [2]
-# X:ERR    ||,-----> headers [3]
-# .:?      |||,----> splint -weak
-#          ||||,---> splint -standard
-#          |||||,--> indent
-#          ||||||,-> inline doc
-#          |||||||
-#          mwp      mw-x11   mw       mw-cmd   mw-mod   mod
-#          |||||||
+#          ,--------> make CHECK=relax  [1]
+#          |,-------> make CHECK=strict [2]
+# 0:OK     ||,------> make CHECK=strict MODE=opti [3]
+# X:ERR    |||,-----> headers [4]
+# .:?      ||||,----> splint -weak
+#          |||||,---> splint -standard
+#          ||||||,--> indent
+#          |||||||,-> inline doc
+#          ||||||||
+#          mwp       mw-x11    mw        mw-cmd    mw-mod    mod
+#          ||||||||
 
-YYYYMMDD   .......  .......  .......  .......  .......  .......
-20090317   000....  00*....  000....  000....  000....  000....
-20090316   000....  00*....  00.....  000....  000....  000....
-20090310   000....  00.....  00.....  000....  000....  000....
-20090306   000....  00.....  00.....  000....  0X.....  0X.....
-20090305   00.....  00.....  00.....  00.....  0X.....  0X.....
+YYYYMMDD   ........  ........  ........  ........  ........  ........
+20090318   0000....  000*....  0000....  0000....  00X0....  00X0....
+20090317   00.0....  00.*....  00.0....  00.0....  00.0....  00.0....
+20090316   00.0....  00.*....  00......  00.0....  00.0....  00.0....
+20090310   00.0....  00......  00......  00.0....  00.0....  00.0....
+20090306   00.0....  00......  00......  00.0....  0X......  0X......
+20090305   00......  00......  00......  00......  0X......  0X......
 
 # [1] CHECK=relax
 #     gcc -ansi -Wall
@@ -32,7 +34,11 @@ YYYYMMDD   .......  .......  .......  .......  .......  .......
 #     -Wformat -Wformat-nonliteral -Wformat-security
 #     -Wfloat-equal
 #
-# [3] allowed headers
+# [3] MODE=opti
+#     gcc -O2 -funroll-loops -finline-functions
+#     -ffunction-sections -fdata-sections
+#
+# [4] allowed headers
 #     ANSI standard library, tiff, X, mw
 #     * : uses the POSIX version of time.h
 
