@@ -62,6 +62,22 @@ YYYYMMDD   .....    .....    .....    .....    .....    .....
 
 ########################################################################
 
+# TIMINGS
+#
+# platform : Intel Core duo @1.5GHz, unsing a single process
+#
+#         ,-> make
+#         |       ,-> make CHECK=strict
+#         |       |       ,-> make LINK=static
+#         |       |       |       ,-> make test
+#         |       |       |       |       ,-> make LINK=static test
+#         |       |       |       |       |
+
+YYYYMMDD  .       .       .       .       .       
+20090318  02m32s  02m43s  03m38s  00m26s  00m35s
+
+########################################################################
+
 # CROSS-COMPILER PORTABILITY TESTS
 #
 #         gcc4.3 gcc4.2 gcc4.1 gcc3.4 icc    tcc
