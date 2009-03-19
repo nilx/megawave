@@ -116,7 +116,7 @@ endif
 
 # optimisation
 ifeq	($(MODE), opti)
-CMISC	+= -O2 -funroll-loops -finline-functions	\
+CMISC	+= -O3 -funroll-loops \
 	-ffunction-sections -fdata-sections
 endif
 
