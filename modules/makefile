@@ -169,9 +169,9 @@ prebuild	: makefile.dep
 TEST	= test/checkmodules.sh
 LIBPATH	= $(LIBDIR)
 
-TESTENV	= PATH=$(BINDIR):$$PATH	\
-	DATA=$(BASEDIR)/data		\
-	SAMPLES=$(BASEDIR)/data/PUBLIC	\
+TESTENV	= PATH=$(BINDIR):$$PATH			\
+	UTILS=$(BASEDIR)/data/utils		\
+	EXAMPLES=$(BASEDIR)/data/examples	\
 	SCRIPTS=$(BASEDIR)/scripts
 
 ifeq	($(LINK), dynamic)
