@@ -1,0 +1,48 @@
+MEGAWAVE PUBLIC LICENSE 
+
+Terms and conditions for using, copying, distribution and modification
+of megawave versions 2.x and 3.x.
+
+You acknowledge to be informed about the following facts, and you
+accept the consequences :
+- megawave is a "soft-publication" for the scientific community,
+  intented to offer reproducible research in image processing;
+- megawave is maintained by the image department of the CMLA, a public
+  french laboratory associated to the CNRS UMR-8536, Ecole Normale
+  Superieure de Cachan;
+- the image department is founded by the CMLA only, using public funds
+  and private grants for software development;
+- megawave has been implemented for research purposes only; it comes
+  therefore without any warranty.
+- the megawave compiler and the system libraries are known to run on
+  some computer models and operating systems only;
+- the CMLA may not maintain this software in the future;
+- the CMLA can not help any user to install nor to use the software;
+- the CMLA may not publish all of the code contained in the various
+  versions of megawave;
+- for transparency, the published code contains the source of the
+  mathematical algorithms developed at the CMLA. You are allowed to
+  copy, modify and redistribute these programs.
+
+The CMLA claims to impose on the diffusion and on the use of its
+software the same rules than the well-known rules which apply to paper
+publication.
+
+You agree to :
+- inform without delay the CMLA about any contract between yourself or
+  your department and any private or public organization, in the case
+  where its execution uses an algorithm (modified or not) included in
+  megawave; you will inform this organization about the origin of
+  these algorithm by writing in the contract the use of the megawave
+  software.
+- make mention in all products (as computer programs or scientific
+  papers) which take advantage of an algorithm included in megawave
+  (modified or not), of the use of this software together with the
+  name(s) of the author(s) written in the header of the corresponding
+  module and with the address of the CMLA and of other laboratories
+  implied in the development, if any.
+
+Address: megaWave, CMLA, Ecole Normale Superieure de Cachan,
+	 61 avenue du President Wilson, 94235 Cachan cedex, France.   
+E-mail:  megawave@cmla.ens-cachan.fr
+Last version available at: http://megawave.cmla.ens-cachan.fr/
