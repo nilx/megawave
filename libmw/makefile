@@ -116,6 +116,13 @@ IPATH	+= $(INCDIR)
 # FIXME: use clean float tests
 CWARN	+= -Wno-float-equal
 
+# FIXME: libmw fails with -O2
+# optimisation
+ifeq	($(MODE), opti)
+CMISC	+= -O1
+endif
+
+
 #
 # BIN
 #

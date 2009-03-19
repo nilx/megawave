@@ -38,7 +38,7 @@ YYYYMMDD   ........  ........  ........  ........  ........  ........
 # [3] MODE=opti
 #     gcc -O3 -funroll-loops
 #     -ffunction-sections -fdata-sections
-#     * : compiles, but execution fails
+#     * : -O2 and above cause libmw to fail at execution; -O1 is forced
 #
 # [4] allowed headers
 #     ANSI standard library, tiff, X, mw
