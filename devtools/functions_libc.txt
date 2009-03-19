@@ -1,0 +1,162 @@
+# built from http://www.acm.uiuc.edu/webmonkeys/book/c_guide/
+# assert.h
+assert
+# ctype.h
+isalnum
+isalpha
+iscntrl
+isdigit
+isgraph
+islower
+isprint
+ispunct
+isspace
+isupper
+isxdigit
+tolower
+toupper
+# errno.h
+# float.h
+# limits.h
+# locale.h
+localeconv
+setlocale
+# math.h
+acos
+asin
+atan
+atan2
+ceil
+cos
+cosh
+exp
+fabs
+floor
+fmod
+frexp
+ldexp
+log
+log10
+modf
+pow
+sin
+sinh
+sqrt
+tan
+tanh
+# setjmp.h
+setjmp
+longjmp
+# signal.h
+signal
+raise
+# stdarg.h
+va_start
+va_arg
+va_end
+# stddef.h
+offsetof
+# stdio.h
+clearerr
+fclose
+feof
+ferror
+fflush
+fgetpos
+fopen
+fread
+freopen
+fseek
+fsetpos
+ftell
+fwrite
+remove
+rename
+rewind
+setbuf
+setvbuf
+tmpfile
+tmpnam
+fprintf
+fscanf
+printf
+scanf
+sprintf
+sscanf
+vfprintf
+vprintf
+vsprintf
+fgetc
+fgets
+fputc
+fputs
+getc
+getchar
+gets
+putc
+putchar
+puts
+ungetc
+perror
+# stdlib.h
+abort
+abs
+atexit
+atof
+atoi
+atol
+bsearch
+calloc
+div
+exit
+free
+getenv
+labs
+ldiv
+malloc
+mblen
+mbstowcs
+mbtowc
+qsort
+rand
+realloc
+srand
+strtod
+strtol
+strtoul
+system
+wcstombs
+wctomb
+# string.h
+memchr
+memcmp
+memcpy
+memmove
+memset
+strcat
+strncat
+strchr
+strcmp
+strncmp
+strcoll
+strcpy
+strncpy
+strcspn
+strerror
+strlen
+strpbrk
+strrchr
+strspn
+strstr
+strtok
+strxfrm
+# time.h
+asctime
+clock
+ctime
+difftime
+gmtime
+localtime
+mktime
+strftime
+time

@@ -18,6 +18,9 @@ libmw	: libmw-x11
 libmw-cmdline	: libmw
 	$(MAKE) -C ./libmw-cmdline
 
+libmw-modules	: libmw
+	$(MAKE) -C modules lib
+
 mwp	:
 	$(MAKE) -C ./mwp
 
