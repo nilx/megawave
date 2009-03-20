@@ -195,7 +195,7 @@ Curve mw_copy_curve(Curve in, Curve out)
 	  return(NULL);
      }
      /* FIXME: wrong types, dirty temporary fix */
-     printf("return out=%x\n", (unsigned int) out);
+     printf("return out=%p\n", (void *) out);
      return(out);
 }
 

@@ -214,7 +214,7 @@ int _search_filename(char * fname)  /* Return 1 if found, 0 else */
 	     length = strcspn(path_start, ":");
 	     if (0 < length)
 	     {
-		 sprintf(filepath, "%.*s/%s", length, path_start, fname);
+		 sprintf(filepath, "%.*s/%s", (int) length, path_start, fname);
 		 if (NULL != (fp = fopen(filepath, "r")))
 		 {
 		     fclose(fp);
