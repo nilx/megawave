@@ -24,13 +24,14 @@
 Cimage opening(Cimage u, Cimage v, float *r, Curve s, int *n, char *i)
 {
   Cimage w;
-  
+
   v = mw_change_cimage(v,u->nrow,u->ncol);
   w = mw_change_cimage(NULL,u->nrow,u->ncol);
   if (!v || !w) mwerror(FATAL,1,"Not enough memory.");
   
   erosion(u,w,r,s,n,i);
-  erosion(w,v,r,s,n,(char *)(!i));
+  /* FIXME: dirty hack for 64bits compatibility */
+  erosion(w,v,r,s,n,(NULL != i ? NULL : i+1));
   
   mw_delete_cimage(w);
   
