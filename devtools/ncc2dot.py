@@ -103,7 +103,7 @@ def gengraph(s, d=0):
 
 # process command line options
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "hvVD:d:i:l:s:", \
+    opts, args = getopt.getopt(sys.argv[1:], "hVD:d:i:ls:", \
 	["help","version","depth","dot","ignore","location","show"])
 
 except getopt.GetoptError:
