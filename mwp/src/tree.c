@@ -304,8 +304,8 @@ void strdump_arg(char * str, t_argument * a)
      else
      {
           sprintf(str, "\
-  dump of arg = %x\n\
-    previous = %x  \t next=%x\n\
+  dump of arg = %p\n\
+    previous = %p  \t next=%p\n\
     atype   = %d\n\
     iotype  = %d\n\
     ictype  = %d\n\
@@ -316,8 +316,7 @@ void strdump_arg(char * str, t_argument * a)
     val     = '%s'\n\
     min     = '%s'\n\
     max     = '%s'", \
-                  (unsigned int) a,                                     \
-                  (unsigned int) a->previous, (unsigned int) a->next,   \
+                  (void *) a, (void *) a->previous, (void *) a->next,	\
                   a->Atype, a->IOtype, a->ICtype,                       \
                   (a->Flag ? a->Flag : ' '),                            \
                   a->H_id, a->C_id, a->Cmt, a->Val, a->Min, a->Max);
@@ -331,16 +330,15 @@ static void strdump_variable(char * str, t_variable * v)
      else
      {
           sprintf(str, "\
-  dump of variable = %x\n\
-    previous    = %x \t next = %x\n\
+  dump of variable = %p\n\
+    previous    = %p \t next = %p\n\
     name        = '%s'\n\
     scalar type = '%s'\n\
     full type   = '%s'\n\
     ctype       = %d\n\
     ptrDepth    = %d\n\
     cstorage    = '%s'\n", \
-                  (unsigned int) v,                                     \
-                  (unsigned int) v->previous, (unsigned int) v->next,   \
+                  (void *) v, (void *) v->previous, (void *) v->next,	\
                   v->Name, v->Stype, v->Ftype, v->Ctype, v->PtrDepth,   \
                   v->Cstorage);
      }
@@ -357,8 +355,8 @@ void strdump_varfunc(char * str, t_varfunc * f)
      else
      {
           sprintf(str, "\
-  dump of varfunc = %x\n\
-    previous    = %x \t next = %x\n\
+  dump of varfunc = %p\n\
+    previous    = %p \t next = %p\n\
     itype       = %d\n\
     name        = '%s'\n\
     scalar type = '%s'\n\
@@ -367,8 +365,7 @@ void strdump_varfunc(char * str, t_varfunc * f)
     ptrDepth    = %d\n\
     cstorage    = '%s'\n\
     l0          = %ld \t l1 = %ld\n", \
-                  (unsigned int) f,                                     \
-                  (unsigned int) f->previous, (unsigned int) f->next,   \
+                  (void *) f, (void *) f->previous, (void *) f->next,   \
                   f->Itype, f->v->Name, f->v->Stype, f->v->Ftype,       \
                   f->v->Ctype, f->v->PtrDepth,                          \
                   f->v->Cstorage, f->l0, f->l1);
