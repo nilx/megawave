@@ -1,8 +1,71 @@
-INSTRUCTIONS FOR COMPILING MEGAWAVE
+MEGAWAVE 3.02
 
 
 
-# basic
+# OVERVIEW
+##########
+
+Megawave is a software library and a framework, dedicated to image
+processing. It is produced by the image processing department of the
+following math laboratory:
+    CMLA (CNRS UMR-8536), Ecole Normale Superieure de Cachan
+    61 avenue du President Wilson, 94235 Cachan cedex, France
+
+It implements algorithms developed since 1988 in
+* Universite Paris-IX Dauphine
+* Ecole Normale Superieure de Cachan
+* various associated laboratories.
+
+You can find more information on
+    http://mw.cmla.ens-cachan.fr/megawave/
+
+
+
+# LICENCE AND COPYRIGHTS
+########################
+
+The licence for the previous versions was the "Megawave Licence"; see
+LICENSE_MEGAWAVE.txt for details. A switch to BSD and GPL licences is
+on the way, but not implemented yet, so the previous licencing scheme
+still applies.
+
+Unless specified otherwise, this software and the associated materials
+(documentation, data) are 
+(C) 1988-1998 Universite Paris-IX Dauphine
+(C) 1999-2009 Ecole Normale Superieure de Cachan
+
+Individual authors who contributed to megawave are listed in
+AUTHORS.txt, and in the relevant files.
+
+
+
+# REQUIREMENTS
+##############
+
+Megawave is expected to build and run on Linux, and maybe more POSIX
+systems. It only works on a 32bit architecture. Running megawave
+requires libtiff and libX11. Compiling megawave requires the
+development parts of these libraries, plus make, gcc, and standard
+unix utilities. gcc >= 4.3 may be required for code syntax check (see
+below), but these check have been performed already, so an older
+version of gcc is enough for compilation.
+
+On Debian and Debian based systems, you can install
+* the packages required for compilation and test with
+    sudo aptitude install libtiff-dev libx11-dev make gcc bc
+* the packages required for execution with
+    sudo aptitude install libtiff libx11
+
+
+
+# COMPILATION
+#############
+
+The compilation and compatibility status of megawave on various
+platforms is tracked in the STATUS.txt file.
+
+
+## BASIC
 
 * Prepare the source; this is only needed if you downloaded a "rawsrc"
   version of the source code. It will generate some automatic source
@@ -27,8 +90,7 @@ INSTRUCTIONS FOR COMPILING MEGAWAVE
     make distclean
 
 
-
-# options
+## OPTIONS
 
 Different options are available. Include these options in the
 command-line to use them.
@@ -54,8 +116,7 @@ syntax check, with static linking and debugging symbols.
     make CHECK=strict LINK=static MODE=debug modules
 
 
-
-# parameters
+## PARAMETERS
 
 Different parameters can be changed from the command-line. Some of
 them are explained hereafter; please refer to `common/makefile` for a
@@ -82,7 +143,17 @@ other systems, but not thoroughly tested.
 Uncomment the related include lines in `common/makefile` to use them.
 
 
-# subfolders
+## CONFIGURATION
+
+All the build process configuration lies in `common/makefile`.
+
+
+
+# SUBPARTS OF THE PROJECT
+#########################
+
+
+## SUBFOLDERS
 
 You can also invoke make directly from within the subfolders
 `mwp`, `libmw`, `libmw-x11`, `libmw-io`, `libmw-cmdline` and
@@ -95,7 +166,7 @@ development purpose (code linting, syntax cleanup, ...). They are not
 extensively tested.
 
 
-# documentation
+## DOCUMENTATION
 
 * Compile the system and user documentation manuals.
   This target is not thoroughly tested.
@@ -114,10 +185,3 @@ extensively tested.
   Required tools: `doxygen`, `graphviz`, `pdflatex`.
 
     make srcdoc
-
-
-# configuration
-
-All the build process configuration lies in `common/makefile`.
-
-
