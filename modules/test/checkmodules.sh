@@ -88,6 +88,11 @@ mkdir $TMP
 
 HISTFILE=`tempfile`
 
+if [ "" = "$(which bc)" ]; then
+    echo "Error: bc is required for the tests"
+    exit 1
+fi
+
 # check modules
 echo "checking megawave modules"
 
