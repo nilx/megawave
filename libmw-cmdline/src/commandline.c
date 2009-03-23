@@ -37,21 +37,24 @@ int verbose_flg = FALSE;
 /**
  * default option buffer
  */
-char _mwdefoptbuf[BUFSIZ];
+char _mwdefoptbuf[BUFSIZ]="";
 
-char type_force[mw_ftype_size+1] = {'?', '\0'};
+char type_force[mw_ftype_size+1] = "?";
 
-int mwdbg = FALSE;
 int help_flg = FALSE;
 int vers_flg = FALSE;
 
 extern int help_flg;
 extern int vers_flg;
 
-char _mwoptlist[BUFSIZ] = {'\0'};
+char _mwoptlist[BUFSIZ] = "";
 
 int   _mwoptind = 1;
 char *_mwoptarg = NULL;
+
+Mwiline mwicmd[]={{NULL, NULL, NULL, NULL, NULL, NULL}};
+int mwind=0;
+
 
 /*
  * structures

@@ -32,6 +32,9 @@ API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
 IPATH	+= $(INCDIR)
+LPATH	+= $(LIBDIR)
+
+SHLIBS	= mw
 
 #
 # BIN
