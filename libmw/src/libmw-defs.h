@@ -146,20 +146,6 @@
      }			       \
      while (0)
 
-/* I/O conversion macros called by mwp (data_io.c) */
-#define	_mw_atoq_(S)	(S)
-#define	_mw_atoc_(S)	*(S)
-#define	_mw_atouc_(S)	(unsigned char) *(S)
-#define	_mw_atos_(S)	(short) atoi(S)
-#define	_mw_atous_(S)	(unsigned short) atoi(S)
-#define	_mw_atoi_(S)	(int) atoi(S)
-#define	_mw_atoui_(S)	(unsigned int) atoi(S)
-#define	_mw_atol_(S)	atol(S)
-#define	_mw_atof_(S)	(float) atof(S)
-#define	_mw_atod_(S)	(double) atof(S)
-#define _mw_qtoa_(S)	(S)
-
-
 /*
  * STRUCTURES
  */
