@@ -282,119 +282,7 @@ int mw_opt_used(char c)
      return (strchr(_mwoptlist, c) != NULL) ? TRUE : FALSE;
 }
 
-/*
- * i/o conversion functions called by mwp (data_io.c)
- */
-
-char *_mw_ctoa_(char c)
-{
-     char *ret;
-     char buffer[BUFSIZ];
-     sprintf(buffer, "%c", c);
-     ret = (char *)malloc(strlen(buffer)+1);
-     strcpy(ret, buffer);
-     return ret;
-}
-
-char *_mw_uctoa_(unsigned char uc)
-{
-     char *ret;
-     char buffer[BUFSIZ];
-     sprintf(buffer, "%c", (char)uc);
-     ret = (char *)malloc(strlen(buffer)+1);
-     strcpy(ret, buffer);
-     return ret;
-}
-
-char *_mw_stoa_(short s)
-{
-     char *ret;
-     char buffer[BUFSIZ];
-     sprintf(buffer, "%hd", s);
-     ret = (char *)malloc(strlen(buffer)+1);
-     strcpy(ret, buffer);
-     return ret;
-}
-
-char *_mw_ustoa_(unsigned short us)
-{
-     char *ret;
-     char buffer[BUFSIZ];
-     sprintf(buffer, "%hu", us);
-     ret = (char *)malloc(strlen(buffer)+1);
-     strcpy(ret, buffer);
-     return ret;
-}
-
-char *_mw_itoa_(int i)
-{
-     char *ret;
-     char buffer[BUFSIZ];
-     sprintf(buffer, "%d", i);
-     ret = (char *)malloc(strlen(buffer)+1);
-     strcpy(ret, buffer);
-     return ret;
-}
-
-char *_mw_uitoa_(unsigned int ui)
-{
-     char *ret;
-     char buffer[BUFSIZ];
-     sprintf(buffer, "%u", ui);
-     ret = (char *)malloc(strlen(buffer)+1);
-     strcpy(ret, buffer);
-     return ret;
-}
-
-char *_mw_ltoa_(long l)
-{
-     char *ret;
-     char buffer[BUFSIZ];
-     sprintf(buffer, "%ld", l);
-     ret = (char *)malloc(strlen(buffer)+1);
-     strcpy(ret, buffer);
-     return ret;
-}
-
-char *_mw_ultoa_(unsigned long ul)
-{
-     char *ret;
-     char buffer[BUFSIZ];
-     sprintf(buffer, "%lu", ul);
-     ret = (char *)malloc(strlen(buffer)+1);
-     strcpy(ret, buffer);
-     return ret;
-}
-
-/*
- * 17/3/95: Erreur inexpliquee sur Sun Solaris 5.3 (Grib1):
- *          la variable f n'est pas mise a la bonne valeur
- *          lors de l'appel de _mw_ftoa_(xx) si cette
- *          fonction n'est pas declaree suivant la norme ANSI !!
- *  A enlever dans une future version (tester par exemple
- *  la valeur retournee par le module fentropy)
- */
-
-char *_mw_ftoa_(float f)
-{
-     char *ret;
-     char buffer[BUFSIZ];
-     sprintf(buffer, "%g", (double)f);
-     ret = (char *)malloc(strlen(buffer)+1);
-     strcpy(ret, buffer);
-     return ret;
-}
-
-char *_mw_dtoa_(double d)
-{
-     char *ret;
-     char buffer[BUFSIZ];
-     sprintf(buffer, "%g", d);
-     ret = (char *)malloc(strlen(buffer)+1);
-     strcpy(ret, buffer);
-     return ret;
-}
-
+/* TODO: drop */
 int _mwis_open(char *s, char *rw)
 {
      char fname[BUFSIZ];
@@ -404,7 +292,7 @@ int _mwis_open(char *s, char *rw)
 	 strcpy(fname,s);          /* do not change the value of s */
 	 return(_search_filename(fname));
      }
-     return(TRUE); /* checking diseable for writing */
+     return(TRUE); /* checking disabled for writing */
 }
 
 
