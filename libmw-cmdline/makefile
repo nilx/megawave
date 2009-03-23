@@ -23,7 +23,7 @@ SRCDIR	= src
 SRC	= $(addprefix $(SRCDIR)/, commandline.c)
 
 AUTOHDR	= $(SRC:.c=.h)
-HDR	= $(AUTOHDR) $(SRCDIR)/definitions.h
+HDR	= $(AUTOHDR)
 OBJ	= $(SRC:.c=$(.O))
 DEP	= $(SRC:.c=.d)
 

@@ -17,6 +17,8 @@
  * @author Nicolas Limare (2009)
  */
 
+/* TODO: include _mwsave_xx form libmw */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -25,38 +27,10 @@
 #include <setjmp.h>
 
 #include "mw.h"
-#include "definitions.h"
-#include "commandline.h"
-
-/*
- * global variables
- */
-
-int verbose_flg = FALSE;
-
-/**
- * default option buffer
- */
-char _mwdefoptbuf[BUFSIZ]="";
-
-char type_force[mw_ftype_size+1] = "?";
-
-int help_flg = FALSE;
-int vers_flg = FALSE;
-
-extern int help_flg;
-extern int vers_flg;
-
-char _mwoptlist[BUFSIZ] = "";
-
-int   _mwoptind = 1;
-char *_mwoptarg = NULL;
 
 /*
  * structures
  */
-
-/* TODO : move to definitions.h */
 
 /**
  *  data structure for the default megawave options
@@ -68,6 +42,33 @@ struct mwargs {
      char *argtexname;
      void (*action)(void);
 };
+
+struct Mwiline {
+  char *name;
+  int (*mwarg)(int, char**);
+  void (*mwuse)(char *);
+  char *group;
+  char *function;
+  char *usage;
+};
+typedef struct Mwiline Mwiline;
+
+#include "commandline.h"
+
+/*
+ * global variables
+ */
+
+static int verbose_flg = FALSE;
+static int vers_flg = FALSE;
+
+/* TODO : make static, passa as param from the command-line source */
+int help_flg = FALSE;
+char _mwdefoptbuf[BUFSIZ]="";
+char type_force[mw_ftype_size+1] = "?";
+char _mwoptlist[BUFSIZ] = "";
+int   _mwoptind = 1;
+char *_mwoptarg = NULL;
 
 /**
  * system options

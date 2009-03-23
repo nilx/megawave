@@ -18,7 +18,6 @@ struct Mwiline {
   char *function;
   char *usage;
 };
-
 typedef struct Mwiline Mwiline;
 
 /* src/commandline.c */
