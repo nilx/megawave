@@ -131,7 +131,7 @@
 /*DECLARATIONS DES VARIABLES GLOBALES*/
 
   
-MODELE image;           /* Image sous la forme du modele            */
+static MODELE image;           /* Image sous la forme du modele            */
  
 
 /* declare functions */

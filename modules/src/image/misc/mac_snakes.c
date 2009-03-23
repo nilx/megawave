@@ -25,11 +25,11 @@
 #include "mw.h"
 #include "mw-modules.h" /* for czoom(), fderiv() */
 
-Cimage bg;
-double *xt,*yt;
-double thepower;
-Wframe *win;
-Dlists ref;
+static Cimage bg;
+static double *xt,*yt;
+static double thepower;
+static Wframe *win;
+static Dlists ref;
 
 /* the g function in the energy (energy is int g(Du.n)ds) */
 static void gdgh(double t, double *g, double *dg, double *h)

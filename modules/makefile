@@ -45,6 +45,9 @@ LIBMW_CMDLINE	= $(LIBDIR)/libmw-cmdline
 LIBMW_MODULES	= $(LIBDIR)/lib$(LIBNAME)
 MWP	= $(BINDIR)/mwp
 
+IPATH	+= $(INCDIR)
+LPATH	+= $(LIBDIR)
+
 ifeq	($(LINK), static)
 SHLIBS	= c m X11 tiff
 STLIBS	=
@@ -54,10 +57,7 @@ STLIBS	=
 else
 SHLIBS	= c m X11 tiff
 STLIBS	=
-LPATH	+= $(LIBDIR)
 endif
-
-IPATH	+= $(INCDIR)
 
 # FIXME: use clean float tests
 CWARN	+= -Wno-float-equal
@@ -101,12 +101,12 @@ ifeq	($(LINK), static)
 # order of the libraries matters
 # see http://gcc.gnu.org/ml/gcc-help/2004-04/msg00106.html
 %.cmd	: %.cmd.o $(LIBMW_MODULES)$(.A) \
-	$(LIBMW)$(.A) $(LIBMW_X11)$(.A) $(LIBMW_CMDLINE)$(.A) \
+	$(LIBMW)$(.A) $(LIBMW_X11)$(.A) $(LIBMW_CMDLINE)$(.A) 
 	$(addsuffix $(.A), $(addprefix /usr/lib/lib, $(STLIBS)))
 	$(LDWRAP) $(LD) $(LDFLAGS) -o $@ $^
 else
 %.cmd	: %.cmd.o $(LIBMW_MODULES)$(.SO) \
-	$(LIBMW)$(.SO) $(LIBMW_X11)$(.SO) $(LIBMW_CMDLINE)$(.SO)
+	$(LIBMW)$(.SO) $(LIBMW_X11)$(.SO) $(LIBMW_CMDLINE)$(.SO) 
 	$(LDWRAP) $(LD) $(LDFLAGS) \
 	-lmw -lmw-x11 -lmw-cmdline -lmw-modules -o $@ $<
 endif

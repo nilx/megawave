@@ -25,7 +25,7 @@
 
 /*----- GLOBAL VARIABLE -----*/
 
-int NPARAM;
+static int NPARAM;
 
 
 /* Compute the size of a Fcurves */

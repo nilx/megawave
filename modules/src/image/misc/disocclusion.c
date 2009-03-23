@@ -259,31 +259,31 @@ static int compar_uc(const void * u, const void * v)
   return (-1);
 }
 
-int line_number,col_number;  /* image line and column numbers  */
-int IONumber; /* Number of T-junctions asspciated with different level lines */
+static int line_number,col_number;  /* image line and column numbers  */
+static int IONumber; /* Number of T-junctions asspciated with different level lines */
 
 /* These three arrays are used for the computation of the optimal set of T-junctions
    (see ComputeOptimalSet) */
-double **energy; 
-int **correspond;
-jordan **element;
+static double **energy; 
+static int **correspond;
+static jordan **element;
 
-char *anglep;
-int energy_criterion;
-int globx,globy;
+static char *anglep;
+static int energy_criterion;
+static int globx,globy;
 
 static double CCost(jordan *jc1, jordan *jc2);
 static void ComputeOptimalSet(jordan *jc);
 
-unsigned char *IImage,*OImage; /* Pointers to Input and Output images */
-float *LImage; /* Pointer to Label image (image containing the only occlusions) */
-float lvalue;  /* Current occlusion label */
+static unsigned char *IImage,*OImage; /* Pointers to Input and Output images */
+static float *LImage; /* Pointer to Label image (image containing the only occlusions) */
+static float lvalue;  /* Current occlusion label */
 
 typedef struct occlusionPoint{ /* structure used to describe the occlusion */
   int pos; /* coordinates of point */
   } occlusionPoint;
-occlusionPoint *occlusion;
-int numcolored; /* number of points already colorized */
+static occlusionPoint *occlusion;
+static int numcolored; /* number of points already colorized */
 
 
 typedef struct a_frontier { /* structure used to describe the vertices of the occlusion boundary */
@@ -291,12 +291,12 @@ typedef struct a_frontier { /* structure used to describe the vertices of the oc
   struct a_frontier *previous,*next;
 } frontier;
 
-frontier *jb; /* First element of frontier */
-int numfrontier=0;
-char *pivots; /* A geodesic path can be made of different segments; 
+static frontier *jb; /* First element of frontier */
+static int numfrontier=0;
+static char *pivots; /* A geodesic path can be made of different segments; 
 		 at each segment apex (pivot) one needs the local conformation 
 		 of the level line */
-int *fpivots;
+static int *fpivots;
 
 typedef struct Pxy_t {
     double x, y;
@@ -354,15 +354,15 @@ typedef struct deque_t {
     int pnlpn, fpnlpi, lpnlpi, apex;
 } deque_t;
 
-pointnlink_t *pnls, **pnlps;
-int pnll;
+static pointnlink_t *pnls, **pnlps;
+static int pnll;
 
-triangle_t *tris;
-int trin, tril;
+static triangle_t *tris;
+static int trin, tril;
 
-deque_t dq;
+static deque_t dq;
 
-Ppoint_t *ops;
+static Ppoint_t *ops;
 
 /****************************************************************************/
 
@@ -987,10 +987,10 @@ static void FreeTPath(void)
 
 /****************************************************************************/
 
-Ppoint_t *polypoints; 
+static Ppoint_t *polypoints; 
     /* Copy of the frontier as a polygonal line whose structure 
        is compatible with Mitchell's shortest path algorithm */
-Ppoint_t *endTjunctions; /* All the geodesics endpoints */
+static Ppoint_t *endTjunctions; /* All the geodesics endpoints */
 
 /****************************************************************************/
 

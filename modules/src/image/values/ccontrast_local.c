@@ -21,8 +21,8 @@ output<-out        "output Cimage"
 
 #define GRAY_LEVEL(image, point) ((image)->gray[(int)((point)->y)*(image)->ncol+(int)((point)->x)])
 
-int *histo_global;		/* old histogram */
-float *newht_global;		/* new histogram */
+static int *histo_global;		/* old histogram */
+static float *newht_global;		/* new histogram */
 
 
 /*--------------- SOME BASIC FUNCTIONS ---------------------------*/

@@ -42,13 +42,13 @@ typedef struct mydata {
 } *Mydata;
 
 /*----- global variables -----*/
-Fimage   image,NormOfDu;
-int      precision1,precision2,max_only,zero_order;
-Fsignal  logProbaOfDu;
-Shapes   ref_tree;
-float    **tabsaddles;
-Flists   boundaries;
-Flist    boundary;
+static Fimage   image,NormOfDu;
+static int      precision1,precision2,max_only,zero_order;
+static Fsignal  logProbaOfDu;
+static Shapes   ref_tree;
+static float    **tabsaddles;
+static Flists   boundaries;
+static Flist    boundary;
 
 
 /*===== Compute the minimum contrast and the length of the curve l =====*/

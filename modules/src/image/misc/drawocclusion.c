@@ -219,14 +219,14 @@ static void fconnected(float *In, int line, int col, float FOREGROUND, int *NUMB
 #define max(A,B)     (((A)>(B)) ? (A) : (B))
 #define Labels_Number 10000
 
-Polygons poly;
-Polygon pl,npl;
-Point_curve pc,npc;
-int max_number_of_points_in_poly=0;
+static Polygons poly;
+static Polygon pl,npl;
+static Point_curve pc,npc;
+static int max_number_of_points_in_poly=0;
 
-int x0,y0,x1,y1,oldx1,oldy1,dx,dy;
+static int x0,y0,x1,y1,oldx1,oldy1,dx,dy;
 static char first_point=0;
-char print_mode=0;
+static char print_mode=0;
 
 static void DrawLinePoly(Wframe *ImageWindow, int a0, int b0, int a1, int b1)
 {

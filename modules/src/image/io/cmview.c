@@ -37,9 +37,9 @@ typedef struct cmview_SParam {
    }  *cmview_Param;
 
 static char step_mode,direction=1;
-unsigned char InfoPrint; /* Toggle to print info on the current image */
-int CurrentFrameNumber;  /* Current number of the frame */
-int FrameNumber;         /* Total number of frames */
+static unsigned char InfoPrint; /* Toggle to print info on the current image */
+static int CurrentFrameNumber;  /* Current number of the frame */
+static int FrameNumber;         /* Total number of frames */
 
 static void cmview_notify_help(void)
 {

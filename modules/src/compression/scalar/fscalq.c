@@ -67,7 +67,7 @@ static int      buffer;           /* Bits to encode in the currently
 				   * encoded codeword */
 static unsigned char *ptrc;       /* Pointer to compress->gray for next 
 				   * codewords to encode */
-float           min, max;	  /* Minimum and maximum values of gray level
+static float    min, max;	  /* Minimum and maximum values of gray level
 				   * in `Image` */
 
 

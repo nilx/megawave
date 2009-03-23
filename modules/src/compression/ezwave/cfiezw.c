@@ -33,7 +33,7 @@ usage = {
 #define GREEN 1
 #define BLUE 2
 
-Fsignal      ORI1, ORI2;          /* Non normalized filters */
+static Fsignal      ORI1, ORI2;          /* Non normalized filters */
 
 
 

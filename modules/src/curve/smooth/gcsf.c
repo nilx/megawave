@@ -32,8 +32,8 @@
 #include "mw-modules.h"
 
 /*--- Global Variables ---*/
-double **pts1,**pts2,**chord1,**chord2;
-double tmp;
+static double **pts1,**pts2,**chord1,**chord2;
+static double tmp;
 
 #define ABS(x)      ( (x)>0.0?(x):-(x) )
 #define SGN(x)      (((x)==0.0)?0.0:(((x)>0.0)?(1.0):(-1.0)))

@@ -54,24 +54,24 @@
 #define C_BLUE(i)  ((((i) %10)* 255)/9)
 
 /*------------------- GLOBAL VARIABLES -------------------*/
-Wframe *win;                  /* display window */
-Ccimage image;                /* image displayed */
-Fimage which_curve;           /* index of curve at each pixel */
-int nx,ny;                    /* its dimensions */
-Flists curves,ref_curves;     /* input/reference curves (Flists) */
-double sx1,sx2,sy1,sy2;       /* part to be displayed */
-int X1,X2,Y1,Y2;              /* corresponding coordinates in the window */
-int draw_mode,grid_mode;      /* modes for plot_curves() */
-int size_strleft;             /* max # chars needed for y axis */
-int bg_order;                 /* interpolation order for bg */
-int in_color,ref_color;       /* input/reference color */
-char ref_display,bg_flag;     /* flags */
-char a_flag,s_flag,e_flag;    /* flags */
-char cur_index_display;       /* flag to display index of current curve */
-Curve disc1,disc2,disc5;      /* discs to be displayed */
-Fimage bg_image,tmp_fimage;   /* for bg display */
-int cur_index,cur_display;    /* for curve selection */
-int show_all,motion_flag;     /* for motion and single display */
+static Wframe *win;                  /* display window */
+static Ccimage image;                /* image displayed */
+static Fimage which_curve;           /* index of curve at each pixel */
+static int nx,ny;                    /* its dimensions */
+static Flists curves,ref_curves;     /* input/reference curves (Flists) */
+static double sx1,sx2,sy1,sy2;       /* part to be displayed */
+static int X1,X2,Y1,Y2;              /* corresponding coords in the window */
+static int draw_mode,grid_mode;      /* modes for plot_curves() */
+static int size_strleft;             /* max # chars needed for y axis */
+static int bg_order;                 /* interpolation order for bg */
+static int in_color,ref_color;       /* input/reference color */
+static char ref_display,bg_flag;     /* flags */
+static char a_flag,s_flag,e_flag;    /* flags */
+static char cur_index_display;       /* flag to display index of cur. curve */
+static Curve disc1,disc2,disc5;      /* discs to be displayed */
+static Fimage bg_image,tmp_fimage;   /* for bg display */
+static int cur_index,cur_display;    /* for curve selection */
+static int show_all,motion_flag;     /* for motion and single display */
 /*--------------------------------------------------------*/
 
 /* compute the rule (graduations) associated to a given interval */
@@ -107,7 +107,7 @@ static void restore_xyratio(void)
   }
 }
 
-static double trunc(double v, double ref)
+static double local_trunc(double v, double ref)
 {
   ref = v/ref;
   ref = ABS(ref);
@@ -286,7 +286,7 @@ static void plot_curves(void)
 	if (s_flag) y = Y1+(int)((double)(Y2-Y1)*(v-sy1)/(sy2-sy1));
 	else        y = Y2+(int)((double)(Y1-Y2)*(v-sy1)/(sy2-sy1));
 	if (y>=Y1 && y<=Y2) {
-	  sprintf(str,"%g",trunc(v,truncref));
+	  sprintf(str,"%g",local_trunc(v,truncref));
 	  i = strlen(str);
 	  if (i>size_strleft) size_strleft=i;
 	}
@@ -314,7 +314,7 @@ static void plot_curves(void)
 	  case 2: mw_draw_ccimage(image,X2+1,y,X2+7,y,255,0,0);
 	  case 1: mw_draw_ccimage(image,X1-7,y,X1-1,y,255,0,0);
 	  }
-	  sprintf(str,"%g",trunc(v,truncref));
+	  sprintf(str,"%g",local_trunc(v,truncref));
 	  ccputstring(image,X1-7-FONTWIDTH*strlen(str),y-FONTHEIGHT/2,
 		      &fgcolor,&bgcolor,NULL,str);
 	}
@@ -340,7 +340,7 @@ static void plot_curves(void)
 	  case 2: mw_draw_ccimage(image,x,Y1-7,x,Y1-1,255,0,0);
 	  case 1: mw_draw_ccimage(image,x,Y2+1,x,Y2+7,255,0,0);
 	  }
-	  sprintf(str,"%g",trunc(v,truncref));
+	  sprintf(str,"%g",local_trunc(v,truncref));
 	  ccputstring(image,x-strlen(str)*FONTWIDTH/2,Y2+7,
 		      &fgcolor,&bgcolor,NULL,str);
 	}

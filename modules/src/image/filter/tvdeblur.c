@@ -37,7 +37,7 @@ usage = {
 
 
 /* global variable */
-Fimage aux2;
+static Fimage aux2;
 
 
 /* compute weight * total variation and add its gradient to grad */

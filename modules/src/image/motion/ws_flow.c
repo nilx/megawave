@@ -33,10 +33,10 @@
                 
 
 /****global variables: not very beautiful, but avoid functions with 50 arguments ;-)******/
-int nx,ny,nz,nzo,r,s,to;
-long adrxy;
-float *a,*Ex,*Ey,*Et;
-float *U,*V,*residue;
+static int nx,ny,nz,nzo;
+static long adrxy;
+static float *a,*Ex,*Ey,*Et;
+static float *U,*V,*residue;
 
 static void ALLOCATE(Fmovie out, int nb_image)
 {

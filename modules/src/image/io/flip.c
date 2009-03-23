@@ -24,17 +24,17 @@
 
 /*------------------- GLOBAL CONSTANTS AND VARIABLES -------------------*/
 
-int ordernum = 6;
-int ordervalue[6]={0,1,-3,3,5,7};
-char *ordername[6]=
+static int ordernum = 6;
+static int ordervalue[6]={0,1,-3,3,5,7};
+static char *ordername[6]=
   {"nearest neighbor","bilinear","Key's bicubic","bicubic spline",
    "spline order 5","spline order 7"};
 
-Wframe *win;
-int nx,ny,num,order,zoom,disp;
-float X1,Y1,X2,Y2,min,max;
-Fimage u1,u2,u;
-Ccimage image1,image2;
+static Wframe *win;
+static int nx,ny,num,order,zoom,disp;
+static float X1,Y1,X2,Y2,min,max;
+static Fimage u1,u2,u;
+static Ccimage image1,image2;
 
 static void max_contrast(void)
 {

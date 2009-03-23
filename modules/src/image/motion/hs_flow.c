@@ -32,12 +32,12 @@
 
                /* GLOBAL VARIABLES */   
 
-float *a;               /* original movie  */
-float *Ex,*Ey,*Et;      /* gray level derivatives*/
-float **U,**V;
+static float *a;               /* original movie  */
+static float *Ex,*Ey,*Et;      /* gray level derivatives*/
+static float **U,**V;
 
-int   nx,ny,nz,nzo;     /* movie input dimensions */ 
-long  adrxyz,adrxyz2,adrxy;
+static int   nx,ny,nz,nzo;     /* movie input dimensions */ 
+static long  adrxyz,adrxyz2,adrxy;
 
  
 

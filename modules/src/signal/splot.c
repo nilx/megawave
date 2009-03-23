@@ -91,7 +91,7 @@ static int minmax(double *min, double *max)
   return(0);
 }
 
-static double trunc(double v, double ref)
+static double local_trunc(double v, double ref)
 {
   ref = v/ref; 
   ref = ABS(ref);
@@ -166,7 +166,7 @@ static void plot_signal(void)
     for (k=0;(v=yofs+(double)k*ystep*(double)ysub)<=sy2;k++) {
       y = Y2+(int)((double)(Y1-Y2)*(v-sy1)/(sy2-sy1));
       if (y>=Y1 && y<=Y2) {
-	sprintf(str,"%g",trunc(v,truncref));
+	sprintf(str,"%g",local_trunc(v,truncref));
 	i = strlen(str);
 	if (i>max) max=i;
       }
@@ -189,7 +189,7 @@ static void plot_signal(void)
 	  case 2: mw_draw_ccimage(image,X2+1,y,X2+7,y,255,0,0);
 	  case 1: mw_draw_ccimage(image,X1-7,y,X1-1,y,255,0,0);
 	  }
-	  sprintf(str,"%g",trunc(v,truncref));
+	  sprintf(str,"%g",local_trunc(v,truncref));
 	  ccputstring(image,X1-7-FONTWIDTH*strlen(str),y-FONTHEIGHT/2,
 		      &fgcolor,&bgcolor,NULL,str);
 	}
@@ -215,7 +215,7 @@ static void plot_signal(void)
 	  case 2: mw_draw_ccimage(image,x,Y1-7,x,Y1-1,255,0,0);
 	  case 1: mw_draw_ccimage(image,x,Y2+1,x,Y2+7,255,0,0);
 	  }
-	  sprintf(str,"%g",trunc(v,truncref));
+	  sprintf(str,"%g",local_trunc(v,truncref));
 	  ccputstring(image,x-strlen(str)*FONTWIDTH/2,Y2+7,
 		      &fgcolor,&bgcolor,NULL,str);
 	}

@@ -42,31 +42,29 @@
 
                /* GLOBAL VARIABLES */   
                 
-int B[MAXvitesse][MAXvitesse];	  /* allowed speeds */
-int BB[MAXvitesse2][MAXvitesse2];
+static int B[MAXvitesse][MAXvitesse];	  /* allowed speeds */
+static int BB[MAXvitesse2][MAXvitesse2];
     
-float *a;  		/* original picture  */
-float *curv;  		/* courbure spatiale */  
-float *grad; 		/* gradient (in fact 16xgradient^2) */
-float *inter; 		/* stabilisateur */
-float *accel;          	/* accel */
-short *ani;  		/* ani is a boolean array */ 
+static float *a;  		/* original picture  */
+static float *curv;  		/* courbure spatiale */  
+static float *grad; 		/* gradient (in fact 16xgradient^2) */
+static float *inter; 		/* stabilisateur */
+static float *accel;          	/* accel */
+static short *ani;  		/* ani is a boolean array */ 
                         /* if ani[...]=0 we use isotropic diffusion, */
                         /* if ani[...]=1 anisotropic diffusion */
 
-int   nx,ny,nz;         /* movie dimensions */  
-long  adrxyz,adrxy;
+static int   nx,ny,nz;         /* movie dimensions */  
+static long  adrxyz,adrxy;
 
     
 		/* AUXILIARY VARIABLES */
 		
-float MAXacel;
-            
-float alpha1,alpha2,alpha3;	/* different powers */
-float q;			/* accel power */
-short MAXvit2,MINvit2;
-float time1,time2,final_scale;
-short MAXvit,MINvit,fmxa;
+static float alpha1,alpha2,alpha3;	/* different powers */
+static float q;			/* accel power */
+static short MAXvit2,MINvit2;
+static float time1,time2;
+static short MAXvit,MINvit,fmxa;
 
 
 static void RESOLUTION2(void),EVOL(void),CALCULB(void),CALC_CURV(void),CALC_ACCEL(void);

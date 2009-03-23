@@ -33,18 +33,18 @@
 /*------------------- GLOBAL VARIABLES -------------------*/
 
                     /* button handling */
-Wpanel wp;
-struct wp_toggle b1,b2,b3,b6;
-struct wp_int b4,b5;
+static Wpanel wp;
+static struct wp_toggle b1,b2,b3,b6;
+static struct wp_int b4,b5;
 
-Wframe *win1;       /* control window */
-Wframe *win2;       /* display window */
+static Wframe *win1;       /* control window */
+static Wframe *win2;       /* display window */
 
-int nx,ny,zoom;     /* size of display and zoom level */
-Fimage ref;         /* reference image (= input image) */
-Fimage interpolate; /* current interpolated image */
-Ccimage image;      /* image displayed */
-float X1,Y1,X2,Y2;  /* location of displayed subimage */
+static int nx,ny,zoom;     /* size of display and zoom level */
+static Fimage ref;         /* reference image (= input image) */
+static Fimage interpolate; /* current interpolated image */
+static Ccimage image;      /* image displayed */
+static float X1,Y1,X2,Y2;  /* location of displayed subimage */
 
 /*--------------------------------------------------------*/
 

@@ -67,15 +67,15 @@ typedef float bufmse[MAX_WADAP][MAX_LEVEL][NORIENT][MAX_CB];
 typedef float bufrl[MAX_WADAP][MAX_LEVEL][NORIENT];
 typedef int   bufind[MAX_WADAP][MAX_LEVEL][NORIENT];
 
-bufmse        bmse;            /* Buffer for m.s.e. for subimages 
+static bufmse        bmse;     /* Buffer for m.s.e. for subimages 
 				* and different codebooks */
-bufmse        brate;           /* Buffer for rate for subimages 
+static bufmse        brate;    /* Buffer for rate for subimages 
 				* and different codebooks */
-bufrl         brl;             /* Buffer for classes map rates for 
+static bufrl         brl;      /* Buffer for classes map rates for 
 				* subimages and different codebooks */
-bufind        numcb;           /* Buffer for number of codebooks 
+static bufind        numcb;    /* Buffer for number of codebooks 
 				* for each class and each subimage */
-bufrl         bfacmse;         /* Buffer of multiplicative constants 
+static bufrl         bfacmse;  /* Buffer of multiplicative constants 
                                 * for mse in approximative memory allocation */
 static int    nadapcb[MAX_LEVEL][NORIENT];  /* Number of adapted classes 
 				* for each level and orientation */

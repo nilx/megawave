@@ -43,8 +43,8 @@ typedef struct cview_SParam {
 
 #define H_CSCALE 20 /* Height of the color_scale box */
 
-int GLprint;  /* Toggle to print the Gray Level values */
-int oldx1,oldy1,oldevent,zfactor,cscale_shown;
+static int GLprint;  /* Toggle to print the Gray Level values */
+static int oldx1,oldy1,oldevent,zfactor,cscale_shown;
 
 static void cview_notify_help(void)
 {

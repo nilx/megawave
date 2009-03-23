@@ -48,8 +48,8 @@ typedef struct fview_SParam {
   Fsignal section;
 } *fview_Param;
 
-int GLprint;  /* Toggle to print the Gray Level values */
-int oldx1,oldy1,oldevent,zfactor,cscale_shown;
+static int GLprint;  /* Toggle to print the Gray Level values */
+static int oldx1,oldy1,oldevent,zfactor,cscale_shown;
 
 static void fview_notify_help(void)
 {

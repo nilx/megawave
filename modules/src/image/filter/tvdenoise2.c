@@ -27,9 +27,9 @@ usage = {
 #include "mw-modules.h"
 #include "mw-x11.h"
 
-int nx,ny;            /* image size (global variable, never changes) */
-unsigned char *image; /* image plane for display */
-Wframe *win;          /* display window */
+static int nx,ny;            /* image size (global variable, never changes) */
+static unsigned char *image; /* image plane for display */
+static Wframe *win;          /* display window */
 
 
 static void init_display(char *str)

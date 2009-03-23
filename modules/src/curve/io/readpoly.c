@@ -20,11 +20,11 @@
 /* Number of channels for the polygon: 1 (gray-level) */
 #define NB_OF_CHANNELS 1
 
-Polygons poly;
-Polygon pl,npl;
-Point_curve pc,npc;
+static Polygons poly;
+static Polygon pl,npl;
+static Point_curve pc,npc;
 
-int x0,y0,x1,y1,oldx1,oldy1,dx,dy;
+static int x0,y0,x1,y1,oldx1,oldy1,dx,dy;
 static char first_point=0;
 
 

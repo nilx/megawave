@@ -102,7 +102,7 @@
 
 /* DECLARATION DE LA VARIABLE GLOBALE */
 
-MODELE image;                               /* Image sous la forme du modele */
+static MODELE image;                               /* Image sous la forme du modele */
 
 
 /* declare functions */

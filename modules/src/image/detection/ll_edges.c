@@ -34,13 +34,13 @@ usage = {
 #define HISTO_STEP 0.01
 
 /*----- global variables -----*/
-Fimage   NormOfDu;
-int      precision1,zero_order;
-Fsignal  logProbaOfDu;
-Flists   edges;
-float    *contrast;
-double   *length;
-int      n_alloc;
+static Fimage   NormOfDu;
+static int      precision1,zero_order;
+static Fsignal  logProbaOfDu;
+static Flists   edges;
+static float    *contrast;
+static double   *length;
+static int      n_alloc;
 
 
 /*===== Fill contrast[] and length[] arrays  =====*/

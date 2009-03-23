@@ -35,8 +35,8 @@ typedef struct ccview_SParam {
     unsigned char *image_blue_save;
   } *ccview_Param;
 
-int GLprint;  /* Toggle to print the R,G,B values */
-int oldx1,oldy1,oldevent,zfactor;
+static int GLprint;  /* Toggle to print the R,G,B values */
+static int oldx1,oldy1,oldevent,zfactor;
 
 static void ccview_notify_help(void)
 {
