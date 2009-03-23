@@ -5,6 +5,10 @@
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2009)
 
 .SO	= .dylib
-LDFLAGS	?= $(LDMISC)						\
+LDFLAGS	?= $(LDMISC)					\
 	$(addprefix -L, $(LPATH)) $(addprefix -l$(LPREFIX), $(SHLIBS))
 LDFLAGS_SHARED	?= -dynamiclib $(LDFLAGS)
+
+LPATH	?= . /sw/lib /usr/X11R6/lib
+IPATH	?= . /sw/include
+
