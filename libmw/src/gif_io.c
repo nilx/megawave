@@ -33,44 +33,45 @@ typedef unsigned char byte;
 #define MONO(rd,gn,bl) (((rd)*11 + (gn)*16 + (bl)*5) >> 5)  /*.33R+ .5G+ .17B*/
 
 
-int BitOffset = 0,		/* Bit Offset of next code */
-     XC = 0, YC = 0,		/* Output X and Y coords of current pixel */
-     Pass = 0,			/* Used by output routine if interlaced pic */
-     OutCount = 0,		/* Decompressor output 'stack count' */
-     RWidth, RHeight,		/* screen dimensions */
-     Width, Height,		/* image dimensions */
-     LeftOfs, TopOfs,		/* image offset */
-     BitsPerPixel,		/* Bits per pixel, read from GIF header */
-     BytesPerScanline,		/* bytes per scanline in output raster */
-     ColorMapSize,		/* number of colors */
-     Background,		/* background color */
-     CodeSize,			/* Code size, read from GIF header */
-     InitCodeSize,		/* Starting code size, used during Clear */
-     Code,			/* Value returned by ReadCode */
-     MaxCode,			/* limiting value for current code size */
-     ClearCode,			/* GIF clear code */
-     EOFCode,			/* GIF end-of-information code */
-     CurCode, OldCode, InCode,	/* Decompressor variables */
-     FirstFree,			/* First free code, generated per GIF spec */
-     FreeCode,			/* Decompressor,next free slot in hash table */
-     FinChar,			/* Decompressor variable */
-     BitMask,			/* AND mask for data size */
-     ReadMask,			/* Code AND mask for current code size */
-     Misc;                      /* miscellaneous bits (interlace, local cmap)*/
+int BitOffset=0,		/* Bit Offset of next code */
+     XC=0, YC=0,		/* Output X and Y coords of current pixel */
+     Pass=0,			/* Used by output routine if interlaced pic */
+     OutCount=0,		/* Decompressor output 'stack count' */
+     RWidth=0, RHeight=0,	/* screen dimensions */
+     Width=0, Height=0,		/* image dimensions */
+     LeftOfs=0, TopOfs=0,	/* image offset */
+     BitsPerPixel=0,		/* Bits per pixel, read from GIF header */
+     BytesPerScanline=0,	/* bytes per scanline in output raster */
+     ColorMapSize=0,		/* number of colors */
+     Background=0,		/* background color */
+     CodeSize=0,		/* Code size, read from GIF header */
+     InitCodeSize=0,		/* Starting code size, used during Clear */
+     Code=0,			/* Value returned by ReadCode */
+     MaxCode=0,			/* limiting value for current code size */
+     ClearCode=0,		/* GIF clear code */
+     EOFCode=0,			/* GIF end-of-information code */
+     CurCode=0, OldCode=0, 
+     InCode=0,	                /* Decompressor variables */
+     FirstFree=0,		/* First free code, generated per GIF spec */
+     FreeCode=0,		/* Decompressor, next free slot in hash table */
+     FinChar=0,			/* Decompressor variable */
+     BitMask=0,			/* AND mask for data size */
+     ReadMask=0,		/* Code AND mask for current code size */
+     Misc=0;                    /* miscellaneous bits (interlace, local cmap)*/
 
 
-boolean Interlace, HasColormap;
+boolean Interlace=0, HasColormap=0;
 
-byte *RawGIF;			/* The heap array to hold it, raw */
-byte *Raster;			/* The raster data stream, unblocked */
-byte *pic;
+byte *RawGIF=NULL;			/* The heap array to hold it, raw */
+byte *Raster=NULL;			/* The raster data stream, unblocked */
+byte *pic=NULL;
 
 /* The hash table used by the decompressor */
-int Prefix[4096];
-int Suffix[4096];
+int Prefix[4096]={0};
+int Suffix[4096]={0};
 
 /* An output array used by the decompressor */
-int OutCode[1025];
+int OutCode[1025]={0};
 
 /* The colormap */
 static byte r[256],g[256],b[256];
@@ -82,7 +83,7 @@ char *id = "GIF87a";
 static int  ReadCode(void);
 static void DoInterlace(byte);
 
-int filesize;
+int filesize=0;
 
 
 /*~~~~~ Load GIF ~~~~~*/

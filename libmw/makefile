@@ -122,6 +122,7 @@ ifeq	($(MODE), opti)
 CMISC	+= -O1
 endif
 
+SHLIBS	= X11 tiff jpeg
 
 #
 # BIN

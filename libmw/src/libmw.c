@@ -425,3 +425,4 @@ char * mw_type_conv_in[] =
 
 char * mwname = NULL;         /* Name of the module */
 char * mwgroup = NULL;        /* Group of the module */
+int mwdbg = FALSE;
