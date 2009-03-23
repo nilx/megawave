@@ -841,7 +841,6 @@ extern char * mwgroup;
 #define mw_edges_mirror 3   /* mirror effect */
 #define mw_edges_wadapted 4 /* adapted wavelet on edges */
 
-extern int mwind;
 extern int mwdbg;
 
 /* src/ccimage.c */

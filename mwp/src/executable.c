@@ -378,8 +378,8 @@ static void writegendecl(FILE * afile)
      fprintf(afile, "extern int help_flg;\n");
      fprintf(afile, "\n");
 
-     fprintf(afile, "int mwind = 0;\n");
-     fprintf(afile, "Mwiline mwicmd[] = { { "
+     fprintf(afile, "static int mwind = 0;\n");
+     fprintf(afile, "static Mwiline mwicmd[] = { { "
              "\"%s\", _%s, usage_%s, \"%s\", \"%s\", \"%s\"} };\n",
              module_name, module_name, module_name,
              group_name, H->Function, usagebuf);
@@ -1762,7 +1762,7 @@ static void writebody(FILE * afile)
           fprintf(afile, "  %svar_flg = FALSE;\n", MWPF);
 
      /* call to function which do MegaWave default options actions */
-     fprintf(afile, "  MegaWaveDefOpt(\"%s\");\n\n", H->Version);
+     fprintf(afile, "  MegaWaveDefOpt(\"%s\", mwicmd, mwind);\n\n", H->Version);
 
      /*
       * generate code to verify that input files are readable, output
@@ -1795,7 +1795,7 @@ static void writemain(FILE * afile)
     fprintf(afile, " */\n");
     fprintf(afile, "int main(int argc, char ** argv, char ** envp)\n");
     fprintf(afile, "{\n");
-    fprintf(afile, "    return _mw_main(argc, argv, envp);\n");
+    fprintf(afile, "    return _mw_main(argc, argv, envp, mwicmd, mwind);\n");
     fprintf(afile, "}\n");
 }
 

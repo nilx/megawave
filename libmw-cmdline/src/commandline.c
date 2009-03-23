@@ -52,10 +52,6 @@ char _mwoptlist[BUFSIZ] = "";
 int   _mwoptind = 1;
 char *_mwoptarg = NULL;
 
-Mwiline mwicmd[]={{NULL, NULL, NULL, NULL, NULL, NULL}};
-int mwind=0;
-
-
 /*
  * structures
  */
@@ -193,7 +189,8 @@ static struct mwargs *lookup(char *s)
 /**
  * main run-time function
  */
-int _mw_main(int argc, char *argv[], char *envp[])
+int _mw_main(int argc, char *argv[], char *envp[],
+	     Mwiline mwicmd[], int mwind)
 { 
     char *userargv[BUFSIZ];
     int i, userargc, flg;
@@ -265,7 +262,7 @@ int _mw_main(int argc, char *argv[], char *envp[])
 /**
  * megawave default options actions
  */
-void MegaWaveDefOpt(char *vers)
+void MegaWaveDefOpt(char *vers, Mwiline mwicmd[], int mwind)
 {
      /* Version flag */
      if (vers_flg == TRUE)

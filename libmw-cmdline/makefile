@@ -31,10 +31,10 @@ LIBNAME	= mw-cmdline
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
+SHLIBS	= mw
+
 IPATH	+= $(INCDIR)
 LPATH	+= $(LIBDIR)
-
-SHLIBS	= mw
 
 #
 # BIN

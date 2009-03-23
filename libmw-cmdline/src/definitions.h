@@ -16,6 +16,4 @@ struct Mwiline {
 
 typedef struct Mwiline Mwiline;
 
-extern Mwiline mwicmd[];
-
 #endif /* !_DEFINITIONS_ */

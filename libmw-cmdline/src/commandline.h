@@ -6,8 +6,8 @@
 #define _COMMANDLINE_H_
 
 /* src/commandline.c */
-int _mw_main(int argc, char *argv[], char *envp[]);
-void MegaWaveDefOpt(char *vers);
+int _mw_main(int argc, char *argv[], char *envp[], Mwiline mwicmd[], int mwind);
+void MegaWaveDefOpt(char *vers, Mwiline mwicmd[], int mwind);
 int mw_opt_used(char c);
 char *_mw_ctoa_(char c);
 char *_mw_uctoa_(unsigned char uc);

@@ -111,8 +111,6 @@ LIBNAME	= mw
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
-IPATH	+= $(INCDIR)
-
 # FIXME: use clean float tests
 CWARN	+= -Wno-float-equal
 
@@ -122,7 +120,10 @@ ifeq	($(MODE), opti)
 CMISC	+= -O1
 endif
 
-SHLIBS	= X11 tiff jpeg
+SHLIBS	= mw-x11 X11 tiff jpeg
+
+IPATH	+= $(INCDIR)
+LPATH	+= $(LIBDIR)
 
 #
 # BIN
