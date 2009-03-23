@@ -13,11 +13,10 @@
  */
 #define _POSIX_C_SOURCE 199309L
 #include <time.h>
-#undef _POSIX_C_SOURCE
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#undef _POSIX_C_SOURCE
 
 #include "definitions.h"
 #include "wdevice.h"
@@ -27,16 +26,16 @@
 #define mw_nmax_windows 10 /* Max Numbers of windows */
 
 int mwwindelay = 100; /* Delay to refresh windows (milliseconds) */
-int mw_n_windows=0; /* Current Number of windows */
+int mw_n_windows = 0; /* Current Number of windows */
 
-Wframe *mw_ptr_window[mw_nmax_windows]; /* ptr to each window */
-void *mw_ptr_param[mw_nmax_windows]; /* ptr to each user's parameter */
+static Wframe *mw_ptr_window[mw_nmax_windows]; /* ptr to each window */
+static void *mw_ptr_param[mw_nmax_windows]; /* ptr to each user's parameter */
 
 /* ptr to each notify proc associated to a window */
-int (*mw_ptr_window_notify[mw_nmax_windows])(Wframe *, void *);
+static int (*mw_ptr_window_notify[mw_nmax_windows])(Wframe *, void *);
 
 /* Filled by Wdevice: Maps bitmap pixel values to X pixel vals */
-unsigned long _W_cols[256];
+unsigned long _W_cols[256] = {0};
 
 /*     Get a window available for drawing, new if window==NULL or if
        window->win == NULL (deleted window).

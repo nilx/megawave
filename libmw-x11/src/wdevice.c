@@ -32,28 +32,30 @@
  */
 
 Display 	*_W_Display=NULL;	/* -- Which display          */
-int		_W_Screen;	/* -- Which screen on the display    */
-int		_W_Depth;	/* -- Number of color planes         */
-unsigned long	_W_BlackPixel;	/* -- System "Black" color           */
-unsigned long	_W_WhitePixel;	/* -- System "White" color           */
-Colormap	_W_Colormap;	/* -- default System color map       */
-Cursor		_W_Cursor;	/* -- Application program's cursor   */
-GC              _W_GC;          /* -- Graphic content to be used     */
-Visual          *_W_Visual;     /* -- Visual color structure         */
-XFontStruct     *_W_Font;       /* -- Font loaded                    */ 
+int		_W_Screen=0;	/* -- Which screen on the display    */
+int		_W_Depth=0;	/* -- Number of color planes         */
+unsigned long	_W_BlackPixel=0;	/* -- System "Black" color           */
+unsigned long	_W_WhitePixel=0;	/* -- System "White" color           */
+Colormap	_W_Colormap=None;	/* -- default System color map       */
+Cursor		_W_Cursor=None;	/* -- Application program's cursor   */
+GC              _W_GC=None;          /* -- Graphic content to be used     */
+Visual          *_W_Visual=NULL;     /* -- Visual color structure         */
+XFontStruct     *_W_Font=NULL;       /* -- Font loaded                    */ 
 
-int             _W_KeyBuffer;          /* -- The Key pressed */
-int             _W_XErrorOccured = 0;  /* -- Used by WIsAnActiveWindow */
+int             _W_KeyBuffer=0;          /* -- The Key pressed */
+int             _W_XErrorOccured=0;  /* -- Used by WIsAnActiveWindow */
 
 /* Color parameters, located into the Wframe structure in Wdevice V2 : */
-unsigned char   _W_Red[256], _W_Green[256], _W_Blue[256];  /* User ColorMap */
-XColor          _W_RGB[256];           /* ColorMap (X11 format) */
+unsigned char   _W_Red[256] = {0},
+    _W_Green[256] = {0},
+    _W_Blue[256] = {0};  /* User ColorMap */
+XColor          _W_RGB[256]={{0,0,0,0,0,0}};  /* ColorMap (X11 format) */
 int             _W_NumCols=0;             /* Number of colors to allocate */
-unsigned char   _W_special_color; /* The special color (used as a mark) */
+unsigned char   _W_special_color=0; /* The special color (used as a mark) */
                      
 /* Internal use only */
 int             _W_nfcols=0;          /* number of colors to free */
-unsigned long   _W_freecols[256]; /* list of pixel values to free */
+unsigned long   _W_freecols[256]={0}; /* list of pixel values to free */
 
 
 #define theIcon_width 64

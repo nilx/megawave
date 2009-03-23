@@ -31,6 +31,8 @@ LIBNAME	= mw-x11
 API	= $(LIBNAME).h
 APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
 
+SHLIBS = X11
+
 #
 # BIN
 #

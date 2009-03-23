@@ -27,7 +27,7 @@
 
 /* FIXME: unsafe snprintf() hack */
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
-static int snprintf(char * dest, int nb, const char * fmt, ...)
+static int pseudo_snprintf(char * dest, int nb, const char * fmt, ...)
 {
      /* arbitrary length, this isn't safe */
      static char tmp[1024];
@@ -140,18 +140,18 @@ void Wp_SetButton(int type, Wpanel wp, void *b)
      case WP_INT:
 	  wi = (Wp_int)b;
 	  WSetColorPencil(wp->window,WP_BLACK);
-	  snprintf(str,WP_STRSIZE,wi->text);
+	  pseudo_snprintf(str,WP_STRSIZE,wi->text);
 	  WDrawString(wp->window,wi->x,wi->y+12,str);
 	  x = wi->x+strlen(str)*7;
 	  WSetColorPencil(wp->window,wi->color);
 	  if (!wi->strsize) {
-	       snprintf(str,WP_STRSIZE,wi->format,wi->value);
+	       pseudo_snprintf(str,WP_STRSIZE,wi->format,wi->value);
 	       wi->strsize = strlen(str)+1;
-	  } else snprintf(str,wi->strsize,wi->format,wi->value);
+	  } else pseudo_snprintf(str,wi->strsize,wi->format,wi->value);
 	  WDrawString(wp->window,x,wi->y+12,str);
 	  x += strlen(str)*7;
 	  if (wi->scale) {
-	       snprintf(str,WP_STRSIZE,"%d",wi->firstscale);
+	       pseudo_snprintf(str,WP_STRSIZE,"%d",wi->firstscale);
 	       WSetColorPencil(wp->window,WP_BLACK);
 	       WDrawString(wp->window,x,wi->y+12,str);
 	       x += strlen(str)*7+10;
@@ -169,7 +169,7 @@ void Wp_SetButton(int type, Wpanel wp, void *b)
 			 wp->button[adr] = (short)(-dx-1);
 		    }
 	       x += wi->scale+5;
-	       snprintf(str,WP_STRSIZE,"%d",wi->lastscale);
+	       pseudo_snprintf(str,WP_STRSIZE,"%d",wi->lastscale);
 	       WSetColorPencil(wp->window,WP_BLACK);
 	       WDrawString(wp->window,x,wi->y+12,str);
 	       x += strlen(str)*7+10;
@@ -193,14 +193,14 @@ void Wp_SetButton(int type, Wpanel wp, void *b)
      case WP_FLOAT:
 	  wf = (Wp_float)b;
 	  WSetColorPencil(wp->window,WP_BLACK);
-	  snprintf(str,WP_STRSIZE,wf->text);
+	  pseudo_snprintf(str,WP_STRSIZE,wf->text);
 	  WDrawString(wp->window,wf->x,wf->y+12,str);
 	  x = wf->x+strlen(str)*7;
 	  WSetColorPencil(wp->window,wf->color);
 	  if (!wf->strsize) {
-	       snprintf(str,WP_STRSIZE,wf->format,wf->value);
+	       pseudo_snprintf(str,WP_STRSIZE,wf->format,wf->value);
 	       wf->strsize = strlen(str)+1;
-	  } else snprintf(str,wf->strsize,wf->format,wf->value);
+	  } else pseudo_snprintf(str,wf->strsize,wf->format,wf->value);
 	  WDrawString(wp->window,x,wf->y+12,str);
 	  x += strlen(str)*7;
 	  for (i=0;i<wf->nbuttons;i++) {
