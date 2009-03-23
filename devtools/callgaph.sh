@@ -20,6 +20,8 @@ NCC2DOT="python devtools/ncc2dot.py"
 FUNCTIONS_FILTEROUT="foobar"
 IGNORE_EXTRA_FUNCTIONS=""
 
+DESTDIR=./doc/misc
+
 makegraph() {
 make CC="nccgen -ncgcc -ncld -ncfabs" AR=nccar lib$LIB
 FUNCTIONS=$(nm -f posix build/lib/lib$LIB.so \
@@ -27,10 +29,10 @@ FUNCTIONS=$(nm -f posix build/lib/lib$LIB.so \
     | grep -v -E "$FUNCTIONS_FILTEROUT" | tr "\n" " ")
 NCCOUT=build/lib/lib$LIB.a.nccout
 $NCC2DOT -i "$IGNORE_FUNCTIONS $IGNORE_EXTRA_FUNCTIONS" \
-    $NCCOUT $FUNCTIONS > lib$LIB.dot
-dot -Tsvg -Gratio=0.75 lib$LIB.dot > lib$LIB.svg
+    $NCCOUT $FUNCTIONS > $DESTDIR/lib$LIB.dot
+dot -Tsvg -Gratio=0.75 $DESTDIR/lib$LIB.dot > $DESTDIR/lib$LIB.svg
 for FMT in $FORMATS; do
-    inkscape --export-$FMT=lib$LIB.$FMT lib$LIB.svg
+    inkscape --export-$FMT=$DESTDIR/lib$LIB.$FMT $DESTDIR/lib$LIB.svg
 done
 }
 
