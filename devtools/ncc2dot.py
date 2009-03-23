@@ -162,7 +162,7 @@ for line in infile:
         cfile = None
 
 # generate graph
-print "digraph gengraph {"
+print "digraph ncc2dot {"
 if dot:
     print dot
 
