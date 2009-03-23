@@ -160,11 +160,6 @@
 #define _mw_qtoa_(S)	(S)
 
 
-#define _mwis_readable(S)	_mwis_open(S, "r")
-#define _mwis_writable(S)	_mwis_open(S, "w")
-
-
-
 /*
  * STRUCTURES
  */

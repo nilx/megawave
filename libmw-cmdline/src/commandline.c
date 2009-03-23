@@ -283,20 +283,6 @@ int mw_opt_used(char c)
      return (strchr(_mwoptlist, c) != NULL) ? TRUE : FALSE;
 }
 
-/* TODO: drop */
-int _mwis_open(char *s, char *rw)
-{
-     char fname[BUFSIZ];
-
-     if (*rw == 'r') /* read */
-     {
-	 strcpy(fname,s);          /* do not change the value of s */
-	 return(_search_filename(fname));
-     }
-     return(TRUE); /* checking disabled for writing */
-}
-
-
 int _mwgetopt(int argc, char **argv, char *optstring)
 {
      if (_mwoptind < argc) {

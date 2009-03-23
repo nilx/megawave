@@ -76,24 +76,17 @@
     "Cannot open A-file '%s' for writing"
 
 #define CODE_INPUT_MW_OPTION "\
-        if (!_mwis_readable(_mwoptarg))\n\
+        if (!_search_filename(_mwoptarg))\n\
         {\n\
           char buffer[BUFSIZ];\n\
           sprintf(buffer, \"cannot find '%%s' in default path\", _mwoptarg);\n\
-          mwicmd[mwind].mwuse(buffer);\n\
-        }\n"
-#define CODE_OUTPUT_MW_OPTION "\
-        if (!_mwis_writable(_mwoptarg))\n\
-        {\n\
-          char buffer[BUFSIZ];\n\
-          sprintf(buffer, \"cannot write '%%s'\", _mwoptarg);\n\
           mwicmd[mwind].mwuse(buffer);\n\
         }\n"
 #define CODE_INPUT_MW_NEEDED "\
   /* input megawave needed argument H_id=%s */\n\
   if (_mwoptind+%d<argc)\n\
   {\n\
-    if (!_mwis_readable(argv[_mwoptind+%d]))\n\
+    if (!_search_filename(argv[_mwoptind+%d]))\n\
     {\n\
       char buffer[BUFSIZ];\n\
       sprintf(buffer, \"cannot find '%%s' in default path\", \\\n\
@@ -105,22 +98,13 @@
     mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_OUTPUT_MW_NEEDED "\
   /* output megawave needed argument H_id=%s */\n\
-  if (_mwoptind+%d<argc)\n\
-  {\n\
-    if (!_mwis_writable(argv[_mwoptind+%d]))\n\
-    {\n\
-      char buffer[BUFSIZ];\n\
-      sprintf(buffer, \"cannot write '%%s'\", argv[_mwoptind+%d]);\n\
-      mwicmd[mwind].mwuse(buffer);\n\
-    }\n\
-  }\n\
-  else\n\
+  if (_mwoptind+%d>=argc)\n\
     mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_INPUT_MW_OPTION2 "\
     /* input megawave optional argument H_id=%s */\n\
     if (_mwoptind+%d<argc)\n\
     {\n\
-      if (!_mwis_readable(argv[_mwoptind+%d]))\n\
+      if (!_search_filename(argv[_mwoptind+%d]))\n\
       {\n\
         char buffer[BUFSIZ];\n\
         sprintf(buffer, \"cannot find '%%s' in default path\", \\\n\
@@ -132,16 +116,7 @@
       mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_OUTPUT_MW_OPTION2 "\
     /* output megawave optional argument H_id=%s */\n\
-    if (_mwoptind+%d<argc)\n\
-    {\n\
-      if (!_mwis_writable(argv[_mwoptind+%d]))\
-      {\n\
-        char buffer[BUFSIZ];\n\
-        sprintf(buffer, \"cannot write '%%s'\", argv[_mwoptind+%d]);\n\
-        mwicmd[mwind].mwuse(buffer);\n\
-      }\n\
-    }\n\
-    else\n\
+    if (_mwoptind+%d>=argc)\n\
       mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_INPUT_SCALAR_NEEDED "\
   /* input scalar needed argument H_id=%s */\n\
@@ -169,19 +144,11 @@
       mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_INPUT_MW_VAR_ARGUMENT "\
   /* input megawave variable argument H_id=%s */\n\
-    if (!_mwis_readable(argv[%si]))\n\
+    if (!_search_filename(argv[%si]))\n\
     {\n\
       char buffer[BUFSIZ];\n\
       sprintf(buffer, \"cannot find '%%s' in default path\",  \\\n\
               argv[%si]);\n\", MWPF);\n\
-      mwicmd[mwind].mwuse(buffer);\n\
-   }\n"
-#define CODE_OUTPUT_MW_VAR_ARGUMENT "\
-  /* output megawave variable argument H_id=%s */\n\
-    if (!_mwis_writable(argv[%si]))\n\
-    {\n\
-      char buffer[BUFSIZ];\n\
-      sprintf(buffer, \"cannot write '%%s'\", argv[%si]);\n\
       mwicmd[mwind].mwuse(buffer);\n\
    }\n"
 #define CODE_INPUT_SCAL_VAR_ARGUMENT "\
@@ -860,8 +827,6 @@ static void print_check_io_arg(FILE * afile)
                     {
                          if (ISARG_INPUT(a))
                               fprintf(afile, CODE_INPUT_MW_OPTION);
-                         else
-                              fprintf(afile, CODE_OUTPUT_MW_OPTION);
                     }
                     else if (ISARG_SCALARNOTFLAG(a))
                     {
@@ -905,7 +870,7 @@ static void print_check_io_arg(FILE * afile)
                          else
                          {
                               fprintf(afile, CODE_OUTPUT_MW_NEEDED, \
-                                      a->H_id, n, n, n, a->H_id);
+                                      a->H_id, n, a->H_id);
                               n++;
                          }
                     }
@@ -959,7 +924,7 @@ static void print_check_io_arg(FILE * afile)
                          else
                          {
                               fprintf(afile, CODE_OUTPUT_MW_OPTION2, \
-                                      a->H_id, n, n, n, a->H_id);
+                                      a->H_id, n, a->H_id);
                               n++;
                          }
                     }
@@ -1010,10 +975,6 @@ static void print_check_io_arg(FILE * afile)
                          if (ISARG_INPUT(a))
                               /* input megawave variable argument */
                               fprintf(afile, CODE_INPUT_MW_VAR_ARGUMENT, \
-                                      a->H_id, MWPF, MWPF);
-                         else
-                              /* output megawave variable argument */
-                              fprintf(afile, CODE_OUTPUT_MW_VAR_ARGUMENT, \
                                       a->H_id, MWPF, MWPF);
                     }
                     else if (ISARG_SCALAR(a))
