@@ -1,14 +1,11 @@
-/*
- * libmw.h
+/**
+ * @file definitions.h
  *
  * common definitions for libmw
  */
 
-#ifndef _LIBMW_DEFS_H
-#define _LIBMW_DEFS_H
-
-/* FIXME : split libmw-common (#defines) and libmw-defs (typedef)*/
-/* FIXME : rename libmw3 */
+#ifndef _DEFINITIONS_H
+#define _DEFINITIONS_H
 
 /* 
  * DEFINITIONS
@@ -979,4 +976,4 @@ extern char * mwgroup;
 
 extern int mwdbg;
 
-#endif /* !_LIBMW_DEFS_H */
+#endif /* !_DEFINITIONS_H */

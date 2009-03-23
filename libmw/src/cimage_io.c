@@ -13,7 +13,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "libmw-defs.h"
+#include "definitions.h"
 #include "error.h"
 #include "cimage.h"
 #include "mwio.h"

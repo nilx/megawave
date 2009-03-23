@@ -16,7 +16,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdio.h>
 
-#include "libmw-defs.h"
+#include "definitions.h"
 #include "error.h"
 #include "mwio.h"
 #include "rawdata.h"

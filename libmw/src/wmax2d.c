@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libmw-defs.h"
+#include "definitions.h"
 #include "error.h"
 
 
