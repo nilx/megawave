@@ -263,7 +263,7 @@ int _mw_main(int argc, char *argv[], char *envp[],
 /**
  * megawave default options actions
  */
-void MegaWaveDefOpt(char *vers, Mwiline mwicmd[], int mwind)
+void mwdefopt(char *vers, Mwiline mwicmd[], int mwind)
 {
      /* Version flag */
      if (vers_flg == TRUE)

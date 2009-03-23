@@ -1762,7 +1762,7 @@ static void writebody(FILE * afile)
           fprintf(afile, "  %svar_flg = FALSE;\n", MWPF);
 
      /* call to function which do MegaWave default options actions */
-     fprintf(afile, "  MegaWaveDefOpt(\"%s\", mwicmd, mwind);\n\n", H->Version);
+     fprintf(afile, "  mwdefopt(\"%s\", mwicmd, mwind);\n\n", H->Version);
 
      /*
       * generate code to verify that input files are readable, output
