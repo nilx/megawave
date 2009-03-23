@@ -107,6 +107,11 @@ command-line to use them.
 * CHECK      The code checking mode can be
   - relax    : default ansi mode
   - strict   : strict ansi confirmance with extra code quality check
+* SYSTEM     The sytem on the current machine
+  - default  : default generic settings
+  - osx	     : tweaks for Mac OSX
+  - cygwin   : tweaks for cygwin
+  - debian3  : tweaks for Debian 3.x
 
 Example:
 

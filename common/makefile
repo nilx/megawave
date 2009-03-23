@@ -52,10 +52,16 @@ SYSTEM_ARCH	:= $(shell [ -x /usr/bin/dpkg ] \
 			&& dpkg --print-architecture \
 			|| ( file /bin/ls | cut -d: -f2 | cut -d, -f2 ))
 
-# for specific targets, uncomment the relevant line
-#include $(COMMONDIR)/makefile.osx
-#include $(COMMONDIR)/makefile.cygwin
-#include $(COMMONDIR)/makefile.debian3
+# for specific systems
+ifeq	($(SYSTEM), osx)
+include $(COMMONDIR)/makefile.osx
+endif
+ifeq	($(SYSTEM), cygwin)
+include $(COMMONDIR)/makefile.cygwin
+endif
+ifeq	($(SYSTEM), debian3)
+include $(COMMONDIR)/makefile.debian3
+endif
 
 BUILDDIR	= $(BASEDIR)/build
 LIBDIR	= $(BUILDDIR)/lib
