@@ -102,8 +102,7 @@ SRC	:= $(addprefix $(SRCDIR)/, \
 
 AUTOHDR	= $(SRC:.c=.h)
 HDR	= $(AUTOHDR) $(addprefix $(SRCDIR)/,	\
-	tiff.h strtoul.h ppmr_io.h pm.h tiffio.h \
-	definitions.h)
+	strtoul.h ppmr_io.h pm.h definitions.h)
 OBJ	= $(SRC:.c=$(.O))
 #DEP	= $(SRC:.c=.d)
 
