@@ -6,9 +6,9 @@
 #define _JPEG_IO_H_
 
 /* src/jpeg_io.c */
-Cimage _mw_cimage_load_jpeg(char *fname);
-Ccimage _mw_ccimage_load_jpeg(char *fname);
-short _mw_cimage_create_jpeg(char *fname, Cimage image, char *Quality);
-short _mw_ccimage_create_jpeg(char *fname, Ccimage image, char *Quality);
+Cimage _mw_cimage_load_jpeg(const char *fname);
+Ccimage _mw_ccimage_load_jpeg(const char *fname);
+short _mw_cimage_create_jpeg(const char *fname, const Cimage image, const char *quality);
+short _mw_ccimage_create_jpeg(const char *fname, const Ccimage image, const char *quality);
 
 #endif /* !_JPEG_IO_H_ */
