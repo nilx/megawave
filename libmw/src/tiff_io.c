@@ -15,29 +15,29 @@
 
 #include "tiff_io.h"
 
+
 /**
- * load a tiff image file to a Ccimage struct
- *
- * Loading the interlaced raster, then deinterlacing it uses
- * unnecessary memory, but this is the easy and safe way for the
- * moment.
+ * load a TIFF structure into a RGBA raster array,
+ * for further use with _mw_xx_load_tiff
  */
-Ccimage _mw_ccimage_load_tiff(const char * fname)
+static uint32 * _mw_tiff_load_raster(uint32 *raster,
+				     uint32 *width, uint32 *height,
+				     const char *fname)
 {
     TIFF *tiffp=NULL;
-    uint32 *raster=NULL, *raster_ptr=NULL, *raster_end=NULL;
-    uint32 width=0, height=0;
-    Ccimage image=NULL;
-    unsigned char *ptrR=NULL, *ptrG=NULL, *ptrB=NULL;
 
     /* open the TIFF file and structure */
     if (NULL == (tiffp = TIFFOpen(fname, "r")))
 	return NULL;
 
+    /* any non-allocated pointer should be NULL */
+    if (NULL != raster)
+	return NULL;
+
     /* read width and height and allocate the storage raster */
-    if (1 != TIFFGetField(tiffp, TIFFTAG_IMAGEWIDTH, &width) 
-	|| 1 != TIFFGetField(tiffp, TIFFTAG_IMAGELENGTH, &height)
-	|| NULL == (raster = (uint32 *) malloc(width * height 
+    if (1 != TIFFGetField(tiffp, TIFFTAG_IMAGEWIDTH, width) 
+	|| 1 != TIFFGetField(tiffp, TIFFTAG_IMAGELENGTH, height)
+	|| NULL == (raster = (uint32 *) malloc(*width * *height 
 					       * sizeof(uint32))))
     {
 	TIFFClose(tiffp);
@@ -45,7 +45,7 @@ Ccimage _mw_ccimage_load_tiff(const char * fname)
     }
 
     /* read the image into the raster */
-    if (1 != TIFFReadRGBAImageOriented(tiffp, width, height, raster,
+    if (1 != TIFFReadRGBAImageOriented(tiffp, *width, *height, raster,
 				       ORIENTATION_TOPLEFT, 1))
     {
 	free(raster);
@@ -56,11 +56,33 @@ Ccimage _mw_ccimage_load_tiff(const char * fname)
     /* close the TIFF file and structure */
     TIFFClose(tiffp);
 
+    return raster;
+}
+
+/**
+ * load a tiff image file to a Ccimage struct
+ *
+ * Loading the interlaced raster, then deinterlacing it uses
+ * unnecessary memory, but this is the easy and safe way for the
+ * moment.
+ */
+Ccimage _mw_ccimage_load_tiff(const char * fname)
+{
+    uint32 *raster=NULL, *raster_ptr=NULL, *raster_end=NULL;
+    uint32 width=0, height=0;
+    Ccimage image=NULL;
+    unsigned char *ptrR=NULL, *ptrG=NULL, *ptrB=NULL;
+
+    /* load the TIFF into a RGBA raster */
+    if (NULL == (raster = _mw_tiff_load_raster(raster, &width, &height,
+					       fname)))
+	return NULL;
+
     /*
      * ensure the width and height are within the limits (ccimage uses int)
      * and allocate the image
      */
-    if (INT_MAX < width || INT_MAX < height
+    if ((double) INT_MAX < (double) width || (double) INT_MAX < (double) height
 	|| NULL == (image = mw_new_ccimage())
 	|| NULL == (image = mw_alloc_ccimage(image, (int) width, (int) height)))
     {
@@ -93,48 +115,24 @@ Ccimage _mw_ccimage_load_tiff(const char * fname)
  * unnecessary memory, but this is the easy and safe way for the
  * moment. We only read one channel, as all the channels are the same
  * for a greyscale image loaded as RGBA.
- *
- * @todo refactor with ccimage_load
  */
 Cimage _mw_cimage_load_tiff(const char * fname)
 {
-    TIFF *tiffp=NULL;
     uint32 *raster=NULL, *raster_ptr=NULL, *raster_end=NULL;
     uint32 width=0, height=0;
     Cimage image=NULL;
     unsigned char *ptr=NULL;
 
-    /* open the TIFF file and structure */
-    if (NULL == (tiffp = TIFFOpen(fname, "r")))
+    /* load the TIFF into a RGBA raster */
+    if (NULL == (raster = _mw_tiff_load_raster(raster, &width, &height,
+					       fname)))
 	return NULL;
-
-    /* read width and height and allocate the storage raster */
-    if (1 != TIFFGetField(tiffp, TIFFTAG_IMAGEWIDTH, &width) 
-	|| 1 != TIFFGetField(tiffp, TIFFTAG_IMAGELENGTH, &height)
-	|| NULL == (raster = (uint32 *) malloc(width * height 
-					       * sizeof(uint32))))
-    {
-	TIFFClose(tiffp);
-	return NULL;
-    }
-
-    /* read the image into the raster */
-    if (1 != TIFFReadRGBAImageOriented(tiffp, width, height, raster,
-				       ORIENTATION_TOPLEFT, 1))
-    {
-	free(raster);
-	TIFFClose(tiffp);
-	return NULL;
-    }
-
-    /* close the TIFF file and structure */
-    TIFFClose(tiffp);
 
     /*
      * ensure the width and height are within the limits (ccimage uses int)
      * and allocate the image
      */
-    if (INT_MAX < width || INT_MAX < height
+    if ((double) INT_MAX < (double) width || (double) INT_MAX < (double) height
 	|| NULL == (image = mw_new_cimage())
 	|| NULL == (image = mw_alloc_cimage(image, (int) width, (int) height)))
     {
@@ -152,7 +150,36 @@ Cimage _mw_cimage_load_tiff(const char * fname)
     /* free the raster and return the image */
     free(raster);
     return image;
-}  
+}
+
+/**
+ * setup a TIFF structure, for further use with _mw_xx_create_tiff
+ */
+static TIFF * _mw_tiff_setup(uint32 width, uint32 height,
+			     const char *fname)
+{
+    TIFF *tiffp=NULL;
+
+    /* open the TIFF file and structure */
+    if (NULL == (tiffp = TIFFOpen(fname, "w")))
+	return NULL;
+
+    /* insert tags into the TIFF structure */
+    if (1 != TIFFSetField(tiffp, TIFFTAG_IMAGEWIDTH, width)
+	|| 1 != TIFFSetField(tiffp, TIFFTAG_IMAGELENGTH, height)
+	|| 1 != TIFFSetField(tiffp, TIFFTAG_ORIENTATION, 
+			     ORIENTATION_TOPLEFT)
+	|| 1 != TIFFSetField(tiffp, TIFFTAG_BITSPERSAMPLE,   8)
+	|| 1 != TIFFSetField(tiffp, TIFFTAG_PLANARCONFIG,
+			     PLANARCONFIG_CONTIG)
+	|| 1 != TIFFSetField(tiffp, TIFFTAG_ROWSPERSTRIP, height))
+    {
+	TIFFClose(tiffp);
+	return NULL;
+    }
+
+    return tiffp;
+}
 
 /**
  * save a Ccimage struct as a tiff image file
@@ -174,8 +201,8 @@ short _mw_ccimage_create_tiff(char * const fname, const Ccimage image)
      * ensure the width and height are within the limits (tiff uses int32)
      * and allocate the raster
      */
-    if (4294967295. < (float) image->ncol
-	|| 4294967295. < (float) image->nrow
+    if (4294967295. < (double) image->ncol
+	|| 4294967295. < (double) image->nrow
 	|| NULL == (raster = (unsigned char *) 
 		    malloc(3 * image->nrow * image->ncol 
 			   * sizeof(unsigned char))))
@@ -194,28 +221,18 @@ short _mw_ccimage_create_tiff(char * const fname, const Ccimage image)
 	*raster_ptr++ = *ptrB++;
     }
 
-    /* open the TIFF file and structure */
-    if (NULL == (tiffp = TIFFOpen(fname, "w")))
+    /* open and setup the TIFF structure */
+    if (NULL == (_mw_tiff_setup((uint32) image->ncol, (uint32) image->nrow,
+				fname)))
     {
 	free(raster);
 	return -1;
     }
 
-    /* insert tags into the TIFF structure */
-    if (1 != TIFFSetField(tiffp, TIFFTAG_IMAGEWIDTH,
-			  (uint32) image->ncol)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_IMAGELENGTH,
-			     (uint32) image->nrow)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_ORIENTATION, 
-			     ORIENTATION_TOPLEFT)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_SAMPLESPERPIXEL, 3)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_BITSPERSAMPLE,   8)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_PLANARCONFIG,
-			     PLANARCONFIG_CONTIG)
+    /* insert specific tags into the TIFF structure */
+    if (1 != TIFFSetField(tiffp, TIFFTAG_SAMPLESPERPIXEL, 3)
 	|| 1 != TIFFSetField(tiffp, TIFFTAG_PHOTOMETRIC,
-			     PHOTOMETRIC_RGB)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_ROWSPERSTRIP,
-			     (uint32) image->nrow))
+			     PHOTOMETRIC_RGB))
     {
 	TIFFClose(tiffp);
 	free(raster);
@@ -232,17 +249,15 @@ short _mw_ccimage_create_tiff(char * const fname, const Ccimage image)
 	return -1;
     }
 
-    /* free the raster and tiff TIFF and structure, return success */
-    free(raster);
+    /* free the raster and TIFF structure, return success */
     TIFFClose(tiffp);
+    free(raster);
     return 0;
 }
 
 
 /**
  * save a Cimage struct as a tiff image file
- *
- * @todo refactor with ccimage_create
  */
 short _mw_cimage_create_tiff(const char * fname, const Cimage image)
 {
@@ -253,29 +268,23 @@ short _mw_cimage_create_tiff(const char * fname, const Cimage image)
 	return -1;
 
     /*
-     * ensure the width and height are within the limits (tiff uses int32)
+     * ensure the width and height are within the limits
+     * (tiff uses int32, 2^32 - 1 = 4294967295)
      * and open the TIFF file and structure
      */
-    if (4294967295. < (float) image->ncol
-	|| 4294967295. < (float) image->nrow
-	|| NULL == (tiffp = TIFFOpen(fname, "w")))
+    if (4294967295. < (double) image->ncol
+	|| 4294967295. < (double) image->nrow)
 	return -1;
 
-    /* insert tags into the TIFF structure */
-    if (1 != TIFFSetField(tiffp, TIFFTAG_IMAGEWIDTH,
-			  (uint32) image->ncol)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_IMAGELENGTH,
-			     (uint32) image->nrow)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_ORIENTATION, 
-			     ORIENTATION_TOPLEFT)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_SAMPLESPERPIXEL, 1)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_BITSPERSAMPLE,   8)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_PLANARCONFIG,
-			     PLANARCONFIG_CONTIG)
+    /* open and setup the TIFF structure */
+    if (NULL == (_mw_tiff_setup((uint32) image->ncol, (uint32) image->nrow,
+				fname)))
+	return -1;
+
+    /* insert specific tags into the TIFF structure */
+    if (1 != TIFFSetField(tiffp, TIFFTAG_SAMPLESPERPIXEL, 1)
 	|| 1 != TIFFSetField(tiffp, TIFFTAG_PHOTOMETRIC,
-			     PHOTOMETRIC_MINISBLACK)
-	|| 1 != TIFFSetField(tiffp, TIFFTAG_ROWSPERSTRIP,
-			     (uint32) image->nrow))
+			     PHOTOMETRIC_MINISBLACK))
     {
 	TIFFClose(tiffp);
 	return -1;
@@ -290,7 +299,7 @@ short _mw_cimage_create_tiff(const char * fname, const Cimage image)
 	return -1;
     }
 
-    /* free the raster and tiff TIFF and structure, return success */
+    /* free the TIFF and structure, return success */
     TIFFClose(tiffp);
     return 0;
 }
