@@ -10,6 +10,7 @@ set -e
 
 LIBC_FUNCTIONS=$(grep -v "#" devtools/functions_libc.txt | tr "\n" " ")
 LIBTIFF_FUNCTIONS=$(grep -v "#" devtools/functions_libtiff.txt | tr "\n" " ")
+LIBJPEG_FUNCTIONS=$(grep -v "#" devtools/functions_libjpeg.txt | tr "\n" " ")
 LIBX11_FUNCTIONS=$(grep -v "#" devtools/functions_libX11.txt | tr "\n" " ")
 IGNORE_FUNCTIONS="$LIBC_FUNCTIONS _init _fini
     (*virtual __builtin_va_start __builtin_va_end"
@@ -17,14 +18,14 @@ IGNORE_FUNCTIONS="$LIBC_FUNCTIONS _init _fini
 NCC2DOT="python devtools/ncc2dot.py"
 #FORMATS="png ps pdf"
 
-FUNCTIONS_FILTEROUT="foobar"
+FUNCTIONS_FILTEROUT="(_init|_fini|__)"
 IGNORE_EXTRA_FUNCTIONS=""
 
 DESTDIR=./doc/misc
 
 makegraph() {
 make CC="nccgen -ncgcc -ncld -ncfabs" AR=nccar lib$LIB
-FUNCTIONS=$(nm -f posix build/lib/lib$LIB.so \
+FUNCTIONS=$(nm -f posix build/lib/lib$LIB.a \
     | grep " T " | cut -d\  -f1 \
     | grep -v -E "$FUNCTIONS_FILTEROUT" | tr "\n" " ")
 NCCOUT=build/lib/lib$LIB.a.nccout
@@ -47,8 +48,8 @@ makegraph
 
 # libmw
 LIB=mw
-FUNCTIONS_FILTEROUT="(_init|_fini|mwerror|mwdebug)"
-IGNORE_EXTRA_FUNCTIONS="$LIBTIFF_FUNCTIONS mwerror mwdebug"
+FUNCTIONS_FILTEROUT="(_init|_fini|__|mwerror|mwdebug)"
+IGNORE_EXTRA_FUNCTIONS="$LIBTIFF_FUNCTIONS $LIBJPEG_FUNCTIONS mwerror mwdebug"
 makegraph
 
 # libmw-modules

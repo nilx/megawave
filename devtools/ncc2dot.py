@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-"""Usage: %s [options] <nccout> <function> ...
+"""Usage: %(arg0)s [options] <nccout> <function> ...
 valid options:
 \t -h | --help: usage statement
 \t -V | --version: print version and exit
@@ -12,7 +12,7 @@ valid options:
 
 Reads a ncc-generated file and produces a call graph in dot format.
 Sample usage:
-gengraph.py -i "exit strlen" nccout main |dot -Tsvg -o func.svg
+%(arg0)s -i "exit strlen" nccout main |dot -Tsvg -o func.svg
 """
 #
 # Author: Jose Vasconcellos <jvasco@bellatlantic.net>
@@ -29,6 +29,8 @@ gengraph.py -i "exit strlen" nccout main |dot -Tsvg -o func.svg
 # GNU General Public License for more details.
 #
 # Tested with Python version 2.3 and ncc-1.9
+
+# TODO: differentiate ststic functions with same name in different files
 
 import sys
 import os
@@ -54,7 +56,7 @@ funcs = {}
 ####################
 
 def usage():
-    print __doc__ % os.path.basename(sys.argv[0])
+    print __doc__ % {'arg0' : os.path.basename(sys.argv[0])}
     sys.exit(1)
 
 ####################
@@ -114,7 +116,7 @@ for o, a in opts:
     if o in ("-h", "--help"):
 	usage()
     elif o in ("-V", "--version"):
-        print "$Id: gengraph.py 5 2004-11-18 03:21:58Z Jose $"
+        print "ncc2dot"
 	sys.exit(1)
     elif o in ("-i", "--ignore"):
 	ignore = string.split(a)
