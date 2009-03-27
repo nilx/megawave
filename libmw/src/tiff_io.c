@@ -17,7 +17,7 @@
 
 
 /**
- * load a TIFF structure into a RGBA raster array,
+ * load a tiff image into a RGBA raster array,
  * for further use with _mw_xx_load_tiff
  */
 static uint32 * _mw_tiff_load_raster(uint32 *raster,
@@ -26,17 +26,19 @@ static uint32 * _mw_tiff_load_raster(uint32 *raster,
 {
     TIFF *tiffp=NULL;
 
-    /* open the TIFF file and structure */
-    if (NULL == (tiffp = TIFFOpen(fname, "r")))
-	return NULL;
-
     /* any non-allocated pointer should be NULL */
     if (NULL != raster)
+	return NULL;
+
+    /* open the TIFF file and structure */
+    if (NULL == (tiffp = TIFFOpen(fname, "r")))
 	return NULL;
 
     /* read width and height and allocate the storage raster */
     if (1 != TIFFGetField(tiffp, TIFFTAG_IMAGEWIDTH, width) 
 	|| 1 != TIFFGetField(tiffp, TIFFTAG_IMAGELENGTH, height)
+	|| (double) INT_MAX < (double) *width
+	|| (double) INT_MAX < (double) *height
 	|| NULL == (raster = (uint32 *) malloc(*width * *height 
 					       * sizeof(uint32))))
     {
@@ -82,9 +84,8 @@ Ccimage _mw_ccimage_load_tiff(const char * fname)
      * ensure the width and height are within the limits (ccimage uses int)
      * and allocate the image
      */
-    if ((double) INT_MAX < (double) width || (double) INT_MAX < (double) height
-	|| NULL == (image = mw_new_ccimage())
-	|| NULL == (image = mw_alloc_ccimage(image, (int) width, (int) height)))
+    if (NULL == (image = mw_new_ccimage())
+	|| NULL == (image = mw_alloc_ccimage(image, (int) height, (int) width)))
     {
 	free(raster);
 	return NULL;
@@ -98,9 +99,9 @@ Ccimage _mw_ccimage_load_tiff(const char * fname)
     ptrB = image->blue;
     while (raster_ptr < raster_end)
     {
-	*ptrR++ = TIFFGetR(*raster_ptr);
-	*ptrG++ = TIFFGetG(*raster_ptr);
-	*ptrB++ = TIFFGetB(*raster_ptr++);
+	*ptrR++ = (unsigned char) TIFFGetR(*raster_ptr);
+	*ptrG++ = (unsigned char) TIFFGetG(*raster_ptr);
+	*ptrB++ = (unsigned char) TIFFGetB(*raster_ptr++);
     }
 
     /* free the raster and return the image */
@@ -132,20 +133,19 @@ Cimage _mw_cimage_load_tiff(const char * fname)
      * ensure the width and height are within the limits (ccimage uses int)
      * and allocate the image
      */
-    if ((double) INT_MAX < (double) width || (double) INT_MAX < (double) height
-	|| NULL == (image = mw_new_cimage())
-	|| NULL == (image = mw_alloc_cimage(image, (int) width, (int) height)))
+    if (NULL == (image = mw_new_cimage())
+	|| NULL == (image = mw_alloc_cimage(image, (int) height, (int) width)))
     {
 	free(raster);
 	return NULL;
     }
 
-    /* load the RGBA raster mix into the gray planes */
+    /* load the first raster channel mix into the gray planes */
     raster_ptr = raster;
     raster_end = raster_ptr + (size_t) width * (size_t) height;
     ptr = image->gray;
     while (raster_ptr < raster_end)
-	*ptr++ = TIFFGetR(*raster_ptr++);
+	*ptr++ = (unsigned char) TIFFGetR(*raster_ptr++);
 
     /* free the raster and return the image */
     free(raster);
@@ -216,9 +216,9 @@ short _mw_ccimage_create_tiff(char * const fname, const Ccimage image)
     raster_end = raster_ptr + 3 * image->ncol * image->nrow;
     while (raster_ptr < raster_end)
     {
-	*raster_ptr++ = *ptrR++;
-	*raster_ptr++ = *ptrG++;
-	*raster_ptr++ = *ptrB++;
+	*raster_ptr++ = (uint32) *ptrR++;
+	*raster_ptr++ = (uint32) *ptrG++;
+	*raster_ptr++ = (uint32) *ptrB++;
     }
 
     /* open and setup the TIFF structure */
