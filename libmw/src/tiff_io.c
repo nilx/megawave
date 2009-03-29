@@ -222,8 +222,9 @@ short _mw_ccimage_create_tiff(char * const fname, const Ccimage image)
     }
 
     /* open and setup the TIFF structure */
-    if (NULL == (_mw_tiff_setup((uint32) image->ncol, (uint32) image->nrow,
-				fname)))
+    if (NULL == (tiffp = _mw_tiff_setup((uint32) image->ncol, 
+					(uint32) image->nrow,
+					fname)))
     {
 	free(raster);
 	return -1;
@@ -277,8 +278,9 @@ short _mw_cimage_create_tiff(const char * fname, const Cimage image)
 	return -1;
 
     /* open and setup the TIFF structure */
-    if (NULL == (_mw_tiff_setup((uint32) image->ncol, (uint32) image->nrow,
-				fname)))
+    if (NULL == (tiffp = _mw_tiff_setup((uint32) image->ncol,
+					(uint32) image->nrow,
+					fname)))
 	return -1;
 
     /* insert specific tags into the TIFF structure */
