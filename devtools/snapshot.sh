@@ -35,20 +35,20 @@ sloccount --addlangall --cached --details \
 
 cd ${MWDEV_SNAPSHOT_TMPDIR}
 
-tar czf megawave_${DATE}_rawsrc.tgz megawave_${DATE}
-tar cjf megawave_${DATE}_rawsrc.tbz megawave_${DATE}
-tar cf - megawave_${DATE} | 7zr a -si -mx=9 megawave_${DATE}_rawsrc.t7z
+tar czf megawave_${DATE}_rawsrc.tar.gz megawave_${DATE}
+tar cjf megawave_${DATE}_rawsrc.tar.bz2 megawave_${DATE}
+tar cf - megawave_${DATE} | 7zr a -si -mx=9 megawave_${DATE}_rawsrc.tar.lzma
 zip -qr9 megawave_${DATE}_rawsrc.zip megawave_${DATE}
 
 make -C megawave_${DATE} prebuild
 
-tar czf megawave_${DATE}_src.tgz megawave_${DATE}
-tar cjf megawave_${DATE}_src.tbz megawave_${DATE}
-tar cf - megawave_${DATE} | 7zr a -si -mx=9 megawave_${DATE}_src.t7z
+tar czf megawave_${DATE}_src.tar.gz megawave_${DATE}
+tar cjf megawave_${DATE}_src.tar.bz2 megawave_${DATE}
+tar cf - megawave_${DATE} | 7zr a -si -mx=9 megawave_${DATE}_src.tar.lzma
 zip -qr9 megawave_${DATE}_src.zip megawave_${DATE}
 
 mkdir upload
-for EXT in t7z tbz tgz zip; do 
+for EXT in tar.gz tar.bz2 tar.lzma zip; do 
     for SRC in src rawsrc; do 
 	mv megawave_${DATE}_${SRC}.${EXT} upload
 	ln -s megawave_${DATE}_${SRC}.${EXT} \
