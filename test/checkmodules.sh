@@ -100,18 +100,32 @@ echo "checking io"
 # jpeg
 echo -n 'jpeg: '
 
-ccopy -ftype JFIF $EXAMPLES/images/cimage $TMP/1 \
-    && pass || fail write-cimage-jpeg
+for FILE in $IOEXAMPLES/libjpeg/*.jpg; do
+    ccopy $FILE $TMP/1 2> /dev/null \
+    && pass || fail read-jpeg-cimage
+    cccopy $FILE $TMP/1 2> /dev/null \
+    && pass || fail read-jpeg-ccimage
+done
 
-ccopy $IOEXAMPLES/libjpeg/testimg_gray.jpg $TMP/1 \
-    && pass || fail read-cimage-jpeg
+# JFIF output is only grayscale
+ccopy -ftype JFIF $EXAMPLES/images/cimage $TMP/1 2> /dev/null \
+    && pass || fail write-cimage-jpeg
 
 # JFIF output is only grayscale
 cccopy -ftype JFIF $EXAMPLES/images/ccimage $TMP/1 2> /dev/null \
     && pass || fail write-ccimage-jpeg
 
-cccopy $IOEXAMPLES/libjpeg/testimg.jpg $TMP/1 \
-    && pass || fail read-ccimage-jpeg
+echo
+
+# tiff
+echo -n 'tiff: '
+
+for FILE in $IOEXAMPLES/libtiff/*.tif; do
+    ccopy $FILE $TMP/1 2> /dev/null \
+    && pass || fail read-tiff-cimage
+    cccopy $FILE $TMP/1 2> /dev/null \
+    && pass || fail read-tiff-ccimage
+done
 
 echo
 
