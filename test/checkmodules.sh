@@ -2,15 +2,16 @@
 #
 # Testsuite for the modules
 #
-# Set $PATH, $SAMPLES, $SCRIPTS and $LD_LIBRARY_PATH according to your
-# locations.
+# Set $PATH, $EXAMPLES, $IOEXAMPELS, $SCRIPTS and $LD_LIBRARY_PATH
+# according to your locations.
 #
 # example : 
 # MWBASE=~/megawave
-# PATH=$MWBASE/bin
+# PATH=$MWBASE/build/bin
 # SCRIPTS=$MWBASE/scripts
-# SAMPLES=$MWBASE/data
-# LD_LIBRARY_PATH=$MWBASE/lib
+# EXAMPLES=$MWBASE/data
+# IOEXAMPLES=$MWBASE/test/iodata
+# LD_LIBRARY_PATH=$MWBASE/build/lib
 #
 
 usage() {
@@ -92,6 +93,27 @@ if [ "" = "$(which bc)" ]; then
     echo "Error: bc is required for the tests"
     exit 1
 fi
+
+# check io
+echo "checking io"
+
+# jpeg
+echo -n 'jpeg: '
+
+ccopy -ftype JFIF $EXAMPLES/images/cimage $TMP/1 \
+    && pass || fail write-cimage-jpeg
+
+ccopy $IOEXAMPLES/libjpeg/testimg_gray.jpg $TMP/1 \
+    && pass || fail read-cimage-jpeg
+
+# JFIF output is only grayscale
+cccopy -ftype JFIF $EXAMPLES/images/ccimage $TMP/1 2> /dev/null \
+    && pass || fail write-ccimage-jpeg
+
+cccopy $IOEXAMPLES/libjpeg/testimg.jpg $TMP/1 \
+    && pass || fail read-ccimage-jpeg
+
+echo
 
 # check modules
 echo "checking megawave modules"

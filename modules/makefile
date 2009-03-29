@@ -172,6 +172,7 @@ LIBPATH	= $(LIBDIR)
 TESTENV	= PATH=$(BINDIR):$$PATH			\
 	UTILS=$(BASEDIR)/data/utils		\
 	EXAMPLES=$(BASEDIR)/data/examples	\
+	IOEXAMPLES=$(BASEDIR)/test/iodata	\
 	SCRIPTS=$(BASEDIR)/scripts
 
 ifeq	($(LINK), dynamic)
