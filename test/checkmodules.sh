@@ -107,12 +107,10 @@ for FILE in $IOEXAMPLES/libjpeg/*.jpg; do
     && pass || fail read-jpeg-ccimage
 done
 
-# JFIF output is only grayscale
-ccopy -ftype JFIF $EXAMPLES/images/cimage $TMP/1 2> /dev/null \
+ccopy -ftype JFIF $EXAMPLES/images/cimage $TMP/1 \
     && pass || fail write-cimage-jpeg
 
-# JFIF output is only grayscale
-cccopy -ftype JFIF $EXAMPLES/images/ccimage $TMP/1 2> /dev/null \
+cccopy -ftype JFIFC $EXAMPLES/images/ccimage $TMP/1 \
     && pass || fail write-ccimage-jpeg
 
 echo
@@ -120,11 +118,17 @@ echo
 # tiff
 echo -n 'tiff: '
 
+#echo
+
 for FILE in $IOEXAMPLES/libtiff/*.tif; do
+#    identify $FILE
     ccopy $FILE $TMP/1 2> /dev/null \
     && pass || fail read-tiff-cimage
+#    echo
+#    identify $FILE
     cccopy $FILE $TMP/1 2> /dev/null \
     && pass || fail read-tiff-ccimage
+#    echo
 done
 
 echo
