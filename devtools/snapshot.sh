@@ -35,11 +35,6 @@ sloccount --addlangall --cached --details \
 
 cd ${MWDEV_SNAPSHOT_TMPDIR}
 
-tar czf megawave_${DATE}_rawsrc.tar.gz megawave_${DATE}
-tar cjf megawave_${DATE}_rawsrc.tar.bz2 megawave_${DATE}
-tar cf - megawave_${DATE} | 7zr a -si -mx=9 megawave_${DATE}_rawsrc.tar.lzma
-zip -qr9 megawave_${DATE}_rawsrc.zip megawave_${DATE}
-
 make -C megawave_${DATE} prebuild
 
 tar czf megawave_${DATE}_src.tar.gz megawave_${DATE}
@@ -47,15 +42,33 @@ tar cjf megawave_${DATE}_src.tar.bz2 megawave_${DATE}
 tar cf - megawave_${DATE} | 7zr a -si -mx=9 megawave_${DATE}_src.tar.lzma
 zip -qr9 megawave_${DATE}_src.zip megawave_${DATE}
 
-mkdir upload
-for EXT in tar.gz tar.bz2 tar.lzma zip; do 
-    for SRC in src rawsrc; do 
-	mv megawave_${DATE}_${SRC}.${EXT} upload
-	ln -s megawave_${DATE}_${SRC}.${EXT} \
-	    upload/megawave_latest_${SRC}.${EXT};
-    done;
+make -C megawave_${DATE}/doc
+mkdir megawave_${DATE}_doc
+
+for SECTION in system user; do
+    DOC_FOLDER=megawave_${DATE}/doc/${SECTION}
+    cp -r ${DOC_FOLDER}/${SECTION}_manual_html megawave_${DATE}_doc
+    cp ${DOC_FOLDER}/${SECTION}_manual.html megawave_${DATE}_doc
+    cp ${DOC_FOLDER}/${SECTION}_manual.pdf megawave_${DATE}_doc
+    cp ${DOC_FOLDER}/${SECTION}_manual.txt megawave_${DATE}_doc
 done
 
+tar czf megawave_${DATE}_doc.tar.gz megawave_${DATE}_doc
+tar cjf megawave_${DATE}_doc.tar.bz2 megawave_${DATE}_doc
+tar cf - megawave_${DATE}_doc | 7zr a -si -mx=9 megawave_${DATE}_doc.tar.lzma
+zip -qr9 megawave_${DATE}_doc.zip megawave_${DATE}_doc
+
+mkdir upload
+for EXT in tar.gz tar.bz2 tar.lzma zip; do 
+    mv megawave_${DATE}_src.${EXT} upload
+    ln -s megawave_${DATE}_src.${EXT} \
+	upload/megawave_latest_src.${EXT};
+    mv megawave_${DATE}_doc.${EXT} upload
+    ln -s megawave_${DATE}_doc.${EXT} \
+	upload/megawave_latest_doc.${EXT};
+done
+
+cp megawave_${DATE}/STATUS.txt upload
 mv sloccount_${DATE}.txt upload
 
 rsync -av --rsh=ssh upload/ ${DEST}
