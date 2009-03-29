@@ -25,23 +25,6 @@
 
 #include "wpanel.h"
 
-/* FIXME: unsafe snprintf() hack */
-#pragma GCC diagnostic ignored "-Wformat-nonliteral"
-static int pseudo_snprintf(char * dest, int nb, const char * fmt, ...)
-{
-     /* arbitrary length, this isn't safe */
-     static char tmp[1024];
-     va_list args;
-
-     va_start(args, fmt);
-     sprintf(tmp, fmt, args);
-     va_end(args);
-     dest[0] = '\0';
-     strncat(dest, tmp, nb);
-     return strlen(dest);
-}
-#pragma GCC diagnostic error "-Wformat-nonliteral"
- 
 /* draw button and return width (height is 16) */
 int Wp_DrawButton(Wframe *window, int x, int y, char *str, int color)
 {
@@ -102,6 +85,7 @@ Wpanel Wp_Init(Wframe *window)
 }
 
 /* init or actualize button */
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 void Wp_SetButton(int type, Wpanel wp, void *b)
 {
      char str[WP_STRSIZE];
@@ -140,18 +124,18 @@ void Wp_SetButton(int type, Wpanel wp, void *b)
      case WP_INT:
 	  wi = (Wp_int)b;
 	  WSetColorPencil(wp->window,WP_BLACK);
-	  pseudo_snprintf(str,WP_STRSIZE,wi->text);
+	  strncpy(str,wi->text,WP_STRSIZE);
 	  WDrawString(wp->window,wi->x,wi->y+12,str);
 	  x = wi->x+strlen(str)*7;
 	  WSetColorPencil(wp->window,wi->color);
 	  if (!wi->strsize) {
-	       pseudo_snprintf(str,WP_STRSIZE,wi->format,wi->value);
+	       sprintf(str,wi->format,wi->value);
 	       wi->strsize = strlen(str)+1;
-	  } else pseudo_snprintf(str,wi->strsize,wi->format,wi->value);
+	  } else sprintf(str,wi->format,wi->value);
 	  WDrawString(wp->window,x,wi->y+12,str);
 	  x += strlen(str)*7;
 	  if (wi->scale) {
-	       pseudo_snprintf(str,WP_STRSIZE,"%d",wi->firstscale);
+	       sprintf(str,"%d",wi->firstscale);
 	       WSetColorPencil(wp->window,WP_BLACK);
 	       WDrawString(wp->window,x,wi->y+12,str);
 	       x += strlen(str)*7+10;
@@ -169,7 +153,7 @@ void Wp_SetButton(int type, Wpanel wp, void *b)
 			 wp->button[adr] = (short)(-dx-1);
 		    }
 	       x += wi->scale+5;
-	       pseudo_snprintf(str,WP_STRSIZE,"%d",wi->lastscale);
+	       sprintf(str,"%d",wi->lastscale);
 	       WSetColorPencil(wp->window,WP_BLACK);
 	       WDrawString(wp->window,x,wi->y+12,str);
 	       x += strlen(str)*7+10;
@@ -193,14 +177,14 @@ void Wp_SetButton(int type, Wpanel wp, void *b)
      case WP_FLOAT:
 	  wf = (Wp_float)b;
 	  WSetColorPencil(wp->window,WP_BLACK);
-	  pseudo_snprintf(str,WP_STRSIZE,wf->text);
+	  strncpy(str,wf->text,WP_STRSIZE);
 	  WDrawString(wp->window,wf->x,wf->y+12,str);
 	  x = wf->x+strlen(str)*7;
 	  WSetColorPencil(wp->window,wf->color);
 	  if (!wf->strsize) {
-	       pseudo_snprintf(str,WP_STRSIZE,wf->format,wf->value);
+	       sprintf(str,wf->format,wf->value);
 	       wf->strsize = strlen(str)+1;
-	  } else pseudo_snprintf(str,wf->strsize,wf->format,wf->value);
+	  } else sprintf(str,wf->format,wf->value);
 	  WDrawString(wp->window,x,wf->y+12,str);
 	  x += strlen(str)*7;
 	  for (i=0;i<wf->nbuttons;i++) {
@@ -223,6 +207,7 @@ void Wp_SetButton(int type, Wpanel wp, void *b)
 	 abort();
      }
 }
+#pragma GCC diagnostic error "-Wformat-nonliteral"
 
 /* handle event */
 int Wp_handle(Wpanel wp, int event, int x, int y)

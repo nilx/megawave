@@ -152,6 +152,6 @@ void mw_window_main_loop(void)
 		    if (r != 0) event_occured=1;
 		}
 	    }
-	if (event_occured==0) nanosleep(&sleep_time, NULL);
+	nanosleep(&sleep_time, NULL);
     }
 }
