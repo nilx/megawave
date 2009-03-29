@@ -102,9 +102,9 @@ echo -n 'jpeg: '
 
 for FILE in $IOEXAMPLES/libjpeg/*.jpg; do
     ccopy $FILE $TMP/1 2> /dev/null \
-    && pass || fail read-jpeg-cimage
+	&& pass || fail read-jpeg-cimage
     cccopy $FILE $TMP/1 2> /dev/null \
-    && pass || fail read-jpeg-ccimage
+	&& pass || fail read-jpeg-ccimage
 done
 
 ccopy -ftype JFIF $EXAMPLES/images/cimage $TMP/1 \
@@ -121,15 +121,19 @@ echo -n 'tiff: '
 #echo
 
 for FILE in $IOEXAMPLES/libtiff/*.tif; do
-#    identify $FILE
-    ccopy $FILE $TMP/1 2> /dev/null \
-    && pass || fail read-tiff-cimage
-#    echo
-#    identify $FILE
-    cccopy $FILE $TMP/1 2> /dev/null \
-    && pass || fail read-tiff-ccimage
-#    echo
+    if [ "caspian.tif" != $( basename $FILE ) ]; then
+	ccopy $FILE $TMP/1 2> /dev/null \
+	    && pass || fail read-tiff-cimage
+	cccopy $FILE $TMP/1 2> /dev/null \
+	    && pass || fail read-tiff-ccimage
+    fi
 done
+
+ccopy -ftype TIFF $EXAMPLES/images/cimage $TMP/1 \
+    && pass || fail write-cimage-tiff
+
+cccopy -ftype TIFFC $EXAMPLES/images/ccimage $TMP/1 \
+    && pass || fail write-ccimage-tiff
 
 echo
 
