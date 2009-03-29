@@ -220,7 +220,7 @@ void fwivq(Fimage Edge_Ri, Fsignal Ri2, int *FilterNorm, float *WeightFac, Fimag
 /* src/image/io/ccview.c */
 void ccview(Ccimage image, int *x0, int *y0, float *zoom, int *order, int *no_refresh, char *window);
 /* src/image/io/cccopy.c */
-Ccimage cccopy(Ccimage Input, Ccimage *Output);
+void cccopy(Ccimage Input, Ccimage *Output);
 /* src/image/io/ccmview.c */
 void ccmview(Ccmovie input, int *x0, int *y0, float *zoom, int *order, int *loop, int *pause, char *window);
 /* src/image/io/ccopy.c */
