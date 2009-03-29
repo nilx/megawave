@@ -45,7 +45,6 @@
                    (((x) >= '0') && ((x) <= '9')) ||    \
                    ((x)=='_'))
 
-/*#include <ctype.h> */
 /**
  * emulate a simple isupper() without handling localization
  * to avoid glibc dependencies

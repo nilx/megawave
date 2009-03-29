@@ -28,7 +28,6 @@
 
 #include "file_type.h"
 
-/*#include <ctype.h> */
 /**
  * emulate a simple isupper() without handling localization
  * to avoid glibc dependencies

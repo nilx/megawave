@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-#include  "mw-modules.h" /* for fft1d() */
+#include "mw-modules.h" /* for fft1d() */
 
 static int is_a_power_of_two(int n)
 {
