@@ -10,22 +10,21 @@
  * structures
  */
 
+/* TODO: use libmagic */
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-/* FIXME : avoid */
-#include <setjmp.h>
+
+#include <tiffio.h>
+#include <jpeglib.h>
 
 #include "definitions.h"
 #include "error.h"
-
 #include "type_conv.h"
 #include "mwio.h"
 #include "pm.h"
 #include "ascii_file.h"
-/* FIXME : use standard headers */
-#include "tiffio.h"
-#include "jpeglib.h"
 
 #include "file_type.h"
 
@@ -645,81 +644,39 @@ static int what_kind_of_BMP(char * file, char * subtype, char * mtype)
 /*              TIFFC means 24-bits Color TIFF format with char pixel values */
 /* mtype is the associated MegaWave2 memory format */
 
-static int what_kind_of_TIFF(char * file, char * subtype, char * mtype)
+static int what_kind_of_TIFF(const char * file, char * subtype, char * mtype)
 {
-     TIFF  *tif;
-     short photo,spp;
+     TIFF *tiffp=NULL;
+     short spp=0;
 
-     strcpy(subtype,"?");
-     strcpy(mtype,"?");
+     strcpy(subtype, "?");
+     strcpy(mtype,   "?");
  
-     tif=TIFFOpen(file,"r");
-     if (!tif) return(0);
+     if (NULL == (tiffp = TIFFOpen(file, "rb")))
+	 return 0;
 
-     TIFFGetField(tif, TIFFTAG_PHOTOMETRIC, &photo);
-     TIFFGetFieldDefaulted(tif, TIFFTAG_SAMPLESPERPIXEL, &spp);
-     if (spp == 1) /* 1 plane */
+     if (1 != TIFFGetFieldDefaulted(tiffp, TIFFTAG_SAMPLESPERPIXEL, &spp))
+	 return 0;
+
+     TIFFClose(tiffp);
+
+     if (1 == spp)
      {
-	  if (photo == PHOTOMETRIC_PALETTE)
-	       return(0); /* 8-bits color image : not implemented in MegaWave2 */
-	  strcpy(subtype,"TIFF");
-	  strcpy(mtype,"cimage");
+	 /* 1 plane */
+	 strcpy(subtype, "TIFF");
+	 strcpy(mtype,   "cimage");
      }
-     else /* 3 planes */
+     else
      {
-	  strcpy(subtype,"TIFFC");
-	  strcpy(mtype,"ccimage");
+	 /* 3 planes */
+	 strcpy(subtype, "TIFFC");
+	 strcpy(mtype,   "ccimage");
      }
 
-     TIFFClose(tif);
-
-     return(1);
+     return 1;
 }
 
 /*--------------------- Functions to deal with JPEG format --------------------*/
-
-struct my_error_mgr {
-     struct jpeg_error_mgr pub;
-     jmp_buf               setjmp_buffer;
-};
-
-typedef struct my_error_mgr *my_error_ptr;
-
-#undef PARM
-#define PARM(a) a
-
-static void         mw_error_exit      PARM((j_common_ptr));
-static void         mw_error_output    PARM((j_common_ptr));
-static char *lfname;
-
-/* This function is called when a fatal jpeglib error is detected :
-   call mw_error_output and resume execution 
-*/
-static void mw_error_exit(cinfo) 
-j_common_ptr cinfo;
-{
-     my_error_ptr myerr;
-
-     myerr = (my_error_ptr) cinfo->err;
-     /* Display error message and resume */
-     (*cinfo->err->output_message)(cinfo);   
-}
-
-/* Print jpeglib error message */
-static void mw_error_output(cinfo) 
-j_common_ptr cinfo;
-{
-     my_error_ptr myerr;
-     char         buffer[JMSG_LENGTH_MAX];
-
-     myerr = (my_error_ptr) cinfo->err;
-     (*cinfo->err->format_message)(cinfo, buffer);
-     mwerror(ERROR,0,"JPEG image file \"%s\" : %s... Denying image loading !\n", 
-	     lfname, buffer); 
-
-     /* Do the longjump for any kind of jpeglib errors (not only the fatal ones) */
-     longjmp(myerr->setjmp_buffer, 1);        
-}
 
 /* Find the sub-type of a JPEG file */
 /* Return 0 if not a loadable JPEG file, 1 if it is */
@@ -730,65 +687,38 @@ j_common_ptr cinfo;
 
 static int what_kind_of_JPEG(char * fname, char * subtype, char * mtype)
 {
-     FILE *fp;
-     int bperpix;
-     struct jpeg_decompress_struct    cinfo;
-     struct my_error_mgr              jerr;
-     int val;
+     FILE * fp;
+     struct jpeg_decompress_struct cinfo;
+     struct jpeg_error_mgr jerr;
 
-     lfname=fname;
+     strcpy(subtype, "?");
+     strcpy(mtype, "?");
 
-     strcpy(subtype,"?");
-     strcpy(mtype,"?");
-
-     if ((fp = fopen(fname, "r")) == NULL)
-	  return(0);
-
-     /* Initialize the JPEG decompression object with personal error handling. */
-     cinfo.err = jpeg_std_error(&jerr.pub);
-     jerr.pub.error_exit     = mw_error_exit;
-     jerr.pub.output_message = mw_error_output;
-
-     if ((val=setjmp(jerr.setjmp_buffer))==1)
-	  /* What to do in case of error detected in jpeg library */
-     {
-	  jpeg_destroy_decompress(&cinfo);
-	  fclose(fp);
-	  return(0);
-     }
-
-     /* Allocate and initialize a JPEG decompression object */
+     cinfo.err = jpeg_std_error(&jerr);
      jpeg_create_decompress(&cinfo);
- 
-     /* Specify data source for decompression */
+     
+     if (NULL == (fp = fopen(fname, "rb")))
+	 return 0;
      jpeg_stdio_src(&cinfo, fp);
- 
-     /* Read file header, set default decompression parameters */
+     
      (void) jpeg_read_header(&cinfo, TRUE);
+ 
+     if (JCS_GRAYSCALE == cinfo.jpeg_color_space)
+     {
+	 /* image is in grayscale */
+	 strcpy(subtype, "JFIF");
+	 strcpy(mtype,   "cimage");
+     }
+     else
+     {
+	 /* image is in color */
+	 strcpy(subtype, "JFIFC");
+	 strcpy(mtype,   "ccimage");
+     }
 
-     jpeg_calc_output_dimensions(&cinfo);
-     bperpix = cinfo.output_components;
- 
-     if ((bperpix==1) && (cinfo.jpeg_color_space == JCS_GRAYSCALE))
-	  /* Coded image is in 8-bits gray levels format */
-     {
-	  strcpy(subtype,"JFIF");
-	  strcpy(mtype,"cimage");
-	  jpeg_destroy_decompress(&cinfo);
-	  fclose(fp);
-	  return(1);     
-     }
- 
-     if ((bperpix==3)&&((cinfo.jpeg_color_space != JCS_GRAYSCALE)))
-	  /* Coded image is in 3x8-bits color levels format (but probably not RGB) */
-     {
-	  strcpy(subtype,"JFIFC");
-	  strcpy(mtype,"ccimage");
-	  jpeg_destroy_decompress(&cinfo);
-	  fclose(fp);
-	  return(1);     
-     }
-     return(0);
+     jpeg_destroy_decompress(&cinfo);
+     fclose(fp);
+     return 1;     
 }
 
 /*---------------------  --------------------*/
