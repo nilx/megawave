@@ -166,7 +166,7 @@ prebuild	: makefile.dep
 
 # TODO: add profiling/coverage wrappers
 
-TEST	= test/checkmodules.sh
+TEST	= $(BASEDIR)/test/checkmodules.sh
 LIBPATH	= $(LIBDIR)
 
 TESTENV	= PATH=$(BINDIR):$$PATH			\
