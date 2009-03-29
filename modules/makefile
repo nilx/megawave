@@ -144,7 +144,6 @@ distclean-bin : clean-bin
 	$(RM) $(LIBDIR)/lib$(LIBNAME)$(.A)
 	$(RM) $(LIBDIR)/lib$(LIBNAME)$(.SO)
 	$(RM) $(INCDIR)/$(API)
-	$(RM) makefile.dep
 
 # include the prerequisites files
 # they will be built and re-read if they are missing
