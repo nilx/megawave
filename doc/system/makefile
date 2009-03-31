@@ -9,7 +9,7 @@ include	$(COMMON_DIR)/makefile
 
 MANUAL	= system_manual
 
-MANUAL_CHAP = $(addprefix chapter_, $(shell seq -w 10))
+MANUAL_CHAP = $(addprefix chapter_, 01 02 03 04 05 06 07 08 09 10)
 #TODO: aggregate into single files
 MANUAL_DEP	= $(shell find -mindepth 2 -type f -name "*.tex")	\
 	$(COMMON_DIR)/head.inc.tex $(COMMON_DIR)/body.inc.tex

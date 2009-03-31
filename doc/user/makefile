@@ -9,7 +9,7 @@ include	$(COMMON_DIR)/makefile
 
 MANUAL	= user_manual
 
-MANUAL_CHAP	= $(addprefix chapter_, $(shell seq 8))
+MANUAL_CHAP	= $(addprefix chapter_, 1 2 3 4 5 6 7 8)
 MANUAL_DEP	= license.tex 	\
 	$(COMMON_DIR)/head.inc.tex $(COMMON_DIR)/body.inc.tex
 MANUAL_SRC	= $(addsuffix .tex, $(MANUAL) $(MANUAL_CHAP))	\
