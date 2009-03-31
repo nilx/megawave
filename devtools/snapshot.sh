@@ -23,7 +23,7 @@ git log --no-color \
 cd ${MWDEV_SNAPSHOT_TMPDIR}/megawave_${DATE}
 
 sloccount --addlangall \
-    common mwp libmw libmw-x11 libmw-cmdline modules \
+    common doc devtools mwp libmw3 libmw3-x11 libmw3-cmdline libmw3-modules \
     > ../sloccount_${DATE}.txt
 
 echo -e "\n\nDetails:\n" >> ../sloccount_${DATE}.txt
