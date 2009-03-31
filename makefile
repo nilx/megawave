@@ -1,5 +1,5 @@
 default	: all
-all	: mwp libmw3 libmw3-x11 libmw3-cmdline linmw3-modules
+all	: mwp libmw3 libmw3-x11 libmw3-cmdline libmw3-modules modules
 .PHONY	: prebuild mwp libmw3 libmw3-x11 libmw3-cmdline libmw3-modules doc
 
 prebuild	:

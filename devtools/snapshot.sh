@@ -20,22 +20,24 @@ git archive --format=tar --prefix=megawave_${DATE}/ \
 git log --no-color \
     > ${MWDEV_SNAPSHOT_TMPDIR}/megawave_${DATE}/CHANGES.gitlog.txt
 
+make -C ${MWDEV_SNAPSHOT_TMPDIR}/megawave_${DATE} prebuild
+
 cd ${MWDEV_SNAPSHOT_TMPDIR}/megawave_${DATE}
 
 sloccount --addlangall \
-    common doc devtools mwp libmw3 libmw3-x11 libmw3-cmdline libmw3-modules \
+    common doc devtools mwp \
+    libmw3 libmw3-x11 libmw3-cmdline libmw3-modules \
     > ../sloccount_${DATE}.txt
 
 echo -e "\n\nDetails:\n" >> ../sloccount_${DATE}.txt
 
 sloccount --addlangall --cached --details \
-    common mwp libmw libmw-x11 libmw-cmdline modules \
+    common doc devtools mwp \
+    libmw3 libmw3-x11 libmw3-cmdline libmw3-modules \
     | sed "s,${MWDEV_SNAPSHOT_TMPDIR}/megawave_${DATE}/,," \
     >> ../sloccount_${DATE}.txt
 
 cd ${MWDEV_SNAPSHOT_TMPDIR}
-
-make -C megawave_${DATE} prebuild
 
 tar czf megawave_${DATE}_src.tar.gz megawave_${DATE}
 tar cjf megawave_${DATE}_src.tar.bz2 megawave_${DATE}
