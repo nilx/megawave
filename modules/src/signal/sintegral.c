@@ -17,30 +17,30 @@
 
 Fsignal sintegral(Fsignal in, char *n, char *r)
 {
-  int i;
-  double v;
+    int i;
+    double v;
 
-  if (!r) {
-    v = (double)in->values[0];
-    for (i=1;i<in->size;i++) {
-      v += (double)in->values[i];
-      in->values[i] = v;
+    if (!r)
+    {
+        v = (double) in->values[0];
+        for (i = 1; i < in->size; i++)
+        {
+            v += (double) in->values[i];
+            in->values[i] = v;
+        }
     }
-  } else {
-    v = (double)in->values[in->size-1];
-    for (i=in->size-2;i>=0;i--) {
-      v += (double)in->values[i];
-      in->values[i] = v;
+    else
+    {
+        v = (double) in->values[in->size - 1];
+        for (i = in->size - 2; i >= 0; i--)
+        {
+            v += (double) in->values[i];
+            in->values[i] = v;
+        }
     }
-  }
-  if (n) for (i=in->size;i--;) in->values[i]/=v;
+    if (n)
+        for (i = in->size; i--;)
+            in->values[i] /= v;
 
-  return(in);
+    return (in);
 }
-
-
-
-
-
-
-

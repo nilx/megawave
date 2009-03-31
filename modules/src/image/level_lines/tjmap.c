@@ -20,62 +20,70 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
-#include "mw-modules.h" /* for tjpoint() */
+#include "mw-modules.h"         /* for tjpoint() */
 
 /* Record the junction location */
 
 static void record_junction(Cimage U, Cimage J, char *values, int x, int y)
 {
-  int l;
+    int l;
 
-  if (!values) mw_plot_cimage(J,x,y,255);
-  else
+    if (!values)
+        mw_plot_cimage(J, x, y, 255);
+    else
     {
-      l=y*U->ncol+x;
-      J->gray[l] = U->gray[l];
-      J->gray[l+1] = U->gray[l+1];      
-      J->gray[l+U->ncol] = U->gray[l+U->ncol];      
-      J->gray[l+U->ncol+1] = U->gray[l+U->ncol+1];      
+        l = y * U->ncol + x;
+        J->gray[l] = U->gray[l];
+        J->gray[l + 1] = U->gray[l + 1];
+        J->gray[l + U->ncol] = U->gray[l + U->ncol];
+        J->gray[l + U->ncol + 1] = U->gray[l + U->ncol + 1];
     }
 }
 
-int tjmap(char *connex8, char *values, int *tarea, int *tquant, Cimage U, Cimage J)
+int tjmap(char *connex8, char *values, int *tarea, int *tquant, Cimage U,
+          Cimage J)
 {
-  int x,y;  /* current position (x,y) */
-  int tj,ntj,l;
-  unsigned char *M=NULL; /* Tab to mark the pixels in mscarea */
-  int *P=NULL;           /* Tab to index area -> pixel in mscarea */
+    int x, y;                   /* current position (x,y) */
+    int tj, ntj, l;
+    unsigned char *M = NULL;    /* Tab to mark the pixels in mscarea */
+    int *P = NULL;              /* Tab to index area -> pixel in mscarea */
 
-  /* Initialisations */
+    /* Initialisations */
 
-  J=mw_change_cimage(J, U->nrow, U->ncol);
-  if (J==NULL) mwerror(FATAL,1,"Not enough memory.\n");
-  mw_clear_cimage(J,0);
+    J = mw_change_cimage(J, U->nrow, U->ncol);
+    if (J == NULL)
+        mwerror(FATAL, 1, "Not enough memory.\n");
+    mw_clear_cimage(J, 0);
 
-  M=(unsigned char *) malloc(U->nrow*U->ncol);
-  if (M==NULL) mwerror(FATAL,1,"Not enough memory.\n");
-  memset(M,0,U->nrow*U->ncol);
-  
-  P=(int *) malloc(*tarea * sizeof(int));
-  if (P==NULL) mwerror(FATAL,1,"Not enough memory.\n");
-  for (l=0; l<*tarea; l++) P[l]=-1;
+    M = (unsigned char *) malloc(U->nrow * U->ncol);
+    if (M == NULL)
+        mwerror(FATAL, 1, "Not enough memory.\n");
+    memset(M, 0, U->nrow * U->ncol);
 
-  /* Scan each point of the image U */
+    P = (int *) malloc(*tarea * sizeof(int));
+    if (P == NULL)
+        mwerror(FATAL, 1, "Not enough memory.\n");
+    for (l = 0; l < *tarea; l++)
+        P[l] = -1;
 
-  ntj=0;
-  for (y=0; y < U->nrow - 1; y++)
-    { 
-      mwdebug("line %d/%d...\n",y,U->nrow-2);
-      for (x=0; x < U->ncol - 1; x++)
-	{
-	  tj = tjpoint(connex8,tarea,tquant,U,x,y,
-		       NULL,NULL,NULL,NULL,NULL,NULL,M,P);
-	  if (tj > 0) { ntj++; record_junction(U,J,values,x,y); }
-	}
+    /* Scan each point of the image U */
+
+    ntj = 0;
+    for (y = 0; y < U->nrow - 1; y++)
+    {
+        mwdebug("line %d/%d...\n", y, U->nrow - 2);
+        for (x = 0; x < U->ncol - 1; x++)
+        {
+            tj = tjpoint(connex8, tarea, tquant, U, x, y,
+                         NULL, NULL, NULL, NULL, NULL, NULL, M, P);
+            if (tj > 0)
+            {
+                ntj++;
+                record_junction(U, J, values, x, y);
+            }
+        }
     }
-  free(P);
-  free(M);
-  return(ntj);
+    free(P);
+    free(M);
+    return (ntj);
 }
-
-

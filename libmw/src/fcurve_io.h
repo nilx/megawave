@@ -21,4 +21,4 @@ short _mw_create_fcurves_mw2_fcurves(char *fname, Fcurves cvs);
 short _mw_fcurves_create_native(char *fname, Fcurves cvs, char *Type);
 short _mw_create_fcurves(char *fname, Fcurves cvs, char *Type);
 
-#endif /* !_FCURVE_IO_H_ */
+#endif                          /* !_FCURVE_IO_H_ */

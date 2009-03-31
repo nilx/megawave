@@ -3,7 +3,8 @@
 name = {cvsencode};
 version = {"0.1"};
 author = {"Jacques Froment"};
-function = {"Encode a set of curves : return bit rate for lossless compression"};
+function = {"Encode a set of curves : return bit rate
+            for lossless compression"};
 usage = {
  's':L->L  "split curves with overlapping parts of length greater than L",
  'o':O<-O  "output the encoded curves (C=O if option -s is not selected)",
@@ -16,176 +17,199 @@ usage = {
 
 #include <stdio.h>
 #include "mw.h"
-#include "mw-modules.h" /* for cvsfrecode(), cvsorgcode() */
+#include "mw-modules.h"         /* for cvsfrecode(), cvsorgcode() */
 
-
-/* Compute in (*ncol, *nrow) the size of the smallest image containing 
+/* Compute in (*ncol, *nrow) the size of the smallest image containing
    all points which are in the curves of C.
    Compute in (*mincol, *minrow) the translation point.
 */
 
-static void Get_Size_Image(Curves C, int *ncol, int *nrow, int *mincol, int *minrow)
+static void Get_Size_Image(Curves C, int *ncol, int *nrow, int *mincol,
+                           int *minrow)
 {
-  Curve cv;
-  Point_curve point;
-  int maxcol,maxrow,x,y;
-  
-  *mincol = maxcol = C->first->first->x;
-  *minrow = maxrow = C->first->first->y;
+    Curve cv;
+    Point_curve point;
+    int maxcol, maxrow, x, y;
 
-  for (cv = C->first; cv; cv = cv->next)
-    for (point = cv->first; point; point = point->next)
-      {
-	x=point->x;
-	y=point->y;
-	if (*mincol > x) *mincol=x;
-	else if (maxcol < x) maxcol=x;      
-	if (*minrow > y) *minrow=y;
-	else if (maxrow < y) maxrow=y;      
-      }
-  *ncol = maxcol - *mincol + 1;
-  *nrow = maxrow - *minrow + 1;
+    *mincol = maxcol = C->first->first->x;
+    *minrow = maxrow = C->first->first->y;
+
+    for (cv = C->first; cv; cv = cv->next)
+        for (point = cv->first; point; point = point->next)
+        {
+            x = point->x;
+            y = point->y;
+            if (*mincol > x)
+                *mincol = x;
+            else if (maxcol < x)
+                maxcol = x;
+            if (*minrow > y)
+                *minrow = y;
+            else if (maxrow < y)
+                maxrow = y;
+        }
+    *ncol = maxcol - *mincol + 1;
+    *nrow = maxrow - *minrow + 1;
 }
 
 /* Return the number of points between two successive non-multiple point
    p0->next and the next non-successive point p1.
 */
 
-static int Seek_Non_Multiple_Point(Cimage bitmap, int mincol, int minrow, Point_curve p0, Point_curve *p1)
+static int Seek_Non_Multiple_Point(Cimage bitmap, int mincol, int minrow,
+                                   Point_curve p0, Point_curve * p1)
 {
-  Point_curve p;
-  int n,ncol;
+    Point_curve p;
+    int n, ncol;
 
-  ncol = bitmap->ncol;
-  p=p0->next;
-  *p1=NULL;
-  n=0;
-  while (p && (bitmap->gray[(p->y-minrow)*ncol + (p->x-mincol)] != 0))
+    ncol = bitmap->ncol;
+    p = p0->next;
+    *p1 = NULL;
+    n = 0;
+    while (p && (bitmap->gray[(p->y - minrow) * ncol + (p->x - mincol)] != 0))
     {
-      n++;
-      *p1=p;
-      p=p->next;
+        n++;
+        *p1 = p;
+        p = p->next;
     }
-  /* To make sure end of curve contains at least 2 points */
-  if ((*p1) && !(*p1)->next)
+    /* To make sure end of curve contains at least 2 points */
+    if ((*p1) && !(*p1)->next)
     {
-      *p1 = (*p1)->previous;
-      n--;
-    }      
-  return(n);
+        *p1 = (*p1)->previous;
+        n--;
+    }
+    return (n);
 }
 
-/* Add in O a curve made by the part of the curve between fpoint and lpoint. 
+/* Add in O a curve made by the part of the curve between fpoint and lpoint.
    If lpoint=NULL, add the points until the end of the curve.
 */
 
-static void Add_Curve(Curves O, Point_curve fpoint, Point_curve lpoint, Cimage bitmap, int mincol, int minrow)
+static void Add_Curve(Curves O, Point_curve fpoint, Point_curve lpoint,
+                      Cimage bitmap, int mincol, int minrow)
 {
-  Curve cv,lcv;
-  Point_curve p,p0,p1;
-  int ncol;
+    Curve cv, lcv;
+    Point_curve p, p0, p1;
+    int ncol;
 
-  ncol = bitmap->ncol;
-  cv = mw_new_curve();
-  if (!cv) mwerror(FATAL,1,"Not enough memory\n");
-  if (!O->first) O->first = cv;
-  else
+    ncol = bitmap->ncol;
+    cv = mw_new_curve();
+    if (!cv)
+        mwerror(FATAL, 1, "Not enough memory\n");
+    if (!O->first)
+        O->first = cv;
+    else
     {
-      for (lcv=O->first; lcv && lcv->next; lcv=lcv->next);
-      lcv->next = cv;
-      cv->previous = lcv;
+        for (lcv = O->first; lcv && lcv->next; lcv = lcv->next);
+        lcv->next = cv;
+        cv->previous = lcv;
     }
-  p=fpoint;
-  p0=NULL;
-  for (p=fpoint; p!=NULL; p=p->next)
+    p = fpoint;
+    p0 = NULL;
+    for (p = fpoint; p != NULL; p = p->next)
     {
-      p1 = mw_new_point_curve();
-      if (!p1) mwerror(FATAL,1,"Not enough memory\n");
-      p1->x = p->x;
-      p1->y = p->y;
-      bitmap->gray[(p->y-minrow)*ncol + (p->x-mincol)] = 1;
-      if (!cv->first) cv->first = p1;
-      else
-	{
-	  p0->next=p1;
-	  p1->previous=p0;
-	}
-      p0=p1;
-      if (p == lpoint) break;
+        p1 = mw_new_point_curve();
+        if (!p1)
+            mwerror(FATAL, 1, "Not enough memory\n");
+        p1->x = p->x;
+        p1->y = p->y;
+        bitmap->gray[(p->y - minrow) * ncol + (p->x - mincol)] = 1;
+        if (!cv->first)
+            cv->first = p1;
+        else
+        {
+            p0->next = p1;
+            p1->previous = p0;
+        }
+        p0 = p1;
+        if (p == lpoint)
+            break;
     }
 }
 
 /* Split the curves in case of multiple points */
 
-static Curves Split_Curves(Curves O, Curves C, int L, Cimage bitmap, int mincol, int minrow)
+static Curves Split_Curves(Curves O, Curves C, int L, Cimage bitmap,
+                           int mincol, int minrow)
 {
-  Curve cv;
-  Point_curve p0, p1, begp;
-  int ncol;
-  
-  /* Split curve in 2 curves when 4 successive points or more are 
-     already coded by other curves.
-  */
-  if (!O) O = mw_new_curves();
-  if (!O) mwerror(FATAL,1,"Not enough memory\n");
-  ncol = bitmap->ncol;
-  for (cv = C->first; cv; cv = cv->next)
+    Curve cv;
+    Point_curve p0, p1, begp;
+    int ncol;
+
+    /* Split curve in 2 curves when 4 successive points or more are
+     * already coded by other curves.
+     */
+    if (!O)
+        O = mw_new_curves();
+    if (!O)
+        mwerror(FATAL, 1, "Not enough memory\n");
+    ncol = bitmap->ncol;
+    for (cv = C->first; cv; cv = cv->next)
     {
-      /* Begin at the second point (origin point coded elsewhere) */
-      begp = cv->first;
-      p0 = begp->next;
-      while (p0)
-	{
-	  if (Seek_Non_Multiple_Point(bitmap,mincol,minrow,p0,&p1) >= L)
-	    {
-	      Add_Curve(O,begp,p0,bitmap,mincol,minrow);
-	      begp = p1;
-	      p0 = begp->next;
-	    }
-	  else p0=p0->next;
-	}
-      Add_Curve(O,begp,NULL,bitmap,mincol,minrow);
+        /* Begin at the second point (origin point coded elsewhere) */
+        begp = cv->first;
+        p0 = begp->next;
+        while (p0)
+        {
+            if (Seek_Non_Multiple_Point(bitmap, mincol, minrow, p0, &p1) >= L)
+            {
+                Add_Curve(O, begp, p0, bitmap, mincol, minrow);
+                begp = p1;
+                p0 = begp->next;
+            }
+            else
+                p0 = p0->next;
+        }
+        Add_Curve(O, begp, NULL, bitmap, mincol, minrow);
     }
-  return(O);
+    return (O);
 }
 
 double cvsencode(int *L, Curves O, Curves C, unsigned int *N, double *B)
 {
-  Cimage bitmap=NULL;  /* Bitmap the points of the curves to detect multiple
-			  points */
-  Curves Oorg;         /* Initial value of O */
-  int nrow,ncol;       /* Size of bitmap, if used. */
-  int minrow, mincol;  /* Translation point in bitmap, if used. */
-  double Borg;         /* Nb of bits to code origin of curves */
-  double Bfre;         /* Nb of bits for Freeman coding */
-  double orgrate;      /* Rate to code origin of curves */
-  double frerate;      /* Rate for Freeman coding */
+    Cimage bitmap = NULL;       /* Bitmap the points of the curves
+                                 *to detect multiple
+                                 * points */
+    Curves Oorg;                /* Initial value of O */
+    int nrow, ncol;             /* Size of bitmap, if used. */
+    int minrow, mincol;         /* Translation point in bitmap, if used. */
+    double Borg;                /* Nb of bits to code origin of curves */
+    double Bfre;                /* Nb of bits for Freeman coding */
+    double orgrate;             /* Rate to code origin of curves */
+    double frerate;             /* Rate for Freeman coding */
 
-  mwdebug("\n--- cvsencode --- code points of curves...\n");
+    mwdebug("\n--- cvsencode --- code points of curves...\n");
 
-  if ((!C)||(!C->first)||(!C->first->first))
-    mwerror(FATAL,1,"Input curves does not contain any curve or point !\n");
+    if ((!C) || (!C->first) || (!C->first->first))
+        mwerror(FATAL, 1,
+                "Input curves does not contain any curve or point !\n");
 
-  Oorg = O;
-  if (L != NULL)  /* do not code multiple points : split overlapping curves */
+    Oorg = O;
+    if (L != NULL)              /* do not code multiple points :
+                                 * split overlapping curves */
     {
-      /* Compute the size of bitmap */
-      Get_Size_Image(C,&ncol,&nrow,&mincol,&minrow);
-      bitmap = mw_change_cimage(bitmap,nrow,ncol);
-      if (!bitmap) mwerror(FATAL,1,"Not enough memory\n");
-      mw_clear_cimage(bitmap,0);
-      /* Compute the new curves, without any large intersection */
-      O = Split_Curves(O,C,*L,bitmap,mincol,minrow);
+        /* Compute the size of bitmap */
+        Get_Size_Image(C, &ncol, &nrow, &mincol, &minrow);
+        bitmap = mw_change_cimage(bitmap, nrow, ncol);
+        if (!bitmap)
+            mwerror(FATAL, 1, "Not enough memory\n");
+        mw_clear_cimage(bitmap, 0);
+        /* Compute the new curves, without any large intersection */
+        O = Split_Curves(O, C, *L, bitmap, mincol, minrow);
     }
-  else O=C;
+    else
+        O = C;
 
-  orgrate = cvsorgcode(O,N,&Borg);
-  frerate = cvsfrecode(O,N,&Bfre);
+    orgrate = cvsorgcode(O, N, &Borg);
+    frerate = cvsfrecode(O, N, &Bfre);
 
-  *B = Borg + Bfre;
-  if (!Oorg) { mw_delete_curves(O); O=NULL; }
+    *B = Borg + Bfre;
+    if (!Oorg)
+    {
+        mw_delete_curves(O);
+        O = NULL;
+    }
 
-  mwdebug("--- cvsencode --- Terminated.\n");
-  return(orgrate + frerate);
+    mwdebug("--- cvsencode --- Terminated.\n");
+    return (orgrate + frerate);
 }
-

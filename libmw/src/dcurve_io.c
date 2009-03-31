@@ -1,18 +1,18 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   dcurve_io.c
-   
+
   Vers. 1.10
   (C) 2000-2002 Jacques Froment
   Input/Output functions for the dcurve & dcurves structure
 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
   MegaWave2 is a "soft-publication" for the scientific community. It has
   been developed for research purposes and it comes without any warranty.
   The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -49,10 +49,10 @@
 
 Point_dcurve _mw_point_dcurve_load_native(char *fname, char *type)
 {
-     /* FIXME : unused parameter */
-     fname = fname;
-     type = type;
-     return(NULL);
+    /* FIXME : unused parameter */
+    fname = fname;
+    type = type;
+    return (NULL);
 }
 
 /* ---- I/O for Dcurve ---- */
@@ -64,232 +64,254 @@ Point_dcurve _mw_point_dcurve_load_native(char *fname, char *type)
 
 Dcurve _mw_load_dcurve_mw2_dcurve(char *fname)
 {
-     FILE    *fp;
-     Dcurve cv;
-     Point_dcurve newcvc,oldcvc;
-     int filesize,buf_size,i;
-     int readsize,remainsize;
-     double vx,vy,*buffer;
-     register double *ptr;
-     char ftype[mw_ftype_size],mtype[mw_mtype_size];
-     int need_flipping;
-     unsigned long *lptr; /* for flip */
-     int hsize;  /* Size of the header, in bytes */
-     float version;/* Version number of the file format */
+    FILE *fp;
+    Dcurve cv;
+    Point_dcurve newcvc, oldcvc;
+    int filesize, buf_size, i;
+    int readsize, remainsize;
+    double vx, vy, *buffer;
+    register double *ptr;
+    char ftype[mw_ftype_size], mtype[mw_mtype_size];
+    int need_flipping;
+    unsigned long *lptr;        /* for flip */
+    int hsize;                  /* Size of the header, in bytes */
+    float version;              /* Version number of the file format */
 
-     need_flipping = _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
-     if (strcmp(ftype,"MW2_DCURVE") != 0)
-	  mwerror(INTERNAL, 0,"[_mw_load_dcurve_mw2_dcurve] File \"%s\" is not in the MW2_DCURVE format\n",fname);
+    need_flipping =
+        _mw_get_file_type(fname, ftype, mtype, &hsize, &version) - 1;
+    if (strcmp(ftype, "MW2_DCURVE") != 0)
+        mwerror(INTERNAL, 0,
+                "[_mw_load_dcurve_mw2_dcurve] File \"%s\" is not "
+                "in the MW2_DCURVE format\n", fname);
 
-  
-     if (need_flipping==-1)
-     {
-	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
-	  return(NULL);
-     }
+    if (need_flipping == -1)
+    {
+        mwerror(ERROR, 0, "File \"%s\" not found or unreadable\n", fname);
+        return (NULL);
+    }
 
-     if (NULL == (fp = fopen(fname, "r")))
-     {
-	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
-	  fclose(fp);
-	  return(NULL);
-     }
+    if (NULL == (fp = fopen(fname, "r")))
+    {
+        mwerror(ERROR, 0, "File \"%s\" not found or unreadable\n", fname);
+        fclose(fp);
+        return (NULL);
+    }
 
-     /* Size of the file - size of the header, in bytes */
-     filesize = mw_fsize(fp) - hsize; 
-     remainsize = filesize / sizeof(double); /* Number of coordinates */
-     if ((remainsize % 2) != 0)
-     {
-	  mwerror(ERROR, 0,"Error into the file \"%s\": not an even number of coordinates !\n",fname);
-	  return(NULL);
-     }
-  
-     buf_size=remainsize;
-     if (hsize>buf_size) buf_size=hsize;
-     if (buf_size > MAXBUFSIZ) buf_size=MAXBUFSIZ;
-     if ( (!(buffer = (double *) malloc(buf_size * sizeof(double)))) ||
-	  (!(cv = mw_new_dcurve())))
-     {
-	  mwerror(ERROR, 0,"Not enough memory to dcurve file \"%s\" !\n",fname);
-	  fclose(fp);
-	  return(NULL);
-     }
+    /* Size of the file - size of the header, in bytes */
+    filesize = mw_fsize(fp) - hsize;
+    remainsize = filesize / sizeof(double);     /* Number of coordinates */
+    if ((remainsize % 2) != 0)
+    {
+        mwerror(ERROR, 0,
+                "Error into the file \"%s\": "
+                "not an even number of coordinates !\n", fname);
+        return (NULL);
+    }
 
-     /* FIXME: wrong types, dirty temporary fix */
-     if (fread(buffer,1,hsize,fp) != (unsigned int) hsize)
-     {
-	  mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
-	  fclose(fp);
-	  return(NULL);
-     }
+    buf_size = remainsize;
+    if (hsize > buf_size)
+        buf_size = hsize;
+    if (buf_size > MAXBUFSIZ)
+        buf_size = MAXBUFSIZ;
+    if ((!(buffer = (double *) malloc(buf_size * sizeof(double)))) ||
+        (!(cv = mw_new_dcurve())))
+    {
+        mwerror(ERROR, 0, "Not enough memory to dcurve file \"%s\" !\n",
+                fname);
+        fclose(fp);
+        return (NULL);
+    }
 
-     oldcvc = newcvc = NULL;
+    /* FIXME: wrong types, dirty temporary fix */
+    if (fread(buffer, 1, hsize, fp) != (unsigned int) hsize)
+    {
+        mwerror(ERROR, 0, "Error while reading file \"%s\"...\n", fname);
+        fclose(fp);
+        return (NULL);
+    }
 
-     while (remainsize > 0)
-     {
-	  readsize=remainsize;
-	  if (readsize > buf_size) readsize=buf_size;
-          /* FIXME: wrong types, dirty temporary fix */
-	  if (fread(buffer,sizeof(double),readsize,fp) != (unsigned int) readsize)
-	  {
-	       mwerror(ERROR, 0,"Error while reading file \"%s\"...\n",fname);
-	       free(buffer);
-	       fclose(fp);
-	       return(NULL);
-	  }
-	  remainsize -= readsize;
-      
-	  for (ptr=buffer, i=1; i < readsize; i+=2)
-	  {
-	       if (need_flipping==1)
-	       {	
-		    lptr= (unsigned long *) ptr;
-		    _mw_in_flip_double(lptr);
-		    vx=*((double *) lptr);
-		    ptr++;
-		    lptr= (unsigned long *) ptr;
-		    _mw_in_flip_double(lptr);
-		    vy=*((double *) lptr);
-		    ptr++;
-		    /*printf("(flip) i=%d (%g,%g)\n",i,vx,vy); */
-	       }
-	       else
-	       {	
-		    vx = *ptr++;
-		    vy = *ptr++;
-		    /* printf("(no flip) i=%d (%g,%g)\n",i,vx,vy); */
-	       }
-	       newcvc = mw_new_point_dcurve();
-	       if (newcvc == NULL)
-	       {
-		    mw_delete_dcurve(cv);
-		    free(buffer);
-		    return(NULL);
-	       }
-	       if (cv->first == NULL) cv->first = newcvc;
-	       if (oldcvc != NULL) oldcvc->next = newcvc;
-	       newcvc->previous = oldcvc;
-	       newcvc->next = NULL;
-	       newcvc->x = vx; newcvc->y = vy;
-	       oldcvc = newcvc;
-	  }
-     }
-  
-     fclose(fp);
-     free(buffer);
-     return(cv);
+    oldcvc = newcvc = NULL;
+
+    while (remainsize > 0)
+    {
+        readsize = remainsize;
+        if (readsize > buf_size)
+            readsize = buf_size;
+        /* FIXME: wrong types, dirty temporary fix */
+        if (fread(buffer, sizeof(double), readsize, fp) !=
+            (unsigned int) readsize)
+        {
+            mwerror(ERROR, 0, "Error while reading file \"%s\"...\n", fname);
+            free(buffer);
+            fclose(fp);
+            return (NULL);
+        }
+        remainsize -= readsize;
+
+        for (ptr = buffer, i = 1; i < readsize; i += 2)
+        {
+            if (need_flipping == 1)
+            {
+                lptr = (unsigned long *) ptr;
+                _mw_in_flip_double(lptr);
+                vx = *((double *) lptr);
+                ptr++;
+                lptr = (unsigned long *) ptr;
+                _mw_in_flip_double(lptr);
+                vy = *((double *) lptr);
+                ptr++;
+                /*printf("(flip) i=%d (%g,%g)\n",i,vx,vy); */
+            }
+            else
+            {
+                vx = *ptr++;
+                vy = *ptr++;
+                /* printf("(no flip) i=%d (%g,%g)\n",i,vx,vy); */
+            }
+            newcvc = mw_new_point_dcurve();
+            if (newcvc == NULL)
+            {
+                mw_delete_dcurve(cv);
+                free(buffer);
+                return (NULL);
+            }
+            if (cv->first == NULL)
+                cv->first = newcvc;
+            if (oldcvc != NULL)
+                oldcvc->next = newcvc;
+            newcvc->previous = oldcvc;
+            newcvc->next = NULL;
+            newcvc->x = vx;
+            newcvc->y = vy;
+            oldcvc = newcvc;
+        }
+    }
+
+    fclose(fp);
+    free(buffer);
+    return (cv);
 }
 
 /* Native formats (without conversion of the internal type) */
 
 Dcurve _mw_dcurve_load_native(char *fname, char *type)
 {
-     if (strcmp(type,"MW2_DCURVE") == 0)
-	  return((Dcurve)_mw_load_dcurve_mw2_dcurve(fname));
+    if (strcmp(type, "MW2_DCURVE") == 0)
+        return ((Dcurve) _mw_load_dcurve_mw2_dcurve(fname));
 
-     return(NULL);
+    return (NULL);
 }
-
 
 /* All available formats */
 
 Dcurve _mw_load_dcurve(char *fname, char *type)
-{ 
-     Dcurve cv;
-     char mtype[mw_mtype_size];
-     int hsize;  /* Size of the header, in bytes */
-     float version;/* Version number of the file format */
+{
+    Dcurve cv;
+    char mtype[mw_mtype_size];
+    int hsize;                  /* Size of the header, in bytes */
+    float version;              /* Version number of the file format */
 
-     _mw_get_file_type(fname,type,mtype,&hsize,&version);
+    _mw_get_file_type(fname, type, mtype, &hsize, &version);
 
-     /* First, try native formats */
-     cv = _mw_dcurve_load_native(fname,type);
-     if (cv != NULL) return(cv);
+    /* First, try native formats */
+    cv = _mw_dcurve_load_native(fname, type);
+    if (cv != NULL)
+        return (cv);
 
-     /* If failed, try other formats with memory conversion */
-     cv = (Dcurve) _mw_load_etype_to_itype(fname,mtype,"dcurve",type);
-     if (cv != NULL) return(cv);
+    /* If failed, try other formats with memory conversion */
+    cv = (Dcurve) _mw_load_etype_to_itype(fname, mtype, "dcurve", type);
+    if (cv != NULL)
+        return (cv);
 
-     if (type[0]=='?')
-	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
-     else
-	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Dcurve !\n",fname,type);
-     return NULL;
+    if (type[0] == '?')
+        mwerror(FATAL, 1, "Unknown external type for the file \"%s\"\n",
+                fname);
+    else
+        mwerror(FATAL, 1,
+                "External type of file \"%s\" is %s. "
+                "I Don't know how to load such external type into a Dcurve !\n",
+                fname, type);
+    return NULL;
 }
 
-
-/* Write file in MW2_DCURVE format */  
+/* Write file in MW2_DCURVE format */
 
 short _mw_create_dcurve_mw2_dcurve(char *fname, Dcurve cv)
 {
-     FILE *fp;
-     Point_dcurve pc;
-     double vx=0.0,vy=0.0;
+    FILE *fp;
+    Point_dcurve pc;
+    double vx = 0.0, vy = 0.0;
 
-     if (cv == NULL)
-	  mwerror(INTERNAL,1,"[_mw_create_dcurve_mw2_dcurve] Cannot create file: Dcurve structure is NULL\n");
+    if (cv == NULL)
+        mwerror(INTERNAL, 1,
+                "[_mw_create_dcurve_mw2_dcurve] Cannot create file: "
+                "Dcurve structure is NULL\n");
 
-     fp=_mw_write_header_file(fname,"MW2_DCURVE",1.00);
-     if (fp == NULL) return(-1);
-  
-     /* Allow to create empty dcurve
-	if (cv->first == NULL)
-	mwerror(INTERNAL,1,"[_mw_create_dcurve_mw2_dcurve] Dcurve has no point dcurve !\n");
+    fp = _mw_write_header_file(fname, "MW2_DCURVE", 1.00);
+    if (fp == NULL)
+        return (-1);
+
+    /* Allow to create empty dcurve
+     * if (cv->first == NULL)
+     * mwerror(INTERNAL,1,"[_mw_create_dcurve_mw2_dcurve] Dcurve has no "
+     *         "point dcurve !\n");
      */
 
-     for (pc=cv->first; pc; pc=pc->next)
-     {
-	  vx = pc->x;
-	  vy = pc->y;
-	  if (1 > fwrite(&vx, sizeof(double), 1, fp)
-	      || 1 > fwrite(&vy, sizeof(double), 1, fp))
-	  {
-	      mwerror(ERROR, 0, "Error while writing "
-		      "to file \"%s\" !\n", fname);
-	      exit(EXIT_FAILURE);
-	  }
-     }
+    for (pc = cv->first; pc; pc = pc->next)
+    {
+        vx = pc->x;
+        vy = pc->y;
+        if (1 > fwrite(&vx, sizeof(double), 1, fp)
+            || 1 > fwrite(&vy, sizeof(double), 1, fp))
+        {
+            mwerror(ERROR, 0, "Error while writing "
+                    "to file \"%s\" !\n", fname);
+            exit(EXIT_FAILURE);
+        }
+    }
 
-     fclose(fp);
-     return(0);
+    fclose(fp);
+    return (0);
 }
-   
 
 /* Create native formats (without conversion of the internal type) */
 
 short _mw_dcurve_create_native(char *fname, Dcurve cv, char *Type)
 {
-     if (strcmp(Type,"MW2_DCURVE") == 0)
-	  return(_mw_create_dcurve_mw2_dcurve(fname,cv));
-  
-     return(-1);
+    if (strcmp(Type, "MW2_DCURVE") == 0)
+        return (_mw_create_dcurve_mw2_dcurve(fname, cv));
+
+    return (-1);
 }
 
-
 /* Write file in different formats */
-   
+
 short _mw_create_dcurve(char *fname, Dcurve cv, char *Type)
 {
-     short ret;
+    short ret;
 
-     /* First, try native formats */
-     ret = _mw_dcurve_create_native(fname,cv,Type);
-     if (ret == 0) return(0);
+    /* First, try native formats */
+    ret = _mw_dcurve_create_native(fname, cv, Type);
+    if (ret == 0)
+        return (0);
 
-     /* If failed, try other formats with memory conversion */
-     ret = _mw_create_etype_from_itype(fname,cv,"dcurve",Type);
-     if (ret == 0) return(0);
+    /* If failed, try other formats with memory conversion */
+    ret = _mw_create_etype_from_itype(fname, cv, "dcurve", Type);
+    if (ret == 0)
+        return (0);
 
-     /* Invalid Type should have been detected before, but we can arrive here because
-	of a write failure (e.g. the output file name is write protected).
+    /* Invalid Type should have been detected before, but we can
+     * arrive here because of a write failure (e.g. the output file
+     * name is write protected).
      */
-     mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
-     return -1;
+    mwerror(FATAL, 1, "Cannot save \"%s\" : all write procedures failed !\n",
+            fname);
+    return -1;
 }
 
 /* ---- I/O for Dcurves ---- */
 
-/* Load dcurves from a file of MW2_DCURVES format 
+/* Load dcurves from a file of MW2_DCURVES format
    Read operation is no more bufferized to be able to load huge dcurves.
 */
 
@@ -297,389 +319,426 @@ short _mw_create_dcurve(char *fname, Dcurve cv, char *Type)
 
 Dcurves _mw_load_dcurves_mw2_dcurves_1_00(char *fname)
 {
-     FILE    *fp;
-     Dcurves cvs;
-     Dcurve newcv,oldcv;
-     Point_dcurve newcvc,oldcvc = NULL;
-     double x,y;
-     unsigned long *px,*py;
-     char new_dcurve;
-     char ftype[mw_ftype_size],mtype[mw_mtype_size];
-     int need_flipping; 
-     char header[BUFSIZ];
-     double xsave;
-     int eof;
-     int hsize;  /* Size of the header, in bytes */
-     float version;/* Version number of the file format */
+    FILE *fp;
+    Dcurves cvs;
+    Dcurve newcv, oldcv;
+    Point_dcurve newcvc, oldcvc = NULL;
+    double x, y;
+    unsigned long *px, *py;
+    char new_dcurve;
+    char ftype[mw_ftype_size], mtype[mw_mtype_size];
+    int need_flipping;
+    char header[BUFSIZ];
+    double xsave;
+    int eof;
+    int hsize;                  /* Size of the header, in bytes */
+    float version;              /* Version number of the file format */
 
-     need_flipping = _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
-     if (strcmp(ftype,"MW2_DCURVES") != 0)
-	  mwerror(INTERNAL, 0,"[_mw_load_dcurves_mw2_dcurves] File \"%s\" is not in the MW2_DCURVES format\n",fname);
-  
-     if (need_flipping==-1)
-     {
-	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
-	  return(NULL);
-     }
+    need_flipping =
+        _mw_get_file_type(fname, ftype, mtype, &hsize, &version) - 1;
+    if (strcmp(ftype, "MW2_DCURVES") != 0)
+        mwerror(INTERNAL, 0,
+                "[_mw_load_dcurves_mw2_dcurves] File \"%s\" is not "
+                "in the MW2_DCURVES format\n", fname);
 
-     if (!(fp = fopen(fname, "r")))
-     {
-	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
-	  fclose(fp);
-	  return(NULL);
-     }
+    if (need_flipping == -1)
+    {
+        mwerror(ERROR, 0, "File \"%s\" not found or unreadable\n", fname);
+        return (NULL);
+    }
 
-     /* FIXME: wrong types, dirty temporary fix */
-     if (fread(header,1,hsize,fp) != (unsigned int) hsize)
-     {
-	  mwerror(ERROR, 0,"Error while reading header of file \"%s\" !\n",fname);
-	  fclose(fp);
-	  return(NULL);
-     }
+    if (!(fp = fopen(fname, "r")))
+    {
+        mwerror(ERROR, 0, "File \"%s\" not found or unreadable\n", fname);
+        fclose(fp);
+        return (NULL);
+    }
 
-     /*
-       printf("hsize=%d version=%f need_flipping=%d\n",hsize,version,need_flipping);
+    /* FIXME: wrong types, dirty temporary fix */
+    if (fread(header, 1, hsize, fp) != (unsigned int) hsize)
+    {
+        mwerror(ERROR, 0, "Error while reading header of file \"%s\" !\n",
+                fname);
+        fclose(fp);
+        return (NULL);
+    }
+
+    /*
+     * printf("hsize=%d version=%f need_flipping=%d\n", hsize,
+     *        version, need_flipping);
      */
 
-     cvs = mw_new_dcurves();
-     if (cvs == NULL) return(cvs);
-     oldcv = newcv = NULL;
+    cvs = mw_new_dcurves();
+    if (cvs == NULL)
+        return (cvs);
+    oldcv = newcv = NULL;
 
-     new_dcurve = 1;
-     xsave=END_MARKER;
-     eof=0;
-     while (eof != 1)
-     {
-	  if (new_dcurve == 1)  /* Begin a new dcurve */
-	  {
-	       oldcv = newcv;
-	       newcv = mw_new_dcurve();
-	       if (newcv == NULL)
-	       {
-		    mw_delete_dcurves(cvs);
-		    return(NULL);
-	       }
-	       if (cvs->first == NULL) cvs->first = newcv;
-	       if (oldcv != NULL) oldcv->next = newcv;
-	       newcv->previous = oldcv;
-	       newcv->next = NULL;
-	       newcv->first = NULL;
-	       oldcvc = newcvc = NULL;
-	  }
-      
-	  if (xsave >= END_MARKER_THRESHOLD) /* Has to read x from file */
-	  {
-	       if (fread(&x,1,sizeof(double),fp) != sizeof(double))
-	       {
-		    mwerror(ERROR, 0,
-			    "Error into the file \"%s\" : EOF encountered before EOC.\n",fname);
-		    return(NULL);		
-	       }
-	       if (need_flipping==1) 
-	       {
-		    px= (unsigned long *) &x;
-		    _mw_in_flip_double(px);
-		    x=*((double *)px);
-	       }
-	  }	
-      
-	  else x=xsave; /* set previous value */
-      
-	  if (fread(&y,1,sizeof(double),fp) != sizeof(double))
-	  {
-	       mwerror(ERROR, 0,
-		       "Error into the file \"%s\" : cannot read y coordinate\n",fname);
-	       return(NULL);		    
-	  }		
-	  if (need_flipping==1) 
-	  {
-	       py= (unsigned long *) &y;
-	       _mw_in_flip_double(py);
-	       y=*((double *)py);
-	  }
-	  if (x>=END_MARKER_THRESHOLD)
-	  {
-	       xsave=y;
-	       if (y>=END_MARKER_THRESHOLD)
-	       {
-		    if (fread(&y,1,sizeof(double),fp) != 0)
-		    {
-			 mwerror(ERROR, 0,
-				 "Error into the file \"%s\" : no EOF after double EOC.\n",fname);
-			 return(NULL);		    
-		    }
-		    else eof=1;
-	       }
-	       else new_dcurve=1;
-	  }
-	  else /* Record (x,y) */
-	  {
-	       xsave=END_MARKER;
-	       new_dcurve = 0;
-	       newcvc = mw_new_point_dcurve();
-	       if (newcvc == NULL)
-	       {
-		    mw_delete_dcurves(cvs);
-		    return(NULL);
-	       }
-	       if (newcv->first == NULL) newcv->first = newcvc;
-	       if (oldcvc != NULL) oldcvc->next = newcvc;
-	       newcvc->previous = oldcvc;
-	       newcvc->next = NULL;
-	       newcvc->x = x; newcvc->y = y;
-	       oldcvc = newcvc;
-	  }
-     }      /* while (eof != 1) */
-     fclose(fp);
-     return(cvs);
+    new_dcurve = 1;
+    xsave = END_MARKER;
+    eof = 0;
+    while (eof != 1)
+    {
+        if (new_dcurve == 1)
+        {                       /* Begin a new dcurve */
+            oldcv = newcv;
+            newcv = mw_new_dcurve();
+            if (newcv == NULL)
+            {
+                mw_delete_dcurves(cvs);
+                return (NULL);
+            }
+            if (cvs->first == NULL)
+                cvs->first = newcv;
+            if (oldcv != NULL)
+                oldcv->next = newcv;
+            newcv->previous = oldcv;
+            newcv->next = NULL;
+            newcv->first = NULL;
+            oldcvc = newcvc = NULL;
+        }
+
+        if (xsave >= END_MARKER_THRESHOLD)
+        {                       /* Has to read x from file */
+            if (fread(&x, 1, sizeof(double), fp) != sizeof(double))
+            {
+                mwerror(ERROR, 0,
+                        "Error into the file \"%s\" : "
+                        "EOF encountered before EOC.\n", fname);
+                return (NULL);
+            }
+            if (need_flipping == 1)
+            {
+                px = (unsigned long *) &x;
+                _mw_in_flip_double(px);
+                x = *((double *) px);
+            }
+        }
+
+        else
+            x = xsave;          /* set previous value */
+
+        if (fread(&y, 1, sizeof(double), fp) != sizeof(double))
+        {
+            mwerror(ERROR, 0,
+                    "Error into the file \"%s\" : cannot read y coordinate\n",
+                    fname);
+            return (NULL);
+        }
+        if (need_flipping == 1)
+        {
+            py = (unsigned long *) &y;
+            _mw_in_flip_double(py);
+            y = *((double *) py);
+        }
+        if (x >= END_MARKER_THRESHOLD)
+        {
+            xsave = y;
+            if (y >= END_MARKER_THRESHOLD)
+            {
+                if (fread(&y, 1, sizeof(double), fp) != 0)
+                {
+                    mwerror(ERROR, 0,
+                            "Error into the file \"%s\" : "
+                            "no EOF after double EOC.\n", fname);
+                    return (NULL);
+                }
+                else
+                    eof = 1;
+            }
+            else
+                new_dcurve = 1;
+        }
+        else
+        {                       /* Record (x,y) */
+
+            xsave = END_MARKER;
+            new_dcurve = 0;
+            newcvc = mw_new_point_dcurve();
+            if (newcvc == NULL)
+            {
+                mw_delete_dcurves(cvs);
+                return (NULL);
+            }
+            if (newcv->first == NULL)
+                newcv->first = newcvc;
+            if (oldcvc != NULL)
+                oldcvc->next = newcvc;
+            newcvc->previous = oldcvc;
+            newcvc->next = NULL;
+            newcvc->x = x;
+            newcvc->y = y;
+            oldcvc = newcvc;
+        }
+    }                           /* while (eof != 1) */
+    fclose(fp);
+    return (cvs);
 }
 
-/* Load current format V1.01 
+/* Load current format V1.01
    Changes from V1.00 : - END_OF_CURVES introduced to be able
    to record empty curve;
    - markers values changed (to double).
 */
 
-
 Dcurves _mw_load_dcurves_mw2_dcurves(char *fname)
 {
-     FILE    *fp;
-     Dcurves cvs;
-     Dcurve newcv,oldcv;
-     Point_dcurve newcvc, oldcvc=NULL;
-     double X[2];
-     int n;
-     unsigned long *px;
-     char ftype[mw_ftype_size],mtype[mw_mtype_size];
-     int need_flipping; 
-     char header[BUFSIZ];
-     int hsize;  /* Size of the header, in bytes */
-     float version;/* Version number of the file format */
+    FILE *fp;
+    Dcurves cvs;
+    Dcurve newcv, oldcv;
+    Point_dcurve newcvc, oldcvc = NULL;
+    double X[2];
+    int n;
+    unsigned long *px;
+    char ftype[mw_ftype_size], mtype[mw_mtype_size];
+    int need_flipping;
+    char header[BUFSIZ];
+    int hsize;                  /* Size of the header, in bytes */
+    float version;              /* Version number of the file format */
 
-     need_flipping = _mw_get_file_type(fname,ftype,mtype,&hsize,&version)-1;
-     if (strcmp(ftype,"MW2_DCURVES") != 0)
-	  mwerror(INTERNAL, 0,"[_mw_load_dcurves_mw2_dcurves] File \"%s\" is not in the MW2_DCURVES format\n",fname);
-  
-  
-     /*printf("[_mw_load_dcurves_mw2_dcurves] version=%f\n",version);*/
-     if (version==1.0) return(_mw_load_dcurves_mw2_dcurves_1_00(fname));
-  
-     if (need_flipping==-1)
-     {
-	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
-	  return(NULL);
-     }
+    need_flipping =
+        _mw_get_file_type(fname, ftype, mtype, &hsize, &version) - 1;
+    if (strcmp(ftype, "MW2_DCURVES") != 0)
+        mwerror(INTERNAL, 0,
+                "[_mw_load_dcurves_mw2_dcurves] File \"%s\" is not "
+                "in the MW2_DCURVES format\n", fname);
 
-     if (!(fp = fopen(fname, "r")))
-     {
-	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
-	  fclose(fp);
-	  return(NULL);
-     }
+    /*printf("[_mw_load_dcurves_mw2_dcurves] version=%f\n",version); */
+    if (version == 1.0)
+        return (_mw_load_dcurves_mw2_dcurves_1_00(fname));
 
-     /* FIXME: wrong types, dirty temporary fix */
-     if (fread(header,1,hsize,fp) != (unsigned int) hsize)
-     {
-	  mwerror(ERROR, 0,"Error while reading header of file \"%s\" !\n",fname);
-	  fclose(fp);
-	  return(NULL);
-     }
+    if (need_flipping == -1)
+    {
+        mwerror(ERROR, 0, "File \"%s\" not found or unreadable\n", fname);
+        return (NULL);
+    }
 
-     cvs = mw_new_dcurves();
-     if (cvs == NULL) return(cvs);
-     oldcv = newcv = NULL;
+    if (!(fp = fopen(fname, "r")))
+    {
+        mwerror(ERROR, 0, "File \"%s\" not found or unreadable\n", fname);
+        fclose(fp);
+        return (NULL);
+    }
 
-     n=0;
-     while (1)
-     {
-	  if (fread(&X[n],1,sizeof(double),fp) != sizeof(double))
-	  {
-	       mwerror(ERROR, 0,
-		       "Error into the file \"%s\" : EOF encountered before END_OF_CURVES.\n",fname);
-	       return(NULL);		
-	  }
-	  if (need_flipping==1) 
-	  {
-	       px= (unsigned long *) &X[n];
-	       _mw_in_flip_double(px);
-	       X[n]=*((double *)px);
-	  }
-	  if ((X[n]<END_OF_CURVE_THRESHOLD)&&(X[n]>=END_OF_CURVES_THRESHOLD))
-	  {
-	       fclose(fp);
-	       return(cvs);
-	  }
-	  else
-	       if (X[n]>=END_OF_CURVE_THRESHOLD)
-	       {
-		    n=-1;
-		    oldcv = newcv;
-		    newcv = mw_new_dcurve();
-		    if (newcv == NULL)
-		    {
-			 mw_delete_dcurves(cvs);
-			 fclose(fp);
-			 return(NULL);
-		    }
-		    if (cvs->first == NULL) cvs->first = newcv;
-		    if (oldcv != NULL) oldcv->next = newcv;
-		    newcv->previous = oldcv;
-		    newcv->next = NULL;
-		    newcv->first = NULL;
-		    oldcvc = newcvc = NULL;
-	       }
-	       else
-		    if (n==1) /* record new point */
-		    {
-			 newcvc = mw_new_point_dcurve();
-			 if (newcvc == NULL)
-			 {
-			      mw_delete_dcurves(cvs);
-			      return(NULL);
-			 }
-			 if (newcv->first == NULL) newcv->first = newcvc;
-			 if (oldcvc != NULL) oldcvc->next = newcvc;
-			 newcvc->previous = oldcvc;
-			 newcvc->next = NULL;
-			 newcvc->x = X[0]; newcvc->y = X[1];
-			 oldcvc = newcvc;
-		    }
-	  n++; if (n==2) n=0;
-     }
+    /* FIXME: wrong types, dirty temporary fix */
+    if (fread(header, 1, hsize, fp) != (unsigned int) hsize)
+    {
+        mwerror(ERROR, 0, "Error while reading header of file \"%s\" !\n",
+                fname);
+        fclose(fp);
+        return (NULL);
+    }
+
+    cvs = mw_new_dcurves();
+    if (cvs == NULL)
+        return (cvs);
+    oldcv = newcv = NULL;
+
+    n = 0;
+    while (1)
+    {
+        if (fread(&X[n], 1, sizeof(double), fp) != sizeof(double))
+        {
+            mwerror(ERROR, 0,
+                    "Error into the file \"%s\" : "
+                    "EOF encountered before END_OF_CURVES.\n", fname);
+            return (NULL);
+        }
+        if (need_flipping == 1)
+        {
+            px = (unsigned long *) &X[n];
+            _mw_in_flip_double(px);
+            X[n] = *((double *) px);
+        }
+        if ((X[n] < END_OF_CURVE_THRESHOLD)
+            && (X[n] >= END_OF_CURVES_THRESHOLD))
+        {
+            fclose(fp);
+            return (cvs);
+        }
+        else if (X[n] >= END_OF_CURVE_THRESHOLD)
+        {
+            n = -1;
+            oldcv = newcv;
+            newcv = mw_new_dcurve();
+            if (newcv == NULL)
+            {
+                mw_delete_dcurves(cvs);
+                fclose(fp);
+                return (NULL);
+            }
+            if (cvs->first == NULL)
+                cvs->first = newcv;
+            if (oldcv != NULL)
+                oldcv->next = newcv;
+            newcv->previous = oldcv;
+            newcv->next = NULL;
+            newcv->first = NULL;
+            oldcvc = newcvc = NULL;
+        }
+        else if (n == 1)
+        {                       /* record new point */
+            newcvc = mw_new_point_dcurve();
+            if (newcvc == NULL)
+            {
+                mw_delete_dcurves(cvs);
+                return (NULL);
+            }
+            if (newcv->first == NULL)
+                newcv->first = newcvc;
+            if (oldcvc != NULL)
+                oldcvc->next = newcvc;
+            newcvc->previous = oldcvc;
+            newcvc->next = NULL;
+            newcvc->x = X[0];
+            newcvc->y = X[1];
+            oldcvc = newcvc;
+        }
+        n++;
+        if (n == 2)
+            n = 0;
+    }
 }
-
 
 /* Native formats (without conversion of the internal type) */
 
 Dcurves _mw_dcurves_load_native(char *fname, char *type)
 {
-     if (strcmp(type,"MW2_DCURVES") == 0)
-	  return((Dcurves)_mw_load_dcurves_mw2_dcurves(fname));
+    if (strcmp(type, "MW2_DCURVES") == 0)
+        return ((Dcurves) _mw_load_dcurves_mw2_dcurves(fname));
 
-     return(NULL);
+    return (NULL);
 }
 
 /* All available formats */
 
 Dcurves _mw_load_dcurves(char *fname, char *type)
-{ 
-     Dcurves cvs;
-     char mtype[mw_mtype_size];
-     int hsize;  /* Size of the header, in bytes */
-     float version;/* Version number of the file format */
+{
+    Dcurves cvs;
+    char mtype[mw_mtype_size];
+    int hsize;                  /* Size of the header, in bytes */
+    float version;              /* Version number of the file format */
 
-     _mw_get_file_type(fname,type,mtype,&hsize,&version);
+    _mw_get_file_type(fname, type, mtype, &hsize, &version);
 
-     /* First, try native formats */
-     cvs = _mw_dcurves_load_native(fname,type);
-     if (cvs != NULL) return(cvs);
+    /* First, try native formats */
+    cvs = _mw_dcurves_load_native(fname, type);
+    if (cvs != NULL)
+        return (cvs);
 
-     /* If failed, try other formats with memory conversion */
-     cvs = (Dcurves) _mw_load_etype_to_itype(fname,mtype,"dcurves",type);
-     if (cvs != NULL) return(cvs);
+    /* If failed, try other formats with memory conversion */
+    cvs = (Dcurves) _mw_load_etype_to_itype(fname, mtype, "dcurves", type);
+    if (cvs != NULL)
+        return (cvs);
 
-     if (type[0]=='?')
-	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",fname);
-     else
-	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I Don't know how to load such external type into a Dcurves !\n",fname,type);
-     return NULL;
+    if (type[0] == '?')
+        mwerror(FATAL, 1, "Unknown external type for the file \"%s\"\n",
+                fname);
+    else
+        mwerror(FATAL, 1,
+                "External type of file \"%s\" is %s. "
+                "I Don't know how to load such external type "
+                "into a Dcurves !\n", fname, type);
+    return NULL;
 }
 
-
-/* Write file in MW2_DCURVES format */  
+/* Write file in MW2_DCURVES format */
 
 short _mw_create_dcurves_mw2_dcurves(char *fname, Dcurves cvs)
 {
-     FILE *fp;
-     Dcurve pl;
-     Point_dcurve pc;
-     int n;
-     double vx=0.0,vy=0.0,end_of_dcurve=END_OF_CURVE;
-     double end_of_dcurves = END_OF_CURVES;
+    FILE *fp;
+    Dcurve pl;
+    Point_dcurve pc;
+    int n;
+    double vx = 0.0, vy = 0.0, end_of_dcurve = END_OF_CURVE;
+    double end_of_dcurves = END_OF_CURVES;
 
+    if (cvs == NULL)
+        mwerror(INTERNAL, 1,
+                "[_mw_create_dcurves_mw2_dcurves] Cannot create file: "
+                "Dcurves structure is NULL\n");
 
-     if (cvs == NULL)
-	  mwerror(INTERNAL,1,"[_mw_create_dcurves_mw2_dcurves] Cannot create file: Dcurves structure is NULL\n");
+    fp = _mw_write_header_file(fname, "MW2_DCURVES", 1.01);
+    if (fp == NULL)
+        return (-1);
 
-     fp=_mw_write_header_file(fname,"MW2_DCURVES",1.01);
-     if (fp == NULL) return(-1);
+    if (cvs->first)
+        if (1 > fwrite(&end_of_dcurve, sizeof(double), 1, fp))
+        {
+            mwerror(ERROR, 0, "Error while writing to file \"%s\" !\n",
+                    fname);
+            exit(EXIT_FAILURE);
+        }
 
-     if (cvs->first)
-	 if (1 > fwrite(&end_of_dcurve, sizeof(double), 1, fp))
-	 {
-	     mwerror(ERROR, 0, "Error while writing to file \"%s\" !\n", fname);
-	     exit(EXIT_FAILURE);
-	 }
+    for (pl = cvs->first, n = 1; pl; pl = pl->next, n++)
+    {
+        for (pc = pl->first; pc; pc = pc->next)
+        {
+            if ((pc->x >= END_OF_CURVES_THRESHOLD) ||
+                (pc->y >= END_OF_CURVES_THRESHOLD))
+                mwerror(INTERNAL, 1,
+                        "[_mw_create_dcurves_mw2_dcurves] Dcurve #%d "
+                        "has a point which coordinates (%f,%f) "
+                        "exceed double capacity\n", n, pc->x, pc->y);
+            vx = pc->x;
+            vy = pc->y;
+            if (1 > fwrite(&vx, sizeof(double), 1, fp)
+                || 1 > fwrite(&vy, sizeof(double), 1, fp))
+            {
+                mwerror(ERROR, 0, "Error while writing "
+                        "to file \"%s\" !\n", fname);
+                exit(EXIT_FAILURE);
+            }
+        }
+        if (pl->next)
+            if (1 > fwrite(&end_of_dcurve, sizeof(double), 1, fp))
+            {
+                mwerror(ERROR, 0, "Error while writing "
+                        "to file \"%s\" !\n", fname);
+                exit(EXIT_FAILURE);
+            }
 
-     for (pl=cvs->first, n=1; pl; pl=pl->next, n++)
-     {
-	  for (pc=pl->first; pc; pc=pc->next)
-	  {
-	       if ((pc->x >= END_OF_CURVES_THRESHOLD) ||
-		   (pc->y >= END_OF_CURVES_THRESHOLD))
-		    mwerror(INTERNAL,1,"[_mw_create_dcurves_mw2_dcurves] Dcurve #%d has a point which coordinates (%f,%f) exceed double capacity\n",n,pc->x,pc->y);
-	       vx = pc->x;
-	       vy = pc->y;
-	       if (1 > fwrite(&vx, sizeof(double), 1, fp)
-		   || 1 > fwrite(&vy, sizeof(double), 1, fp))
-	       {
-		   mwerror(ERROR, 0, "Error while writing "
-			   "to file \"%s\" !\n", fname);
-		   exit(EXIT_FAILURE);
-	       }
-	  }
-	  if (pl->next)
-	      if (1 > fwrite(&end_of_dcurve, sizeof(double), 1, fp))
-	      {
-		  mwerror(ERROR, 0, "Error while writing "
-			  "to file \"%s\" !\n", fname);
-		  exit(EXIT_FAILURE);
-	      }
+    }
+    if (1 > fwrite(&end_of_dcurves, sizeof(double), 1, fp))
+    {
+        mwerror(ERROR, 0, "Error while writing to file \"%s\" !\n", fname);
+        exit(EXIT_FAILURE);
+    }
 
-     }      
-     if (1 > fwrite(&end_of_dcurves, sizeof(double), 1, fp))
-     {
-	 mwerror(ERROR, 0, "Error while writing to file \"%s\" !\n", fname);
-	 exit(EXIT_FAILURE);
-     }
-
-     fclose(fp);
-     return(0);
+    fclose(fp);
+    return (0);
 }
-
 
 /* Create native formats (without conversion of the internal type) */
 
 short _mw_dcurves_create_native(char *fname, Dcurves cvs, char *Type)
 {
-     if (strcmp(Type,"MW2_DCURVES") == 0)
-	  return(_mw_create_dcurves_mw2_dcurves(fname,cvs));
-  
-     return(-1);
-}
+    if (strcmp(Type, "MW2_DCURVES") == 0)
+        return (_mw_create_dcurves_mw2_dcurves(fname, cvs));
 
+    return (-1);
+}
 
 /* Write file in different formats */
-   
+
 short _mw_create_dcurves(char *fname, Dcurves cvs, char *Type)
 {
-     short ret;
+    short ret;
 
-     /* First, try native formats */
-     ret = _mw_dcurves_create_native(fname,cvs,Type);
-     if (ret == 0) return(0);
+    /* First, try native formats */
+    ret = _mw_dcurves_create_native(fname, cvs, Type);
+    if (ret == 0)
+        return (0);
 
-     /* If failed, try other formats with memory conversion */
-     ret = _mw_create_etype_from_itype(fname,cvs,"dcurves",Type);
-     if (ret == 0) return(0);
+    /* If failed, try other formats with memory conversion */
+    ret = _mw_create_etype_from_itype(fname, cvs, "dcurves", Type);
+    if (ret == 0)
+        return (0);
 
-     /* Invalid Type should have been detected before, but we can arrive here because
-	of a write failure (e.g. the output file name is write protected).
+    /* Invalid Type should have been detected before, but we can
+     * arrive here because of a write failure (e.g. the output file
+     * name is write protected).
      */
-     mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",fname);  
-     return -1;
+    mwerror(FATAL, 1, "Cannot save \"%s\" : all write procedures failed !\n",
+            fname);
+    return -1;
 }
-   
-
-
-

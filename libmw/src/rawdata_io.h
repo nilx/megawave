@@ -9,4 +9,4 @@
 Rawdata _mw_load_rawdata(char *fname);
 short _mw_create_rawdata(char *fname, Rawdata rd);
 
-#endif /* !_RAWDATA_IO_H_ */
+#endif                          /* !_RAWDATA_IO_H_ */

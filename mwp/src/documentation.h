@@ -6,6 +6,6 @@
 #define _DOCUMENTATION_H_
 
 /* src/documentation.c */
-void gen_doc_file(FILE *tfile);
+void gen_doc_file(FILE * tfile);
 
-#endif /* !_DOCUMENTATION_H_ */
+#endif                          /* !_DOCUMENTATION_H_ */

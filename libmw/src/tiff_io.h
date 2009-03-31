@@ -11,4 +11,4 @@ Cimage _mw_cimage_load_tiff(const char *fname);
 short _mw_ccimage_create_tiff(char *const fname, const Ccimage image);
 short _mw_cimage_create_tiff(const char *fname, const Cimage image);
 
-#endif /* !_TIFF_IO_H_ */
+#endif                          /* !_TIFF_IO_H_ */

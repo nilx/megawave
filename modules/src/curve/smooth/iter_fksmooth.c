@@ -4,8 +4,8 @@
    author = {"Lionel Moisan"};
    version = {"1.1"};
    function = {"Iterated Euclidean heat equation (fksmooth)"};
-   usage = {    
-        
+   usage = {
+
  'N':[niter=10]->niter "number of iterations",
  'n':[n=10]->n         "(for fksmooth) number of iterations",
  's':[std=2.]->std     "(for fksmooth) standart deviation for Gaussian kernel",
@@ -14,7 +14,7 @@
  in->in                "input curve (Dlist)",
  out<-out              "output curves (Dlists)"
 
-	    };
+            };
 */
 /*----------------------------------------------------------------------
  v1.1 (04/2007): simplified header (LM)
@@ -22,19 +22,19 @@
 
 #include <stdio.h>
 #include "mw.h"
-#include "mw-modules.h" /* for fksmooth() */
+#include "mw-modules.h"         /* for fksmooth() */
 
-Flists iter_fksmooth(Flist in, Flists out, int *niter, int *n, float *std, float *t, char *P)
+Flists iter_fksmooth(Flist in, Flists out, int *niter, int *n, float *std,
+                     float *t, char *P)
 {
-  int i;
+    int i;
 
-  out = mw_change_flists(out,*niter+1,*niter+1);
-  out->list[0] = mw_copy_flist(in,NULL);
-  for (i=0;i<*niter;i++) {
-    fksmooth(in,n,std,t,P);
-    out->list[i+1] = mw_copy_flist(in,NULL);
-  }
-  return(out);
+    out = mw_change_flists(out, *niter + 1, *niter + 1);
+    out->list[0] = mw_copy_flist(in, NULL);
+    for (i = 0; i < *niter; i++)
+    {
+        fksmooth(in, n, std, t, P);
+        out->list[i + 1] = mw_copy_flist(in, NULL);
+    }
+    return (out);
 }
-
-    

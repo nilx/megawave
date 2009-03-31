@@ -9,4 +9,4 @@
 Cimage _mw_cimage_load_gif(char *fname);
 short _mw_cimage_create_gif(char *fname, Cimage image);
 
-#endif /* !_GIF_IO_H_ */
+#endif                          /* !_GIF_IO_H_ */

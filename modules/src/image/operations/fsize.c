@@ -15,8 +15,5 @@
 
 void fsize(Fimage in)
 {
-  printf("%d %d\n",in->ncol,in->nrow);
+    printf("%d %d\n", in->ncol, in->nrow);
 }
-
-
-

@@ -4,7 +4,7 @@
  version = {"1.2"};
  author = {"Lionel Moisan"};
  function = {"Create a x^gamma signal, 0 <= x/s < n (2-Flist)"};
- usage = {   
+ usage = {
    'g':[g=2.]->g      "gamma power",
    'n':[n=256]->n     "number of samples",
    's':[s=1.]->s      "step on x",
@@ -23,16 +23,18 @@
 
 Flist flgamma(Flist out, float *g, float *s, int *n, float *f)
 {
-  int i;
-  double x,scale;
+    int i;
+    double x, scale;
 
-  out = mw_change_flist(out,*n,*n,2);
-  scale = (f?(double)(*f)/pow((double)(*f),(double)(*g)):1.);
-  for (i=0;i<*n;i++) {
-    x = *s*(float)i;
-    out->values[2*i  ] = x;
-    out->values[2*i+1] = (float)(scale*pow((double)x,(double)(*g)));
-  }
+    out = mw_change_flist(out, *n, *n, 2);
+    scale = (f ? (double) (*f) / pow((double) (*f), (double) (*g)) : 1.);
+    for (i = 0; i < *n; i++)
+    {
+        x = *s * (float) i;
+        out->values[2 * i] = x;
+        out->values[2 * i + 1] =
+            (float) (scale * pow((double) x, (double) (*g)));
+    }
 
-  return(out);
+    return (out);
 }

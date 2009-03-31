@@ -4,7 +4,7 @@
    author = {"Lionel Moisan"};
    version = {"1.0"};
    function = {"Compute the (algebraic) area of a curve (Dlist)"};
-   usage = {    
+   usage = {
       in->in      "input curve (Dlist)",
       out<-area   "result (double)"
    };
@@ -18,15 +18,17 @@
 
 double area(Dlist in)
 {
-  double  *first,*p,a;
-  int     d,i;
-  
-  if (!in || in->size<3) return(0.);
-  p = first = in->values;
-  a = 0.;
-  d = in->dim;
-  if (d<2) mwerror(FATAL,1,"Not a curve: dim < 2\n");
-  for (i=in->size-1;i--;p+=d) 
-    a += DET3(*first,*(first+1),*p,*(p+1),*(p+d),*(p+d+1));
-  return(.5*a);
+    double *first, *p, a;
+    int d, i;
+
+    if (!in || in->size < 3)
+        return (0.);
+    p = first = in->values;
+    a = 0.;
+    d = in->dim;
+    if (d < 2)
+        mwerror(FATAL, 1, "Not a curve: dim < 2\n");
+    for (i = in->size - 1; i--; p += d)
+        a += DET3(*first, *(first + 1), *p, *(p + 1), *(p + d), *(p + d + 1));
+    return (.5 * a);
 }

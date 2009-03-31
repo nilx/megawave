@@ -12,35 +12,41 @@
 */
 
 #include "mw.h"
-#include "mw-modules.h" /* for fextract() */
+#include "mw-modules.h"         /* for fextract() */
 
 void fsym2(Fimage in, Fimage out, char *i)
 {
-  int x,y,nx,ny,z;
-  float b;
+    int x, y, nx, ny, z;
+    float b;
 
-  nx = in->ncol;
-  ny = in->nrow;
+    nx = in->ncol;
+    ny = in->nrow;
 
-  if (i) {
+    if (i)
+    {
 
-    /* croping */
-    if (nx & 1 || ny & 1) mwerror(WARNING,1,"Non-even image dimensions\n");
-    z = 0;
-    b = 0.;
-    fextract(&b,in,NULL,out,0,0,nx/2-1,ny/2-1,&z,&z,NULL);
+        /* croping */
+        if (nx & 1 || ny & 1)
+            mwerror(WARNING, 1, "Non-even image dimensions\n");
+        z = 0;
+        b = 0.;
+        fextract(&b, in, NULL, out, 0, 0, nx / 2 - 1, ny / 2 - 1, &z, &z,
+                 NULL);
 
-  } else {
+    }
+    else
+    {
 
-    /* symmetrization */
-    mw_change_fimage(out,2*ny,2*nx);
-    if (!out) mwerror(FATAL,1,"Not enough memory\n");
-    for (x=nx;x--;)
-      for (y=ny;y--;) 
-	out->gray[y*nx*2+x]
-	  = out->gray[y*nx*2+nx*2-1-x]
-	  = out->gray[(ny*2-1-y)*nx*2+x]
-	  = out->gray[(ny*2-1-y)*nx*2+nx*2-1-x]
-	  = in->gray[y*nx+x];
-  }
+        /* symmetrization */
+        mw_change_fimage(out, 2 * ny, 2 * nx);
+        if (!out)
+            mwerror(FATAL, 1, "Not enough memory\n");
+        for (x = nx; x--;)
+            for (y = ny; y--;)
+                out->gray[y * nx * 2 + x]
+                    = out->gray[y * nx * 2 + nx * 2 - 1 - x]
+                    = out->gray[(ny * 2 - 1 - y) * nx * 2 + x]
+                    = out->gray[(ny * 2 - 1 - y) * nx * 2 + nx * 2 - 1 - x]
+                    = in->gray[y * nx + x];
+    }
 }

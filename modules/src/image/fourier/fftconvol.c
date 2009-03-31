@@ -17,42 +17,45 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-#include "mw-modules.h" /* for fft2d() */
+#include "mw-modules.h"         /* for fft2d() */
 
 /* NB : calling this module with out=in is possible */
 
 Fimage fftconvol(Fimage in, Fimage filter, Fimage out)
 {
-  int i,nx,ny;
-  Fimage re,im;
+    int i, nx, ny;
+    Fimage re, im;
 
-  nx = in->ncol;
-  ny = in->nrow;
-  
-  if (filter->ncol!=nx || filter->nrow!=ny) 
-    mwerror(USAGE,1,"Input image and filter dimensions do not match !\n");
+    nx = in->ncol;
+    ny = in->nrow;
 
-  re = mw_new_fimage();
-  im = mw_new_fimage();
+    if (filter->ncol != nx || filter->nrow != ny)
+        mwerror(USAGE, 1,
+                "Input image and filter dimensions do not match !\n");
 
-  /* Fourier transform */
-  fft2d(in, NULL, re, im, NULL);
+    re = mw_new_fimage();
+    im = mw_new_fimage();
 
-  /* multiplication in Fourier domain */
-  for (i=nx*ny;i--;) {
-    re->gray[i] *= filter->gray[i];
-    im->gray[i] *= filter->gray[i];
-  }
+    /* Fourier transform */
+    fft2d(in, NULL, re, im, NULL);
 
-  out = mw_change_fimage(out,ny,nx);
-  if (!out) mwerror(FATAL,1,"Not enough memory\n");
+    /* multiplication in Fourier domain */
+    for (i = nx * ny; i--;)
+    {
+        re->gray[i] *= filter->gray[i];
+        im->gray[i] *= filter->gray[i];
+    }
 
-  /* inverse Fourier transform */
-  fft2d(re, im, out, NULL, (char *) 1);
+    out = mw_change_fimage(out, ny, nx);
+    if (!out)
+        mwerror(FATAL, 1, "Not enough memory\n");
 
-  /* free memory */
-  mw_delete_fimage(im);
-  mw_delete_fimage(re);
+    /* inverse Fourier transform */
+    fft2d(re, im, out, NULL, (char *) 1);
 
-  return(out);
+    /* free memory */
+    mw_delete_fimage(im);
+    mw_delete_fimage(re);
+
+    return (out);
 }

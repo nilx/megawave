@@ -2,7 +2,7 @@
 /* mwcommand
  name = {mschannel};
  version = {"1.5"};
- author = {"Yann Guyonvarc'h"}; 
+ author = {"Yann Guyonvarc'h"};
  function = {"Build a multi-scales multi-channels decomposition of an image"};
  usage = {
    'N':[N=1]->N      "# images per channel(for local scale value)",
@@ -24,82 +24,90 @@
 #include <stdlib.h>
 #include <math.h>
 #include "mw.h"
-#include "mw-modules.h" /* for fsmooth() */
+#include "mw-modules.h"         /* for fsmooth() */
 
 #define ABS(x)       ( (x)>0?(x):-(x) )
 
-
-static Fimage add_image(int nx, int ny, Fimage *prev, Fimage **next)
+static Fimage add_image(int nx, int ny, Fimage * prev, Fimage ** next)
 {
-  Fimage u;
-  
-  u = mw_change_fimage(NULL,ny,nx);
-  if (!u) mwerror(FATAL,1,"Not enough memory\n");
-  u->previous = *prev;
-  **next = *prev = u;
-  *next = &(u->next);
+    Fimage u;
 
-  return(u);
+    u = mw_change_fimage(NULL, ny, nx);
+    if (!u)
+        mwerror(FATAL, 1, "Not enough memory\n");
+    u->previous = *prev;
+    **next = *prev = u;
+    *next = &(u->next);
+
+    return (u);
 }
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
 void mschannel(int *N, int *S, int *W, int *p, Fimage in, Fmovie mov)
 {
-  int      x,y,xl,xr,yl,yr,e,nx,ny,boundary=1;  
-  Fimage   H,V,D,tmp,prev,*next;
-  float    a,b,c;
+    int x, y, xl, xr, yl, yr, e, nx, ny, boundary = 1;
+    Fimage H, V, D, tmp, prev, *next;
+    float a, b, c;
 
-  nx = in->ncol; ny = in->nrow;
-  
-  mov = mw_change_fmovie(mov);
-  tmp = mw_change_fimage(in,ny,nx);
-  if (!mov || !tmp) mwerror(FATAL,1,"Not enough memory\n");
-  
-  next = &(mov->first);
-  prev = NULL;
+    nx = in->ncol;
+    ny = in->nrow;
 
-  *N = abs(2*(*N)-1);
-  mw_copy_fimage(in,tmp);
-  
-  for (e=1;e<=*N;e+=2) {
+    mov = mw_change_fmovie(mov);
+    tmp = mw_change_fimage(in, ny, nx);
+    if (!mov || !tmp)
+        mwerror(FATAL, 1, "Not enough memory\n");
 
-    H = add_image(nx,ny,&prev,&next);
-    V = add_image(nx,ny,&prev,&next);
-    D = add_image(nx,ny,&prev,&next);
+    next = &(mov->first);
+    prev = NULL;
 
-    if (e!=1)
-      fsepconvol(tmp,tmp,NULL,NULL,&e,NULL,&boundary);
-      
-    for (x=0;x<nx;x++)
-      for (y=0;y<ny;y++) {
+    *N = abs(2 * (*N) - 1);
+    mw_copy_fimage(in, tmp);
 
-	a = tmp->gray[y*nx+x];
-	xl = (x>=e?x-e:0); xr = (x+e<nx?x+e:nx-1);
-	yl = (y>=e?y-e:0); yr = (y+e<ny?y+e:ny-1);
+    for (e = 1; e <= *N; e += 2)
+    {
 
-	/* Horizontal channel */
-	b = tmp->gray[y*nx+xl] - a;
-	c = tmp->gray[y*nx+xr] - a;
-	H->gray[y*nx+x] = 0.5*(*p==1?ABS(b)+ABS(c):b*b+c*c);
+        H = add_image(nx, ny, &prev, &next);
+        V = add_image(nx, ny, &prev, &next);
+        D = add_image(nx, ny, &prev, &next);
 
-	/* Vertical channel */
-	b = tmp->gray[yl*nx+x] - a;
-	c = tmp->gray[yr*nx+x] - a;
-	V->gray[y*nx+x] = 0.5*(*p==1?ABS(b)+ABS(c):b*b+c*c);
+        if (e != 1)
+            fsepconvol(tmp, tmp, NULL, NULL, &e, NULL, &boundary);
 
-	/* Diagonal channel */
-	b = tmp->gray[yl*nx+xl] - a;
-	c = tmp->gray[yr*nx+xr] - a;
-	D->gray[y*nx+x] = 0.5*(*p==1?ABS(b)+ABS(c):b*b+c*c);
+        for (x = 0; x < nx; x++)
+            for (y = 0; y < ny; y++)
+            {
 
-      }
-    
-    fsmooth(S,W,H,H);
-    fsmooth(S,W,V,V);
-    fsmooth(S,W,D,D);
-  }
-  
-  *next=NULL;
+                a = tmp->gray[y * nx + x];
+                xl = (x >= e ? x - e : 0);
+                xr = (x + e < nx ? x + e : nx - 1);
+                yl = (y >= e ? y - e : 0);
+                yr = (y + e < ny ? y + e : ny - 1);
+
+                /* Horizontal channel */
+                b = tmp->gray[y * nx + xl] - a;
+                c = tmp->gray[y * nx + xr] - a;
+                H->gray[y * nx + x] =
+                    0.5 * (*p == 1 ? ABS(b) + ABS(c) : b * b + c * c);
+
+                /* Vertical channel */
+                b = tmp->gray[yl * nx + x] - a;
+                c = tmp->gray[yr * nx + x] - a;
+                V->gray[y * nx + x] =
+                    0.5 * (*p == 1 ? ABS(b) + ABS(c) : b * b + c * c);
+
+                /* Diagonal channel */
+                b = tmp->gray[yl * nx + xl] - a;
+                c = tmp->gray[yr * nx + xr] - a;
+                D->gray[y * nx + x] =
+                    0.5 * (*p == 1 ? ABS(b) + ABS(c) : b * b + c * c);
+
+            }
+
+        fsmooth(S, W, H, H);
+        fsmooth(S, W, V, V);
+        fsmooth(S, W, D, D);
+    }
+
+    *next = NULL;
 }
-

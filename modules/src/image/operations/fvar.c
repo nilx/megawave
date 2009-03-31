@@ -22,25 +22,28 @@
 
 float fvar(Fimage A, char *e, char *s)
 {
-  int size;
-  register float *ptr;
-  register int i;
-  double m,v,vr;
+    int size;
+    register float *ptr;
+    register int i;
+    double m, v, vr;
 
-  size = A->ncol*A->nrow;
-  if (size <= 1) return(0.);
+    size = A->ncol * A->nrow;
+    if (size <= 1)
+        return (0.);
 
-  for (m=0., i=0, ptr = A->gray; i<size; i++,ptr++) m += *ptr;
-  m /= (double)size;
-      
-  vr = 0.0;
-  for (i=0, ptr = A->gray;i<size;i++,ptr++) 
+    for (m = 0., i = 0, ptr = A->gray; i < size; i++, ptr++)
+        m += *ptr;
+    m /= (double) size;
+
+    vr = 0.0;
+    for (i = 0, ptr = A->gray; i < size; i++, ptr++)
     {
-      v = *ptr - m;  
-      vr += v*v;
+        v = *ptr - m;
+        vr += v * v;
     }
-  vr /=  (double)size - (e?0.:1.);
-  if (s) vr = sqrt(vr);
+    vr /= (double) size - (e ? 0. : 1.);
+    if (s)
+        vr = sqrt(vr);
 
-  return ((float)vr);
+    return ((float) vr);
 }

@@ -4,7 +4,7 @@
  version = {"1.0"};
  author = {"Lionel Moisan"};
  function = {"Apply a contrast change to a Fimage"};
- usage = { 
+ usage = {
    in->in           "input Fimage",
    g->g             "contrast change (2-Flist)",
    out<-fcontrast   "result Fimage (modified input)"
@@ -17,35 +17,41 @@
 
 static float apply_g(Flist g, float v)
 {
-  int i,j,k;
-  float a,b,s;
+    int i, j, k;
+    float a, b, s;
 
-  k = i = g->size-1; 
-  if (v>=g->values[2*i] || v<=g->values[0]) 
-    j = 0;
-  else {    
-    do {
-      k = (k+1)/2; 
-      j = i-k; 
-      if (j<0) j=0;
-      if (g->values[j*2]>v) i = j;
-    } while (k>1);
-    j = i-1;
-    if (j<0) j=0;
-  }
-  a = g->values[j*2];
-  b = g->values[i*2];
-  s = (v-a)/(b-a);
+    k = i = g->size - 1;
+    if (v >= g->values[2 * i] || v <= g->values[0])
+        j = 0;
+    else
+    {
+        do
+        {
+            k = (k + 1) / 2;
+            j = i - k;
+            if (j < 0)
+                j = 0;
+            if (g->values[j * 2] > v)
+                i = j;
+        }
+        while (k > 1);
+        j = i - 1;
+        if (j < 0)
+            j = 0;
+    }
+    a = g->values[j * 2];
+    b = g->values[i * 2];
+    s = (v - a) / (b - a);
 
-  return ((1-s)*g->values[j*2+1]+s*g->values[i*2+1]);
+    return ((1 - s) * g->values[j * 2 + 1] + s * g->values[i * 2 + 1]);
 }
 
 Fimage fcontrast(Fimage in, Flist g)
 {
-  int adr;
-  
-  for (adr=in->nrow*in->ncol;adr--;) 
-    in->gray[adr] = apply_g(g,in->gray[adr]);
+    int adr;
 
-  return(in);
+    for (adr = in->nrow * in->ncol; adr--;)
+        in->gray[adr] = apply_g(g, in->gray[adr]);
+
+    return (in);
 }

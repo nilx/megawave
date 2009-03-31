@@ -17,14 +17,12 @@
 
 Fimage fconst(float g, int x, int y)
 {
-  Fimage out;
-  
-  out = mw_change_fimage(NULL,y,x);
-  if (out==NULL) mwerror(FATAL,1,"Not enough memory.");
-  mw_clear_fimage(out,g);
+    Fimage out;
 
-  return(out);
+    out = mw_change_fimage(NULL, y, x);
+    if (out == NULL)
+        mwerror(FATAL, 1, "Not enough memory.");
+    mw_clear_fimage(out, g);
+
+    return (out);
 }
-
-
-

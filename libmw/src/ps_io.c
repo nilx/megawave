@@ -1,6 +1,6 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ps_io.c
-   
+
   Vers. 1.4
   Author : Jacques Froment
 
@@ -8,14 +8,14 @@
 
   Main changes :
   v1.4 (JF): added include <string> (Linux 2.6.12 & gcc 4.0.2)
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
   MegaWave2 is a "soft-publication" for the scientific community. It has
   been developed for research purposes and it comes without any warranty.
   The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -30,38 +30,41 @@
 #include "ps_io.h"
 
 /* Table de conversion Hexa -> Ascii */
-char  hval[] = {'0', '1', '2', '3', '4', '5', '6',
-		'7', '8', '9','a', 'b', 'c', 'd', 'e', 'f'}; 
-	
+char hval[] = { '0', '1', '2', '3', '4', '5', '6',
+    '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+};
 
 /*~~~~~ Load PS ~~~~~*/
 
 Cimage _mw_cimage_load_ps(char *fname)
 {
-     Cimage image;
-     FILE *fp;
-     int Height,Width;
+    Cimage image;
+    FILE *fp;
+    int Height, Width;
 
-     fp = fopen(fname,"r");
-     if (!fp) 
-     {
-	  mwerror(ERROR, 0,"File \"%s\" not found or unreadable\n",fname);
-	  return(NULL);
-     }
-  
-     mwerror(FATAL,0,"Sorry, PS file format for input not available ! (why don't you use Ghostscript ?)\n");
+    fp = fopen(fname, "r");
+    if (!fp)
+    {
+        mwerror(ERROR, 0, "File \"%s\" not found or unreadable\n", fname);
+        return (NULL);
+    }
 
-     /* TO DO */
-     Height = Width = 0;
-  
-     image = mw_change_cimage(NULL,Height,Width);
-     if (image == NULL)
-	  mwerror(FATAL,0,"Not enough memory to load the image \"%s\"\n",fname);
+    mwerror(FATAL, 0,
+            "Sorry, PS file format for input not available ! "
+            "(why don't you use Ghostscript ?)\n");
 
-     _mw_flip_image((unsigned char *) image->gray,sizeof(char),image->ncol,
-		    image->nrow,FALSE);
-  
-     return(image);
+    /* TO DO */
+    Height = Width = 0;
+
+    image = mw_change_cimage(NULL, Height, Width);
+    if (image == NULL)
+        mwerror(FATAL, 0, "Not enough memory to load the image \"%s\"\n",
+                fname);
+
+    _mw_flip_image((unsigned char *) image->gray, sizeof(char), image->ncol,
+                   image->nrow, FALSE);
+
+    return (image);
 }
 
 /* Used by _mw_cimage_create_ps() : remove in s special characters which
@@ -70,275 +73,287 @@ Cimage _mw_cimage_load_ps(char *fname)
 
 static void remove_special_char(char *s)
 {
-     while (*s != '\0')
-     {
-	  switch(*s)
-	  {
-	  case '(' : 
-	       *s='[';
-	       break;
-	  case ')':
-	       *s=']';
-	       break;
-	  case '"':
-	       *s='\'';
-	       break;
-	  }
-	  s++;
-     }
+    while (*s != '\0')
+    {
+        switch (*s)
+        {
+        case '(':
+            *s = '[';
+            break;
+        case ')':
+            *s = ']';
+            break;
+        case '"':
+            *s = '\'';
+            break;
+        }
+        s++;
+    }
 }
-
 
 /*~~~~~ Write PS ~~~~~*/
 
 short _mw_cimage_create_ps(char *fname, Cimage image)
 {
-     /* FIXME : write remplaced by fwrite */
-     FILE *fp;
-     /* int  PSfd; */
+    /* FIXME : write remplaced by fwrite */
+    FILE *fp;
+    /* int  PSfd; */
 
-#define   MAXBUFSIZE  10000  /* Taille max du Buffer fichier PostScript */
+#define   MAXBUFSIZE  10000     /* Taille max du Buffer fichier PostScript */
 #define   PSHEADS     1000
 
-     unsigned char	PSfbuf[MAXBUFSIZE]; /* Buffer fichier PostScript */
-     char		headbuf[PSHEADS];   /* tableau commandes PS */
-     char		hbuf[PSHEADS];	    /* tampon commandes PS */ 
+    unsigned char PSfbuf[MAXBUFSIZE];   /* Buffer fichier PostScript */
+    char headbuf[PSHEADS];      /* tableau commandes PS */
+    char hbuf[PSHEADS];         /* tampon commandes PS */
 
-     unsigned int  bufsize=MAXBUFSIZE;
-     int pixoffs;
-     int PSfcmd;			/* nbre caracteres commandes PS */
+    unsigned int bufsize = MAXBUFSIZE;
+    int pixoffs;
+    int PSfcmd;                 /* nbre caracteres commandes PS */
 
-     /* PostScript Scale */
+    /* PostScript Scale */
 #define BGST 740
-#define	LWST	540
-#define XPIX	228
-#define	YPIX	158
+#define LWST    540
+#define XPIX    228
+#define YPIX    158
 
-     /* Margins */
+    /* Margins */
 #define LM 30
 #define UM 40
 
-     float 	pagratio = (float) BGST / LWST; /* hauteur/largeur page */
-     float 	PSsx;			/* echelle image */
-     float 	PSsy;
-     float 	PSorx;			/* origines image */
-     float 	PSory;
+    float pagratio = (float) BGST / LWST;       /* hauteur/largeur page */
+    float PSsx;                 /* echelle image */
+    float PSsy;
+    float PSorx;                /* origines image */
+    float PSory;
 
-     /* Number of lines */
-     int	bdy;
+    /* Number of lines */
+    int bdy;
 
-     float	bsy;
-     float	boy;
-     int	cntdy = 0;
-	
-     /* indices boucle de conversion */
-     unsigned int j;
-     unsigned int pixcnt;
+    float bsy;
+    float boy;
+    int cntdy = 0;
 
-     /* Date */
-     time_t        Date;                   /* Date et heure du systeme */
-     struct tm     *Gmt;                   /* Convertion en structure GMT */
+    /* indices boucle de conversion */
+    unsigned int j;
+    unsigned int pixcnt;
 
-     /* Comments */
-#define   MAXLCOM   80      /* Longueur maxi indicative d'une ligne de comm.*/
-     char          lcom[MAXLCOM+30];
-     char          *comm;
-     int lg,i;
+    /* Date */
+    time_t Date;                /* Date et heure du systeme */
+    struct tm *Gmt;             /* Convertion en structure GMT */
+
+    /* Comments */
+#define   MAXLCOM   80
+/* Longueur maxi indicative d'une ligne de comm. */
+    char lcom[MAXLCOM + 30];
+    char *comm;
+    int lg, i;
 #define LgDep 45
 
-     if ((image == NULL) || (image->gray == NULL))
-     {
-	  mwerror(INTERNAL, 0,"[_mw_cimage_create_ps] NULL cimage or cimage plane\n");
-	  return(-2);
-     }
+    if ((image == NULL) || (image->gray == NULL))
+    {
+        mwerror(INTERNAL, 0,
+                "[_mw_cimage_create_ps] NULL cimage or cimage plane\n");
+        return (-2);
+    }
 
-     if (!(fp = fopen(fname, "w")))
-     {
-	  mwerror(ERROR, 0,"Cannot create the file \"%s\"\n",fname);
-	  return(-1);
-     }
-     /* PSfd = fileno(fp); */
+    if (!(fp = fopen(fname, "w")))
+    {
+        mwerror(ERROR, 0, "Cannot create the file \"%s\"\n", fname);
+        return (-1);
+    }
+    /* PSfd = fileno(fp); */
 
-     /* Header */
-     strcpy(headbuf,"%!PS-Adobe\n");
-     strcat(headbuf,"%Creator : MegaWave2 (PS format)\n");
-     strcat(headbuf,"newpath\n");
+    /* Header */
+    strcpy(headbuf, "%!PS-Adobe\n");
+    strcat(headbuf, "%Creator : MegaWave2 (PS format)\n");
+    strcat(headbuf, "newpath\n");
 
-     sprintf(hbuf,"/Times-Roman findfont 15 scalefont setfont\n60 %hd moveto\n",
-	     LgDep);
-     strcat(headbuf,hbuf);
+    sprintf(hbuf,
+            "/Times-Roman findfont 15 scalefont setfont\n60 %hd moveto\n",
+            LgDep);
+    strcat(headbuf, hbuf);
 
-     time(&Date); 
-     Gmt = gmtime(&Date);
-     sprintf(hbuf, "(\"%s\") show\n350 %hd moveto\n",fname,LgDep);
-     strcat(headbuf,hbuf);
-     strcat(headbuf, "/Times-Roman findfont 8 scalefont setfont\n");
-     sprintf(hbuf,"(%d/%d/%d) show\n",(*Gmt).tm_mday,(*Gmt).tm_mon+1,(*Gmt).tm_year);
-     strcat(headbuf,hbuf);
+    time(&Date);
+    Gmt = gmtime(&Date);
+    sprintf(hbuf, "(\"%s\") show\n350 %hd moveto\n", fname, LgDep);
+    strcat(headbuf, hbuf);
+    strcat(headbuf, "/Times-Roman findfont 8 scalefont setfont\n");
+    sprintf(hbuf, "(%d/%d/%d) show\n", (*Gmt).tm_mday, (*Gmt).tm_mon + 1,
+            (*Gmt).tm_year);
+    strcat(headbuf, hbuf);
 
-     strcat(headbuf, "/Times-Roman findfont 15 scalefont setfont\n");
-     sprintf(hbuf, "480 %hd moveto\n",LgDep);
-     strcat(headbuf,hbuf);
-     strcat(headbuf,"(MegaWave2) show\n");
+    strcat(headbuf, "/Times-Roman findfont 15 scalefont setfont\n");
+    sprintf(hbuf, "480 %hd moveto\n", LgDep);
+    strcat(headbuf, hbuf);
+    strcat(headbuf, "(MegaWave2) show\n");
 
+    PSfcmd = strlen(headbuf);
+    if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
+    {
+        fprintf(stderr, "error while writing to disk");
+        exit(EXIT_FAILURE);
+    }
 
-     PSfcmd = strlen(headbuf);
-     if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
-     {
-	 fprintf(stderr, "error while writing to disk");
-	 exit(EXIT_FAILURE);
-     }
-  
-     /* Comments */
-     strcpy(headbuf,"/Times-BoldItalic findfont 10 scalefont setfont\n");
-     comm = (char *) image->cmt;
+    /* Comments */
+    strcpy(headbuf, "/Times-BoldItalic findfont 10 scalefont setfont\n");
+    comm = (char *) image->cmt;
 
-     lg = LgDep-20;
-     while ( *comm != '\0'  ) 
-     {
-	  i=MAXLCOM;
-          /* FIXME: wrong types, dirty temporary fix */
-	  while ( (i< (int) strlen(comm)) && (comm[i] != ' ') ) i++;
-	  strncpy(lcom,comm,i);
-	  lcom[i++] = '\0';
-	  comm = (char *) &comm[i];
-	  sprintf(hbuf,"60 %d moveto\n",lg);
-	  strcat(headbuf,hbuf);
-	  remove_special_char(lcom);
-	  sprintf(hbuf,"(%s) show\n",lcom);
-	  strcat(headbuf,hbuf);
-	  lg -= 10;
-     }
-     PSfcmd = strlen(headbuf);
-     if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
-     {
-	 fprintf(stderr, "error while writing to disk");
-	 exit(EXIT_FAILURE);
-     }
- 
-     /* DATA */
+    lg = LgDep - 20;
+    while (*comm != '\0')
+    {
+        i = MAXLCOM;
+        /* FIXME: wrong types, dirty temporary fix */
+        while ((i < (int) strlen(comm)) && (comm[i] != ' '))
+            i++;
+        strncpy(lcom, comm, i);
+        lcom[i++] = '\0';
+        comm = (char *) &comm[i];
+        sprintf(hbuf, "60 %d moveto\n", lg);
+        strcat(headbuf, hbuf);
+        remove_special_char(lcom);
+        sprintf(hbuf, "(%s) show\n", lcom);
+        strcat(headbuf, hbuf);
+        lg -= 10;
+    }
+    PSfcmd = strlen(headbuf);
+    if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
+    {
+        fprintf(stderr, "error while writing to disk");
+        exit(EXIT_FAILURE);
+    }
 
-     bdy = (bufsize / image->ncol) >> 1;
-     if (bdy <= 0) 
-	  mwerror(INTERNAL,1,"[_mw_cimage_create_ps] Cannot write PS image with so many columns !\n");
-    
-     /* Remember original state */
-     sprintf(headbuf,"/origstate save def\n");
+    /* DATA */
 
-     if (image->ncol > image->nrow) 
-	  /* LANDSCAPE */
-     {	sprintf (headbuf, "/origstate save def\n-90 rotate\n");
-	  if (image->ncol >= (image->nrow * pagratio))
-	  {	PSsx = BGST;
-	       PSsy = ((float) PSsx * image->nrow) / image->ncol;
-	       PSorx = - 800;
-	       PSory = LWST + LM - PSsy;
-	  }
-	  else
-	  {	PSsy = LWST;
-	       PSsx = ((float) PSsy * image->ncol) / image->nrow;
-	       PSorx = - 800;
-	       PSory = LM;
-	  }
-     }
-     else
-	  /* PORTRAIT */
-     {	sprintf (headbuf, "/origstate save def\n");
-	  if (image->ncol >= (image->nrow / pagratio))
-	  {	PSsx = LWST;
-	       PSsy = ((float) PSsx * image->nrow) / image->ncol;
-	       PSorx = LM;
-	       PSory = BGST + UM - PSsy;
-	  }
-	  else
-	  {	PSsy = BGST;
-	       PSsx = ((float) PSsy * image->ncol) / image->nrow;
-	       PSorx = LM;
-	       PSory = UM;
-	  }
-     }
+    bdy = (bufsize / image->ncol) >> 1;
+    if (bdy <= 0)
+        mwerror(INTERNAL, 1,
+                "[_mw_cimage_create_ps] Cannot write PS image "
+                "with so many columns !\n");
 
-     while (cntdy < image->nrow)
-     {
-	  /* Nbre de lignes imprimees par bloc, 
-	     origine et echelle en y */
-		
-	  if (cntdy == 0)
-	  {	if ((image->nrow - cntdy) < bdy)
-		    bdy = image->nrow;
-	       bsy = PSsy * bdy / image->nrow;
-	       boy = PSory + PSsy * (1 - ((float) bdy / image->nrow));
-	  }
-	  else
-	  {	PSorx = 0;
-	       boy = -1;
-	       PSsx = 1;
-	       bsy = 1;
-	       if ((image->nrow - cntdy) < bdy)
-	       {	bsy *= (float) (image->nrow - cntdy) / bdy;
-		    boy *= (float) (image->nrow - cntdy) / bdy; 
-		    bdy = image->nrow - cntdy;
-	       }
-	  }
-		
-	  /* Ecriture de l'en-tete du fichier PostScript */
-      
-	  sprintf (hbuf, "%f %f translate\n", PSorx, boy);
-	  strcat (headbuf, hbuf);
-	  sprintf (hbuf, "%f %f scale\n", PSsx, bsy);
-	  strcat (headbuf, hbuf);
-	  sprintf (hbuf ,"%d %d %d ", image->ncol, bdy, 8);
-	  strcat (headbuf ,hbuf);
-	  sprintf (hbuf ,"[%d 0 0 -%d 0 %d] <", image->ncol, bdy, bdy);
-	  strcat (headbuf ,hbuf);
-      
-	  PSfcmd = strlen(headbuf);
-	  if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
-	  {
-	      fprintf(stderr, "error while writing to disk");
-	      exit(EXIT_FAILURE);
-	  }
+    /* Remember original state */
+    sprintf(headbuf, "/origstate save def\n");
 
-	  /* Lecture des pixels de l'image et conversion PostScript */
+    if (image->ncol > image->nrow)
+        /* LANDSCAPE */
+    {
+        sprintf(headbuf, "/origstate save def\n-90 rotate\n");
+        if (image->ncol >= (image->nrow * pagratio))
+        {
+            PSsx = BGST;
+            PSsy = ((float) PSsx * image->nrow) / image->ncol;
+            PSorx = -800;
+            PSory = LWST + LM - PSsy;
+        }
+        else
+        {
+            PSsy = LWST;
+            PSsx = ((float) PSsy * image->ncol) / image->nrow;
+            PSorx = -800;
+            PSory = LM;
+        }
+    }
+    else
+        /* PORTRAIT */
+    {
+        sprintf(headbuf, "/origstate save def\n");
+        if (image->ncol >= (image->nrow / pagratio))
+        {
+            PSsx = LWST;
+            PSsy = ((float) PSsx * image->nrow) / image->ncol;
+            PSorx = LM;
+            PSory = BGST + UM - PSsy;
+        }
+        else
+        {
+            PSsy = BGST;
+            PSsx = ((float) PSsy * image->ncol) / image->nrow;
+            PSorx = LM;
+            PSory = UM;
+        }
+    }
 
-	  pixoffs = (long) cntdy * image->ncol;
-	  pixcnt = 2 * bdy * image->ncol;
-	  for (j = 0; j < pixcnt; j+=2)
-	  {	
-	       PSfbuf[j] = hval[image->gray[pixoffs]>>4];
-	       PSfbuf[j+1]=hval[image->gray[pixoffs++]&15];
-	  }
-	  if ((size_t) pixcnt > fwrite(PSfbuf, sizeof(unsigned char),
-				       pixcnt, fp))
-	  {
-	      fprintf(stderr, "error while writing to disk");
-	      exit(EXIT_FAILURE);
-	  }
-      
-	  /* Fin commandes PostScript */	
+    while (cntdy < image->nrow)
+    {
+        /* Nbre de lignes imprimees par bloc,
+         * origine et echelle en y */
 
-	  sprintf (headbuf, "> image\n");
-	  PSfcmd = strlen(headbuf);
-	  if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
-	  {
-	      fprintf(stderr, "error while writing to disk");
-	      exit(EXIT_FAILURE);
-	  }
-	  headbuf[0] = '\0';
-	  cntdy += bdy;
+        if (cntdy == 0)
+        {
+            if ((image->nrow - cntdy) < bdy)
+                bdy = image->nrow;
+            bsy = PSsy * bdy / image->nrow;
+            boy = PSory + PSsy * (1 - ((float) bdy / image->nrow));
+        }
+        else
+        {
+            PSorx = 0;
+            boy = -1;
+            PSsx = 1;
+            bsy = 1;
+            if ((image->nrow - cntdy) < bdy)
+            {
+                bsy *= (float) (image->nrow - cntdy) / bdy;
+                boy *= (float) (image->nrow - cntdy) / bdy;
+                bdy = image->nrow - cntdy;
+            }
+        }
 
-     }
-     /* Show the page and Restore original state */
-     sprintf(headbuf,"showpage\norigstate restore\n");
-     PSfcmd = strlen(headbuf);
-     if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
-     {
-	 fprintf(stderr, "error while writing to disk");
-	 exit(EXIT_FAILURE);
-     }
-    
-     fclose (fp);
-     return (0);
+        /* Ecriture de l'en-tete du fichier PostScript */
+
+        sprintf(hbuf, "%f %f translate\n", PSorx, boy);
+        strcat(headbuf, hbuf);
+        sprintf(hbuf, "%f %f scale\n", PSsx, bsy);
+        strcat(headbuf, hbuf);
+        sprintf(hbuf, "%d %d %d ", image->ncol, bdy, 8);
+        strcat(headbuf, hbuf);
+        sprintf(hbuf, "[%d 0 0 -%d 0 %d] <", image->ncol, bdy, bdy);
+        strcat(headbuf, hbuf);
+
+        PSfcmd = strlen(headbuf);
+        if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
+        {
+            fprintf(stderr, "error while writing to disk");
+            exit(EXIT_FAILURE);
+        }
+
+        /* Lecture des pixels de l'image et conversion PostScript */
+
+        pixoffs = (long) cntdy *image->ncol;
+        pixcnt = 2 * bdy * image->ncol;
+        for (j = 0; j < pixcnt; j += 2)
+        {
+            PSfbuf[j] = hval[image->gray[pixoffs] >> 4];
+            PSfbuf[j + 1] = hval[image->gray[pixoffs++] & 15];
+        }
+        if ((size_t) pixcnt >
+            fwrite(PSfbuf, sizeof(unsigned char), pixcnt, fp))
+        {
+            fprintf(stderr, "error while writing to disk");
+            exit(EXIT_FAILURE);
+        }
+
+        /* Fin commandes PostScript */
+
+        sprintf(headbuf, "> image\n");
+        PSfcmd = strlen(headbuf);
+        if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
+        {
+            fprintf(stderr, "error while writing to disk");
+            exit(EXIT_FAILURE);
+        }
+        headbuf[0] = '\0';
+        cntdy += bdy;
+
+    }
+    /* Show the page and Restore original state */
+    sprintf(headbuf, "showpage\norigstate restore\n");
+    PSfcmd = strlen(headbuf);
+    if ((size_t) PSfcmd > fwrite(headbuf, sizeof(char), PSfcmd, fp))
+    {
+        fprintf(stderr, "error while writing to disk");
+        exit(EXIT_FAILURE);
+    }
+
+    fclose(fp);
+    return (0);
 }
-
- 

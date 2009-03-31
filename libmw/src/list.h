@@ -33,4 +33,4 @@ Dlists mw_change_dlists(Dlists ls, int max_size, int size);
 void mw_delete_dlists(Dlists ls);
 Dlists mw_copy_dlists(Dlists in, Dlists out);
 
-#endif /* !_LIST_H_ */
+#endif                          /* !_LIST_H_ */

@@ -14,11 +14,9 @@
 #include "mw.h"
 #include "mw-modules.h"
 
-void ccopy(Cimage Input, Cimage *Output)
+void ccopy(Cimage Input, Cimage * Output)
 {
-  if (*Output == NULL) mwerror(USAGE,1,"At least one Output requested\n");
-  *Output = Input; 
+    if (*Output == NULL)
+        mwerror(USAGE, 1, "At least one Output requested\n");
+    *Output = Input;
 }
-
-
-

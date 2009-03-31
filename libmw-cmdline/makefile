@@ -59,16 +59,21 @@ $(INCDIR)/$(API) 	: $(SRCDIR)/$(API)
 	$(CP) $< $@
 
 .PHONY	: lint
-lint	: lint.flag
+lint	: lint.flag charset.flag linelength.flag
 lint.flag	: $(SRC) $(HDR)
-	$(LINT) $(LINTFLAGS) $?
+#	$(LINT) $(LINT_FLAGS) $?
+	@touch $@
+charset.flag	: $(SRC) $(HDR)
 	$(MAKE) $(addsuffix +charset, $?)
+	@touch $@
+linelength.flag	: $(SRC) $(HDR)
 	$(MAKE) $(addsuffix +linelength, $?)
 	@touch $@
 
 .PHONY	: beautify
 beautify	: beautify.flag
-beautify.flag	: $(SRC) $(HDR)
+beautify.flag	: $(SRC) $(HDR) $(SRCDIR)/$(API)
+	$(MAKE) $(addsuffix +style, $?)
 	$(MAKE) $(addsuffix +cleanup, $?)
 	@touch $@
 
@@ -76,7 +81,7 @@ beautify.flag	: $(SRC) $(HDR)
 clean-bin :
 	@echo '$(RM) $$(OBJ)'
 	@$(RM) $(OBJ)
-	$(RM) lint.flag beautify.flag
+	$(RM) lint.flag charset.flag linelength.flag beautify.flag
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin

@@ -19,39 +19,41 @@
 #include "mw.h"
 #include "mw-modules.h"
 
-
 Curve disc(float r, float *i)
 {
-  Curve        c;
-  Point_curve  p,prev,*next;
-  int          ir,dx,dy;
-  float        r2,d2,i2;
-  
-  c = mw_new_curve();
-  if (!c) mwerror(FATAL,1,"Not enough memory\n");
-  c->previous = c->next = NULL;
-  next = &(c->first);
-  prev = NULL;
+    Curve c;
+    Point_curve p, prev, *next;
+    int ir, dx, dy;
+    float r2, d2, i2;
 
-  ir = ceil(r);
-  r2 = r*r;
-  i2 = (i?*i*(*i):-1.);
+    c = mw_new_curve();
+    if (!c)
+        mwerror(FATAL, 1, "Not enough memory\n");
+    c->previous = c->next = NULL;
+    next = &(c->first);
+    prev = NULL;
 
-  for (dx=-ir;dx<=ir;dx++)
-    for (dy=-ir;dy<=ir;dy++) {
-      d2 = (float)(dx*dx+dy*dy);
-      if (d2<=r2 && d2>i2) {
-	p = mw_new_point_curve();
-	if (!p) mwerror(FATAL,1,"Not enough memory\n");
-	p->x = dx;
-	p->y = dy;
-	p->previous = prev;
-	*next = prev = p;
-	next = &(p->next);
-      }
-    }
-  *next = NULL;
+    ir = ceil(r);
+    r2 = r * r;
+    i2 = (i ? *i * (*i) : -1.);
 
-  return(c);
+    for (dx = -ir; dx <= ir; dx++)
+        for (dy = -ir; dy <= ir; dy++)
+        {
+            d2 = (float) (dx * dx + dy * dy);
+            if (d2 <= r2 && d2 > i2)
+            {
+                p = mw_new_point_curve();
+                if (!p)
+                    mwerror(FATAL, 1, "Not enough memory\n");
+                p->x = dx;
+                p->y = dy;
+                p->previous = prev;
+                *next = prev = p;
+                next = &(p->next);
+            }
+        }
+    *next = NULL;
+
+    return (c);
 }
-

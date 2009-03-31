@@ -183,4 +183,4 @@
  */
 #define DT_Stype 4
 
-#endif /* !_CONFIG_H */
+#endif                          /* !_CONFIG_H */

@@ -20,4 +20,4 @@ short _mw_create_curves_mw2_curves(char *fname, Curves cvs);
 short _mw_curves_create_native(char *fname, Curves cvs, char *Type);
 short _mw_create_curves(char *fname, Curves cvs, char *Type);
 
-#endif /* !_CURVE_IO_H_ */
+#endif                          /* !_CURVE_IO_H_ */

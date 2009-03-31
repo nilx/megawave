@@ -21,44 +21,53 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-#include "mw-modules.h" /* for fft2d() */
+#include "mw-modules.h"         /* for fft2d() */
 
-/* NB : as for fft2d : 
-     * calling this module with in_im=NULL is possible and means 
-       in_im(x,y) = 0 everywhere 
-     * calling this module with out1=NULL or out2=NULL 
+/* NB : as for fft2d :
+     * calling this module with in_im=NULL is possible and means
+       in_im(x,y) = 0 everywhere
+     * calling this module with out1=NULL or out2=NULL
        is possible (if you are not interested on one of these outputs)
 */
 
-void fft2dpol(Fimage in_re, Fimage in_im, Fimage out1, Fimage out2, char *i_flag)
+void fft2dpol(Fimage in_re, Fimage in_im, Fimage out1, Fimage out2,
+              char *i_flag)
 {
-  int    i;
-  float  rho,theta;
-  Fimage drho_flag,dtheta_flag;
-  double dx,dy;
+    int i;
+    float rho, theta;
+    Fimage drho_flag, dtheta_flag;
+    double dx, dy;
 
-  if ((!out1) && (!out2)) 
-    mwerror(USAGE,1,"At least one output needed\n");
-  
+    if ((!out1) && (!out2))
+        mwerror(USAGE, 1, "At least one output needed\n");
+
   /***** allocate output images if necessary *****/
-  drho_flag   = out1; if (drho_flag   == NULL) out1 = mw_new_fimage();
-  dtheta_flag = out2; if (dtheta_flag == NULL) out2 = mw_new_fimage();    
-  if (!out1 || !out2) mwerror(FATAL,1,"Not enough memory.");
-  
+    drho_flag = out1;
+    if (drho_flag == NULL)
+        out1 = mw_new_fimage();
+    dtheta_flag = out2;
+    if (dtheta_flag == NULL)
+        out2 = mw_new_fimage();
+    if (!out1 || !out2)
+        mwerror(FATAL, 1, "Not enough memory.");
+
   /*** Compute cartesian FFT ***/
-  fft2d(in_re,in_im,out1,out2,i_flag);
-  
+    fft2d(in_re, in_im, out1, out2, i_flag);
+
   /*** Convert result to polar coordinates ***/
-  for (i=out1->nrow*out1->ncol; i-- ; ) {
-    dx = out2->gray[i];
-    dy = out1->gray[i];
-    rho   = (float) sqrt(dx * dx + dy * dy);
-    theta = (float)atan2((double)out2->gray[i],(double)out1->gray[i]);
-    out1->gray[i] = rho;
-    out2->gray[i] = theta;
-  }
-  
+    for (i = out1->nrow * out1->ncol; i--;)
+    {
+        dx = out2->gray[i];
+        dy = out1->gray[i];
+        rho = (float) sqrt(dx * dx + dy * dy);
+        theta = (float) atan2((double) out2->gray[i], (double) out1->gray[i]);
+        out1->gray[i] = rho;
+        out2->gray[i] = theta;
+    }
+
   /***** free output images if necessary *****/
-  if (drho_flag   == NULL) mw_delete_fimage(out1);
-  if (dtheta_flag == NULL) mw_delete_fimage(out2);
+    if (drho_flag == NULL)
+        mw_delete_fimage(out1);
+    if (dtheta_flag == NULL)
+        mw_delete_fimage(out2);
 }

@@ -20,30 +20,28 @@
 #include "mw.h"
 #include "mw-modules.h"
 
-Fcurves fkzrt(Fcurves cs, float zoom, float angle, float x, float y, char *sym)
+Fcurves fkzrt(Fcurves cs, float zoom, float angle, float x, float y,
+              char *sym)
 {
-  Fcurve        c;
-  Point_fcurve  p;
-  double        theta,ct,st,px,py;
+    Fcurve c;
+    Point_fcurve p;
+    double theta, ct, st, px, py;
 
-  theta = (double)(angle*M_PI/180.0);
-  ct = (double)zoom * cos(theta);
-  st = (double)zoom * sin(theta);
-  
-  for (c=cs->first; c; c=c->next) 
-    for (p=c->first; p; p=p->next) {
-      
-      px = (double)p->x;
-      py = (double)(sym?-p->y:p->y);
-      
-      p->x = (float)( ct*px - st*py ) + x;
-      p->y = (float)( st*px + ct*py ) + y;
-      
-    }
+    theta = (double) (angle * M_PI / 180.0);
+    ct = (double) zoom *cos(theta);
+    st = (double) zoom *sin(theta);
 
-  return cs;
+    for (c = cs->first; c; c = c->next)
+        for (p = c->first; p; p = p->next)
+        {
+
+            px = (double) p->x;
+            py = (double) (sym ? -p->y : p->y);
+
+            p->x = (float) (ct * px - st * py) + x;
+            p->y = (float) (st * px + ct * py) + y;
+
+        }
+
+    return cs;
 }
-
-
-
-

@@ -15,4 +15,4 @@ short _mw_ccimage_create_pm(char *file, Ccimage image);
 Cfimage _mw_cfimage_load_pm(char *file);
 short _mw_cfimage_create_pm(char *file, Cfimage image);
 
-#endif /* !_PM_IO_H_ */
+#endif                          /* !_PM_IO_H_ */

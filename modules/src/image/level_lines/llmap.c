@@ -30,48 +30,49 @@
 
 Cimage llmap(short int *ls, char *tmap, Cimage input, Cimage output)
 {
-  register int l;
-  register unsigned char *in,*out;
-  int dx,dy,size,beg;
-  unsigned char step,U,L,C;
-  
-  step = (unsigned char) *ls;
-  dy= input->nrow;
-  dx= input->ncol;
-  size=dx*dy;
-  
-  output=mw_change_cimage(output,dy,dx);
-  if (!output) mwerror(FATAL,1,"Not enough memory.\n");
-  mw_clear_cimage(output,255);
-  
-  beg=dx;
-  if (!tmap)
-    { /* Every borders are coded as value 0 */
-      for (l=beg, in=input->gray+beg, out = output->gray+beg; 
-	   l<size; 
-	   l++,in++,out++)
-	if ( ((*(in-1)/step)!=(*in/step)) || ((*(in-dx)/step)!=(*in/step)) )
-	  *out=0;
-	else
-	  *out=255;
+    register int l;
+    register unsigned char *in, *out;
+    int dx, dy, size, beg;
+    unsigned char step, U, L, C;
+
+    step = (unsigned char) *ls;
+    dy = input->nrow;
+    dx = input->ncol;
+    size = dx * dy;
+
+    output = mw_change_cimage(output, dy, dx);
+    if (!output)
+        mwerror(FATAL, 1, "Not enough memory.\n");
+    mw_clear_cimage(output, 255);
+
+    beg = dx;
+    if (!tmap)
+    {                           /* Every borders are coded as value 0 */
+        for (l = beg, in = input->gray + beg, out = output->gray + beg;
+             l < size; l++, in++, out++)
+            if (((*(in - 1) / step) != (*in / step))
+                || ((*(in - dx) / step) != (*in / step)))
+                *out = 0;
+            else
+                *out = 255;
     }
-  else
+    else
     {
-      for (l=beg, in=input->gray+beg, out = output->gray+beg; 
-	   l<size; 
-	   l++,in++,out++)
-	{
-	  C=*in/step;
-	  L=*(in-1)/step;
-	  U=*(in-dx)/step;
-	  if ((L==C) && (U==C)) *out=VOID;
-	  else
-	    if ((L!=C) && (U!=C)) *out=BOTH;
-	    else
-	      if (L!=C) *out=LEFT;
-	      else
-		*out=UP;
-	}
+        for (l = beg, in = input->gray + beg, out = output->gray + beg;
+             l < size; l++, in++, out++)
+        {
+            C = *in / step;
+            L = *(in - 1) / step;
+            U = *(in - dx) / step;
+            if ((L == C) && (U == C))
+                *out = VOID;
+            else if ((L != C) && (U != C))
+                *out = BOTH;
+            else if (L != C)
+                *out = LEFT;
+            else
+                *out = UP;
+        }
     }
-  return(output);
+    return (output);
 }

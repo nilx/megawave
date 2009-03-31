@@ -5,8 +5,8 @@
   author = {"Jacques Froment, Lionel Moisan"};
   function = {"Zoom of a color char movie"};
   usage = {
-  'x'->x_flg        "Zoom only in the X direction", 
-  'y'->y_flg        "Zoom only in the Y direction",      
+  'x'->x_flg        "Zoom only in the X direction",
+  'y'->y_flg        "Zoom only in the Y direction",
   'X':[factor=2.0]->factor    [0.01,100.0]  "Zoom factor",
   'o':[o=0]->o      "order: 0,1=linear,-3=cubic,3,5..11=spline",
   'i'->i_flg        "apply inverse zooming",
@@ -22,29 +22,31 @@
 #include <stdio.h>
 #include <string.h>
 #include "mw.h"
-#include "mw-modules.h" /* for cczoom() */
+#include "mw-modules.h"         /* for cczoom() */
 
-void ccmzoom(Ccmovie Input, Ccmovie Output, char *x_flg, char *y_flg, float *factor, int *o, char *i_flg)
+void ccmzoom(Ccmovie Input, Ccmovie Output, char *x_flg, char *y_flg,
+             float *factor, int *o, char *i_flg)
 {
-  Ccimage src,dst,prev;
-  
-  Output = mw_change_ccmovie(Output);
-  if (Output == NULL) mwerror(FATAL,1,"Not enough memory.\n");
+    Ccimage src, dst, prev;
 
-  src = Input->first;
-  prev = NULL;
-  while (src) 
+    Output = mw_change_ccmovie(Output);
+    if (Output == NULL)
+        mwerror(FATAL, 1, "Not enough memory.\n");
+
+    src = Input->first;
+    prev = NULL;
+    while (src)
     {
-      dst = cczoom(src, NULL, x_flg, y_flg, factor, o, i_flg);
-      if (prev == NULL) 
-	Output->first = dst;
-      else 
-	{
-	  prev->next = dst;
-	  dst->previous = prev;	
-	}
-      prev = dst;
-      src = src->next;
+        dst = cczoom(src, NULL, x_flg, y_flg, factor, o, i_flg);
+        if (prev == NULL)
+            Output->first = dst;
+        else
+        {
+            prev->next = dst;
+            dst->previous = prev;
+        }
+        prev = dst;
+        src = src->next;
     }
-  strcpy(Output->cmt,Input->cmt);
+    strcpy(Output->cmt, Input->cmt);
 }

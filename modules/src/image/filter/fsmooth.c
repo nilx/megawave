@@ -28,54 +28,59 @@
 
 void fsmooth(int *S, int *W, Fimage in, Fimage out)
 {
-  Fimage tmp;
-  register int i,j,ncOUT;
-  register float *ptrOUT,*ptrTMP;
-  int nrOUT,n,N;
-  
-  N=((2+(*W))*(*S)*(*S));
-  
-  out = mw_change_fimage(out,in->nrow,in->ncol);
-  tmp = mw_change_fimage(NULL,in->nrow,in->ncol);
-  if (!out || !tmp) mwerror(FATAL,1,"not enough memory\n"); 
-  
-  mw_copy_fimage(in,out);
+    Fimage tmp;
+    register int i, j, ncOUT;
+    register float *ptrOUT, *ptrTMP;
+    int nrOUT, n, N;
 
-  ptrOUT = out->gray;
-  ptrTMP = tmp->gray;
+    N = ((2 + (*W)) * (*S) * (*S));
 
-  ncOUT = out->ncol;
-  nrOUT = out->nrow;
-  
-  for (n=1;n<=N;n++)
-    { 
-      /*horizontal*/
-      
-      for (j=0;j<(nrOUT);j++)
-	for (i=1;i<(ncOUT)-1;i++)
-	  TMP(i,j) = (OUT((i-1),j)+OUT(i+1,j)+(*W)*OUT(i,j))/(2+(*W));
-      
-      for (j=0;j<(nrOUT);j++)
-	TMP(ncOUT-1,j) = (OUT(((ncOUT)-2),j)+OUT((ncOUT)-1,j)
-			  +(*W)*OUT(((ncOUT)-1),j))/(2+(*W));
-      
-      for (j=0;j<(nrOUT);j++)
-	TMP(0,j)=(OUT(0,j)+OUT(1,j)+(*W)*OUT(0,j))/(2+(*W));
-	
+    out = mw_change_fimage(out, in->nrow, in->ncol);
+    tmp = mw_change_fimage(NULL, in->nrow, in->ncol);
+    if (!out || !tmp)
+        mwerror(FATAL, 1, "not enough memory\n");
 
-     /*vertical*/
+    mw_copy_fimage(in, out);
 
-     for (i=0;i<(ncOUT);i++)
-       for (j=1;j<(nrOUT)-1;j++)
-	 OUT(i,j) = (TMP(i,j-1)+TMP(i,j+1)+(*W)*TMP(i,j))/(2+(*W));
-     
-  
-     for (i=0;i<(ncOUT);i++)
-        OUT(i,nrOUT-1)=(TMP(i,((nrOUT)-2))+TMP(i,(nrOUT)-1)
-			+(*W)*TMP(i,(nrOUT)-1))/(2+(*W));
-     
-     for (i=0;i<(ncOUT);i++)
-       OUT(i,0) = (TMP(i,0)+TMP(i,1)+(*W)*TMP(i,0))/(2+(*W));
- 
-   }
+    ptrOUT = out->gray;
+    ptrTMP = tmp->gray;
+
+    ncOUT = out->ncol;
+    nrOUT = out->nrow;
+
+    for (n = 1; n <= N; n++)
+    {
+        /*horizontal */
+
+        for (j = 0; j < (nrOUT); j++)
+            for (i = 1; i < (ncOUT) - 1; i++)
+                TMP(i, j) =
+                    (OUT((i - 1), j) + OUT(i + 1, j) +
+                     (*W) * OUT(i, j)) / (2 + (*W));
+
+        for (j = 0; j < (nrOUT); j++)
+            TMP(ncOUT - 1, j) = (OUT(((ncOUT) - 2), j) + OUT((ncOUT) - 1, j)
+                                 + (*W) * OUT(((ncOUT) - 1), j)) / (2 + (*W));
+
+        for (j = 0; j < (nrOUT); j++)
+            TMP(0, j) =
+                (OUT(0, j) + OUT(1, j) + (*W) * OUT(0, j)) / (2 + (*W));
+
+        /*vertical */
+
+        for (i = 0; i < (ncOUT); i++)
+            for (j = 1; j < (nrOUT) - 1; j++)
+                OUT(i, j) =
+                    (TMP(i, j - 1) + TMP(i, j + 1) + (*W) * TMP(i, j)) / (2 +
+                                                                          (*W));
+
+        for (i = 0; i < (ncOUT); i++)
+            OUT(i, nrOUT - 1) = (TMP(i, ((nrOUT) - 2)) + TMP(i, (nrOUT) - 1)
+                                 + (*W) * TMP(i, (nrOUT) - 1)) / (2 + (*W));
+
+        for (i = 0; i < (ncOUT); i++)
+            OUT(i, 0) =
+                (TMP(i, 0) + TMP(i, 1) + (*W) * TMP(i, 0)) / (2 + (*W));
+
+    }
 }

@@ -17,14 +17,16 @@
 
 Flists flscale(Flists in, Fsignal s)
 {
-  int i,j,k,d;
+    int i, j, k, d;
 
-  for (i=in->size;i--;) {
-    d = in->list[i]->dim;
-    if (d>s->size) mwerror(FATAL,1,"Fsignal size is too small.");
-    for (k=d;k--;)
-      for (j=in->list[i]->size;j--;) 
-	in->list[i]->values[d*j+k] *= s->values[k];
-  }
-  return(in);
+    for (i = in->size; i--;)
+    {
+        d = in->list[i]->dim;
+        if (d > s->size)
+            mwerror(FATAL, 1, "Fsignal size is too small.");
+        for (k = d; k--;)
+            for (j = in->list[i]->size; j--;)
+                in->list[i]->values[d * j + k] *= s->values[k];
+    }
+    return (in);
 }

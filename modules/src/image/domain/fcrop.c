@@ -4,7 +4,7 @@
    version = {"1.1"};
    author = {"Lionel Moisan"};
    function = {"image croping (with zoom) using interpolation"};
-   usage = {  
+   usage = {
     'x':sx->sx         "force x-size of output image",
     'y':sy->sy         "force y-size of output image",
     'z':z->z           "zoom factor (default 1.0)",
@@ -27,241 +27,314 @@
 #include <string.h>
 #include <math.h>
 #include "mw.h"
-#include "mw-modules.h" /* for finvspline() */
-
+#include "mw-modules.h"         /* for finvspline() */
 
 /* NB : calling this module with out=in is possible */
 
 /* extract image value (even outside image domain) */
 static float v(Fimage in, int x, int y, float bg)
 {
-  if (x<0 || x>=in->ncol || y<0 || y>=in->nrow)
-    return(bg); else return(in->gray[y*in->ncol+x]);
+    if (x < 0 || x >= in->ncol || y < 0 || y >= in->nrow)
+        return (bg);
+    else
+        return (in->gray[y * in->ncol + x]);
 }
-
 
 /* c[] = values of interpolation function at ...,t-2,t-1,t,t+1,... */
 
 /* coefficients for cubic interpolant (Keys' function) */
 static void keys(float *c, float t, float a)
 {
-  float t2,at;
+    float t2, at;
 
-  t2 = t*t;
-  at = a*t;
-  c[0] = a*t2*(1.0-t);
-  c[1] = (2.0*a+3.0 - (a+2.0)*t)*t2 - at;
-  c[2] = ((a+2.0)*t - a-3.0)*t2 + 1.0;
-  c[3] = a*(t-2.0)*t2 + at;
+    t2 = t * t;
+    at = a * t;
+    c[0] = a * t2 * (1.0 - t);
+    c[1] = (2.0 * a + 3.0 - (a + 2.0) * t) * t2 - at;
+    c[2] = ((a + 2.0) * t - a - 3.0) * t2 + 1.0;
+    c[3] = a * (t - 2.0) * t2 + at;
 }
 
 /* coefficients for cubic spline */
 static void spline3(float *c, float t)
 {
-  float tmp;
+    float tmp;
 
-  tmp = 1.-t;
-  c[0] = 0.1666666666*t*t*t;
-  c[1] = 0.6666666666-0.5*tmp*tmp*(1.+t);
-  c[2] = 0.6666666666-0.5*t*t*(2.-t);
-  c[3] = 0.1666666666*tmp*tmp*tmp;
+    tmp = 1. - t;
+    c[0] = 0.1666666666 * t * t * t;
+    c[1] = 0.6666666666 - 0.5 * tmp * tmp * (1. + t);
+    c[2] = 0.6666666666 - 0.5 * t * t * (2. - t);
+    c[3] = 0.1666666666 * tmp * tmp * tmp;
 }
 
 /* pre-computation for spline of order >3 */
 static void init_splinen(float *a, int n)
 {
-  int k;
+    int k;
 
-  a[0] = 1.;
-  for (k=2;k<=n;k++) a[0]/=(float)k;
-  for (k=1;k<=n+1;k++)
-    a[k] = - a[k-1] *(float)(n+2-k)/(float)k;
+    a[0] = 1.;
+    for (k = 2; k <= n; k++)
+        a[0] /= (float) k;
+    for (k = 1; k <= n + 1; k++)
+        a[k] = -a[k - 1] * (float) (n + 2 - k) / (float) k;
 }
 
 /* fast integral power function */
 static float ipow(float x, int n)
 {
-  float res;
+    float res;
 
-  for (res=1.;n;n>>=1) {
-    if (n&1) res*=x;
-    x*=x;
-  }
-  return(res);
+    for (res = 1.; n; n >>= 1)
+    {
+        if (n & 1)
+            res *= x;
+        x *= x;
+    }
+    return (res);
 }
 
 /* coefficients for spline of order >3 */
 static void splinen(float *c, float t, float *a, int n)
 {
-  int i,k;
-  float xn;
-  
-  memset((void *)c,0,(n+1)*sizeof(float));
-  for (k=0;k<=n+1;k++) { 
-    xn = ipow(t+(float)k,n);
-    for (i=k;i<=n;i++) 
-      c[i] += a[i-k]*xn;
-  }
-}
+    int i, k;
+    float xn;
 
+    memset((void *) c, 0, (n + 1) * sizeof(float));
+    for (k = 0; k <= n + 1; k++)
+    {
+        xn = ipow(t + (float) k, n);
+        for (i = k; i <= n; i++)
+            c[i] += a[i - k] * xn;
+    }
+}
 
 /*------------------------ MAIN MODULE ---------------------------------*/
 
-Fimage fcrop(Fimage in, Fimage out, float *sx, float *sy, float *z, float *bg, int *o, float *p, float X1, float Y1, float X2, float Y2)
+Fimage fcrop(Fimage in, Fimage out, float *sx, float *sy, float *z, float *bg,
+             int *o, float *p, float X1, float Y1, float X2, float Y2)
 {
-  int    nsx,nsy,n1,n2,nx,ny,x,y,xi,yi,d;
-  float  zx,zy,res,xp,yp,u,c[12],ak[13];
-  Fimage ref,tmp,coeffs;
+    int nsx, nsy, n1, n2, nx, ny, x, y, xi, yi, d;
+    float zx, zy, res, xp, yp, u, c[12], ak[13];
+    Fimage ref, tmp, coeffs;
 
-  /* CHECK ORDER */
-  if (*o!=0 && *o!=1 && *o!=-3 && 
-      *o!=3 && *o!=5 && *o!=7 && *o!=9 && *o!=11)
-    mwerror(FATAL,1,"unrecognized interpolation order.\n");
+    /* CHECK ORDER */
+    if (*o != 0 && *o != 1 && *o != -3 &&
+        *o != 3 && *o != 5 && *o != 7 && *o != 9 && *o != 11)
+        mwerror(FATAL, 1, "unrecognized interpolation order.\n");
 
-  /* COMPUTE OUTPUT DIMENSIONS AND ZOOM FACTORS */
-  if (!sx && !sy && !z) zx=zy=1.;
-  if (sx) zx = *sx/(X2-X1);
-  if (sy) zy = *sy/(Y2-Y1);
-  if (sx && !sy) zy = zx;
-  if (!sx && sy) zx = zy;
-  if (z) zx = zy = *z;
-  nsx = floor((double)zx*(double)(X2-X1) + .5);
-  nsy = floor((double)zy*(double)(Y2-Y1) + .5);
-  mwdebug("Output size is %d x %d\n",nsx,nsy);
-  if (nsx<0 || nsy<0) mwerror(FATAL,1,"illegal window specification.\n");
+    /* COMPUTE OUTPUT DIMENSIONS AND ZOOM FACTORS */
+    if (!sx && !sy && !z)
+        zx = zy = 1.;
+    if (sx)
+        zx = *sx / (X2 - X1);
+    if (sy)
+        zy = *sy / (Y2 - Y1);
+    if (sx && !sy)
+        zy = zx;
+    if (!sx && sy)
+        zx = zy;
+    if (z)
+        zx = zy = *z;
+    nsx = floor((double) zx * (double) (X2 - X1) + .5);
+    nsy = floor((double) zy * (double) (Y2 - Y1) + .5);
+    mwdebug("Output size is %d x %d\n", nsx, nsy);
+    if (nsx < 0 || nsy < 0)
+        mwerror(FATAL, 1, "illegal window specification.\n");
 
-  nx = in->ncol; ny = in->nrow;
-  
-  if (*o>=3) {
-    coeffs = mw_new_fimage();
-    finvspline(in,*o,coeffs);
-    ref = coeffs;
-    if (*o>3) init_splinen(ak,*o);
-  } else {
-    coeffs = NULL;
-    ref = in;
-  }
+    nx = in->ncol;
+    ny = in->nrow;
 
-  tmp = mw_change_fimage(NULL,ny,nsx);
+    if (*o >= 3)
+    {
+        coeffs = mw_new_fimage();
+        finvspline(in, *o, coeffs);
+        ref = coeffs;
+        if (*o > 3)
+            init_splinen(ak, *o);
+    }
+    else
+    {
+        coeffs = NULL;
+        ref = in;
+    }
+
+    tmp = mw_change_fimage(NULL, ny, nsx);
 
   /********** FIRST LOOP (x) **********/
-  
-  for (x=0;x<nsx;x++) {
 
-    xp = X1+( (float)x + 0.5 )/zx;
+    for (x = 0; x < nsx; x++)
+    {
 
-    if (*o==0) { /* zero order interpolation (pixel replication) */
+        xp = X1 + ((float) x + 0.5) / zx;
 
-      xi = floor((double)xp); 
-      if (xi<0 || xi>=nx)
-	for (y=0;y<ny;y++) tmp->gray[y*nsx+x] = *bg; 
-      else for (y=0;y<ny;y++) tmp->gray[y*nsx+x] = ref->gray[y*nx+(int)xi];
-      
-    } else { /* higher order interpolations */
+        if (*o == 0)
+        {
+            /* zero order interpolation (pixel replication) */
 
-      if (xp<0. || xp>(float)nx) 
-	for (y=0;y<ny;y++) tmp->gray[y*nsx+x]=*bg; 
+            xi = floor((double) xp);
+            if (xi < 0 || xi >= nx)
+                for (y = 0; y < ny; y++)
+                    tmp->gray[y * nsx + x] = *bg;
+            else
+                for (y = 0; y < ny; y++)
+                    tmp->gray[y * nsx + x] = ref->gray[y * nx + (int) xi];
 
-      else {
+        }
+        else
+        {                       /* higher order interpolations */
 
-	xp -= 0.5;
-	xi = floor((double)xp); 
-	u = xp-(float)xi;
-	switch (*o) 
-	  {
-	  case 1: /* first order interpolation (bilinear) */
-	    n2 = 1; c[0]=u; c[1]=1.-u; break;
-	    
-	  case -3: /* third order interpolation (bicubic Keys' function) */
-	    n2 = 2; keys(c,u,(p?*p:-0.5)); break;
-	    
-	  case 3: /* spline of order 3 */
-	    n2 = 2; spline3(c,u); break;
-	    
-	  default: /* spline of order >3 */
-	    n2 = (1+*o)/2; splinen(c,u,ak,*o); break;
-	  }
-	
-	n1 = 1-n2;
-	/* this test saves computation time */
-	if (xi+n1>=0 && xi+n2<nx) {
-	  for (y=0;y<ny;y++) {
-	    for (d=n1,res=0.;d<=n2;d++) 
-		res += c[n2-d]*ref->gray[y*nx+(int)xi+d];
-	    tmp->gray[y*nsx+x] = res;
-	  }
-	} else 
-	  for (y=0;y<ny;y++) {
-	    for (d=n1,res=0.;d<=n2;d++) 
-		res += c[n2-d]*v(ref,(int)xi+d,y,*bg);
-	    tmp->gray[y*nsx+x] = res;
-	  }
-      }
+            if (xp < 0. || xp > (float) nx)
+                for (y = 0; y < ny; y++)
+                    tmp->gray[y * nsx + x] = *bg;
+
+            else
+            {
+
+                xp -= 0.5;
+                xi = floor((double) xp);
+                u = xp - (float) xi;
+                switch (*o)
+                {
+                case 1:
+                    /* first order interpolation (bilinear) */
+                    n2 = 1;
+                    c[0] = u;
+                    c[1] = 1. - u;
+                    break;
+
+                case -3:
+                    /* third order interpolation (bicubic Keys' function) */
+                    n2 = 2;
+                    keys(c, u, (p ? *p : -0.5));
+                    break;
+
+                case 3:
+                    /* spline of order 3 */
+                    n2 = 2;
+                    spline3(c, u);
+                    break;
+
+                default:
+                    /* spline of order >3 */
+                    n2 = (1 + *o) / 2;
+                    splinen(c, u, ak, *o);
+                    break;
+                }
+
+                n1 = 1 - n2;
+                /* this test saves computation time */
+                if (xi + n1 >= 0 && xi + n2 < nx)
+                {
+                    for (y = 0; y < ny; y++)
+                    {
+                        for (d = n1, res = 0.; d <= n2; d++)
+                            res +=
+                                c[n2 - d] * ref->gray[y * nx + (int) xi + d];
+                        tmp->gray[y * nsx + x] = res;
+                    }
+                }
+                else
+                    for (y = 0; y < ny; y++)
+                    {
+                        for (d = n1, res = 0.; d <= n2; d++)
+                            res += c[n2 - d] * v(ref, (int) xi + d, y, *bg);
+                        tmp->gray[y * nsx + x] = res;
+                    }
+            }
+        }
     }
-  }
-  
-  ref = tmp;
-  out = mw_change_fimage(out,nsy,nsx);
-  if (!out) mwerror(FATAL,1,"not enough memory\n");
+
+    ref = tmp;
+    out = mw_change_fimage(out, nsy, nsx);
+    if (!out)
+        mwerror(FATAL, 1, "not enough memory\n");
 
   /********** SECOND LOOP (y) **********/
-  
-  for (y=0;y<nsy;y++) {
 
-    yp = Y1+( (float)y + 0.5 )/zy;
+    for (y = 0; y < nsy; y++)
+    {
 
-    if (*o==0) { /* zero order interpolation (pixel replication) */
+        yp = Y1 + ((float) y + 0.5) / zy;
 
-      yi = floor((double)yp); 
-      if (yi<0 || yi>=ny)
-	for (x=0;x<nsx;x++) out->gray[y*nsx+x] = *bg; 
-      else for (x=0;x<nsx;x++) out->gray[y*nsx+x] = ref->gray[(int)yi*nsx+x];
-      
-    } else { /* higher order interpolations */
+        if (*o == 0)
+        {
+            /* zero order interpolation (pixel replication) */
 
-      if (yp<0. || yp>(float)ny) 
-	for (x=0;x<nsx;x++) out->gray[y*nsx+x]=*bg; 
+            yi = floor((double) yp);
+            if (yi < 0 || yi >= ny)
+                for (x = 0; x < nsx; x++)
+                    out->gray[y * nsx + x] = *bg;
+            else
+                for (x = 0; x < nsx; x++)
+                    out->gray[y * nsx + x] = ref->gray[(int) yi * nsx + x];
 
-      else {
+        }
+        else
+        {
+            /* higher order interpolations */
 
-	yp -= 0.5;
-	yi = floor((double)yp); 
-	u = yp-(float)yi;
-	switch (*o) 
-	  {
-	  case 1: /* first order interpolation (bilinear) */
-	    n2 = 1; c[0]=u; c[1]=1.-u; break;
-	    
-	  case -3: /* third order interpolation (bicubic Keys' function) */
-	    n2 = 2; keys(c,u,(p?*p:-0.5)); break;
-	    
-	  case 3: /* spline of order 3 */
-	    n2 = 2; spline3(c,u); break;
-	    
-	  default: /* spline of order >3 */
-	    n2 = (1+*o)/2; splinen(c,u,ak,*o); break;
-	  }
-	
-	n1 = 1-n2;
-	/* this test saves computation time */
-	if (yi+n1>=0 && yi+n2<ny) {
-	  for (x=0;x<nsx;x++) {
-	    for (d=n1,res=0.;d<=n2;d++) 
-		res += c[n2-d]*ref->gray[((int)yi+d)*nsx+x];
-	    out->gray[y*nsx+x] = res;
-	  }
-	} else 
-	  for (x=0;x<nsx;x++) {
-	    for (d=n1,res=0.;d<=n2;d++) 
-		res += c[n2-d]*v(ref,x,(int)yi+d,*bg);
-	    out->gray[y*nsx+x] = res;
-	  }
-      }
+            if (yp < 0. || yp > (float) ny)
+                for (x = 0; x < nsx; x++)
+                    out->gray[y * nsx + x] = *bg;
+
+            else
+            {
+
+                yp -= 0.5;
+                yi = floor((double) yp);
+                u = yp - (float) yi;
+                switch (*o)
+                {
+                case 1:
+                    /* first order interpolation (bilinear) */
+                    n2 = 1;
+                    c[0] = u;
+                    c[1] = 1. - u;
+                    break;
+
+                case -3:
+                    /* third order interpolation (bicubic Keys' function) */
+                    n2 = 2;
+                    keys(c, u, (p ? *p : -0.5));
+                    break;
+
+                case 3:        /* spline of order 3 */
+                    n2 = 2;
+                    spline3(c, u);
+                    break;
+
+                default:       /* spline of order >3 */
+                    n2 = (1 + *o) / 2;
+                    splinen(c, u, ak, *o);
+                    break;
+                }
+
+                n1 = 1 - n2;
+                /* this test saves computation time */
+                if (yi + n1 >= 0 && yi + n2 < ny)
+                {
+                    for (x = 0; x < nsx; x++)
+                    {
+                        for (d = n1, res = 0.; d <= n2; d++)
+                            res +=
+                                c[n2 - d] * ref->gray[((int) yi + d) * nsx +
+                                                      x];
+                        out->gray[y * nsx + x] = res;
+                    }
+                }
+                else
+                    for (x = 0; x < nsx; x++)
+                    {
+                        for (d = n1, res = 0.; d <= n2; d++)
+                            res += c[n2 - d] * v(ref, x, (int) yi + d, *bg);
+                        out->gray[y * nsx + x] = res;
+                    }
+            }
+        }
     }
-  }
-  mw_delete_fimage(tmp);
-  if (coeffs) mw_delete_fimage(coeffs);
+    mw_delete_fimage(tmp);
+    if (coeffs)
+        mw_delete_fimage(coeffs);
 
-  return(out);
+    return (out);
 }
-

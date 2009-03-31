@@ -19,4 +19,4 @@ short _mw_create_fpolygons_a_fpoly(char *fname, Fpolygons poly);
 short _mw_fpolygons_create_native(char *fname, Fpolygons fpoly, char *Type);
 short _mw_create_fpolygons(char *fname, Fpolygons fpoly, char *Type);
 
-#endif /* !_FPOLYGON_IO_H_ */
+#endif                          /* !_FPOLYGON_IO_H_ */

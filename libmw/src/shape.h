@@ -21,4 +21,4 @@ Shapes mw_alloc_shapes(Shapes shs, int nrow, int ncol, float value);
 Shapes mw_change_shapes(Shapes shs, int nrow, int ncol, float value);
 void mw_delete_shapes(Shapes shs);
 
-#endif /* !_SHAPE_H_ */
+#endif                          /* !_SHAPE_H_ */

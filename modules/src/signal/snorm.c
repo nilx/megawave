@@ -25,48 +25,65 @@
 #include "mw.h"
 #include "mw-modules.h"
 
-float snorm(Fsignal in, Fsignal ref, float *p, char *s, char *v, int *b, char *n, float *t)
+float snorm(Fsignal in, Fsignal ref, float *p, char *s, char *v, int *b,
+            char *n, float *t)
 {
-  int x,num;
-  double sum,diff,val;
+    int x, num;
+    double sum, diff, val;
 
-  /* check options */
-  if ((p?1:0) + (s?1:0) + (v?1:0) != 1)
-    mwerror(USAGE,1,"Please use exactly one of the -p / -s / -v options");
-  if (n && !ref) 
-    mwerror(USAGE,1,"Option -n does not make sense without option -c");
-  if (ref) {
-    /* check size compatibility */
-    if (in->size!=ref->size)
-      mwerror(FATAL,1,"both signals must have the same sizes");
-  }
-
-  /* MAIN LOOP */
-  sum = 0.0; num = 0;
-  for (x=*b;x<in->size-(*b);x++) {
-    if (p || s) {
-      val = (double)in->values[x];
-      if (ref) val-= (double)ref->values[x];
-      if (val<0) val=-val;
-      if (p) sum += pow(val,(double)(*p));
-      else if (val>sum) sum=val;
-    } else if (v && x!=*b) {
-      diff = in->values[x]-in->values[x-1];
-      sum += (diff<0.?-diff:diff);
+    /* check options */
+    if ((p ? 1 : 0) + (s ? 1 : 0) + (v ? 1 : 0) != 1)
+        mwerror(USAGE, 1,
+                "Please use exactly one of the -p / -s / -v options");
+    if (n && !ref)
+        mwerror(USAGE, 1, "Option -n does not make sense without option -c");
+    if (ref)
+    {
+        /* check size compatibility */
+        if (in->size != ref->size)
+            mwerror(FATAL, 1, "both signals must have the same sizes");
     }
-    num++;
-  }
 
-  /* normalize and threshold result if needed */
-  if (!s) {
-    if (num) sum /= (double)num; else sum=0.0;
-  }
-  if (n) sum /= (double)snorm(ref,NULL,p,s,v,b,NULL,NULL);
-  if (t) if (sum<=*t) sum=0.0;
-  if (p) sum = pow(sum,1.0/(double)(*p));
+    /* MAIN LOOP */
+    sum = 0.0;
+    num = 0;
+    for (x = *b; x < in->size - (*b); x++)
+    {
+        if (p || s)
+        {
+            val = (double) in->values[x];
+            if (ref)
+                val -= (double) ref->values[x];
+            if (val < 0)
+                val = -val;
+            if (p)
+                sum += pow(val, (double) (*p));
+            else if (val > sum)
+                sum = val;
+        }
+        else if (v && x != *b)
+        {
+            diff = in->values[x] - in->values[x - 1];
+            sum += (diff < 0. ? -diff : diff);
+        }
+        num++;
+    }
 
-  return ((float)sum);
+    /* normalize and threshold result if needed */
+    if (!s)
+    {
+        if (num)
+            sum /= (double) num;
+        else
+            sum = 0.0;
+    }
+    if (n)
+        sum /= (double) snorm(ref, NULL, p, s, v, b, NULL, NULL);
+    if (t)
+        if (sum <= *t)
+            sum = 0.0;
+    if (p)
+        sum = pow(sum, 1.0 / (double) (*p));
+
+    return ((float) sum);
 }
-
-
-

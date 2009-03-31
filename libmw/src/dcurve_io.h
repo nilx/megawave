@@ -21,4 +21,4 @@ short _mw_create_dcurves_mw2_dcurves(char *fname, Dcurves cvs);
 short _mw_dcurves_create_native(char *fname, Dcurves cvs, char *Type);
 short _mw_create_dcurves(char *fname, Dcurves cvs, char *Type);
 
-#endif /* !_DCURVE_IO_H_ */
+#endif                          /* !_DCURVE_IO_H_ */

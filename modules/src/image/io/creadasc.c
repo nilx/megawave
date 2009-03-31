@@ -14,19 +14,21 @@
 #include <stdio.h>
 #include "mw.h"
 #include "mw-modules.h"
- 
+
 void creadasc(Cimage u, int dx, int dy)
 {
-  register unsigned char *ptr;
-  int i,c;
-  
-  u = mw_change_cimage(u,dy,dx); 
-  if (!u) mwerror(FATAL,1,"Not enough memory\n");
+    register unsigned char *ptr;
+    int i, c;
 
-  for (i=0, ptr=u->gray; i<dx*dy; i++, ptr++)
+    u = mw_change_cimage(u, dy, dx);
+    if (!u)
+        mwerror(FATAL, 1, "Not enough memory\n");
+
+    for (i = 0, ptr = u->gray; i < dx * dy; i++, ptr++)
     {
-      if (scanf("%d",&c) != 1) 
-	mwerror(WARNING,1,"Size of input data less than given size (dx,dy)\n");
-      *ptr = c;
+        if (scanf("%d", &c) != 1)
+            mwerror(WARNING, 1,
+                    "Size of input data less than given size (dx,dy)\n");
+        *ptr = c;
     }
 }

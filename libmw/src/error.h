@@ -9,4 +9,4 @@
 void mwdebug(char *fmt, ...);
 void mwerror(int code, int exit_code, char *fmt, ...);
 
-#endif /* !_ERROR_H_ */
+#endif                          /* !_ERROR_H_ */

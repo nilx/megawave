@@ -13,4 +13,4 @@ short _mw_create_wpack2d_ascii(char *fname, Wpack2d pack);
 short _mw_wpack2d_create_native(char *fname, Wpack2d pack, char *Type);
 short _mw_create_wpack2d(char *fname, Wpack2d pack, char *Type);
 
-#endif /* !_WPACK2D_IO_H_ */
+#endif                          /* !_WPACK2D_IO_H_ */

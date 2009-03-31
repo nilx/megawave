@@ -18,18 +18,18 @@
 #include <stdio.h>
 #include "mw.h"
 #include "mw-modules.h"
- 
+
 void binarize(Fimage in, Cimage out, float *t, char *i)
 {
-  int ptr;
+    int ptr;
 
-  out = mw_change_cimage(out,in->nrow,in->ncol);
-  if (!out) mwerror(FATAL,1,"Not enough memory\n");
-  if (i) 
-    for (ptr=in->nrow*in->ncol;ptr--;) 
-      *(out->gray+ptr) = (*(in->gray+ptr)>*t?0:255);
-  else 
-    for (ptr=in->nrow*in->ncol;ptr--;) 
-      *(out->gray+ptr) = (*(in->gray+ptr)>*t?255:0);
+    out = mw_change_cimage(out, in->nrow, in->ncol);
+    if (!out)
+        mwerror(FATAL, 1, "Not enough memory\n");
+    if (i)
+        for (ptr = in->nrow * in->ncol; ptr--;)
+            *(out->gray + ptr) = (*(in->gray + ptr) > *t ? 0 : 255);
+    else
+        for (ptr = in->nrow * in->ncol; ptr--;)
+            *(out->gray + ptr) = (*(in->gray + ptr) > *t ? 255 : 0);
 }
-

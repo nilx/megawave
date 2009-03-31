@@ -37,6 +37,7 @@ CSPLIT	= /usr/bin/csplit
 INSTALL	= /usr/bin/install
 LINT	= /usr/bin/splint
 EXPAND	= /usr/bin/expand
+INDENT	= /usr/bin/indent
 DOXYGEN	= /usr/bin/doxygen
 PANDOC	= /usr/bin/pandoc
 PDFLATEX	= /usr/bin/pdflatex
@@ -239,6 +240,10 @@ CPROTO_FLAGS	?= $(addprefix -I, $(IPATH)) -q
 %+cleanup : %
 	$(EXPAND) $< | $(SED) 's/[ \t]*$$//' > $<.$$$$ \
 	    && $(MV) $<.$$$$ $<;
+
+INDENT_FLAGS	= -kr -bl -bli0 -i4 -l78 -nut -nce -sob -sc
+%+style	: %
+	$(INDENT) $(INDENT_FLAGS) $<
 
 CHARSET	= us-ascii
 %+charset : %

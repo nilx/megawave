@@ -30,41 +30,54 @@ usage = {
 
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
-
-Fimage fextract(float *b, Fimage in, Fimage bg, Fimage out, int X1, int Y1, int X2, int Y2, int *Xc, int *Yc, char *r)
+Fimage fextract(float *b, Fimage in, Fimage bg, Fimage out, int X1, int Y1,
+                int X2, int Y2, int *Xc, int *Yc, char *r)
 {
-  int x,y,pos1,pos2;
+    int x, y, pos1, pos2;
 
-  /* test relative coordinates */
-  if (r) {X2+=X1-1; Y2+=Y1-1;}
-  if (X2<0) X2=in->ncol+X2-1;
-  if (Y2<0) Y2=in->nrow+Y2-1;
+    /* test relative coordinates */
+    if (r)
+    {
+        X2 += X1 - 1;
+        Y2 += Y1 - 1;
+    }
+    if (X2 < 0)
+        X2 = in->ncol + X2 - 1;
+    if (Y2 < 0)
+        Y2 = in->nrow + Y2 - 1;
 
-  if (X2<X1 || Y2<Y1) 
-    mwerror(FATAL,1,"empty region to extract: (%d,%d)-(%d,%d)\n",X1,Y1,X2,Y2);
+    if (X2 < X1 || Y2 < Y1)
+        mwerror(FATAL, 1, "empty region to extract: (%d,%d)-(%d,%d)\n", X1,
+                Y1, X2, Y2);
 
-  if (bg) {
-    out = mw_change_fimage(out,MAX(bg->nrow,*Yc+Y2-Y1+1),MAX(bg->ncol,*Xc+X2-Y1+1));
-    mw_clear_fimage(out,*b);
-    for (x=0;x<bg->ncol;x++) 
-      for (y=0;y<bg->nrow;y++) 
-	out->gray[y*out->ncol+x] = bg->gray[y*bg->ncol+x];
-  } else {
-    out = mw_change_fimage(out,Y2-Y1+1,X2-X1+1);
-    mw_clear_fimage(out,*b);
-  }
+    if (bg)
+    {
+        out =
+            mw_change_fimage(out, MAX(bg->nrow, *Yc + Y2 - Y1 + 1),
+                             MAX(bg->ncol, *Xc + X2 - Y1 + 1));
+        mw_clear_fimage(out, *b);
+        for (x = 0; x < bg->ncol; x++)
+            for (y = 0; y < bg->nrow; y++)
+                out->gray[y * out->ncol + x] = bg->gray[y * bg->ncol + x];
+    }
+    else
+    {
+        out = mw_change_fimage(out, Y2 - Y1 + 1, X2 - X1 + 1);
+        mw_clear_fimage(out, *b);
+    }
 
-  for (x=X1;x<=X2;x++)
-    for (y=Y1;y<=Y2;y++) {
-      pos1 = y*in->ncol+x;
-      pos2 = (*Yc+y-Y1)*out->ncol+(*Xc+x-X1);
-      if (*Yc+y-Y1>=0 && *Yc+y-Y1<out->nrow && 
-	  *Xc+x-X1>=0 && *Xc+x-X1<out->ncol &&
-	  x>=0 && x<in->ncol && y>=0 && y<in->nrow) {
-	out->gray[pos2] = in->gray[pos1];
-      }  
-    }      
+    for (x = X1; x <= X2; x++)
+        for (y = Y1; y <= Y2; y++)
+        {
+            pos1 = y * in->ncol + x;
+            pos2 = (*Yc + y - Y1) * out->ncol + (*Xc + x - X1);
+            if (*Yc + y - Y1 >= 0 && *Yc + y - Y1 < out->nrow &&
+                *Xc + x - X1 >= 0 && *Xc + x - X1 < out->ncol &&
+                x >= 0 && x < in->ncol && y >= 0 && y < in->nrow)
+            {
+                out->gray[pos2] = in->gray[pos1];
+            }
+        }
 
-  return(out);
+    return (out);
 }
-

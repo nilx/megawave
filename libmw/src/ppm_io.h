@@ -9,4 +9,4 @@
 Ccimage _mw_ccimage_load_ppmr(char *file);
 short _mw_ccimage_create_ppmr(char *file, Ccimage image);
 
-#endif /* !_PPM_IO_H_ */
+#endif                          /* !_PPM_IO_H_ */

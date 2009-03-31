@@ -6,6 +6,6 @@
 #define _PARSER_H_
 
 /* src/parser.c */
-void parse(FILE *sfile);
+void parse(FILE * sfile);
 
-#endif /* !_PARSER_H_ */
+#endif                          /* !_PARSER_H_ */

@@ -37,4 +37,4 @@ unsigned int mw_length_ml_cmimage(Cmimage cmimage);
 unsigned int mw_length_fml_cmimage(Cmimage cmimage);
 unsigned int mw_length_ms_cmimage(Cmimage cmimage);
 
-#endif /* !_CMIMAGE_H_ */
+#endif                          /* !_CMIMAGE_H_ */

@@ -24,73 +24,80 @@
 #include "mw.h"
 #include "mw-modules.h"
 
-int dirx[8]={1,1,0,-1,-1,-1,0,1};
-int diry[8]={0,1,1,1,0,-1,-1,-1};
+int dirx[8] = { 1, 1, 0, -1, -1, -1, 0, 1 };
+int diry[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
 
 static void draw_arrow(Cimage u, int x, int y, double angle, unsigned char c)
 {
-  int n,i,j,dx,dy,a;
+    int n, i, j, dx, dy, a;
 
-  n = u->ncol;
-  a = fmod(floor(angle*4./M_PI+8.5),8);
-  dx = dirx[a];
-  dy = diry[a];
-  
-  if (a%2)
-    /* tilted arrow */
-    for (i=0;i<=3;i++)
-      for (j=0;j<=3-i;j++) 
-	u->gray[(y-dy*j)*n+x-dx*i]=c;
-  else if (dx==0)
-    /* vertical arrow */
-    for (i=0;i<=2;i++)
-      for (j=-i;j<=i;j++) 
-	u->gray[(y-dy*i)*n+x-j]=c;
-  else 
-    /* horizontal arrow */
-    for (i=0;i<=2;i++)
-      for (j=-i;j<=i;j++) 
-	u->gray[(y-j)*n+x-dx*i]=c;
+    n = u->ncol;
+    a = fmod(floor(angle * 4. / M_PI + 8.5), 8);
+    dx = dirx[a];
+    dy = diry[a];
+
+    if (a % 2)
+        /* tilted arrow */
+        for (i = 0; i <= 3; i++)
+            for (j = 0; j <= 3 - i; j++)
+                u->gray[(y - dy * j) * n + x - dx * i] = c;
+    else if (dx == 0)
+        /* vertical arrow */
+        for (i = 0; i <= 2; i++)
+            for (j = -i; j <= i; j++)
+                u->gray[(y - dy * i) * n + x - j] = c;
+    else
+        /* horizontal arrow */
+        for (i = 0; i <= 2; i++)
+            for (j = -i; j <= i; j++)
+                u->gray[(y - j) * n + x - dx * i] = c;
 }
 
 /*------------------------------ MAIN MODULE ------------------------------*/
 
 Cmovie ofdraw(Fmovie U, Fmovie V, int *a, float *m, int *p, int *z, float *h)
 {
-  Cmovie out;
-  Cimage new,prev,*next;
-  Fimage X,Y;
-  int ix,iy,nx,ny,fx,fy;
-  float vx,vy;
+    Cmovie out;
+    Cimage new, prev, *next;
+    Fimage X, Y;
+    int ix, iy, nx, ny, fx, fy;
+    float vx, vy;
 
-  out = mw_new_cmovie();
-  next = &(out->first);
-  prev = NULL;
+    out = mw_new_cmovie();
+    next = &(out->first);
+    prev = NULL;
 
-  for (X=U->first,Y=V->first;X&&Y;X=X->next,Y=Y->next) {
-    nx = X->ncol; ny = X->nrow;
-    new = mw_change_cimage(NULL,*z*ny,*z*nx);
-    new->previous = prev;
-    *next = prev = new;
-    next = &(new->next);
-    mw_clear_cimage(new,255);
-    for (ix=*p;ix<nx;ix+=*p)
-      for (iy=*p;iy<ny;iy+=*p) {
-	vx = X->gray[iy*nx+ix];
-	vy = Y->gray[iy*nx+ix];
-	if (vx*vx+vy*vy>*m*(*m)) {
-	  fx = *z*ix+floor((double)(*h*vx+0.5));
-	  fy = *z*iy+floor((double)(*h*vy+0.5));
-	  if (fx>=3 && fx<new->ncol-3 && fy>=3 && fy<new->nrow-3) {
-	    mw_draw_cimage(new,*z*ix,*z*iy,fx,fy,0);
-	    if (!a) draw_arrow(new,fx,fy,atan2((double)vy,(double)vx),0);
-	  } 
-	}
-	new->gray[(*z*iy)*new->ncol+*z*ix] = 0;
-      }
-  }
-  *next = NULL;
+    for (X = U->first, Y = V->first; X && Y; X = X->next, Y = Y->next)
+    {
+        nx = X->ncol;
+        ny = X->nrow;
+        new = mw_change_cimage(NULL, *z * ny, *z * nx);
+        new->previous = prev;
+        *next = prev = new;
+        next = &(new->next);
+        mw_clear_cimage(new, 255);
+        for (ix = *p; ix < nx; ix += *p)
+            for (iy = *p; iy < ny; iy += *p)
+            {
+                vx = X->gray[iy * nx + ix];
+                vy = Y->gray[iy * nx + ix];
+                if (vx * vx + vy * vy > *m * (*m))
+                {
+                    fx = *z * ix + floor((double) (*h * vx + 0.5));
+                    fy = *z * iy + floor((double) (*h * vy + 0.5));
+                    if (fx >= 3 && fx < new->ncol - 3 && fy >= 3
+                        && fy < new->nrow - 3)
+                    {
+                        mw_draw_cimage(new, *z * ix, *z * iy, fx, fy, 0);
+                        if (!a)
+                            draw_arrow(new, fx, fy,
+                                       atan2((double) vy, (double) vx), 0);
+                    }
+                }
+                new->gray[(*z * iy) * new->ncol + *z * ix] = 0;
+            }
+    }
+    *next = NULL;
 
-  return(out);
+    return (out);
 }
-

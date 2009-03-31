@@ -21,4 +21,4 @@ void mw_delete_dcurves(Dcurves dcurves);
 unsigned int mw_length_dcurves(Dcurves dcurves);
 unsigned int mw_npoints_dcurves(Dcurves dcurves);
 
-#endif /* !_DCURVE_H_ */
+#endif                          /* !_DCURVE_H_ */

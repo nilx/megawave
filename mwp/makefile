@@ -26,7 +26,7 @@ SRC	= $(addprefix $(SRCDIR)/,				\
 CMDLINE	= $(SRCDIR)/mwp_cmdline.c
 
 AUTOHDR	= $(SRC:.c=.h)
-HDR	= $(AUTOHDR) $(CMDLINE:.c=.h)				\
+HDR	= $(AUTOHDR) 						\
 	$(SRCDIR)/definitions.h $(SRCDIR)/config.h
 OBJ	= $(SRC:.c=$(.O)) $(CMDLINE:.c=$(.O))
 #DEP	= $(SRC:.c=.d)
@@ -64,17 +64,21 @@ $(CMDLINE:.c=$(.O))	: $(CMDLINE)
 	$(CCWRAP) $(CC) $(CFLAGS_NOWARN) -c -o $@ $<
 
 .PHONY	: lint
-lint	: lint.flag
+lint	: lint.flag charset.flag linelength.flag
 lint.flag	: $(SRC) $(HDR)
-	$(LINT) $(LINTFLAGS) $?
+#	$(LINT) $(LINT_FLAGS) $?
+	@touch $@
+charset.flag	: $(SRC) $(HDR)
 	$(MAKE) $(addsuffix +charset, $?)
+	@touch $@
+linelength.flag	: $(SRC) $(HDR)
 	$(MAKE) $(addsuffix +linelength, $?)
 	@touch $@
 
-# TODO: add `indent`
 .PHONY	: beautify
 beautify	: beautify.flag
 beautify.flag	: $(SRC) $(HDR)
+	$(MAKE) $(addsuffix +style, $?)
 	$(MAKE) $(addsuffix +cleanup, $?)
 	@touch $@
 
@@ -82,7 +86,7 @@ beautify.flag	: $(SRC) $(HDR)
 clean-bin :
 	@$(ECHO) '$(RM) $$(OBJ)'
 	@$(RM) $(OBJ)
-	$(RM) lint-flag beautify-flag
+	$(RM) lint.flag charset.flag linelength.flag beautify.flag
 
 .PHONY	: distclean-bin
 distclean-bin : clean-bin

@@ -14,11 +14,9 @@
 #include "mw.h"
 #include "mw-modules.h"
 
-void cccopy(Ccimage Input, Ccimage *Output)
+void cccopy(Ccimage Input, Ccimage * Output)
 {
-  if (*Output == NULL) mwerror(USAGE,1,"At least one Output requested\n");
-  *Output = Input;  
+    if (*Output == NULL)
+        mwerror(USAGE, 1, "At least one Output requested\n");
+    *Output = Input;
 }
-
-
-

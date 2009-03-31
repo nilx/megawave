@@ -7,14 +7,13 @@ version  = {"1.2"};
 usage    = {
              in->in         "input image",
              out<-out       "sampled image",
-             step->step     "new grid step (factor of sampling)"    
+             step->step     "new grid step (factor of sampling)"
            };
 */
 /*----------------------------------------------------------------------
  v1.1: return result (L.Moisan)
  v1.2: allow non-integer factor and remove step>=2 condition (L.Moisan)
 ----------------------------------------------------------------------*/
-
 
 #include <stdio.h>
 #include <math.h>
@@ -25,33 +24,36 @@ usage    = {
 
 Cimage csample(Cimage in, Cimage out, double step)
 {
-  register int i,j;
-  int nr;
-  int nc;
-  int nr1;
-  int nc1;
-  int istep, jstep;
-  
-  nr = in->nrow;
-  nc = in->ncol;
-  nr1 = nr; while ((floor((double)(nr1-1)*step))+1>nr) nr1--;
-  nc1 = nc; while ((floor((double)(nc1-1)*step))+1>nc) nc1--;
+    register int i, j;
+    int nr;
+    int nc;
+    int nr1;
+    int nc1;
+    int istep, jstep;
 
-  mwdebug("Input size: nr = %d \t nc = %d\n", nr,nc);
-  mwdebug("Output size: nr1 = %d \t nc1 = %d\n", nr1,nc1);
+    nr = in->nrow;
+    nc = in->ncol;
+    nr1 = nr;
+    while ((floor((double) (nr1 - 1) * step)) + 1 > nr)
+        nr1--;
+    nc1 = nc;
+    while ((floor((double) (nc1 - 1) * step)) + 1 > nc)
+        nc1--;
 
-  out = mw_change_cimage(out, nr1, nc1);
-  if (out == NULL) mwerror(FATAL,1,"not enough memory.\n");
+    mwdebug("Input size: nr = %d \t nc = %d\n", nr, nc);
+    mwdebug("Output size: nr1 = %d \t nc1 = %d\n", nr1, nc1);
 
-  for (i=0 ; i<  nr1; i++)
-    for (j=0 ; j<  nc1; j++) 
-    {
-      istep = floor((double)i*step);
-      jstep = floor((double)j*step);
-      _(out,i,j) = _(in, istep, jstep);
-    }
+    out = mw_change_cimage(out, nr1, nc1);
+    if (out == NULL)
+        mwerror(FATAL, 1, "not enough memory.\n");
 
-  return(out);
+    for (i = 0; i < nr1; i++)
+        for (j = 0; j < nc1; j++)
+        {
+            istep = floor((double) i * step);
+            jstep = floor((double) j * step);
+            _(out, i, j) = _(in, istep, jstep);
+        }
+
+    return (out);
 }
-
-

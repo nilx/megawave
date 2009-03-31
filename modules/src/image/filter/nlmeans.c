@@ -28,57 +28,70 @@
 #define MIN(a,b) ((a)<(b)?(a):(b))
 #define MAX(a,b) ((a)>(b)?(a):(b))
 
-Fimage nlmeans(Fimage in, Fimage out, double *h, double *a, int *s, int *d, double *c)
+Fimage nlmeans(Fimage in, Fimage out, double *h, double *a, int *s, int *d,
+               double *c)
 {
-  int *dadr,*dd,nx,ny,x,y,xp,yp,i,adr,adrp,wsize,ds;
-  double *w,*ww,dist,new,sum,e,A;
-  register float v;
+    int *dadr, *dd, nx, ny, x, y, xp, yp, i, adr, adrp, wsize, ds;
+    double *w, *ww, dist, new, sum, e, A;
+    register float v;
 
-  if (*s<1 || ((*s)&1)==0) 
-    mwerror(FATAL,1,"s must be a positive odd integer.");
-  A = (a?*a:((double)(*s)-1.)/4.); 
-  A = 2.*A*A; if (A==0.) A=1.;
+    if (*s < 1 || ((*s) & 1) == 0)
+        mwerror(FATAL, 1, "s must be a positive odd integer.");
+    A = (a ? *a : ((double) (*s) - 1.) / 4.);
+    A = 2. * A * A;
+    if (A == 0.)
+        A = 1.;
 
-  nx = in->ncol; ny = in->nrow;
-  out = mw_change_fimage(out,ny,nx);
-  if (!out) mwerror(FATAL,1,"Not enough memory\n");
-  mw_copy_fimage(in,out);
+    nx = in->ncol;
+    ny = in->nrow;
+    out = mw_change_fimage(out, ny, nx);
+    if (!out)
+        mwerror(FATAL, 1, "Not enough memory\n");
+    mw_copy_fimage(in, out);
 
-  /* precompute weights */
-  wsize = *s*(*s); 
-  w = (double *)malloc(wsize*sizeof(double));
-  dadr = (int *)malloc(wsize*sizeof(int));
-  ds = *s/2; /* patch = [-ds,ds]x[-ds,ds] */
-  for(sum=0.,i=0,x=-ds;x<=ds;x++)
-    for(y=-ds;y<=ds;y++,i++) {
-      dadr[i] = y*nx+x;
-      w[i] = exp(-(double)(x*x+y*y)/A);
-      sum += w[i];
-    }
-  for (i=wsize;i--;) w[i] /= sum*2.*(*h)*(*h);
+    /* precompute weights */
+    wsize = *s * (*s);
+    w = (double *) malloc(wsize * sizeof(double));
+    dadr = (int *) malloc(wsize * sizeof(int));
+    ds = *s / 2;                /* patch = [-ds,ds]x[-ds,ds] */
+    for (sum = 0., i = 0, x = -ds; x <= ds; x++)
+        for (y = -ds; y <= ds; y++, i++)
+        {
+            dadr[i] = y * nx + x;
+            w[i] = exp(-(double) (x * x + y * y) / A);
+            sum += w[i];
+        }
+    for (i = wsize; i--;)
+        w[i] /= sum * 2. * (*h) * (*h);
 
-  /* main loop */
-  for (x=ds;x<nx-ds;x++)
-    for (y=ds;y<ny-ds;y++) {
-      adr = y*nx+x;
-      new = sum = 0.;
-      /* loop on patches */
-      for (xp=MAX(x-*d,ds);xp<=MIN(x+*d,nx-1-ds);xp++)
-	for (yp=MAX(y-*d,ds);yp<=MIN(y+*d,ny-1-ds);yp++)
-	  if ((x-xp)*(x-xp)+(y-yp)*(y-yp)<=(*d)*(*d)) {
-	    adrp = yp*nx+xp;
-	    for (i=wsize,dist=0.,ww=w,dd=dadr;i--;ww++,dd++) {
-	      v = in->gray[adr+*dd]-in->gray[adrp+*dd];
-	      dist += *ww*(double)(v*v);
-	    }
-	    e = (adrp==adr?*c:exp(-dist));
-	    new += e*(double)in->gray[adrp];
-	    sum += e;
-	  }
-      out->gray[adr] = (float)(new/sum);
-    }
-  free(dadr);
-  free(w);
+    /* main loop */
+    for (x = ds; x < nx - ds; x++)
+        for (y = ds; y < ny - ds; y++)
+        {
+            adr = y * nx + x;
+            new = sum = 0.;
+            /* loop on patches */
+            for (xp = MAX(x - *d, ds); xp <= MIN(x + *d, nx - 1 - ds); xp++)
+                for (yp = MAX(y - *d, ds); yp <= MIN(y + *d, ny - 1 - ds);
+                     yp++)
+                    if ((x - xp) * (x - xp) + (y - yp) * (y - yp) <=
+                        (*d) * (*d))
+                    {
+                        adrp = yp * nx + xp;
+                        for (i = wsize, dist = 0., ww = w, dd = dadr; i--;
+                             ww++, dd++)
+                        {
+                            v = in->gray[adr + *dd] - in->gray[adrp + *dd];
+                            dist += *ww * (double) (v * v);
+                        }
+                        e = (adrp == adr ? *c : exp(-dist));
+                        new += e * (double) in->gray[adrp];
+                        sum += e;
+                    }
+            out->gray[adr] = (float) (new / sum);
+        }
+    free(dadr);
+    free(w);
 
-  return(out);
+    return (out);
 }

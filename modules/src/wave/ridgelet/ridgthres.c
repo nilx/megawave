@@ -21,97 +21,108 @@
 #include <math.h>
 #include <stdlib.h>
 #include "mw.h"
-#include "mw-modules.h" /* for fvalues(), ridgelet(), iridgelet() */
+#include "mw-modules.h"         /* for fvalues(), ridgelet(), iridgelet() */
 
-void ridgthres(Fimage in_re, Fimage in_im, int np, Fimage out_re, Fimage out_im, int pourcent)
+void ridgthres(Fimage in_re, Fimage in_im, int np, Fimage out_re,
+               Fimage out_im, int pourcent)
 {
-  int N,i,s,somme=0;
-  float seuil_im,seuil_re;
-  Fimage rid_re=NULL,rid_im=NULL,abs_rid_re=NULL,abs_rid_im=NULL,rank=NULL;
-  Fsignal rid_re_ord=NULL,rid_im_ord=NULL,mult=NULL;
-  char c;
-  
-  N=(int)(in_re->nrow);
+    int N, i, s, somme = 0;
+    float seuil_im, seuil_re;
+    Fimage rid_re = NULL, rid_im = NULL, abs_rid_re = NULL, abs_rid_im =
+        NULL, rank = NULL;
+    Fsignal rid_re_ord = NULL, rid_im_ord = NULL, mult = NULL;
+    char c;
 
-  out_re=mw_change_fimage(out_re,N,N);
-  if (!out_re) mwerror(FATAL,1,"not enough memory !\n");
+    N = (int) (in_re->nrow);
 
-  out_im=mw_change_fimage(out_im,N,N);
-  if (!out_im) mwerror(FATAL,1,"not enough memory !\n");
+    out_re = mw_change_fimage(out_re, N, N);
+    if (!out_re)
+        mwerror(FATAL, 1, "not enough memory !\n");
 
-  rid_re=mw_change_fimage(rid_re,2*N,2*N);
-  if (!rid_re) mwerror(FATAL,1,"not enough memory !\n");
+    out_im = mw_change_fimage(out_im, N, N);
+    if (!out_im)
+        mwerror(FATAL, 1, "not enough memory !\n");
 
-  rid_im=mw_change_fimage(rid_im,2*N,2*N);
-  if (!rid_im) mwerror(FATAL,1,"not enough memory !\n");
+    rid_re = mw_change_fimage(rid_re, 2 * N, 2 * N);
+    if (!rid_re)
+        mwerror(FATAL, 1, "not enough memory !\n");
 
-  abs_rid_re=mw_change_fimage(abs_rid_re,2*N,2*N);
-  if (!abs_rid_re) mwerror(FATAL,1,"not enough memory !\n");
+    rid_im = mw_change_fimage(rid_im, 2 * N, 2 * N);
+    if (!rid_im)
+        mwerror(FATAL, 1, "not enough memory !\n");
 
-  abs_rid_im=mw_change_fimage(abs_rid_im,2*N,2*N);
-  if (!rid_im) mwerror(FATAL,1,"not enough memory !\n");
+    abs_rid_re = mw_change_fimage(abs_rid_re, 2 * N, 2 * N);
+    if (!abs_rid_re)
+        mwerror(FATAL, 1, "not enough memory !\n");
 
-  rid_re_ord=mw_change_fsignal(rid_re_ord,4*N*N+1);
-  if (!rid_re_ord) mwerror(FATAL,1,"not enough memory !\n");
+    abs_rid_im = mw_change_fimage(abs_rid_im, 2 * N, 2 * N);
+    if (!rid_im)
+        mwerror(FATAL, 1, "not enough memory !\n");
 
-  rid_im_ord=mw_change_fsignal(rid_im_ord,4*N*N+1);
-  if (!rid_im_ord) mwerror(FATAL,1,"not enough memory !\n");
+    rid_re_ord = mw_change_fsignal(rid_re_ord, 4 * N * N + 1);
+    if (!rid_re_ord)
+        mwerror(FATAL, 1, "not enough memory !\n");
 
-  mult=mw_change_fsignal(mult,4*N*N+1);
-  if (!mult) mwerror(FATAL,1,"not enough memory !\n");
+    rid_im_ord = mw_change_fsignal(rid_im_ord, 4 * N * N + 1);
+    if (!rid_im_ord)
+        mwerror(FATAL, 1, "not enough memory !\n");
 
-  rank=mw_change_fimage(rank,2*N,2*N);
-  if (!rank) mwerror(FATAL,1,"not enough memory !\n");
+    mult = mw_change_fsignal(mult, 4 * N * N + 1);
+    if (!mult)
+        mwerror(FATAL, 1, "not enough memory !\n");
 
-  ridgelet(in_re,in_im,np,rid_re,rid_im);
+    rank = mw_change_fimage(rank, 2 * N, 2 * N);
+    if (!rank)
+        mwerror(FATAL, 1, "not enough memory !\n");
 
-  for(i=0;i<4*N*N;i++)
-    abs_rid_re->gray[i]=fabs(rid_re->gray[i]);
-    
+    ridgelet(in_re, in_im, np, rid_re, rid_im);
+
+    for (i = 0; i < 4 * N * N; i++)
+        abs_rid_re->gray[i] = fabs(rid_re->gray[i]);
+
     /* thresholding */
     /* real part */
-  rid_re_ord=fvalues(&c,mult,rank,abs_rid_re);
-  s=(int)(pourcent*4*N*N/100);
-  i=0;
-  while((somme <s)&&(i<mult->size))
+    rid_re_ord = fvalues(&c, mult, rank, abs_rid_re);
+    s = (int) (pourcent * 4 * N * N / 100);
+    i = 0;
+    while ((somme < s) && (i < mult->size))
     {
-      somme+=(mult->values[i]);
-      i++;
+        somme += (mult->values[i]);
+        i++;
     }
-  seuil_re=(rid_re_ord->values[i]);
- 
-  for(i=0;i<(4*N*N);i++)
-    if((fabs(( rid_re->gray[i])))<seuil_re) 
-      (rid_re->gray[i])=0;
+    seuil_re = (rid_re_ord->values[i]);
 
-  /* imaginary part */
-  for(i=0;i<4*N*N;i++)
-    abs_rid_im->gray[i]=fabs(rid_im->gray[i]);
+    for (i = 0; i < (4 * N * N); i++)
+        if ((fabs((rid_re->gray[i]))) < seuil_re)
+            (rid_re->gray[i]) = 0;
 
-  rid_im_ord=fvalues(&c,mult,rank,abs_rid_im);
+    /* imaginary part */
+    for (i = 0; i < 4 * N * N; i++)
+        abs_rid_im->gray[i] = fabs(rid_im->gray[i]);
 
-  somme=0;
-  i=0;
-  while(somme < s)
+    rid_im_ord = fvalues(&c, mult, rank, abs_rid_im);
+
+    somme = 0;
+    i = 0;
+    while (somme < s)
     {
-      somme+=(mult->values[i]);
-      i++;
-    }	       
-  seuil_im=(rid_im_ord->values[i]);
+        somme += (mult->values[i]);
+        i++;
+    }
+    seuil_im = (rid_im_ord->values[i]);
 
-  for(i=0;i<(4*N*N);i++)
-    if( (fabs((rid_im->gray[i])))<seuil_im) 
-      (rid_im->gray[i])=0;
+    for (i = 0; i < (4 * N * N); i++)
+        if ((fabs((rid_im->gray[i]))) < seuil_im)
+            (rid_im->gray[i]) = 0;
 
-  iridgelet(rid_re,rid_im,np,out_re,out_im);
+    iridgelet(rid_re, rid_im, np, out_re, out_im);
 
-  mw_delete_fimage(rid_re);
-  mw_delete_fimage(rid_im);
-  mw_delete_fimage(abs_rid_re);
-  mw_delete_fimage(abs_rid_im);
-  mw_delete_fimage(rank);
-  mw_delete_fsignal(rid_re_ord);
-  mw_delete_fsignal(rid_im_ord);
-  mw_delete_fsignal(mult);
+    mw_delete_fimage(rid_re);
+    mw_delete_fimage(rid_im);
+    mw_delete_fimage(abs_rid_re);
+    mw_delete_fimage(abs_rid_im);
+    mw_delete_fimage(rank);
+    mw_delete_fsignal(rid_re_ord);
+    mw_delete_fsignal(rid_im_ord);
+    mw_delete_fsignal(mult);
 }
-

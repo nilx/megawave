@@ -16,4 +16,4 @@ Fpolygons mw_change_fpolygons(Fpolygons poly);
 void mw_delete_fpolygons(Fpolygons fpolygons);
 unsigned int mw_length_fpolygons(Fpolygons fpolys);
 
-#endif /* !_FPOLYGON_H_ */
+#endif                          /* !_FPOLYGON_H_ */

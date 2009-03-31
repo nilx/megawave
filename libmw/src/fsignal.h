@@ -15,4 +15,4 @@ void mw_copy_fsignal_values(Fsignal in, Fsignal out);
 void mw_copy_fsignal_header(Fsignal in, Fsignal out);
 void mw_copy_fsignal(Fsignal in, Fsignal out);
 
-#endif /* !_FSIGNAL_H_ */
+#endif                          /* !_FSIGNAL_H_ */

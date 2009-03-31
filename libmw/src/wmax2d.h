@@ -19,4 +19,4 @@ Vpoint_wmax mw_copy_vpoint_wmax(Vpoint_wmax vpoint1, Vpoint_wmax vpoint0);
 Vchain_wmax mw_copy_vchain_wmax(Vchain_wmax vchain1, Vchain_wmax vchain0);
 int mw_give_nlevel_vchain(Vchain_wmax vchain);
 
-#endif /* !_WMAX2D_H_ */
+#endif                          /* !_WMAX2D_H_ */

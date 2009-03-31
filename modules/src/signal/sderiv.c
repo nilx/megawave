@@ -17,23 +17,17 @@
 
 void sderiv(Fsignal A, Fsignal B)
 {
-  int i,size;
+    int i, size;
 
-  size = A->size;
-  B = mw_change_fsignal(B, size);
-  if (B == NULL) mwerror(FATAL,1,"Not enough memory.");
-  
-  mw_copy_fsignal_header(A,B);
-  
-  for(i = 1; i<size; i++)
-    B->values[i] = (float) (A->values[i] - A->values[i-1]);
-  B->values[0] = 0.0;
+    size = A->size;
+    B = mw_change_fsignal(B, size);
+    if (B == NULL)
+        mwerror(FATAL, 1, "Not enough memory.");
+
+    mw_copy_fsignal_header(A, B);
+
+    for (i = 1; i < size; i++)
+        B->values[i] = (float) (A->values[i] - A->values[i - 1]);
+    B->values[0] = 0.0;
 
 }
-
-
-
-
-
-
-

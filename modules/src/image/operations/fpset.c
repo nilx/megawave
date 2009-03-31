@@ -18,9 +18,6 @@
 
 Fimage fpset(Fimage in, int x, int y, float g)
 {
-  mw_plot_fimage(in,x,y,g);
-  return(in);
+    mw_plot_fimage(in, x, y, g);
+    return (in);
 }
-
-
-

@@ -22,29 +22,25 @@
 
 void sdirac(int *size, float *A, Fsignal signal)
 {
-  int i,med;
+    int i, med;
 
-  signal = mw_change_fsignal(signal, *size);
-  if (signal == NULL) mwerror(FATAL,1,"Not enough memory.");
+    signal = mw_change_fsignal(signal, *size);
+    if (signal == NULL)
+        mwerror(FATAL, 1, "Not enough memory.");
 
-  strcpy(signal->cmt,"Dirac");
+    strcpy(signal->cmt, "Dirac");
 
-  med = *size >> 1;
+    med = *size >> 1;
 
-/* Provoque un BUG 
+/* Provoque un BUG
 
   for(i = 0; i<size; i++) signal->values[i] = *A*((i == med) ? 1. : 0.);
 */
 
-  for(i = 0; i< *size; i++)
-    if (i == med) signal->values[i] = *A; else 
-      signal->values[i] = 0.0;
-  
+    for (i = 0; i < *size; i++)
+        if (i == med)
+            signal->values[i] = *A;
+        else
+            signal->values[i] = 0.0;
+
 }
-
-
-
-
-
-
-

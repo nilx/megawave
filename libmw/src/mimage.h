@@ -44,4 +44,4 @@ unsigned int mw_length_ml_mimage(Mimage mimage);
 unsigned int mw_length_fml_mimage(Mimage mimage);
 unsigned int mw_length_ms_mimage(Mimage mimage);
 
-#endif /* !_MIMAGE_H_ */
+#endif                          /* !_MIMAGE_H_ */

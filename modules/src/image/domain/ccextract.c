@@ -29,46 +29,60 @@ usage = {
 
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
-
-Ccimage ccextract(int *b, Ccimage in, Ccimage bg, Ccimage out, int X1, int Y1, int X2, int Y2, int *Xc, int *Yc, char *r)
+Ccimage ccextract(int *b, Ccimage in, Ccimage bg, Ccimage out, int X1, int Y1,
+                  int X2, int Y2, int *Xc, int *Yc, char *r)
 {
-  int x,y,pos1,pos2;
+    int x, y, pos1, pos2;
 
-  /* test relative coordinates */
-  if (r) {X2+=X1-1; Y2+=Y1-1;}
-  if (X2<0) X2=in->ncol+X2-1;
-  if (Y2<0) Y2=in->nrow+Y2-1;
+    /* test relative coordinates */
+    if (r)
+    {
+        X2 += X1 - 1;
+        Y2 += Y1 - 1;
+    }
+    if (X2 < 0)
+        X2 = in->ncol + X2 - 1;
+    if (Y2 < 0)
+        Y2 = in->nrow + Y2 - 1;
 
-  if (X2<X1 || Y2<Y1) 
-    mwerror(FATAL,1,"empty region to extract: (%d,%d)-(%d,%d)\n",X1,Y1,X2,Y2);
+    if (X2 < X1 || Y2 < Y1)
+        mwerror(FATAL, 1, "empty region to extract: (%d,%d)-(%d,%d)\n", X1,
+                Y1, X2, Y2);
 
-  if (bg) {
-    out = mw_change_ccimage(out,MAX(bg->nrow,*Yc+Y2-Y1+1),MAX(bg->ncol,*Xc+X2-Y1+1));
-    mw_clear_ccimage(out,*b,*b,*b);
-    for (x=0;x<bg->ncol;x++) 
-      for (y=0;y<bg->nrow;y++) {
-	out->red  [y*out->ncol+x] = bg->red  [y*bg->ncol+x];
-	out->green[y*out->ncol+x] = bg->green[y*bg->ncol+x];
-	out->blue [y*out->ncol+x] = bg->blue [y*bg->ncol+x];
-      }
-  } else {
-    out = mw_change_ccimage(out,Y2-Y1+1,X2-X1+1);
-    mw_clear_ccimage(out,*b,*b,*b);
-  }
+    if (bg)
+    {
+        out =
+            mw_change_ccimage(out, MAX(bg->nrow, *Yc + Y2 - Y1 + 1),
+                              MAX(bg->ncol, *Xc + X2 - Y1 + 1));
+        mw_clear_ccimage(out, *b, *b, *b);
+        for (x = 0; x < bg->ncol; x++)
+            for (y = 0; y < bg->nrow; y++)
+            {
+                out->red[y * out->ncol + x] = bg->red[y * bg->ncol + x];
+                out->green[y * out->ncol + x] = bg->green[y * bg->ncol + x];
+                out->blue[y * out->ncol + x] = bg->blue[y * bg->ncol + x];
+            }
+    }
+    else
+    {
+        out = mw_change_ccimage(out, Y2 - Y1 + 1, X2 - X1 + 1);
+        mw_clear_ccimage(out, *b, *b, *b);
+    }
 
-  for (x=X1;x<=X2;x++)
-    for (y=Y1;y<=Y2;y++) {
-      pos1 = y*in->ncol+x;
-      pos2 = (*Yc+y-Y1)*out->ncol+(*Xc+x-X1);
-      if (*Yc+y-Y1>=0 && *Yc+y-Y1<out->nrow && 
-	  *Xc+x-X1>=0 && *Xc+x-X1<out->ncol &&
-	  x>=0 && x<in->ncol && y>=0 && y<in->nrow) {
-	out->red  [pos2] = in->red  [pos1];
-	out->green[pos2] = in->green[pos1];
-	out->blue [pos2] = in->blue [pos1];
-      }  
-    }      
+    for (x = X1; x <= X2; x++)
+        for (y = Y1; y <= Y2; y++)
+        {
+            pos1 = y * in->ncol + x;
+            pos2 = (*Yc + y - Y1) * out->ncol + (*Xc + x - X1);
+            if (*Yc + y - Y1 >= 0 && *Yc + y - Y1 < out->nrow &&
+                *Xc + x - X1 >= 0 && *Xc + x - X1 < out->ncol &&
+                x >= 0 && x < in->ncol && y >= 0 && y < in->nrow)
+            {
+                out->red[pos2] = in->red[pos1];
+                out->green[pos2] = in->green[pos1];
+                out->blue[pos2] = in->blue[pos1];
+            }
+        }
 
-  return(out);
+    return (out);
 }
-

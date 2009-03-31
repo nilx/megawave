@@ -7,7 +7,7 @@
   usage = {
   'g':std->std      "additive Gaussian noise with standard deviation std",
 
-  't':t->t[0.0,100.0]     
+  't':t->t[0.0,100.0]
     "transmission noise : t percent of signal values are lost (set to 0)",
 
   'n'->n_flag       "in order NOT to reinitialize the random seed",
@@ -18,7 +18,7 @@
   };
 */
 /*----------------------------------------------------------------------
- v1.1: preserve header info for e.g. sound processing (JF) 
+ v1.1: preserve header info for e.g. sound processing (JF)
 ----------------------------------------------------------------------*/
 
 #include <stdlib.h>
@@ -32,41 +32,45 @@
 
 Fsignal snoise(Fsignal in, Fsignal out, float *std, float *t, char *n_flag)
 {
-  int    i;
-  double a,b,z;
+    int i;
+    double a, b, z;
 
-  if ((std?1:0) + (t?1:0) != 1) 
-    mwerror(USAGE,0,"Please select exactly one of the -g and -t options.");
+    if ((std ? 1 : 0) + (t ? 1 : 0) != 1)
+        mwerror(USAGE, 0,
+                "Please select exactly one of the -g and -t options.");
 
   /*** Initialize random seed if necessary ***/
-  if (!n_flag) mw_srand_mt( (unsigned long) time (NULL) );
-  
-  /* Allocate memory */
-  out = mw_change_fsignal(out,in->size);
-  if (!out) mwerror(FATAL,1,"Not enough memory.");
-  mw_copy_fsignal_header(in,out);
+    if (!n_flag)
+        mw_srand_mt((unsigned long) time(NULL));
 
-  if (std) 
+    /* Allocate memory */
+    out = mw_change_fsignal(out, in->size);
+    if (!out)
+        mwerror(FATAL, 1, "Not enough memory.");
+    mw_copy_fsignal_header(in, out);
 
-    /* Gaussian noise */
-    for (i=in->size;i--;) {
-      a = mw_drand53_mt();
-      b = mw_drand53_mt();
-      z = (double)(*std)*sqrt(-2.0*log(a))*cos(2.0*M_PI*b);
-      out->values[i] = in->values[i] + (float)z;
+    if (std)
+
+        /* Gaussian noise */
+        for (i = in->size; i--;)
+        {
+            a = mw_drand53_mt();
+            b = mw_drand53_mt();
+            z = (double) (*std) * sqrt(-2.0 * log(a)) * cos(2.0 * M_PI * b);
+            out->values[i] = in->values[i] + (float) z;
+        }
+
+    else
+    {
+
+        /* transmission noise */
+        for (i = in->size; i--;)
+            if (mw_drand53_mt() * 100.0 < *t)
+                out->values[i] = 0.;
+            else
+                out->values[i] = in->values[i];
+
     }
 
-  else {
-
-    /* transmission noise */
-    for (i=in->size;i--;)
-      if (mw_drand53_mt() * 100.0 < *t) out->values[i] = 0.;
-      else out->values[i] = in->values[i];
-    
-  }
-
-  return(out);
+    return (out);
 }
-
-
-

@@ -26,50 +26,52 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "mw.h"
-#include "mw-modules.h" /* for fcrop() */
+#include "mw-modules.h"         /* for fcrop() */
 
 /* NB : calling this module with out=in is possible */
 
-Ccimage cccrop(Ccimage in, Ccimage out, float *sx, float *sy, float *z, unsigned char *bg, int *o, float *p, float X1, float Y1, float X2, float Y2)
+Ccimage cccrop(Ccimage in, Ccimage out, float *sx, float *sy, float *z,
+               unsigned char *bg, int *o, float *p, float X1, float Y1,
+               float X2, float Y2)
 {
-  Cimage aux_in,aux_out;
-  Fimage tmp1,tmp2;
-  float fbg;
+    Cimage aux_in, aux_out;
+    Fimage tmp1, tmp2;
+    float fbg;
 
-  aux_in = mw_new_cimage(); 
-  aux_out = mw_new_cimage(); 
-  aux_in->nrow = in->nrow; 
-  aux_in->ncol = in->ncol;
-  fbg = (float)(*bg);
+    aux_in = mw_new_cimage();
+    aux_out = mw_new_cimage();
+    aux_in->nrow = in->nrow;
+    aux_in->ncol = in->ncol;
+    fbg = (float) (*bg);
 
-  /* red component */
-  aux_in->gray = in->red;
-  tmp1 = mw_cimage_to_fimage(aux_in,NULL);
-  tmp2 = fcrop(tmp1,NULL,sx,sy,z,&fbg,o,p,X1,Y1,X2,Y2);
-  out = mw_change_ccimage(out,tmp2->nrow,tmp2->ncol);
-  aux_out->nrow = tmp2->nrow; 
-  aux_out->ncol = tmp2->ncol;
-  aux_out->gray = out->red;
-  mw_fimage_to_cimage(tmp2,aux_out);
+    /* red component */
+    aux_in->gray = in->red;
+    tmp1 = mw_cimage_to_fimage(aux_in, NULL);
+    tmp2 = fcrop(tmp1, NULL, sx, sy, z, &fbg, o, p, X1, Y1, X2, Y2);
+    out = mw_change_ccimage(out, tmp2->nrow, tmp2->ncol);
+    aux_out->nrow = tmp2->nrow;
+    aux_out->ncol = tmp2->ncol;
+    aux_out->gray = out->red;
+    mw_fimage_to_cimage(tmp2, aux_out);
 
-  /* green component */
-  aux_in->gray = in->green;
-  aux_out->gray = out->green;
-  mw_cimage_to_fimage(aux_in,tmp1);
-  fcrop(tmp1,tmp2,sx,sy,z,&fbg,o,p,X1,Y1,X2,Y2);
-  mw_fimage_to_cimage(tmp2,aux_out);
+    /* green component */
+    aux_in->gray = in->green;
+    aux_out->gray = out->green;
+    mw_cimage_to_fimage(aux_in, tmp1);
+    fcrop(tmp1, tmp2, sx, sy, z, &fbg, o, p, X1, Y1, X2, Y2);
+    mw_fimage_to_cimage(tmp2, aux_out);
 
-  /* blue component */
-  aux_in->gray = in->blue;
-  aux_out->gray = out->blue;
-  mw_cimage_to_fimage(aux_in,tmp1);
-  fcrop(tmp1,tmp2,sx,sy,z,&fbg,o,p,X1,Y1,X2,Y2);
-  mw_fimage_to_cimage(tmp2,aux_out);
+    /* blue component */
+    aux_in->gray = in->blue;
+    aux_out->gray = out->blue;
+    mw_cimage_to_fimage(aux_in, tmp1);
+    fcrop(tmp1, tmp2, sx, sy, z, &fbg, o, p, X1, Y1, X2, Y2);
+    mw_fimage_to_cimage(tmp2, aux_out);
 
-  mw_delete_fimage(tmp2);
-  mw_delete_fimage(tmp1);
-  free(aux_out); 
-  free(aux_in); 
+    mw_delete_fimage(tmp2);
+    mw_delete_fimage(tmp1);
+    free(aux_out);
+    free(aux_in);
 
-  return(out);
+    return (out);
 }

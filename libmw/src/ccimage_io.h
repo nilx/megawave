@@ -11,4 +11,4 @@ short _mw_ccimage_create_native(char *NomFic, Ccimage image, char *Type);
 Ccimage _mw_ccimage_load_image(char *NomFic, char *Type);
 short _mw_ccimage_create_image(char *NomFic, Ccimage image, char *Type);
 
-#endif /* !_CCIMAGE_IO_H_ */
+#endif                          /* !_CCIMAGE_IO_H_ */

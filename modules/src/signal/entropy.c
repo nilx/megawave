@@ -14,35 +14,33 @@ usage = {
 #include "mw.h"
 #include "mw-modules.h"
 
-
 void entropy(Fsignal Histo, double *Entropy)
-     
-                       		/* Input histogram */
-                         	/* Output, entropy of Histo */
+                                /* Input histogram */
+                                /* Output, entropy of Histo */
 {
-  int i;
-  double sum;				/* Sum of histogram values */
-  double e;				/* Entropy of histogram */
-  double s;				/* Normalised values of histogram */
+    int i;
+    double sum;                 /* Sum of histogram values */
+    double e;                   /* Entropy of histogram */
+    double s;                   /* Normalised values of histogram */
 
   /*--- Sum of histogram values ---*/
-	
-  sum = 0.0;
-  for(i=0;i<Histo->size;i++)
-    sum+=Histo->values[i];
+
+    sum = 0.0;
+    for (i = 0; i < Histo->size; i++)
+        sum += Histo->values[i];
 
   /*--- Computation of entropy ---*/
-	
-  e = 0.0;
-  for(i=0;i<Histo->size;i++)
-    if(Histo->values[i] > 0.0) {
-      s = Histo->values[i] / sum;
-      e -= s * log((double) s);
-    }
-	
-  e /= log((double) 2.0);
 
-  *Entropy = e;
+    e = 0.0;
+    for (i = 0; i < Histo->size; i++)
+        if (Histo->values[i] > 0.0)
+        {
+            s = Histo->values[i] / sum;
+            e -= s * log((double) s);
+        }
+
+    e /= log((double) 2.0);
+
+    *Entropy = e;
 
 }
-

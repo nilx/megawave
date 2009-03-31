@@ -19,13 +19,16 @@
 #include "header.h"
 
 #define MSG_ERROR_HEADER_SYNTAX_SSCANF \
-     "(sscanf) t_header statement \"%s\" does not follow the syntax \"<name> = {<value>}\"."
+     "(sscanf) t_header statement \"%s\" " \
+     "does not follow the syntax \"<name> = {<value>}\"."
 #define MSG_ERROR_HEADER_SYNTAX_BRACES \
-     "(v='%s') t_header statement \"%s\" does not follow the syntax \"<name> = {<value>}\"."
+     "(v='%s') t_header statement \"%s\" " \
+     "does not follow the syntax \"<name> = {<value>}\"."
 #define MSG_ERROR_INVALID_INDEX \
      "Invalid n-th index n=%d"
 #define MSG_ERROR_USAGE_OPTIONAL_DUPLICATE \
-     "Invalid '{' in the usage : no more than one optional arguments list is allowed"
+     "Invalid '{' in the usage : no more than one " \
+     "optional arguments list is allowed"
 #define MSG_ERROR_USAGE_OPTIONAL_NESTED \
      "Invalid '{' in the usage : already inside an optional arguments list"
 #define MSG_ERROR_USAGE_OPTIONAL_OUTSIDE \
@@ -43,27 +46,38 @@
 #define MSG_ERROR_CID \
     "C_id not found in \"%s\""
 #define MSG_ERROR_CID_FIELD \
-    "Invalid field following C_id=\"%s\" in \"%s\"\nExpecting void or optional interval [Min, Max]."
+    "Invalid field following C_id=\"%s\" in \"%s\"\n" \
+    "Expecting void or optional interval [Min, Max]."
 #define MSG_ERROR_CID_FIELD2 \
     "Invalid field \"%s\" following interval (%s, %s) of C_id=\"%s\" in \"%s\"."
 #define MSG_ERROR_DEFAULT_FIELD_BRACKET \
-    "Invalid default value field in \"%s\".\nThis string does not end with ']'."
+    "Invalid default value field in \"%s\".\n" \
+    "This string does not end with ']'."
 #define MSG_ERROR_DEFAULT_FIELD_SYNTAX \
-    "Invalid default value field in \"%s]\".\nThis string does not follow the syntax [H_id=Val]."
+    "Invalid default value field in \"%s]\".\n" \
+    "This string does not follow the syntax [H_id=Val]."
 #define MSG_ERROR_OPTION_THIRD_LETTER \
-    "Invalid option field in \"%s\".\nThird letter : expecting \"'\" character instead of \"%c\".\nPossible error : user's options of more than one character are not allowed."
+    "Invalid option field in \"%s\".\n" \
+    "Third letter : expecting \"'\" character instead of \"%c\".\n" \
+    "Possible error : user's options of more than one character " \
+    "are not allowed."
 #define MSG_ERROR_OPTION_ARG_LIST \
-    "Invalid option occurrence in \"%s\".\nOptions are not allowed inside an optional argument list."
+    "Invalid option occurrence in \"%s\".\n" \
+    "Options are not allowed inside an optional argument list."
 #define MSG_ERROR_OPTION_FOURTH_LETTER \
-    "Invalid option field in \"%s\".\nFourth letter : expecting \":\" or end of char instead of \"%c\"."
+    "Invalid option field in \"%s\".\n" \
+    "Fourth letter : expecting \":\" or end of char instead of \"%c\"."
 #define MSG_ERROR_INVALID_FIELD \
     "Invalid variable argument field (...) in \"%s\"."
 #define MSG_ERROR_INVALID_VARIABLE \
-    "Invalid variable argument occurrence in \"%s\".\nVariable arguments are not allowed inside an optional argument list."
+    "Invalid variable argument occurrence in \"%s\".\n" \
+    "Variable arguments are not allowed inside an optional argument list."
 #define MSG_ERROR_UNUSED_ARGUMENT \
-    "Invalid notused occurrence in \"%s\".\nUnused arguments are not allowed inside an optional argument list."
+    "Invalid notused occurrence in \"%s\".\n" \
+    "Unused arguments are not allowed inside an optional argument list."
 #define MSG_ERROR_DEFAULT_VALUES \
-    "Invalid default value occurrence in \"%s\".\nDefault values are not allowed with needed arguments."
+    "Invalid default value occurrence in \"%s\".\n" \
+    "Default values are not allowed with needed arguments."
 #define MSG_ERROR_DUPLICATE_NAME \
     "Duplicate name statement (previous name is \"%s\") !"
 #define MSG_ERROR_LIMIT \
@@ -106,7 +120,6 @@
     "Comment's string \"%s\" in usage exceeds maximum size length of %d char."
 #define MSG_ERROR_MEMORY \
     "Not enough memory for a new usage statement"
-
 #define MSG_DEBUG_GETUSAGESPEC \
      "[GetUsageSpec] arg='%s' str='%s'"
 #define MSG_DEBUG_GETARGUSAGESPEC \
@@ -118,22 +131,22 @@
  * get from sentence <s>
  * a header statement of the form "<name> = { <value> }"
  */
-void GetHeaderStatement(char * s, char * name, char * value)
+void GetHeaderStatement(char *s, char *name, char *value)
 {
-     char v[STRSIZE];
+    char v[STRSIZE];
 
-     * name  = '\0';
-     * v     = '\0';
-     * value = '\0';
+    *name = '\0';
+    *v = '\0';
+    *value = '\0';
 
-     if ((sscanf(s, "%[a-z]=%[^\n]",   name, v) != 2) && \
-         (sscanf(s, "%[a-z] =%[^\n]",  name, v) != 2) && \
-         (sscanf(s, "%[a-z]= %[^\n]",  name, v) != 2) && \
-         (sscanf(s, "%[a-z] = %[^\n]", name, v) != 2))
-          error(MSG_ERROR_HEADER_SYNTAX_SSCANF, s);
+    if ((sscanf(s, "%[a-z]=%[^\n]", name, v) != 2) &&
+        (sscanf(s, "%[a-z] =%[^\n]", name, v) != 2) &&
+        (sscanf(s, "%[a-z]= %[^\n]", name, v) != 2) &&
+        (sscanf(s, "%[a-z] = %[^\n]", name, v) != 2))
+        error(MSG_ERROR_HEADER_SYNTAX_SSCANF, s);
 
-     if (removebraces(v, value) != 1)
-          error(MSG_ERROR_HEADER_SYNTAX_BRACES, v, s);
+    if (removebraces(v, value) != 1)
+        error(MSG_ERROR_HEADER_SYNTAX_BRACES, v, s);
 }
 
 /*
@@ -142,110 +155,109 @@ void GetHeaderStatement(char * s, char * name, char * value)
  * and put it in <arg>, <str>.
  * return 1 if found, 0 elsewhere (no more usage spec.)
  */
-static int GetUsageSpec(char * s, size_t n, \
-                        /*@out@*/ char * arg, /*@out@*/ char * str)
+static int GetUsageSpec(char *s, size_t n,
+                        /*@out@ */ char *arg, /*@out@ */ char *str)
 {
-     size_t i, l, i0, i1, q0, q1;
-     char us[STRSIZE];
+    size_t i, l, i0, i1, q0, q1;
+    char us[STRSIZE];
 
-     arg[0] = '\0';
-     str[0] = '\0';
+    arg[0] = '\0';
+    str[0] = '\0';
 
-     /*
-      * n-th spec. begins
-      * after the (n-1)-th '", ' or '" , ' or '}, ' or '} , '
-      * the two last cases corresponding to an usage spec.
-      * following an optional argument list.
-      */
-     i0 = 0;
-     for (i = 1; i < n; i++)
-     {
-     notasep0:
-          while ((s[i0] != '\0') && (s[i0] != ','))
-               i0++;
-          if ((i0<2) || (s[i0]=='\0'))
-               return 0;
-          if ((s[i0-1] != '"') && (s[i0-1] != '}') &&  \
-              (((s[i0-1] != ' ') || ((s[i0-2]!='"') && \
-                                     (s[i0-2]!='}')))))
-          {
-               i0++;
-               goto notasep0;
-          }
-          i0++;
-          if (s[i0] == '\0')
-               return 0;
-     }
-     while ((s[i0] != '\0') && (s[i0] == ' '))
-          i0++;
-     if (s[i0] == '\0')
-          return 0;
+    /*
+     * n-th spec. begins
+     * after the (n-1)-th '", ' or '" , ' or '}, ' or '} , '
+     * the two last cases corresponding to an usage spec.
+     * following an optional argument list.
+     */
+    i0 = 0;
+    for (i = 1; i < n; i++)
+    {
+      notasep0:
+        while ((s[i0] != '\0') && (s[i0] != ','))
+            i0++;
+        if ((i0 < 2) || (s[i0] == '\0'))
+            return 0;
+        if ((s[i0 - 1] != '"') && (s[i0 - 1] != '}') &&
+            (((s[i0 - 1] != ' ') || ((s[i0 - 2] != '"') &&
+                                     (s[i0 - 2] != '}')))))
+        {
+            i0++;
+            goto notasep0;
+        }
+        i0++;
+        if (s[i0] == '\0')
+            return 0;
+    }
+    while ((s[i0] != '\0') && (s[i0] == ' '))
+        i0++;
+    if (s[i0] == '\0')
+        return 0;
 
-     if (s[i0] == '{')
-     {
-          /* open optional arguments list */
-          if (inside_optionarg < 0)
-               error(MSG_ERROR_USAGE_OPTIONAL_DUPLICATE);
-          if (inside_optionarg >= 1)
-               error(MSG_ERROR_USAGE_OPTIONAL_NESTED);
-          inside_optionarg = 1;
-          i0++;
-     }
+    if (s[i0] == '{')
+    {
+        /* open optional arguments list */
+        if (inside_optionarg < 0)
+            error(MSG_ERROR_USAGE_OPTIONAL_DUPLICATE);
+        if (inside_optionarg >= 1)
+            error(MSG_ERROR_USAGE_OPTIONAL_NESTED);
+        inside_optionarg = 1;
+        i0++;
+    }
 
-     /* seek the right ', ' or end of <s> */
-     i1 = i0;
-notasep1:
-     while ((s[i1] != '\0') && (s[i1] != ',') && (s[i1] != '}'))
-          i1++;
-     if ((s[i1-1] != '"') && (((s[i1-1] != ' ') || (s[i1-2] != '"'))))
-     {
-          i1++;
-          goto notasep1;
-     }
-     if (s[i1] == '}')
-     /* close optional arguments list */
-     {
-          if (inside_optionarg != 1)
-               error(MSG_ERROR_USAGE_OPTIONAL_OUTSIDE);
-          /* this n-th arg is the last optional argument */
-          inside_optionarg = 2;
-     }
-     i1--;
+    /* seek the right ', ' or end of <s> */
+    i1 = i0;
+  notasep1:
+    while ((s[i1] != '\0') && (s[i1] != ',') && (s[i1] != '}'))
+        i1++;
+    if ((s[i1 - 1] != '"') && (((s[i1 - 1] != ' ') || (s[i1 - 2] != '"'))))
+    {
+        i1++;
+        goto notasep1;
+    }
+    if (s[i1] == '}')
+        /* close optional arguments list */
+    {
+        if (inside_optionarg != 1)
+            error(MSG_ERROR_USAGE_OPTIONAL_OUTSIDE);
+        /* this n-th arg is the last optional argument */
+        inside_optionarg = 2;
+    }
+    i1--;
 
-     /* now the n-th usage spec. is in s[i0]...s[i1] */
-     l = i1 - i0 + 1;
-     strncpy(us, &s[i0], l);
-     us[l] = '\0';
+    /* now the n-th usage spec. is in s[i0]...s[i1] */
+    l = i1 - i0 + 1;
+    strncpy(us, &s[i0], l);
+    us[l] = '\0';
 
-     /* seek the left '"' */
-     q0 = 0;
-     while ((q0 < l-1) && (us[q0] != '"'))
-          q0++;
-     q0++;
-     if (q0 >= l-1)
-       error(MSG_ERROR_USAGE_LEFT_QUOTES, us);
-     q1 = q0;
-     while ((q1 < l) && (us[q1] != '"'))
-          q1++;
-     if (us[q1] != '"')
-          error(MSG_ERROR_USAGE_RIGHT_QUOTES, us);
-     q1--;
+    /* seek the left '"' */
+    q0 = 0;
+    while ((q0 < l - 1) && (us[q0] != '"'))
+        q0++;
+    q0++;
+    if (q0 >= l - 1)
+        error(MSG_ERROR_USAGE_LEFT_QUOTES, us);
+    q1 = q0;
+    while ((q1 < l) && (us[q1] != '"'))
+        q1++;
+    if (us[q1] != '"')
+        error(MSG_ERROR_USAGE_RIGHT_QUOTES, us);
+    q1--;
 
-     for (i = 0; i < q0 - 1; i++)
-          arg[i] = us[i];
-     arg[i] = '\0';
-     for (i = q0; i <= q1; i++)
-          str[i - q0] = us[i];
-     str[i - q0] = '\0';
+    for (i = 0; i < q0 - 1; i++)
+        arg[i] = us[i];
+    arg[i] = '\0';
+    for (i = q0; i <= q1; i++)
+        str[i - q0] = us[i];
+    str[i - q0] = '\0';
 
-     removespaces(arg);
+    removespaces(arg);
 
-     if (debug_flag)
-          debug(MSG_DEBUG_GETUSAGESPEC, arg, str);
+    if (debug_flag)
+        debug(MSG_DEBUG_GETUSAGESPEC, arg, str);
 
-     return 1 ;
+    return 1;
 }
-
 
 /*
  * get from arg usage value <s>
@@ -255,75 +267,73 @@ notasep1:
  * return READ if the arrow is -> (input arg)
  * or WRITE if the arrow is <- (output arg).
  */
-static int GetArgUsageSpec(char * s, \
-                           /*@out@*/ char * left, /*@out@*/ char * right)
+static int GetArgUsageSpec(char *s,
+                           /*@out@ */ char *left, /*@out@ */ char *right)
 {
-     size_t i;
-     int rw;
+    size_t i;
+    int rw;
 
-     left[0]  = '\0';
-     right[0] = '\0';
+    left[0] = '\0';
+    right[0] = '\0';
 
-     /* seek the arrow */
-     i = 1;
+    /* seek the arrow */
+    i = 1;
 
-notanarrow:
-     while ((s[i] != '\0') && (s[i] != '-') && (s[i] != '<'))
-          i++;
-     if ((s[i] == '\0') || (s[i + 1] == '\0'))
-          error(MSG_ERROR_ARROW, s);
+  notanarrow:
+    while ((s[i] != '\0') && (s[i] != '-') && (s[i] != '<'))
+        i++;
+    if ((s[i] == '\0') || (s[i + 1] == '\0'))
+        error(MSG_ERROR_ARROW, s);
 
-     if ((s[i] == '-') && (s[i + 1] == '>'))
-          rw = READ;
-     else
-          if ((s[i] == '<') && (s[i + 1] == '-'))
-               rw = WRITE;
-          else
-          {
-               i++;
-               goto notanarrow;
-          }
+    if ((s[i] == '-') && (s[i + 1] == '>'))
+        rw = READ;
+    else if ((s[i] == '<') && (s[i + 1] == '-'))
+        rw = WRITE;
+    else
+    {
+        i++;
+        goto notanarrow;
+    }
 
+    strncpy(left, s, i);
+    left[i] = '\0';
+    strcpy(right, &s[i + 2]);
 
-     strncpy(left, s, i);
-     left[i] = '\0';
-     strcpy(right, &s[i + 2]);
+    removespaces(left);
+    removespaces(right);
 
-     removespaces(left);
-     removespaces(right);
+    if (debug_flag)
+        debug(MSG_DEBUG_GETARGUSAGESPEC, left, right, rw);
 
-     if (debug_flag)
-          debug(MSG_DEBUG_GETARGUSAGESPEC, left, right, rw);
-
-     return rw;
+    return rw;
 }
-
 
 /*
  * analyse right part of the arg usage value
  * (as returned in <right> by GetArgUsageSpec()).
  * from <s> get <Cid> (needed) and optionally <ictype>, <min>, <max>.
  */
-static void AnalyseRightArgUsage(char * s, char * Cid, int * ictype,
-                          char * min, char * max)
+static void AnalyseRightArgUsage(char *s, char *Cid, int *ictype,
+                                 char *min, char *max)
 {
-     int i, j;
+    int i, j;
 
-     i = getCid(s, Cid);
-     if (i == 0) error(MSG_ERROR_CID, s);
-     * ictype = getInterval(&s[i], min, max, &j);
+    i = getCid(s, Cid);
+    if (i == 0)
+        error(MSG_ERROR_CID, s);
+    *ictype = getInterval(&s[i], min, max, &j);
 
-     /* check that nothing is following */
-     if (* ictype == NONE)
-     {
-          if (s[i] != '\0')
-               error(MSG_ERROR_CID_FIELD, Cid, s);
-     }
-     else
-     {
-          if (s[i + j] != '\0')
-               error(MSG_ERROR_CID_FIELD2, &s[j], min, max, Cid, s);
-     }
+    /* check that nothing is following */
+    if (*ictype == NONE)
+    {
+        if (s[i] != '\0')
+            error(MSG_ERROR_CID_FIELD, Cid, s);
+    }
+    else
+    {
+        if (s[i + j] != '\0')
+            error(MSG_ERROR_CID_FIELD2, &s[j], min, max, Cid, s);
+    }
 }
 
 /*
@@ -331,334 +341,317 @@ static void AnalyseRightArgUsage(char * s, char * Cid, int * ictype,
  * return 1 (and fill <hid>, <val>)
  * if the input <s> follows this syntax, 0 or generate error elsewhere.
  */
-static int GetDefaultInputValue(char * s, char * hid, char * val)
+static int GetDefaultInputValue(char *s, char *hid, char *val)
 {
-     size_t l;
+    size_t l;
 
-     removespaces(s);
-     if (s[0] != '[')
-          return 0;
-     l = strlen(s);
-     if (s[l - 1] != ']')
-          error(MSG_ERROR_DEFAULT_FIELD_BRACKET, s);
-     s[l - 1] = '\0';
+    removespaces(s);
+    if (s[0] != '[')
+        return 0;
+    l = strlen(s);
+    if (s[l - 1] != ']')
+        error(MSG_ERROR_DEFAULT_FIELD_BRACKET, s);
+    s[l - 1] = '\0';
 
-     if (sscanf(s, "[%[^=]=%[^\n]", hid, val) != 2)
-          error(MSG_ERROR_DEFAULT_FIELD_SYNTAX, s);
+    if (sscanf(s, "[%[^=]=%[^\n]", hid, val) != 2)
+        error(MSG_ERROR_DEFAULT_FIELD_SYNTAX, s);
 
-     removespaces(hid);
-     removespaces(val);
-     /*  printf("[GetDefaultInputValue] hid=\"%s\" val=\"%s\"\n", hid, val);*/
+    removespaces(hid);
+    removespaces(val);
+    /*  printf("[GetDefaultInputValue] hid=\"%s\" val=\"%s\"\n", hid, val); */
 
-     return 1;
+    return 1;
 }
-
 
 /*
  * analyse left part of the arg usage value
  * (as returned in <left> by GetArgUsageSpec()).
  * from <s> get <atype>, <flg>, <hid>, <val>.
  */
-static void AnalyseLeftArgUsage(char * s, int * atype, char * flg,
-                         char * hid, char * val)
+static void AnalyseLeftArgUsage(char *s, int *atype, char *flg,
+                                char *hid, char *val)
 {
-     char t[STRSIZE];
+    char t[STRSIZE];
 
-     /* some possibilities may be determined from the first letter */
-     if (s[0] == '\'')
-     {
-          /* must be an option */
-          if (s[2] != '\'')
-               error(MSG_ERROR_OPTION_THIRD_LETTER, s, s[2]);
-          if (inside_optionarg>0)
-               error(MSG_ERROR_OPTION_ARG_LIST, s);
+    /* some possibilities may be determined from the first letter */
+    if (s[0] == '\'')
+    {
+        /* must be an option */
+        if (s[2] != '\'')
+            error(MSG_ERROR_OPTION_THIRD_LETTER, s, s[2]);
+        if (inside_optionarg > 0)
+            error(MSG_ERROR_OPTION_ARG_LIST, s);
 
-          * atype = OPTION;
-          * flg = s[1];
-          if ((s[3] != ':') && (s[3] != '\0'))
-               error(MSG_ERROR_OPTION_FOURTH_LETTER, s, s[3]);
-          if (s[3] == ':')
-          {
-               /* option with input value */
-               strcpy(t, &s[4]);
-               if (GetDefaultInputValue(t, hid, val)!=1)
-                    /*
-                     * option with NO default input value :
-                     * remaining text is assumed to be hid only
-                     */
-                    strcpy(hid, t);
-          }
-          return;
-     }
+        *atype = OPTION;
+        *flg = s[1];
+        if ((s[3] != ':') && (s[3] != '\0'))
+            error(MSG_ERROR_OPTION_FOURTH_LETTER, s, s[3]);
+        if (s[3] == ':')
+        {
+            /* option with input value */
+            strcpy(t, &s[4]);
+            if (GetDefaultInputValue(t, hid, val) != 1)
+                /*
+                 * option with NO default input value :
+                 * remaining text is assumed to be hid only
+                 */
+                strcpy(hid, t);
+        }
+        return;
+    }
 
-     if (s[0]=='.')
-     {
-          /* must be a variable argument */
-          if ((s[1] != '.') || (s[2] != '.') || (s[3] != '\0'))
-               error(MSG_ERROR_INVALID_FIELD, s);
-          if (inside_optionarg > 0)
-               error(MSG_ERROR_INVALID_VARIABLE, s);
-          * atype = VARARG;
-          return;
-     }
+    if (s[0] == '.')
+    {
+        /* must be a variable argument */
+        if ((s[1] != '.') || (s[2] != '.') || (s[3] != '\0'))
+            error(MSG_ERROR_INVALID_FIELD, s);
+        if (inside_optionarg > 0)
+            error(MSG_ERROR_INVALID_VARIABLE, s);
+        *atype = VARARG;
+        return;
+    }
 
-     if (strcmp(s, "notused") == 0)
-     {
-          /* unused argument */
-          if (inside_optionarg > 0)
-               error(MSG_ERROR_UNUSED_ARGUMENT, s);
-          * atype = NOTUSEDARG;
-          return;
-     }
+    if (strcmp(s, "notused") == 0)
+    {
+        /* unused argument */
+        if (inside_optionarg > 0)
+            error(MSG_ERROR_UNUSED_ARGUMENT, s);
+        *atype = NOTUSEDARG;
+        return;
+    }
 
-     /*
-      * now, only two possibilities :
-      * needed or optional arg, the only difference being that
-      * with needed arg input value is not allowed.
-      */
-     strcpy(t, s);
-     if (GetDefaultInputValue(t, hid, val) == 1)
-     {
-          if (inside_optionarg <= 0)
-               error(MSG_ERROR_DEFAULT_VALUES, s);
-          * atype = OPTIONARG;
-          return;
-     }
-     /*
-      * argument with NO default input value :
-      * remaining text is assumed to be hid only
-      */
-     strcpy(hid, s);
-     if (inside_optionarg > 0)
-          * atype = OPTIONARG;
-     else
-          * atype = NEEDEDARG;
+    /*
+     * now, only two possibilities :
+     * needed or optional arg, the only difference being that
+     * with needed arg input value is not allowed.
+     */
+    strcpy(t, s);
+    if (GetDefaultInputValue(t, hid, val) == 1)
+    {
+        if (inside_optionarg <= 0)
+            error(MSG_ERROR_DEFAULT_VALUES, s);
+        *atype = OPTIONARG;
+        return;
+    }
+    /*
+     * argument with NO default input value :
+     * remaining text is assumed to be hid only
+     */
+    strcpy(hid, s);
+    if (inside_optionarg > 0)
+        *atype = OPTIONARG;
+    else
+        *atype = NEEDEDARG;
 }
-
 
 /*
  * add name statement to the header tree
  */
-static void AddNameStatement(char * value)
+static void AddNameStatement(char *value)
 {
 
-     if (H->Name[0] != '\0')
-          error(MSG_ERROR_DUPLICATE_NAME, H->Name);
-     if (strlen(value) >= TREESTRSIZE)
-          error(MSG_ERROR_LIMIT, value, \
-          TREESTRSIZE - 1);
-     strcpy(H->Name, value);
+    if (H->Name[0] != '\0')
+        error(MSG_ERROR_DUPLICATE_NAME, H->Name);
+    if (strlen(value) >= TREESTRSIZE)
+        error(MSG_ERROR_LIMIT, value, TREESTRSIZE - 1);
+    strcpy(H->Name, value);
 
-     /* check whether or not this name matches the file name */
-     if (strcmp(H->Name, module_name) != 0)
-          error(MSG_ERROR_NAME, module_name);
+    /* check whether or not this name matches the file name */
+    if (strcmp(H->Name, module_name) != 0)
+        error(MSG_ERROR_NAME, module_name);
 }
-
 
 /*
  * add author statement to the header tree
  */
-static void AddAuthorStatement(char * value)
+static void AddAuthorStatement(char *value)
 {
-     char v[STRSIZE];
+    char v[STRSIZE];
 
-     if (H->Author[0] != '\0')
-          error(MSG_ERROR_DUPLICATE_AUTHOR, H->Author);
-     if (getenclosedstring(value, v) != 1)
-          error(MSG_ERROR_AUTHOR_QUOTES);
+    if (H->Author[0] != '\0')
+        error(MSG_ERROR_DUPLICATE_AUTHOR, H->Author);
+    if (getenclosedstring(value, v) != 1)
+        error(MSG_ERROR_AUTHOR_QUOTES);
 
-     if (strlen(v) >= TREESTRSIZE)
-          error(MSG_ERROR_AUTHOR_LIMIT, v, TREESTRSIZE - 1);
+    if (strlen(v) >= TREESTRSIZE)
+        error(MSG_ERROR_AUTHOR_LIMIT, v, TREESTRSIZE - 1);
 
-     strcpy(H->Author, v);
+    strcpy(H->Author, v);
 }
 
 /*
  * add version statement to the header tree
  */
-static void AddVersionStatement(char * value)
+static void AddVersionStatement(char *value)
 {
-     char v[STRSIZE];
+    char v[STRSIZE];
 
-     if (H->Version[0] != '\0')
-          error(MSG_ERROR_DUPLICATE_VERSION, H->Version);
+    if (H->Version[0] != '\0')
+        error(MSG_ERROR_DUPLICATE_VERSION, H->Version);
 
-     if (getenclosedstring(value, v) != 1)
-          error(MSG_ERROR_VERSION_QUOTES);
+    if (getenclosedstring(value, v) != 1)
+        error(MSG_ERROR_VERSION_QUOTES);
 
-     if (strlen(v) >= TREESTRSIZE)
-          error(MSG_ERROR_VERSION_LIMIT, v, TREESTRSIZE - 1);
+    if (strlen(v) >= TREESTRSIZE)
+        error(MSG_ERROR_VERSION_LIMIT, v, TREESTRSIZE - 1);
 
-     strcpy(H->Version, v);
+    strcpy(H->Version, v);
 }
-
 
 /*
  * add function statement to the header tree
  */
-static void AddFunctionStatement(char * value)
+static void AddFunctionStatement(char *value)
 {
-     char v[STRSIZE];
+    char v[STRSIZE];
 
-     if (H->Function[0] != '\0')
-          error(MSG_ERROR_DUPLICATE_FUNCTION, H->Function);
+    if (H->Function[0] != '\0')
+        error(MSG_ERROR_DUPLICATE_FUNCTION, H->Function);
 
-     if (getenclosedstring(value, v) != 1)
-          error(MSG_ERROR_FUNCTION_QUOTES);
+    if (getenclosedstring(value, v) != 1)
+        error(MSG_ERROR_FUNCTION_QUOTES);
 
-     if (strlen(v) >= TREESTRSIZE)
-          error(MSG_ERROR_FUNCTION_LIMIT, v, TREESTRSIZE - 1);
+    if (strlen(v) >= TREESTRSIZE)
+        error(MSG_ERROR_FUNCTION_LIMIT, v, TREESTRSIZE - 1);
 
-     strcpy(H->Function, v);
+    strcpy(H->Function, v);
 }
-
 
 /*
  * add labo statement to the header tree
  */
 /* TODO: s/labo/orga/ */
-static void AddLaboStatement(char * value)
+static void AddLaboStatement(char *value)
 {
-     char v[STRSIZE];
+    char v[STRSIZE];
 
-     if (H->Labo[0] != '\0')
-          error(MSG_ERROR_DUPLICATE_LABO, H->Labo);
-     if (getenclosedstring(value, v) != 1)
-          error(MSG_ERROR_LABO_QUOTES);
+    if (H->Labo[0] != '\0')
+        error(MSG_ERROR_DUPLICATE_LABO, H->Labo);
+    if (getenclosedstring(value, v) != 1)
+        error(MSG_ERROR_LABO_QUOTES);
 
-     if (strlen(v) >= TREESTRSIZE)
-          error(MSG_ERROR_LABO_LIMIT, v, TREESTRSIZE - 1);
+    if (strlen(v) >= TREESTRSIZE)
+        error(MSG_ERROR_LABO_LIMIT, v, TREESTRSIZE - 1);
 
-     strcpy(H->Labo, v);
+    strcpy(H->Labo, v);
 }
-
 
 /*
  * add group statement to the header tree
  */
 /* TODO: s/group/team/ */
-static void AddGroupStatement(char * value)
+static void AddGroupStatement(char *value)
 {
-     char v[STRSIZE];
+    char v[STRSIZE];
 
-     if (H->Group[0] != '\0')
-          error(MSG_ERROR_DUPLICATE_GROUP, H->Group);
-     if (getenclosedstring(value, v) != 1)
-          error(MSG_ERROR_GROUP_QUOTES);
+    if (H->Group[0] != '\0')
+        error(MSG_ERROR_DUPLICATE_GROUP, H->Group);
+    if (getenclosedstring(value, v) != 1)
+        error(MSG_ERROR_GROUP_QUOTES);
 
-     if (strlen(v) >= TREESTRSIZE)
-          error(MSG_ERROR_GROUP_LIMIT, v, TREESTRSIZE - 1);
+    if (strlen(v) >= TREESTRSIZE)
+        error(MSG_ERROR_GROUP_LIMIT, v, TREESTRSIZE - 1);
 
-     strcpy(H->Group, v);
+    strcpy(H->Group, v);
 
-     /* check whether or not this group matches group_name */
-     if (strcmp(H->Group, group_name) != 0)
-          error(MSG_ERROR_GROUP, group_name);
+    /* check whether or not this group matches group_name */
+    if (strcmp(H->Group, group_name) != 0)
+        error(MSG_ERROR_GROUP, group_name);
 }
-
 
 /*
  * add usage statement to the header tree
  */
-static void AddUsageStatement(char * value)
+static void AddUsageStatement(char *value)
 {
-     size_t n;
-     char arg[STRSIZE];
-     char str[STRSIZE];
-     char left[STRSIZE];
-     char right[STRSIZE];
-     t_argument * a, * a0;
+    size_t n;
+    char arg[STRSIZE];
+    char str[STRSIZE];
+    char left[STRSIZE];
+    char right[STRSIZE];
+    t_argument *a, *a0;
 
-     inside_optionarg = 0;
+    inside_optionarg = 0;
 
-     n = 1;
-     a0 = NULL;
-     while (GetUsageSpec(value, n, arg, str) == 1)
-     {
-          if (strlen(str) >= TREESTRSIZE)
-               error(MSG_ERROR_COMMENT_LIMIT, str, TREESTRSIZE-1);
+    n = 1;
+    a0 = NULL;
+    while (GetUsageSpec(value, n, arg, str) == 1)
+    {
+        if (strlen(str) >= TREESTRSIZE)
+            error(MSG_ERROR_COMMENT_LIMIT, str, TREESTRSIZE - 1);
 
-          a = new_arg();
-          if (a == NULL)
-               error(MSG_ERROR_MEMORY);
-          if (a0 == NULL)
-               H->usage = a;
-          else
-          {
-               a0->next = a;
-               a->previous = a0;
-          }
-          a0 = a;
+        a = new_arg();
+        if (a == NULL)
+            error(MSG_ERROR_MEMORY);
+        if (a0 == NULL)
+            H->usage = a;
+        else
+        {
+            a0->next = a;
+            a->previous = a0;
+        }
+        a0 = a;
 
-          /* set arg fields Cmt, IOtype */
-          strcpy(a->Cmt, str);
-          a->IOtype = GetArgUsageSpec(arg, left, right);
+        /* set arg fields Cmt, IOtype */
+        strcpy(a->Cmt, str);
+        a->IOtype = GetArgUsageSpec(arg, left, right);
 
-          /*
-           * analyse right portion of the arg usage description.
-           * set the following arg fields :
-           * ICtype, C_id, Min, Max
-           */
-          AnalyseRightArgUsage(right, a->C_id, &(a->ICtype), a->Min, a->Max);
+        /*
+         * analyse right portion of the arg usage description.
+         * set the following arg fields :
+         * ICtype, C_id, Min, Max
+         */
+        AnalyseRightArgUsage(right, a->C_id, &(a->ICtype), a->Min, a->Max);
 
-          /*
-           * analyse left portion of the arg usage description.
-           * set the following arg fields :
-           * Atype, Flag, H_id, Val
-           */
-          AnalyseLeftArgUsage(left, &(a->Atype), &(a->Flag), a->H_id, a->Val);
+        /*
+         * analyse left portion of the arg usage description.
+         * set the following arg fields :
+         * Atype, Flag, H_id, Val
+         */
+        AnalyseLeftArgUsage(left, &(a->Atype), &(a->Flag), a->H_id, a->Val);
 
-          /*
-           * remaining arg to set : Ctype, Vtype.
-           * To be completed when the C body would be parsed.
-           */
+        /*
+         * remaining arg to set : Ctype, Vtype.
+         * To be completed when the C body would be parsed.
+         */
 
-          /* Dump arg content for debug */
-          if (debug_flag)
-          {
-               char dump[STRSIZE] = "";
-               strdump_arg(dump, a);
-               debug(dump);
-          }
+        /* Dump arg content for debug */
+        if (debug_flag)
+        {
+            char dump[STRSIZE] = "";
+            strdump_arg(dump, a);
+            debug(dump);
+        }
 
-          n++;
-          if (inside_optionarg == 2)
-               /* does not allow new optional arguments list */
-               inside_optionarg =- 1;
-     }
+        n++;
+        if (inside_optionarg == 2)
+            /* does not allow new optional arguments list */
+            inside_optionarg = -1;
+    }
 }
-
-
 
 /*
  * analyse the current header statement and add it to the header tree
  */
-void AnalyseHeaderStatement(char * argclass, char * value)
+void AnalyseHeaderStatement(char *argclass, char *value)
 {
-     if (debug_flag)
-          debug(MSG_DEBUG_ANALYSEHEADERSTATEMENT, argclass, value);
+    if (debug_flag)
+        debug(MSG_DEBUG_ANALYSEHEADERSTATEMENT, argclass, value);
 
-     if (strcmp(argclass, "name") == 0)
-          AddNameStatement(value);
-     else
-          if (strcmp(argclass, "author") == 0)
-               AddAuthorStatement(value);
-          else
-               if (strcmp(argclass, "version") == 0)
-                    AddVersionStatement(value);
-               else
-                    if (strcmp(argclass, "function") == 0)
-                         AddFunctionStatement(value);
-                    else
-                         if (strcmp(argclass, "labo") == 0)
-                              AddLaboStatement(value);
-                         else
-                              if (strcmp(argclass, "group") == 0)
-                                   AddGroupStatement(value);
-                              else
-                                   if (strcmp(argclass, "usage") == 0)
-                                        AddUsageStatement(value);
-                                   else
-                                        error(MSG_ERROR_UNKNOWN_STATEMENT, \
-                                              argclass);
+    if (strcmp(argclass, "name") == 0)
+        AddNameStatement(value);
+    else if (strcmp(argclass, "author") == 0)
+        AddAuthorStatement(value);
+    else if (strcmp(argclass, "version") == 0)
+        AddVersionStatement(value);
+    else if (strcmp(argclass, "function") == 0)
+        AddFunctionStatement(value);
+    else if (strcmp(argclass, "labo") == 0)
+        AddLaboStatement(value);
+    else if (strcmp(argclass, "group") == 0)
+        AddGroupStatement(value);
+    else if (strcmp(argclass, "usage") == 0)
+        AddUsageStatement(value);
+    else
+        error(MSG_ERROR_UNKNOWN_STATEMENT, argclass);
 }

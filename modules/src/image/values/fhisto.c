@@ -29,79 +29,106 @@
 
 #define DEFAULT_NUMBER_OF_CELLS 100
 
-Fsignal fhisto(Fimage in, Fsignal out, float *l, float *r, int *n, float *s, char *t, Fimage w)
+Fsignal fhisto(Fimage in, Fsignal out, float *l, float *r, int *n, float *s,
+               char *t, Fimage w)
 {
-  float min,max,size=0.0,v;
-  int num,i,cell;
+    float min, max, size = 0.0, v;
+    int num, i, cell;
 
-  /* compute min and max */
-  min = max = in->gray[0];
-  for (i = in->nrow*in->ncol;i--;) {
-    v=in->gray[i];
-    if (v<min) min=v;
-    if (v>max) max=v;
-  }
-
-  /* default */
-  if (l) min = *l;
-  if (r) max = *r;
-  if (n) num = *n; else {
-    if (s) {
-      size = *s;
-      num = (int)(0.5+(max-min)/size);
-      if (num<=0) num=1;
-    } else num = DEFAULT_NUMBER_OF_CELLS;
-  }
-  if (!s) size = (max-min)/(float)num;
-
-  switch ((l?1:0) + (r?1:0) + (n?1:0) + (s?1:0)) {
-
-  case 0: 
-    break;
-
-  case 1:
-    if (s) {
-      min = size * floor((double)(min/size));
-      num = 1 + floor((double)((max-min)/size));
-    } 
-    break;
-    
-  case 2: 
-    if (n && s) 
-      mwerror(USAGE,1,"You cannot use only -n and -s options together\n");
-    break;
-      
-  case 3: 
-    if (!l) min = max-(float)num*size;
-    if (!r) max = min+(float)num*size;
-    if (!n) {
-      size = (max-min)/(float)(num);
-      if (size!=*s) 
-	mwerror(WARNING,0,"cell size changed to match interval bounds\n");
+    /* compute min and max */
+    min = max = in->gray[0];
+    for (i = in->nrow * in->ncol; i--;)
+    {
+        v = in->gray[i];
+        if (v < min)
+            min = v;
+        if (v > max)
+            max = v;
     }
-    break;
-    
-  default: 
-    mwerror(USAGE,1,"You cannot use the 4 options -l -r -n and -s together\n");
-  }
 
-  /* prepare output */
-  out = mw_change_fsignal(out,num);
-  if (!out) mwerror(FATAL,1,"Not enough memory\n");
-  mw_clear_fsignal(out,0.0);
-  out->shift = min;
-  out->scale = size;
-
-  /* compute histogram */
-  for (i = in->nrow*in->ncol;i--;) {
-    cell = (in->gray[i]-min)/size;
-    if (t) {
-      if (cell<0) cell=0;
-      if (cell>=num) cell=num-1;
+    /* default */
+    if (l)
+        min = *l;
+    if (r)
+        max = *r;
+    if (n)
+        num = *n;
+    else
+    {
+        if (s)
+        {
+            size = *s;
+            num = (int) (0.5 + (max - min) / size);
+            if (num <= 0)
+                num = 1;
+        }
+        else
+            num = DEFAULT_NUMBER_OF_CELLS;
     }
-    if (cell>=0 && cell<num) out->values[cell] += (w?w->gray[i]:1.);
-  }
+    if (!s)
+        size = (max - min) / (float) num;
 
-  return(out);
+    switch ((l ? 1 : 0) + (r ? 1 : 0) + (n ? 1 : 0) + (s ? 1 : 0))
+    {
+
+    case 0:
+        break;
+
+    case 1:
+        if (s)
+        {
+            min = size * floor((double) (min / size));
+            num = 1 + floor((double) ((max - min) / size));
+        }
+        break;
+
+    case 2:
+        if (n && s)
+            mwerror(USAGE, 1,
+                    "You cannot use only -n and -s options together\n");
+        break;
+
+    case 3:
+        if (!l)
+            min = max - (float) num *size;
+        if (!r)
+            max = min + (float) num *size;
+        if (!n)
+        {
+            size = (max - min) / (float) (num);
+            if (size != *s)
+                mwerror(WARNING, 0,
+                        "cell size changed to match interval bounds\n");
+        }
+        break;
+
+    default:
+        mwerror(USAGE, 1,
+                "You cannot use the 4 options -l -r -n and -s together\n");
+    }
+
+    /* prepare output */
+    out = mw_change_fsignal(out, num);
+    if (!out)
+        mwerror(FATAL, 1, "Not enough memory\n");
+    mw_clear_fsignal(out, 0.0);
+    out->shift = min;
+    out->scale = size;
+
+    /* compute histogram */
+    for (i = in->nrow * in->ncol; i--;)
+    {
+        cell = (in->gray[i] - min) / size;
+        if (t)
+        {
+            if (cell < 0)
+                cell = 0;
+            if (cell >= num)
+                cell = num - 1;
+        }
+        if (cell >= 0 && cell < num)
+            out->values[cell] += (w ? w->gray[i] : 1.);
+    }
+
+    return (out);
 }
-

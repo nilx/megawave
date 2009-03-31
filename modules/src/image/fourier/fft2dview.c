@@ -26,58 +26,77 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-#include "mw-modules.h" /* for fhamming(), fft2d(), fft2dpol(), fview() */
+#include "mw-modules.h"
+/* for fhamming(), fft2d(), fft2dpol(), fview() */
 
-void fft2dview(int *type, char *h_flag, Fimage in, Fimage out, char *i_flag, float *d)
+void fft2dview(int *type, char *h_flag, Fimage in, Fimage out, char *i_flag,
+               float *d)
 {
-  Fimage      tmp;
-  int	      x,y,i,n,p,out_flag;
-  
+    Fimage tmp;
+    int x, y, i, n, p, out_flag;
+
   /*** for fview ***/
-  int         x0=50,y0=50,order=0;
-  float       zoom=1.0;
-  Wframe      *ImageWindow;
-  
-  out_flag = (out!=NULL);
-  
+    int x0 = 50, y0 = 50, order = 0;
+    float zoom = 1.0;
+    Wframe *ImageWindow;
+
+    out_flag = (out != NULL);
+
   /*** Prepare input image (hamming) ***/
-  n = in->nrow;
-  p = in->ncol;
-  tmp = mw_change_fimage(NULL,n,p);
-  if (!tmp) mwerror(FATAL,1,"Not enough memory\n");
-  if (h_flag) fhamming(in,tmp); else mw_copy_fimage(in,tmp);
-  
+    n = in->nrow;
+    p = in->ncol;
+    tmp = mw_change_fimage(NULL, n, p);
+    if (!tmp)
+        mwerror(FATAL, 1, "Not enough memory\n");
+    if (h_flag)
+        fhamming(in, tmp);
+    else
+        mw_copy_fimage(in, tmp);
+
   /*** Compute desired part of FFT ***/
-  switch(*type) {
-    
-  case 0: fft2dpol( tmp,NULL,tmp ,NULL,i_flag); break;
-  case 1: fft2dpol( tmp,NULL,NULL,tmp ,i_flag); break;
-  case 2: fft2d(    tmp,NULL,tmp ,NULL,i_flag); break;
-  case 3: fft2d(    tmp,NULL,NULL,tmp ,i_flag); break;
-  case 4: fft2dpol( tmp,NULL,tmp ,NULL,i_flag); 
-    for (i=n*p; i--; ) 
-      /* FIXME: replaced log1p(x) by log (1. + x), bad precision */
-      tmp->gray[i] = (float) log(1. + (double) tmp->gray[i]);
-    break;
-    
-  default: mwerror(FATAL,1,"Unrecognized argument value : type.");
-  }
-  
+    switch (*type)
+    {
+
+    case 0:
+        fft2dpol(tmp, NULL, tmp, NULL, i_flag);
+        break;
+    case 1:
+        fft2dpol(tmp, NULL, NULL, tmp, i_flag);
+        break;
+    case 2:
+        fft2d(tmp, NULL, tmp, NULL, i_flag);
+        break;
+    case 3:
+        fft2d(tmp, NULL, NULL, tmp, i_flag);
+        break;
+    case 4:
+        fft2dpol(tmp, NULL, tmp, NULL, i_flag);
+        for (i = n * p; i--;)
+            /* FIXME: replaced log1p(x) by log (1. + x), bad precision */
+            tmp->gray[i] = (float) log(1. + (double) tmp->gray[i]);
+        break;
+
+    default:
+        mwerror(FATAL, 1, "Unrecognized argument value : type.");
+    }
+
   /*** Center output ***/
-  out = mw_change_fimage(out,tmp->nrow,tmp->ncol);
-  if (!out) mwerror(FATAL,1,"Not enough memory\n");
-  for (x=0; x<p; x++)
-    for (y=0; y<n; y++) 
-      out->gray[((y+n/2)%n)*p+(x+p/2)%p] = tmp->gray[y*p+x];
+    out = mw_change_fimage(out, tmp->nrow, tmp->ncol);
+    if (!out)
+        mwerror(FATAL, 1, "Not enough memory\n");
+    for (x = 0; x < p; x++)
+        for (y = 0; y < n; y++)
+            out->gray[((y + n / 2) % n) * p + (x + p / 2) % p] =
+                tmp->gray[y * p + x];
 
-  if (!out_flag) {
-    ImageWindow = (Wframe *)
-      mw_get_window((Wframe *)NULL,out->ncol,out->nrow,x0,y0,out->name);
-    fview(out, &x0, &y0, &zoom, &order, NULL, ImageWindow,
-	  NULL, NULL, NULL, d);
-    mw_delete_fimage(out);
-  }
-  mw_delete_fimage(tmp);
-} 
-
- 
+    if (!out_flag)
+    {
+        ImageWindow = (Wframe *)
+            mw_get_window((Wframe *) NULL, out->ncol, out->nrow, x0, y0,
+                          out->name);
+        fview(out, &x0, &y0, &zoom, &order, NULL, ImageWindow, NULL, NULL,
+              NULL, d);
+        mw_delete_fimage(out);
+    }
+    mw_delete_fimage(tmp);
+}

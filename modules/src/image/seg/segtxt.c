@@ -3,7 +3,8 @@
  name = {segtxt};
  version = {"1.3"};
  author = {"Yann Guyonvarc'h"};
- function = {"Texture Segmentation using multi-scales multi-channels representation"};
+ function = {"Texture Segmentation using multi-scales
+             multi-channels representation"};
  usage = {
    'N':[N=1]->N      "# images per channel (for local scale value)",
    'S':[S=1]->S      "standard deviation of the smoothing filter",
@@ -24,15 +25,14 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-#include "mw-modules.h" /* msegct(), mschannel() */
+#include "mw-modules.h"         /* msegct(), mschannel() */
 
 Cimage segtxt(int *N, int *S, int *W, int *p, int *nr, Fimage in, Fmovie mov)
 {
-  float f;
-  int nbr;     /* not used by our application */
-  int sgrid=1; /* used to fix a bug in msegct default values */ 
- 
-  mschannel(N,S,W,p,in,mov);   
-  return(msegct(NULL,&sgrid,nr,NULL,NULL,NULL,&nbr,&f,mov));
- }
+    float f;
+    int nbr;                    /* not used by our application */
+    int sgrid = 1;              /* used to fix a bug in msegct default values */
 
+    mschannel(N, S, W, p, in, mov);
+    return (msegct(NULL, &sgrid, nr, NULL, NULL, NULL, &nbr, &f, mov));
+}

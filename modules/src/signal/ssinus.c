@@ -23,21 +23,15 @@
 
 void ssinus(int *size, float *A, float *D, Fsignal signal)
 {
-  int i;
+    int i;
 
-  signal = mw_change_fsignal(signal, *size);
-  if (signal == NULL) mwerror(FATAL,1,"Not enough memory.");
+    signal = mw_change_fsignal(signal, *size);
+    if (signal == NULL)
+        mwerror(FATAL, 1, "Not enough memory.");
 
-  strcpy(signal->cmt,"Sine");
+    strcpy(signal->cmt, "Sine");
 
-  for(i = 0; i< *size; i++)
-    signal->values[i] = (float)
-      *A * sin((2.0* *D * i / (*size) - *D)*2.0*M_PI);
+    for (i = 0; i < *size; i++)
+        signal->values[i] = (float)
+            *A * sin((2.0 * *D * i / (*size) - *D) * 2.0 * M_PI);
 }
-
-
-
-
-
-
-

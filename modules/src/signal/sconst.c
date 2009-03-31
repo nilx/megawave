@@ -25,16 +25,10 @@
 void sconst(int *size, float *A, Fsignal signal)
 {
 
-  signal = mw_change_fsignal(signal, *size);
-  if (signal == NULL) mwerror(FATAL,1,"Not enough memory.");
-  strcpy(signal->cmt,"Constant");
+    signal = mw_change_fsignal(signal, *size);
+    if (signal == NULL)
+        mwerror(FATAL, 1, "Not enough memory.");
+    strcpy(signal->cmt, "Constant");
 
-  mw_clear_fsignal(signal,*A);
+    mw_clear_fsignal(signal, *A);
 }
-
-
-
-
-
-
-

@@ -17,17 +17,19 @@
 #include <stdio.h>
 #include "mw.h"
 #include "mw-modules.h"
- 
+
 void sprintasc(Fsignal s, int *i1, int *i2, char *verbose)
 {
-  int i,vi1,vi2;
+    int i, vi1, vi2;
 
-  if (verbose) printf("number of samples : %d\n\n",s->size);
-  vi1 = (i1?*i1:0);
-  vi2 = (i2?*i2:s->size-1);
-  for (i=vi1;i<=vi2;i++) {
-    if (verbose) printf("%10d : ",i);
-    printf("%g\n",s->values[i]);
-  }
+    if (verbose)
+        printf("number of samples : %d\n\n", s->size);
+    vi1 = (i1 ? *i1 : 0);
+    vi2 = (i2 ? *i2 : s->size - 1);
+    for (i = vi1; i <= vi2; i++)
+    {
+        if (verbose)
+            printf("%10d : ", i);
+        printf("%g\n", s->values[i]);
+    }
 }
-

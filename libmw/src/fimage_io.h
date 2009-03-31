@@ -13,4 +13,4 @@ short _mw_fimage_create_native(char *NomFic, Fimage image, char *Type);
 Fimage _mw_fimage_load_image(char *NomFic, char *Type);
 short _mw_fimage_create_image(char *NomFic, Fimage image, char *Type);
 
-#endif /* !_FIMAGE_IO_H_ */
+#endif                          /* !_FIMAGE_IO_H_ */

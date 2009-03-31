@@ -8,8 +8,8 @@
    'm':min->min  "Force output minimal value",
    'M':max->max  "Force output maximal value",
    'a'->a        "average: output is C=(A+B)/2",
-   A->A          "Input fimage #1", 
-   B->B          "Input fimage #2", 
+   A->A          "Input fimage #1",
+   B->B          "Input fimage #2",
    C<-C          "Output fimage"
 };
 */
@@ -24,21 +24,25 @@
 
 Fimage fadd(Fimage A, Fimage B, Fimage C, float *min, float *max, char *a)
 {
-  float v;
-  int i;
+    float v;
+    int i;
 
-  if((A->nrow != B->nrow) || (A->ncol != B->ncol))
-    mwerror(FATAL, 1, "Input images must have the same size\n");
+    if ((A->nrow != B->nrow) || (A->ncol != B->ncol))
+        mwerror(FATAL, 1, "Input images must have the same size\n");
 
-  if ((C = mw_change_fimage(C,A->nrow,A->ncol)) == NULL)
-    mwerror(FATAL, 1, "Not enough memory\n");  
+    if ((C = mw_change_fimage(C, A->nrow, A->ncol)) == NULL)
+        mwerror(FATAL, 1, "Not enough memory\n");
 
-  for (i=A->nrow*A->ncol;i--;) {
-    v = A->gray[i]+B->gray[i];
-    if (a) v *= 0.5;
-    if (min && v<*min) v = *min;
-    if (max && v>*max) v = *max;
-    C->gray[i] = v;
-  }
-  return C;
+    for (i = A->nrow * A->ncol; i--;)
+    {
+        v = A->gray[i] + B->gray[i];
+        if (a)
+            v *= 0.5;
+        if (min && v < *min)
+            v = *min;
+        if (max && v > *max)
+            v = *max;
+        C->gray[i] = v;
+    }
+    return C;
 }

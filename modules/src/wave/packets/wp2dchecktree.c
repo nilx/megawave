@@ -3,9 +3,10 @@
 name = {wp2dchecktree};
 version = {"1.0"};
 author = {"Francois Malgouyres"};
-function = {"Check if an image can be considered as a quad-tree for a 2D-wavelet packet decomposition"};
-usage = { 
-   'd'->display_on_flag     "print the result", 
+function = {"Check if an image can be considered as a quad-tree for a
+            2D-wavelet packet decomposition"};
+usage = {
+   'd'->display_on_flag     "print the result",
    Cimage->tree             "Cimage describing (or not) a quad-tree"
 };
 */
@@ -19,12 +20,14 @@ usage = {
 
 int wp2dchecktree(Cimage tree, char *display_on_flag)
 {
-  int level;
+    int level;
 
-  level=mw_checktree_wpack2d(tree);
+    level = mw_checktree_wpack2d(tree);
 
-  if(display_on_flag)
-    printf("This image has a tree structure. \n Its maximum decomposition level is %d\n",level);
-  
-  return(level); 
+    if (display_on_flag)
+        printf
+            ("This image has a tree structure. \n"
+             " Its maximum decomposition level is %d\n", level);
+
+    return (level);
 }

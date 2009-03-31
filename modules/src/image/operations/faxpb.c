@@ -4,7 +4,7 @@
  version = {"1.3"};
  author = {"Lionel Moisan"};
  function = {"Gain/Offset correction to a Fimage (a x plus b)"};
- usage = {            
+ usage = {
     'a':a->a   "set a directly",
     's':s->s   "set a indirectly by selecting the output standart deviation s",
     'M':M->M   "set a indirectly (and b=0) by selecting total mass M",
@@ -25,61 +25,78 @@
 #include <stdio.h>
 #include <math.h>
 #include "mw.h"
-#include "mw-modules.h" /* for fmean(), fvar() */
+#include "mw-modules.h"         /* for fmean(), fvar() */
 
 /*** NB: Calling this module with out=in is possible ***/
 
-void faxpb(Fimage in, Fimage out, float *a, float *s, float *b, float *m, char *k, float *M, float *N)
+void faxpb(Fimage in, Fimage out, float *a, float *s, float *b, float *m,
+           char *k, float *M, float *N)
 {
-  double sum;
-  float gain,ofs1,ofs2,*pin,*pout;
-  int   i,adr;
-  
-  if (M) {
+    double sum;
+    float gain, ofs1, ofs2, *pin, *pout;
+    int i, adr;
 
-    if ((s?1:0) + (a?1:0) + (m?1:0) + (b?1:0) + (k?1:0) + (N?1:0) > 0) 
-      mwerror(USAGE,1,"please use -M option alone");
-    ofs1 = ofs2 = 0.;
-    gain = *M/(fmean(in)*(float)in->ncol*(float)in->nrow);
+    if (M)
+    {
 
-  } else if (N) {
+        if ((s ? 1 : 0) + (a ? 1 : 0) + (m ? 1 : 0) + (b ? 1 : 0) +
+            (k ? 1 : 0) + (N ? 1 : 0) > 0)
+            mwerror(USAGE, 1, "please use -M option alone");
+        ofs1 = ofs2 = 0.;
+        gain = *M / (fmean(in) * (float) in->ncol * (float) in->nrow);
 
-    if ((s?1:0) + (a?1:0) + (m?1:0) + (b?1:0) + (k?1:0) + (M?1:0) > 0) 
-      mwerror(USAGE,1,"please use -N option alone");
-    ofs1 = ofs2 = 0.;
-    for (sum=0.,adr=in->ncol*in->nrow;adr--;) 
-      sum += (double)(in->gray[adr]*in->gray[adr]);
-    gain = *N/(float)sqrt(sum);
-
-  } else {
-
-    if (s && a) 
-      mwerror(USAGE,1,"-a and -s options cannot be used together");
-    if ((m?1:0) + (b?1:0) + (k?1:0) > 1) 
-      mwerror(USAGE,1,"please select no more than one of -b -m -k options");
-    
-    if (s) 
-      gain = *s / fvar(in, (char *) 1, (char *) 1);
-    else gain = (a?*a:1.0);
-    
-    if (m) {
-      ofs1 = fmean(in);
-      ofs2 = *m;
-    } else if (k) {
-      ofs1 = fmean(in);
-      ofs2 = ofs1;
-    } else {
-      ofs1 = 0.0;
-      ofs2 = (b?*b:0.0);
     }
-  }
+    else if (N)
+    {
 
-  mwdebug("a = %f\n",gain);
-  mwdebug("b = %f\n",ofs2-gain*ofs1);
+        if ((s ? 1 : 0) + (a ? 1 : 0) + (m ? 1 : 0) + (b ? 1 : 0) +
+            (k ? 1 : 0) + (M ? 1 : 0) > 0)
+            mwerror(USAGE, 1, "please use -N option alone");
+        ofs1 = ofs2 = 0.;
+        for (sum = 0., adr = in->ncol * in->nrow; adr--;)
+            sum += (double) (in->gray[adr] * in->gray[adr]);
+        gain = *N / (float) sqrt(sum);
 
-  out = mw_change_fimage(out,in->nrow,in->ncol);
-  if (!out) mwerror(FATAL,1,"Not enough memory.");
+    }
+    else
+    {
 
-  for (i=in->nrow*in->ncol,pin=in->gray,pout=out->gray; i-- ; pin++,pout++) 
-    *pout = gain * (*pin - ofs1) + ofs2;  
+        if (s && a)
+            mwerror(USAGE, 1, "-a and -s options cannot be used together");
+        if ((m ? 1 : 0) + (b ? 1 : 0) + (k ? 1 : 0) > 1)
+            mwerror(USAGE, 1,
+                    "please select no more than one of -b -m -k options");
+
+        if (s)
+            gain = *s / fvar(in, (char *) 1, (char *) 1);
+        else
+            gain = (a ? *a : 1.0);
+
+        if (m)
+        {
+            ofs1 = fmean(in);
+            ofs2 = *m;
+        }
+        else if (k)
+        {
+            ofs1 = fmean(in);
+            ofs2 = ofs1;
+        }
+        else
+        {
+            ofs1 = 0.0;
+            ofs2 = (b ? *b : 0.0);
+        }
+    }
+
+    mwdebug("a = %f\n", gain);
+    mwdebug("b = %f\n", ofs2 - gain * ofs1);
+
+    out = mw_change_fimage(out, in->nrow, in->ncol);
+    if (!out)
+        mwerror(FATAL, 1, "Not enough memory.");
+
+    for (i = in->nrow * in->ncol, pin = in->gray, pout = out->gray; i--;
+         pin++, pout++)
+        *pout = gain * (*pin - ofs1) + ofs2;
 }

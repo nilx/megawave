@@ -8,4 +8,4 @@
 /* src/mwp.c */
 int main(int argc, char **argv);
 
-#endif /* !_MWP_H_ */
+#endif                          /* !_MWP_H_ */

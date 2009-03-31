@@ -5,15 +5,15 @@
   author = {"Lionel Moisan"};
   function = {"Compute the gradient of an image using Fourier interpolation"};
   usage = {
-'x':gradx<-gradx 
+'x':gradx<-gradx
       "gradient (x coordinate)",
-'y':grady<-grady 
+'y':grady<-grady
       "gradient (y coordinate)",
-'n':gradn<-gradn 
+'n':gradn<-gradn
       "gradient norm |Du|",
-'p':gradp<-gradp 
+'p':gradp<-gradp
       "gradient phase (degrees) in [-180,180] U {mw_not_an_argument (=1.0e9)}",
-in->in           
+in->in
       "input Fimage"
   };
 */
@@ -29,85 +29,92 @@ in->in
 
 #define RADIANS_TO_DEGREES (180.0/M_PI)
 
-
-void fftgrad(Fimage in, Fimage gradx, Fimage grady, Fimage gradn, Fimage gradp)
+void fftgrad(Fimage in, Fimage gradx, Fimage grady, Fimage gradn,
+             Fimage gradp)
 {
-  int nx,ny,x,y,adr;
-  float normx,normy,cx,cy,xx,yy;
-  double dx,dy;
-  Fimage re,im;
+    int nx, ny, x, y, adr;
+    float normx, normy, cx, cy, xx, yy;
+    double dx, dy;
+    Fimage re, im;
 
-  nx = in->ncol;
-  ny = in->nrow;
+    nx = in->ncol;
+    ny = in->nrow;
 
-  gradx = mw_change_fimage(gradx,ny,nx);
-  if (!gradx) mwerror(FATAL,1,"Not enough Memory.\n");
-  else mw_clear_fimage(gradx,0.0);
+    gradx = mw_change_fimage(gradx, ny, nx);
+    if (!gradx)
+        mwerror(FATAL, 1, "Not enough Memory.\n");
+    else
+        mw_clear_fimage(gradx, 0.0);
 
-  grady = mw_change_fimage(grady,ny,nx);
-  if (!grady) mwerror(FATAL,1,"Not enough Memory.\n");
-  else mw_clear_fimage(grady,0.0);
-  
-  if (gradn) 
-  {
-    if (!mw_change_fimage(gradn,ny,nx))
-      mwerror(FATAL,1,"Not enough Memory.\n");
-    else 
-      mw_clear_fimage(gradn,0.0);
-  }
-  if (gradp)
-  { 
-    if (!mw_change_fimage(gradp,ny,nx))
-      mwerror(FATAL,1,"Not enough Memory.\n");
-    else 
-      mw_clear_fimage(gradp,mw_not_an_argument);
-  }
-  normx = 2.0*M_PI/(float)(nx);
-  normy = 2.0*M_PI/(float)(ny);
+    grady = mw_change_fimage(grady, ny, nx);
+    if (!grady)
+        mwerror(FATAL, 1, "Not enough Memory.\n");
+    else
+        mw_clear_fimage(grady, 0.0);
 
-  re = mw_new_fimage();
-  im = mw_new_fimage();
+    if (gradn)
+    {
+        if (!mw_change_fimage(gradn, ny, nx))
+            mwerror(FATAL, 1, "Not enough Memory.\n");
+        else
+            mw_clear_fimage(gradn, 0.0);
+    }
+    if (gradp)
+    {
+        if (!mw_change_fimage(gradp, ny, nx))
+            mwerror(FATAL, 1, "Not enough Memory.\n");
+        else
+            mw_clear_fimage(gradp, mw_not_an_argument);
+    }
+    normx = 2.0 * M_PI / (float) (nx);
+    normy = 2.0 * M_PI / (float) (ny);
 
-  /* Fourier transform */
-  fft2d(in, NULL, re, im, NULL);
+    re = mw_new_fimage();
+    im = mw_new_fimage();
+
+    /* Fourier transform */
+    fft2d(in, NULL, re, im, NULL);
 
   /*** MAIN LOOP ***/
-  for (x=0;x<nx;x++)
-    for (y=0;y<ny;y++) {
+    for (x = 0; x < nx; x++)
+        for (y = 0; y < ny; y++)
+        {
 
-      adr = y*nx+x;
+            adr = y * nx + x;
 
-      cx = re->gray[adr];
-      cy = im->gray[adr];
+            cx = re->gray[adr];
+            cy = im->gray[adr];
 
-      xx = normx * (float)(x>nx/2?x-nx:x);
-      yy = normy * (float)(y>ny/2?y-ny:y);
+            xx = normx * (float) (x > nx / 2 ? x - nx : x);
+            yy = normy * (float) (y > ny / 2 ? y - ny : y);
 
-      if (2*x==nx) xx=0.0;
-      if (2*y==ny) yy=0.0;
+            if (2 * x == nx)
+                xx = 0.0;
+            if (2 * y == ny)
+                yy = 0.0;
 
-      re->gray[adr] =  yy * cx + xx * cy;
-      im->gray[adr] = -xx * cx + yy * cy;
-    }
+            re->gray[adr] = yy * cx + xx * cy;
+            im->gray[adr] = -xx * cx + yy * cy;
+        }
 
-  /* inverse Fourier transform */
-  fft2d(re, im, gradx, grady, (char *) 1);
-  
-  if (gradp)
-    for (adr=nx*ny;adr--;)
-      if (gradx->gray[adr]!=0.0 || grady->gray[adr]!=0.0)
-	  gradp->gray[adr] = RADIANS_TO_DEGREES *
-	    (float)atan2( (double)grady->gray[adr],
-			  (double)gradx->gray[adr]);
+    /* inverse Fourier transform */
+    fft2d(re, im, gradx, grady, (char *) 1);
 
-  if (gradn)
-    for (adr=nx*ny;adr--;)
-      if (gradx->gray[adr]!=0.0 || grady->gray[adr]!=0.0)
-      {
-	dx = gradx->gray[adr];
-	dy = grady->gray[adr];
-	gradn->gray[adr] = (float) sqrt(dx * dx + dy * dy);
-      }
-  mw_delete_fimage(re);
-  mw_delete_fimage(im);
+    if (gradp)
+        for (adr = nx * ny; adr--;)
+            if (gradx->gray[adr] != 0.0 || grady->gray[adr] != 0.0)
+                gradp->gray[adr] = RADIANS_TO_DEGREES *
+                    (float) atan2((double) grady->gray[adr],
+                                  (double) gradx->gray[adr]);
+
+    if (gradn)
+        for (adr = nx * ny; adr--;)
+            if (gradx->gray[adr] != 0.0 || grady->gray[adr] != 0.0)
+            {
+                dx = gradx->gray[adr];
+                dy = grady->gray[adr];
+                gradn->gray[adr] = (float) sqrt(dx * dx + dy * dy);
+            }
+    mw_delete_fimage(re);
+    mw_delete_fimage(im);
 }

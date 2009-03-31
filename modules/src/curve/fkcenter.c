@@ -4,10 +4,10 @@
    version = {"1.2"};
    author = {"Thierry Cohignac, Lionel Moisan"};
    function = {"Compute the center of mass (barycenter) of a set of Fcurves"};
-   usage = {            
+   usage = {
             in->cs               "input (Fcurves)",
-	    xg<-xg               "barycenter (x coordinate)",
-	    yg<-yg               "barycenter (y coordinate)"
+            xg<-xg               "barycenter (x coordinate)",
+            yg<-yg               "barycenter (y coordinate)"
    };
 */
 
@@ -17,26 +17,23 @@
 
 void fkcenter(Fcurves cs, float *xg, float *yg)
 {
-  int           n;
-  Fcurve        c;
-  Point_fcurve  p;
-  
-  *xg = *yg = 0.0;
-  n = 0;
-  
-  for (c=cs->first; c; c=c->next) 
-    for (p=c->first; p; p=p->next) {
-      
-      *xg += p->x;
-      *yg += p->y;
-      
-      n++;
-    }
-  
-  *xg /= (float)n;
-  *yg /= (float)n;
+    int n;
+    Fcurve c;
+    Point_fcurve p;
+
+    *xg = *yg = 0.0;
+    n = 0;
+
+    for (c = cs->first; c; c = c->next)
+        for (p = c->first; p; p = p->next)
+        {
+
+            *xg += p->x;
+            *yg += p->y;
+
+            n++;
+        }
+
+    *xg /= (float) n;
+    *yg /= (float) n;
 }
-
-
-
-

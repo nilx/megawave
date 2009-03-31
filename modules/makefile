@@ -127,10 +127,30 @@ makefile.dep	: $(SRC)
 $(MODULES)	:
 	$(CP) $< $@
 
+.PHONY	: lint
+lint	: lint.flag charset.flag linelength.flag
+lint.flag	: $(SRC) $(HDR)
+#	$(LINT) $(LINT_FLAGS) $?
+	@touch $@
+charset.flag	: $(SRC) $(HDR)
+	$(MAKE) $(addsuffix +charset, $?)
+	@touch $@
+linelength.flag	: $(SRC) $(HDR)
+	$(MAKE) $(addsuffix +linelength, $?)
+	@touch $@
+
+.PHONY	: beautify
+beautify	: beautify.flag
+beautify.flag	: $(SRC) $(HDR) $(SRCDIR)/$(API)
+	$(MAKE) $(addsuffix +style, $?)
+	$(MAKE) $(addsuffix +cleanup, $?)
+	@touch $@
+
 .PHONY	: clean-bin
 clean-bin :
 	@echo '$(RM) $$(OBJ) $$(CMDOBJ)'
 	@$(RM) $(OBJ) $(CMDOBJ)
+	$(RM) lint.flag charset.flag linelength.flag beautify.flag
 
 # TODO fixme, remove the header and cmdline sources
 .PHONY	: distclean-bin

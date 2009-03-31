@@ -1,18 +1,18 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ccimage_io.c
-   
+
   Vers. 1.12
   (C) 1993-2002 Jacques Froment
   Input/Output private functions for the Ccimage structure
 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~~~~~~~~  This file is part of the MegaWave2 system library ~~~~~~~~~~~~~~~
   MegaWave2 is a "soft-publication" for the scientific community. It has
   been developed for research purposes and it comes without any warranty.
   The last version is available at http://www.cmla.ens-cachan.fr/Cmla/Megawave
   CMLA, Ecole Normale Superieure de Cachan, 61 av. du President Wilson,
-  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  94235 Cachan cedex, France. Email: megawave@cmla.ens-cachan.fr
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -38,27 +38,27 @@
 
 Ccimage _mw_ccimage_load_native(char *NomFic, char *Type)
 {
-     if (strcmp(Type,"PMC_C") == 0)
-	  /* PM format with pm_form=PM_C and pm_np = 3 */
-	  return((Ccimage) _mw_ccimage_load_pm(NomFic));
+    if (strcmp(Type, "PMC_C") == 0)
+        /* PM format with pm_form=PM_C and pm_np = 3 */
+        return ((Ccimage) _mw_ccimage_load_pm(NomFic));
 
-     if (strcmp(Type,"TIFFC") == 0)
-	  /* TIFF format with 24-bit color plane */
-	  return((Ccimage) _mw_ccimage_load_tiff(NomFic));
+    if (strcmp(Type, "TIFFC") == 0)
+        /* TIFF format with 24-bit color plane */
+        return ((Ccimage) _mw_ccimage_load_tiff(NomFic));
 
-     if (strcmp(Type,"BMPC") == 0)
-	  /* BMP format with 24 bpp */
-	  return((Ccimage) _mw_ccimage_load_bmp(NomFic));
+    if (strcmp(Type, "BMPC") == 0)
+        /* BMP format with 24 bpp */
+        return ((Ccimage) _mw_ccimage_load_bmp(NomFic));
 
-     if (strcmp(Type,"PPM") == 0)
-	  /* PPM raw format with 24 bpp */
-	  return((Ccimage) _mw_ccimage_load_ppmr(NomFic));
-  
-     if (strcmp(Type,"JFIFC") == 0)
-	  /* JPEG/JFIF format with 24-bit color plane */
-	  return((Ccimage) _mw_ccimage_load_jpeg(NomFic));
+    if (strcmp(Type, "PPM") == 0)
+        /* PPM raw format with 24 bpp */
+        return ((Ccimage) _mw_ccimage_load_ppmr(NomFic));
 
-     return(NULL);
+    if (strcmp(Type, "JFIFC") == 0)
+        /* JPEG/JFIF format with 24-bit color plane */
+        return ((Ccimage) _mw_ccimage_load_jpeg(NomFic));
+
+    return (NULL);
 }
 
 /* Return 0 if create OK */
@@ -66,74 +66,84 @@ Ccimage _mw_ccimage_load_native(char *NomFic, char *Type)
 short _mw_ccimage_create_native(char *NomFic, Ccimage image, char *Type)
 {
 
-     if (strcmp(Type,"TIFFC") == 0)
-	  /* TIFF format with 24-bit color plane */
-	  return(_mw_ccimage_create_tiff(NomFic,image));
+    if (strcmp(Type, "TIFFC") == 0)
+        /* TIFF format with 24-bit color plane */
+        return (_mw_ccimage_create_tiff(NomFic, image));
 
-     if (strcmp(Type,"BMPC") == 0)
-	  /* BMP format with 24 bpp */
-	  return(_mw_ccimage_create_bmp(NomFic,image));
+    if (strcmp(Type, "BMPC") == 0)
+        /* BMP format with 24 bpp */
+        return (_mw_ccimage_create_bmp(NomFic, image));
 
-     if (strcmp(Type,"PMC_C") == 0)
-	  /* PM format with pm_form=PM_C and pm_np 3 */
-	  return(_mw_ccimage_create_pm(NomFic,image));
+    if (strcmp(Type, "PMC_C") == 0)
+        /* PM format with pm_form=PM_C and pm_np 3 */
+        return (_mw_ccimage_create_pm(NomFic, image));
 
-     if (strcmp(Type,"PPM") == 0)
-	  /* PPM (portable pixmap file) format */
-	  return(_mw_ccimage_create_ppmr(NomFic,image));
+    if (strcmp(Type, "PPM") == 0)
+        /* PPM (portable pixmap file) format */
+        return (_mw_ccimage_create_ppmr(NomFic, image));
 
-     if (_mw_is_of_ftype(Type,"JFIFC"))
-	  /* JPEG/JFIF format with 24-bit color plane */
-	  return(_mw_ccimage_create_jpeg(NomFic,image,_mw_get_ftype_opt(Type)));
-  
-     return(-1);
+    if (_mw_is_of_ftype(Type, "JFIFC"))
+        /* JPEG/JFIF format with 24-bit color plane */
+        return (_mw_ccimage_create_jpeg
+                (NomFic, image, _mw_get_ftype_opt(Type)));
+
+    return (-1);
 }
 
 /* All available formats */
 
 Ccimage _mw_ccimage_load_image(char *NomFic, char *Type)
-{ 
-     Ccimage im;
-     char mtype[mw_mtype_size];
-     int hsize;  /* Size of the header, in bytes */
-     float version;/* Version number of the file format */
+{
+    Ccimage im;
+    char mtype[mw_mtype_size];
+    int hsize;                  /* Size of the header, in bytes */
+    float version;              /* Version number of the file format */
 
-     _mw_get_file_type(NomFic,Type,mtype,&hsize,&version);
+    _mw_get_file_type(NomFic, Type, mtype, &hsize, &version);
 
-     /* First, try native formats */
-     im = _mw_ccimage_load_native(NomFic,Type);
-     if (im != NULL) return(im);
+    /* First, try native formats */
+    im = _mw_ccimage_load_native(NomFic, Type);
+    if (im != NULL)
+        return (im);
 
-     /* If failed, try other formats with memory conversion */
-     im = (Ccimage) _mw_load_etype_to_itype(NomFic,mtype,"ccimage",Type);
-     if (im != NULL) return(im);
+    /* If failed, try other formats with memory conversion */
+    im = (Ccimage) _mw_load_etype_to_itype(NomFic, mtype, "ccimage", Type);
+    if (im != NULL)
+        return (im);
 
-     if (Type[0]=='?')
-	  mwerror(FATAL, 1,"Unknown external type for the file \"%s\"\n",NomFic);
-     else
-	  mwerror(FATAL, 1,"External type of file \"%s\" is %s. I don't know how to load such external type into a Ccimage !\n",NomFic,Type);
+    if (Type[0] == '?')
+        mwerror(FATAL, 1, "Unknown external type for the file \"%s\"\n",
+                NomFic);
+    else
+        mwerror(FATAL, 1,
+                "External type of file \"%s\" is %s. "
+                "I don't know how to load such external type "
+                "into a Ccimage !\n", NomFic, Type);
 
-     return NULL;
+    return NULL;
 }
-
 
 short _mw_ccimage_create_image(char *NomFic, Ccimage image, char *Type)
-{ 
-     short ret;
+{
+    short ret;
 
-     /* First, try native formats */
-     ret = _mw_ccimage_create_native(NomFic,image,Type);
-     if (ret == 0) return(0);
+    /* First, try native formats */
+    ret = _mw_ccimage_create_native(NomFic, image, Type);
+    if (ret == 0)
+        return (0);
 
-     /* If failed, try other formats with memory conversion */
-     ret = _mw_create_etype_from_itype(NomFic,image,"ccimage",Type);
-     if (ret == 0) return(0);
+    /* If failed, try other formats with memory conversion */
+    ret = _mw_create_etype_from_itype(NomFic, image, "ccimage", Type);
+    if (ret == 0)
+        return (0);
 
-     /* Invalid Type should have been detected before, but we can arrive here because
-	of a write failure (e.g. the output file name is write protected).
+    /*
+     * Invalid Type should have been detected before, but we can
+     * arrive here because  of a write failure (e.g. the output file
+     * name is write protected).
      */
-     mwerror(FATAL, 1,"Cannot save \"%s\" : all write procedures failed !\n",NomFic);  
+    mwerror(FATAL, 1, "Cannot save \"%s\" : all write procedures failed !\n",
+            NomFic);
 
-     return -1;
+    return -1;
 }
-
