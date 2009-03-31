@@ -1,0 +1,208 @@
+#! make -f
+#
+# makefile for the megawave library
+#
+# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008)
+
+BASEDIR	= ..
+COMMONDIR	= $(BASEDIR)/common
+include	$(COMMONDIR)/makefile
+
+#
+# TOP-LEVEL
+#
+
+.PHONY	: default all clean distclean
+default	: lib api
+all	: beautify lint lib api test man
+clean 	: clean-bin
+distclean	: distclean-bin
+
+SRCDIR	= src
+SRC	:= $(addprefix $(SRCDIR)/, \
+        ccimage.c       \
+        ccimage_io.c    \
+        cfimage.c       \
+        cfimage_io.c    \
+        cimage.c        \
+        cimage_io.c     \
+        fimage.c        \
+        fimage_io.c     \
+        \
+        ccmovie.c       \
+        ccmovie_io.c    \
+        cfmovie.c       \
+        cfmovie_io.c    \
+        cmovie.c        \
+        cmovie_io.c     \
+        fmovie.c        \
+        fmovie_io.c     \
+        \
+        cmimage.c       \
+        cmimage_io.c    \
+        mimage.c        \
+        mimage_io.c     \
+        \
+        curve.c         \
+        curve_io.c      \
+        dcurve.c        \
+        dcurve_io.c     \
+        fcurve.c        \
+        fcurve_io.c     \
+        fpolygon.c      \
+        fpolygon_io.c   \
+        polygon.c       \
+        polygon_io.c    \
+        shape.c         \
+        shape_io.c      \
+        \
+        fsignal.c       \
+        fsignal_io.c    \
+	\
+        list.c          \
+        list_io.c       \
+	\
+        wave_io.c       \
+        wmax2d.c        \
+        wmax2d_io.c     \
+        wpack2d.c       \
+        wpack2d_io.c    \
+        wtrans1d.c      \
+        wtrans1d_io.c   \
+        wtrans2d.c      \
+        wtrans2d_io.c   \
+        \
+        error.c         \
+	\
+        rawdata.c       \
+        rawdata_io.c    \
+        \
+        bmp_io.c        \
+        epsf_io.c       \
+        gif_io.c        \
+        jpeg_io.c       \
+        pgm_io.c        \
+        pm_io.c         \
+        ppm_io.c        \
+        ps_io.c         \
+        tiff_io.c       \
+        \
+        ascii_file.c    \
+        basic_conv.c    \
+        file_type.c     \
+        libmw.c         \
+        mwio.c          \
+        type_conv.c     \
+	\
+	mt19937ar.c	\
+	)
+
+AUTOHDR	= $(SRC:.c=.h)
+HDR	= $(AUTOHDR) $(addprefix $(SRCDIR)/,	\
+	strtoul.h ppmr_io.h pm.h definitions.h)
+OBJ	= $(SRC:.c=$(.O))
+#DEP	= $(SRC:.c=.d)
+
+LIBNAME	= mw3
+API	= $(LIBNAME).h
+APITAG	:= _`echo -n $(API) | tr "a-z" "A-Z" | tr -c "A-Z0-9" "_"`_
+
+# FIXME: use clean float tests
+CWARN	+= -Wno-float-equal
+
+# FIXME: libmw fails with -O2
+# optimisation
+ifeq	($(MODE), opti)
+CMISC	+= -O1
+endif
+
+SHLIBS	= mw3-x11 X11 tiff jpeg
+
+IPATH	+= $(INCDIR)
+LPATH	+= $(LIBDIR)
+
+#
+# BIN
+#
+
+.PHONY	: lib
+lib 	: $(LIBDIR)/lib$(LIBNAME)$(.A) $(LIBDIR)/lib$(LIBNAME)$(.SO)
+
+$(LIBDIR)/lib$(LIBNAME)$(.A)	: $(OBJ)
+	$(MKDIR) $(@D)
+	@$(ECHO) '$(AR) ru $@ $$(OBJ)'
+	@$(AR) ru $@ $?
+$(LIBDIR)/lib$(LIBNAME)$(.SO)	: $(OBJ)
+	$(MKDIR) $(@D)
+	@$(ECHO) '$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $$(OBJ)'
+	@$(LDWRAP) $(LD) -fPIC $(LDFLAGS_SHARED) -o $@ $^
+
+.PHONY	: api
+api 	: $(INCDIR)/$(API)
+$(INCDIR)/$(API) 	: $(SRCDIR)/$(API)
+	$(MKDIR) $(@D)
+	$(CP) $< $@
+
+.PHONY	: lint
+lint	: lint.flag charset.flag linelength.flag
+lint.flag	: $(SRC) $(HDR)
+#	$(LINT) $(LINT_FLAGS) $?
+	@touch $@
+charset.flag	: $(SRC) $(HDR)
+	$(MAKE) $(addsuffix +charset, $?)
+	@touch $@
+linelength.flag	: $(SRC) $(HDR)
+	$(MAKE) $(addsuffix +linelength, $?)
+	@touch $@
+
+.PHONY	: beautify
+beautify	: beautify.flag
+beautify.flag	: $(SRC) $(HDR) $(SRCDIR)/$(API)
+	$(MAKE) $(addsuffix +style, $?)
+	$(MAKE) $(addsuffix +cleanup, $?)
+	@touch $@
+
+.PHONY	: clean-bin
+clean-bin :
+	@echo '$(RM) $$(OBJ)'
+	@$(RM) $(OBJ)
+	$(RM) lint.flag charset.flag linelength.flag beautify.flag
+
+.PHONY	: distclean-bin
+distclean-bin : clean-bin
+	$(RM) $(INCDIR)/$(API)
+	$(RM) $(LIBDIR)/lib$(LIBNAME)$(.A)
+	$(RM) $(LIBDIR)/lib$(LIBNAME)$(.SO)
+
+# include the prerequisites files
+# they will be built and re-read if they are missing
+#-include $(DEP)
+
+
+#
+# PREBUILD AND UTILS
+#
+
+.PHONY	: prebuild
+prebuild	: autohdr man #dep
+
+.PHONY	: autohdr
+autohdr	: $(AUTOHDR)
+
+#.PHONY	: dep
+#dep	: $(DEP)
+
+
+#
+# TEST
+#
+
+.PHONY	: test
+
+#
+# DOC
+#
+
+DOCNAME	= lib$(LIBNAME)
+MANSECTION	= 3
+include	$(COMMONDIR)/makefile.doc

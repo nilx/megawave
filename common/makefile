@@ -69,7 +69,7 @@ LIBDIR	= $(BUILDDIR)/lib
 BINDIR	= $(BUILDDIR)/bin
 INCDIR	= $(BUILDDIR)/include
 MANDIR	= $(BUILDDIR)/share/man
-DOCDIR	= $(BUILDDIR)/share/doc/megawave
+DOCDIR	= $(BUILDDIR)/share/doc/megawave3
 
 # CC OPTIONS
 # C language version

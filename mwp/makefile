@@ -38,7 +38,7 @@ BINNAME	= mwp
 #
 
 .PHONY	: prebuild
-prebuild	: autohdr cmdline #dep
+prebuild	: autohdr cmdline man #dep
 
 .PHONY	: cmdline
 cmdline	: $(SRCDIR)/mwp.c+cmdline

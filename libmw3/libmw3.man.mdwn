@@ -1,0 +1,34 @@
+% LIBMW3(3)
+% Jacques Froment <jacques.froment@univ-ubs.fr>
+% 2008-09-30
+
+# NAME
+
+**FIXME**: to be filled
+ - core library for the megawave framework.
+
+# LIBRARY
+
+library "libmw"
+
+# SYNOPSYS
+
+**FIXME**: to be filled
+
+# DESCRIPTION
+
+**FIXME**: to be filled
+
+# FILES
+
+/usr/include/libmw3.h
+
+# COPYRIGHT
+
+This program is part of the megawave framework.  
+See http://megawave.cmla.ens-cachan.fr/ for details.  
+(C) 2008 CMLA, ENS Cachan, 94235 Cachan cedex, France.  
+
+# SEE ALSO
+
+**megawave(7)**, **megawave-modules(7)**, **libmw3-x11(3)**

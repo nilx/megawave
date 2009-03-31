@@ -1,0 +1,63 @@
+/*--------------------------- MegaWave2 Module -----------------------------*/
+/* mwcommand
+   name = {fzrt};
+   version = {"1.1"};
+   author = {"Lionel Moisan"};
+   function = {"Zoom, Rotate then translate an image"};
+   usage = {
+    'o':[o=3]->o    "order: 0,1=linear,-3=cubic,3,5..11=spline",
+    'p':[p=-.5]->p  "Keys' parameter (when o=-3), in [-1,0]",
+    'b':[b=0.]->b   "background grey value",
+    in->in          "input Fimage",
+    out<-out        "output Fimage",
+    zoom->zoom      "zoom factor",
+    angle->angle    "rotation angle (in degrees, counterclockwise)",
+    x->x            "translation vector (x coordinate)",
+    y->y            "translation vector (y coordinate)"
+   };
+*/
+/*----------------------------------------------------------------------
+ v1.1 (04/2007): simplified header (LM)
+----------------------------------------------------------------------*/
+
+#include <stdio.h>
+#include <math.h>
+#include "mw3.h"
+#include "mw3-modules.h"         /* for fproj() */
+
+static void rotate(double cx, double cy, double ca, double sa, double x,
+                   double y, float *nx, float *ny)
+{
+    *nx = (float) (cx + (x - cx) * ca - (y - cy) * sa);
+    *ny = (float) (cy + (x - cx) * sa + (y - cy) * ca);
+}
+
+void fzrt(Fimage in, Fimage out, float zoom, float angle, float x, float y,
+          int *o, float *p, float *b)
+{
+    int nx, ny, sx, sy;
+    float X1, Y1, X2, Y2, X3, Y3;
+    double ca, sa, cx, cy;
+
+    nx = in->ncol;
+    ny = in->nrow;
+    ca = cos((double) angle * M_PI / 180.0);
+    sa = sin((double) angle * M_PI / 180.0);
+    cx = 0.5 * (double) nx;
+    cy = 0.5 * (double) ny;
+    rotate(cx, cy, ca, sa, 0., 0., &X1, &Y1);
+    rotate(cx, cy, ca, sa, cx * 2., 0., &X2, &Y2);
+    rotate(cx, cy, ca, sa, 0., cy * 2., &X3, &Y3);
+    x /= zoom;
+    y /= zoom;
+    X1 -= x;
+    X2 -= x;
+    X3 -= x;
+    Y1 -= y;
+    Y2 -= y;
+    Y3 -= y;
+    sx = ceil((double) zoom * (double) nx);
+    sy = ceil((double) zoom * (double) ny);
+    fproj(in, out, &sx, &sy, b, o, p, NULL, X1, Y1, X2, Y2, X3, Y3, NULL,
+          NULL);
+}

@@ -6,6 +6,6 @@
 #define _EXECUTABLE_H_
 
 /* src/executable.c */
-void gen_exec_file(FILE * afile);
+void gen_exec_file(FILE *afile);
 
-#endif                          /* !_EXECUTABLE_H_ */
+#endif /* !_EXECUTABLE_H_ */

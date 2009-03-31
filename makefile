@@ -1,65 +1,65 @@
 default	: all
-all	: mwp libmw libmw-x11 libmw-cmdline modules
-.PHONY	: prebuild mwp libmw libmw-x11 libmw-cmdline modules doc
+all	: mwp libmw3 libmw3-x11 libmw3-cmdline linmw3-modules
+.PHONY	: prebuild mwp libmw3 libmw3-x11 libmw3-cmdline libmw3-modules doc
 
 prebuild	:
-	$(MAKE) -C ./libmw-x11 prebuild
-	$(MAKE) -C ./libmw-cmdline prebuild
-	$(MAKE) -C ./libmw prebuild
 	$(MAKE) -C ./mwp prebuild
-	$(MAKE) -C ./modules prebuild
-
-libmw-x11	:
-	$(MAKE) -C ./libmw-x11
-
-libmw	: libmw-x11
-	$(MAKE) -C ./libmw
-
-libmw-cmdline	: libmw
-	$(MAKE) -C ./libmw-cmdline
-
-libmw-modules	: libmw
-	$(MAKE) -C modules lib
+	$(MAKE) -C ./libmw3-x11 prebuild
+	$(MAKE) -C ./libmw3-cmdline prebuild
+	$(MAKE) -C ./libmw3 prebuild
+	$(MAKE) -C ./libmw3-modules prebuild
 
 mwp	:
 	$(MAKE) -C ./mwp
 
-modules	: mwp libmw libmw-x11 libmw-cmdline
-	$(MAKE) -C ./modules
+libmw3-x11	:
+	$(MAKE) -C ./libmw3-x11
+
+libmw3	: libmw3-x11
+	$(MAKE) -C ./libmw3
+
+libmw3-cmdline	: libmw3
+	$(MAKE) -C ./libmw3-cmdline
+
+libmw3-modules	: libmw3 libmw3-x11 libmw3-cmdline
+	$(MAKE) -C ./libmw3-modules
+
+modules	: libmw3-modules libmw3-cmdline mwp
+	$(MAKE) -C ./libmw3-modules modules
 
 test	: modules
-	$(MAKE) -C ./modules test
+	$(MAKE) -C ./libmw3-modules test
 
 doc	:
 	$(MAKE) -C ./doc
 
 man	:
-	$(MAKE) -C ./libmw-x11 man
-	$(MAKE) -C ./libmw man
-	$(MAKE) -C ./libmw-cmdline man
 	$(MAKE) -C ./mwp man
-	$(MAKE) -C ./modules man
+	$(MAKE) -C ./libmw3-x11 man
+	$(MAKE) -C ./libmw3 man
+	$(MAKE) -C ./libmw3-cmdline man
+	$(MAKE) -C ./libmw3-modules man
 
 srcdoc	:
-	$(MAKE) -C ./libmw-x11 srcdoc
-	$(MAKE) -C ./libmw srcdoc
-	$(MAKE) -C ./libmw-cmdline srcdoc
 	$(MAKE) -C ./mwp srcdoc
-	$(MAKE) -C ./modules srcdoc
+	$(MAKE) -C ./libmw3-x11 srcdoc
+	$(MAKE) -C ./libmw3 srcdoc
+	$(MAKE) -C ./libmw3-cmdline srcdoc
+	$(MAKE) -C ./libmw3-modules srcdoc
 
 clean	:
 	$(MAKE) -C ./mwp clean
-	$(MAKE) -C ./libmw-x11 clean
-	$(MAKE) -C ./libmw clean
-	$(MAKE) -C ./libmw-cmdline clean
-	$(MAKE) -C ./modules clean
+	$(MAKE) -C ./libmw3-x11 clean
+	$(MAKE) -C ./libmw3 clean
+	$(MAKE) -C ./libmw3-cmdline clean
+	$(MAKE) -C ./libmw3-modules clean
 	$(MAKE) -C ./doc clean
 
 distclean	:
 	$(MAKE) -C ./mwp distclean
-	$(MAKE) -C ./libmw-x11 distclean
-	$(MAKE) -C ./libmw distclean
-	$(MAKE) -C ./libmw-cmdline distclean
-	$(MAKE) -C ./modules distclean
+	$(MAKE) -C ./libmw3-x11 distclean
+	$(MAKE) -C ./libmw3 distclean
+	$(MAKE) -C ./libmw3-cmdline distclean
+	$(MAKE) -C ./libmw3-modules distclean
 	$(MAKE) -C ./doc distclean
 	rm -rf ./build

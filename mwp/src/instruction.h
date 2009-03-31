@@ -8,6 +8,6 @@
 /* src/instruction.c */
 void Init_Cuserdatatype(void);
 void Free_Cuserdatatype(void);
-int GetNextInstruction(FILE * sfile);
+int GetNextInstruction(FILE *sfile);
 
-#endif                          /* !_INSTRUCTION_H_ */
+#endif /* !_INSTRUCTION_H_ */

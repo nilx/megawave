@@ -168,9 +168,9 @@ All the build process configuration lies in `common/makefile`.
 ## SUBFOLDERS
 
 You can also invoke make directly from within the subfolders
-`mwp`, `libmw`, `libmw-x11`, `libmw-io`, `libmw-cmdline` and
-`modules`. The previous options are still valid, and some other make
-targets are available. Please refer to `<subfolder>/README.txt` for
+`mwp`, `libmw3`, `libmw3-x11`, `libmw3-cmdline` and
+`libmw3-modules`. The previous options are still valid, and some other
+make targets are available. Please refer to `<subfolder>/README.txt` for
 the details.
 
 Some extra targets are available from the subfolders, mainly for
@@ -247,7 +247,7 @@ Compiling a new module requires the following steps:
 
 2. add it to your own modules archive
 
-    ar ru libmw-mymodules.a module.o
+    ar ru libmw3-mymodules.a module.o
 
 3. generate the command-line handler source
 
@@ -260,14 +260,14 @@ Compiling a new module requires the following steps:
 5. statically link it into an executable prograqm
 
     cc module.cmd.o libmw-mymodules.a libmw-modules.a \
-    libmw.a libmw-x11.a libmw-cmdline.a -ltiff -ljpeg -lX11 -o module
+    libmw3.a libmw3-x11.a libmw3-cmdline.a -ltiff -ljpeg -lX11 -o module
 
 The dynamic variant involves the following step:
 
 5. dynamically it into an executable prograqm
 
-    cc module.cmd.o libmw-mymodules.a -lmw-modules
-    -lmw -lmw-x11 -lmw-cmdline -o module
+    cc module.cmd.o libmw3-mymodules.a -lmw3-modules
+    -lmw3 -lmw3-x11 -lmw3-cmdline -o module
 
 Using dynamic links for the local modules archive is not recommended.
 

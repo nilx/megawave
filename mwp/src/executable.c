@@ -360,9 +360,9 @@ static void writegendecl(FILE * afile)
     fprintf(afile, "#include <stdlib.h>\n");
     fprintf(afile, "#include <string.h>\n");
 
-    fprintf(afile, "#include \"mw.h\"\n");
-    fprintf(afile, "#include \"mw-modules.h\"\n");
-    fprintf(afile, "#include \"mw-cmdline.h\"\n\n");
+    fprintf(afile, "#include \"mw3.h\"\n");
+    fprintf(afile, "#include \"mw3-modules.h\"\n");
+    fprintf(afile, "#include \"mw3-cmdline.h\"\n\n");
 
     /* TODO : in mw.h */
     fprintf(afile, "#define TRUE  1\n");
