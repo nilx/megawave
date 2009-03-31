@@ -16,4 +16,4 @@ Polygons mw_change_polygons(Polygons poly);
 void mw_delete_polygons(Polygons polygons);
 unsigned int mw_length_polygons(Polygons polys);
 
-#endif                          /* !_POLYGON_H_ */
+#endif /* !_POLYGON_H_ */

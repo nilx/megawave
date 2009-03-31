@@ -17,4 +17,4 @@ void mw_clear_fimage(Fimage image, float v);
 void mw_copy_fimage(Fimage in, Fimage out);
 float **mw_newtab_gray_fimage(Fimage image);
 
-#endif                          /* !_FIMAGE_H_ */
+#endif /* !_FIMAGE_H_ */

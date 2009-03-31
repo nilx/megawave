@@ -12,4 +12,4 @@ void mw_delete_rawdata(Rawdata rd);
 Rawdata mw_change_rawdata(Rawdata rd, int newsize);
 void mw_copy_rawdata(Rawdata in, Rawdata out);
 
-#endif                          /* !_RAWDATA_H_ */
+#endif /* !_RAWDATA_H_ */

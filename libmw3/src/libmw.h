@@ -7,4 +7,4 @@
 
 /* src/libmw.c */
 
-#endif                          /* !_LIBMW_H_ */
+#endif /* !_LIBMW_H_ */

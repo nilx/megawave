@@ -33,13 +33,6 @@ test	: modules
 doc	:
 	$(MAKE) -C ./doc
 
-man	:
-	$(MAKE) -C ./mwp man
-	$(MAKE) -C ./libmw3-x11 man
-	$(MAKE) -C ./libmw3 man
-	$(MAKE) -C ./libmw3-cmdline man
-	$(MAKE) -C ./libmw3-modules man
-
 srcdoc	:
 	$(MAKE) -C ./mwp srcdoc
 	$(MAKE) -C ./libmw3-x11 srcdoc

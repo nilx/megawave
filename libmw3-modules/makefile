@@ -69,6 +69,7 @@ CWARN	+= -Wno-float-equal
 .PHONY	: modules
 modules	: $(MODULES)
 
+
 .PHONY	: lib
 lib 	: $(LIBDIR)/lib$(LIBNAME)$(.A) $(LIBDIR)/lib$(LIBNAME)$(.SO)
 
@@ -125,6 +126,7 @@ makefile.dep	: $(SRC)
 
 -include makefile.dep
 $(MODULES)	:
+	$(MKDIR) $(@D)
 	$(CP) $< $@
 
 .PHONY	: lint

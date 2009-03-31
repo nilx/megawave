@@ -66,11 +66,11 @@ static Fimage alloc_image(int kx, Wpack2d pack, int start_nrow,
 {
     pack->images[kx] = mw_change_fimage(pack->images[kx],
                                         mw_bandsize_wpack2d(start_nrow,
-                                                            pack->
-                                                            tree->gray[kx]),
+                                                            pack->tree->
+                                                            gray[kx]),
                                         mw_bandsize_wpack2d(start_ncol,
-                                                            pack->
-                                                            tree->gray[kx]));
+                                                            pack->tree->
+                                                            gray[kx]));
     return (pack->images[kx]);
 }
 

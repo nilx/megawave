@@ -19,6 +19,7 @@ MKDIR	= /bin/mkdir -p
 SED	= /bin/sed
 CAT	= /bin/cat
 ECHO	= /bin/echo
+LN	= /bin/ln
 
 CC	= /usr/bin/gcc
 CCWRAP	= 

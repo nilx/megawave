@@ -10,4 +10,4 @@ Fmovie mw_new_fmovie(void);
 void mw_delete_fmovie(Fmovie movie);
 Fmovie mw_change_fmovie(Fmovie movie);
 
-#endif                          /* !_FMOVIE_H_ */
+#endif /* !_FMOVIE_H_ */

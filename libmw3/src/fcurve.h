@@ -21,4 +21,4 @@ void mw_delete_fcurves(Fcurves fcurves);
 unsigned int mw_length_fcurves(Fcurves fcurves);
 unsigned int mw_npoints_fcurves(Fcurves fcurves);
 
-#endif                          /* !_FCURVE_H_ */
+#endif /* !_FCURVE_H_ */

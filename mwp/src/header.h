@@ -9,4 +9,4 @@
 void GetHeaderStatement(char *s, char *name, char *value);
 void AnalyseHeaderStatement(char *argclass, char *value);
 
-#endif                          /* !_HEADER_H_ */
+#endif /* !_HEADER_H_ */
