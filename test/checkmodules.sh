@@ -220,7 +220,7 @@ snorm -v $EXAMPLES/signals/fsignal > $TMP/1 \
 
 ccopy $EXAMPLES/images/cimage $TMP/1_1 \
     && ccopy $EXAMPLES/images/fimage $TMP/1_2 \
-    && sh $SCRIPTS/mw-mkmovie.sh Cmovie $TMP/1 1 2 \
+    && sh $SCRIPTS/mkmovie.sh Cmovie $TMP/1 1 2 \
     && VAL=`grep nimage $TMP/1 | cut -d":" -f2` \
     && exact $VAL 2 \
     && pass || fail ccopy
@@ -270,10 +270,10 @@ cfiezw $TMP/3 $UTILS/wave/biortho/h/sd07.ir $TMP/4 > /dev/null \
     && exact $VAL 0 \
     && pass || fail cfiezw
 
-env DATA=$UTILS sh $SCRIPTS/mw-cfezw.sh $TMP/1 > $TMP/2 \
+env DATA=$UTILS sh $SCRIPTS/cfezw.sh $TMP/1 > $TMP/2 \
     && VAL=`tail -1 $TMP/2 | cut -f2` \
     && approx $VAL 31.18 \
-    && pass || fail mw-cfezw
+    && pass || fail cfezw.sh
 
 funzoom -z 4 -o 0 $EXAMPLES/images/cimage $TMP/1
 
@@ -288,10 +288,10 @@ fiezw $TMP/3 $UTILS/wave/biortho/h/sd07.ir $TMP/4 > /dev/null \
     && exact $VAL 0 \
     && pass || fail fiezw
 
-env DATA=$UTILS sh $SCRIPTS/mw-fezw.sh $TMP/1 > $TMP/2 \
+env DATA=$UTILS sh $SCRIPTS/fezw.sh $TMP/1 > $TMP/2 \
     && VAL=`tail -1 $TMP/2 | cut -f2` \
     && approx $VAL 33.62 \
-    && pass || fail mw-fezw
+    && pass || fail fezw.sh
 
 echo
 
@@ -913,8 +913,8 @@ finvspline $EXAMPLES/images/cimage 5 $TMP/1 \
 
 ccopy $EXAMPLES/images/cimage $TMP/1_001 \
     && ccopy $EXAMPLES/images/fimage $TMP/1_002 \
-    && sh $SCRIPTS/mw-mkmovie.sh Cmovie $TMP/1 1 2 \
-    && pass || fail mk-movie
+    && sh $SCRIPTS/mkmovie.sh Cmovie $TMP/1 1 2 \
+    && pass || fail mkmovie.sh
 
 cmzoom -o 3 -X 2 $TMP/1 $TMP/2 2> /dev/null \
     && fdiff $TMP/2_00001 $TMP/2_00002 $TMP/3 \
@@ -1687,11 +1687,11 @@ ssinus -s 100 -a 1 -d 1 $TMP/1  \
 
 sprintasc $EXAMPLES/signals/fsignal 1 1024 \
     | sreadasc $TMP/1 1024 \
-    && env DATA=$UTILS sh $SCRIPTS/mw-swtvdenoise.sh \
+    && env DATA=$UTILS sh $SCRIPTS/swtvdenoise.sh \
     -D 10 -N 200 $TMP/1 $TMP/2 > /dev/null \
     && VAL=`snorm -p 2 -c $TMP/1 $TMP/2 | cut -d"=" -f2` \
     && approx $VAL 11.52 \
-    && pass || fail mw-swtvdenoise
+    && pass || fail swtvdenoise.sh
 
 # TODO
 # stvrestore
