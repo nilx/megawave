@@ -109,15 +109,33 @@ autohdr	: $(AUTOHDR)
 
 
 #
-# TEST
-#
-
-.PHONY	: test
-
-#
 # DOC
 #
 
 DOCNAME	= lib$(LIBNAME)
 MANSECTION	= 3
 include	$(COMMONDIR)/makefile.doc
+
+#
+# INSTALL
+#
+
+.PHONY	: install
+install	: $(LIBDIR)/lib$(LIBNAME)$(.A) $(LIBDIR)/lib$(LIBNAME)$(.SO) \
+		 $(INCDIR)/$(API) $(MAN) $(MANHTML)
+	$(INSTALL) -d $(DESTDIR)/lib/
+	$(INSTALL) -s $(filter $(LIBDIR)/%, $^) $(DESTDIR)/lib/
+	$(INSTALL) -d $(DESTDIR)/include/
+	$(INSTALL) $(filter $(INCDIR)/%, $^) $(DESTDIR)/include/
+	$(INSTALL) -d $(DESTDIR)/share/man/man$(MANSECTION)
+	$(INSTALL) $(MAN) $(DESTDIR)/share/man/man$(MANSECTION)/
+	$(INSTALL) -d $(DESTDIR)/share/doc/megawave3
+	$(INSTALL) $(MANHTML) $(DESTDIR)/share/doc/megawave3/
+
+
+#
+# TEST
+#
+
+.PHONY	: test
+

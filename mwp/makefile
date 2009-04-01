@@ -98,6 +98,28 @@ distclean-bin : clean-bin
 #-include $(DEP)
 
 #
+# DOC
+#
+
+DOCNAME	= $(BINNAME)
+MANSECTION	= 1
+include	$(COMMONDIR)/makefile.doc
+
+
+#
+# INSTALL
+#
+
+.PHONY	: install
+install	: $(BINDIR)/$(BINNAME) $(MAN) $(MANHTML)
+	$(INSTALL) -d $(DESTDIR)/bin/
+	$(INSTALL) -s $(filter $(BINDIR)/%, $^) $(DESTDIR)/bin/
+	$(INSTALL) -d $(DESTDIR)/share/man/man$(MANSECTION)
+	$(INSTALL) $(MAN) $(DESTDIR)/share/man/man$(MANSECTION)/
+	$(INSTALL) -d $(DESTDIR)/share/doc/megawave3
+	$(INSTALL) $(MANHTML) $(DESTDIR)/share/doc/megawave3/
+
+#
 # TEST
 #
 
@@ -125,12 +147,4 @@ distclean-bin : clean-bin
 #
 #.PHONY	: distclean-test
 #distclean-test : clean-test
-
-#
-# DOC
-#
-
-DOCNAME	= $(BINNAME)
-MANSECTION	= 1
-include	$(COMMONDIR)/makefile.doc
 

@@ -181,6 +181,39 @@ prebuild	: man makefile.dep
 #.PHONY	: dep
 #dep	: $(DEP)
 
+
+#
+# DOC
+#
+
+DOXY_OVERRIDE	= \
+	EXCLUDE_PATTERNS	= *.cmd.*\n\
+	RECURSIVE		= YES\n\
+	SHOW_DIRECTORIES	= YES\n
+DOCNAME	= lib$(LIBNAME)
+MANSECTION	= 3
+include	$(COMMONDIR)/makefile.doc
+
+
+#
+# INSTALL
+#
+
+.PHONY	: install
+install	: $(LIBDIR)/lib$(LIBNAME)$(.A) $(LIBDIR)/lib$(LIBNAME)$(.SO) \
+		 $(INCDIR)/$(API) $(MODULES) $(MAN) $(MANHTML)
+	$(INSTALL) -d $(DESTDIR)/lib/
+	$(INSTALL) -s $(filter $(LIBDIR)/%, $^) $(DESTDIR)/lib/
+	$(INSTALL) -d $(DESTDIR)/lib/megawave3/modules/
+	$(INSTALL) -s $(MODULES) $(DESTDIR)/lib/megawave3/modules/
+	$(INSTALL) -d $(DESTDIR)/include/
+	$(INSTALL) $(filter $(INCDIR)/%, $^) $(DESTDIR)/include/
+	$(INSTALL) -d $(DESTDIR)/share/man/man$(MANSECTION)
+	$(INSTALL) $(MAN) $(DESTDIR)/share/man/man$(MANSECTION)/
+	$(INSTALL) -d $(DESTDIR)/share/doc/megawave3
+	$(INSTALL) $(MANHTML) $(DESTDIR)/share/doc/megawave3/
+
+
 #
 # TEST
 #
@@ -203,16 +236,4 @@ endif
 .PHONY	: test
 test	: $(MODULES)
 	env $(TESTENV) $(SH) $(TEST)
-
-#
-# DOC
-#
-
-DOXY_OVERRIDE	= \
-	EXCLUDE_PATTERNS	= *.cmd.*\n\
-	RECURSIVE		= YES\n\
-	SHOW_DIRECTORIES	= YES\n
-DOCNAME	= lib$(LIBNAME)
-MANSECTION	= 3
-include	$(COMMONDIR)/makefile.doc
 

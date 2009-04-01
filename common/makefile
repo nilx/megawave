@@ -72,6 +72,8 @@ INCDIR	= $(BUILDDIR)/include
 MANDIR	= $(BUILDDIR)/share/man
 DOCDIR	= $(BUILDDIR)/share/doc/megawave3
 
+DESTDIR	?= /usr/local
+
 # CC OPTIONS
 # C language version
 CSTD	?= -ansi
@@ -215,14 +217,6 @@ CPROTO_FLAGS	?= $(addprefix -I, $(IPATH)) -q
 			$(CAT) $@; \
 			$(ECHO) -e "\n#endif /* !$${HNAME} */";) > $@.$$$$ \
 		&& $(MV) $@.$$$$ $@
-
-# markdown to manpage
-%.man : %.man.mdwn
-	-test -x $(PANDOC) && $(PANDOC) $(PANDOC_FLAGS) -t man -o $@ $<
-
-# markdown to html
-%.html : %.mdwn
-	-test -x $(PANDOC) && $(PANDOC) $(PANDOC_FLAGS) -t html -o $@ $<
 
 
 # UTILITIES

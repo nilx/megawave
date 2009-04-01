@@ -9,15 +9,21 @@ default :
 clean 	: clean-doc
 distclean	: distclean-doc
 
-MAN	= $(DOCNAME).man
+MAN	= $(DOCNAME).$(MANSECTION)
 MANHTML	= $(MAN).html
 
 .PHONY	: man
 man	: $(MAN) $(MANHTML)
-	$(MKDIR) $(MANDIR)/man$(MANSECTION)
-	$(CP) $(MAN) $(MANDIR)/man$(MANSECTION)/$(DOCNAME).$(MANSECTION)
-	$(MKDIR) $(DOCDIR)
-	$(CP) $(MANHTML) $(DOCDIR)/$(DOCNAME).html
+
+
+# markdown to manpage
+$(MAN) : $(basename $(MAN)).man.mdwn
+	-test -x $(PANDOC) && $(PANDOC) $(PANDOC_FLAGS) -t man -o $@ $<
+
+# markdown to html
+$(MANHTML) : $(basename $(MAN)).man.mdwn
+	-test -x $(PANDOC) && $(PANDOC) $(PANDOC_FLAGS) -t html -o $@ $<
+
 
 .PHONY	: srcdoc
 srcdoc	: html/index.html $(DOCNAME).pdf
@@ -78,8 +84,7 @@ clean-doc	:
 
 .PHONY	: distclean-doc
 distclean-doc	: clean-doc
-	$(RM) $(MANDIR)/man$(MANSECTION)/$(DOCNAME).$(MANSECTION)
-	$(RM) $(DOCDIR)/$(DOCNAME).html
+	$(RM) $(MAN) $(MANHTML)
 	$(RM) $(DOCDIR)/srcdoc/$(DOCNAME).pdf
 	$(RRM) $(DOCDIR)/srcdoc/$(DOCNAME)
 
