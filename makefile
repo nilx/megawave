@@ -44,6 +44,7 @@ install	: mwp libmw3-x11 libmw3 libmw3-cmdline libmw3-modules modules
 	$(MAKE) -C ./libmw3-cmdline install
 	$(MAKE) -C ./libmw3-modules install
 	$(MAKE) -C ./data install
+	$(MAKE) -C ./scripts install
 
 doc	:
 	$(MAKE) -C ./doc
