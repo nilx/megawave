@@ -1,6 +1,0 @@
-#! /bin/sh
-
-#
-# global functions
-#
-
