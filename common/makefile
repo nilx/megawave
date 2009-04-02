@@ -184,9 +184,11 @@ LINT_FLAGS	?= -posixlib -weak -ansi89limits
 PANDOC_FLAGS	?= --standalone --reference-links --smart
 DOXYCONF	?= doxygen.conf
 
-GGOVERSION	:= $(shell $(GENGETOPT) --version | head -n 1 | cut -d' ' -f 3)
-GGO_FLAGS_2_22	:= $(shell if [ ! "$(GGOVERSION)" \< "2.22" ]; then   \
-                             echo "--no-help --no-version";           \
+GGOVERSION	:= $(shell test -x $(GENGETOPT) 			\
+			&& $(GENGETOPT) --version 			\
+				| head -n 1 | cut -d' ' -f 3)
+GGO_FLAGS_2_22	:= $(shell if [ ! "$(GGOVERSION)" \< "2.22" ]; then   	\
+                             echo "--no-help --no-version";           	\
                            fi) # available from gengetopt 2.22
 
 GENGETOPT_FLAGS	?= --func-name=mw_cmdline --arg-struct=mw_args_info	\
