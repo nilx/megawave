@@ -1,0 +1,77 @@
+#! /bin/sh
+#
+# common functions and settings for the megawave scripts
+#
+# This shell fragment is supposed to be sourced from other shell
+# scripts, not executed
+#
+# author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2009)
+
+#
+# SETTINGS
+#
+
+BASE_OPTIONS="\
+        -h, --help    show this usage information
+        -v, --version show the version information"
+
+FOOTER="\
+This program is part of the megawave framework.
+See http://megawave.cmla.ens-cachan.fr/ for details.
+(C) $DATE CMLA, ENS Cachan, 94235 Cachan cedex, France"
+
+USAGE="\
+$NAME version $VERSION
+
+$NAME - $BRIEF
+
+Synopsis:
+        $NAME [-h|--help]
+        $NAME [-v|--version]
+$SYNOPSIS
+
+Options:
+$OPTIONS
+
+Base options:
+$BASE_OPTIONS
+
+$DESCRIPTION
+
+$FOOTER"
+
+#
+# FUNCTIONS
+#
+
+error() {
+    echo "$CALLNAME: Command-line error. See '$CALLNAME --help' for details."
+}
+
+base_options() {
+    if [ $# -ge 1 ]; then
+	case $1 in
+	    -h|--help)
+		echo "$USAGE"
+		exit 1
+		;;
+	    -v|--version)
+		echo "$NAME $VERSION"
+		exit
+		;;
+	esac
+    fi
+}
+
+#
+# LOCAL SETTINGS
+#
+
+if [ -r /etc/megawave3.config ]; then
+    . /etc/megawave3.config
+fi
+
+if [ -r $HOME/.config/megawave3.config ]; then
+    . $HOME/.config/megawave3.config
+fi
+

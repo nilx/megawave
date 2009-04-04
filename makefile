@@ -4,6 +4,10 @@
 #
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2008-2009)
 
+BASEDIR	= .
+COMMONDIR	= $(BASEDIR)/common
+include	$(COMMONDIR)/makefile
+
 default	: mwp libmw3 libmw3-x11 libmw3-cmdline libmw3-modules modules
 .PHONY	: prebuild mwp \
 	libmw3 libmw3-x11 libmw3-cmdline libmw3-modules \
@@ -44,7 +48,8 @@ install	: mwp libmw3-x11 libmw3 libmw3-cmdline libmw3-modules modules
 	$(MAKE) -C ./libmw3-cmdline install
 	$(MAKE) -C ./libmw3-modules install
 	$(MAKE) -C ./data install
-	$(MAKE) -C ./scripts install
+	$(MAKE) -C ./scripts install # must be installed *after* the modules
+	$(SH) $(COMMONDIR)/post-install.sh
 
 doc	:
 	$(MAKE) -C ./doc

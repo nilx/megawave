@@ -10,7 +10,7 @@ clean 	: clean-doc
 distclean	: distclean-doc
 
 MAN	= $(DOCNAME).$(MANSECTION)
-MANHTML	= $(MAN).html
+MANHTML	= $(DOCNAME).html
 
 .PHONY	: man
 man	: $(MAN) $(MANHTML)
