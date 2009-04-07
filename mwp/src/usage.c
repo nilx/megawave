@@ -29,19 +29,22 @@ void module_presentation(FILE * afile,
     year %= 100;
     year += 2000;
 
-    fprintf(afile, "  fprintf(stderr, \"%s %s\\n\");\n", Prog, Vers);
-    fprintf(afile, "  fprintf(stderr, \"%s\\n\");\n", Func);
+    /* TODO: split header/footer */
+    /* HEADER */
+    fprintf(afile, "  fprintf(stderr, \"%s version %s\\n\");\n", Prog, Vers);
+    fprintf(afile, "  fprintf(stderr, \"%s - %s\\n\");\n", Prog, Func);
+    /* FOOTER */
     fprintf(afile, "  fprintf(stderr, \""
-            "This program, written by %s\");\n", Auth);
+            "This program is part of the megawave framework.\\n\");\n");
+    fprintf(afile, "  fprintf(stderr, \"Written by %s\");\n", Auth);
     if (0 < strlen(Lab))
         fprintf(afile, "  fprintf(stderr, \" (%s)\");\n", Lab);
+    fprintf(afile, "  fprintf(stderr, \".\\n\");\n");
     fprintf(afile, "  fprintf(stderr, \""
-            ", is part of the megawave framework.\\n\");\n");
+            "See http://megawave.cmla.ens-cachan.fr/ for details.\\n\");\n");
     fprintf(afile, "  fprintf(stderr, \""
-            "(C)1995-%d CMLA, ENS Cachan, "
+            "(C) 1995-%d CMLA, ENS Cachan, "
             "94235 Cachan cedex, France.\\n\");\n", year);
-    fprintf(afile, "  fprintf(stderr, \""
-            "-> http://megawave.cmla.ens-cachan.fr/\\n\");\n");
     fprintf(afile, "  fprintf(stderr, \"\\n\");\n");
 
     return;
