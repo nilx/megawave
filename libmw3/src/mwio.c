@@ -147,14 +147,10 @@ FILE *_mw_write_header_file(char *fname, char *type, float IDvers)
 
 /*===== Default paths for seeking input files =====*/
 
-/* Search fname in this order, <mwgroup> being the module's group :
+/* Search fname in this order, being the module's group :
    1) fname
-   2) fname in $MY_MEGAWAVE2/data/<mwgroup>/
-   3) fname in $MY_MEGAWAVE2/data/
-   4) fname in $MEGAWAVE2/data/<mwgroup>
-   5) fname in $MEGAWAVE2/data/
-   6) fname in $MEGAWAVE2_DATAPATH ($MEGAWAVE2_DATAPATH is a
-      colon-separated list of directories)
+   2) fname in $MW3_DATAPATH ($MW3_DATAPATH is a colon-separated list
+      of directories)
 */
 
 int _search_filename(char *fname)
@@ -174,43 +170,7 @@ int _search_filename(char *fname)
     if ('/' == fname[0])
         return (FALSE);
 
-    /* Search in $MY_MEGAWAVE2/data */
-    if (NULL != (path = getenv("MY_MEGAWAVE2")))
-    {
-        sprintf(filepath, "%s/data/%s/%s", path, mwgroup, fname);
-        if (NULL != (fp = fopen(filepath, "r")))
-        {
-            fclose(fp);
-            strcpy(fname, filepath);
-            return (TRUE);
-        }
-        sprintf(filepath, "%s/data/%s", path, fname);
-        if (NULL != (fp = fopen(filepath, "r")))
-        {
-            fclose(fp);
-            strcpy(fname, filepath);
-            return (TRUE);
-        }
-    }
-    /* Search in $MEGAWAVE2/data */
-    if (NULL != (path = getenv("MEGAWAVE2")))
-    {
-        sprintf(filepath, "%s/data/%s/%s", path, mwgroup, fname);
-        if (NULL != (fp = fopen(filepath, "r")))
-        {
-            fclose(fp);
-            strcpy(fname, filepath);
-            return (TRUE);
-        }
-        sprintf(filepath, "%s/data/%s", path, fname);
-        if (NULL != (fp = fopen(filepath, "r")))
-        {
-            fclose(fp);
-            strcpy(fname, filepath);
-            return (TRUE);
-        }
-    }
-    if (NULL != (path = getenv("MEGAWAVE2_DATAPATH")))
+    if (NULL != (path = getenv("MW3_DATAPATH")))
     {
         char *path_start;
         size_t length;
@@ -226,13 +186,13 @@ int _search_filename(char *fname)
                 {
                     fclose(fp);
                     strcpy(fname, filepath);
-                    return (TRUE);
+                    return TRUE;
                 }
             }
             path_start += length + 1;
         }
     }
-    return (FALSE);
+    return FALSE;
 }
 
 static void search_filename(char *fname)
