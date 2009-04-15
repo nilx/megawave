@@ -1,39 +1,34 @@
 #!/bin/sh
+#--------------------------- Shell MegaWave2 Macro --------------------------#
+_sccsid="%Z%MegaWave2 %R%, %M% %I%, %G%";
+_Prog="Cfezw"
+_Vers="1.3"
+_Date="1997-2002"
+_Func="Compress a color image with EZW algorithm";
+_Auth="Jean-Pierre D'Ales";
+_Usage="[-R Rate] [-c] [-b1 BiFilt1] [-b2 BiFilt2] [-o OrthoFilt] [-e EdgeFilt] image"
 
-NAME=cfezw.sh
-VERSION=1.3
-DATE=1997-2002
-BRIEF="compress a color image with EZW algorithm"
-AUTHOR="Jean-Pierre d'Ales"
+#---- MegaWave2 - Copyright (C) 1992-94 J.F. & S.P. All Rights Reserved. ----#
 
-SYNOPSIS="$NAME [-R Rate] [-c] [-b1 BiFilt1] [-b2 BiFilt2] [-o OrthoFilt] [-e EdgeFilt] image"
+#	input:		the image to be compressed, the wavelet filters
+#	output:		the quantized image, the compressed file
+#
+#       MegaWave2 modules used: cfezw
 
-OPTIONS="\
-no detail yet"
+# v1.2: fixed owave directory bug (L.Moisan)
+# v1.3: MY_MEGAWAVE2/tmp removed (JF).
 
-DESCRIPTION="\
-input:  the image to be compressed, the wavelet filters
-output: the quantized image, the compressed file
-
-megawave modules used: cfezw"
-
-. ${SCRIPTS_PATH}/megawave3.shi
-
-base_options $*
-
-if [ $# -lt 1 ]; then
-    error
-    exit 1
+#----- Check syntax -----
+if [ $# -le 0 ] 
+then
+	. .mw2_help_lg_com
 fi
-
-#
-# DO STUFF
-#
 
 # FIXME
 MWDATA=$DATA
 MY_MWDATA=$DATA
 GROUP=compression/ezwave
+
 
 # option to compute rate distortion curve
 RDOPT="-d"
