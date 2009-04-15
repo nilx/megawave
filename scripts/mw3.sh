@@ -8,11 +8,11 @@
 # SETTINGS
 #
 
-NAME=mw3
-VERSION=0.01
+NAME="mw3"
+VERSION="0.01"
 BRIEF="command-line wrapper for megawave"
 AUTHOR="Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr>"
-DATE=2008-2009
+DATE="2008-2009"
 
 SYNOPSIS="\
         $NAME <options>"
@@ -52,8 +52,7 @@ CALLNAME=$( basename $0 )
 # default system location
 
 if [ "$LIB_DIR" != "/lib" \
-   -a "$LIB_DIR" != "/usr/lib" \
-   -a "$LIB_DIR" != "/usr/local/lib" ]; then
+   -a "$LIB_DIR" != "/usr/lib" ]; then
    LD_LIBRARY_PATH=$LIB_DIR:$LD_LIBRARY_PATH
 fi
 
