@@ -5,7 +5,8 @@
 3. REQUIREMENTS
 4. COMPILATION
 5. INSTALLATION
-6. USAGE
+6. CLEANUP
+7. USAGE
 
 
 # 1. OVERVIEW
@@ -206,6 +207,8 @@ Required tools: `doxygen`, `graphviz`, `pdflatex`.
 After a successful compilation, you can install the programs, scripts
 and documents on your system.
 
+## DESTINATION
+
 The installation proceeds by copying the files to be installed into
 subdirectories of a "destination directory" called DESTDIR, following
 the file hierarchy standard:
@@ -257,9 +260,30 @@ or
 
     -I/opt/megawave3/include -L/opt/megawave3/lib
 
+## DOCUMENTATION
+
+If you compiled the documentation (`make doc`, as explained before),
+you can also install it in the default locations.
+
+    make install-doc
+
+The `DESTDIR` parameter discussion above still applies here.
 
 
-# 6. USAGE
+# 6. CLEANUP
+############
+
+Two cleanup targets are possible.
+
+* remove all the temporary files produced during the compilation
+  process: `make clean`
+* remove all the temporary files produced during the compilation
+  process and the result of the compilation: `make distclean`
+
+The installed files are not removed.
+
+
+# 7. USAGE
 ##########
 
 After the instalation step mentioned above, you should be able to use
