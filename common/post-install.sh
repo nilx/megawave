@@ -37,7 +37,7 @@ variable. Depending on your shell you should:
 * sh users, add this line to you ~/.profile file:
     PATH=\$PATH:$CLEAN_DESTDIR/bin
 * csh/tcsh users, add this line to you ~/.cshrc file:
-    setenc PATH \$PATH:$CLEAN_DESTDIR/bin
+    setenv PATH \$PATH:$CLEAN_DESTDIR/bin
 * ksh, zsh, fish users, ... we need more information about your shell
 
 It seems that you are currently using the "$( basename $SHELL )" shell.
