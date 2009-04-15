@@ -26,7 +26,7 @@ cat <<EOF
 EOF
 
 if [ "$DESTDIR" != "/" \
-    -a  "$DESTDIR" != "/usr/" \
+    -a "$DESTDIR" != "/usr/" \
     -a "$DESTDIR" != "/usr/local/" ]; then
     cat <<EOF
 
