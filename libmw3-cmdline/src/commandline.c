@@ -209,16 +209,6 @@ int _mw_main(int argc, char *argv[], char *envp[], Mwiline mwicmd[],
     /* Group */
     mwgroup = mwicmd[mwind].group;
 
-    /* If MW_CHECK_HIDDEN set, check for hidden module */
-    chm = getenv("MW_CHECK_HIDDEN");
-    if ((chm) && (chm[0] == '1'))
-    {
-        sprintf(command, "mwwhere -bin %s > /dev/null", mwname);
-        retcommand = system(command) >> 8;
-        if (retcommand == 2)
-            mwerror(WARNING, 1, "Module of same name hidden by this one !\n");
-    }
-
     /* make default option buf for usage */
     for (p = mwargs; p->name != NULL; p++)
     {
