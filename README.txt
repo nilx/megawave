@@ -56,7 +56,7 @@ unix utilities. gcc >= 4.3 may be required for code syntax check (see
 below), but these check have been performed already, so an older
 version of gcc is enough for compilation.
 
-On Debian and Debian based systems, you can install
+On Debian and Debian-based systems, you can install
 
 * the packages required for compilation and test with
   `sudo aptitude install libtiff-dev libjpeg-dev libx11-dev make gcc bc`
@@ -76,7 +76,8 @@ platforms is tracked in the STATUS.txt file.
 
 Prepare the source; this is only needed if you downloaded the source
 directly from the git tree. It will generate some automatic source
-and header files.
+and header files. If you downloaded a tarball, you don't need this
+step.
 
 Required tools: `make`, `cproto`, `gengetopt` and `csplit`.
 
@@ -150,10 +151,6 @@ full list.
 * `LDWRAP` an optional wrapper over the linker; intended for tools
            such as `diet`.
 
-* `.O`  the file extension for objects files (default:.o)
-* `.A`  the file extension for static  libraries files (default:.a)
-* `.SO` the file extension for dynamic libraries files (default:.so)
-
 Example:
 Build the modules with the `gcc-3.4` compiler and `ccache`.
 
@@ -206,40 +203,75 @@ Required tools: `doxygen`, `graphviz`, `pdflatex`.
 # 5. INSTALLATION
 #################
 
-There is no installation mechanism for the moment.
+After a successful compilation, you can install the programs, scripts
+and documents on your system.
 
-If you have root access, you can move the `build` folder content to
-`/usr/local/`, ie
+The installation proceeds by copying the files to be installed into
+subdirectories of a "destination directory" called DESTDIR, following
+the file hierarchy standard:
 
-    build/bin     -> /usr/local/bin
-    build/lib     -> /usr/local/lib
-    build/include -> /usr/local/include
+* `$DESTDIR/include/`                 : development headers
+* `$DESTDIR/lib/`                     : libraries (both static and dynamic) 
+* `$DESTDIR/lib/megawave3/modules/`   : executable modules
+* `$DESTDIR/share/doc/megawave3/`     : general documentation
+* `$DESTDIR/share/man/`               : manual pages
+* `$DESTDIR/share/megawave3/data/`    : example and utility data files
+* `$DESTDIR/share/megawave3/scripts/` : convenience scripts
 
-If you don't have root access, you can use any other folder instead of
-`/usr/local`, but you will need to set up some environment variables;
-for exempla, if you use `/home/user/megawave3`, then you need these
-settings, to be included in your profile (ie `.bashrc` for bash):
+A wrapper script ans symlinks are also added to `$DESTDIR/bin/`.
 
-    PATH=/home/user/megawave3/bin:$PATH
-    LD_LIBRARY_PATH=/home/user/megawave3/lib:$LD_LIBRARY_PATH
+The default value of `DESTDIR` is `/usr/local`, the usual destination
+for non-packaged software. Installing there requires root access.
+
+    make install
+
+If you don't have root access, or if you don't want a system-wide
+installation, you can override `DESTDIR` from the command-line.
+
+    make DESTDIR=/path/to/your/destination install
+
+An usual choice is a subfolder of your home directory, or a subfolder
+of the `/opt` directory if you have root access:
+
+    make DESTDIR=~/megawave3 install
+
+or
+
+    make DESTDIR=/opt/megawave3 install
+
+Using an ad-hoc `DESTDIR` provides the extra advantage of making the
+uninstallation easy by just deleting `DESTDIR`; if you install to a
+system location (like `/usr` or `/usr/local`), knowing exactly which
+files you can remove is can be tedious.
+
+In this case, you will need to update your `PATH` variable if you want
+to access the megawave programs directly; a post-install message will
+detail the required settings.
 
 In addition, you will need to add these options for any compilation
 using the megawave headers or libraries:
 
-    -I/home/user/megawave3/include -L/home/user/megawave3/lib
+    -I~/megawave3/include -L~/megawave3/lib
+
+or
+
+    -I/opt/megawave3/include -L/opt/megawave3/lib
 
 
 
 # 6. USAGE
 ##########
 
-After the instalation steps mentioned above, you can use megawave 3.02
-on your system.
+After the instalation step mentioned above, you should be able to use
+megawave 3.02 on your system.
 
 Running already compiled modules only requires to call them from the
 command-line.
 
-Compiling a new module requires the following steps:
+The convenience scripts found in megawave 3.01 or the concepts of
+global/local modules are not available yet in this version.
+
+For the moment, compiling a new module requires the following steps:
 
 1. compile the module into an object
 
@@ -269,7 +301,7 @@ The dynamic variant involves the following step:
     cc module.cmd.o libmw3-mymodules.a -lmw3-modules
     -lmw3 -lmw3-x11 -lmw3-cmdline -o module
 
-Using dynamic links for the local modules archive is not recommended.
+Using dynamic links for the local modules is not recommended.
 
 Note that such compilations now require the modules to be ANSI compliant
 code, with all the required headers included.
