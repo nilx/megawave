@@ -5,7 +5,7 @@
 # author: Nicolas Limare <nicolas.limare@cmla.ens-cachan.fr> (2009)
 
 
-CLEAN_DESTDIR=${DESTDIR%%/}/
+CLEAN_DESTDIR=${DESTDIR%%/}
 
 #
 # EVERYTHING FINE
@@ -30,14 +30,14 @@ if [ "$DESTDIR" != "/" \
     -a "$DESTDIR" != "/usr/local/" ]; then
     cat <<EOF
 
-To use it, you should add "$CLEAN_DESTDIR" to your PATH environment
+To use it, you should add "$CLEAN_DESTDIR/bin" to your PATH environment
 variable. Depending on your shell you should:
 * bash users, add this line to you ~/.bashrc file:
-    PATH=\$PATH:$CLEAN_DESTDIR
+    PATH=\$PATH:$CLEAN_DESTDIR/bin
 * sh users, add this line to you ~/.profile file:
-    PATH=\$PATH:$CLEAN_DESTDIR
+    PATH=\$PATH:$CLEAN_DESTDIR/bin
 * csh/tcsh users, add this line to you ~/.cshrc file:
-    setenc PATH \$PATH:$CLEAN_DESTDIR
+    setenc PATH \$PATH:$CLEAN_DESTDIR/bin
 * ksh, zsh, fish users, ... we need more information about your shell
 
 It seems that you are currently using the "$( basename $SHELL )" shell.
@@ -87,8 +87,8 @@ cat <<EOF
 
 Not implemented yet...
 
-It your installed megawave with a custom \$DESTDIR in /opt or in your
-own folder, then simply deleting this folder and its contect should be
-OK; don't forget to remove also any configuration file and custom data
-folder.
+It your installed megawave with a custom \$DESTDIR (in /opt or in your
+own folder), then simply deleting this folder and its content should be
+enough; don't forget to remove also any configuration file and custom
+data folder.
 EOF
