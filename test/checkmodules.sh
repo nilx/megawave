@@ -2,15 +2,14 @@
 #
 # Testsuite for the modules
 #
-# Set $PATH, $IOEXAMPLES, $SCRIPTS and $LD_LIBRARY_PATH
-# according to your locations.
+# $PATH and optionnaly $LD_LIBRARY_PATH must be set.
+#
+# Set $IOEXAMPLES and $SCRIPTS according to your locations.
 #
 # example : 
 # MWBASE=~/megawave
-# PATH=$MWBASE/build/bin
-# SCRIPTS=$MWBASE/scripts
 # IOEXAMPLES=$MWBASE/test/iodata
-# LD_LIBRARY_PATH=$MWBASE/build/lib
+# SCRIPTS=$MWBASE/scripts
 #
 
 usage() {
