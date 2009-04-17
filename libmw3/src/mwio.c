@@ -195,6 +195,15 @@ int _search_filename(char *fname)
     return FALSE;
 }
 
+/* Return 1 if found, 0 else */
+int _check_filename(const char *fname)
+{
+    char tmpfname[BUFSIZ];
+
+    strcpy(tmpfname, fname);
+    return _search_filename(tmpfname);
+}
+
 static void search_filename(char *fname)
 {
     if (_search_filename(fname) != TRUE)
