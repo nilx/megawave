@@ -37,7 +37,7 @@ can launch
   this case, 'cmw2' behaves like '$NAME -b'."
 
 # path prefix, installation-dependant (set a install time)
-
+#PREFIX="%%DESTDIR%%"
 PREFIX="%%DESTDIR%%"
 
 # the name used to call this script (symbolic links detection)
@@ -45,7 +45,7 @@ CALLNAME=$( basename $0 )
 
 # source common shell settings and functions
 # provides MW3_DOCVIEWER, MW3_DATAPATH, XXX_DIR
-
+#. %%DESTDIR%%/share/megawave3/scripts/megawave3.shi
 . %%DESTDIR%%/share/megawave3/scripts/megawave3.shi
 
 # custom LD_LIBRARY_PATH is needed if the libraries are not in a
