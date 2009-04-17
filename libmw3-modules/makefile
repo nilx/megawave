@@ -224,8 +224,8 @@ TEST	= $(BASEDIR)/test/checkmodules.sh
 LIBPATH	= $(LIBDIR)
 
 TESTENV	= PATH=$(BINDIR):$$PATH			\
+	MW3_DATAPATH=$(shell find $(BASEDIR)/data -type d | tr '\n' ':' ) \
 	UTILS=$(BASEDIR)/data/utils		\
-	EXAMPLES=$(BASEDIR)/data/examples	\
 	IOEXAMPLES=$(BASEDIR)/test/iodata	\
 	SCRIPTS=$(BASEDIR)/scripts
 
