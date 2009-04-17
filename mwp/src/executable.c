@@ -109,7 +109,7 @@
     "Cannot open A-file '%s' for writing"
 
 #define CODE_INPUT_MW_OPTION \
-    "if (!_search_filename(_mwoptarg))\n" \
+    "if (!_check_filename(_mwoptarg))\n" \
     "{\n" \
     "    char buffer[BUFSIZ];\n" \
     "    sprintf(buffer, \"cannot find '%%s' in default path\", _mwoptarg);\n" \
@@ -119,7 +119,7 @@
     "/* input megawave needed argument H_id=%s */\n" \
     "if (_mwoptind+%d<argc)\n" \
     "{\n" \
-    "  if (!_search_filename(argv[_mwoptind+%d]))\n" \
+    "  if (!_check_filename(argv[_mwoptind+%d]))\n" \
     "  {\n" \
     "    char buffer[BUFSIZ];\n" \
     "    sprintf(buffer, \"cannot find '%%s' in default path\", \\\n" \
@@ -137,7 +137,7 @@
     "  /* input megawave optional argument H_id=%s */\n" \
     "  if (_mwoptind+%d<argc)\n" \
     "  {\n" \
-    "    if (!_search_filename(argv[_mwoptind+%d]))\n" \
+    "    if (!_check_filename(argv[_mwoptind+%d]))\n" \
     "    {\n" \
     "      char buffer[BUFSIZ];\n" \
     "      sprintf(buffer, \"cannot find '%%s' in default path\", \\\n" \
@@ -177,7 +177,7 @@
     "    mwicmd[mwind].mwuse(\"missing '%s'\");\n"
 #define CODE_INPUT_MW_VAR_ARGUMENT \
     "/* input megawave variable argument H_id=%s */\n" \
-    "  if (!_search_filename(argv[%si]))\n" \
+    "  if (!_check_filename(argv[%si]))\n" \
     "  {\n" \
     "    char buffer[BUFSIZ];\n" \
     "    sprintf(buffer, \"cannot find '%%s' in default path\",  \\\n" \
