@@ -10,6 +10,7 @@ long mw_fsize(FILE *fp);
 void _mw_flip_image(register unsigned char *ptr, short size, short dx, short dy, char flip);
 FILE *_mw_write_header_file(char *fname, char *type, float IDvers);
 int _search_filename(char *fname);
+int _check_filename(const char *fname);
 long _mw_find_pattern_in_file(FILE *fp, char *label);
 int _mw_byte_ordering_is_little_endian(void);
 short _mwload_cimage(char *name, char type[], char comment[], Cimage *im);
