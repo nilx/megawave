@@ -194,8 +194,6 @@ int _mw_main(int argc, char *argv[], char *envp[], Mwiline mwicmd[],
     char *userargv[BUFSIZ];
     int i, userargc, flg;
     struct mwargs *p;
-    char command[BUFSIZ], *chm;
-    int retcommand;
 
     /* FIXME: unused parameter */
     envp = envp;
