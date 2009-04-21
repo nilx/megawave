@@ -272,46 +272,45 @@ static void _mw_print_available_ftype_for_output(char *mtype)
     char convmtype[mw_mtype_size];
     char ftype[mw_ftype_size];
 
-    printf
-        ("Internal type \"%s\" may be saved "
-         "using the following external types :\n", mtype);
+    fprintf(stderr, "Internal type \"%s\" may be saved "
+	    "using the following external types :\n", mtype);
 
     r = _mw_get_max_range_array(mtype, mw_native_ftypes);
     if (r > 0)
     {
-        printf("- Native formats are : ");
+        fprintf(stderr, "- Native formats are : ");
         for (i = 1; i <= r; i++)
         {
             _mw_put_range_array(mtype, ftype, i, mw_native_ftypes);
-            printf("%s ", ftype);
+            fprintf(stderr, "%s ", ftype);
         }
-        printf("\n");
+        fprintf(stderr, "\n");
     }
     else
-        printf("- The system reports no native format !\n");
+        fprintf(stderr, "- The system reports no native format !\n");
 
     r = _mw_get_max_range_array(mtype, mw_type_conv_out);
     if (r > 0)
     {
-        printf("- Other formats are : ");
+        fprintf(stderr, "- Other formats are : ");
         for (i = 1; i <= r; i++)
         {
             _mw_put_range_array(mtype, convmtype, i, mw_type_conv_out);
             if (i > 1)
-                printf("/ ");
-            printf("(%s) ", convmtype);
+                fprintf(stderr, "/ ");
+            fprintf(stderr, "(%s) ", convmtype);
 
             s = _mw_get_max_range_array(convmtype, mw_native_ftypes);
             for (j = 1; j <= s; j++)
             {
                 _mw_put_range_array(convmtype, ftype, j, mw_native_ftypes);
-                printf("%s ", ftype);
+                fprintf(stderr, "%s ", ftype);
             }
         }
-        printf("\n");
+        fprintf(stderr, "\n");
     }
     else
-        printf("- No other formats available.\n");
+        fprintf(stderr, "- No other formats available.\n");
 }
 
 /* Choose the external type to be used to save the structure */
