@@ -1,0 +1,12 @@
+% Roadmap for a post 3.01 release
+
+1. robust build system, executable only
+2. code lint, check, beautify, file cleanup  
+   -> release 4.0
+3. simplified, updated documentation
+4. packaging  
+   -> release 4.1
+5. simplified module development
+6. build tools for module development  
+   -> release 4.2
+
