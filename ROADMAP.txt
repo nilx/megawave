@@ -1,6 +1,6 @@
-% Roadmap for a post 3.01 release
+% Roadmap for possible 4.x releases
 
-1. robust build system, executable only
+1. robust build system, executable only, with 64bit support
 2. code lint, check, beautify, file cleanup  
    -> release 4.0
 3. simplified, updated documentation
